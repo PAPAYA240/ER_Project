@@ -10,9 +10,9 @@ public class GameScene : BaseScene
 
         SceneType = Define.Scene.Game;
 
-        Managers.Map.LoadMap(1);
+        Managers.Map.LoadMap("Cobalt");
 
-        Screen.SetResolution(640, 480, false);
+        Screen.SetResolution(1920, 1080, false);
 
         //GameObject player = Managers.Resource.Instantiate("Creature/Player");
         //player.name = "Player";
