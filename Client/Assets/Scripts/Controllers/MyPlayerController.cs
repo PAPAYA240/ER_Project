@@ -7,10 +7,16 @@ using static Define;
 public class MyPlayerController : PlayerController
 {
     bool _moveKeyPressed = false;
+    Dictionary<KeyCode, bool> _isCoolDown = new Dictionary<KeyCode, bool>();
 
     protected override void Init()
     {
         base.Init();
+
+        _isCoolDown[KeyCode.Q] = false;
+        _isCoolDown[KeyCode.W] = false;
+        _isCoolDown[KeyCode.E] = false;
+        _isCoolDown[KeyCode.R] = false;
     }
 
     protected override void UpdateController()
@@ -37,7 +43,22 @@ public class MyPlayerController : PlayerController
             return;
         }
 
-        if (_coSkillCooltime == null && Input.GetKey(KeyCode.Space))
+        InputSkill();
+    }
+
+    void InputSkill()
+    {
+        if (!_isCoolDown[KeyCode.Q] && Input.GetKey(KeyCode.Q))
+        {
+            Debug.Log("Skill!");
+
+            C_Skill skill = new C_Skill() { Info = new SkillInfo() };
+            skill.Info.SkillId = 1;
+            Managers.Network.Send(skill);
+
+            StartCoroutine(CoInputCooltime(KeyCode.Q, 0.2f));
+        }
+        else if (!_isCoolDown[KeyCode.W] && Input.GetKey(KeyCode.W))
         {
             Debug.Log("Skill!");
 
@@ -45,15 +66,46 @@ public class MyPlayerController : PlayerController
             skill.Info.SkillId = 2;
             Managers.Network.Send(skill);
 
-            _coSkillCooltime = StartCoroutine("CoInputCooltime", 0.2f);
+            StartCoroutine(CoInputCooltime(KeyCode.W, 3f));
+        }
+        else if (!_isCoolDown[KeyCode.E] && Input.GetKey(KeyCode.E))
+        {
+            Debug.Log("Skill!");
+
+            C_Skill skill = new C_Skill() { Info = new SkillInfo() };
+            skill.Info.SkillId = 3;
+            Managers.Network.Send(skill);
+
+            StartCoroutine(CoInputCooltime(KeyCode.E, 5f));
+        }
+        else if (!_isCoolDown[KeyCode.R] && Input.GetKey(KeyCode.R))
+        {
+            Debug.Log("Skill!");
+
+            C_Skill skill = new C_Skill() { Info = new SkillInfo() };
+            skill.Info.SkillId = 4;
+            Managers.Network.Send(skill);
+
+            StartCoroutine(CoInputCooltime(KeyCode.R, 10f));
         }
     }
 
-    Coroutine _coSkillCooltime;
-    IEnumerator CoInputCooltime(float time)
+    // ½ºÅ³ ÄðÅ¸ÀÓ
+    //Coroutine _coSkillCooltime;
+    IEnumerator CoInputCooltime(KeyCode key, float time)
     {
-        yield return new WaitForSeconds(time);
-        _coSkillCooltime = null;
+        _isCoolDown[key] = true;
+
+        float elapsed = 0f;
+        while (elapsed < time)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+
+        }
+
+        _isCoolDown[key] = false;
+        //_coSkillCooltime = null;
     }
 
     void LateUpdate()
@@ -66,19 +118,19 @@ public class MyPlayerController : PlayerController
     {
         _moveKeyPressed = true;
 
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.UpArrow))
         {
             Dir = MoveDir.Up;
         }
-        else if (Input.GetKey(KeyCode.S))
+        else if (Input.GetKey(KeyCode.DownArrow))
         {
             Dir = MoveDir.Down;
         }
-        else if (Input.GetKey(KeyCode.A))
+        else if (Input.GetKey(KeyCode.LeftArrow))
         {
             Dir = MoveDir.Left;
         }
-        else if (Input.GetKey(KeyCode.D))
+        else if (Input.GetKey(KeyCode.RightArrow))
         {
             Dir = MoveDir.Right;
         }
