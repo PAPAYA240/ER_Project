@@ -60,33 +60,33 @@ using UnityEngine;
 			GameObject go = Managers.Resource.Instantiate($"Map/{mapName}");
 			go.name = "Map";
 
-			GameObject collision = Util.FindChild(go, "Tilemap_Collision", true);
-			if (collision != null)
-				collision.SetActive(false);
+			//GameObject collision = Util.FindChild(go, "Tilemap_Collision", true);
+			//if (collision != null)
+			//	collision.SetActive(false);
 
-			CurrentGrid = go.GetComponent<Grid>();
+			//CurrentGrid = go.GetComponent<Grid>();
 
-			// Collision 관련 파일
-			TextAsset txt = Managers.Resource.Load<TextAsset>($"Map/{mapName}");
-			StringReader reader = new StringReader(txt.text);
+			//// Collision 관련 파일
+			//TextAsset txt = Managers.Resource.Load<TextAsset>($"Map/{mapName}");
+			//StringReader reader = new StringReader(txt.text);
 
-			MinX = int.Parse(reader.ReadLine());
-			MaxX = int.Parse(reader.ReadLine());
-			MinY = int.Parse(reader.ReadLine());
-			MaxY = int.Parse(reader.ReadLine());
+			//MinX = int.Parse(reader.ReadLine());
+			//MaxX = int.Parse(reader.ReadLine());
+			//MinY = int.Parse(reader.ReadLine());
+			//MaxY = int.Parse(reader.ReadLine());
 
-			int xCount = MaxX - MinX + 1;
-			int yCount = MaxY - MinY + 1;
-			_collision = new bool[yCount, xCount];
+			//int xCount = MaxX - MinX + 1;
+			//int yCount = MaxY - MinY + 1;
+			//_collision = new bool[yCount, xCount];
 
-			for (int y = 0; y < yCount; y++)
-			{
-				string line = reader.ReadLine();
-				for (int x = 0; x < xCount; x++)
-				{
-					_collision[y, x] = (line[x] == '1' ? true : false);
-				}
-			}
+			//for (int y = 0; y < yCount; y++)
+			//{
+			//	string line = reader.ReadLine();
+			//	for (int x = 0; x < xCount; x++)
+			//	{
+			//		_collision[y, x] = (line[x] == '1' ? true : false);
+			//	}
+			//}
 		}
 
 		public void DestroyMap()
