@@ -1,0 +1,233 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!90 &9000000
+Avatar:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: AttackDroneAvatar
+  m_AvatarSize: 1844
+  m_Avatar:
+    serializedVersion: 3
+    m_AvatarSkeleton:
+      data:
+        m_Node:
+        - m_ParentId: -1
+          m_AxesId: -1
+        - m_ParentId: 0
+          m_AxesId: -1
+        - m_ParentId: 0
+          m_AxesId: -1
+        - m_ParentId: 2
+          m_AxesId: -1
+        - m_ParentId: 3
+          m_AxesId: -1
+        - m_ParentId: 4
+          m_AxesId: -1
+        - m_ParentId: 4
+          m_AxesId: -1
+        - m_ParentId: 4
+          m_AxesId: -1
+        - m_ParentId: 7
+          m_AxesId: -1
+        - m_ParentId: 8
+          m_AxesId: -1
+        - m_ParentId: 9
+          m_AxesId: -1
+        - m_ParentId: 9
+          m_AxesId: -1
+        - m_ParentId: 4
+          m_AxesId: -1
+        m_ID: 000000004100e8036556c6+66d1b4836b59544(999e1ec1b1e1c34(f84b30044b276144a75368b(c5581d05fc3b1d728a8b63d4c
+        m_AxesArray: []
+    m_AvatarSkeletonPose:
+      data:
+        m_X:
+        - t: {x: 0, y: 0, z: 0}
+          q: {x: 0, y: 0, z: 0, w: 1}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: -0, y: 0, z: -0.038404007}
+          q: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: 3.4389213E-08, y: 0, z: 0}
+          q: {x: 0.7071068, y: -4.2160817E-09, z: -0.7071067, w: -4.2160826E-09}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: 2.4801583E-08, y: -0.41610152, z: 1.2042051E-09}
+          q: {x: 0, y: -3.5538914E-16, z: -0, w: 1}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: -0.0025417241, y: 0, z: -0.00067058334}
+          q: {x: 0.5000001, y: 0.49999994, z: -0.49999994, w: 0.5000001}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: -0.0006796479, y: 0.17258732, z: 0.030995635}
+          q: {x: -0.14215383, y: 1.5196798E-14, z: -5.850077E-15, w: 0.9898446}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: -0.0006707382, y: -0.2888431, z: -0.029020118}
+          q: {x: 2.8421716E-14, y: 1.4210855E-14, z: -7.950949E-15, w: 1}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: -0.00067065045, y: 0.017264646, z: -0.18750024}
+          q: {x: -0.49999985, y: 0.5000001, z: 0.5000002, w: -0.4999999}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: -8.34465E-09, y: -1.9073486E-08, z: -1.9073486E-08}
+          q: {x: 7.158822E-15, y: 1.0066304E-15, z: -0.045634042, w: 0.99895823}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: 0.20113239, y: -0.024660053, z: -4.5474734E-15}
+          q: {x: 7.1054265E-15, y: 8.8817837E-16, z: 3.7252899E-09, w: 1}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: 0.17857729, y: 0.028520564, z: -0.00025112153}
+          q: {x: -7.568258E-05, y: 0.70710665, z: 7.568256E-05, w: 0.7071069}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: 0.14972866, y: -0.028646506, z: -0.000251112}
+          q: {x: -7.568258E-05, y: 0.70710665, z: 7.568256E-05, w: 0.7071069}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: -0, y: 0.0031637582, z: 3.8146972E-08}
+          q: {x: 2.8421716E-14, y: 1.4210855E-14, z: -7.950949E-15, w: 1}
+          s: {x: 1, y: 1, z: 1}
+    m_DefaultPose:
+      data:
+        m_X:
+        - t: {x: 0, y: 0, z: 0}
+          q: {x: 0, y: 0, z: 0, w: 1}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: -0, y: 0, z: -0.038404007}
+          q: {x: -0.7071068, y: 0, z: -0, w: 0.7071068}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: 3.4389213E-08, y: 0, z: 0}
+          q: {x: 0.7071068, y: -4.2160817E-09, z: -0.7071067, w: -4.2160826E-09}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: 2.4801583E-08, y: -0.41610152, z: 1.2042051E-09}
+          q: {x: 0, y: -3.5538914E-16, z: -0, w: 1}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: -0.0025417241, y: 0, z: -0.00067058334}
+          q: {x: 0.5000001, y: 0.49999994, z: -0.49999994, w: 0.5000001}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: -0.0006796479, y: 0.17258732, z: 0.030995635}
+          q: {x: -0.14215383, y: 1.5196798E-14, z: -5.850077E-15, w: 0.9898446}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: -0.0006707382, y: -0.2888431, z: -0.029020118}
+          q: {x: 2.8421716E-14, y: 1.4210855E-14, z: -7.950949E-15, w: 1}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: -0.00067065045, y: 0.017264646, z: -0.18750024}
+          q: {x: -0.49999985, y: 0.5000001, z: 0.5000002, w: -0.4999999}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: -8.34465E-09, y: -1.9073486E-08, z: -1.9073486E-08}
+          q: {x: 7.158822E-15, y: 1.0066304E-15, z: -0.045634042, w: 0.99895823}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: 0.20113239, y: -0.024660053, z: -4.5474734E-15}
+          q: {x: 7.1054265E-15, y: 8.8817837E-16, z: 3.7252899E-09, w: 1}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: 0.17857729, y: 0.028520564, z: -0.00025112153}
+          q: {x: -7.568258E-05, y: 0.70710665, z: 7.568256E-05, w: 0.7071069}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: 0.14972866, y: -0.028646506, z: -0.000251112}
+          q: {x: -7.568258E-05, y: 0.70710665, z: 7.568256E-05, w: 0.7071069}
+          s: {x: 1, y: 1, z: 1}
+        - t: {x: -0, y: 0.0031637582, z: 3.8146972E-08}
+          q: {x: 2.8421716E-14, y: 1.4210855E-14, z: -7.950949E-15, w: 1}
+          s: {x: 1, y: 1, z: 1}
+    m_SkeletonNameIDArray: 000000004100e8036556c6+6812c5f5cb577f0,f7dd6680cfa2bb0)8d21170.36840797afe707e0dcbd51d.45de51a)33611b47f
+    m_Human:
+      data:
+        serializedVersion: 2
+        m_RootX:
+          t: {x: 0, y: 0, z: 0}
+          q: {x: 0, y: 0, z: 0, w: 1}
+          s: {x: 1, y: 1, z: 1}
+        m_Skeleton:
+          data:
+            m_Node: []
+            m_ID:
+            m_AxesArray: []
+        m_SkeletonPose:
+          data:
+            m_X: []
+        m_LeftHand:
+          data:
+            m_HandBoneIndex: ffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/f
+        m_RightHand:
+          data:
+            m_HandBoneIndex: ffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/f
+        m_HumanBoneIndex: ffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/fffffff/f
+        m_HumanBoneMass:
+        - 0.14545456
+        - 0.12121213
+        - 0.12121213
+        - 0.048484854
+        - 0.048484854
+        - 0.009696971
+        - 0.009696971
+        - 0.030303033
+        - 0.14545456
+        - 0.14545456
+        - 0.012121214
+        - 0.048484854
+        - 0.006060607
+        - 0.006060607
+        - 0.024242427
+        - 0.024242427
+        - 0.01818182
+        - 0.01818182
+        - 0.006060607
+        - 0.006060607
+        - 0.0024242427
+        - 0.0024242427
+        - 0
+        - 0
+        - 0
+        m_Scale: 1
+        m_ArmTwist: 0.5
+        m_ForeArmTwist: 0.5
+        m_UpperLegTwist: 0.5
+        m_LegTwist: 0.5
+        m_ArmStretch: 0.05
+        m_LegStretch: 0.05
+        m_FeetSpacing: 0
+        m_HasLeftHand: 0
+        m_HasRightHand: 0
+        m_HasTDoF: 0
+    m_HumanSkeletonIndexArray:
+    m_HumanSkeletonReverseIndexArray:
+    m_RootMotionBoneIndex: -1
+    m_RootMotionBoneX:
+      t: {x: 0, y: 0, z: 0}
+      q: {x: 0, y: 0, z: 0, w: 1}
+      s: {x: 1, y: 1, z: 1}
+    m_RootMotionSkeleton:
+      data:
+        m_Node: []
+        m_ID:
+        m_AxesArray: []
+    m_RootMotionSkeletonPose:
+      data:
+        m_X: []
+    m_RootMotionSkeletonIndexArray:
+  m_TOS:
+    1607500117: Root/AttackDrone_Total/AttackDrone_Body/AttackDrone_Gun01/AttackDrone_Gun02/AttackDrone_Gun03/AttackDrone_Gun05
+    3066451557: Root
+    2302973365: Root/AttackDrone_Total/AttackDrone_Body
+    910695277: Root/AttackDrone_Total
+    2357933685: Root/AttackDrone_Total/AttackDrone_Body/AttackDrone_Gun01/AttackDrone_Gun02/AttackDrone_Gun03
+    685224387: Root/AttackDrone_Total/AttackDrone_Body/AttackDrone_Gun01/AttackDrone_Gun02/AttackDrone_Gun03/AttackDrone_Gun04
+    1242855090: Root/AttackDrone_Total/AttackDrone_Body/AttackDrone_Gun01/AttackDrone_Gun02
+    65536065: AttackDrone
+    0:
+    468509081: Root/AttackDrone_Total/AttackDrone_Body/AttackDrone_wing
+    1140896644: Root/AttackDrone_Total/AttackDrone_Body/AttackDrone_Gun01
+    1279112872: Root/AttackDrone_Total/AttackDrone_Body/AttackDrone_top
+    2402556958: Root/AttackDrone_Total/AttackDrone_Body/AttackDrone_lens
+  m_HumanDescription:
+    serializedVersion: 3
+    m_Human: []
+    m_Skeleton: []
+    m_ArmTwist: 0.5
+    m_ForeArmTwist: 0.5
+    m_UpperLegTwist: 0.5
+    m_LegTwist: 0.5
+    m_ArmStretch: 0.05
+    m_LegStretch: 0.05
+    m_FeetSpacing: 0
+    m_GlobalScale: 1
+    m_RootMotionBoneName:
+    m_HasTranslationDoF: 0
+    m_HasExtraRoot: 0
+    m_SkeletonHasParents: 1
