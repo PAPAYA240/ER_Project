@@ -24,4 +24,14 @@ public class Define
         Click,
         Drag,
     }
+
+    public enum CameraMode
+    {
+        QuaterView,
+    }
+
+    public enum Layer
+    {
+        Map = 11,
+    }
 }

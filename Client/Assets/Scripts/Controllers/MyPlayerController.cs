@@ -9,6 +9,9 @@ public class MyPlayerController : PlayerController
     bool _moveKeyPressed = false;
     Dictionary<KeyCode, bool> _isCoolDown = new Dictionary<KeyCode, bool>();
 
+    int _mask = (1 << (int)Define.Layer.Map);
+    Vector3 _dstPos = Vector3.zero;
+
     protected override void Init()
     {
         base.Init();
@@ -24,10 +27,10 @@ public class MyPlayerController : PlayerController
         switch (State)
         {
             case CreatureState.Idle:
-                GetDirInput();
+                GetMouseInput();
                 break;
             case CreatureState.Moving:
-                GetDirInput();
+                GetMouseInput();
                 break;
         }
 
@@ -90,6 +93,27 @@ public class MyPlayerController : PlayerController
         }
     }
 
+    protected override void UpdateMoving()
+    {
+        Vector3 moveDir = _dstPos - transform.position;
+        moveDir.y = 0.0f;
+
+        // 도착 여부 체크
+        float dist = moveDir.magnitude;
+        if (dist < Speed * Time.deltaTime)
+        {
+            transform.position = _dstPos;
+            State = CreatureState.Idle;
+            _moveKeyPressed = false;
+        }
+        else
+        {
+            transform.position += moveDir.normalized * Speed * Time.deltaTime;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDir), 20 * Time.deltaTime);
+            State = CreatureState.Moving;
+        }
+    }
+
     // 스킬 쿨타임
     //Coroutine _coSkillCooltime;
     IEnumerator CoInputCooltime(KeyCode key, float time)
@@ -108,9 +132,35 @@ public class MyPlayerController : PlayerController
         //_coSkillCooltime = null;
     }
 
+    [SerializeField]
+    public Vector3 _offset = new Vector3(0, 10, -10);
+    [SerializeField]
+    public float smoothSpeed = 5f;
+
     void LateUpdate()
     {
-        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
+        Vector3 targetPos = transform.position + _offset;
+        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, targetPos, smoothSpeed * Time.deltaTime);
+        Camera.main.transform.LookAt(transform.position);
+    }
+
+    // 마우스 입력
+    void GetMouseInput()
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f, _mask);
+
+        if (Input.GetMouseButton(1))
+        {
+            if (raycastHit)
+            {
+                _dstPos = hit.point;
+                State = CreatureState.Moving;
+
+                _moveKeyPressed = true;
+            }
+        }
     }
 
     // 키보드 입력
@@ -120,24 +170,22 @@ public class MyPlayerController : PlayerController
 
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            Dir = MoveDir.Up;
+            
         }
         else if (Input.GetKey(KeyCode.DownArrow))
         {
-            Dir = MoveDir.Down;
+            
         }
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
-            Dir = MoveDir.Left;
+            
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
-            Dir = MoveDir.Right;
+            
         }
         else
-        {
             _moveKeyPressed = false;
-        }
     }
 
     protected override void MoveToNextPos()
