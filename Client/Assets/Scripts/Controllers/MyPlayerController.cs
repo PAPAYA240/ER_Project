@@ -15,6 +15,7 @@ public class MyPlayerController : PlayerController
     protected override void Init()
     {
         base.Init();
+        Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
 
         _isCoolDown[KeyCode.Q] = false;
         _isCoolDown[KeyCode.W] = false;
