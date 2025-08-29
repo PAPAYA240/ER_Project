@@ -29,4 +29,9 @@ public class Define
     {
         QuaterView,
     }
+
+    public enum Layer
+    {
+        Map = 11,
+    }
 }
