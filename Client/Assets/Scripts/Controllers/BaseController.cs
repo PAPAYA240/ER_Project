@@ -58,8 +58,8 @@ public class BaseController : MonoBehaviour
 
     public void SyncPos()
     {
-        Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
-        transform.position = destPos;
+        //Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
+        //transform.position = destPos;
     }
 
     public Vector3Int CellPos
@@ -238,8 +238,8 @@ public class BaseController : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         //_sprite = GetComponent<SpriteRenderer>();
-        Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
-        transform.position = pos;
+        //Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
+        //transform.position = pos;
 
         UpdateAnimation();
     }

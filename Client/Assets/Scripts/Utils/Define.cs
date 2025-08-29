@@ -24,4 +24,9 @@ public class Define
         Click,
         Drag,
     }
+
+    public enum CameraMode
+    {
+        QuaterView,
+    }
 }

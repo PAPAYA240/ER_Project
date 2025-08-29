@@ -11,6 +11,8 @@ public class MyPlayerController : PlayerController
     protected override void Init()
     {
         base.Init();
+
+        Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
     }
 
     protected override void UpdateController()
@@ -56,9 +58,16 @@ public class MyPlayerController : PlayerController
         _coSkillCooltime = null;
     }
 
+    [SerializeField]
+    public Vector3 _offset = new Vector3(0, 10, -10);
+    [SerializeField]
+    public float smoothSpeed = 5f;
+
     void LateUpdate()
     {
-        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
+        Vector3 targetPos = transform.position + _offset;
+        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, targetPos, smoothSpeed * Time.deltaTime);
+        Camera.main.transform.LookAt(transform.position);
     }
 
     // 키보드 입력
@@ -68,24 +77,22 @@ public class MyPlayerController : PlayerController
 
         if (Input.GetKey(KeyCode.W))
         {
-            Dir = MoveDir.Up;
+            
         }
         else if (Input.GetKey(KeyCode.S))
         {
-            Dir = MoveDir.Down;
+            
         }
         else if (Input.GetKey(KeyCode.A))
         {
-            Dir = MoveDir.Left;
+            
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            Dir = MoveDir.Right;
+            
         }
         else
-        {
             _moveKeyPressed = false;
-        }
     }
 
     protected override void MoveToNextPos()
