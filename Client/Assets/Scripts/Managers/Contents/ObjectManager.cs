@@ -59,14 +59,14 @@ public class ObjectManager
         }
 		else if (objectType == GameObjectType.Projectile)
 		{
-			GameObject go = Managers.Resource.Instantiate("Creature/Arrow");
-			go.name = "Arrow";
-			_objects.Add(info.ObjectId, go);
+			//GameObject go = Managers.Resource.Instantiate("Creature/Arrow");
+			//go.name = "Arrow";
+			//_objects.Add(info.ObjectId, go);
 
-			ArrowController ac = go.GetComponent<ArrowController>();
-			ac.PosInfo = info.PosInfo;
-			ac.Stat = info.StatInfo;
-			ac.SyncPos();
+			//ArrowController ac = go.GetComponent<ArrowController>();
+			//ac.PosInfo = info.PosInfo;
+			//ac.Stat = info.StatInfo;
+			//ac.SyncPos();
 		}
 	}
 
