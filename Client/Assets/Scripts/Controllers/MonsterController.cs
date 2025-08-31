@@ -13,12 +13,11 @@ public class MonsterController : CreatureController
 		base.Init();
 	}
 
-	protected override void UpdateIdle()
-	{
-		base.UpdateIdle();
-	}
+    protected override void UpdateIdle()
+    {
+    }
 
-	public override void OnDamaged()
+    public override void OnDamaged()
 	{
 		//Managers.Object.Remove(Id);
 		//Managers.Resource.Destroy(gameObject);

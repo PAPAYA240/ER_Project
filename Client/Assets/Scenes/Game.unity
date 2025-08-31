@@ -123,6 +123,103 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &111134620 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1888531132932458, guid: d5c518ff3c8e4df4bad72fa21923ff8b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1820643295}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &111134624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111134620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aaf8e885585ec34ca0cd6eb6ac2e534, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &111134625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111134620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6415413e3af48b24fa745e2bd62f04a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &1820643295
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1639671529707130, guid: d5c518ff3c8e4df4bad72fa21923ff8b, type: 3}
+      propertyPath: m_Name
+      value: Alpha_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4030657651212512, guid: d5c518ff3c8e4df4bad72fa21923ff8b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4030657651212512, guid: d5c518ff3c8e4df4bad72fa21923ff8b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.96
+      objectReference: {fileID: 0}
+    - target: {fileID: 4030657651212512, guid: d5c518ff3c8e4df4bad72fa21923ff8b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -7.32
+      objectReference: {fileID: 0}
+    - target: {fileID: 4030657651212512, guid: d5c518ff3c8e4df4bad72fa21923ff8b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4030657651212512, guid: d5c518ff3c8e4df4bad72fa21923ff8b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4030657651212512, guid: d5c518ff3c8e4df4bad72fa21923ff8b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4030657651212512, guid: d5c518ff3c8e4df4bad72fa21923ff8b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4030657651212512, guid: d5c518ff3c8e4df4bad72fa21923ff8b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4030657651212512, guid: d5c518ff3c8e4df4bad72fa21923ff8b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 4030657651212512, guid: d5c518ff3c8e4df4bad72fa21923ff8b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 114905846809542298, guid: d5c518ff3c8e4df4bad72fa21923ff8b, type: 3}
+    - {fileID: 114976063585841528, guid: d5c518ff3c8e4df4bad72fa21923ff8b, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1888531132932458, guid: d5c518ff3c8e4df4bad72fa21923ff8b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 111134624}
+    - targetCorrespondingSourceObject: {fileID: 1888531132932458, guid: d5c518ff3c8e4df4bad72fa21923ff8b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 111134625}
+  m_SourcePrefab: {fileID: 100100000, guid: d5c518ff3c8e4df4bad72fa21923ff8b, type: 3}
 --- !u!1 &1890984472
 GameObject:
   m_ObjectHideFlags: 0
@@ -227,7 +324,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 1
+  orthographic: 0
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
@@ -265,3 +362,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 2026506530}
   - {fileID: 1890984473}
+  - {fileID: 1820643295}

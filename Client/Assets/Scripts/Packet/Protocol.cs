@@ -2051,7 +2051,6 @@ namespace Google.Protobuf.Protocol {
         totalHp_ = value;
       }
     }
-
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as StatInfo);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Text;
 using Google.Protobuf;
@@ -17,6 +18,16 @@ namespace Server.Game
         Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
 
         public Map Map { get; private set; } = new Map();
+
+        // ======== 임의[N] ======== 
+        object _lock = new object();
+        public List<Player> GetAllPlayers()
+        {
+            lock (_lock)
+            {
+                return _players.Values.ToList();
+            }
+        }
 
         public void Init(int mapId)
         {

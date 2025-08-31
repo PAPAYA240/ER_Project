@@ -29,7 +29,6 @@ public class BaseController : MonoBehaviour
         get { return Stat.Speed; }
         set { Stat.Speed = value; }
     }
-
     public virtual int Hp
     {
         get { return Stat.Hp; }
@@ -58,8 +57,8 @@ public class BaseController : MonoBehaviour
 
     public void SyncPos()
     {
-        Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
-        transform.position = destPos;
+       // Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
+        //transform.position = destPos;
     }
 
     public Vector3Int CellPos
@@ -238,8 +237,8 @@ public class BaseController : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         //_sprite = GetComponent<SpriteRenderer>();
-        Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
-        transform.position = pos;
+        //Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
+        //transform.position = pos;
 
         UpdateAnimation();
     }
@@ -267,13 +266,13 @@ public class BaseController : MonoBehaviour
     {
     }
 
-    // ½º¸£¸¤ ÀÌµ¿ÇÏ´Â °ÍÀ» Ã³¸®
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
     protected virtual void UpdateMoving()
     {
         //Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
         //Vector3 moveDir = destPos - transform.position;
 
-        //// µµÂø ¿©ºÎ Ã¼Å©
+        //// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
         //float dist = moveDir.magnitude;
         //if (dist < Speed * Time.deltaTime)
         //{
