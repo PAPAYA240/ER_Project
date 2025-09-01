@@ -10,7 +10,7 @@ public abstract class BaseScene : MonoBehaviour
 	void Awake()
 	{
 		Init();
-	}
+    }
 
 	protected virtual void Init()
     {

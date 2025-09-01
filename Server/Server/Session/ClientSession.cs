@@ -49,8 +49,8 @@ namespace Server
 				MyPlayer.Session = this;
             }
 
-			GameRoom room = RoomManager.Instance.Find(1);
-			room.Push(room.EnterGame, MyPlayer);
+			//GameRoom room = RoomManager.Instance.Find(1);
+			//room.Push(room.EnterGame, MyPlayer);
         }
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)

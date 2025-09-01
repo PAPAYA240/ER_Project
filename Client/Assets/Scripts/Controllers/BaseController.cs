@@ -71,6 +71,13 @@ public class BaseController : MonoBehaviour
         }
     }
 
+    ObjectInfo _ObjectInfo = new ObjectInfo();
+    public ObjectInfo ObjInfo
+    {
+        get { return _ObjectInfo; }
+        set { }
+    }
+
     public void SyncPos()
     {
         transform.position = CellPos;
@@ -177,13 +184,13 @@ public class BaseController : MonoBehaviour
     {
     }
 
-    // ½º¸£¸¤ ÀÌµ¿ÇÏ´Â °ÍÀ» Ã³¸®
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
     protected virtual void UpdateMoving()
     {
         ////Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
         //Vector3 moveDir = destPos - transform.position;
 
-        //// µµÂø ¿©ºÎ Ã¼Å©
+        //// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
         //float dist = moveDir.magnitude;
         //if (dist < Speed * Time.deltaTime)
         //{

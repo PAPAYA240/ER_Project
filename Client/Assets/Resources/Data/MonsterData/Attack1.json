@@ -1,0 +1,29 @@
+{
+  "Name": "Root",
+  "Type": "SequenceNode",
+  "Children": [
+    {
+      "Name": "CheckQKey",
+      "Type": "IsKeyPressedNode",
+      "Properties": {
+        "key": "Q"
+      }
+    },
+    {
+      "Name": "Attack1",
+      "Type": "PlayAnimatorTriggerNode",
+      "Properties": {
+        "triggerName": "tAttack01",
+        "animationStateName": "Monster_Alpha_atk01"
+      }
+    },
+    {
+      "Name": "Attack2",
+      "Type": "PlayAnimatorTriggerNode",
+      "Properties": {
+        "triggerName": "tAttack02",
+        "animationStateName": "Monster_Alpha_atk02"
+      }
+    }
+  ]
+}

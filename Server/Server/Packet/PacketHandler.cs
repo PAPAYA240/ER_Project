@@ -9,12 +9,27 @@ using System.Text;
 
 class PacketHandler
 {
-	public static void C_MoveHandler(PacketSession session, IMessage packet)
+    public static void C_EnterGameHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = RoomManager.Instance.Find(1);
+        if (room == null)
+            return;
+
+        room.Push(room.EnterGame, player);
+    }
+
+    public static void C_MoveHandler(PacketSession session, IMessage packet)
 	{
 		C_Move movePacket = packet as C_Move;
 		ClientSession clientSession = session as ClientSession;
 
-        Console.WriteLine($"C_Move ({movePacket.PosInfo.PosX}, {movePacket.PosInfo.PosY}, {movePacket.PosInfo.PosZ})");
+        //Console.WriteLine($"C_Move ({movePacket.PosInfo.PosX}, {movePacket.PosInfo.PosY}, {movePacket.PosInfo.PosZ})");
 
 		Player player = clientSession.MyPlayer;
         if (player == null)
