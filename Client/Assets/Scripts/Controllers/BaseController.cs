@@ -147,8 +147,8 @@ public class BaseController : MonoBehaviour
 
     protected virtual void Init()
     {
-        _animator = GetComponent<Animator>();
-        _sprite = GetComponent<SpriteRenderer>();
+        _animator = GetComponentInChildren<Animator>();
+
         SyncPos();
 
         UpdateAnimation();
