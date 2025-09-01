@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,18 +9,24 @@ public class MultiplayersBuildAndRun
     [MenuItem("Tools/Run MultiPlayer/2 Players")]
     static void PerformWin64Build2()
     {
+        if (!IsServerRunning())
+            return;
         PerformWin64Build(2);
     }
 
     [MenuItem("Tools/Run MultiPlayer/3 Players")]
     static void PerformWin64Build3()
     {
+        if (!IsServerRunning())
+            return;
         PerformWin64Build(3);
     }
 
     [MenuItem("Tools/Run MultiPlayer/4 Players")]
     static void PerformWin64Build4()
     {
+        if (!IsServerRunning())
+            return;
         PerformWin64Build(4);
     }
 
@@ -52,5 +59,16 @@ public class MultiplayersBuildAndRun
         }
 
         return scenes;
+    }
+
+    static bool IsServerRunning(string processName = "Server")
+    {
+        if (Process.GetProcessesByName(processName).Length > 0)
+            return true;
+        else
+        {
+            UnityEngine.Debug.Log("¼­¹ö Å°¼À;;");
+            return false;
+        }
     }
 }

@@ -1,0 +1,24 @@
+
+// Skill01 Ready -> Skill01
+{
+  "Name": "Root",
+  "Type": "SequenceNode",
+  "Children": [
+    {
+      "Name": "CheckRKey",
+      "Type": "IsKeyPressedNode",
+      "Properties": {
+        "key": "R"
+      }
+    },
+    {
+      "Name": "Skill02",
+      "Type": "PlayAnimatorTriggerNode",
+      "Properties": {
+        "triggerName": "tSkill02",
+        "animationStateName": "Monster_Alpha_skill02"
+      }
+    }
+  ]
+}
+

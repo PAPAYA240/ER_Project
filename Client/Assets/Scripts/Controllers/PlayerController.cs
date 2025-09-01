@@ -1,6 +1,7 @@
-﻿using System.Collections;
+﻿using Google.Protobuf.Protocol;
+using System.Collections;
 using System.Collections.Generic;
-using Google.Protobuf.Protocol;
+using UnityEditor;
 using UnityEngine;
 using static Define;
 
@@ -16,74 +17,20 @@ public class PlayerController : CreatureController
 
 	protected override void UpdateAnimation()
 	{
-		if (_animator == null || _sprite == null)
+		if (_animator == null)
 			return;
 
 		if (State == CreatureState.Idle)
 		{
-			switch (Dir)
-			{
-				case MoveDir.Up:
-					_animator.Play("IDLE_BACK");
-					_sprite.flipX = false;
-					break;
-				case MoveDir.Down:
-					_animator.Play("IDLE_FRONT");
-					_sprite.flipX = false;
-					break;
-				case MoveDir.Left:
-					_animator.Play("IDLE_RIGHT");
-					_sprite.flipX = true;
-					break;
-				case MoveDir.Right:
-					_animator.Play("IDLE_RIGHT");
-					_sprite.flipX = false;
-					break;
-			}
+			
 		}
 		else if (State == CreatureState.Moving)
 		{
-			switch (Dir)
-			{
-				case MoveDir.Up:
-					_animator.Play("WALK_BACK");
-					_sprite.flipX = false;
-					break;
-				case MoveDir.Down:
-					_animator.Play("WALK_FRONT");
-					_sprite.flipX = false;
-					break;
-				case MoveDir.Left:
-					_animator.Play("WALK_RIGHT");
-					_sprite.flipX = true;
-					break;
-				case MoveDir.Right:
-					_animator.Play("WALK_RIGHT");
-					_sprite.flipX = false;
-					break;
-			}
+			
 		}
 		else if (State == CreatureState.Skill)
 		{
-			switch (Dir)
-			{
-				case MoveDir.Up:
-					_animator.Play(_rangedSkill ? "ATTACK_WEAPON_BACK" : "ATTACK_BACK");
-					_sprite.flipX = false;
-					break;
-				case MoveDir.Down:
-					_animator.Play(_rangedSkill ? "ATTACK_WEAPON_FRONT" : "ATTACK_FRONT");
-					_sprite.flipX = false;
-					break;
-				case MoveDir.Left:
-					_animator.Play(_rangedSkill ? "ATTACK_WEAPON_RIGHT" : "ATTACK_RIGHT");
-					_sprite.flipX = true;
-					break;
-				case MoveDir.Right:
-					_animator.Play(_rangedSkill ? "ATTACK_WEAPON_RIGHT" : "ATTACK_RIGHT");
-					_sprite.flipX = false;
-					break;
-			}
+			
 		}
 		else
 		{
@@ -98,26 +45,29 @@ public class PlayerController : CreatureController
 
 	public override void UseSkill(int skillId)
 	{
-		if (skillId == 1)
-		{
-			_coSkill = StartCoroutine("CoStartPunch");
-			Debug.Log("Skill Q !");
-		}
-		else if (skillId == 2)
-		{
-            _coSkill = StartCoroutine("CoStartShootArrow");
-            Debug.Log("Skill W !");
-        }
-		else if (skillId == 3)
-		{
-			_coSkill = StartCoroutine("CoStartSkillTemp");
-			Debug.Log("Skill E !");
-		}
-		else if (skillId == 4)
-		{
-			_coSkill = StartCoroutine("CoStartSkillTemp2");
-			Debug.Log("Skill R !");
-		}
+        _coSkill = StartCoroutine("CoStartSkill");
+        Debug.Log("스킬 코루틴 시작");
+
+  //      if (skillId == 1)
+		//{
+		//	_coSkill = StartCoroutine("CoStartSkill");
+		//	Debug.Log("스킬 코루틴 시작");
+		//}
+		//else if (skillId == 2)
+		//{
+  //          _coSkill = StartCoroutine("CoStartShootArrow");
+  //          Debug.Log("Skill W !");
+  //      }
+		//else if (skillId == 3)
+		//{
+		//	_coSkill = StartCoroutine("CoStartSkillTemp");
+		//	Debug.Log("Skill E !");
+		//}
+		//else if (skillId == 4)
+		//{
+		//	_coSkill = StartCoroutine("CoStartSkillTemp2");
+		//	Debug.Log("Skill R !");
+		//}
 	}
 
 	protected virtual void CheckUpdatedFlag()
@@ -125,7 +75,21 @@ public class PlayerController : CreatureController
 
 	}
 
-	IEnumerator CoStartPunch()
+    IEnumerator CoStartSkill()
+    {
+        // 대기 시간
+        _rangedSkill = false;
+        State = CreatureState.Skill;
+        float length = _animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(length);
+        State = CreatureState.Idle;
+        _coSkill = null;
+
+        _animator.SetTrigger("tIdle");
+        CheckUpdatedFlag();
+    }
+
+    IEnumerator CoStartPunch()
 	{
 		// 대기 시간
 		_rangedSkill = false;

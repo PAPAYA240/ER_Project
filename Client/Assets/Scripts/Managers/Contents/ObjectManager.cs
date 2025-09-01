@@ -52,7 +52,7 @@ public class ObjectManager
             go.name = info.Name;
             _objects.Add(info.ObjectId, go);
 
-            MonsterController mc = go.GetComponent<MonsterController>();
+            MonsterController mc = go.GetComponentInChildren<MonsterController>();
             mc.Id = info.ObjectId;
             mc.PosInfo = info.PosInfo;
             mc.Stat = info.StatInfo;

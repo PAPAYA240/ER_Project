@@ -4,14 +4,30 @@ using System.Collections.Generic;
 using System.IO;
 using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MapManager
 {
-	//public NavMeshSurface navMeshSurface;
+	NavMeshSurface navMeshSurface = null;
 
-	public bool CanGo(Vector3Int cellPos)
+	public Vector3Int CalcResultPos(Vector3Int destPos) // 이동스킬 위치 결과
 	{
-		return true;
+		if (CanGo(destPos))
+			return destPos;
+
+
+
+		return Vector3Int.zero;
+	}
+
+	bool CanGo(Vector3Int destPos) // 스킬 or 점멸로 이동하는 경우 사용
+	{
+        NavMeshHit hit;
+        bool isOnNavMesh = NavMesh.SamplePosition(destPos, out hit, 1.0f, NavMesh.AllAreas);
+        if (isOnNavMesh) 
+			return true;
+		else
+			return false;
 	}
 
 	public void LoadMap(string mapName)
@@ -22,7 +38,7 @@ public class MapManager
 		GameObject go = Managers.Resource.Instantiate($"Map/{mapFullName}");
 		go.name = "Map";
 
-		//navMeshSurface.BuildNavMesh();
+		navMeshSurface = go.GetComponent<NavMeshSurface>();
 	}
 
 	public void DestroyMap()
@@ -31,6 +47,7 @@ public class MapManager
 		if (map != null)
 		{
 			GameObject.Destroy(map);
-		}
+			navMeshSurface = null;
+        }
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
@@ -14,7 +15,7 @@ public class GameScene : BaseScene
 
         Managers.Map.LoadMap("Cobalt");
 
-        Screen.SetResolution(1920, 1080, false);
+        Screen.SetResolution(960 , 540, false);
 
         // 서버로 패킷 보내기
         BaseController baseController = new BaseController();
