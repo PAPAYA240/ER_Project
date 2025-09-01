@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class GameScene : BaseScene
@@ -12,12 +13,12 @@ public class GameScene : BaseScene
 
         Managers.Map.LoadMap("Cobalt");
 
-        Screen.SetResolution(1920, 1080, false);
+        Screen.SetResolution(960 , 540, false);
 
         //GameObject player = Managers.Resource.Instantiate("Creature/Player");
         //player.name = "Player";
         //Managers.Object.Add(player);
-        
+
 
         //Managers.UI.ShowSceneUI<UI_Inven>();
         //Dictionary<int, Data.Stat> dict = Managers.Data.StatDict;

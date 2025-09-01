@@ -31,6 +31,10 @@ namespace Server.Data
         public int id;
         public string name;
         public float cooldown;
+        public float lastUsedTime;
+        public int manaCost;
+        public string uiTag;
+
         public int damage;
         public SkillType skillType;
         public ProjectileInfo projectile;

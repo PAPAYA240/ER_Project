@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="3cefb427-91fc-47ba-b98e-86372cdae44d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi/RozziController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi/RozziController.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi/Skill.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi/Skill/Rozzi_Q.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi/Skill/Rozzi_Q.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi/Skill/Rozzi_W.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi/Skill/Rozzi_W.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Skill.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Contents/SkillBase.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Contents/SkillBase.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Contents/SkillManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Contents/SkillManager.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/ProtoUtils.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/ProtoUtils.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/Server/Packet/ProtoUtils.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Editor/MapEditor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Editor/MapEditor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Editor/MultiplayersBuildAndRun.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Editor/MultiplayersBuildAndRun.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Data/SkillData.json" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Data/SkillData.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/Creature/Player.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/Creature/Player.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/Creature/Player.prefab.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/Creature/Player.prefab.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Rozzi/AnimationClip/Rozzi_Pistol_Atk01_1.anim" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Rozzi/AnimationClip/Rozzi_Pistol_Atk01_1.anim" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Theodore/AnimatorController/Rozzi_S002.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Theodore/AnimatorController/Rozzi_S002.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scenes/Game.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scenes/Game.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/ArrowController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/ArrowController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/BaseController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/BaseController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/MyPlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/MyPlayerController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/PlayerController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Data/Data.Contents.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Data/Data.Contents.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Contents/MapManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Contents/MapManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Core/DataManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Core/DataManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Managers.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Managers.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/PacketHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/PacketHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/Protocol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/Protocol.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Scenes/GameScene.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Scenes/GameScene.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/Protocol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/Protocol.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/Protocol.proto" beforeDir="false" afterPath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/Protocol.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Data/Data.Contents.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Data/Data.Contents.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/Arrow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/Arrow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/GameObject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/GameObject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/Monster/Monster.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/Monster/Monster.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Room/GameRoom.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Room/GameRoom.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Room/Map.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Packet/PacketHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Packet/PacketHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Packet/Protocol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Packet/Protocol.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Session/ClientSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Session/ClientSession.cs" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="324gsPe4faACHOWIqLGAAG4F9pD" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3cefb427-91fc-47ba-b98e-86372cdae44d" name="Changes" comment="" />
+      <created>1756685465514</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1756685465514</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

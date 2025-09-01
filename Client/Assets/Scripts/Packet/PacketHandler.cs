@@ -10,7 +10,7 @@ class PacketHandler
 	public static void S_EnterGameHandler(PacketSession session, IMessage packet)
 	{
 		S_EnterGame enterGamePacket = packet as S_EnterGame;
-        Managers.Object.Add(enterGamePacket.Player, myPlayer : true);
+        //Managers.Object.Add(enterGamePacket.Player, myPlayer : true);
 	}
 
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)
@@ -51,6 +51,8 @@ class PacketHandler
             return;
 
         bc.PosInfo = movePacket.PosInfo;
+        bc.RotInfo = movePacket.RotInfo;
+        bc.SyncPos();
     }
 
     public static void S_SkillHandler(PacketSession session, IMessage packet)

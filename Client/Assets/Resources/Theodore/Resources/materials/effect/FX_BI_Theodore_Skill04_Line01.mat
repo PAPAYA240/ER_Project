@@ -8,10 +8,11 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FX_BI_Theodore_Skill04_Line01
-  m_Shader: {fileID: 4800000, guid: 1dd3f17fbba0d1346886b8b78c9beebc, type: 3}
+  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _EMISSION
   m_InvalidKeywords: []
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
@@ -19,59 +20,91 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties:
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-      _MainTex:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
         m_Texture: {fileID: 2800000, guid: e7403a666d03fbf4a9cc42e13a962977, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-      _MaskTex:
+    - _MaskTex:
         m_Texture: {fileID: 2800000, guid: 17724f0172a6db84dad2c28d11e26fa7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0.17, y: 0}
-      _Noise01:
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Noise01:
         m_Texture: {fileID: 2800000, guid: e7403a666d03fbf4a9cc42e13a962977, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-      _Noise02:
+    - _Noise02:
         m_Texture: {fileID: 2800000, guid: 4ac533000cf411544821ac470e0dff2f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Ints: {}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
-      _BumpScale: 1
-      _Cull: 0
-      _Cutoff: 0.5
-      _DetailNormalMapScale: 1
-      _DstBlend: 0
-      _GlossMapScale: 1
-      _Glossiness: 0.5
-      _GlossyReflections: 1
-      _Glow: 12
-      _MaskTex_SpeedONCoustom_OFF: 0
-      _Metallic: 0
-      _Mode: 0
-      _Noise: 1
-      _Noise_Intensity: 0.2312452
-      _Noise_Intensity1: 0.2312452
-      _OcclusionStrength: 1
-      _Parallax: 0.02
-      _SmoothnessTextureChannel: 0
-      _SpecularHighlights: 1
-      _SrcBlend: 1
-      _UVSec: 0
-      _ZTestMode: 2
-      _ZWrite: 1
-      __dirty: 0
+    - _BumpScale: 1
+    - _Cull: 0
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _Glow: 12
+    - _MaskTex_SpeedONCoustom_OFF: 0
+    - _Metallic: 0
+    - _Mode: 0
+    - _Noise: 1
+    - _Noise_Intensity: 0.2312452
+    - _Noise_Intensity1: 0.2312452
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _UVSec: 0
+    - _ZTestMode: 2
+    - _ZWrite: 1
+    - __dirty: 0
     m_Colors:
-      _Color: {r: 0.33490568, g: 0.68693864, b: 1, a: 1}
-      _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-      _MainTexUV_TilingSpeed: {r: 1.5, g: 0.4, b: 1, a: 0.1}
-      _MaskTexUV_TilingSpeed: {r: 1, g: 1, b: 0, a: 0}
-      _MaskUV_Tiling: {r: 0, g: 0, b: 0, a: 0}
-      _MaskUV_Tiling1: {r: 0, g: 0, b: 0, a: 0}
-      _Noise01UV_TilingSpeed: {r: 0.5, g: 0.5, b: -5, a: -0.25}
-      _Noise02UV_TilingSpeed: {r: 1, g: 1, b: -0.5, a: 0}
+    - _Color: {r: 0.33490568, g: 0.68693864, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _MainTexUV_TilingSpeed: {r: 1.5, g: 0.4, b: 1, a: 0.1}
+    - _MaskTexUV_TilingSpeed: {r: 1, g: 1, b: 0, a: 0}
+    - _MaskUV_Tiling: {r: 0, g: 0, b: 0, a: 0}
+    - _MaskUV_Tiling1: {r: 0, g: 0, b: 0, a: 0}
+    - _Noise01UV_TilingSpeed: {r: 0.5, g: 0.5, b: -5, a: -0.25}
+    - _Noise02UV_TilingSpeed: {r: 1, g: 1, b: -0.5, a: 0}
   m_BuildTextureStacks: []

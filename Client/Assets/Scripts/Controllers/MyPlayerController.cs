@@ -40,7 +40,7 @@ public class MyPlayerController : PlayerController
 
     protected override void UpdateIdle()
     {
-        // ÀÌµ¿ »óÅÂ·Î °¥Áö È®ÀÎ
+        // ï¿½Ìµï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
         if (_moveKeyPressed)
         {
             State = CreatureState.Moving;
@@ -50,48 +50,74 @@ public class MyPlayerController : PlayerController
         InputSkill();
     }
 
+    protected override void UpdateSkill()
+    {
+        InputSkill();
+    }
+
     void InputSkill()
     {
-        if (!_isCoolDown[KeyCode.Q] && Input.GetKey(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
-            Debug.Log("Skill!");
+            Debug.Log("Rozzi_Q!");
 
             C_Skill skill = new C_Skill() { Info = new SkillInfo() };
             skill.Info.SkillId = 1;
             Managers.Network.Send(skill);
 
-            StartCoroutine(CoInputCooltime(KeyCode.Q, 0.2f));
+            Managers.Skill.UseSkill("Rozzi_Q");
         }
-        else if (!_isCoolDown[KeyCode.W] && Input.GetKey(KeyCode.W))
+        else if (Input.GetKeyDown(KeyCode.W))
         {
-            Debug.Log("Skill!");
+            Debug.Log("Rozzi_W!");
 
             C_Skill skill = new C_Skill() { Info = new SkillInfo() };
             skill.Info.SkillId = 2;
             Managers.Network.Send(skill);
 
-            StartCoroutine(CoInputCooltime(KeyCode.W, 3f));
+            Managers.Skill.UseSkill("Rozzi_W");
         }
-        else if (!_isCoolDown[KeyCode.E] && Input.GetKey(KeyCode.E))
-        {
-            Debug.Log("Skill!");
 
-            C_Skill skill = new C_Skill() { Info = new SkillInfo() };
-            skill.Info.SkillId = 3;
-            Managers.Network.Send(skill);
+        //if (!_isCoolDown[KeyCode.Q] && Input.GetKey(KeyCode.Q))
+        //{
+        //    Debug.Log("Skill!");
 
-            StartCoroutine(CoInputCooltime(KeyCode.E, 5f));
-        }
-        else if (!_isCoolDown[KeyCode.R] && Input.GetKey(KeyCode.R))
-        {
-            Debug.Log("Skill!");
+        //    C_Skill skill = new C_Skill() { Info = new SkillInfo() };
+        //    skill.Info.SkillId = 1;
+        //    Managers.Network.Send(skill);
 
-            C_Skill skill = new C_Skill() { Info = new SkillInfo() };
-            skill.Info.SkillId = 4;
-            Managers.Network.Send(skill);
+        //    StartCoroutine(CoInputCooltime(KeyCode.Q, 0.2f));
+        //}
+        //else if (!_isCoolDown[KeyCode.W] && Input.GetKey(KeyCode.W))
+        //{
+        //    Debug.Log("Skill!");
 
-            StartCoroutine(CoInputCooltime(KeyCode.R, 10f));
-        }
+        //    C_Skill skill = new C_Skill() { Info = new SkillInfo() };
+        //    skill.Info.SkillId = 2;
+        //    Managers.Network.Send(skill);
+
+        //    StartCoroutine(CoInputCooltime(KeyCode.W, 3f));
+        //}
+        //else if (!_isCoolDown[KeyCode.E] && Input.GetKey(KeyCode.E))
+        //{
+        //    Debug.Log("Skill!");
+
+        //    C_Skill skill = new C_Skill() { Info = new SkillInfo() };
+        //    skill.Info.SkillId = 3;
+        //    Managers.Network.Send(skill);
+
+        //    StartCoroutine(CoInputCooltime(KeyCode.E, 5f));
+        //}
+        //else if (!_isCoolDown[KeyCode.R] && Input.GetKey(KeyCode.R))
+        //{
+        //    Debug.Log("Skill!");
+
+        //    C_Skill skill = new C_Skill() { Info = new SkillInfo() };
+        //    skill.Info.SkillId = 4;
+        //    Managers.Network.Send(skill);
+
+        //    StartCoroutine(CoInputCooltime(KeyCode.R, 10f));
+        //}
     }
 
     protected override void UpdateMoving()
@@ -99,7 +125,7 @@ public class MyPlayerController : PlayerController
         Vector3 moveDir = _dstPos - transform.position;
         moveDir.y = 0.0f;
 
-        // µµÂø ¿©ºÎ Ã¼Å©
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
         float dist = moveDir.magnitude;
         if (dist < Speed * Time.deltaTime)
         {
@@ -112,10 +138,13 @@ public class MyPlayerController : PlayerController
             transform.position += moveDir.normalized * Speed * Time.deltaTime;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDir), 20 * Time.deltaTime);
             State = CreatureState.Moving;
+            CellPos = transform.position;
+            RotInfo = transform.rotation;
+            CheckUpdatedFlag();
         }
     }
 
-    // ½ºÅ³ ÄðÅ¸ÀÓ
+    // ï¿½ï¿½Å³ ï¿½ï¿½Å¸ï¿½ï¿½
     //Coroutine _coSkillCooltime;
     IEnumerator CoInputCooltime(KeyCode key, float time)
     {
@@ -145,7 +174,7 @@ public class MyPlayerController : PlayerController
         Camera.main.transform.LookAt(transform.position);
     }
 
-    // ¸¶¿ì½º ÀÔ·Â
+    // ï¿½ï¿½ï¿½ì½º ï¿½Ô·ï¿½
     void GetMouseInput()
     {
         RaycastHit hit;
@@ -164,7 +193,7 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    // Å°º¸µå ÀÔ·Â
+    // Å°ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½
     void GetDirInput()
     {
         _moveKeyPressed = true;
@@ -189,50 +218,13 @@ public class MyPlayerController : PlayerController
             _moveKeyPressed = false;
     }
 
-    protected override void MoveToNextPos()
-    {
-        if (_moveKeyPressed == false)
-        {
-            State = CreatureState.Idle;
-            CheckUpdatedFlag();
-            return;
-        }
-
-        Vector3Int destPos = CellPos;
-
-        switch (Dir)
-        {
-            case MoveDir.Up:
-                destPos += Vector3Int.up;
-                break;
-            case MoveDir.Down:
-                destPos += Vector3Int.down;
-                break;
-            case MoveDir.Left:
-                destPos += Vector3Int.left;
-                break;
-            case MoveDir.Right:
-                destPos += Vector3Int.right;
-                break;
-        }
-
-        if (Managers.Map.CanGo(destPos))
-        {
-            if (Managers.Object.FindCreature(destPos) == null)
-            {
-                CellPos = destPos;
-            }
-        }
-
-        CheckUpdatedFlag();
-    }
-
     protected override void CheckUpdatedFlag()
     {
         if (_updated)
         {
             C_Move movePacket = new C_Move();
             movePacket.PosInfo = PosInfo;
+            movePacket.RotInfo = RotInfo;
             Managers.Network.Send(movePacket);
             _updated = false;
         }
