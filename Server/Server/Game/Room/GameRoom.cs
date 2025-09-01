@@ -6,6 +6,7 @@ using System.Text;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
+using Server.Game.Object.Monster;
 
 namespace Server.Game
 {
@@ -16,6 +17,8 @@ namespace Server.Game
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
         Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
         Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
+
+        MonsterManager _monsterManager = new MonsterManager();
 
         public Map Map { get; private set; } = new Map();
 
@@ -33,6 +36,9 @@ namespace Server.Game
         {
             Map.LoadMap(mapId);
 
+            // Spawn Monster
+            _monsterManager.Init(this, 1);
+
             // TEMP
             //Monster monster = ObjectManager.Instance.Add<Monster>();
             //monster.CellPos = new Vector2Int(5, 5);
@@ -41,6 +47,8 @@ namespace Server.Game
 
         public void Update()
         {
+            _monsterManager.Update();
+
             foreach (Monster monster in _monsters.Values)
             {
                 monster.Update();
@@ -144,6 +152,7 @@ namespace Server.Game
                
                 Map.ApplyLeave(monster);
                 monster.Room = null;
+                _monsterManager.Add(-1);
             }
             else if (type == GameObjectType.Projectile)
             {

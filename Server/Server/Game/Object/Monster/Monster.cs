@@ -5,7 +5,7 @@ using System.Threading;
 using Google.Protobuf.Protocol;
 using Server.Data;
 
-namespace Server.Game
+namespace Server.Game.Object.Monster
 {
     public class Monster : GameObject
     {
@@ -95,7 +95,7 @@ namespace Server.Game
             }
 
             List<Vector2Int> path = Room.Map.FindPath(CellPos, _target.CellPos, checkObjects: false);
-            if(path.Count < 2 || path.Count > _chaseCellDist)
+            if (path.Count < 2 || path.Count > _chaseCellDist)
             {
                 _target = null;
                 State = CreatureState.Idle;
@@ -104,7 +104,7 @@ namespace Server.Game
             }
 
             // 스킬로 넘어갈지 체크
-            if(dist <= _skillRange && (dir.x == 0 || dir.y == 0))
+            if (dist <= _skillRange && (dir.x == 0 || dir.y == 0))
             {
                 _coolTick = 0;
                 State = CreatureState.Skill;
@@ -129,10 +129,10 @@ namespace Server.Game
         long _coolTick = 0;
         protected virtual void UpdateSkill()
         {
-            if(_coolTick == 0)
+            if (_coolTick == 0)
             {
                 // 유효한 타겟인지
-                if(_target == null || _target.Room != Room || _target.Hp == 0)
+                if (_target == null || _target.Room != Room || _target.Hp == 0)
                 {
                     _target = null;
                     State = CreatureState.Moving;
@@ -143,8 +143,8 @@ namespace Server.Game
                 // 스킬이 아직 사용 가능한지
                 Vector2Int dir = _target.CellPos - CellPos;
                 int dist = dir.cellDisFromZero;
-                bool canUseSkill = (dist <= _skillRange && (dir.x == 0 || dir.y == 0));
-                if(canUseSkill == false)
+                bool canUseSkill = dist <= _skillRange && (dir.x == 0 || dir.y == 0);
+                if (canUseSkill == false)
                 {
                     State = CreatureState.Moving;
                     BroadcastMove();
@@ -153,7 +153,7 @@ namespace Server.Game
 
                 // 타게팅 방향 주시
                 MoveDir lookDir = GetDirFromVec(dir);
-                if(Dir != lookDir)
+                if (Dir != lookDir)
                 {
                     Dir = lookDir;
                     BroadcastMove();
