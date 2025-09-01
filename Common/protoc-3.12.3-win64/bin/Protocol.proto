@@ -24,13 +24,6 @@ enum CreatureState{
   DEAD = 3;
 }
 
-enum MoveDir{
-  UP = 0;
-  DOWN = 1;
-  LEFT = 2;
-  RIGHT = 3;
-}
-
 enum GameObjectType{
 	NONE = 0;
 	PLAYER = 1;
@@ -62,11 +55,13 @@ message S_Despawn{
 
 message C_Move{
   PositionInfo posInfo = 1;
+  RotationInfo rotInfo = 2;
 }
 
 message S_Move{
   int32 objectId = 1;
   PositionInfo posInfo = 2;
+  RotationInfo rotInfo = 3;
 }
 
 message C_Skill{
@@ -82,7 +77,8 @@ message ObjectInfo{
 	int32 objectId = 1;
 	string name = 2;
 	PositionInfo posInfo = 3;
-	StatInfo statInfo = 4;
+	RotationInfo rotInfo = 4;
+	StatInfo statInfo = 5;
 }
 
 message S_ChangeHp{
@@ -97,9 +93,16 @@ message S_ChangeHp{
 
 message PositionInfo{
 	CreatureState state = 1;
-	MoveDir moveDir = 2;
-	int32 posX = 3;
-	int32 posY = 4;
+	float posX = 2;
+	float posY = 3;
+	float posZ = 4;
+}
+
+message RotationInfo{
+	float qx = 1;
+    float qy = 2;
+    float qz = 3;
+    float qw = 4;
 }
 
 message StatInfo{

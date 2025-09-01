@@ -138,6 +138,9 @@ public class MyPlayerController : PlayerController
             transform.position += moveDir.normalized * Speed * Time.deltaTime;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDir), 20 * Time.deltaTime);
             State = CreatureState.Moving;
+            CellPos = transform.position;
+            RotInfo = transform.rotation;
+            CheckUpdatedFlag();
         }
     }
 
@@ -215,50 +218,13 @@ public class MyPlayerController : PlayerController
             _moveKeyPressed = false;
     }
 
-    protected override void MoveToNextPos()
-    {
-        if (_moveKeyPressed == false)
-        {
-            State = CreatureState.Idle;
-            CheckUpdatedFlag();
-            return;
-        }
-
-        Vector3Int destPos = CellPos;
-
-        switch (Dir)
-        {
-            case MoveDir.Up:
-                destPos += Vector3Int.up;
-                break;
-            case MoveDir.Down:
-                destPos += Vector3Int.down;
-                break;
-            case MoveDir.Left:
-                destPos += Vector3Int.left;
-                break;
-            case MoveDir.Right:
-                destPos += Vector3Int.right;
-                break;
-        }
-
-        if (Managers.Map.CanGo(destPos))
-        {
-            if (Managers.Object.FindCreature(destPos) == null)
-            {
-                CellPos = destPos;
-            }
-        }
-
-        CheckUpdatedFlag();
-    }
-
     protected override void CheckUpdatedFlag()
     {
         if (_updated)
         {
             C_Move movePacket = new C_Move();
             movePacket.PosInfo = PosInfo;
+            movePacket.RotInfo = RotInfo;
             Managers.Network.Send(movePacket);
             _updated = false;
         }

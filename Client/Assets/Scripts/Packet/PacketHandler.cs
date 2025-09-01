@@ -51,6 +51,8 @@ class PacketHandler
             return;
 
         bc.PosInfo = movePacket.PosInfo;
+        bc.RotInfo = movePacket.RotInfo;
+        bc.SyncPos();
     }
 
     public static void S_SkillHandler(PacketSession session, IMessage packet)

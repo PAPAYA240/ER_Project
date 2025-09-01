@@ -22,29 +22,29 @@ namespace Server.Game
             long tick = (long)(1000 / Data.projectile.speed);
             _nextMoveTick = Environment.TickCount64 + tick;
 
-            Vector2Int destPos = GetFrontCellPos();
-            if (Room.Map.CanGo(destPos))
-            {
-                CellPos = destPos;
+            //Vector2Int destPos = GetFrontCellPos();
+            //if (Room.Map.CanGo(destPos))
+            //{
+            //    CellPos = destPos;
 
-                S_Move movePacket = new S_Move();
-                movePacket.ObjectId = Id;
-                movePacket.PosInfo = PosInfo;
-                Room.Broadcast(movePacket);
+            //    S_Move movePacket = new S_Move();
+            //    movePacket.ObjectId = Id;
+            //    movePacket.PosInfo = PosInfo;
+            //    Room.Broadcast(movePacket);
 
-                Console.WriteLine("Move Arrow");
-            }
-            else
-            {
-                GameObject target = Room.Map.Find(destPos);
-                if (target != null)
-                {
-                    target.OnDamaged(this, Data.damage + Owner.Stat.Attack);
-                }
+            //    Console.WriteLine("Move Arrow");
+            //}
+            //else
+            //{
+            //    GameObject target = Room.Map.Find(destPos);
+            //    if (target != null)
+            //    {
+            //        target.OnDamaged(this, Data.damage + Owner.Stat.Attack);
+            //    }
 
-                //소멸
-                Room.Push(Room.LeaveGame, Id);
-            }
+            //    //소멸
+            //    Room.Push(Room.LeaveGame, Id);
+            //}
         }
     }
 }
