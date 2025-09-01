@@ -21,7 +21,7 @@ namespace Server.Game
 
         public override void OnDead(GameObject attacker)
         {
-            base.OnDead(attacker);
+            //base.OnDead(attacker);
         }
     }
 }

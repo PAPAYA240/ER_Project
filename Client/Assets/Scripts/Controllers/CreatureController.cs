@@ -44,7 +44,7 @@ public class CreatureController : BaseController
 	protected override void Init()
 	{
 		base.Init();
-		AddHpBar();
+		//AddHpBar();
     }
 	
 	public virtual void OnDamaged()

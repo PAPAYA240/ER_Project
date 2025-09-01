@@ -7,10 +7,20 @@ using static Define;
 public class MyPlayerController : PlayerController
 {
     bool _moveKeyPressed = false;
+    Dictionary<KeyCode, bool> _isCoolDown = new Dictionary<KeyCode, bool>();
+
+    int _mask = (1 << (int)Define.Layer.Map);
+    Vector3 _dstPos = Vector3.zero;
 
     protected override void Init()
     {
         base.Init();
+        Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
+
+        _isCoolDown[KeyCode.Q] = false;
+        _isCoolDown[KeyCode.W] = false;
+        _isCoolDown[KeyCode.E] = false;
+        _isCoolDown[KeyCode.R] = false;
     }
 
     protected override void UpdateController()
@@ -18,10 +28,10 @@ public class MyPlayerController : PlayerController
         switch (State)
         {
             case CreatureState.Idle:
-                GetDirInput();
+                GetMouseInput();
                 break;
             case CreatureState.Moving:
-                GetDirInput();
+                GetMouseInput();
                 break;
         }
 
@@ -37,7 +47,22 @@ public class MyPlayerController : PlayerController
             return;
         }
 
-        if (_coSkillCooltime == null && Input.GetKey(KeyCode.Space))
+        InputSkill();
+    }
+
+    void InputSkill()
+    {
+        if (!_isCoolDown[KeyCode.Q] && Input.GetKey(KeyCode.Q))
+        {
+            Debug.Log("Skill!");
+
+            C_Skill skill = new C_Skill() { Info = new SkillInfo() };
+            skill.Info.SkillId = 1;
+            Managers.Network.Send(skill);
+
+            StartCoroutine(CoInputCooltime(KeyCode.Q, 0.2f));
+        }
+        else if (!_isCoolDown[KeyCode.W] && Input.GetKey(KeyCode.W))
         {
             Debug.Log("Skill!");
 
@@ -45,20 +70,98 @@ public class MyPlayerController : PlayerController
             skill.Info.SkillId = 2;
             Managers.Network.Send(skill);
 
-            _coSkillCooltime = StartCoroutine("CoInputCooltime", 0.2f);
+            StartCoroutine(CoInputCooltime(KeyCode.W, 3f));
+        }
+        else if (!_isCoolDown[KeyCode.E] && Input.GetKey(KeyCode.E))
+        {
+            Debug.Log("Skill!");
+
+            C_Skill skill = new C_Skill() { Info = new SkillInfo() };
+            skill.Info.SkillId = 3;
+            Managers.Network.Send(skill);
+
+            StartCoroutine(CoInputCooltime(KeyCode.E, 5f));
+        }
+        else if (!_isCoolDown[KeyCode.R] && Input.GetKey(KeyCode.R))
+        {
+            Debug.Log("Skill!");
+
+            C_Skill skill = new C_Skill() { Info = new SkillInfo() };
+            skill.Info.SkillId = 4;
+            Managers.Network.Send(skill);
+
+            StartCoroutine(CoInputCooltime(KeyCode.R, 10f));
         }
     }
 
-    Coroutine _coSkillCooltime;
-    IEnumerator CoInputCooltime(float time)
+    protected override void UpdateMoving()
     {
-        yield return new WaitForSeconds(time);
-        _coSkillCooltime = null;
+        Vector3 moveDir = _dstPos - transform.position;
+        moveDir.y = 0.0f;
+
+        // 도착 여부 체크
+        float dist = moveDir.magnitude;
+        if (dist < Speed * Time.deltaTime)
+        {
+            transform.position = _dstPos;
+            State = CreatureState.Idle;
+            _moveKeyPressed = false;
+        }
+        else
+        {
+            transform.position += moveDir.normalized * Speed * Time.deltaTime;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDir), 20 * Time.deltaTime);
+            State = CreatureState.Moving;
+        }
     }
+
+    // 스킬 쿨타임
+    //Coroutine _coSkillCooltime;
+    IEnumerator CoInputCooltime(KeyCode key, float time)
+    {
+        _isCoolDown[key] = true;
+
+        float elapsed = 0f;
+        while (elapsed < time)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+
+        }
+
+        _isCoolDown[key] = false;
+        //_coSkillCooltime = null;
+    }
+
+    [SerializeField]
+    public Vector3 _offset = new Vector3(0, 10, -10);
+    [SerializeField]
+    public float smoothSpeed = 5f;
 
     void LateUpdate()
     {
-        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
+        Vector3 targetPos = transform.position + _offset;
+        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, targetPos, smoothSpeed * Time.deltaTime);
+        Camera.main.transform.LookAt(transform.position);
+    }
+
+    // 마우스 입력
+    void GetMouseInput()
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f, _mask);
+
+        if (Input.GetMouseButton(1))
+        {
+            if (raycastHit)
+            {
+                _dstPos = hit.point;
+                State = CreatureState.Moving;
+
+                _moveKeyPressed = true;
+            }
+        }
     }
 
     // 키보드 입력
@@ -66,26 +169,24 @@ public class MyPlayerController : PlayerController
     {
         _moveKeyPressed = true;
 
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.UpArrow))
         {
-            Dir = MoveDir.Up;
+            
         }
-        else if (Input.GetKey(KeyCode.S))
+        else if (Input.GetKey(KeyCode.DownArrow))
         {
-            Dir = MoveDir.Down;
+            
         }
-        else if (Input.GetKey(KeyCode.A))
+        else if (Input.GetKey(KeyCode.LeftArrow))
         {
-            Dir = MoveDir.Left;
+            
         }
-        else if (Input.GetKey(KeyCode.D))
+        else if (Input.GetKey(KeyCode.RightArrow))
         {
-            Dir = MoveDir.Right;
+            
         }
         else
-        {
             _moveKeyPressed = false;
-        }
     }
 
     protected override void MoveToNextPos()

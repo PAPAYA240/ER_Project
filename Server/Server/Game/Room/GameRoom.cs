@@ -34,9 +34,9 @@ namespace Server.Game
             Map.LoadMap(mapId);
 
             // TEMP
-            Monster monster = ObjectManager.Instance.Add<Monster>();
-            monster.CellPos = new Vector2Int(5, 5);
-            EnterGame(monster);
+            //Monster monster = ObjectManager.Instance.Add<Monster>();
+            //monster.CellPos = new Vector2Int(5, 5);
+            //EnterGame(monster);
         }
 
         public void Update()
