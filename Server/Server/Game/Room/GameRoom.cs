@@ -16,12 +16,8 @@ namespace Server.Game
         Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
         Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
 
-        public Map Map { get; private set; } = new Map();
-
         public void Init(int mapId)
         {
-            Map.LoadMap(mapId);
-
             // TEMP
             //Monster monster = ObjectManager.Instance.Add<Monster>();
             //monster.CellPos = new Vector2Int(5, 5);
@@ -55,8 +51,6 @@ namespace Server.Game
                 _players.Add(gameObject.Id, player);
                 player.Room = this;
 
-                Map.ApplyMove(player, new Vector2Int(player.CellPos.x, player.CellPos.y));
-
                 // 본인한테 정보 전송
                 {
                     S_EnterGame enterPacket = new S_EnterGame();
@@ -84,8 +78,6 @@ namespace Server.Game
                 Monster monster = gameObject as Monster;
                 _monsters.Add(gameObject.Id, monster); 
                 monster.Room = this;
-
-                Map.ApplyMove(monster, new Vector2Int(monster.CellPos.x, monster.CellPos.y));
             }
             else if (type == GameObjectType.Projectile)
             {
@@ -116,7 +108,6 @@ namespace Server.Game
                 if (_players.Remove(objectId, out player) == false)
                     return;
 
-                Map.ApplyLeave(player);
                 player.Room = null;
 
                 // 본인한테 정보 전송
@@ -130,8 +121,7 @@ namespace Server.Game
                 Monster monster = null;
                 if (_monsters.Remove(objectId, out monster) == false)
                     return;
-               
-                Map.ApplyLeave(monster);
+                
                 monster.Room = null;
             }
             else if (type == GameObjectType.Projectile)
@@ -163,24 +153,19 @@ namespace Server.Game
             // todo : 검증
 
             // 일단 서버에서 좌표 이동
-            PositionInfo movePosInfo = movePacket.PosInfo;
-            ObjectInfo info = player.Info;
-
-            // 다른 좌표로 이동할 경우, 갈 수 있는지 체크
-            if(movePosInfo.PosX != info.PosInfo.PosX || movePosInfo.PosY != info.PosInfo.PosY)
-            {
-                if (Map.CanGo(new Vector2Int(movePosInfo.PosX, movePosInfo.PosY)) == false)
-                    return;
-            }
-
-            info.PosInfo.State = movePosInfo.State;
-            info.PosInfo.MoveDir = movePosInfo.MoveDir;
-            Map.ApplyMove(player, new Vector2Int(movePosInfo.PosX, movePosInfo.PosY));
+            player.Info.PosInfo.PosX = movePacket.PosInfo.PosX;
+            player.Info.PosInfo.PosY = movePacket.PosInfo.PosY;
+            player.Info.PosInfo.PosZ = movePacket.PosInfo.PosZ;
+            player.Info.RotInfo.Qx = movePacket.RotInfo.Qx;
+            player.Info.RotInfo.Qy = movePacket.RotInfo.Qy;
+            player.Info.RotInfo.Qz = movePacket.RotInfo.Qz;
+            player.Info.RotInfo.Qw = movePacket.RotInfo.Qw;
 
             // 다른 플레이어한테도 알려준다
             S_Move resMovePacket = new S_Move();
             resMovePacket.ObjectId = player.Info.ObjectId;
             resMovePacket.PosInfo = movePacket.PosInfo;
+            resMovePacket.RotInfo = movePacket.RotInfo;
 
             Broadcast(resMovePacket);
         }
@@ -210,13 +195,13 @@ namespace Server.Game
             {
                 case SkillType.SkillAuto:
                     {
-                        // 데미지 판정
-                        Vector2Int skillPos = player.GetFrontCellPos(info.PosInfo.MoveDir);
-                        GameObject target = Map.Find(skillPos);
-                        if (target != null)
-                        {
-                            Console.WriteLine("Hit GameObject!");
-                        }
+                        //// 데미지 판정
+                        //Vector2Int skillPos = player.GetFrontCellPos(info.PosInfo.MoveDir);
+                        //GameObject target = Map.Find(skillPos);
+                        //if (target != null)
+                        //{
+                        //    Console.WriteLine("Hit GameObject!");
+                        //}
                     }
                     break;
                 case SkillType.SkillProjectile:
@@ -228,7 +213,6 @@ namespace Server.Game
                         arrow.Owner = player;
                         arrow.Data = skillData;
                         arrow.PosInfo.State = CreatureState.Moving;
-                        arrow.PosInfo.MoveDir = player.PosInfo.MoveDir;
                         arrow.PosInfo.PosX = player.PosInfo.PosX;
                         arrow.PosInfo.PosY = player.PosInfo.PosY;
                         arrow.Speed = skillData.projectile.speed;
