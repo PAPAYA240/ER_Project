@@ -40,7 +40,7 @@ public class MyPlayerController : PlayerController
 
     protected override void UpdateIdle()
     {
-        // ÀÌµ¿ »óÅÂ·Î °¥Áö È®ÀÎ
+        // ï¿½Ìµï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
         if (_moveKeyPressed)
         {
             State = CreatureState.Moving;
@@ -125,7 +125,7 @@ public class MyPlayerController : PlayerController
         Vector3 moveDir = _dstPos - transform.position;
         moveDir.y = 0.0f;
 
-        // µµÂø ¿©ºÎ Ã¼Å©
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
         float dist = moveDir.magnitude;
         if (dist < Speed * Time.deltaTime)
         {
@@ -144,7 +144,7 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    // ½ºÅ³ ÄðÅ¸ÀÓ
+    // ï¿½ï¿½Å³ ï¿½ï¿½Å¸ï¿½ï¿½
     //Coroutine _coSkillCooltime;
     IEnumerator CoInputCooltime(KeyCode key, float time)
     {
@@ -174,7 +174,7 @@ public class MyPlayerController : PlayerController
         Camera.main.transform.LookAt(transform.position);
     }
 
-    // ¸¶¿ì½º ÀÔ·Â
+    // ï¿½ï¿½ï¿½ì½º ï¿½Ô·ï¿½
     void GetMouseInput()
     {
         RaycastHit hit;
@@ -193,7 +193,7 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    // Å°º¸µå ÀÔ·Â
+    // Å°ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½
     void GetDirInput()
     {
         _moveKeyPressed = true;

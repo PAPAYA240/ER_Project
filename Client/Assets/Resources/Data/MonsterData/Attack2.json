@@ -1,0 +1,24 @@
+
+{
+  "Name": "Root",
+  "Type": "SequenceNode",
+  "Children": [
+    {
+      // TODO : 곧 지울 예시 조건
+      "Name": "CheckWKey",
+      "Type": "IsKeyPressedNode",
+      "Properties": {
+        "key": "W"
+      }
+    },
+    {
+      "Name": "Attack2",
+      "Type": "PlayAnimatorTriggerNode",
+      "Properties": {
+        "triggerName": "tAttack02",
+        "animationStateName": "Monster_Alpha_atk02"
+      }
+    }
+  ]
+}
+
