@@ -56,6 +56,13 @@ public class BaseController : MonoBehaviour
         }
     }
 
+    ObjectInfo _ObjectInfo = new ObjectInfo();
+    public ObjectInfo ObjInfo
+    {
+        get { return _ObjectInfo; }
+        set { }
+    }
+
     public void SyncPos()
     {
         //Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);

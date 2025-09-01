@@ -5,16 +5,17 @@ package Protocol;
 option csharp_namespace = "Google.Protobuf.Protocol";
 
 enum MsgId {
-  S_ENTER_GAME = 0;
-  S_LEAVE_GAME = 1;
-  S_SPAWN = 2;
-  S_DESPAWN = 3;
-  C_MOVE = 4;
-  S_MOVE = 5;
-  C_SKILL = 6;
-  S_SKILL = 7;
-  S_CHANGE_HP = 8;
-  S_DIE = 9;
+  C_ENTER_GAME = 0;
+  S_ENTER_GAME = 1;
+  S_LEAVE_GAME = 2;
+  S_SPAWN = 3;
+  S_DESPAWN = 4;
+  C_MOVE = 5;
+  S_MOVE = 6;
+  C_SKILL = 7;
+  S_SKILL = 8;
+  S_CHANGE_HP = 9;
+  S_DIE = 10;
 }
 
 enum CreatureState{
@@ -44,8 +45,12 @@ enum SkillType{
 	SKILL_PROJECTILE = 2;
 }
 
+message C_EnterGame {
+	ObjectInfo player = 1;
+}
+
 message S_EnterGame {
-  ObjectInfo player = 1;
+	ObjectInfo player = 1;
 }
 
 message S_LeaveGame {

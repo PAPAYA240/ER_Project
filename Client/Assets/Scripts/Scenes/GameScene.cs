@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using Google.Protobuf.Protocol;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class GameScene : BaseScene
 {
@@ -14,10 +16,17 @@ public class GameScene : BaseScene
 
         Screen.SetResolution(1920, 1080, false);
 
+        // 서버로 패킷 보내기
+        BaseController baseController = new BaseController();
+        C_EnterGame EnterGamePacket = new C_EnterGame();
+        EnterGamePacket.Player = baseController.ObjInfo;
+        Managers.Network.Send(EnterGamePacket);
+
+
         //GameObject player = Managers.Resource.Instantiate("Creature/Player");
         //player.name = "Player";
         //Managers.Object.Add(player);
-        
+
 
         //Managers.UI.ShowSceneUI<UI_Inven>();
         //Dictionary<int, Data.Stat> dict = Managers.Data.StatDict;
