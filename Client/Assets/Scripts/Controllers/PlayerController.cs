@@ -1,6 +1,7 @@
-﻿using System.Collections;
+﻿using Google.Protobuf.Protocol;
+using System.Collections;
 using System.Collections.Generic;
-using Google.Protobuf.Protocol;
+using UnityEditor;
 using UnityEngine;
 using static Define;
 
@@ -98,26 +99,29 @@ public class PlayerController : CreatureController
 
 	public override void UseSkill(int skillId)
 	{
-		if (skillId == 1)
-		{
-			_coSkill = StartCoroutine("CoStartPunch");
-			Debug.Log("Skill Q !");
-		}
-		else if (skillId == 2)
-		{
-            _coSkill = StartCoroutine("CoStartShootArrow");
-            Debug.Log("Skill W !");
-        }
-		else if (skillId == 3)
-		{
-			_coSkill = StartCoroutine("CoStartSkillTemp");
-			Debug.Log("Skill E !");
-		}
-		else if (skillId == 4)
-		{
-			_coSkill = StartCoroutine("CoStartSkillTemp2");
-			Debug.Log("Skill R !");
-		}
+        _coSkill = StartCoroutine("CoStartSkill");
+        Debug.Log("스킬 코루틴 시작");
+
+  //      if (skillId == 1)
+		//{
+		//	_coSkill = StartCoroutine("CoStartSkill");
+		//	Debug.Log("스킬 코루틴 시작");
+		//}
+		//else if (skillId == 2)
+		//{
+  //          _coSkill = StartCoroutine("CoStartShootArrow");
+  //          Debug.Log("Skill W !");
+  //      }
+		//else if (skillId == 3)
+		//{
+		//	_coSkill = StartCoroutine("CoStartSkillTemp");
+		//	Debug.Log("Skill E !");
+		//}
+		//else if (skillId == 4)
+		//{
+		//	_coSkill = StartCoroutine("CoStartSkillTemp2");
+		//	Debug.Log("Skill R !");
+		//}
 	}
 
 	protected virtual void CheckUpdatedFlag()
@@ -125,7 +129,21 @@ public class PlayerController : CreatureController
 
 	}
 
-	IEnumerator CoStartPunch()
+    IEnumerator CoStartSkill()
+    {
+        // 대기 시간
+        _rangedSkill = false;
+        State = CreatureState.Skill;
+        float length = _animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(length);
+        State = CreatureState.Idle;
+        _coSkill = null;
+
+        _animator.SetTrigger("tIdle");
+        CheckUpdatedFlag();
+    }
+
+    IEnumerator CoStartPunch()
 	{
 		// 대기 시간
 		_rangedSkill = false;

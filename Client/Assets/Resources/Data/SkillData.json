@@ -1,24 +1,28 @@
 {
-  "skills": [
+  "skillData": [
     {
       "id": "1",
-      "name": "평타",
-      "cooldown": "0.5",
-      "damage": "10",
-      "skillType": "SkillAuto"
+      "name": "Rozzi_Q",
+      "cooldown": "2",
+      "damage": "10"
     },
     {
       "id": "2",
-      "name": "화살 공격",
-      "cooldown": "0.5",
-      "damage": "5",
-      "skillType": "SkillProjectile",
-      "projectile": {
-        "name": "화살",
-        "speed": "20.0",
-        "range": "10",
-        "prefab": "Creature/Arrow"
-      }
+      "name": "Rozzi_W",
+      "cooldown": "2",
+      "damage": "20"
+    },
+    {
+      "id": "3",
+      "name": "Rozzi_E",
+      "cooldown": "5",
+      "damage": "30"
+    },
+    {
+      "id": "4",
+      "name": "Rozzi_R",
+      "cooldown": "10",
+      "damage": "40"
     }
   ]
 } 

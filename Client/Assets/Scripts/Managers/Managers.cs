@@ -10,10 +10,12 @@ public class Managers : MonoBehaviour
     #region Contents
     MapManager _map = new MapManager();
     ObjectManager _obj = new ObjectManager();
+    SkillManager _skill = new SkillManager();
     NetworkManager _network = new NetworkManager();
 
     public static MapManager Map { get { return Instance._map; } }
     public static ObjectManager Object { get { return Instance._obj; } }
+    public static SkillManager Skill { get { return Instance._skill; } }
     public static NetworkManager Network { get { return Instance._network; } }
 	#endregion
 
@@ -59,6 +61,7 @@ public class Managers : MonoBehaviour
 
             s_instance._network.Init();
             s_instance._data.Init();
+            s_instance._skill.Init();
             s_instance._pool.Init();
             s_instance._sound.Init();
         }		

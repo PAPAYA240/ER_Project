@@ -236,7 +236,7 @@ public class BaseController : MonoBehaviour
 
     protected virtual void Init()
     {
-        _animator = GetComponent<Animator>();
+        _animator = GetComponentInChildren<Animator>();
         _sprite = GetComponent<SpriteRenderer>();
         //Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
         //transform.position = pos;
