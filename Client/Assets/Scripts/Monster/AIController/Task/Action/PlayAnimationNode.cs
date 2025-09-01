@@ -2,7 +2,6 @@
 
 // 애니메이션 재생 노드
 
-[CreateAssetMenu(fileName = "New PlayAnimation", menuName = "BehaviorTree/Actions/PlayAnimation")]
 public class PlayAnimationNode : ActionNode
 {
     [Tooltip("Trigger 이름 작성하기")]

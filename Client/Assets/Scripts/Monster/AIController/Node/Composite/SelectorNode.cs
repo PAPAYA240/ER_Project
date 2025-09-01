@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
 
-[CreateAssetMenu(fileName = "New Selector", menuName = "BehaviorTree/Composites/Selector")]
 public class SelectorNode : CompositeNode
 {
     private int _currentIdx = 0;

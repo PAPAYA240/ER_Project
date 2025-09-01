@@ -1,0 +1,23 @@
+
+{
+  "Name": "Root",
+  "Type": "SequenceNode",
+  "Children": [
+    {
+      // TODO : 곧 지울 예시 조건
+      "Name": "CheckQKey",
+      "Type": "IsKeyPressedNode",
+      "Properties": {
+        "key": "Q"
+      }
+    },
+    {
+      "Name": "Attack1",
+      "Type": "PlayAnimationNode",
+      "Properties": {
+        "triggerName": "tAttack01"
+      }
+    }
+  ]
+}
+

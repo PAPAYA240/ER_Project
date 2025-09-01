@@ -1,11 +1,6 @@
 ﻿ using UnityEngine;
 
 
-/// <summary>
-///  확인용
-/// </summary>
- [CreateAssetMenu(fileName = "New IsKeyPressed", menuName =
-"BehaviorTree/Decorators/IsKeyPressed")]
  public class IsKeyPressedNode : DecoratorNode
  {
      public KeyCode key = KeyCode.W;

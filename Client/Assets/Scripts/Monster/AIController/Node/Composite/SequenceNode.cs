@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-
-[CreateAssetMenu(fileName = "New Sequence", menuName = "BehaviorTree/Composites/Sequence")]
 public class SequenceNode : CompositeNode
 {
     private int _currentIdx = 0;
