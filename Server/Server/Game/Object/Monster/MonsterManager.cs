@@ -35,7 +35,7 @@ namespace Server.Game.Object.Monster
         {
             Monster monster = ObjectManager.Instance.Add<Monster>();
 
-            monster.CellPos = new Vector2Int(0, 0);
+            //monster.CellPos = new Vector3(0, 0, 0);
             _room.Push(_room.EnterGame, monster);
             _monsterCount++;
         }

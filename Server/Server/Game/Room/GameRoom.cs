@@ -20,21 +20,10 @@ namespace Server.Game
 
         MonsterManager _monsterManager = new MonsterManager();
 
-        public Map Map { get; private set; } = new Map();
-
         public void Init(int mapId)
         {
-            Map.LoadMap(mapId);
-
             // Spawn Monster
             _monsterManager.Init(this, 1);
-
-        public void Init(int mapId)
-        {
-            // TEMP
-            //Monster monster = ObjectManager.Instance.Add<Monster>();
-            //monster.CellPos = new Vector2Int(5, 5);
-            //EnterGame(monster);
         }
 
         public void Update()
