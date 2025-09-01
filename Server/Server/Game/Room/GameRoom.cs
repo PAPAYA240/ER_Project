@@ -215,7 +215,6 @@ namespace Server.Game
                 return;
 
             // TODO : 스킬 사용 가능 여부 체크
-
             info.PosInfo.State = CreatureState.Skill;
             S_Skill skill = new S_Skill() { Info = new SkillInfo() };
             skill.ObjectId = info.ObjectId;

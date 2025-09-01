@@ -13,9 +13,10 @@
     },
     {
       "Name": "Attack2",
-      "Type": "PlayAnimationNode",
+      "Type": "PlayAnimatorTriggerNode",
       "Properties": {
-        "triggerName": "tAttack02"
+        "triggerName": "tAttack02",
+        "animationStateName": "Monster_Alpha_atk02"
       }
     }
   ]
