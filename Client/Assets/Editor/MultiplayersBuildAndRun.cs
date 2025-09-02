@@ -67,7 +67,7 @@ public class MultiplayersBuildAndRun
             return true;
         else
         {
-            UnityEngine.Debug.Log("¼­¹ö Å°¼À;;");
+            UnityEngine.Debug.Log("ï¿½ï¿½ï¿½ï¿½ Å°ï¿½ï¿½;;");
             return false;
         }
     }
