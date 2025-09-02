@@ -60,7 +60,7 @@ public class MonsterController : CreatureController
     protected override void UpdateMoving()
     {
         const float interpolationPosSpeed = 1f; 
-        const float interpolationRotSpeed = 1f;
+        const float interpolationRotSpeed = 2f;
 
         _posRatio += Time.deltaTime * interpolationPosSpeed;
         _rotRatio += Time.deltaTime * interpolationRotSpeed;

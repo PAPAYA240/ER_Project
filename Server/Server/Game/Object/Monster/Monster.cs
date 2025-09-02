@@ -94,12 +94,12 @@ namespace Server.Game.Object.Monster
             Vector3 targetPos  = new Vector3(_target.PosInfo.PosX, _target.PosInfo.PosY, _target.PosInfo.PosZ);
             Vector3 dir = targetPos - monsterPos;
             float dist = dir.Length();
-            if (dist < range)
-            {
-                Console.WriteLine("--> Monster Skill 쓰는 중");
-                State = CreatureState.Skill;
-                return;
-            }
+            //if (dist < range)
+            //{
+            //    Console.WriteLine("--> Monster Skill 쓰는 중");
+            //    State = CreatureState.Skill;
+            //    return;
+            //}
             //if (dist > _chaseCellDist)
             //{
             //    _target = null;
