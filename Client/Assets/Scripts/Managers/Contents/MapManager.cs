@@ -27,7 +27,7 @@ public class MapManager
 
 	bool CanGo(Vector3 destPos, out NavMeshHit nmHit) // 스킬 or 점멸로 이동하는 경우 사용
 	{
-        bool isOnNavMesh = NavMesh.SamplePosition(destPos, out nmHit, 0.5f, NavMesh.AllAreas);
+        bool isOnNavMesh = NavMesh.SamplePosition(destPos, out nmHit, 1f, NavMesh.AllAreas);
         if (isOnNavMesh) 
 			return true;
 		else

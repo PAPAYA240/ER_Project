@@ -67,7 +67,7 @@ public class MultiplayersBuildAndRun
             return true;
         else
         {
-            UnityEngine.Debug.Log("���� Ű��;;");
+            UnityEngine.Debug.Log("Server Off;;");
             return false;
         }
     }
