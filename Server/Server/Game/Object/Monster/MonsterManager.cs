@@ -34,7 +34,7 @@ namespace Server.Game.Object.Monster
 
             _nextSpawnTick = Environment.TickCount64 + 1000;
 
-            if (_monsterCount < _keepMonsterCount)
+            if (_monsterCount < _keepMonsterCount) 
                 Spawn();
         }
 
