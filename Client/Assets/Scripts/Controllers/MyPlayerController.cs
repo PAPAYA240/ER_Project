@@ -204,12 +204,11 @@ public class MyPlayerController : PlayerController
 
         if (Input.GetKeyDown(KeyCode.F))
         {
-            NavMeshAgent nma = GetComponent<NavMeshAgent>();
-            if (nma == null)
+            if (_navMeshAgent == null)
                 return;
 
             Vector3 targetPos = Managers.Map.CalcResultPos(transform.position, hit.point);
-            nma.Warp(targetPos);
+            _navMeshAgent.Warp(targetPos);
             _dstPos = targetPos;
             CellPos = transform.position;
             RotInfo = transform.rotation;

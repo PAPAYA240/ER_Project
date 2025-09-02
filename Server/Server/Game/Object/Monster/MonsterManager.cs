@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Google.Protobuf.Protocol;
+using Server.Data;
 using static Google.Protobuf.WellKnownTypes.Field.Types;
 
 namespace Server.Game.Object.Monster
@@ -41,6 +43,14 @@ namespace Server.Game.Object.Monster
         private void Spawn()
         {
             Monster monster = ObjectManager.Instance.Add<Monster>();
+            monster.Info.Name = $"Monster_TestMonster";
+            monster.Info.PosInfo.State = CreatureState.Idle;
+            monster.Info.PosInfo.PosX = 0;
+            monster.Info.PosInfo.PosY = 0;
+
+            StatInfo stat = null;
+            DataManager.StatDict.TryGetValue(2, out stat);
+            monster.Stat.MergeFrom(stat);
 
             //monster.Cell = new Vector3(0, 0, 0);
             _room.Push(_room.EnterGame, monster);
