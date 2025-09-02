@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
-using System.Threading;
 using Google.Protobuf.Protocol;
-using Server.Data;
 
 namespace Server.Game.Object.Monster
 {
@@ -45,7 +41,7 @@ namespace Server.Game.Object.Monster
         }
 
         Player _target;
-        int _searchCellDist = 10;
+        int _searchCellDist = 100;
         int _chaseCellDist = 20;
 
         int _skillRange = 1;
@@ -56,36 +52,90 @@ namespace Server.Game.Object.Monster
                 return;
             _nextSearchTick = Environment.TickCount64 + 1000;
 
+            Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY,PosInfo.PosZ);
+
             Player target = Room.FindPlayer(p =>
             {
-                float dist = p.PosInfo.Distance(PosInfo);
-                return dist <= _searchCellDist;
-            });
+                Vector3 playerPos = new Vector3(p.PosInfo.PosX,p.PosInfo.PosY, p.PosInfo.PosZ);
+                float distance = Vector3.Distance(monsterPos, playerPos);
+                return Vector3.Distance(monsterPos, playerPos) <= _searchCellDist;
+             });
 
             if (target == null)
+            {
+                Console.WriteLine("--> 결과: 타겟 없음");
                 return;
+            }
 
+            Console.WriteLine($"--> 결과: 타겟 찾음! ID: {target.Id}");
             _target = target;
             State = CreatureState.Moving;
         }
 
         long _nextMoveTick = 0;
+        float range = 0.2f;
         protected virtual void UpdateMoving()
         {
-            //if (_nextMoveTick > Environment.TickCount64)
-            //    return;
-            //int moveTick = (int)(1000 / Speed);
-            //_nextMoveTick = Environment.TickCount64 + moveTick;
+            // == 임시 ==
+            if (_nextSearchTick > Environment.TickCount64)
+                return;
+            long tick = (long)(1000 / Speed);
+            _nextMoveTick = Environment.TickCount64 + tick;
 
-            //if (_target == null || _target.Room != Room)
+            if (_target == null || _target.Room != Room || _target.Hp == 0)
+            {
+                Console.WriteLine("--> 타겟을 잃었거나 타겟이 죽었슴다. Idle 상태로 돌아갑니다.");
+                _target = null;
+                State = CreatureState.Idle;
+                return;
+            }
+
+            Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
+            Vector3 targetPos  = new Vector3(_target.PosInfo.PosX, _target.PosInfo.PosY, _target.PosInfo.PosZ);
+            Vector3 dir = targetPos - monsterPos;
+            float dist = dir.Length();
+            if (dist < range)
+            {
+                Console.WriteLine("--> Monster Skill 쓰는 중");
+                State = CreatureState.Skill;
+                return;
+            }
+            //if (dist > _chaseCellDist)
             //{
             //    _target = null;
             //    State = CreatureState.Idle;
-            //    BroadcastMove();
             //    return;
             //}
 
-            //// 이동
+            //if (dist <= _skillRange)
+            //{
+            //    State = CreatureState.Skill;
+            //    return;
+            //}
+
+            // 거리 계산
+            Vector3 moveDir = Vector3.Normalize(dir);
+            float moveDist = Speed * (tick / 1000.0f);
+
+            // 앵글 계산
+            Vector3 flatDir = new Vector3(dir.X, 0, dir.Z);
+
+            if (flatDir.LengthSquared() < 0.0001f)
+                return;
+
+            float angleRad = (float)Math.Atan2(flatDir.X, flatDir.Z);
+
+            Quaternion targetRotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angleRad);
+
+            RotInfo.Qx = targetRotation.X;
+            RotInfo.Qy = targetRotation.Y;
+            RotInfo.Qz = targetRotation.Z;
+            RotInfo.Qw = targetRotation.W;
+
+            PosInfo.PosX += moveDir.X * moveDist;
+            PosInfo.PosY += moveDir.Y * moveDist;
+            PosInfo.PosZ += dir.Z * moveDist; 
+
             BroadcastMove();
         }
 
@@ -94,64 +144,13 @@ namespace Server.Game.Object.Monster
             // 다른 플레이어한테도 알려준다
             S_Move movePacket = new S_Move();
             movePacket.ObjectId = Id;
-            movePacket.PosInfo = PosInfo;
+            movePacket.PosInfo = new PositionInfo(PosInfo);
+            movePacket.RotInfo = new RotationInfo(RotInfo);
             Room.Broadcast(movePacket);
         }
 
-        long _coolTick = 0;
         protected virtual void UpdateSkill()
         {
-            //if(_coolTick == 0)
-            //{
-            //    // 유효한 타겟인지
-            //    if(_target == null || _target.Room != Room || _target.Hp == 0)
-            //    {
-            //        _target = null;
-            //        State = CreatureState.Moving;
-            //        BroadcastMove();
-            //        return;
-            //    }
-
-            //    // 스킬이 아직 사용 가능한지
-            //    //Vector2Int dir = _target.CellPos - CellPos;
-            //    //int dist = dir.cellDisFromZero;
-            //    //bool canUseSkill = (dist <= _skillRange && (dir.x == 0 || dir.y == 0));
-            //    if(canUseSkill == false)
-            //    {
-            //        State = CreatureState.Moving;
-            //        BroadcastMove();
-            //        return;
-            //    }
-
-            //    // 타게팅 방향 주시
-            //    MoveDir lookDir = GetDirFromVec(dir);
-            //    if(Dir != lookDir)
-            //    {
-            //        Dir = lookDir;
-            //        BroadcastMove();
-            //    }
-
-            //    Skill skillData = null;
-            //    DataManager.SkillDict.TryGetValue(1, out skillData);
-
-            //    // 데미지 판정
-            //    _target.OnDamaged(this, skillData.damage + Stat.Attack);
-
-            //    // 스킬 사용 Broadcast
-            //    S_Skill skill = new S_Skill() { Info = new SkillInfo() };
-            //    skill.ObjectId = Id;
-            //    skill.Info.SkillId = skillData.id;
-            //    Room.Broadcast(skill);
-
-            //    // 스킬 쿨타임 적용
-            //    int coolTick = (int)(1000 * skillData.cooldown);
-            //    _coolTick = Environment.TickCount64 + coolTick;
-            //}
-
-            //if (_coolTick > Environment.TickCount64)
-            //    return;
-
-            //_coolTick = 0;
         }
 
         protected virtual void UpdateDead()

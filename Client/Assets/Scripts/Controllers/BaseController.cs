@@ -61,7 +61,10 @@ public class BaseController : MonoBehaviour
         get { return _rotationInfo; }
         set
         {
-            if (_rotationInfo.Equals(value))
+            if (value == null)  
+                return;
+
+            if (_rotationInfo.Equals(value)) 
                 return;
 
             _rotationInfo.Qx = value.Qx;
@@ -182,6 +185,7 @@ public class BaseController : MonoBehaviour
 
     protected virtual void UpdateIdle()
     {
+       
     }
 
     // ������ �̵��ϴ� ���� ó��
