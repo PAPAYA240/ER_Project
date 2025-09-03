@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Google.Protobuf.Protocol;
 using UnityEngine;
+using UnityEngine.AI;
 using static Define;
 
 public class MyPlayerController : PlayerController
@@ -50,6 +51,8 @@ public class MyPlayerController : PlayerController
                 GetMouseInput();
                 break;
         }
+
+        TempKeyInput();
 
         base.UpdateController();
     }
@@ -228,29 +231,24 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    // Ű���� �Է�
-    void GetDirInput()
+    void TempKeyInput()
     {
-        _moveKeyPressed = true;
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f, _mask);
 
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKeyDown(KeyCode.F))
         {
-            
+            if (_navMeshAgent == null)
+                return;
+
+            Vector3 targetPos = Managers.Map.CalcResultPos(transform.position, hit.point);
+            _navMeshAgent.Warp(targetPos);
+            _dstPos = targetPos;
+            CellPos = transform.position;
+            RotInfo = transform.rotation;
+            CheckUpdatedFlag();
         }
-        else if (Input.GetKey(KeyCode.DownArrow))
-        {
-            
-        }
-        else if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            
-        }
-        else if (Input.GetKey(KeyCode.RightArrow))
-        {
-            
-        }
-        else
-            _moveKeyPressed = false;
     }
 
     protected override void CheckUpdatedFlag()

@@ -1,0 +1,22 @@
+
+{
+  "Name": "Root",
+  "Type": "SequenceNode",
+  "Children": [
+    {
+      "Name": "movePlayer",
+      "Type": "IsMovetoPlayer",
+      "Properties": {
+      }
+      },
+    {
+      "Name": "Walk",
+      "Type": "PlayAnimatorBoolNode",
+      "Properties": {
+        "paramName": "walk",
+        "valueToSet": true
+      }
+    }
+  ]
+}
+
