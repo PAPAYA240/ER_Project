@@ -7,6 +7,8 @@ using static Define;
 
 public class CreatureController : BaseController
 {
+	public Define.Object _object = Define.Object.Unknown;
+
 	HpBar _hpBar;
 	public override StatInfo Stat
 	{
@@ -66,4 +68,9 @@ public class CreatureController : BaseController
 	{
 
 	}
+
+    public virtual void UseSkill(string skillName)
+    {
+
+    }
 }

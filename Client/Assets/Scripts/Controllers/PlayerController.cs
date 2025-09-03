@@ -1,6 +1,9 @@
 ﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using static Define;
@@ -10,12 +13,45 @@ public class PlayerController : CreatureController
 	protected Coroutine _coSkill;
     protected bool _rangedSkill = false;
 
-	protected override void Init()
+    protected Dictionary<string, SkillBase> _skills = new Dictionary<string, SkillBase>();
+
+    protected override void Init()
 	{
 		base.Init();
-	}
+		MakeSkillDict();
+        _object = Define.Object.OtherPlayer; 
+    }
 
-	protected override void UpdateAnimation()
+	protected void MakeSkillDict()
+	{
+        var skillTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsSubclassOf(typeof(SkillBase)) && !t.IsAbstract);
+
+        foreach (var type in skillTypes)
+        {
+            // TODO : 캐릭터 별로 다르게 넣어주기
+            // SkillBase를 상속받은 클래스들을 탐색해 생성
+            // 클래스의 이름으로 SkillDict에서 SkillData을 검색해 데이터를 채워줌
+            SkillBase skill = (SkillBase)Activator.CreateInstance(type);
+            skill.SkillData = Managers.Data.SkillDict[type.Name];
+            skill._player = this;
+            skill._animator = this._animator;
+            _skills.Add(type.Name, skill);
+        }
+    }
+
+    protected SkillBase FindSkill(string skillName)
+    {
+        SkillBase skillBase = null;
+        if (!_skills.TryGetValue(skillName, out skillBase))
+        {
+            Debug.Log($"Skill을 찾을 수 없음 : {skillName}");
+            return null;
+        }
+
+        return skillBase;
+    }
+
+    protected override void UpdateAnimation()
 	{
 		if (_animator == null)
 			return;
@@ -30,7 +66,7 @@ public class PlayerController : CreatureController
 		}
 		else if (State == CreatureState.Skill)
 		{
-			
+
 		}
 		else
 		{
@@ -43,34 +79,26 @@ public class PlayerController : CreatureController
 		base.UpdateController();
 	}
 
-	public override void UseSkill(int skillId)
-	{
+    public override void UseSkill(string skillName)
+    {
+        SkillBase skill = FindSkill(skillName);
+        skill.Execute();
+
+        if(_coSkill != null)
+            StopCoroutine(_coSkill);
         _coSkill = StartCoroutine("CoStartSkill");
         Debug.Log("스킬 코루틴 시작");
+    }
 
-  //      if (skillId == 1)
-		//{
-		//	_coSkill = StartCoroutine("CoStartSkill");
-		//	Debug.Log("스킬 코루틴 시작");
-		//}
-		//else if (skillId == 2)
-		//{
-  //          _coSkill = StartCoroutine("CoStartShootArrow");
-  //          Debug.Log("Skill W !");
-  //      }
-		//else if (skillId == 3)
-		//{
-		//	_coSkill = StartCoroutine("CoStartSkillTemp");
-		//	Debug.Log("Skill E !");
-		//}
-		//else if (skillId == 4)
-		//{
-		//	_coSkill = StartCoroutine("CoStartSkillTemp2");
-		//	Debug.Log("Skill R !");
-		//}
-	}
+    public virtual void PlayAnimation(AnimInfo animInfo)
+    {
+        if(!animInfo.IsTrigger)
+            _animator.Play(animInfo.Hash, 0, Time.time - animInfo.Time);
+        else
+            _animator.SetTrigger(animInfo.Hash);     
+    }
 
-	protected virtual void CheckUpdatedFlag()
+    protected virtual void CheckUpdatedFlag()
 	{
 
 	}
@@ -86,50 +114,6 @@ public class PlayerController : CreatureController
         _coSkill = null;
 
         _animator.SetTrigger("tIdle");
-        CheckUpdatedFlag();
-    }
-
-    IEnumerator CoStartPunch()
-	{
-		// 대기 시간
-		_rangedSkill = false;
-		State = CreatureState.Skill;
-		yield return new WaitForSeconds(0.5f);
-		State = CreatureState.Idle;
-		_coSkill = null;
-		CheckUpdatedFlag();
-    }
-
-	IEnumerator CoStartShootArrow()
-	{
-		// 대기 시간
-		_rangedSkill = true;
-        State = CreatureState.Skill;
-        yield return new WaitForSeconds(0.3f);
-		State = CreatureState.Idle;
-		_coSkill = null;
-        CheckUpdatedFlag();
-    }
-
-    IEnumerator CoStartSkillTemp()
-    {
-        // 대기 시간
-        _rangedSkill = true;
-        State = CreatureState.Skill;
-        yield return new WaitForSeconds(0.5f);
-        State = CreatureState.Idle;
-        _coSkill = null;
-        CheckUpdatedFlag();
-    }
-
-    IEnumerator CoStartSkillTemp2()
-    {
-        // 대기 시간
-        _rangedSkill = true;
-        State = CreatureState.Skill;
-        yield return new WaitForSeconds(0.1f);
-        State = CreatureState.Idle;
-        _coSkill = null;
         CheckUpdatedFlag();
     }
 

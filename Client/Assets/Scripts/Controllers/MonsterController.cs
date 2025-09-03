@@ -11,7 +11,9 @@ public class MonsterController : CreatureController
 	protected override void Init()
 	{
 		base.Init();
-	}
+
+        _object = Define.Object.Monster;
+    }
 
     protected override void UpdateIdle()
     {

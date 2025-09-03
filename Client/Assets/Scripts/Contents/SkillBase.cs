@@ -10,8 +10,9 @@ using UnityEngine;
 
 public abstract class SkillBase
 {
-    protected MyPlayerController _player;
-    protected Animator _animator;
+    public PlayerController _player;
+    public Animator _animator;
+    public int _objectId;
 
     SkillData _skillData = new SkillData();
     public virtual SkillData SkillData
@@ -26,20 +27,12 @@ public abstract class SkillBase
         }
     }
 
-    public virtual void Init()
-    {
-        _player = Managers.Object.MyPlayer;
-        _animator = _player.GetComponentInChildren<Animator>();
-    }
-
     public virtual void PlayAnimation(string triggerName)
     {
         if (_player == null || _animator == null)
-            Init();
+            return;
 
         _animator.SetTrigger(triggerName);
-
-        //_player.UseSkill(1);
     }
 
     public abstract void Execute();

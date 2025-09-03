@@ -57,4 +57,20 @@ class PacketHandler
 
 		room.Push(room.HandleSkill, player, skillPacket);
     }
+
+    public static void C_AnimHandler(PacketSession session, IMessage packet)
+    {
+        C_Anim animPacket = packet as C_Anim;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleAnim, player, animPacket);
+    }
 }
