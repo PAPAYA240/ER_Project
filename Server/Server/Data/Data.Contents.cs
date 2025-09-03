@@ -26,7 +26,7 @@ namespace Server.Data
 
     #region Skill
     [Serializable]
-    public class Skill
+    public class SkillData
     {
         public int id;
         public string name;
@@ -49,15 +49,23 @@ namespace Server.Data
     }
 
     [Serializable]
-    public class SkillData : ILoader<int, Skill>
+    public class SkillDict : ILoader<string, SkillData>
     {
-        public List<Skill> skills = new List<Skill>();
+        public List<SkillData> skillData = new List<SkillData>();
 
-        public Dictionary<int, Skill> MakeDict()
+        public Dictionary<string, SkillData> MakeDict()
         {
-            Dictionary<int, Skill> dict = new Dictionary<int, Skill>();
-            foreach (Skill skill in skills)
-                dict.Add(skill.id, skill);
+            Dictionary<string, SkillData> dict = new Dictionary<string, SkillData>();
+            foreach (SkillData skillData in skillData)
+                dict.Add(skillData.name, skillData);
+            return dict;
+        }
+
+        public Dictionary<int, SkillData> MakeDictInt()
+        {
+            Dictionary<int, SkillData> dict = new Dictionary<int, SkillData>();
+            foreach (SkillData skillData in skillData)
+                dict.Add(skillData.id, skillData);
             return dict;
         }
     }

@@ -181,18 +181,19 @@ namespace Server.Game
                 return;
 
             ObjectInfo info = player.Info;
-            if (info.PosInfo.State != CreatureState.Idle)
-                return;
+            //if (info.PosInfo.State != CreatureState.Idle)
+            //    return;
 
             // TODO : 스킬 사용 가능 여부 체크
             info.PosInfo.State = CreatureState.Skill;
             S_Skill skill = new S_Skill() { Info = new SkillInfo() };
             skill.ObjectId = info.ObjectId;
             skill.Info.SkillId = skillPacket.Info.SkillId;
+            skill.Info.Name = skillPacket.Info.Name;
             Broadcast(skill);
 
-            Data.Skill skillData = null;
-            if(DataManager.SkillDict.TryGetValue(skillPacket.Info.SkillId, out skillData) == false) 
+            Data.SkillData skillData = null;
+            if (DataManager.SkillDict.TryGetValue(skillPacket.Info.Name, out skillData) == false)
                 return;
 
             switch (skillData.skillType)
@@ -224,6 +225,17 @@ namespace Server.Game
                     }
                     break;
             }
+        }
+
+        public void HandleAnim(Player player, C_Anim animPacket)
+        {
+            if (player == null)
+                return;
+
+            S_Anim anim = new S_Anim() { AnimInfo = new AnimInfo() };
+            anim.ObjectId = player.Id;
+            anim.AnimInfo = animPacket.AnimInfo;
+            Broadcast(anim);           
         }
 
         public Player FindPlayer(Func<GameObject, bool> condition)

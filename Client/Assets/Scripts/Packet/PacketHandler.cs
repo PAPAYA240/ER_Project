@@ -4,6 +4,7 @@ using ServerCore;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static MonsterController;
 
 class PacketHandler
 {
@@ -67,10 +68,29 @@ class PacketHandler
         if (go == null)
             return;
 
-        CreatureController cc = go.GetComponent<CreatureController>();
+        CreatureController cc = go.GetComponentInChildren<CreatureController>();
         if (cc != null)
         {
-            cc.UseSkill(skillPacket.Info.SkillId);
+            if(cc._object == Define.Object.OtherPlayer)
+                cc.UseSkill(skillPacket.Info.Name);
+            else if(cc._object == Define.Object.Monster)
+                cc.UseSkill(skillPacket.Info.SkillId);
+        }
+    }
+
+    public static void S_AnimHandler(PacketSession session, IMessage packet)
+    {
+        S_Anim animPacket = packet as S_Anim;
+
+        GameObject go = Managers.Object.FindById(animPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc != null)
+        {
+            if (pc._object == Define.Object.OtherPlayer)
+                pc.PlayAnimation(animPacket.AnimInfo);
         }
     }
 

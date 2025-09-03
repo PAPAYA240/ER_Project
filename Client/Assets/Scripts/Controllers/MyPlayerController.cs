@@ -2,12 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using Google.Protobuf.Protocol;
 using UnityEngine;
+using UnityEngine.AI;
 using static Define;
 
 public class MyPlayerController : PlayerController
 {
     bool _moveKeyPressed = false;
-    Dictionary<KeyCode, bool> _isCoolDown = new Dictionary<KeyCode, bool>();
+    Dictionary<string, CoolTime> _coolDownDict = new Dictionary<string, CoolTime>();
+    class CoolTime
+    {
+        public bool    isCoolDown;
+        public float   coolTime;
+    }
 
     int _mask = (1 << (int)Define.Layer.Map);
     Vector3 _dstPos = Vector3.zero;
@@ -17,10 +23,21 @@ public class MyPlayerController : PlayerController
         base.Init();
         Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
 
-        _isCoolDown[KeyCode.Q] = false;
-        _isCoolDown[KeyCode.W] = false;
-        _isCoolDown[KeyCode.E] = false;
-        _isCoolDown[KeyCode.R] = false;
+        _object = Define.Object.MyPlayer;
+        MakeCoolDownDict();
+    }
+
+    private void MakeCoolDownDict()
+    {
+        foreach(var skill in _skills)
+        {
+            _coolDownDict[skill.Key] = new CoolTime { isCoolDown  = false, coolTime = 0.0f };
+        }
+    }
+
+    protected float GetCoolTime(string skillName)
+    {
+        return _coolDownDict[skillName].coolTime;
     }
 
     protected override void UpdateController()
@@ -35,12 +52,13 @@ public class MyPlayerController : PlayerController
                 break;
         }
 
+        TempKeyInput();
+
         base.UpdateController();
     }
 
     protected override void UpdateIdle()
     {
-        // �̵� ���·� ���� Ȯ��
         if (_moveKeyPressed)
         {
             State = CreatureState.Moving;
@@ -59,65 +77,43 @@ public class MyPlayerController : PlayerController
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            Debug.Log("Rozzi_Q!");
-
-            C_Skill skill = new C_Skill() { Info = new SkillInfo() };
-            skill.Info.SkillId = 1;
-            Managers.Network.Send(skill);
-
-            Managers.Skill.UseSkill("Rozzi_Q");
+            ExecuteSkill("Rozzi_Q");
         }
         else if (Input.GetKeyDown(KeyCode.W))
-        {
-            Debug.Log("Rozzi_W!");
-
-            C_Skill skill = new C_Skill() { Info = new SkillInfo() };
-            skill.Info.SkillId = 2;
-            Managers.Network.Send(skill);
-
-            Managers.Skill.UseSkill("Rozzi_W");
+        {          
+            ExecuteSkill("Rozzi_W");
         }
 
-        //if (!_isCoolDown[KeyCode.Q] && Input.GetKey(KeyCode.Q))
-        //{
-        //    Debug.Log("Skill!");
+        // TEMP
+        if(Input.GetKeyDown(KeyCode.D))
+        {
+            State = CreatureState.Dead;
+        }
+    }
 
-        //    C_Skill skill = new C_Skill() { Info = new SkillInfo() };
-        //    skill.Info.SkillId = 1;
-        //    Managers.Network.Send(skill);
+    protected void ExecuteSkill(string skillName)
+    {
+        if (!_coolDownDict[skillName].isCoolDown)
+        {
+            SkillBase skill = FindSkill(skillName);
+            
+            // 쿨타임 체크
+            StartCoroutine(CoInputCooltime(skillName, skill.SkillData.cooldown));
 
-        //    StartCoroutine(CoInputCooltime(KeyCode.Q, 0.2f));
-        //}
-        //else if (!_isCoolDown[KeyCode.W] && Input.GetKey(KeyCode.W))
-        //{
-        //    Debug.Log("Skill!");
+            // 다른 조건 체크하기
 
-        //    C_Skill skill = new C_Skill() { Info = new SkillInfo() };
-        //    skill.Info.SkillId = 2;
-        //    Managers.Network.Send(skill);
+            // 스킬 실행
+            skill.Execute();
 
-        //    StartCoroutine(CoInputCooltime(KeyCode.W, 3f));
-        //}
-        //else if (!_isCoolDown[KeyCode.E] && Input.GetKey(KeyCode.E))
-        //{
-        //    Debug.Log("Skill!");
+            // 패킷 보내기
+            SendSkillPacket(skillName);
 
-        //    C_Skill skill = new C_Skill() { Info = new SkillInfo() };
-        //    skill.Info.SkillId = 3;
-        //    Managers.Network.Send(skill);
-
-        //    StartCoroutine(CoInputCooltime(KeyCode.E, 5f));
-        //}
-        //else if (!_isCoolDown[KeyCode.R] && Input.GetKey(KeyCode.R))
-        //{
-        //    Debug.Log("Skill!");
-
-        //    C_Skill skill = new C_Skill() { Info = new SkillInfo() };
-        //    skill.Info.SkillId = 4;
-        //    Managers.Network.Send(skill);
-
-        //    StartCoroutine(CoInputCooltime(KeyCode.R, 10f));
-        //}
+            Debug.Log($"스킬 사용! : {skillName}");
+        }
+        else
+        {
+            Debug.Log($"스킬 쿨타임 적용 중! : {skillName} -> {GetCoolTime(skillName)} 초 남음");
+        }
     }
 
     protected override void UpdateMoving()
@@ -144,21 +140,62 @@ public class MyPlayerController : PlayerController
         }
     }
 
+    protected override void UpdateAnimation()
+    {
+        if (_animator == null)
+            return;
+
+        if (State == CreatureState.Idle)
+        {
+            //_animator.Play("WAIT");
+            //_animator.SetTrigger();
+
+            PlayAnimation("WAIT");
+        }
+        else if (State == CreatureState.Moving)
+        {
+            //_animator.Play("RUN");
+
+            PlayAnimation("RUN");
+        }
+        else if (State == CreatureState.Skill)
+        {
+
+        }
+        else if (State == CreatureState.Dead)
+        {
+            TriggerAnimation("tDeath");
+        }
+    }
+
+    protected void PlayAnimation(string animName)
+    {
+        _animator.Play(animName);
+        SendAnimPacket(animName, false);
+    }
+
+    protected void TriggerAnimation(string triggerName)
+    {
+        _animator.SetTrigger(triggerName);
+        SendAnimPacket(triggerName, true);
+    }
+
     // ��ų ��Ÿ��
     //Coroutine _coSkillCooltime;
-    IEnumerator CoInputCooltime(KeyCode key, float time)
+    IEnumerator CoInputCooltime(string skillName, float time)
     {
-        _isCoolDown[key] = true;
+        _coolDownDict[skillName].isCoolDown = true;
 
         float elapsed = 0f;
         while (elapsed < time)
         {
             elapsed += Time.deltaTime;
+            _coolDownDict[skillName].coolTime = time - elapsed;
             yield return null;
-
         }
 
-        _isCoolDown[key] = false;
+        _coolDownDict[skillName].isCoolDown = false;
+        _coolDownDict[skillName].coolTime = 0.0f;
         //_coSkillCooltime = null;
     }
 
@@ -193,29 +230,24 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    // Ű���� �Է�
-    void GetDirInput()
+    void TempKeyInput()
     {
-        _moveKeyPressed = true;
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f, _mask);
 
-        if (Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKeyDown(KeyCode.F))
         {
-            
+            if (_navMeshAgent == null)
+                return;
+
+            Vector3 targetPos = Managers.Map.CalcResultPos(transform.position, hit.point);
+            _navMeshAgent.Warp(targetPos);
+            _dstPos = targetPos;
+            CellPos = transform.position;
+            RotInfo = transform.rotation;
+            CheckUpdatedFlag();
         }
-        else if (Input.GetKey(KeyCode.DownArrow))
-        {
-            
-        }
-        else if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            
-        }
-        else if (Input.GetKey(KeyCode.RightArrow))
-        {
-            
-        }
-        else
-            _moveKeyPressed = false;
     }
 
     protected override void CheckUpdatedFlag()
@@ -228,5 +260,27 @@ public class MyPlayerController : PlayerController
             Managers.Network.Send(movePacket);
             _updated = false;
         }
+    }
+
+    private void SendSkillPacket(string skillName)
+    {
+        C_Skill skillPacket = new C_Skill() { Info = new SkillInfo() { Name = skillName } };
+        Managers.Network.Send(skillPacket);
+    }
+
+    private void SendAnimPacket(string name, bool isTrigger = false)
+    {
+        if(!isTrigger)
+        {
+            int animHash = Animator.StringToHash(name);
+            C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { IsTrigger = false, Hash = animHash, Time = Time.time } };
+            Managers.Network.Send(animPacket);
+        }
+        else
+        {
+            int triggerHash = Animator.StringToHash(name);
+            C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { IsTrigger = true, Hash = triggerHash } };
+            Managers.Network.Send(animPacket);
+        }        
     }
 }

@@ -2,53 +2,79 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3cefb427-91fc-47ba-b98e-86372cdae44d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi/RozziController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi/RozziController.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi/Skill.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi/Skill/Rozzi_Q.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi/Skill/Rozzi_Q.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi/Skill/Rozzi_W.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi/Skill/Rozzi_W.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Skill.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Contents/SkillBase.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Contents/SkillBase.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Contents/SkillManager.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Contents/SkillManager.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/ProtoUtils.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/ProtoUtils.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/Server/Packet/ProtoUtils.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Assets/Editor/MapEditor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Editor/MapEditor.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/HpBar.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/HpBar.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/LevelUpButton.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/LevelUpButton.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/TSkill.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/TSkill.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/UltimateSkill.prefab" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/UltimateSkill.prefab.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_Bar.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_Credit.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_Credit.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_DSkill.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_DSkill.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_Fade.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_Fade.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_HpBar.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_HpBar.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_Level.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_Level.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_LevelUpButton.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_LevelUpButton.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_PlayerInterface.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_PlayerInterface.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_SkillBase.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_SkillBase.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_TSkill.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_TSkill.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_UltimateSkill.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_UltimateSkill.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Assets/Editor/MultiplayersBuildAndRun.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Editor/MultiplayersBuildAndRun.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Data/SkillData.json" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Data/SkillData.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/Creature/Monster.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/Creature/Monster.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/Creature/MyPlayer.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/Creature/MyPlayer.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/Creature/Player.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/Creature/Player.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/Creature/Player.prefab.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/Creature/Player.prefab.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Rozzi/AnimationClip/Rozzi_Pistol_Atk01_1.anim" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Rozzi/AnimationClip/Rozzi_Pistol_Atk01_1.anim" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/Scene/PlayerInterface.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/Scene/PlayerInterface.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/Bar.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/Bar.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/CommonSkill.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/CommonSkill.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/DSkill.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/DSkill.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/SkillLevelUI_3.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/SkillLevelUI_3.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/SkillLevelUI_5.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Prefabs/UI/SubItem/SkillLevelUI_5.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Theodore/AnimatorController/Rozzi_S002.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Theodore/AnimatorController/Rozzi_S002.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Assets/Scenes/Game.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scenes/Game.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/ArrowController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/ArrowController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Tiles/Palettes/Palette_Map.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Tiles/Palettes/Palette_Map.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi/RozziController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Rozzi/RozziController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Contents/SkillBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Contents/SkillBase.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/BaseController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/BaseController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/CreatureController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/CreatureController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/MonsterController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/MonsterController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/MyPlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/MyPlayerController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/PlayerController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Data/Data.Contents.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Data/Data.Contents.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Contents/MapManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Contents/MapManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Core/DataManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Core/DataManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Contents/ObjectManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Contents/ObjectManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Contents/SkillManager.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Contents/SkillManager.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_Bar.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Managers.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Managers.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Monster/AIController/BT_Builder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Monster/AIController/BT_Builder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/ClientPacketManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/ClientPacketManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/PacketHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/PacketHandler.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/Protocol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/Protocol.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Scenes/GameScene.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Scenes/GameScene.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_CommonSkill.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SubItem/UI_CommonSkill.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/UI/UI_Base.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/UI_Base.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/UI/UI_EventHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/UI_EventHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Utils/Define.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Utils/Define.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/ClientPacketManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/ClientPacketManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/Protocol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/Protocol.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/Protocol.proto" beforeDir="false" afterPath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/Protocol.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/ServerPacketManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/ServerPacketManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/Data/Data.Contents.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Data/Data.Contents.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/Arrow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/Arrow.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/GameObject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/GameObject.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/Monster/Monster.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/Monster/Monster.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Data/DataManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Data/DataManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/Monster/MonsterManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/Monster/MonsterManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/Projectile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/Projectile.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/Game/Room/GameRoom.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Room/GameRoom.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Room/Map.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/Packet/PacketHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Packet/PacketHandler.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/Packet/Protocol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Packet/Protocol.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Session/ClientSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Session/ClientSession.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Packet/ServerPacketManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Packet/ServerPacketManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

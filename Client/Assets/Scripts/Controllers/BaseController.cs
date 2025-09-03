@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using Google.Protobuf.Protocol;
 using UnityEngine;
+using UnityEngine.AI;
 using static Define;
 
 public class BaseController : MonoBehaviour
@@ -42,7 +43,7 @@ public class BaseController : MonoBehaviour
     protected bool _updated = false;
 
     PositionInfo _positionInfo = new PositionInfo();
-    RotationInfo _rotationInfo = new RotationInfo();
+    RotationInfo _rotationInfo = new RotationInfo() { Qw = 1.0f };
     public PositionInfo PosInfo
     {
         get { return _positionInfo; }
@@ -107,6 +108,7 @@ public class BaseController : MonoBehaviour
     }
 
     protected Animator _animator;
+    protected NavMeshAgent _navMeshAgent;
 
     public virtual CreatureState State
     {
@@ -158,7 +160,7 @@ public class BaseController : MonoBehaviour
     protected virtual void Init()
     {
         _animator = GetComponentInChildren<Animator>();
-
+        _navMeshAgent = GetComponent<NavMeshAgent>();
         SyncPos();
 
         UpdateAnimation();

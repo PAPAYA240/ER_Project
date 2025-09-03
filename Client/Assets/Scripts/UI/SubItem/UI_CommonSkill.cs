@@ -2,12 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-//using UnityEditor.Build.Reporting;
-//using UnityEditor.Playables;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_CommonSkill : UI_Scene
+public class UI_CommonSkill : UI_SkillBase
 {
     enum Buttons
     {
@@ -23,6 +21,7 @@ public class UI_CommonSkill : UI_Scene
 
     enum Images
     {
+        // 추가 할거면 밑으로만 위에 무엇을 추가하지 말 것. 이미지 잘 못 바뀜.
         Level_1,
         Level_2,
         Level_3,
@@ -34,7 +33,8 @@ public class UI_CommonSkill : UI_Scene
     enum GameObjects
     {
         Stamina,
-        CooldownTimer
+        CooldownTimer,
+        LevelUp
     }
 
     enum ColorEnum
@@ -42,11 +42,6 @@ public class UI_CommonSkill : UI_Scene
         Yellow,
         Gray
     }
-
-    const string _yellow = "#B89249";
-    const string _gray = "#505050";
-
-    int _skillLevel = 1;
 
     const int _cooldownTimer = (int)GameObjects.CooldownTimer;
     const int _stamina = (int)GameObjects.Stamina;
@@ -57,7 +52,6 @@ public class UI_CommonSkill : UI_Scene
 
     public override void Init()
     {
-        base.Init();
 
         Bind<Button>(typeof(Buttons));
         Bind<TextMeshProUGUI>(typeof(Texts));
@@ -65,23 +59,21 @@ public class UI_CommonSkill : UI_Scene
         Bind<GameObject>(typeof(GameObjects));
 
         GetObject(_stamina).gameObject.SetActive(false);
-        GetObject(_cooldownTimer).gameObject.SetActive(false);
 
-        SetSkillLevel(3);
-        UseSkill();
-    }
+        GetText((int)Texts.CooldownTimerText).text = "";
+        ActivateLevelUp(DoYouActivate: false);
 
-    void Start()
-    {
-        Init();
+        SetSkillLevel(_skillLevel);
     }
 
     void Update()
     {
+        if (_skillLevel == 0)
+            return;
         //temp
         //쿨다운타이머가 활성화 되어 있으면 셋 쿨다운을 호출해서 쿨타임을 지속적으로 갱신
         //TODO 쿨타임 이미지 돌아가는거 해야됨.
-        if(GetObject(_cooldownTimer).activeSelf && _remainCool > 0.0f)
+        if (GetObject(_cooldownTimer).activeSelf && _remainCool > 0.0f)
         {
             _remainCool = Math.Max(0.0f, _remainCool - Time.deltaTime);
 
@@ -102,16 +94,23 @@ public class UI_CommonSkill : UI_Scene
 
     void SetSkillLevel(int level)
     {
+        //TODO 레벨 체크 이렇게 해야되나
+        if (level < 0 || level > _maxSkillLevel)
+            return;
+        if (level == 1)
+            GetObject(_cooldownTimer).gameObject.SetActive(false);
+
         _skillLevel = level;
 
         for(int i = 1; i <= _skillLevel; ++i) 
             ChangeColor(i, ColorEnum.Yellow);
 
-        for (int i = _skillLevel + 1; i <= 5; ++i)
+        for (int i = _skillLevel + 1; i <= _maxSkillLevel; ++i)
             ChangeColor(i, ColorEnum.Gray);
     }
-    
-    void SkillLevelUp()
+
+
+    public override void SkillLevelUp()
     {
         SetSkillLevel(_skillLevel + 1);
     }
@@ -140,13 +139,13 @@ public class UI_CommonSkill : UI_Scene
         GetImage(level - 1).color = destColor;
     }
 
-    void UseSkill()
+    public override void UseSkill()
     {
         //스킬을 사용하면 타이머를 활성화
         //활성화 되면 스킬이 어두워지고 쿨타임이 표시됨.
         GetObject(_cooldownTimer).SetActive(true);
         //temp
-        _remainCool = 10.0f;
+        _remainCool = _maxCool;
         //SetCoolDown(0.4f);
     }
 
@@ -166,5 +165,15 @@ public class UI_CommonSkill : UI_Scene
         TextMeshProUGUI textObject = GetText((int)Texts.CooldownTimerText);
         if (textObject != null)
             textObject.text = text;
+    }
+    public override void ActivateLevelUp(bool DoYouActivate)
+    {
+        GetObject((int)GameObjects.LevelUp).SetActive(DoYouActivate);
+    }
+
+    public override void SetImage(string path)
+    {
+        Sprite sprite = Managers.Resource.Load<Sprite>(path);
+        GetButton((int)Buttons.SkillButton).image.sprite = sprite;
     }
 }
