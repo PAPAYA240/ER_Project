@@ -51,14 +51,15 @@ public class BehaviorTreeBuilder
     private Node CreateNodeInstance(string typeName)
     {
         Type type = Type.GetType(typeName);
-        if (null == type) return null;
+        if (null == type)
+            return null;
 
         Node node = ScriptableObject.CreateInstance(type) as Node;
         return node;
     }
 
 #if UNITY_EDITOR
-     public BehaviorTreeBuilder Selector(string name = "Selector")
+    public BehaviorTreeBuilder Selector(string name = "Selector")
     {
         var selector = ScriptableObject.CreateInstance<SelectorNode>();
         selector.name = name;

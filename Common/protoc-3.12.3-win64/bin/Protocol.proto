@@ -16,6 +16,8 @@ enum MsgId {
   S_SKILL = 8;
   S_CHANGE_HP = 9;
   S_DIE = 10;
+  C_ANIM = 11;
+  S_ANIM = 12;
 }
 
 enum CreatureState{
@@ -78,12 +80,27 @@ message S_Skill{
 	SkillInfo info = 2;
 }
 
+message C_Anim{
+	AnimInfo animInfo = 1;
+}
+
+message S_Anim{
+	int32 objectId = 1;
+	AnimInfo animInfo = 2;
+}
+
 message ObjectInfo{
 	int32 objectId = 1;
 	string name = 2;
 	PositionInfo posInfo = 3;
 	RotationInfo rotInfo = 4;
 	StatInfo statInfo = 5;
+}
+
+message AnimInfo{
+	bool isTrigger = 1;
+	int32 hash = 2;
+	float time = 3;
 }
 
 message S_ChangeHp{
@@ -121,4 +138,5 @@ message StatInfo{
 
 message SkillInfo{
 	int32 skillId = 1;
+	string name = 2;
 }

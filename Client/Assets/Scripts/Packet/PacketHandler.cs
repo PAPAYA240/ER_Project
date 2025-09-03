@@ -69,10 +69,29 @@ class PacketHandler
             return;
 
         CreatureController cc = go.GetComponentInChildren<CreatureController>();
-        if (cc == null)
+        if (cc != null)
+        {
+            if(cc._object == Define.Object.OtherPlayer)
+                cc.UseSkill(skillPacket.Info.Name);
+            else if(cc._object == Define.Object.Monster)
+                cc.UseSkill(skillPacket.Info.SkillId);
+        }
+    }
+
+    public static void S_AnimHandler(PacketSession session, IMessage packet)
+    {
+        S_Anim animPacket = packet as S_Anim;
+
+        GameObject go = Managers.Object.FindById(animPacket.ObjectId);
+        if (go == null)
             return;
-        cc.UseSkill(skillPacket.Info.SkillId);
-       
+
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc != null)
+        {
+            if (pc._object == Define.Object.OtherPlayer)
+                pc.PlayAnimation(animPacket.AnimInfo);
+        }
     }
 
     public static void S_ChangeHpHandler(PacketSession session, IMessage packet)

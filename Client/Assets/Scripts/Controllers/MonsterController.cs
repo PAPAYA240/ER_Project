@@ -3,6 +3,7 @@ using Google.Protobuf.WellKnownTypes;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MonsterController : CreatureController
 {
@@ -25,9 +26,10 @@ public class MonsterController : CreatureController
     protected override void Init()
 	{
         Skill = MonsterSkill.Attack1;
-
-        base.Init();
-	}
+        _object = Define.Object.Monster;
+        _navMeshAgent = GetComponentInParent<NavMeshAgent>();
+		base.Init();
+    }
 
     protected override void UpdateController()
     {
@@ -52,30 +54,24 @@ public class MonsterController : CreatureController
             return;
         }
         _lastPos = transform.position;
+
         _currentPos = new Vector3(movePacket.PosInfo.PosX, movePacket.PosInfo.PosY, movePacket.PosInfo.PosZ);
-
-        _posRatio = 0f;
-
-        _lastRot = transform.rotation;
-        _currentRot = new Quaternion(movePacket.RotInfo.Qx, movePacket.RotInfo.Qy, movePacket.RotInfo.Qz, movePacket.RotInfo.Qw);
-        _rotRatio = 0f;
+        _navMeshAgent.SetDestination(new Vector3(movePacket.PosInfo.PosX, movePacket.PosInfo.PosY, movePacket.PosInfo.PosZ));
     }
 
     protected override void UpdateMoving()
     {
-        // 스킬 애니메이션이 끝나면 다시 이동
+        //const float interpolationPosSpeed = 1f; 
+        //const float interpolationRotSpeed = 2f;
 
-        const float interpolationPosSpeed = 1f; 
-        const float interpolationRotSpeed = 2f;
+        //_posRatio += Time.deltaTime * interpolationPosSpeed;
+        //_rotRatio += Time.deltaTime * interpolationRotSpeed;
 
-        _posRatio += Time.deltaTime * interpolationPosSpeed;
-        _rotRatio += Time.deltaTime * interpolationRotSpeed;
+        //_posRatio = Mathf.Clamp01(_posRatio);
+        //_rotRatio = Mathf.Clamp01(_rotRatio);
 
-        _posRatio = Mathf.Clamp01(_posRatio);
-        _rotRatio = Mathf.Clamp01(_rotRatio);
-
-        transform.position = Vector3.Lerp(_lastPos, _currentPos, _posRatio);
-        transform.rotation = Quaternion.Slerp(_lastRot, _currentRot, _rotRatio);
+        //transform.position = Vector3.Lerp(_lastPos, _currentPos, _posRatio);
+        //transform.rotation = Quaternion.Slerp(_lastRot, _currentRot, _rotRatio);
     }
 
     public override void OnDamaged()

@@ -13,6 +13,14 @@ public class Define
         Game,
     }
 
+    public enum Object
+    {
+        Unknown,
+        MyPlayer,
+        OtherPlayer,
+        Monster,
+    }
+
     public enum Sound
     {
         Bgm,
@@ -23,7 +31,11 @@ public class Define
     public enum UIEvent
     {
         Click,
+        PointerEnter,
+        PointerExit,
+        BeginDrag,
         Drag,
+        EndDrag,
     }
 
     public enum CameraMode

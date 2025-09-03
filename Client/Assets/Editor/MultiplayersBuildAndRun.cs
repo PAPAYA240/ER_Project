@@ -6,6 +6,14 @@ using UnityEngine;
 
 public class MultiplayersBuildAndRun
 {
+    [MenuItem("Tools/Run MultiPlayer/1 Players")]
+    static void PerformWin64Build1()
+    {
+        if (!IsServerRunning())
+            return;
+        PerformWin64Build(1);
+    }
+
     [MenuItem("Tools/Run MultiPlayer/2 Players")]
     static void PerformWin64Build2()
     {
@@ -67,7 +75,7 @@ public class MultiplayersBuildAndRun
             return true;
         else
         {
-            UnityEngine.Debug.Log("���� Ű��;;");
+            UnityEngine.Debug.Log("Server Off;;");
             return false;
         }
     }

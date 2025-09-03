@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Scripts.Controllers.character
+public class RozziController : MyPlayerController
 {
-    public class RozziController : MyPlayerController
-    {
-    }
+
 }
+
