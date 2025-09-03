@@ -60,6 +60,14 @@ namespace Server.Data
                 dict.Add(skillData.name, skillData);
             return dict;
         }
+
+        public Dictionary<int, SkillData> MakeDictInt()
+        {
+            Dictionary<int, SkillData> dict = new Dictionary<int, SkillData>();
+            foreach (SkillData skillData in skillData)
+                dict.Add(skillData.id, skillData);
+            return dict;
+        }
     }
     #endregion
 }

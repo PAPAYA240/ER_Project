@@ -22,7 +22,6 @@ public class MonsterController : CreatureController
 
     public MonsterSkill Skill { get;  set; } // Corrected Skill property
 
-
     protected override void Init()
 	{
         Skill = MonsterSkill.Attack1;

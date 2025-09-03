@@ -115,8 +115,9 @@ namespace Server.Game.Object.Monster
         protected virtual void DecideAndUseSkill()
         {
             int skillId = new Random().Next(1, 4); 
-            Skill skillData = null;
-            if (DataManager.MonsterSkillDict.TryGetValue(skillId, out skillData) == false)
+            SkillData skillData = null;
+            string skillKey = $"{skillId}";
+            if (DataManager.MonsterSkillDict.TryGetValue(skillKey, out skillData) == false)
             {
                 Console.WriteLine($"--> 사용할 스킬 ID({skillId})가 데이터에 없습니다.");
                 return;
@@ -179,7 +180,7 @@ namespace Server.Game.Object.Monster
             }
         }
 
-        void BroadcastSkill(Skill skillData)
+        void BroadcastSkill(SkillData skillData)
         {
             S_Skill skill = new S_Skill() { Info = new SkillInfo() };
             skill.ObjectId = Id;
