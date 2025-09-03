@@ -2,8 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.Build.Reporting;
-using UnityEditor.Playables;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -79,15 +77,15 @@ public class UI_CommonSkill : UI_Scene
     void Update()
     {
         //temp
-        //Äð´Ù¿îÅ¸ÀÌ¸Ó°¡ È°¼ºÈ­ µÇ¾î ÀÖÀ¸¸é ¼Â Äð´Ù¿îÀ» È£ÃâÇØ¼­ ÄðÅ¸ÀÓÀ» Áö¼ÓÀûÀ¸·Î °»½Å
-        //TODO ÄðÅ¸ÀÓ ÀÌ¹ÌÁö µ¹¾Æ°¡´Â°Å ÇØ¾ßµÊ.
+        //ï¿½ï¿½Ù¿ï¿½Å¸ï¿½Ì¸Ó°ï¿½ È°ï¿½ï¿½È­ ï¿½Ç¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ù¿ï¿½ï¿½ï¿½ È£ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        //TODO ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½ï¿½Â°ï¿½ ï¿½Ø¾ßµï¿½.
         if(GetObject(_cooldownTimer).activeSelf && _remainCool > 0.0f)
         {
             _remainCool = Math.Max(0.0f, _remainCool - Time.deltaTime);
 
             if( _remainCool > 0.0f )
             {
-                // ÄðÅ¸ÀÓÀÌ ³²¾ÆÀÖÀ»¶§
+                // ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 GetImage((int)Images.CooldownFill).fillAmount = _remainCool / _maxCool;
                 SetCoolDown(_remainCool);
             }
@@ -142,8 +140,8 @@ public class UI_CommonSkill : UI_Scene
 
     void UseSkill()
     {
-        //½ºÅ³À» »ç¿ëÇÏ¸é Å¸ÀÌ¸Ó¸¦ È°¼ºÈ­
-        //È°¼ºÈ­ µÇ¸é ½ºÅ³ÀÌ ¾îµÎ¿öÁö°í ÄðÅ¸ÀÓÀÌ Ç¥½ÃµÊ.
+        //ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ Å¸ï¿½Ì¸Ó¸ï¿½ È°ï¿½ï¿½È­
+        //È°ï¿½ï¿½È­ ï¿½Ç¸ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½Î¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½Ãµï¿½.
         GetObject(_cooldownTimer).SetActive(true);
         //temp
         _remainCool = 10.0f;

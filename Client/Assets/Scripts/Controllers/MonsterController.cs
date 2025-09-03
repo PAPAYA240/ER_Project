@@ -1,12 +1,15 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
+using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class MonsterController : CreatureController
 {
-	Coroutine _coSkill;
+    private System.Random _random = new System.Random();
+    private S_Move _pendingMovePacket = null;
 
-    enum MonsterSkill
+    public enum MonsterSkill
     {
         None = 0,
         Attack1 = 1,
@@ -16,25 +19,21 @@ public class MonsterController : CreatureController
         Skill3 = 5
     }
 
-    MonsterSkill _currentSkill 
-    { 
-        get  { 
-            return _currentSkill; 
-        } 
-        set {
-            _currentSkill = value; 
-        } 
-    }
+    public MonsterSkill Skill { get;  set; } // Corrected Skill property
+
 
     protected override void Init()
 	{
-		base.Init();
+        Skill = MonsterSkill.Attack1;
+
+        base.Init();
 	}
 
     protected override void UpdateController()
     {
         base.UpdateController();
     }
+
     // 보간에 필요한 변수들
     Vector3 _lastPos;
     Vector3 _currentPos;
@@ -47,6 +46,11 @@ public class MonsterController : CreatureController
     // 서버에서 패킷을 받을 때 호출되는 함수
     public void OnRecvMovePacket(S_Move movePacket)
     {
+        if (State == CreatureState.Skill)
+        {
+            _pendingMovePacket = movePacket;
+            return;
+        }
         _lastPos = transform.position;
         _currentPos = new Vector3(movePacket.PosInfo.PosX, movePacket.PosInfo.PosY, movePacket.PosInfo.PosZ);
 
@@ -59,6 +63,8 @@ public class MonsterController : CreatureController
 
     protected override void UpdateMoving()
     {
+        // 스킬 애니메이션이 끝나면 다시 이동
+
         const float interpolationPosSpeed = 1f; 
         const float interpolationRotSpeed = 2f;
 
@@ -78,17 +84,56 @@ public class MonsterController : CreatureController
 		//Managers.Resource.Destroy(gameObject);
 	}
 
-    protected override void UpdateSkill()
+    bool isSkill = false;
+    public void SelectSkill() 
     {
-        Debug.Log("UpdateSkill");
-        // 스킬 랜덤 사용
+        if (isSkill)
+            return;
+
+        isSkill = true;
+        Debug.Log($"SelectSkill : 스킬 쓰는 중");
+        Array skillValues = System.Enum.GetValues(typeof(MonsterSkill));
+        List<MonsterSkill> availableSkills = new List<MonsterSkill>();
+
+        foreach (MonsterSkill skill in skillValues)
+        {
+            if (skill != MonsterSkill.None)
+                availableSkills.Add(skill);
+        }
+
+        if (availableSkills.Count > 0)
+        {
+            int randomIndex = _random.Next(0, availableSkills.Count);
+            MonsterSkill selectedSkill = availableSkills[randomIndex];
+
+            Skill = selectedSkill;
+        }
     }
+
     public override void UseSkill(int skillId)
     {
-        Debug.Log("UpdateSkill");
-        if (skillId == 1)
+        Skill = (MonsterSkill)skillId;
+        State = CreatureState.Skill;
+    }
+
+    public void OnSkillAnimationComplete()
+    {
+        if (_pendingMovePacket != null)
         {
-            State = CreatureState.Skill;
+            OnRecvMovePacket(_pendingMovePacket);
+            _pendingMovePacket = null;
         }
+        else
+            State = CreatureState.Idle;
+
+        isSkill = false;
+        SelectSkill();
+    }
+
+    public bool isAnimEnd = false;
+
+    public void OnSkillAnimationEnd()
+    {
+        isAnimEnd = true;
     }
 }

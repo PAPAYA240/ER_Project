@@ -26,7 +26,7 @@ public class BehaviorTreeBuilder
 
     private Node CreateNodeRecursive(NodeData data)
     {
-        Node node = CreateNodeInstance(data.Type);
+        Node node = CreateNodeInstance(data.Type); // 이 번째 줄
         if (!node) return null;
 
         node.name = data.Name;
@@ -48,7 +48,6 @@ public class BehaviorTreeBuilder
         return node;
     }
 
-#if UNITY_EDITOR
     private Node CreateNodeInstance(string typeName)
     {
         Type type = Type.GetType(typeName);
@@ -57,6 +56,8 @@ public class BehaviorTreeBuilder
         Node node = ScriptableObject.CreateInstance(type) as Node;
         return node;
     }
+
+#if UNITY_EDITOR
      public BehaviorTreeBuilder Selector(string name = "Selector")
     {
         var selector = ScriptableObject.CreateInstance<SelectorNode>();
@@ -66,6 +67,7 @@ public class BehaviorTreeBuilder
         _parentNodeStack.Push(selector);
         return this;
     }
+
      public BehaviorTreeBuilder Sequence(string name = "Sequence")
     {
         var sequence = ScriptableObject.CreateInstance<SequenceNode>();

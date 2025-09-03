@@ -1,0 +1,36 @@
+{
+  "skills": [
+    {
+      "id": 1,
+      "name": "MonsterMeleeAttack",
+      "cooldown": 2.0,
+      "manaCost": 0,
+      "damage": 10,
+      "skillType": "1",
+      "projectile": null
+    },
+    {
+      "id": 2,
+      "name": "MonsterStomp",
+      "cooldown": 5.0,
+      "manaCost": 0,
+      "damage": 25,
+      "skillType": "2",
+      "projectile": null
+    },
+    {
+      "id": 3,
+      "name": "MonsterFireball",
+      "cooldown": 8.0,
+      "manaCost": 0,
+      "damage": 40,
+      "skillType": "3",
+      "projectile": {
+        "name": "Fireball",
+        "speed": 10.0,
+        "range": 15,
+        "prefab": null
+      }
+    }
+  ]
+}

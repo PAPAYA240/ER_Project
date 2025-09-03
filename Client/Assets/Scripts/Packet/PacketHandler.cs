@@ -4,6 +4,7 @@ using ServerCore;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static MonsterController;
 
 class PacketHandler
 {
@@ -67,11 +68,11 @@ class PacketHandler
         if (go == null)
             return;
 
-        CreatureController cc = go.GetComponent<CreatureController>();
-        if (cc != null)
-        {
-            cc.UseSkill(skillPacket.Info.SkillId);
-        }
+        CreatureController cc = go.GetComponentInChildren<CreatureController>();
+        if (cc == null)
+            return;
+        cc.UseSkill(skillPacket.Info.SkillId);
+       
     }
 
     public static void S_ChangeHpHandler(PacketSession session, IMessage packet)

@@ -8,12 +8,13 @@
       "Name": "CheckAKey",
       "Type": "IsKeyPressedNode",
       "Properties": {
-        "key": "A"
+        "key": "A",
+        "skillId" : "None"
       }
     },
     {
       "Name": "dead",
-      "Type": "PlayAnimatorTriggerNode",
+      "Type": "PlayAnimatorBoolNode",
       "Properties": {
         "paramName": "dead",
         "valueToSet": true
