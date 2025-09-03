@@ -31,6 +31,7 @@ namespace Server.Data
         public int id;
         public string name;
         public float cooldown;
+        public float animationTime; // 애니메이션 시간
         public float lastUsedTime;
         public int manaCost;
         public string uiTag;
@@ -60,14 +61,31 @@ namespace Server.Data
                 dict.Add(skillData.name, skillData);
             return dict;
         }
+    }
+    #endregion
 
-        public Dictionary<int, SkillData> MakeDictInt()
+    #region Monster
+    [Serializable]
+    public class MonsterData
+    {
+        public int id;
+        public string name;
+        public StatInfo stat;
+        public List<string> skills;
+    }
+
+    [Serializable]
+    public class MonsterDict : ILoader<string, MonsterData>
+    {
+        public List<MonsterData> monsters = new List<MonsterData>();
+        public Dictionary<string, MonsterData> MakeDict()
         {
-            Dictionary<int, SkillData> dict = new Dictionary<int, SkillData>();
-            foreach (SkillData skillData in skillData)
-                dict.Add(skillData.id, skillData);
+            Dictionary<string, MonsterData> dict = new Dictionary<string, MonsterData>();
+            foreach (MonsterData monster in monsters)
+                dict.Add(monster.name, monster);
             return dict;
         }
     }
     #endregion
+
 }
