@@ -59,7 +59,6 @@ public class MyPlayerController : PlayerController
 
     protected override void UpdateIdle()
     {
-        // �̵� ���·� ���� Ȯ��
         if (_moveKeyPressed)
         {
             State = CreatureState.Moving;

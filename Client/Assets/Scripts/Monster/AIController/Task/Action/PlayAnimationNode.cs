@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Google.Protobuf.Protocol;
+using UnityEngine;
 
 public abstract class AnimationControlNode : ActionNode
 {
@@ -21,6 +22,9 @@ public class PlayAnimatorBoolNode : AnimationControlNode
                 return NodeStatus.Failure;
             }
         }
+        MonsterController monsterController = owner.GetComponentInChildren<MonsterController>();
+        if (monsterController == null)
+            return NodeStatus.Failure;
 
         if (string.IsNullOrEmpty(paramName))
         {
@@ -28,6 +32,7 @@ public class PlayAnimatorBoolNode : AnimationControlNode
             return NodeStatus.Failure;
         }
 
+        Debug.Log("Animation Moving");
         _animator.SetBool(paramName, valueToSet);
         return NodeStatus.Success; 
     }
@@ -36,15 +41,14 @@ public class PlayAnimatorBoolNode : AnimationControlNode
 public class PlayAnimatorTriggerNode : AnimationControlNode
 {
     [Tooltip("Animator에 설정된 Trigger 이름")]
-    public string triggerName; 
+    public string triggerName;
 
-    [Tooltip("애니메이션 상태의 이름")]
+    [Tooltip("Animator에 설정된 실제 애니메이션 상태의 이름. 예: Skill01State")]
     public string animationStateName;
-    private bool _isTriggerSet = false; 
+    private bool _isTriggerSet = false;
 
     public override NodeStatus Execute(GameObject owner)
     {
-        // Animator 컴포넌트를 처음 사용할 때 한 번만 찾아서 캐싱
         if (_animator == null)
         {
             _animator = owner.GetComponentInChildren<Animator>();
@@ -54,40 +58,39 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
                 return NodeStatus.Failure;
             }
         }
+        _animator.SetBool("walk", false);
 
         if (string.IsNullOrEmpty(triggerName) || string.IsNullOrEmpty(animationStateName))
         {
-            Debug.LogError("No Trigger Animation");
+            Debug.LogError("Trigger Name 또는 Animation State Name이 설정되지 않았습니다.");
             return NodeStatus.Failure;
         }
-
         AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
-        if (stateInfo.IsName(animationStateName))
+
+        MonsterController monsterController = owner.GetComponentInChildren<MonsterController>();
+        if (monsterController == null)
+            return NodeStatus.Failure;
+       
+        // 현재 우리가 의도한 스킬 애니메이션이 재생 중이고, 거의 끝났다면 성공 처리
+        if (monsterController.isAnimEnd)
         {
-            if (stateInfo.normalizedTime >= 1.0f)
-            {
-                _isTriggerSet = false;
-                return NodeStatus.Success;
-            }
-            else
-            {
-                return NodeStatus.Running;
-            }
+            Debug.Log("스킬 끝");
+            monsterController.isAnimEnd = false;
+            _isTriggerSet = false; 
+            return NodeStatus.Success;
         }
-        else
+
+        if (!_isTriggerSet)
         {
-            if (!_isTriggerSet)
-            {
-                Debug.Log($"[BT] PlayAnimationNode 실행! 트리거:{triggerName}");
-                _animator.SetTrigger(triggerName);
-                _isTriggerSet = true;
-            }
-            else
-            { 
-                 _isTriggerSet = false;
-                 return NodeStatus.Success;
-            }
-            return NodeStatus.Running;
+            Debug.Log($"{triggerName} 스킬 시작");
+
+            _animator.SetTrigger(triggerName);
+            _isTriggerSet = true;
         }
+
+        return NodeStatus.Running;
     }
+
+   
+
 }

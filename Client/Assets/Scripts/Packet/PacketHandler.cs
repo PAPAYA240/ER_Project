@@ -4,6 +4,7 @@ using ServerCore;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static MonsterController;
 
 class PacketHandler
 {
@@ -73,7 +74,7 @@ class PacketHandler
         if (go == null)
             return;
 
-        CreatureController cc = go.GetComponent<CreatureController>();
+        CreatureController cc = go.GetComponentInChildren<CreatureController>();
         if (cc != null)
         {
             if(cc._object == Define.Object.OtherPlayer)

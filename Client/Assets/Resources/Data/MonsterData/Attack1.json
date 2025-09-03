@@ -6,7 +6,7 @@
       "Name": "CheckQKey",
       "Type": "IsKeyPressedNode",
       "Properties": {
-        "key": "Q"
+        "skillId": "Attack1",
       }
     },
     {
@@ -17,6 +17,7 @@
         "animationStateName": "Monster_Alpha_atk01"
       }
     },
+
     {
       "Name": "Attack2",
       "Type": "PlayAnimatorTriggerNode",

@@ -73,7 +73,7 @@ public class UI_CommonSkill : UI_SkillBase
         //temp
         //쿨다운타이머가 활성화 되어 있으면 셋 쿨다운을 호출해서 쿨타임을 지속적으로 갱신
         //TODO 쿨타임 이미지 돌아가는거 해야됨.
-        if(GetObject(_cooldownTimer).activeSelf && _remainCool > 0.0f)
+        if (GetObject(_cooldownTimer).activeSelf && _remainCool > 0.0f)
         {
             _remainCool = Math.Max(0.0f, _remainCool - Time.deltaTime);
 

@@ -4,6 +4,10 @@ using System;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 [System.Serializable]
 public class NodeData
 {
@@ -26,7 +30,7 @@ public class BehaviorTreeBuilder
 
     private Node CreateNodeRecursive(NodeData data)
     {
-        Node node = CreateNodeInstance(data.Type);
+        Node node = CreateNodeInstance(data.Type); // 이 번째 줄
         if (!node) return null;
 
         node.name = data.Name;
@@ -68,6 +72,7 @@ public class BehaviorTreeBuilder
         _parentNodeStack.Push(selector);
         return this;
     }
+
      public BehaviorTreeBuilder Sequence(string name = "Sequence")
     {
         var sequence = ScriptableObject.CreateInstance<SequenceNode>();

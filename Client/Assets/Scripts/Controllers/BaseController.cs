@@ -43,7 +43,7 @@ public class BaseController : MonoBehaviour
     protected bool _updated = false;
 
     PositionInfo _positionInfo = new PositionInfo();
-    RotationInfo _rotationInfo = new RotationInfo();
+    RotationInfo _rotationInfo = new RotationInfo() { Qw = 1.0f };
     public PositionInfo PosInfo
     {
         get { return _positionInfo; }
