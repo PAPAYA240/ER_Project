@@ -8,8 +8,9 @@ public class ObjectManager
 {
 	public MyPlayerController MyPlayer { get; set; }
 	Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
+    public Define.Character Character { get; set; } = Define.Character.Rozzi;
 
-	public static GameObjectType GetObjectTypeById(int id)
+    public static GameObjectType GetObjectTypeById(int id)
 	{
 		int type = (id >> 24) & 0x7F;
 		return (GameObjectType)type;
@@ -23,7 +24,7 @@ public class ObjectManager
         {
             if (myPlayer)
             {
-                GameObject go = Managers.Resource.Instantiate("Creature/MyPlayer");
+                GameObject go = Managers.Resource.Instantiate($"Creature/{Character}");
                 go.name = info.Name;
                 _objects.Add(info.ObjectId, go);
 
@@ -35,7 +36,7 @@ public class ObjectManager
             }
             else
             {
-                GameObject go = Managers.Resource.Instantiate("Creature/Player");
+                GameObject go = Managers.Resource.Instantiate($"Creature/Player");
                 go.name = info.Name;
                 _objects.Add(info.ObjectId, go);
 

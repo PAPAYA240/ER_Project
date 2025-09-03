@@ -4,6 +4,10 @@ using System;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 [System.Serializable]
 public class NodeData
 {
@@ -48,7 +52,6 @@ public class BehaviorTreeBuilder
         return node;
     }
 
-#if UNITY_EDITOR
     private Node CreateNodeInstance(string typeName)
     {
         Type type = Type.GetType(typeName);
@@ -57,7 +60,9 @@ public class BehaviorTreeBuilder
         Node node = ScriptableObject.CreateInstance(type) as Node;
         return node;
     }
-     public BehaviorTreeBuilder Selector(string name = "Selector")
+
+#if UNITY_EDITOR
+    public BehaviorTreeBuilder Selector(string name = "Selector")
     {
         var selector = ScriptableObject.CreateInstance<SelectorNode>();
         selector.name = name;
