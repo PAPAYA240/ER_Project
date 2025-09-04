@@ -54,11 +54,13 @@ class PacketHandler
 
         if (cc.ObjectType == Define.Object.OtherPlayer)
         {
-            cc.PosInfo = movePacket.PosInfo;
-            cc.RotInfo = movePacket.RotInfo;
+            cc.SyncPos();
         }
         else if (cc.ObjectType == Define.Object.Monster)
         {
+            cc.PosInfo = movePacket.PosInfo;
+            cc.RotInfo = movePacket.RotInfo;
+
             MonsterController mc = go.GetComponentInChildren<MonsterController>();
             if (mc == null)
                 return;

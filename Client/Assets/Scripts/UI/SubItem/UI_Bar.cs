@@ -38,6 +38,10 @@ public class UI_Bar : UI_Base
         _value = value;
         UpdateFillAmountAndText();
     }
+    public float GetValue()
+    {
+        return _value;
+    }
 
     public void SetMaxValue(float maxValue)
     {

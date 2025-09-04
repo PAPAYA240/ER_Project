@@ -1,3 +1,5 @@
+using Google.Protobuf.WellKnownTypes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -21,6 +23,8 @@ public class UI_Level : UI_Base
     {
         CombatImage
     }
+
+    public Action<int> OnLevelUp = null;  
 
     int _currentLevel;
     int _maxExp = 1000;
@@ -64,14 +68,16 @@ public class UI_Level : UI_Base
 
         if( _curExp >= _maxExp )
         {
+            int Level = 0;
             //레벨업
             while(_curExp >= _maxExp)
             {
                 _curExp -= _maxExp;
                 CurrentLevel += 1;
-
-                //TODO 남은 스킬 포인트 획득?
+                Level += 1;
             }
+
+            OnLevelUp?.Invoke(Level);
         }
 
         //경험치 바 갱신

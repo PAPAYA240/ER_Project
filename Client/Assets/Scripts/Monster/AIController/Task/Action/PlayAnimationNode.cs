@@ -87,10 +87,6 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
             _animator.SetTrigger(triggerName);
             _isTriggerSet = true;
         }
-
         return NodeStatus.Running;
     }
-
-   
-
 }

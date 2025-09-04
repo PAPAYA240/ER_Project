@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Linq;
 using Google.Protobuf.Protocol;
 using Server.Data;
 using static Google.Protobuf.WellKnownTypes.Field.Types;
@@ -52,6 +53,7 @@ namespace Server.Game.Object.Monster
             DataManager.StatDict.TryGetValue(2, out stat);
             monster.Stat.MergeFrom(stat);
 
+            monster.Init("Alpha");
             //monster.Cell = new Vector3(0, 0, 0);
             _room.Push(_room.EnterGame, monster);
             _monsterCount++;
