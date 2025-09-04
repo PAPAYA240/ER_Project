@@ -48,16 +48,22 @@ class PacketHandler
         if (Managers.Object.MyPlayer.Id == movePacket.ObjectId)
             return;
 
-        BaseController bc = go.GetComponentInChildren<BaseController>();
-        if (bc == null)
+        CreatureController cc = go.GetComponentInChildren<CreatureController>();
+        if (cc == null)
             return;
-        bc.PosInfo = movePacket.PosInfo;
-        bc.RotInfo = movePacket.RotInfo;
 
-        MonsterController mc = go.GetComponentInChildren<MonsterController>();
-        if (mc == null)
-            return;
-        mc.OnRecvMovePacket(movePacket);
+        if (cc._object == Define.Object.OtherPlayer)
+        {
+            cc.PosInfo = movePacket.PosInfo;
+            cc.RotInfo = movePacket.RotInfo;
+        }
+        else if (cc._object == Define.Object.Monster)
+        {
+            MonsterController mc = go.GetComponentInChildren<MonsterController>();
+            if (mc == null)
+                return;
+            mc.OnRecvMovePacket(movePacket);
+        }          
     }
 
     public static void S_SkillHandler(PacketSession session, IMessage packet)

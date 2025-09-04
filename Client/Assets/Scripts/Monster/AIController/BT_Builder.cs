@@ -4,6 +4,10 @@ using System;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 [System.Serializable]
 public class NodeData
 {
