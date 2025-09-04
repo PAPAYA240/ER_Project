@@ -248,9 +248,9 @@ namespace Server.Game.Object.Monster
 
         void BroadcastSkill(SkillData skillData)
         {
-            S_Skill skill = new S_Skill() { Info = new SkillInfo() };
+            S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
             skill.ObjectId = Id;
-            skill.Info.SkillId = skillData.id;
+            skill.SkillInfo.SkillId = skillData.id;
             Room.Broadcast(skill);
         }
 

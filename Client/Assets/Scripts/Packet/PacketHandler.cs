@@ -79,10 +79,11 @@ class PacketHandler
         CreatureController cc = go.GetComponentInChildren<CreatureController>();
         if (cc != null)
         {
-            if(cc.ObjectType == Define.Object.OtherPlayer)
-                cc.UseSkill(skillPacket.Info.KeyCode);
+            GameObjectType objectType = ObjectManager.GetObjectTypeById(cc.Id);
+            if (objectType == GameObjectType.Player)
+                cc.UseSkill((KeyCode)skillPacket.SkillInfo.KeyCode);
             else if(cc.ObjectType == Define.Object.Monster)
-                cc.UseSkill(skillPacket.Info.SkillId);
+                cc.UseSkill(skillPacket.SkillInfo.SkillId);
         }
     }
 

@@ -79,7 +79,7 @@ public class BaseController : MonoBehaviour
     public ObjectInfo ObjInfo
     {
         get { return _ObjectInfo; }
-        set { }
+        set { _ObjectInfo = value; }
     }
 
     public void SyncPos()

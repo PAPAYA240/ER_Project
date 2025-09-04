@@ -198,20 +198,20 @@ public class MyPlayerController : PlayerController
     {
         if (!_coolDownDict[key].isCoolDown)
         {
-            SkillBase skill = FindSkill(key);
+          SkillBase skill = FindSkill(key);
 
-            // 쿨타임 체크
-            StartCoroutine(CoInputCooltime(key, skill.SkillData.cooldown));
+          // 쿨타임 체크
+          StartCoroutine(CoInputCooltime(key, skill.SkillData.cooldown));
 
-            // 다른 조건 체크하기
+          // 다른 조건 체크하기
 
-            // 스킬 실행
-            skill.Execute();
+          // 스킬 실행
+          //skill.Execute();
 
-            // 패킷 보내기
-            SendSkillPacket(key);
+          // 패킷 보내기
+          SendSkillPacket(key);
 
-            Debug.Log($"스킬 사용! : {key}");
+          Debug.Log($"스킬 사용! : {key}");
         }
         else
         {
@@ -280,7 +280,10 @@ public class MyPlayerController : PlayerController
     #region Packet
     private void SendSkillPacket(KeyCode key)
     {
-        C_Skill skillPacket = new C_Skill() { Info = new SkillInfo() { KeyCode = (int)key } };
+        string skillName = Enum.GetName(typeof(Character), Managers.Object.Character) + '_' + key.ToString();
+        C_Skill skillPacket = new C_Skill() { 
+            ObjectInfo = ObjInfo,
+            SkillInfo = new SkillInfo() { KeyCode = (int)key, Name = skillName } };
         Managers.Network.Send(skillPacket);
     }
 
