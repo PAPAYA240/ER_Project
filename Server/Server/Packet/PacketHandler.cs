@@ -1,11 +1,12 @@
-﻿using Google.Protobuf;
-using Google.Protobuf.Protocol;
-using Server;
-using Server.Game;
-using ServerCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Google.Protobuf;
+using Google.Protobuf.Protocol;
+using Server;
+using Server.Data;
+using Server.Game;
+using ServerCore;
 
 class PacketHandler
 {
@@ -72,5 +73,33 @@ class PacketHandler
             return;
 
         room.Push(room.HandleAnim, player, animPacket);
+    }
+
+    public static void C_CharacterHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_Character charPacket = packet as C_Character;
+        clientSession.MyCharacter = charPacket.CharType;
+
+        GameRoom room = RoomManager.Instance.Find(1);
+        if (room == null)
+            return;
+
+        clientSession.MyPlayer = ObjectManager.Instance.Add<Player>();
+        {
+            clientSession.MyPlayer.Info.Name = $"Player_{clientSession.MyPlayer.Info.ObjectId}";
+            clientSession.MyPlayer.Info.PosInfo.State = CreatureState.Idle;
+            clientSession.MyPlayer.Info.PosInfo.PosX = 0;
+            clientSession.MyPlayer.Info.PosInfo.PosY = 0;
+            clientSession.MyPlayer.Info.CharType = clientSession.MyCharacter;
+
+            StatInfo stat = null;
+            DataManager.StatDict.TryGetValue(1, out stat);
+            clientSession.MyPlayer.Stat.MergeFrom(stat);
+
+            clientSession.MyPlayer.Session = clientSession;
+        }
+        // PickRoom 클래스 만들고 거기서 호출해야할듯
+        //room.Push(pickPacket);
     }
 }
