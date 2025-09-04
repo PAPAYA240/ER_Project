@@ -34,6 +34,16 @@ public class MyPlayerController : PlayerController
         GameObject go = Managers.Resource.Instantiate("UI/Scene/PlayerHUD");
         go.transform.SetParent(gameObject.transform);
         _playerInterface = go.GetComponentInChildren<UI_PlayerInterface>();
+        _playerInterface.CharacterCode = CharTypeToCharCode(ObjInfo.CharType);
+        _playerInterface.CharacterName = Enum.GetName(typeof(CharacterType), ObjInfo.CharType);
+        _playerInterface.WeaponCode = CharTypeToWeaponCode(ObjInfo.CharType);
+        _playerInterface.Init();
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, FindSkill(KeyCode.Q).SkillData.cooldown);
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.WSkill, FindSkill(KeyCode.W).SkillData.cooldown);
+        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, FindSkill(KeyCode.E).SkillData.cooldown);
+        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, FindSkill(KeyCode.R).SkillData.cooldown);
+        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.DSkill, _coolDownDict[KeyCode.D].coolTime);
+        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.FSkill, _coolDownDict[KeyCode.F].coolTime);
     }
 
     // 매 틱 Update에서 호출됨
@@ -208,6 +218,9 @@ public class MyPlayerController : PlayerController
             // 스킬 실행
             skill.Execute();
 
+            // 스킬 실행 UI, TODO 스킬 사용할 수 있는 검증이 다 끝난 곳으로 옮겨야함
+            _playerInterface.UseSkill(KeyToUIEnum(key));
+
             // 패킷 보내기
             SendSkillPacket(key);
 
@@ -248,7 +261,106 @@ public class MyPlayerController : PlayerController
     protected float GetCoolTime(KeyCode key)
     {
         return _coolDownDict[key].coolTime;
-    }        
+    }
+    #endregion
+
+    #region UI
+    private UI_PlayerInterface.GameObjects KeyToUIEnum(KeyCode key)
+    {
+        switch (key)
+        {
+            case KeyCode.Q:
+                return UI_PlayerInterface.GameObjects.QSkill;
+            case KeyCode.W:
+                return UI_PlayerInterface.GameObjects.WSkill;
+            case KeyCode.E:
+                return UI_PlayerInterface.GameObjects.ESkill;
+            case KeyCode.R:
+                return UI_PlayerInterface.GameObjects.RSkill;
+            case KeyCode.D:
+                return UI_PlayerInterface.GameObjects.DSkill;
+            case KeyCode.F:
+                return UI_PlayerInterface.GameObjects.FSkill;
+        }
+
+        return UI_PlayerInterface.GameObjects.TSkill;
+    }
+
+    private string CharTypeToCharCode(CharacterType type)
+    {
+        string result = "";
+
+        switch (type)
+        {
+            case CharacterType.Rozzi:
+                result = "021";
+                break;
+            case CharacterType.Yuki:
+                result = "011";
+                break;
+            case CharacterType.Hyunwoo:
+                result = "007";
+                break;
+            case CharacterType.Abigail:
+                result = "067";
+                break;
+            case CharacterType.Theodore:
+                result = "062";
+                break;
+        }
+
+        return result;
+    }
+    private string CharTypeToWeaponCode(CharacterType type)
+    {
+        string result = "";
+
+        switch (type)
+        {
+            case CharacterType.Rozzi:
+                result = "051";
+                break;
+            case CharacterType.Yuki:
+                result = "021";
+                break;
+            case CharacterType.Hyunwoo:
+                result = "081";
+                break;
+            case CharacterType.Abigail:
+                result = "031";
+                break;
+            case CharacterType.Theodore:
+                result = "071";
+                break;
+        }
+
+        return result;
+    }
+
+    private void SetMaxCoolDownUI(UI_PlayerInterface.GameObjects skillEnum, float value)
+    {
+        _playerInterface.SetSkillMaxCool(skillEnum, value);
+    }
+
+    private void UpdateUISkillMaxCool()
+    {
+        // TODO 현재 스킬레벨에 따른 쿨타임과 아이템으로 인한 스킬 가속을 적용하여 UI에 반영
+        // 일단 스킬 가속에 대한 계산이 어떻게 되는지 알아야하고, 스킬들이 레벨마다 어떤 쿨타임을 가질지 데이터(Json)를 만들어줘야함.
+
+        //temp 나중에 스탯에서 가져오든가 해야될듯
+        float skillAcc = 0.0f;
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, CalculateMaxCool(FindSkill(KeyCode.Q).SkillData.cooldown, skillAcc));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.WSkill, CalculateMaxCool(FindSkill(KeyCode.W).SkillData.cooldown, skillAcc));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, CalculateMaxCool(FindSkill(KeyCode.E).SkillData.cooldown, skillAcc));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(FindSkill(KeyCode.R).SkillData.cooldown, skillAcc));
+    }
+
+    private float CalculateMaxCool(float cooldown, float skillAcc)
+    {
+        // 최종 쿨타임 = 기본 쿨타임 × (100 / (100 + 스킬가속))
+        return cooldown * (100f / (100f + skillAcc));
+    }
+
     #endregion
 
     #region Animation

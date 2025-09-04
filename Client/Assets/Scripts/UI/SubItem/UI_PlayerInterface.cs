@@ -64,11 +64,17 @@ public class UI_PlayerInterface : UI_Base
         GetObject((int)GameObjects.TSkill).GetComponent<UI_SkillBase>().OnLevelUp += CharSkillLevelUp;
         GetObject((int)GameObjects.FSkill).GetComponent<UI_SkillBase>().OnLevelUp += TacticalSkillLevelUp;
 
-        LevelUp(1);
+        //temp
+        //LevelUp(1);
+        LevelUp(4);
         SpecificSkillLevelUp(GameObjects.TSkill);
         SpecificSkillLevelUp(GameObjects.FSkill);
 
         OnDeath();
+    }
+    private void Start()
+    {
+        
     }
 
     void Update()
@@ -94,7 +100,7 @@ public class UI_PlayerInterface : UI_Base
     #region ImageSetting
     public void LoadProfile(string characterName, int skinNumber)
     {
-        string path = "Sprite/CharProfile_" + characterName + "S" + skinNumber.ToString("D3");
+        string path = "Sprite/CharProfile_" + characterName + "_S" + skinNumber.ToString("D3");
         Sprite sprite = Managers.Resource.Load<Sprite>(path);
         if (sprite == null)
             return;
@@ -282,6 +288,7 @@ public class UI_PlayerInterface : UI_Base
     }
 
     #endregion
+
     #region Death
 
     public void OnDeath()
