@@ -52,10 +52,12 @@ class PacketHandler
         if (cc == null)
             return;
 
+        cc.PosInfo = movePacket.PosInfo;
+        cc.RotInfo = movePacket.RotInfo;
+
         if (cc._object == Define.Object.OtherPlayer)
         {
-            cc.PosInfo = movePacket.PosInfo;
-            cc.RotInfo = movePacket.RotInfo;
+            cc.SyncPos();
         }
         else if (cc._object == Define.Object.Monster)
         {
