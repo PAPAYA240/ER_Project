@@ -145,6 +145,45 @@ namespace Server.Game.Object.Monster.AStar
         }
         private static bool HasLineOfSight(Vector3 start, Vector3 end)
         {
+            float gridSize = 0.5f;
+
+            int startX = (int)(start.X / gridSize);
+            int startZ = (int)(start.Z / gridSize);
+            int endX = (int)(end.X / gridSize);
+            int endZ = (int)(end.Z / gridSize);
+
+            // Bresenham's Line Algorithm to check all cells along the li
+            int dx = Math.Abs(endX - startX);
+            int dz = Math.Abs(endZ - startZ);
+
+            int sx = (startX < endX) ? 1 : -1;
+            int sz = (startZ < endZ) ? 1 : -1;
+
+            int err = dx - dz;
+
+            int currentX = startX;
+            int currentZ = startZ;
+
+            while (true)
+            {
+                if (!GridManager.Instance.IsWalkable(currentX, currentZ))
+                    return false; 
+
+                if (currentX == endX && currentZ == endZ)
+                    break; 
+
+                int e2 = 2 * err;
+                if (e2 > -dz)
+                {
+                    err -= dz;
+                    currentX += sx;
+                }
+                if (e2 < dx)
+                {
+                    err += dx;
+                    currentZ += sz;
+                }
+            }
             return true;
         }
 

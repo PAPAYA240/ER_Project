@@ -25,7 +25,7 @@ public class MapEditor
         // 맵의 크기와 그리드 간격 설정
         int width = 200;
         int depth = 200;
-        float gridSize = 2.0f;
+        float gridSize = 0.5f;
 
         MapData mapData = new MapData
         {
@@ -35,24 +35,21 @@ public class MapEditor
             height = new float[width * depth]
         };
 
-        // 맵의 모든 그리드를 순회하며 정보 수집
         for (int z = 0; z < depth; z++)
         {
             for (int x = 0; x < width; x++)
             {
                 Vector3 cellCenter = new Vector3(x * gridSize, 100, z * gridSize); // 아주 높은 곳에서
                 RaycastHit hit;
-
-                // 아래로 레이캐스트를 쏴서 지형 정보를 확인
-                if (Physics.Raycast(cellCenter, Vector3.down, out hit, 200.0f))
+                int layerMask = 1 << LayerMask.NameToLayer("Map");
+                if (Physics.Raycast(cellCenter, Vector3.down, out hit, 200.0f, layerMask))
                 {
-                    // TODO: 'Ground' 레이어에만 걸리도록 LayerMask 설정 필요
-                    mapData.walkable[z * width + x] = true; // 레이캐스트에 걸리면 걸을 수 있는 땅
-                    mapData.height[z * width + x] = hit.point.y; // 걸리는 지점의 높이(Y) 저장
+                    mapData.walkable[z * width + x] = true; 
+                    mapData.height[z * width + x] = hit.point.y; 
                 }
                 else
                 {
-                    mapData.walkable[z * width + x] = false; // 아무것도 없으면 걸을 수 없음
+                    mapData.walkable[z * width + x] = false; 
                     mapData.height[z * width + x] = 0;
                 }
             }

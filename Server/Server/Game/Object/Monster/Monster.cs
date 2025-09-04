@@ -176,8 +176,8 @@ namespace Server.Game.Object.Monster
             {
                 _nextCalcPathTick = Environment.TickCount64 + 1000;
 
-                Vector3 startPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-                Vector3 endPos = new Vector3(_target.PosInfo.PosX, _target.PosInfo.PosY, _target.PosInfo.PosZ);
+                Vector3 startPos = new Vector3(PosInfo.PosX, 0, PosInfo.PosZ);
+                Vector3 endPos = new Vector3(_target.PosInfo.PosX, 0, _target.PosInfo.PosZ);
 
                 _path = Pathfinding.FindPath(startPos, endPos);
                 _pathIdx = 0;
@@ -185,6 +185,9 @@ namespace Server.Game.Object.Monster
                 // 경로 X 추적 포기
                 if (_path.Count == 0)
                 {
+                    if(_target == null)
+                        Console.WriteLine($"Monster {Id} AStar failed to find path to target { _target?.Id}. Going Idle.");
+                    Console.WriteLine($"경로 없음 추적 포기");
                     State = CreatureState.Idle;
                     return;
                 }
@@ -210,22 +213,40 @@ namespace Server.Game.Object.Monster
             }
         }
 
+        private long _lastUpdateTime = 0;
         private void FollowToPlayer(Vector3 targetPos)
         {
+            if (_lastUpdateTime == 0)
+                _lastUpdateTime = Environment.TickCount64;
+
             Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
             Vector3 dir = targetPos - monsterPos;
+            float distance = dir.Length();
 
             if (dir.LengthSquared() < 0.0001f)
+            {
+                PosInfo.PosX = targetPos.X;
+                PosInfo.PosY = targetPos.Y; 
+                PosInfo.PosZ = targetPos.Z;
                 return;
+            }
 
-            long tick = (long)(1000 / Speed);
-            float tickSeconds = tick / 1000.0f;
-            Vector3 moveDir = Vector3.Normalize(dir);
-            float moveDist = Speed * tickSeconds;
+            long tick = Environment.TickCount64;
+            float elapsedTime = (tick - _lastUpdateTime) / 1000.0f;
+            _lastUpdateTime = tick;
 
-            PosInfo.PosX += moveDir.X * moveDist;
-            //PosInfo.PosY += moveDir.Y * moveDist;
-            PosInfo.PosZ += moveDir.Z * moveDist;
+            float moveStep = Stat.Speed * elapsedTime;
+
+            if (moveStep > distance)
+                moveStep = distance;
+
+            // 이동
+            dir = Vector3.Normalize(dir);
+            Vector3 newPos = monsterPos + dir * moveStep;
+
+           PosInfo.PosX = newPos.X;
+           PosInfo.PosY = newPos.Y; 
+           PosInfo.PosZ = newPos.Z;
 
             // 회전
             Vector3 flatDir = new Vector3(dir.X, 0, dir.Z);
