@@ -132,7 +132,6 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("SKILL_MONSTER_ATTACK2")] SkilMonsterAttack2 = 4,
     [pbr::OriginalName("SKILL_MONSTER_SKILL1")] SkilMonsterSkill1 = 5,
     [pbr::OriginalName("SKILL_MONSTER_SKILL2")] SkilMonsterSkill2 = 6,
-
     }
 
   public enum AnimType {
