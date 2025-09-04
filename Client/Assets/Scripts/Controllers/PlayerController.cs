@@ -38,9 +38,9 @@ public class PlayerController : CreatureController
 	}
 
     #region Skill
-    public override void UseSkill(string skillName)
+    public override void UseSkill(KeyCode key)
     {
-        SkillBase skill = FindSkill(skillName);
+        SkillBase skill = FindSkill(key);
         skill.Execute();
 
         if (_coSkill != null)
@@ -80,12 +80,14 @@ public class PlayerController : CreatureController
         }
     }
 
-    protected SkillBase FindSkill(string skillName)
+    protected SkillBase FindSkill(KeyCode key)
     {
         SkillBase skillBase = null;
+
+        string skillName = Enum.GetName(typeof(Character), Managers.Object.Character) + '_' + key.ToString();
         if (!_skills.TryGetValue(skillName, out skillBase))
         {
-            Debug.Log($"Skill을 찾을 수 없음 : {skillName}");
+            Debug.Log($"Skill을 찾을 수 없음 : {key}");
             return null;
         }
 
