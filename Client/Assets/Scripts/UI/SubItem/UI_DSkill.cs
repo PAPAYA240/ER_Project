@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+//D and F Skill
 public class UI_DSkill : UI_SkillBase
 {
     enum Buttons
@@ -136,5 +137,9 @@ public class UI_DSkill : UI_SkillBase
             return;
         }
         GetButton((int)Buttons.SkillButton).image.sprite = sprite;
+    }
+    public override void SetMaxCool(float value)
+    {
+        _maxCool = value;
     }
 }

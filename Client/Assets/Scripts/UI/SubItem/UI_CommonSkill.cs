@@ -213,6 +213,10 @@ public class UI_CommonSkill : UI_SkillBase
         _staminaCost = value;
         GetText((int)Texts.StaminaCost).text = _staminaCost.ToString();
     }
+    public override void SetMaxCool(float value)
+    {
+        _maxCool = value;
+    }
 
     public override bool IsEnoughStamina(float curStamina)
     {
