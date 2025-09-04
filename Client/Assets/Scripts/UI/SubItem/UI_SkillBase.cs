@@ -34,6 +34,7 @@ public abstract class UI_SkillBase : UI_Base
     public abstract void ActivateLevelUp(bool DoYouActivate);
     public abstract void SetImage(string path);
     public virtual void SetStaminaCost(int value) { }
+    public virtual void SetMaxCool(float value) { }
     public virtual bool IsEnoughStamina(float curStamina) { return false; }
 
 }

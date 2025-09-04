@@ -18,6 +18,9 @@ public class MyPlayerController : PlayerController
     int _mask = (1 << (int)Define.Layer.Map);
     Vector3 _dstPos = Vector3.zero;
 
+    //UI
+    //UI_PlayerHUD _playerHUD = null;
+    UI_PlayerInterface _playerInterface = null;
     protected override void Init()
     {
         base.Init();
@@ -25,6 +28,11 @@ public class MyPlayerController : PlayerController
 
         ObjectType = Define.Object.MyPlayer;
         MakeCoolDownDict();
+
+        //UI
+        GameObject go = Managers.Resource.Instantiate("UI/Scene/PlayerHUD");
+        go.transform.SetParent(gameObject.transform);
+        _playerInterface = go.GetComponentInChildren<UI_PlayerInterface>();
     }
 
     // 매 틱 Update에서 호출됨
