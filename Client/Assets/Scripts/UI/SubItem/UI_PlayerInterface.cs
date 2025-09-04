@@ -216,6 +216,10 @@ public class UI_PlayerInterface : UI_Base
     {
         GetObject((int)objEnum).GetComponent<UI_SkillBase>().SetStaminaCost(value);
     }
+    public void SetSkillMaxCool(GameObjects objEnum, float value)
+    {
+        GetObject((int)objEnum).GetComponent<UI_SkillBase>().SetMaxCool(value);
+    }
 
     #endregion
 

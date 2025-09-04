@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Google.Protobuf.Protocol;
@@ -8,7 +9,7 @@ using static Define;
 public class MyPlayerController : PlayerController
 {
     bool _moveKeyPressed = false;
-    Dictionary<string, CoolTime> _coolDownDict = new Dictionary<string, CoolTime>();
+    Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
     class CoolTime
     {
         public bool    isCoolDown;
@@ -18,6 +19,9 @@ public class MyPlayerController : PlayerController
     int _mask = (1 << (int)Define.Layer.Map);
     Vector3 _dstPos = Vector3.zero;
 
+    //UI
+    //UI_PlayerHUD _playerHUD = null;
+    UI_PlayerInterface _playerInterface = null;
     protected override void Init()
     {
         base.Init();
@@ -25,6 +29,11 @@ public class MyPlayerController : PlayerController
 
         ObjectType = Define.Object.MyPlayer;
         MakeCoolDownDict();
+
+        //UI
+        GameObject go = Managers.Resource.Instantiate("UI/Scene/PlayerHUD");
+        go.transform.SetParent(gameObject.transform);
+        _playerInterface = go.GetComponentInChildren<UI_PlayerInterface>();
     }
 
     // 매 틱 Update에서 호출됨
@@ -185,14 +194,14 @@ public class MyPlayerController : PlayerController
     }
 
     #region Skill
-    protected void ExecuteSkill(string skillName)
+    protected void ExecuteSkill(KeyCode key)
     {
-        if (!_coolDownDict[skillName].isCoolDown)
+        if (!_coolDownDict[key].isCoolDown)
         {
-            SkillBase skill = FindSkill(skillName);
+            SkillBase skill = FindSkill(key);
 
             // 쿨타임 체크
-            StartCoroutine(CoInputCooltime(skillName, skill.SkillData.cooldown));
+            StartCoroutine(CoInputCooltime(key, skill.SkillData.cooldown));
 
             // 다른 조건 체크하기
 
@@ -200,43 +209,45 @@ public class MyPlayerController : PlayerController
             skill.Execute();
 
             // 패킷 보내기
-            SendSkillPacket(skillName);
+            SendSkillPacket(key);
 
-            Debug.Log($"스킬 사용! : {skillName}");
+            Debug.Log($"스킬 사용! : {key}");
         }
         else
         {
-            Debug.Log($"스킬 쿨타임 적용 중! : {skillName} -> {GetCoolTime(skillName)} 초 남음");
+            Debug.Log($"스킬 쿨타임 적용 중! : {key} -> {GetCoolTime(key)} 초 남음");
         }
     }
 
-    IEnumerator CoInputCooltime(string skillName, float time)
+    IEnumerator CoInputCooltime(KeyCode key, float time)
     {
-        _coolDownDict[skillName].isCoolDown = true;
+        _coolDownDict[key].isCoolDown = true;
 
         float elapsed = 0f;
         while (elapsed < time)
         {
             elapsed += Time.deltaTime;
-            _coolDownDict[skillName].coolTime = time - elapsed;
+            _coolDownDict[key].coolTime = time - elapsed;
             yield return null;
         }
 
-        _coolDownDict[skillName].isCoolDown = false;
-        _coolDownDict[skillName].coolTime = 0.0f;
+        _coolDownDict[key].isCoolDown = false;
+        _coolDownDict[key].coolTime = 0.0f;
     }
 
     private void MakeCoolDownDict()
     {
         foreach (var skill in _skills)
         {
-            _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
+            string str = skill.Key.Substring(skill.Key.Length - 1);
+            KeyCode key = (KeyCode)Enum.Parse(typeof(KeyCode), str);
+            _coolDownDict[key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
         }
     }
 
-    protected float GetCoolTime(string skillName)
+    protected float GetCoolTime(KeyCode key)
     {
-        return _coolDownDict[skillName].coolTime;
+        return _coolDownDict[key].coolTime;
     }        
     #endregion
 
@@ -267,9 +278,9 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region Packet
-    private void SendSkillPacket(string skillName)
+    private void SendSkillPacket(KeyCode key)
     {
-        C_Skill skillPacket = new C_Skill() { Info = new SkillInfo() { Name = skillName } };
+        C_Skill skillPacket = new C_Skill() { Info = new SkillInfo() { KeyCode = (int)key } };
         Managers.Network.Send(skillPacket);
     }
 

@@ -80,7 +80,7 @@ class PacketHandler
         if (cc != null)
         {
             if(cc.ObjectType == Define.Object.OtherPlayer)
-                cc.UseSkill(skillPacket.Info.Name);
+                cc.UseSkill(skillPacket.Info.KeyCode);
             else if(cc.ObjectType == Define.Object.Monster)
                 cc.UseSkill(skillPacket.Info.SkillId);
         }

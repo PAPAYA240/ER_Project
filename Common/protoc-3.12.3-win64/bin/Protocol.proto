@@ -158,5 +158,6 @@ message StatInfo{
 
 message SkillInfo{
 	int32 skillId = 1;
-	string name = 2;
+	int32 keyCode = 2;
+	string name = 3;
 }

@@ -208,6 +208,11 @@ public class UI_UltimateSkill : UI_SkillBase
         GetText((int)Texts.StaminaCost).text = _staminaCost.ToString();
     }
 
+    public override void SetMaxCool(float value)
+    {
+        _maxCool = value;
+    }
+
     public override bool IsEnoughStamina(float curStamina)
     {
         return curStamina > _staminaCost ? true : false;

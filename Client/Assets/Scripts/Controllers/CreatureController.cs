@@ -73,7 +73,7 @@ public class CreatureController : BaseController
 	{
 	}
 
-    public virtual void UseSkill(string skillName)
+    public virtual void UseSkill(KeyCode key)
     {
     }
 }
