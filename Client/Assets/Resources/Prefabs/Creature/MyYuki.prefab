@@ -406,7 +406,8 @@ GameObject:
   m_Component:
   - component: {fileID: 276638635989082867}
   - component: {fileID: 3830816543678382737}
-  - component: {fileID: 8539249828848574309}
+  - component: {fileID: -2527589312166160202}
+  - component: {fileID: 1900876588016459126}
   m_Layer: 0
   m_Name: MyYuki
   m_TagString: Untagged
@@ -453,7 +454,29 @@ CapsuleCollider:
   m_Height: 2.66
   m_Direction: 1
   m_Center: {x: 0, y: 0.63, z: 0}
---- !u!114 &8539249828848574309
+--- !u!195 &-2527589312166160202
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1018599151254140376}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &1900876588016459126
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -462,7 +485,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1018599151254140376}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d07a4ac14489814e9692da7473da8c6, type: 3}
+  m_Script: {fileID: 11500000, guid: 884a97f57617eb0428d34ce2a8bd5f5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _offset: {x: 0, y: 10, z: -10}
