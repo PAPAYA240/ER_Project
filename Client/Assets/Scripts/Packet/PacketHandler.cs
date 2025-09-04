@@ -61,6 +61,9 @@ class PacketHandler
         }
         else if (cc._object == Define.Object.Monster)
         {
+            cc.PosInfo = movePacket.PosInfo;
+            cc.RotInfo = movePacket.RotInfo;
+
             MonsterController mc = go.GetComponentInChildren<MonsterController>();
             if (mc == null)
                 return;

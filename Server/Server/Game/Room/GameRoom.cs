@@ -7,6 +7,7 @@ using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game.Object.Monster;
+using Server.Game.Object.Monster.AStar;
 
 namespace Server.Game
 {
@@ -22,6 +23,7 @@ namespace Server.Game
 
         public void Init(int mapId)
         {
+            GridManager.Instance.LoadData("MapData");
             // Spawn Monster
             _monsterManager.Init(this, 1);
         }
@@ -181,8 +183,6 @@ namespace Server.Game
                 return;
 
             ObjectInfo info = player.Info;
-            //if (info.PosInfo.State != CreatureState.Idle)
-            //    return;
 
             // TODO : 스킬 사용 가능 여부 체크
             info.PosInfo.State = CreatureState.Skill;
@@ -256,5 +256,9 @@ namespace Server.Game
                 p.Session.Send(packet);
             }
         }
+
     }
+
+
+
 }

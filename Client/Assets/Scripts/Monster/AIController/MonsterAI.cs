@@ -27,13 +27,11 @@ public class MonsterAI : MonoBehaviour
 
     private List<Node> CreateBehaviorTree()
     {
-        TextAsset[] jsonAssets = Resources.LoadAll<TextAsset>("Data/MonsterData");
+        TextAsset[] jsonAssets = Resources.LoadAll<TextAsset>("Data/MonsterDataList");
 
-        // 2. 불러온 모든 JSON 파일을 순회
         var builder = new BehaviorTreeBuilder();
         foreach (var jsonAsset in jsonAssets)
         {
-            // 3. 각 JSON 파일로부터 행동 트리를 생성하고 리스트에 추가
             Node rootNode = builder.BuildFromJson(jsonAsset.text);
             _rootNodes.Add(rootNode);
         }

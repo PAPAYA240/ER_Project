@@ -30,7 +30,7 @@ public class BehaviorTreeBuilder
 
     private Node CreateNodeRecursive(NodeData data)
     {
-        Node node = CreateNodeInstance(data.Type); // 이 번째 줄
+        Node node = CreateNodeInstance(data.Type); 
         if (!node) return null;
 
         node.name = data.Name;
