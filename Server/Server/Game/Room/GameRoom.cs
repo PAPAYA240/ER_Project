@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -23,7 +24,9 @@ namespace Server.Game
 
         public void Init(int mapId)
         {
-            GridManager.Instance.LoadData("MapData");
+            string navMeshFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "navmesh_data.json");
+            Pathfinding.Initialize(navMeshFilePath);
+
             // Spawn Monster
             _monsterManager.Init(this, 1);
         }
