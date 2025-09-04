@@ -130,6 +130,11 @@ public class UI_DSkill : UI_SkillBase
     public override void SetImage(string path)
     {
         Sprite sprite = Managers.Resource.Load<Sprite>(path);
+        if (sprite == null)
+        {
+            Debug.Log($"null : {path}");
+            return;
+        }
         GetButton((int)Buttons.SkillButton).image.sprite = sprite;
     }
 }

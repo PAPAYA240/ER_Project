@@ -101,6 +101,11 @@ public class UI_TSkill : UI_SkillBase
     public override void SetImage(string path)
     {
         Sprite sprite = Managers.Resource.Load<Sprite>(path);
+        if (sprite == null)
+        {
+            Debug.Log($"null : {path}");
+            return;
+        }
         GetImage((int)Images.SkillImg).sprite = sprite;
     }
 

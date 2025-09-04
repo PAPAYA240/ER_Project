@@ -46,6 +46,10 @@ public class UI_CommonSkill : UI_SkillBase
     const int _cooldownTimer = (int)GameObjects.CooldownTimer;
     const int _stamina = (int)GameObjects.Stamina;
 
+    int _staminaCost = 0;
+
+    UI_PlayerInterface ui_PlayerInterface = null;
+
     //Temp
     float _remainCool = 0;
     float _maxCool = 10.0f;
@@ -58,10 +62,16 @@ public class UI_CommonSkill : UI_SkillBase
         Bind<Image>(typeof(Images));
         Bind<GameObject>(typeof(GameObjects));
 
+        ui_PlayerInterface = GetComponentInParent<UI_PlayerInterface>();
+        if (ui_PlayerInterface == null)
+            Debug.Log("null  == ui_PlayerInterface");
+
+        //temp
+        SetStaminaCost(50);
         GetObject(_stamina).gameObject.SetActive(false);
 
         GetText((int)Texts.CooldownTimerText).text = "";
-        ActivateLevelUp(DoYouActivate: false);
+        ActivateLevelUp(activate: false);
 
         SetSkillLevel(_skillLevel);
     }
@@ -89,7 +99,13 @@ public class UI_CommonSkill : UI_SkillBase
             }
         }
 
-        
+        if (null != ui_PlayerInterface)
+        {
+            if (IsEnoughStamina(ui_PlayerInterface.GetStamina())) //스테미너가 충분하면
+                ActivateStamina(false);
+            else //스테미너가 부족하면
+                ActivateStamina(true);
+        }
     }
 
     void SetSkillLevel(int level)
@@ -112,7 +128,11 @@ public class UI_CommonSkill : UI_SkillBase
 
     public override void SkillLevelUp()
     {
+        if (_skillLevel == _maxSkillLevel)
+            return;
+
         SetSkillLevel(_skillLevel + 1);
+        OnLevelUp?.Invoke();
     }
 
     void ChangeColor(int level, ColorEnum color)
@@ -166,14 +186,36 @@ public class UI_CommonSkill : UI_SkillBase
         if (textObject != null)
             textObject.text = text;
     }
-    public override void ActivateLevelUp(bool DoYouActivate)
+    public override void ActivateLevelUp(bool activate)
     {
-        GetObject((int)GameObjects.LevelUp).SetActive(DoYouActivate);
+        GetObject((int)GameObjects.LevelUp).SetActive(activate);
+    }
+
+    public void ActivateStamina(bool activate)
+    {
+        GetObject(_stamina).SetActive(activate);
     }
 
     public override void SetImage(string path)
     {
         Sprite sprite = Managers.Resource.Load<Sprite>(path);
+        if(sprite == null)
+        {
+            Debug.Log($"null : {path}");
+            return;
+        }
+
         GetButton((int)Buttons.SkillButton).image.sprite = sprite;
+    }
+
+    public override void SetStaminaCost(int value)
+    {
+        _staminaCost = value;
+        GetText((int)Texts.StaminaCost).text = _staminaCost.ToString();
+    }
+
+    public override bool IsEnoughStamina(float curStamina)
+    {
+        return curStamina > _staminaCost ? true : false;
     }
 }
