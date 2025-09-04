@@ -40,6 +40,13 @@ enum SkillType{
 	SKILL_PROJECTILE = 2;
 }
 
+enum AnimType{
+	PLAY = 0;
+	TRIGGER = 1;
+	BOOL = 2;
+	FLOAT = 3;
+}
+
 message C_EnterGame {
 	ObjectInfo player = 1;
 }
@@ -98,9 +105,10 @@ message ObjectInfo{
 }
 
 message AnimInfo{
-	bool isTrigger = 1;
-	int32 hash = 2;
-	float time = 3;
+	int32 hash = 1;
+	AnimType type = 2;
+	float value = 3;
+	float time = 4;
 }
 
 message S_ChangeHp{

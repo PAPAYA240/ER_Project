@@ -25,7 +25,7 @@ public class MonsterController : CreatureController
     protected override void Init()
 	{
         Skill = MonsterSkill.Attack1;
-        _object = Define.Object.Monster;
+        ObjectType = Define.Object.Monster;
         _navMeshAgent = GetComponentInParent<NavMeshAgent>();
 		base.Init();
     }

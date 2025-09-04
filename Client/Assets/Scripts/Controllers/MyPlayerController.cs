@@ -23,23 +23,11 @@ public class MyPlayerController : PlayerController
         base.Init();
         Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
 
-        _object = Define.Object.MyPlayer;
+        ObjectType = Define.Object.MyPlayer;
         MakeCoolDownDict();
     }
 
-    private void MakeCoolDownDict()
-    {
-        foreach(var skill in _skills)
-        {
-            _coolDownDict[skill.Key] = new CoolTime { isCoolDown  = false, coolTime = 0.0f };
-        }
-    }
-
-    protected float GetCoolTime(string skillName)
-    {
-        return _coolDownDict[skillName].coolTime;
-    }
-
+    // 매 틱 Update에서 호출됨
     protected override void UpdateController()
     {
         switch (State)
@@ -54,7 +42,44 @@ public class MyPlayerController : PlayerController
 
         TempKeyInput();
 
+        UpdateKeyInput();
+
         base.UpdateController();
+    }
+
+    protected virtual void UpdateKeyInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+        }
+        else if (Input.GetKeyDown(KeyCode.W))
+        {
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+        }
+        else if (Input.GetKeyDown(KeyCode.C))
+        {
+        }
+    }
+
+    protected override void UpdateAnimation()
+    {
+        if (_animator == null)
+            return;
+
+        if (State == CreatureState.Idle)
+        {
+        }
+        else if (State == CreatureState.Moving)
+        {
+        }
+        else if (State == CreatureState.Skill)
+        {
+        }
+        else if (State == CreatureState.Dead)
+        {
+        }
     }
 
     protected override void UpdateIdle()
@@ -63,57 +88,7 @@ public class MyPlayerController : PlayerController
         {
             State = CreatureState.Moving;
             return;
-        }
-
-        InputSkill();
-    }
-
-    protected override void UpdateSkill()
-    {
-        InputSkill();
-    }
-
-    void InputSkill()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            ExecuteSkill("Rozzi_Q");
-        }
-        else if (Input.GetKeyDown(KeyCode.W))
-        {          
-            ExecuteSkill("Rozzi_W");
-        }
-
-        // TEMP
-        if(Input.GetKeyDown(KeyCode.D))
-        {
-            State = CreatureState.Dead;
-        }
-    }
-
-    protected void ExecuteSkill(string skillName)
-    {
-        if (!_coolDownDict[skillName].isCoolDown)
-        {
-            SkillBase skill = FindSkill(skillName);
-            
-            // 쿨타임 체크
-            StartCoroutine(CoInputCooltime(skillName, skill.SkillData.cooldown));
-
-            // 다른 조건 체크하기
-
-            // 스킬 실행
-            skill.Execute();
-
-            // 패킷 보내기
-            SendSkillPacket(skillName);
-
-            Debug.Log($"스킬 사용! : {skillName}");
-        }
-        else
-        {
-            Debug.Log($"스킬 쿨타임 적용 중! : {skillName} -> {GetCoolTime(skillName)} 초 남음");
-        }
+        }       
     }
 
     protected override void UpdateMoving()
@@ -121,7 +96,6 @@ public class MyPlayerController : PlayerController
         Vector3 moveDir = _dstPos - transform.position;
         moveDir.y = 0.0f;
 
-        // ���� ���� üũ
         float dist = moveDir.magnitude;
         if (dist < Speed * Time.deltaTime)
         {
@@ -140,70 +114,19 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    protected override void UpdateAnimation()
+    protected override void UpdateSkill()
     {
-        if (_animator == null)
-            return;
-
-        if (State == CreatureState.Idle)
-        {
-            //_animator.Play("WAIT");
-            //_animator.SetTrigger();
-
-            PlayAnimation("WAIT");
-        }
-        else if (State == CreatureState.Moving)
-        {
-            //_animator.Play("RUN");
-
-            PlayAnimation("RUN");
-        }
-        else if (State == CreatureState.Skill)
-        {
-
-        }
-        else if (State == CreatureState.Dead)
-        {
-            TriggerAnimation("tDeath");
-        }
     }
 
-    protected void PlayAnimation(string animName)
+    protected override void UpdateDead()
     {
-        _animator.Play(animName);
-        SendAnimPacket(animName, false);
     }
 
-    protected void TriggerAnimation(string triggerName)
-    {
-        _animator.SetTrigger(triggerName);
-        SendAnimPacket(triggerName, true);
-    }
-
-    // ��ų ��Ÿ��
-    //Coroutine _coSkillCooltime;
-    IEnumerator CoInputCooltime(string skillName, float time)
-    {
-        _coolDownDict[skillName].isCoolDown = true;
-
-        float elapsed = 0f;
-        while (elapsed < time)
-        {
-            elapsed += Time.deltaTime;
-            _coolDownDict[skillName].coolTime = time - elapsed;
-            yield return null;
-        }
-
-        _coolDownDict[skillName].isCoolDown = false;
-        _coolDownDict[skillName].coolTime = 0.0f;
-        //_coSkillCooltime = null;
-    }
-
+    // Camera
     [SerializeField]
     public Vector3 _offset = new Vector3(0, 10, -10);
     [SerializeField]
     public float smoothSpeed = 5f;
-
     void LateUpdate()
     {
         Vector3 targetPos = transform.position + _offset;
@@ -211,7 +134,6 @@ public class MyPlayerController : PlayerController
         Camera.main.transform.LookAt(transform.position);
     }
 
-    // ���콺 �Է�
     void GetMouseInput()
     {
         RaycastHit hit;
@@ -262,25 +184,100 @@ public class MyPlayerController : PlayerController
         }
     }
 
+    #region Skill
+    protected void ExecuteSkill(string skillName)
+    {
+        if (!_coolDownDict[skillName].isCoolDown)
+        {
+            SkillBase skill = FindSkill(skillName);
+
+            // 쿨타임 체크
+            StartCoroutine(CoInputCooltime(skillName, skill.SkillData.cooldown));
+
+            // 다른 조건 체크하기
+
+            // 스킬 실행
+            skill.Execute();
+
+            // 패킷 보내기
+            SendSkillPacket(skillName);
+
+            Debug.Log($"스킬 사용! : {skillName}");
+        }
+        else
+        {
+            Debug.Log($"스킬 쿨타임 적용 중! : {skillName} -> {GetCoolTime(skillName)} 초 남음");
+        }
+    }
+
+    IEnumerator CoInputCooltime(string skillName, float time)
+    {
+        _coolDownDict[skillName].isCoolDown = true;
+
+        float elapsed = 0f;
+        while (elapsed < time)
+        {
+            elapsed += Time.deltaTime;
+            _coolDownDict[skillName].coolTime = time - elapsed;
+            yield return null;
+        }
+
+        _coolDownDict[skillName].isCoolDown = false;
+        _coolDownDict[skillName].coolTime = 0.0f;
+    }
+
+    private void MakeCoolDownDict()
+    {
+        foreach (var skill in _skills)
+        {
+            _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
+        }
+    }
+
+    protected float GetCoolTime(string skillName)
+    {
+        return _coolDownDict[skillName].coolTime;
+    }        
+    #endregion
+
+    #region Animation
+    protected void PlayAnimation(string animName)
+    {
+        _animator.Play(animName);
+        SendAnimPacket(animName, AnimType.Play, Time.time);
+    }
+
+    protected void TriggerAnimation(string triggerName)
+    {
+        _animator.SetTrigger(triggerName);
+        SendAnimPacket(triggerName, AnimType.Trigger, 0f);
+    }
+
+    protected void SetBoolAnimation(string boolName, bool value)
+    {
+        _animator.SetBool(boolName, value);
+        SendAnimPacket(boolName, AnimType.Bool, value == true ? 1f : 0f);
+    }
+
+    protected void SetFloatAnimation(string floatName, float value)
+    {
+        _animator.SetFloat(floatName, value);
+        SendAnimPacket(floatName, AnimType.Float, value);
+    }
+    #endregion
+
+    #region Packet
     private void SendSkillPacket(string skillName)
     {
         C_Skill skillPacket = new C_Skill() { Info = new SkillInfo() { Name = skillName } };
         Managers.Network.Send(skillPacket);
     }
 
-    private void SendAnimPacket(string name, bool isTrigger = false)
+    private void SendAnimPacket(string name, AnimType type, float value)
     {
-        if(!isTrigger)
-        {
-            int animHash = Animator.StringToHash(name);
-            C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { IsTrigger = false, Hash = animHash, Time = Time.time } };
-            Managers.Network.Send(animPacket);
-        }
-        else
-        {
-            int triggerHash = Animator.StringToHash(name);
-            C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { IsTrigger = true, Hash = triggerHash } };
-            Managers.Network.Send(animPacket);
-        }        
+        int hash = Animator.StringToHash(name);
+        C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { Hash = hash, Type = type, Value = value } };
+        Managers.Network.Send(animPacket);       
     }
+    #endregion
 }
