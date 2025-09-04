@@ -44,6 +44,10 @@ public class UI_UltimateSkill : UI_SkillBase
     const int _cooldownTimer = (int)GameObjects.CooldownTimer;
     const int _stamina = (int)GameObjects.Stamina;
 
+    int _staminaCost = 0;
+
+    UI_PlayerInterface ui_PlayerInterface = null;
+
     //Temp
     float _remainCool = 0;
     float _maxCool = 10.0f;
@@ -57,8 +61,15 @@ public class UI_UltimateSkill : UI_SkillBase
         Bind<Image>(typeof(Images));
         Bind<GameObject>(typeof(GameObjects));
 
+        ui_PlayerInterface = GetComponentInParent<UI_PlayerInterface>();
+        if (ui_PlayerInterface == null)
+            Debug.Log("null  == ui_PlayerInterface");
+
         GetObject(_stamina).gameObject.SetActive(false);
         //GetObject(_cooldownTimer).gameObject.SetActive(false);
+
+        //temp
+        SetStaminaCost(100);
 
         GetText((int)Texts.CooldownTimerText).text = "";
         ActivateLevelUp(DoYouActivate:false);
@@ -88,7 +99,14 @@ public class UI_UltimateSkill : UI_SkillBase
             }
         }
 
-
+        if(null != ui_PlayerInterface)
+        {
+            if(IsEnoughStamina(ui_PlayerInterface.GetStamina())) //스테미너가 충분하면
+                ActivateStamina(false);
+            else //스테미너가 부족하면
+                ActivateStamina(true);
+        }
+        
     }
 
     void SetSkillLevel(int level)
@@ -169,10 +187,35 @@ public class UI_UltimateSkill : UI_SkillBase
     {
         GetObject((int)GameObjects.LevelUp).SetActive(DoYouActivate);
     }
+    public void ActivateStamina(bool activate)
+    {
+        GetObject(_stamina).SetActive(activate);
+    }
+
     public override void SetImage(string path)
     {
         Sprite sprite = Managers.Resource.Load<Sprite>(path);
+        if (sprite == null)
+        {
+            Debug.Log($"null : {path}");
+            return;
+        }
         GetButton((int)Buttons.SkillButton).image.sprite = sprite;
+    }
+    public override void SetStaminaCost(int value)
+    {
+        _staminaCost = value;
+        GetText((int)Texts.StaminaCost).text = _staminaCost.ToString();
+    }
+
+    public override void SetMaxCool(float value)
+    {
+        _maxCool = value;
+    }
+
+    public override bool IsEnoughStamina(float curStamina)
+    {
+        return curStamina > _staminaCost ? true : false;
     }
 }
 

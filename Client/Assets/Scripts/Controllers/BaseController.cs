@@ -54,8 +54,6 @@ public class BaseController : MonoBehaviour
 
             CellPos = new Vector3(value.PosX, value.PosY, value.PosZ);
             State = value.State;
-
-            // SyncPos();
         }
     }
 
@@ -74,8 +72,6 @@ public class BaseController : MonoBehaviour
             _rotationInfo.Qy = value.Qy;
             _rotationInfo.Qz = value.Qz;
             _rotationInfo.Qw = value.Qw;
-
-            // SyncPos();
         }
     }
 
@@ -83,7 +79,7 @@ public class BaseController : MonoBehaviour
     public ObjectInfo ObjInfo
     {
         get { return _ObjectInfo; }
-        set { }
+        set { _ObjectInfo = value; }
     }
 
     public void SyncPos()
@@ -135,20 +131,25 @@ public class BaseController : MonoBehaviour
 
         if (State == CreatureState.Idle)
         {
-
         }
         else if (State == CreatureState.Moving)
         {
-
         }
         else if (State == CreatureState.Skill)
         {
-
         }
         else
         {
-
         }
+    }
+
+    protected virtual void Init()
+    {
+        _animator = GetComponentInChildren<Animator>();
+        _navMeshAgent = GetComponent<NavMeshAgent>();
+        SyncPos();
+
+        UpdateAnimation();
     }
 
     void Start()
@@ -159,15 +160,6 @@ public class BaseController : MonoBehaviour
     void Update()
     {
         UpdateController();
-    }
-
-    protected virtual void Init()
-    {
-        _animator = GetComponentInChildren<Animator>();
-        _navMeshAgent = GetComponent<NavMeshAgent>();
-        SyncPos();
-
-        UpdateAnimation();
     }
 
     protected virtual void UpdateController()
@@ -190,42 +182,18 @@ public class BaseController : MonoBehaviour
     }
 
     protected virtual void UpdateIdle()
-    {
-       
+    {       
     }
 
-    // ������ �̵��ϴ� ���� ó��
     protected virtual void UpdateMoving()
     {
-        ////Vector3 destPos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
-        //Vector3 moveDir = destPos - transform.position;
-
-        //// ���� ���� üũ
-        //float dist = moveDir.magnitude;
-        //if (dist < Speed * Time.deltaTime)
-        //{
-        //    transform.position = destPos;
-        //    MoveToNextPos();
-        //}
-        //else
-        //{
-        //    transform.position += moveDir.normalized * Speed * Time.deltaTime;
-        //    State = CreatureState.Moving;
-        //}
-    }
-
-    protected virtual void MoveToNextPos()
-    {
-
     }
 
     protected virtual void UpdateSkill()
     {
-
     }
 
     protected virtual void UpdateDead()
     {
-
     }
 }

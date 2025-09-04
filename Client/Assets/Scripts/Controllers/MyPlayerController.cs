@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Google.Protobuf.Protocol;
@@ -8,7 +9,7 @@ using static Define;
 public class MyPlayerController : PlayerController
 {
     bool _moveKeyPressed = false;
-    Dictionary<string, CoolTime> _coolDownDict = new Dictionary<string, CoolTime>();
+    Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
     class CoolTime
     {
         public bool    isCoolDown;
@@ -18,28 +19,34 @@ public class MyPlayerController : PlayerController
     int _mask = (1 << (int)Define.Layer.Map);
     Vector3 _dstPos = Vector3.zero;
 
+    //UI
+    //UI_PlayerHUD _playerHUD = null;
+    UI_PlayerInterface _playerInterface = null;
     protected override void Init()
     {
         base.Init();
         Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
 
-        _object = Define.Object.MyPlayer;
+        ObjectType = Define.Object.MyPlayer;
         MakeCoolDownDict();
+
+        //UI
+        GameObject go = Managers.Resource.Instantiate("UI/Scene/PlayerHUD");
+        go.transform.SetParent(gameObject.transform);
+        _playerInterface = go.GetComponentInChildren<UI_PlayerInterface>();
+        _playerInterface.CharacterCode = CharTypeToCharCode(ObjInfo.CharType);
+        _playerInterface.CharacterName = Enum.GetName(typeof(CharacterType), ObjInfo.CharType);
+        _playerInterface.WeaponCode = CharTypeToWeaponCode(ObjInfo.CharType);
+        _playerInterface.Init();
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, FindSkill(KeyCode.Q).SkillData.cooldown);
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.WSkill, FindSkill(KeyCode.W).SkillData.cooldown);
+        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, FindSkill(KeyCode.E).SkillData.cooldown);
+        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, FindSkill(KeyCode.R).SkillData.cooldown);
+        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.DSkill, _coolDownDict[KeyCode.D].coolTime);
+        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.FSkill, _coolDownDict[KeyCode.F].coolTime);
     }
 
-    private void MakeCoolDownDict()
-    {
-        foreach(var skill in _skills)
-        {
-            _coolDownDict[skill.Key] = new CoolTime { isCoolDown  = false, coolTime = 0.0f };
-        }
-    }
-
-    protected float GetCoolTime(string skillName)
-    {
-        return _coolDownDict[skillName].coolTime;
-    }
-
+    // 매 틱 Update에서 호출됨
     protected override void UpdateController()
     {
         switch (State)
@@ -54,7 +61,44 @@ public class MyPlayerController : PlayerController
 
         TempKeyInput();
 
+        UpdateKeyInput();
+
         base.UpdateController();
+    }
+
+    protected virtual void UpdateKeyInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+        }
+        else if (Input.GetKeyDown(KeyCode.W))
+        {
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+        }
+        else if (Input.GetKeyDown(KeyCode.C))
+        {
+        }
+    }
+
+    protected override void UpdateAnimation()
+    {
+        if (_animator == null)
+            return;
+
+        if (State == CreatureState.Idle)
+        {
+        }
+        else if (State == CreatureState.Moving)
+        {
+        }
+        else if (State == CreatureState.Skill)
+        {
+        }
+        else if (State == CreatureState.Dead)
+        {
+        }
     }
 
     protected override void UpdateIdle()
@@ -63,57 +107,7 @@ public class MyPlayerController : PlayerController
         {
             State = CreatureState.Moving;
             return;
-        }
-
-        InputSkill();
-    }
-
-    protected override void UpdateSkill()
-    {
-        InputSkill();
-    }
-
-    void InputSkill()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            ExecuteSkill("Rozzi_Q");
-        }
-        else if (Input.GetKeyDown(KeyCode.W))
-        {          
-            ExecuteSkill("Rozzi_W");
-        }
-
-        // TEMP
-        if(Input.GetKeyDown(KeyCode.D))
-        {
-            State = CreatureState.Dead;
-        }
-    }
-
-    protected void ExecuteSkill(string skillName)
-    {
-        if (!_coolDownDict[skillName].isCoolDown)
-        {
-            SkillBase skill = FindSkill(skillName);
-            
-            // 쿨타임 체크
-            StartCoroutine(CoInputCooltime(skillName, skill.SkillData.cooldown));
-
-            // 다른 조건 체크하기
-
-            // 스킬 실행
-            skill.Execute();
-
-            // 패킷 보내기
-            SendSkillPacket(skillName);
-
-            Debug.Log($"스킬 사용! : {skillName}");
-        }
-        else
-        {
-            Debug.Log($"스킬 쿨타임 적용 중! : {skillName} -> {GetCoolTime(skillName)} 초 남음");
-        }
+        }       
     }
 
     protected override void UpdateMoving()
@@ -121,7 +115,6 @@ public class MyPlayerController : PlayerController
         Vector3 moveDir = _dstPos - transform.position;
         moveDir.y = 0.0f;
 
-        // ���� ���� üũ
         float dist = moveDir.magnitude;
         if (dist < Speed * Time.deltaTime)
         {
@@ -140,70 +133,19 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    protected override void UpdateAnimation()
+    protected override void UpdateSkill()
     {
-        if (_animator == null)
-            return;
-
-        if (State == CreatureState.Idle)
-        {
-            //_animator.Play("WAIT");
-            //_animator.SetTrigger();
-
-            PlayAnimation("WAIT");
-        }
-        else if (State == CreatureState.Moving)
-        {
-            //_animator.Play("RUN");
-
-            PlayAnimation("RUN");
-        }
-        else if (State == CreatureState.Skill)
-        {
-
-        }
-        else if (State == CreatureState.Dead)
-        {
-            TriggerAnimation("tDeath");
-        }
     }
 
-    protected void PlayAnimation(string animName)
+    protected override void UpdateDead()
     {
-        _animator.Play(animName);
-        SendAnimPacket(animName, false);
     }
 
-    protected void TriggerAnimation(string triggerName)
-    {
-        _animator.SetTrigger(triggerName);
-        SendAnimPacket(triggerName, true);
-    }
-
-    // ��ų ��Ÿ��
-    //Coroutine _coSkillCooltime;
-    IEnumerator CoInputCooltime(string skillName, float time)
-    {
-        _coolDownDict[skillName].isCoolDown = true;
-
-        float elapsed = 0f;
-        while (elapsed < time)
-        {
-            elapsed += Time.deltaTime;
-            _coolDownDict[skillName].coolTime = time - elapsed;
-            yield return null;
-        }
-
-        _coolDownDict[skillName].isCoolDown = false;
-        _coolDownDict[skillName].coolTime = 0.0f;
-        //_coSkillCooltime = null;
-    }
-
+    // Camera
     [SerializeField]
     public Vector3 _offset = new Vector3(0, 10, -10);
     [SerializeField]
     public float smoothSpeed = 5f;
-
     void LateUpdate()
     {
         Vector3 targetPos = transform.position + _offset;
@@ -211,7 +153,6 @@ public class MyPlayerController : PlayerController
         Camera.main.transform.LookAt(transform.position);
     }
 
-    // ���콺 �Է�
     void GetMouseInput()
     {
         RaycastHit hit;
@@ -262,25 +203,207 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    private void SendSkillPacket(string skillName)
+    #region Skill
+    protected void ExecuteSkill(KeyCode key)
     {
-        C_Skill skillPacket = new C_Skill() { Info = new SkillInfo() { Name = skillName } };
-        Managers.Network.Send(skillPacket);
-    }
-
-    private void SendAnimPacket(string name, bool isTrigger = false)
-    {
-        if(!isTrigger)
+        if (!_coolDownDict[key].isCoolDown)
         {
-            int animHash = Animator.StringToHash(name);
-            C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { IsTrigger = false, Hash = animHash, Time = Time.time } };
-            Managers.Network.Send(animPacket);
+            SkillBase skill = FindSkill(key);
+
+            // 쿨타임 체크
+            StartCoroutine(CoInputCooltime(key, skill.SkillData.cooldown));
+
+            // 다른 조건 체크하기
+
+            // 스킬 실행
+            //skill.Execute();
+
+            // 패킷 보내기
+            SendSkillPacket(key);
+
+            // 스킬 실행 UI, TODO 스킬 사용할 수 있는 검증이 다 끝난 곳으로 옮겨야함
+            _playerInterface.UseSkill(KeyToUIEnum(key));
+
+            Debug.Log($"스킬 사용! : {key}");
         }
         else
         {
-            int triggerHash = Animator.StringToHash(name);
-            C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { IsTrigger = true, Hash = triggerHash } };
-            Managers.Network.Send(animPacket);
-        }        
+            Debug.Log($"스킬 쿨타임 적용 중! : {key} -> {GetCoolTime(key)} 초 남음");
+        }
     }
+
+    IEnumerator CoInputCooltime(KeyCode key, float time)
+    {
+        _coolDownDict[key].isCoolDown = true;
+
+        float elapsed = 0f;
+        while (elapsed < time)
+        {
+            elapsed += Time.deltaTime;
+            _coolDownDict[key].coolTime = time - elapsed;
+            yield return null;
+        }
+
+        _coolDownDict[key].isCoolDown = false;
+        _coolDownDict[key].coolTime = 0.0f;
+    }
+
+    private void MakeCoolDownDict()
+    {
+        foreach (var skill in _skills)
+        {
+            string str = skill.Key.Substring(skill.Key.Length - 1);
+            KeyCode key = (KeyCode)Enum.Parse(typeof(KeyCode), str);
+            _coolDownDict[key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
+        }
+    }
+
+    protected float GetCoolTime(KeyCode key)
+    {
+        return _coolDownDict[key].coolTime;
+    }
+    #endregion
+
+    #region UI
+    private UI_PlayerInterface.GameObjects KeyToUIEnum(KeyCode key)
+    {
+        switch (key)
+        {
+            case KeyCode.Q:
+                return UI_PlayerInterface.GameObjects.QSkill;
+            case KeyCode.W:
+                return UI_PlayerInterface.GameObjects.WSkill;
+            case KeyCode.E:
+                return UI_PlayerInterface.GameObjects.ESkill;
+            case KeyCode.R:
+                return UI_PlayerInterface.GameObjects.RSkill;
+            case KeyCode.D:
+                return UI_PlayerInterface.GameObjects.DSkill;
+            case KeyCode.F:
+                return UI_PlayerInterface.GameObjects.FSkill;
+        }
+
+        return UI_PlayerInterface.GameObjects.TSkill;
+    }
+
+    private string CharTypeToCharCode(CharacterType type)
+    {
+        string result = "";
+
+        switch (type)
+        {
+            case CharacterType.Rozzi:
+                result = "021";
+                break;
+            case CharacterType.Yuki:
+                result = "011";
+                break;
+            case CharacterType.Hyunwoo:
+                result = "007";
+                break;
+            case CharacterType.Abigail:
+                result = "067";
+                break;
+            case CharacterType.Theodore:
+                result = "062";
+                break;
+        }
+
+        return result;
+    }
+    private string CharTypeToWeaponCode(CharacterType type)
+    {
+        string result = "";
+
+        switch (type)
+        {
+            case CharacterType.Rozzi:
+                result = "051";
+                break;
+            case CharacterType.Yuki:
+                result = "021";
+                break;
+            case CharacterType.Hyunwoo:
+                result = "081";
+                break;
+            case CharacterType.Abigail:
+                result = "031";
+                break;
+            case CharacterType.Theodore:
+                result = "071";
+                break;
+        }
+
+        return result;
+    }
+
+    private void SetMaxCoolDownUI(UI_PlayerInterface.GameObjects skillEnum, float value)
+    {
+        _playerInterface.SetSkillMaxCool(skillEnum, value);
+    }
+
+    private void UpdateUISkillMaxCool()
+    {
+        // TODO 현재 스킬레벨에 따른 쿨타임과 아이템으로 인한 스킬 가속을 적용하여 UI에 반영
+        // 일단 스킬 가속에 대한 계산이 어떻게 되는지 알아야하고, 스킬들이 레벨마다 어떤 쿨타임을 가질지 데이터(Json)를 만들어줘야함.
+
+        //temp 나중에 스탯에서 가져오든가 해야될듯
+        float skillAcc = 0.0f;
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, CalculateMaxCool(FindSkill(KeyCode.Q).SkillData.cooldown, skillAcc));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.WSkill, CalculateMaxCool(FindSkill(KeyCode.W).SkillData.cooldown, skillAcc));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, CalculateMaxCool(FindSkill(KeyCode.E).SkillData.cooldown, skillAcc));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(FindSkill(KeyCode.R).SkillData.cooldown, skillAcc));
+    }
+
+    private float CalculateMaxCool(float cooldown, float skillAcc)
+    {
+        // 최종 쿨타임 = 기본 쿨타임 × (100 / (100 + 스킬가속))
+        return cooldown * (100f / (100f + skillAcc));
+    }
+
+    #endregion
+
+    #region Animation
+    protected void PlayAnimation(string animName)
+    {
+        _animator.Play(animName);
+        SendAnimPacket(animName, AnimType.Play, Time.time);
+    }
+
+    protected void TriggerAnimation(string triggerName)
+    {
+        _animator.SetTrigger(triggerName);
+        SendAnimPacket(triggerName, AnimType.Trigger, 0f);
+    }
+
+    protected void SetBoolAnimation(string boolName, bool value)
+    {
+        _animator.SetBool(boolName, value);
+        SendAnimPacket(boolName, AnimType.Bool, value == true ? 1f : 0f);
+    }
+
+    protected void SetFloatAnimation(string floatName, float value)
+    {
+        _animator.SetFloat(floatName, value);
+        SendAnimPacket(floatName, AnimType.Float, value);
+    }
+    #endregion
+
+    #region Packet
+    private void SendSkillPacket(KeyCode key)
+    {
+        string skillName = Enum.GetName(typeof(Character), Managers.Object.Character) + '_' + key.ToString();
+        C_Skill skillPacket = new C_Skill() { 
+            ObjectInfo = ObjInfo,
+            SkillInfo = new SkillInfo() { KeyCode = (int)key, Name = skillName } };
+        Managers.Network.Send(skillPacket);
+    }
+
+    private void SendAnimPacket(string name, AnimType type, float value)
+    {
+        int hash = Animator.StringToHash(name);
+        C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { Hash = hash, Type = type, Value = value } };
+        Managers.Network.Send(animPacket);       
+    }
+    #endregion
 }

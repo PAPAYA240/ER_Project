@@ -12,7 +12,6 @@ public abstract class SkillBase
 {
     public PlayerController _player;
     public Animator _animator;
-    public int _objectId;
 
     SkillData _skillData = new SkillData();
     public virtual SkillData SkillData
@@ -33,6 +32,7 @@ public abstract class SkillBase
             return;
 
         _animator.SetTrigger(triggerName);
+        //_animator.Play(triggerName);
     }
 
     public abstract void Execute();

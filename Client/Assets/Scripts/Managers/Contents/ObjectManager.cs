@@ -8,6 +8,7 @@ public class ObjectManager
 {
 	public MyPlayerController MyPlayer { get; set; }
 	Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
+
     public Define.Character Character { get; set; } = Define.Character.Rozzi;
 
     public static GameObjectType GetObjectTypeById(int id)
@@ -24,7 +25,7 @@ public class ObjectManager
         {
             if (myPlayer)
             {
-                GameObject go = Managers.Resource.Instantiate($"Creature/{Character}");
+                GameObject go = Managers.Resource.Instantiate($"Creature/My{info.CharType}");
                 go.name = info.Name;
                 _objects.Add(info.ObjectId, go);
 
@@ -33,10 +34,11 @@ public class ObjectManager
                 MyPlayer.PosInfo = info.PosInfo;
                 MyPlayer.Stat = info.StatInfo;
                 MyPlayer.SyncPos();
+                MyPlayer.ObjInfo = info;
             }
             else
             {
-                GameObject go = Managers.Resource.Instantiate($"Creature/Player");
+                GameObject go = Managers.Resource.Instantiate($"Creature/{info.CharType}");
                 go.name = info.Name;
                 _objects.Add(info.ObjectId, go);
 
@@ -45,6 +47,7 @@ public class ObjectManager
                 pc.PosInfo = info.PosInfo;
                 pc.Stat = info.StatInfo;
                 pc.SyncPos();
+                pc.ObjInfo = info;
             }
         }
         else if (objectType == GameObjectType.Monster)

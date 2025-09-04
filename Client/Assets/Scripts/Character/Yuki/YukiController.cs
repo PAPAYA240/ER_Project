@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class RozziController : MyPlayerController
+public class YukiController : MyPlayerController
 {
     protected override void Init()
     {
@@ -17,11 +17,11 @@ public class RozziController : MyPlayerController
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            ExecuteSkill(KeyCode.Q);
+            //ExecuteSkill("Rozzi_Q");
         }
         else if (Input.GetKeyDown(KeyCode.W))
         {
-            ExecuteSkill(KeyCode.W);
+            //ExecuteSkill("Rozzi_W");
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
@@ -72,4 +72,3 @@ public class RozziController : MyPlayerController
     {
     }
 }
-

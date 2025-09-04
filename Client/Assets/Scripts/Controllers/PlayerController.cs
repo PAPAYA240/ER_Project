@@ -19,11 +19,60 @@ public class PlayerController : CreatureController
 	{
 		base.Init();
 		MakeSkillDict();
-        _object = Define.Object.OtherPlayer; 
+        ObjectType = Define.Object.OtherPlayer; 
     }
 
-	protected void MakeSkillDict()
+	protected override void UpdateController()
+	{		
+		base.UpdateController();
+	}
+
+    protected virtual void CheckUpdatedFlag()
 	{
+
+	}
+
+    public override void OnDamaged()
+	{
+		Debug.Log("Player HIT !");
+	}
+
+    #region Util
+    protected string GetCharacterName()
+    {
+        return Enum.GetName(typeof(CharacterType), ObjInfo.CharType);
+    }
+    #endregion
+
+    #region Skill
+    public override void UseSkill(KeyCode key)
+    {
+        SkillBase skill = FindSkill(key);
+        skill.Execute();
+
+        if (_coSkill != null)
+            StopCoroutine(_coSkill);
+        _coSkill = StartCoroutine("CoStartSkill");
+        Debug.Log("스킬 코루틴 시작");
+    }
+
+    IEnumerator CoStartSkill()
+    {
+        // 대기 시간
+        _rangedSkill = false;
+        State = CreatureState.Skill;
+        float length = _animator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(length);
+        State = CreatureState.Idle;
+        _coSkill = null;
+
+        // TODO : TEMP
+        _animator.SetTrigger("tIdle");
+        CheckUpdatedFlag();
+    }
+
+    protected void MakeSkillDict()
+    {
         var skillTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsSubclassOf(typeof(SkillBase)) && !t.IsAbstract);
 
         foreach (var type in skillTypes)
@@ -39,86 +88,59 @@ public class PlayerController : CreatureController
         }
     }
 
-    protected SkillBase FindSkill(string skillName)
+    protected SkillBase FindSkill(KeyCode key)
     {
         SkillBase skillBase = null;
+
+        string skillName = GetCharacterName() + '_' + key.ToString();
         if (!_skills.TryGetValue(skillName, out skillBase))
         {
-            Debug.Log($"Skill을 찾을 수 없음 : {skillName}");
+            Debug.Log($"Skill을 찾을 수 없음 : {key}");
             return null;
         }
 
         return skillBase;
     }
+    #endregion
 
+    #region Animation
     protected override void UpdateAnimation()
-	{
-		if (_animator == null)
-			return;
-
-		if (State == CreatureState.Idle)
-		{
-			
-		}
-		else if (State == CreatureState.Moving)
-		{
-			
-		}
-		else if (State == CreatureState.Skill)
-		{
-
-		}
-		else
-		{
-
-		}
-	}
-
-	protected override void UpdateController()
-	{		
-		base.UpdateController();
-	}
-
-    public override void UseSkill(string skillName)
     {
-        SkillBase skill = FindSkill(skillName);
-        skill.Execute();
+        if (_animator == null)
+            return;
 
-        if(_coSkill != null)
-            StopCoroutine(_coSkill);
-        _coSkill = StartCoroutine("CoStartSkill");
-        Debug.Log("스킬 코루틴 시작");
+        if (State == CreatureState.Idle)
+        {
+        }
+        else if (State == CreatureState.Moving)
+        {
+        }
+        else if (State == CreatureState.Skill)
+        {
+        }
+        else
+        {
+        }
     }
 
+    // 서버로부터 애니메이션 정보를 받아와 다른 플레이어의 애니메이션 재생용
     public virtual void PlayAnimation(AnimInfo animInfo)
     {
-        if(!animInfo.IsTrigger)
-            _animator.Play(animInfo.Hash, 0, Time.time - animInfo.Time);
-        else
-            _animator.SetTrigger(animInfo.Hash);     
+        switch (animInfo.Type)
+        {
+            case AnimType.Play:
+                _animator.Play(animInfo.Hash, 0, Time.time - animInfo.Value);
+                break;
+            case AnimType.Trigger:
+                _animator.SetTrigger(animInfo.Hash);
+                break;
+            case AnimType.Bool:
+                _animator.SetBool(animInfo.Hash, animInfo.Value != 0f);
+                break;
+            case AnimType.Float:
+                _animator.SetFloat(animInfo.Hash, animInfo.Value);
+                break;
+        }
     }
-
-    protected virtual void CheckUpdatedFlag()
-	{
-
-	}
-
-    IEnumerator CoStartSkill()
-    {
-        // 대기 시간
-        _rangedSkill = false;
-        State = CreatureState.Skill;
-        float length = _animator.GetCurrentAnimatorStateInfo(0).length;
-        yield return new WaitForSeconds(length);
-        State = CreatureState.Idle;
-        _coSkill = null;
-
-        _animator.SetTrigger("tIdle");
-        CheckUpdatedFlag();
-    }
-
-    public override void OnDamaged()
-	{
-		Debug.Log("Player HIT !");
-	}
+    #endregion
 }

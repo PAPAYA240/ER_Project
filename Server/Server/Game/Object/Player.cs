@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Google.Protobuf.Protocol;
+using Server.Data;
 
 namespace Server.Game
 {

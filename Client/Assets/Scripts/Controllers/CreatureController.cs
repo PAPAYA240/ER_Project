@@ -7,9 +7,15 @@ using static Define;
 
 public class CreatureController : BaseController
 {
-	public Define.Object _object = Define.Object.Unknown;
+	Define.Object _object = Define.Object.Unknown;
+	public Define.Object ObjectType
+	{
+		get { return _object; }
+		set { _object = value; }
+	}
 
 	HpBar _hpBar;
+
 	public override StatInfo Stat
 	{
 		get { return base.Stat; }
@@ -51,7 +57,6 @@ public class CreatureController : BaseController
 	
 	public virtual void OnDamaged()
 	{
-
 	}
 
     public virtual void OnDead()
@@ -66,11 +71,9 @@ public class CreatureController : BaseController
 
 	public virtual void UseSkill(int skillId)
 	{
-
 	}
 
-    public virtual void UseSkill(string skillName)
+    public virtual void UseSkill(KeyCode key)
     {
-
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +20,9 @@ public abstract class UI_SkillBase : UI_Base
         
     }
 
+
+    public Action OnLevelUp = null;
+
     protected int _skillLevel = 0;
     protected int _maxSkillLevel = 5;
 
@@ -29,5 +33,8 @@ public abstract class UI_SkillBase : UI_Base
     public abstract void UseSkill();
     public abstract void ActivateLevelUp(bool DoYouActivate);
     public abstract void SetImage(string path);
+    public virtual void SetStaminaCost(int value) { }
+    public virtual void SetMaxCool(float value) { }
+    public virtual bool IsEnoughStamina(float curStamina) { return false; }
 
 }

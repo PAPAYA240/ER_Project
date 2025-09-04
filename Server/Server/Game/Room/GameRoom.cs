@@ -188,15 +188,19 @@ namespace Server.Game
             ObjectInfo info = player.Info;
 
             // TODO : 스킬 사용 가능 여부 체크
+
+
+
+            // 스킬 사용이 가능하다 판단되면 패킷 전송
             info.PosInfo.State = CreatureState.Skill;
-            S_Skill skill = new S_Skill() { Info = new SkillInfo() };
+            S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
             skill.ObjectId = info.ObjectId;
-            skill.Info.SkillId = skillPacket.Info.SkillId;
-            skill.Info.Name = skillPacket.Info.Name;
+            skill.SkillInfo = skillPacket.SkillInfo;
             Broadcast(skill);
 
             Data.SkillData skillData = null;
-            if (DataManager.SkillDict.TryGetValue(skillPacket.Info.Name, out skillData) == false)
+
+            if (DataManager.SkillDict.TryGetValue(skillPacket.SkillInfo.Name, out skillData) == false)
                 return;
 
             switch (skillData.skillType)

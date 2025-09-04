@@ -48,6 +48,16 @@ public class UI_HpBar : UI_Base
         _hp = hp;
         UpdateFillAmountAndText();
     }
+    public float GetHp()
+    {
+        return _hp;
+    }
+
+    public void SetBarrier(float barrier)
+    {
+        _barrier = barrier;
+        UpdateFillAmountAndText();
+    }
 
     public void SetMaxHp(float maxHp)
     {

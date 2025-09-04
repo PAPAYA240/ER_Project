@@ -18,6 +18,7 @@ enum MsgId {
   S_DIE = 10;
   C_ANIM = 11;
   S_ANIM = 12;
+  C_CHARACTER = 13;
 }
 
 enum CreatureState{
@@ -38,6 +39,22 @@ enum SkillType{
 	SKILL_NONE = 0;
 	SKILL_AUTO = 1;
 	SKILL_PROJECTILE = 2;
+}
+
+enum AnimType{
+	PLAY = 0;
+	TRIGGER = 1;
+	BOOL = 2;
+	FLOAT = 3;
+}
+
+enum CharacterType {
+	CHARACTER_NONE = 0;
+    ROZZI = 1;
+    YUKI = 2;
+	HYUNWOO = 3;
+	ABIGAIL = 4;
+	THEODORE = 5;
 }
 
 message C_EnterGame {
@@ -72,16 +89,21 @@ message S_Move{
 }
 
 message C_Skill{
-	SkillInfo info = 1;
+	ObjectInfo objectInfo = 1;
+	SkillInfo skillInfo = 2;
 }
 
 message S_Skill{
 	int32 objectId = 1;
-	SkillInfo info = 2;
+	SkillInfo skillInfo = 2;
 }
 
 message C_Anim{
 	AnimInfo animInfo = 1;
+}
+
+message C_Character{
+	CharacterType charType = 1;
 }
 
 message S_Anim{
@@ -95,12 +117,14 @@ message ObjectInfo{
 	PositionInfo posInfo = 3;
 	RotationInfo rotInfo = 4;
 	StatInfo statInfo = 5;
+	CharacterType charType = 6;
 }
 
 message AnimInfo{
-	bool isTrigger = 1;
-	int32 hash = 2;
-	float time = 3;
+	int32 hash = 1;
+	AnimType type = 2;
+	float value = 3;
+	float time = 4;
 }
 
 message S_ChangeHp{
@@ -138,5 +162,6 @@ message StatInfo{
 
 message SkillInfo{
 	int32 skillId = 1;
-	string name = 2;
+	int32 keyCode = 2;
+	string name = 3;
 }

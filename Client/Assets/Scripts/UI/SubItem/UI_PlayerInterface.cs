@@ -1,11 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UI_PlayerInterface : UI_Base
 {
+
+    enum Texts { DeathTimerText }
+
     enum Images 
     {
         ProfileImage
@@ -22,39 +27,80 @@ public class UI_PlayerInterface : UI_Base
         FSkill,
         HpBar,
         StaminaBar,
+        Death,
         LevelAndExp,
         Credit
     }
 
     //TODO 디파인으로 각 요소들을 관리?
-    string _characterName = "Hyunwoo_S000";
-    string _characterCode = "007";
-    string _weaponCode = "081";
-    string _tacticalCode = "4000000";
+    public string CharacterName { get; set; } = "Hyunwoo";
+    public int SkinNumber { get; set; } = 0;
+    public string CharacterCode { get; set; } = "007";
+    public string WeaponCode { get; set; } = "081";
+    public string TacticalCode { get; set; } = "4000000";
 
-    int _remainSkillPoint = 1;
+    int _remainSkillPoint = 0; //이건 QWERT에만 적용되야함.
+    
+    bool _isDead = false;
+    float _respawnCool = 0.0f;
 
     public override void Init()
     {
+        Bind<TextMeshProUGUI>(typeof(Texts));
         Bind<Image>(typeof(Images));
         Bind<GameObject>(typeof(GameObjects));
 
-        LoadProfile(_characterName);
-        LoadQWERTImage(_characterCode);
-        LoadWeaponSkillImage(_weaponCode);
-        LoadTacticalSkillImage(_tacticalCode);
-    }
+        LoadProfile(CharacterName, SkinNumber);
+        LoadQWERTImage(CharacterCode);
+        LoadWeaponSkillImage(WeaponCode);
+        LoadTacticalSkillImage(TacticalCode);
 
-    void Update()
+        GetObject((int)GameObjects.Death).SetActive(false);
+        GetObject((int)GameObjects.LevelAndExp).GetComponent<UI_Level>().OnLevelUp += LevelUp;
+        GetObject((int)GameObjects.QSkill).GetComponent<UI_SkillBase>().OnLevelUp += CharSkillLevelUp;
+        GetObject((int)GameObjects.WSkill).GetComponent<UI_SkillBase>().OnLevelUp += CharSkillLevelUp;
+        GetObject((int)GameObjects.ESkill).GetComponent<UI_SkillBase>().OnLevelUp += CharSkillLevelUp;
+        GetObject((int)GameObjects.RSkill).GetComponent<UI_SkillBase>().OnLevelUp += CharSkillLevelUp;
+        GetObject((int)GameObjects.TSkill).GetComponent<UI_SkillBase>().OnLevelUp += CharSkillLevelUp;
+        GetObject((int)GameObjects.FSkill).GetComponent<UI_SkillBase>().OnLevelUp += TacticalSkillLevelUp;
+
+        //temp
+        //LevelUp(1);
+        LevelUp(4);
+        SpecificSkillLevelUp(GameObjects.TSkill);
+        SpecificSkillLevelUp(GameObjects.FSkill);
+
+        OnDeath();
+    }
+    private void Start()
     {
         
     }
 
+    void Update()
+    {
+        //EarnExp(1);
+
+        #region Dead
+        if (_isDead)
+        {
+            _respawnCool = Mathf.Max(0, _respawnCool - Time.deltaTime);
+            GetText((int)Texts.DeathTimerText).text = _respawnCool.ToString("F0");
+
+            if(_respawnCool <= Mathf.Epsilon)
+            {
+                //TODO 부활
+                GetObject((int)GameObjects.Death).SetActive(false);
+            }
+        }
+        #endregion
+    }
+
 
     #region ImageSetting
-    public void LoadProfile(string characterName)
+    public void LoadProfile(string characterName, int skinNumber)
     {
-        string path = "Sprite/CharProfile_" + characterName;
+        string path = "Sprite/CharProfile_" + characterName + "_S" + skinNumber.ToString("D3");
         Sprite sprite = Managers.Resource.Load<Sprite>(path);
         if (sprite == null)
             return;
@@ -67,11 +113,11 @@ public class UI_PlayerInterface : UI_Base
         string path = "";
         path = "Sprite/SkillIcon_1" + characterCode;
 
-        SetSkillImgSet(GameObjects.QSkill, path + "100");
-        SetSkillImgSet(GameObjects.WSkill, path + "200");
-        SetSkillImgSet(GameObjects.ESkill, path + "300");
-        SetSkillImgSet(GameObjects.RSkill, path + "400");
-        SetSkillImgSet(GameObjects.TSkill, path + "500");
+        SetSkillImgSet(GameObjects.QSkill, path + "200");
+        SetSkillImgSet(GameObjects.WSkill, path + "300");
+        SetSkillImgSet(GameObjects.ESkill, path + "400");
+        SetSkillImgSet(GameObjects.RSkill, path + "500");
+        SetSkillImgSet(GameObjects.TSkill, path + "100");
     }
     public void LoadWeaponSkillImage(string weaponCode)
     {
@@ -124,19 +170,208 @@ public class UI_PlayerInterface : UI_Base
                     if (go == null)
                         return;
 
-                    UI_SkillBase ui_skill = go.GetComponent<UI_SkillBase>();
-                    if (ui_skill != null)
-                        ui_skill.UseSkill();
+                    UI_SkillBase ui_Skill = go.GetComponent<UI_SkillBase>();
+                    if (ui_Skill != null)
+                        ui_Skill.UseSkill();
                 }
                 break;
         }
     }
+
+    void CharSkillLevelUp()
+    {
+        --_remainSkillPoint;
+
+        if(_remainSkillPoint == 0)
+        {
+            ActivateSkillLevelUpButton(GameObjects.QSkill, false);
+            ActivateSkillLevelUpButton(GameObjects.WSkill, false);
+            ActivateSkillLevelUpButton(GameObjects.ESkill, false);
+            ActivateSkillLevelUpButton(GameObjects.RSkill, false);
+            ActivateSkillLevelUpButton(GameObjects.TSkill, false);
+        }
+    }
+
+    void TacticalSkillLevelUp()
+    {
+        ActivateSkillLevelUpButton(GameObjects.FSkill, false);
+    }
+
+    void SpecificSkillLevelUp(GameObjects objEnum)
+    {
+        switch (objEnum)
+        {
+            case GameObjects.QSkill:
+            case GameObjects.WSkill:
+            case GameObjects.ESkill:
+            case GameObjects.RSkill:
+            case GameObjects.TSkill:
+            case GameObjects.DSkill:
+            case GameObjects.FSkill:
+                GetObject((int)objEnum).GetComponent<UI_SkillBase>().SkillLevelUp();
+                break;
+        }
+    }
+
+    void ActivateSkillLevelUpButton(GameObjects objEnum, bool activate)
+    {
+        GetObject((int)objEnum).GetComponent<UI_SkillBase>().ActivateLevelUp(activate);
+    }
+
+    public void SetSkillStaminaCost(GameObjects objEnum, int value)
+    {
+        GetObject((int)objEnum).GetComponent<UI_SkillBase>().SetStaminaCost(value);
+    }
+    public void SetSkillMaxCool(GameObjects objEnum, float value)
+    {
+        GetObject((int)objEnum).GetComponent<UI_SkillBase>().SetMaxCool(value);
+    }
+
+    #endregion
+
+    #region HpBar
+    public void SetHp(float hp)
+    {
+        GetObject((int)GameObjects.HpBar).GetComponent<UI_HpBar>().SetHp(hp);
+    }
+    public float GetHp()
+    {
+        return GetObject((int)GameObjects.HpBar).GetComponent<UI_HpBar>().GetHp();
+    }
+    public void SetBarrier(float barrier)
+    {
+        GetObject((int)GameObjects.HpBar).GetComponent<UI_HpBar>().SetBarrier(barrier);
+    }
+
+    public void SetMaxHp(float maxHp)
+    {
+        GetObject((int)GameObjects.HpBar).GetComponent<UI_HpBar>().SetMaxHp(maxHp);
+    }
+
+    public void PlusHp(float value)
+    {
+        GetObject((int)GameObjects.HpBar).GetComponent<UI_HpBar>().PlusHp(value);
+    }
+    public void PlusBarrier(float value)
+    {
+        GetObject((int)GameObjects.HpBar).GetComponent<UI_HpBar>().PlusBarrier(value);
+    }
+    public void MinusHp(float value)
+    {
+        GetObject((int)GameObjects.HpBar).GetComponent<UI_HpBar>().MinusHp(value);
+    }
+
+    #endregion
+
+    #region StaminaBar
+    public void SetStamina(float value)
+    {
+        GetObject((int)GameObjects.StaminaBar).GetComponent<UI_Bar>().SetValue(value);
+    }
+
+    public float GetStamina()
+    {
+        return GetObject((int)GameObjects.StaminaBar).GetComponent<UI_Bar>().GetValue();
+    }
+
+    public void SetMaxStamina(float value)
+    {
+        GetObject((int)GameObjects.StaminaBar).GetComponent<UI_Bar>().SetMaxValue(value);
+    }
+    public void PlusStamina(float value)
+    {
+        GetObject((int)GameObjects.StaminaBar).GetComponent<UI_Bar>().PlusValue(value);
+    }
+    public void MinusStamina(float value)
+    {
+        GetObject((int)GameObjects.StaminaBar).GetComponent<UI_Bar>().MinusValue(value);
+    }
+
+    #endregion
+
+    #region Death
+
+    public void OnDeath()
+    {
+        _isDead = true;
+        _respawnCool = 20;
+        GetObject((int)GameObjects.Death).SetActive(true);
+    }
+
     #endregion
 
     #region Level
-    public void LevelUp()
+    public void EarnExp(int exp)
     {
-        _remainSkillPoint += 1;
+        GameObject go = GetObject((int)GameObjects.LevelAndExp);
+        if (go == null)
+            return;
+
+        UI_Level ui_Level = go.GetComponent<UI_Level>();
+        if (ui_Level != null)
+            ui_Level.EarnExp(exp);
+    }
+
+    public void ActivateCombatImg(bool activate)
+    {
+        //전투중 이미지 표시
+        GameObject go = GetObject((int)GameObjects.LevelAndExp);
+        if (go == null)
+            return;
+
+        UI_Level ui_Level = go.GetComponent<UI_Level>();
+        if (ui_Level != null)
+            ui_Level.ActivateCombatImg(activate);
+    }
+
+    bool CanSkillLevelUp(GameObjects objEnum)
+    {
+        switch (objEnum)
+        {
+            case GameObjects.QSkill:
+            case GameObjects.WSkill:
+            case GameObjects.ESkill:
+                break;
+            case GameObjects.RSkill:
+                break;
+            case GameObjects.TSkill:
+                break;
+        }
+
+        /*
+        스킬 레벨을 반환 받고 
+        판단해서 리턴
+         
+        일반 스킬의 레벨에 따른 스킬 레벨제한 
+        1 1
+        2 3
+        3 5
+        4 7
+        5 9
+        궁극기 스킬의 레벨에 따른 스킬 레벨제한
+        1 6
+        2 11
+        3 16
+        패시브 스킬의 레벨에 따른 스킬 레벨제한
+        1 이미 찍혀있음.
+        2
+        3
+        */
+        return true;
+    }
+
+
+    void LevelUp(int newLevel)
+    {
+        _remainSkillPoint += newLevel;
+
+        //TODO 레벨업 버튼 활성화 조건 : 일반 스킬 / 궁극기 / 패시브 나뉘어야함.
+        ///CanSkillLevelUp
+        ActivateSkillLevelUpButton(GameObjects.QSkill, true);
+        ActivateSkillLevelUpButton(GameObjects.WSkill, true);
+        ActivateSkillLevelUpButton(GameObjects.ESkill, true);
+        ActivateSkillLevelUpButton(GameObjects.RSkill, true);
+        ActivateSkillLevelUpButton(GameObjects.TSkill, true);
     }
 
     #endregion
@@ -144,21 +379,33 @@ public class UI_PlayerInterface : UI_Base
     #region Credit
     public void PlusCredit(int credit)
     {
-        UI_Credit uI_Credit = GetObject((int)GameObjects.Credit).GetComponent<UI_Credit>();
+        GameObject go = GetObject((int)GameObjects.Credit);
+        if (go == null)
+            return;
+
+        UI_Credit uI_Credit = go.GetComponent<UI_Credit>();
         if (null != uI_Credit)
             uI_Credit.PlusCredit(credit);
     }
 
     public void MinusCredit(int credit)
     {
-        UI_Credit uI_Credit = GetObject((int)GameObjects.Credit).GetComponent<UI_Credit>();
+        GameObject go = GetObject((int)GameObjects.Credit);
+        if (go == null)
+            return;
+
+        UI_Credit uI_Credit = go.GetComponent<UI_Credit>();
         if (null != uI_Credit)
             uI_Credit.MinusCredit(credit);
     }
 
     public void UseCredit(int credit)
     {
-        UI_Credit uI_Credit = GetObject((int)GameObjects.Credit).GetComponent<UI_Credit>();
+        GameObject go = GetObject((int)GameObjects.Credit);
+        if (go == null)
+            return;
+
+        UI_Credit uI_Credit = go.GetComponent<UI_Credit>();
         if (null != uI_Credit)
             uI_Credit.UseCredit(credit);
     }

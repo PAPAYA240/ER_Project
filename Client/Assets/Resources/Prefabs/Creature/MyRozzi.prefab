@@ -2665,9 +2665,9 @@ GameObject:
   - component: {fileID: 5778232800577082947}
   - component: {fileID: 7715207981999100302}
   - component: {fileID: 8649169367258116997}
-  - component: {fileID: -2595687213407678209}
+  - component: {fileID: 3156380127793922552}
   m_Layer: 0
-  m_Name: Player
+  m_Name: MyRozzi
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2734,7 +2734,7 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 0
---- !u!114 &-2595687213407678209
+--- !u!114 &3156380127793922552
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2743,9 +2743,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4507760152863837473}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55e86d03b5ee90343aeb5c705c87e670, type: 3}
+  m_Script: {fileID: 11500000, guid: f48f6f0bbe9516241aaefba62ddcbda2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _offset: {x: 0, y: 10, z: -10}
+  smoothSpeed: 5
 --- !u!1 &4552065746279300795
 GameObject:
   m_ObjectHideFlags: 0

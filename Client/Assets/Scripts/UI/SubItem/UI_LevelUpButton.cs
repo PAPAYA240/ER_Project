@@ -38,10 +38,6 @@ public class UI_LevelUpButton : UI_Base
         
     }
 
-    void OnClick(PointerEventData data)
-    {
-        
-    }
     void OnPointerEnter(PointerEventData data)
     {
         if (_ImageComponent != null)
