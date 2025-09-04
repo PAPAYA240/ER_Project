@@ -52,6 +52,9 @@ enum CharacterType {
 	CHARACTER_NONE = 0;
     ROZZI = 1;
     YUKI = 2;
+	HYUNWOO = 3;
+	ABIGAIL = 4;
+	THEODORE = 5;
 }
 
 message C_EnterGame {

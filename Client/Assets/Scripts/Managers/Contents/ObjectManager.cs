@@ -34,6 +34,7 @@ public class ObjectManager
                 MyPlayer.PosInfo = info.PosInfo;
                 MyPlayer.Stat = info.StatInfo;
                 MyPlayer.SyncPos();
+                MyPlayer.ObjInfo = info;
             }
             else
             {
@@ -46,6 +47,7 @@ public class ObjectManager
                 pc.PosInfo = info.PosInfo;
                 pc.Stat = info.StatInfo;
                 pc.SyncPos();
+                pc.ObjInfo = info;
             }
         }
         else if (objectType == GameObjectType.Monster)
