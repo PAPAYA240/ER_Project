@@ -21,7 +21,7 @@ public class UI_CommonSkill : UI_SkillBase
 
     enum Images
     {
-        // Ãß°¡ ÇÒ°Å¸é ¹ØÀ¸·Î¸¸ À§¿¡ ¹«¾ùÀ» Ãß°¡ÇÏÁö ¸» °Í. ÀÌ¹ÌÁö Àß ¸ø ¹Ù²ñ.
+        // ï¿½ß°ï¿½ ï¿½Ò°Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½. ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ù²ï¿½.
         Level_1,
         Level_2,
         Level_3,
@@ -110,7 +110,7 @@ public class UI_CommonSkill : UI_SkillBase
 
     void SetSkillLevel(int level)
     {
-        //TODO ·¹º§ Ã¼Å© ÀÌ·¸°Ô ÇØ¾ßµÇ³ª
+        //TODO ï¿½ï¿½ï¿½ï¿½ Ã¼Å© ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Ø¾ßµÇ³ï¿½
         if (level < 0 || level > _maxSkillLevel)
             return;
         if (level == 1)

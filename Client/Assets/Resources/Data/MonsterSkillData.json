@@ -1,36 +1,32 @@
 {
-  "skills": [
+  "skillData": [
     {
-      "id": 1,
-      "name": "MonsterMeleeAttack",
-      "cooldown": 2.0,
-      "manaCost": 0,
-      "damage": 10,
-      "skillType": "1",
-      "projectile": null
+      "id": "1",
+      "name": "Attack1",
+      "cooldown": "2",
+      "animationTime" : "1.15",
+      "damage": "10"
     },
     {
-      "id": 2,
-      "name": "MonsterStomp",
-      "cooldown": 5.0,
-      "manaCost": 0,
-      "damage": 25,
-      "skillType": "2",
-      "projectile": null
+      "id": "2",
+      "name": "Attack2",
+      "cooldown": "2",
+      "animationTime": "1.15",
+      "damage": "20"
     },
     {
-      "id": 3,
-      "name": "MonsterFireball",
-      "cooldown": 8.0,
-      "manaCost": 0,
-      "damage": 40,
-      "skillType": "3",
-      "projectile": {
-        "name": "Fireball",
-        "speed": 10.0,
-        "range": 15,
-        "prefab": null
-      }
+      "id": "3",
+      "name": "Skill1",
+      "cooldown": "5",
+      "animationTime": "2.25",
+      "damage": "30"
+    },
+    {
+      "id": "4",
+      "name": "Skill2",
+      "cooldown": "10",
+      "animationTime": "1.15",
+      "damage": "40"
     }
   ]
-}
+} 

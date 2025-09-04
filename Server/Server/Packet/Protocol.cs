@@ -124,12 +124,19 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("SKILL_NONE")] SkillNone = 0,
     [pbr::OriginalName("SKILL_AUTO")] SkillAuto = 1,
     [pbr::OriginalName("SKILL_PROJECTILE")] SkillProjectile = 2,
-  }
 
-  #endregion
+    // Monster Skill
+    [pbr::OriginalName("SKILL_MONSTER_ATTACK1")] SkilMonsterAttack1 = 3,
+    [pbr::OriginalName("SKILL_MONSTER_ATTACK2")] SkilMonsterAttack2 = 4,
+    [pbr::OriginalName("SKILL_MONSTER_SKILL1")] SkilMonsterSkill1 = 5,
+    [pbr::OriginalName("SKILL_MONSTER_SKILL2")] SkilMonsterSkill2 = 6,
 
-  #region Messages
-  public sealed partial class C_EnterGame : pb::IMessage<C_EnterGame> {
+    }
+
+    #endregion
+
+    #region Messages
+    public sealed partial class C_EnterGame : pb::IMessage<C_EnterGame> {
     private static readonly pb::MessageParser<C_EnterGame> _parser = new pb::MessageParser<C_EnterGame>(() => new C_EnterGame());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
