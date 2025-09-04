@@ -55,15 +55,12 @@ class PacketHandler
         cc.PosInfo = movePacket.PosInfo;
         cc.RotInfo = movePacket.RotInfo;
 
-        if (cc._object == Define.Object.OtherPlayer)
+        if (cc.ObjectType == Define.Object.OtherPlayer)
         {
             cc.SyncPos();
         }
-        else if (cc._object == Define.Object.Monster)
+        else if (cc.ObjectType == Define.Object.Monster)
         {
-            cc.PosInfo = movePacket.PosInfo;
-            cc.RotInfo = movePacket.RotInfo;
-
             MonsterController mc = go.GetComponentInChildren<MonsterController>();
             if (mc == null)
                 return;
@@ -82,9 +79,9 @@ class PacketHandler
         CreatureController cc = go.GetComponentInChildren<CreatureController>();
         if (cc != null)
         {
-            if(cc._object == Define.Object.OtherPlayer)
+            if(cc.ObjectType == Define.Object.OtherPlayer)
                 cc.UseSkill(skillPacket.Info.Name);
-            else if(cc._object == Define.Object.Monster)
+            else if(cc.ObjectType == Define.Object.Monster)
                 cc.UseSkill(skillPacket.Info.SkillId);
         }
     }
@@ -100,7 +97,7 @@ class PacketHandler
         PlayerController pc = go.GetComponent<PlayerController>();
         if (pc != null)
         {
-            if (pc._object == Define.Object.OtherPlayer)
+            if (pc.ObjectType == Define.Object.OtherPlayer)
                 pc.PlayAnimation(animPacket.AnimInfo);
         }
     }
