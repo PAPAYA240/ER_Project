@@ -55,7 +55,7 @@ public class BaseController : MonoBehaviour
             CellPos = new Vector3(value.PosX, value.PosY, value.PosZ);
             State = value.State;
 
-            SyncPos();
+            // SyncPos();
         }
     }
 
@@ -75,7 +75,7 @@ public class BaseController : MonoBehaviour
             _rotationInfo.Qz = value.Qz;
             _rotationInfo.Qw = value.Qw;
 
-            SyncPos();
+            // SyncPos();
         }
     }
 

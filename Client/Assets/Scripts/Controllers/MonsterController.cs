@@ -35,15 +35,8 @@ public class MonsterController : CreatureController
         base.UpdateController();
     }
 
-    // 보간에 필요한 변수들
     Vector3 _lastPos;
     Vector3 _currentPos;
-    float _posRatio;
-
-    Quaternion _lastRot;
-    Quaternion _currentRot;
-    float _rotRatio;
-
     // 서버에서 패킷을 받을 때 호출되는 함수
     public void OnRecvMovePacket(S_Move movePacket)
     {
@@ -67,32 +60,6 @@ public class MonsterController : CreatureController
 		//Managers.Object.Remove(Id);
 		//Managers.Resource.Destroy(gameObject);
 	}
-
-    //bool isSkill = false;
-    //public void SelectSkill() 
-    //{
-    //    if (isSkill)
-    //        return;
-
-    //    isSkill = true;
-    //    Debug.Log($"SelectSkill : 스킬 쓰는 중");
-    //    Array skillValues = System.Enum.GetValues(typeof(MonsterSkill));
-    //    List<MonsterSkill> availableSkills = new List<MonsterSkill>();
-
-    //    foreach (MonsterSkill skill in skillValues)
-    //    {
-    //        if (skill != MonsterSkill.None)
-    //            availableSkills.Add(skill);
-    //    }
-
-    //    if (availableSkills.Count > 0)
-    //    {
-    //        int randomIndex = _random.Next(0, availableSkills.Count);
-    //        MonsterSkill selectedSkill = availableSkills[randomIndex];
-
-    //        Skill = selectedSkill;
-    //    }
-    //}
 
     public override void UseSkill(int skillId)
     {
