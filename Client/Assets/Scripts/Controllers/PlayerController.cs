@@ -4,38 +4,26 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEditor;
 using UnityEngine;
 using static Define;
 
 public class PlayerController : CreatureController
 {
-	protected Coroutine _coSkill;
+    protected Coroutine _coSkill;
     protected bool _rangedSkill = false;
 
     protected Dictionary<string, SkillBase> _skills = new Dictionary<string, SkillBase>();
 
     protected override void Init()
-	{
-		base.Init();
-		MakeSkillDict();
-        ObjectType = Define.Object.OtherPlayer; 
+    {
+        base.Init();
+        //MakeSkillDict();
+        ObjectType = Define.Object.OtherPlayer;
     }
 
-	protected override void UpdateController()
-	{		
-		base.UpdateController();
-	}
-
-    protected virtual void CheckUpdatedFlag()
-	{
-
-	}
-
-    public override void OnDamaged()
-	{
-		Debug.Log("Player HIT !");
-	}
+    protected override void UpdateAnimation()
+    {
+    }
 
     #region Util
     protected string GetCharacterName()
@@ -44,11 +32,15 @@ public class PlayerController : CreatureController
     }
     #endregion
 
-    #region Skill
-    public override void UseSkill(KeyCode key)
+    protected override void UpdateController()
     {
-        SkillBase skill = FindSkill(key);
-        skill.Execute();
+        base.UpdateController();
+    }
+
+    public override void UseSkill(string keyCode)
+    {
+        //SkillBase skill = FindSkill(keyCode);
+        //skill.Execute();
 
         if (_coSkill != null)
             StopCoroutine(_coSkill);
@@ -84,9 +76,9 @@ public class PlayerController : CreatureController
             string className = type.Name;
             int idx = className.IndexOf('_');
             string charName = idx >= 0 ? className.Substring(0, idx) : className;
-            if(charName != GetCharacterName())
+            if (charName != GetCharacterName())
                 continue;
-            
+
             SkillBase skill = (SkillBase)Activator.CreateInstance(type);
             skill.SkillData = Managers.Data.SkillDict[type.Name];
             skill._player = this;
@@ -95,59 +87,18 @@ public class PlayerController : CreatureController
         }
     }
 
-    protected SkillBase FindSkill(KeyCode key)
+    protected virtual void CheckUpdatedFlag()
     {
-        SkillBase skillBase = null;
 
-        string skillName = GetCharacterName() + '_' + key.ToString();
-        if (!_skills.TryGetValue(skillName, out skillBase))
-        {
-            Debug.Log($"Skill을 찾을 수 없음 : {key}");
-            return null;
-        }
-
-        return skillBase;
-    }
-    #endregion
-
-    #region Animation
-    protected override void UpdateAnimation()
-    {
-        if (_animator == null)
-            return;
-
-        if (State == CreatureState.Idle)
-        {
-        }
-        else if (State == CreatureState.Moving)
-        {
-        }
-        else if (State == CreatureState.Skill)
-        {
-        }
-        else
-        {
-        }
     }
 
-    // 서버로부터 애니메이션 정보를 받아와 다른 플레이어의 애니메이션 재생용
-    public virtual void PlayAnimation(AnimInfo animInfo)
+    public override void OnDamaged()
     {
-        switch (animInfo.Type)
-        {
-            case AnimType.Play:
-                _animator.Play(animInfo.Hash, 0, Time.time - animInfo.Value);
-                break;
-            case AnimType.Trigger:
-                _animator.SetTrigger(animInfo.Hash);
-                break;
-            case AnimType.Bool:
-                _animator.SetBool(animInfo.Hash, animInfo.Value != 0f);
-                break;
-            case AnimType.Float:
-                _animator.SetFloat(animInfo.Hash, animInfo.Value);
-                break;
-        }
+        Debug.Log("Player HIT !");
     }
-    #endregion
+
+    public void PlayAnimFromServer(AnimInfo animInfo)
+    {
+        _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
+    }
 }

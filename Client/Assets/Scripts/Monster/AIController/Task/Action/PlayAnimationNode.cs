@@ -74,7 +74,7 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
         // 현재 우리가 의도한 스킬 애니메이션이 재생 중이고, 거의 끝났다면 성공 처리
         if (monsterController.isAnimEnd)
         {
-            Debug.Log("스킬 끝");
+            //Debug.Log("스킬 끝");
             monsterController.isAnimEnd = false;
             _isTriggerSet = false; 
             return NodeStatus.Success;
@@ -82,7 +82,7 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
 
         if (!_isTriggerSet)
         {
-            Debug.Log($"{triggerName} 스킬 시작");
+            //Debug.Log($"{triggerName} 스킬 시작");
 
             _animator.SetTrigger(triggerName);
             _isTriggerSet = true;
