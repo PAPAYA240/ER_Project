@@ -180,7 +180,7 @@ message StatInfo{
 
 message SkillInfo{
 	int32 skillId = 1;
-	int32 keyCode = 2;
+	string keyCode = 2;
 	string name = 3;
 }
 
