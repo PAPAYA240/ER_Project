@@ -19,6 +19,10 @@ enum MsgId {
   C_ANIM = 11;
   S_ANIM = 12;
   C_CHARACTER = 13;
+  S_CHARACTER = 14;
+  S_ENTER_PICK = 15;
+  S_LEAVE_PICK = 16;
+  C_PING = 17;
 }
 
 enum CreatureState{
@@ -102,13 +106,27 @@ message C_Anim{
 	AnimInfo animInfo = 1;
 }
 
-message C_Character{
-	CharacterType charType = 1;
-}
-
 message S_Anim{
 	int32 objectId = 1;
 	AnimInfo animInfo = 2;
+}
+
+message C_Character{
+	CharacterType charType = 1;
+	int32 pickIdx = 2;
+}
+
+message S_Character{
+	CharacterType charType = 1;
+	int32 pickIdx = 2;
+}
+
+message S_EnterPick{
+	int32 pickIdx = 1;
+}
+
+message S_LeavePick{
+	int32 pickIdx = 1;
 }
 
 message ObjectInfo{
@@ -164,4 +182,8 @@ message SkillInfo{
 	int32 skillId = 1;
 	int32 keyCode = 2;
 	string name = 3;
+}
+
+message C_Ping{
+	bool ping = 1;
 }
