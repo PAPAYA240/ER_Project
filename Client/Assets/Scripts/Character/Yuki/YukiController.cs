@@ -17,7 +17,7 @@ public class YukiController : MyPlayerController
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            //ExecuteSkill("Rozzi_Q");
+            ExecuteSkill(KeyCode.Q);
         }
         else if (Input.GetKeyDown(KeyCode.W))
         {

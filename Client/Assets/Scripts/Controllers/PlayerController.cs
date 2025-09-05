@@ -77,9 +77,16 @@ public class PlayerController : CreatureController
 
         foreach (var type in skillTypes)
         {
-            // TODO : 캐릭터 별로 다르게 넣어주기
             // SkillBase를 상속받은 클래스들을 탐색해 생성
             // 클래스의 이름으로 SkillDict에서 SkillData을 검색해 데이터를 채워줌
+
+            // 본인 캐릭터의 스킬 정보만 추출
+            string className = type.Name;
+            int idx = className.IndexOf('_');
+            string charName = idx >= 0 ? className.Substring(0, idx) : className;
+            if(charName != GetCharacterName())
+                continue;
+            
             SkillBase skill = (SkillBase)Activator.CreateInstance(type);
             skill.SkillData = Managers.Data.SkillDict[type.Name];
             skill._player = this;
