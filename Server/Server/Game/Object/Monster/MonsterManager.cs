@@ -28,10 +28,7 @@ namespace Server.Game.Object.Monster
         public void Update()
         {
             if (_room == null)
-            {
-                Console.WriteLine("Failed _room = MonsterManager.Update()");
                 return;
-            }
 
             if (_nextSpawnTick > Environment.TickCount64) return; 
 
