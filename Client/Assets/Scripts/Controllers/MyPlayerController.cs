@@ -70,15 +70,20 @@ public class MyPlayerController : PlayerController
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
+            ExecuteSkill(KeyCode.Q);
         }
         else if (Input.GetKeyDown(KeyCode.W))
         {
+            ExecuteSkill(KeyCode.W);
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
+            State = CreatureState.Dead;
         }
         else if (Input.GetKeyDown(KeyCode.C))
         {
+            State = CreatureState.Idle;
+            SetBoolAnimation("bFishing", false);
         }
     }
 
