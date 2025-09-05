@@ -64,8 +64,20 @@ class PacketHandler
             MonsterController mc = go.GetComponentInChildren<MonsterController>();
             if (mc == null)
                 return;
-            mc.OnRecvMovePacket(movePacket);
+            //mc.OnRecvMovePacket(movePacket);
         }          
+    }
+     public static void S_StateHandler(PacketSession session, IMessage packet)
+    {
+        S_State skillPacket = packet as S_State;
+
+        GameObject go = Managers.Object.FindById(skillPacket.ObjectId);
+        if (go == null)
+            return;
+
+        MonsterController mc = go.GetComponentInChildren<MonsterController>();
+        if (mc != null)
+            mc.OnRecvStatePacket(skillPacket);  
     }
 
     public static void S_SkillHandler(PacketSession session, IMessage packet)
@@ -81,9 +93,14 @@ class PacketHandler
         {
             GameObjectType objectType = ObjectManager.GetObjectTypeById(cc.Id);
             if (objectType == GameObjectType.Player)
+            {
                 cc.UseSkill((KeyCode)skillPacket.SkillInfo.KeyCode);
-            else if(cc.ObjectType == Define.Object.Monster)
-                cc.UseSkill(skillPacket.SkillInfo.SkillId);
+            }
+            else if (cc.ObjectType == Define.Object.Monster)
+            {
+                MonsterController mc = go.GetComponentInChildren<MonsterController>();
+                //mc.OnRecvSkillPacket(skillPacket);
+            }
         }
     }
 
@@ -102,7 +119,8 @@ class PacketHandler
                 pc.PlayAnimation(animPacket.AnimInfo);
         }
     }
-
+    
+    
     public static void S_ChangeHpHandler(PacketSession session, IMessage packet)
     {
         S_ChangeHp changePacket = packet as S_ChangeHp;

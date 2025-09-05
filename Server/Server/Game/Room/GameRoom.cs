@@ -22,6 +22,10 @@ namespace Server.Game
 
         MonsterManager _monsterManager = new MonsterManager();
 
+        public bool TryGetMonster(int objectId, out Monster monster)
+        {
+            return _monsters.TryGetValue(objectId, out monster);
+        }
         public void Init(int mapId)
         {
             string navMeshFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "navmesh_data.json");
@@ -188,8 +192,6 @@ namespace Server.Game
             ObjectInfo info = player.Info;
 
             // TODO : 스킬 사용 가능 여부 체크
-
-
 
             // 스킬 사용이 가능하다 판단되면 패킷 전송
             info.PosInfo.State = CreatureState.Skill;

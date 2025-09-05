@@ -41,7 +41,7 @@ namespace Server.Game.Object.Monster
         private void Spawn()
         {
             Monster monster = ObjectManager.Instance.Add<Monster>();
-            monster.Info.Name = $"Monster_TestMonster";
+            monster.Info.Name = $"{monster.Id} Monster";
             monster.Info.PosInfo.State = CreatureState.Idle;
             monster.Info.PosInfo.PosX = 0;
             monster.Info.PosInfo.PosY = 0;

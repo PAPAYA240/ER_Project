@@ -1,9 +1,34 @@
 ﻿using Google.Protobuf.Protocol;
 using UnityEngine;
+using UnityEngine.AI;
 
-public abstract class AnimationControlNode : ActionNode
+public interface IStateChangeListener
+{
+    void HandleStateChange(CreatureState newState);
+}
+
+public abstract class AnimationControlNode : ActionNode, IStateChangeListener
 {
     protected Animator _animator;
+    protected MonsterController monsterController;
+    protected NavMeshAgent _navMeshAgent;
+
+    protected bool Check(GameObject owner)
+    {
+        if (monsterController == null)
+            monsterController = owner.GetComponentInChildren<MonsterController>();
+
+        if (_animator == null)
+            _animator = owner.GetComponentInChildren<Animator>();
+
+        if (_navMeshAgent == null)
+            _navMeshAgent = owner.GetComponentInChildren<NavMeshAgent>();
+
+        return (monsterController != null && _animator != null && _navMeshAgent != null);
+    }
+
+    public abstract void HandleStateChange(CreatureState newState);
+
 }
 // 애니메이션 재생 노드
 public class PlayAnimatorBoolNode : AnimationControlNode
@@ -13,17 +38,7 @@ public class PlayAnimatorBoolNode : AnimationControlNode
 
     public override NodeStatus Execute(GameObject owner)
     {
-        if (_animator == null)
-        {
-            _animator = owner.GetComponentInChildren<Animator>();
-            if (_animator == null)
-            {
-                Debug.LogError("No Animation");
-                return NodeStatus.Failure;
-            }
-        }
-        MonsterController monsterController = owner.GetComponentInChildren<MonsterController>();
-        if (monsterController == null)
+        if(Check(owner) == false)
             return NodeStatus.Failure;
 
         if (string.IsNullOrEmpty(paramName))
@@ -32,10 +47,32 @@ public class PlayAnimatorBoolNode : AnimationControlNode
             return NodeStatus.Failure;
         }
 
-        Debug.Log("Animation Moving");
         _animator.SetBool(paramName, valueToSet);
-        return NodeStatus.Success; 
+        return NodeStatus.Running;
     }
+
+    public override void HandleStateChange(CreatureState newState)
+    {
+    }
+}
+public class PlayAnimatorFloatNode : AnimationControlNode
+{
+
+    public override NodeStatus Execute(GameObject owner)
+    {
+        if (Check(owner) == false)
+            return NodeStatus.Failure;
+
+        float speed = _navMeshAgent.velocity.magnitude;
+        _animator.SetFloat("moveVelocity", speed);
+
+        return NodeStatus.Running;
+    }
+
+    public override void HandleStateChange(CreatureState newState)
+    {
+    }
+
 }
 
 public class PlayAnimatorTriggerNode : AnimationControlNode
@@ -49,44 +86,34 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
 
     public override NodeStatus Execute(GameObject owner)
     {
-        if (_animator == null)
+        if (Check(owner) == false)
         {
-            _animator = owner.GetComponentInChildren<Animator>();
-            if (_animator == null)
-            {
-                Debug.LogError("No Animation");
-                return NodeStatus.Failure;
-            }
-        }
-        _animator.SetBool("walk", false);
-
-        if (string.IsNullOrEmpty(triggerName) || string.IsNullOrEmpty(animationStateName))
-        {
-            Debug.LogError("Trigger Name 또는 Animation State Name이 설정되지 않았습니다.");
             return NodeStatus.Failure;
         }
+
         AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
-
-        MonsterController monsterController = owner.GetComponentInChildren<MonsterController>();
-        if (monsterController == null)
-            return NodeStatus.Failure;
-       
-        // 현재 우리가 의도한 스킬 애니메이션이 재생 중이고, 거의 끝났다면 성공 처리
-        if (monsterController.isAnimEnd)
+        if (_isTriggerSet && stateInfo.normalizedTime >= 1.0f)
         {
-            Debug.Log("스킬 끝");
-            monsterController.isAnimEnd = false;
+            _animator.ResetTrigger(triggerName);
             _isTriggerSet = false; 
-            return NodeStatus.Success;
+            monsterController.SendSkillEndPacket(monsterController.Skill);
+            monsterController.Skill = MonsterSkill.MsNone;
+            monsterController.State = CreatureState.Idle;
+            return NodeStatus.Success; 
         }
 
-        if (!_isTriggerSet)
+        if (_isTriggerSet == false)
         {
-            Debug.Log($"{triggerName} 스킬 시작");
-
             _animator.SetTrigger(triggerName);
             _isTriggerSet = true;
+            Debug.Log("애니메이션 시작");
         }
         return NodeStatus.Running;
     }
+
+    public override void HandleStateChange(CreatureState newState)
+    {
+
+    }
+
 }

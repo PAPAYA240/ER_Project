@@ -9,11 +9,11 @@ namespace Server.Game.Object.Monster
 {
     public class Monster : GameObject
     {
-        List<string> _skills = new List<string>();
-        public Monster()
-        {
-            ObjectType = GameObjectType.Monster;
-        }
+        List<MonsterSkill> _skills = new List<MonsterSkill>();
+        MonsterSkill _currentSkill = MonsterSkill.MsNone;
+        public Monster() => ObjectType = GameObjectType.Monster;
+
+      
 
         public void Init(string name)
         {
@@ -51,8 +51,12 @@ namespace Server.Game.Object.Monster
         Player _target;
         int _searchCellDist = 10;
         long _nextSearchTick = 0;
+        private long _lastSkillTime = 0; // 마지막 스킬 사용 시간
+        private const long SKILL_COOLDOWN_MS = 300;
         protected virtual void UpdateIdle()
         {
+            if (_lastSkillTime > 0 && Environment.TickCount64 < _lastSkillTime + SKILL_COOLDOWN_MS)
+                return;
             if (_nextSearchTick > Environment.TickCount64)
                 return;
             _nextSearchTick = Environment.TickCount64 + 1000;
@@ -69,15 +73,15 @@ namespace Server.Game.Object.Monster
 
             _target = target;
 
-            // 목표를 찾으면 경로 한 번 계산
             CalculatePath();
+            _lastPlayerPosition = new Vector3(_target.PosInfo.PosX, _target.PosInfo.PosY, _target.PosInfo.PosZ);
 
-            State = CreatureState.Moving;
-            Console.WriteLine("--> 타겟 찾음! 이동 시작.");
+            BroadcastState(CreatureState.Moving, new PositionInfo(PosInfo), new RotationInfo(RotInfo));
         }
 
         // Moving 상태 
         long _nextMoveTick = 0;
+        Vector3 _lastPlayerPosition = new Vector3();
         protected virtual void UpdateMoving()
         {
             if (_nextMoveTick > Environment.TickCount64)
@@ -88,25 +92,33 @@ namespace Server.Game.Object.Monster
             if (_target == null || _path.Count == 0 || _target.Room != Room)
             {
                 _target = null;
-                State = CreatureState.Idle;
                 _path.Clear();
+                BroadcastState(CreatureState.Idle);
                 return;
             }
 
             // 스킬 범위 내에 들어오면 스킬 상태로 전환
             if (IsPlayerInSkillRange())
             {
-                State = CreatureState.Skill;
                 _path.Clear();
+                State = CreatureState.Skill;
                 return;
             }
 
-            Console.WriteLine("추적");
+
+            // 플레이어가 일정 이상 움직였을 때 재계산
+            Vector3 targetPos = new Vector3(_target.PosInfo.PosX, _target.PosInfo.PosY, _target.PosInfo.PosZ);
+            if (Vector3.Distance(_lastPlayerPosition, targetPos) > 0.5f) 
+            {
+                Console.WriteLine("재추적");
+                CalculatePath();
+                _lastPlayerPosition = targetPos;
+            }
 
             // 이동만 담당하는 함수 
             MoveAlongPath();
 
-            BroadcastMove();
+            BroadcastState(CreatureState.Moving, new PositionInfo(PosInfo), new RotationInfo(RotInfo));
         }
 
         // 스킬 시전
@@ -115,17 +127,19 @@ namespace Server.Game.Object.Monster
         protected virtual void UpdateSkill()
         {
             if (_selectSkill)
-            {
-                if (_skillEndTime > Environment.TickCount64)
-                    return;
-                State = CreatureState.Moving;
-                _selectSkill = false;
-            }
-            else
-            {
-                _selectSkill = true;
-                DecideAndUseSkill();
-            }
+                return;
+
+            _selectSkill = true;
+             DecideAndUseSkill();
+        }
+        public bool CheckSkillEnd(MonsterSkill skill)
+        {
+            Console.WriteLine("스킬 끝");
+
+            _selectSkill = false;
+            BroadcastState(CreatureState.Idle);
+
+            return true;
         }
 
         // 스킬 탐색
@@ -134,24 +148,18 @@ namespace Server.Game.Object.Monster
             if (_skills.Count == 0)
                 return;
 
-            State = CreatureState.Skill;
-            int skillIndex = new Random().Next(0, _skills.Count);
-            string skillName = _skills[skillIndex];
+            int skillIdx = new Random().Next(0, _skills.Count);
+            MonsterSkill skillName = _skills[skillIdx];
 
-            SkillData skillData = null;
+            MonsterSkillData skillData = null;
             if (DataManager.MonsterSkillDict.TryGetValue(skillName, out skillData) == false)
             {
                 Console.WriteLine($"--> 사용할 스킬 ID({skillName})가 데이터에 없습니다.");
                 return;
             }
 
-            Console.WriteLine($"--> 사거리 진입! {skillData.name} 스킬 사용!");
-            State = CreatureState.Skill;
-
-            long animationTick = (long)(skillData.animationTime * 1000);
-            _skillEndTime = Environment.TickCount64 + animationTick;
-
-            BroadcastSkill(skillData);
+            // 애니메이션 길이 찾기
+            BroadcastState(CreatureState.Skill, null, null, skillData);
             _target.OnDamaged(this, skillData.damage + Stat.Attack);
         }
 
@@ -185,7 +193,7 @@ namespace Server.Game.Object.Monster
             _path = Pathfinding.FindPath(startPos, endPos);
             _pathIdx = 0;
 
-            if (_path.Count == 0)
+            if (_path == null || _path.Count == 0)
             {
                 Console.WriteLine($"경로 없음 추적 포기");
                 _target = null;
@@ -212,8 +220,7 @@ namespace Server.Game.Object.Monster
 
             // 웨이포인트에 충분히 가까워졌는지 확인
             float distToNextWaypoint = Vector3.Distance(monsterPos, nextWaypoint);
-            Console.WriteLine($"Current Position: {monsterPos}, Next Waypoint: {nextWaypoint}, Distance: {distToNextWaypoint}");
-            if (distToNextWaypoint < 0.5f)
+            if (distToNextWaypoint < 1.0f)
             {
                 // 다음 웨이포인트로 인덱스 증가
                 _pathIdx++;
@@ -261,7 +268,7 @@ namespace Server.Game.Object.Monster
                 float angleRad = (float)Math.Atan2(flatDir.X, flatDir.Z);
                 Quaternion targetRotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angleRad);
 
-                float rotationSpeed = 10.0f;
+                float rotationSpeed = 50.0f;
                 Quaternion newRotation = Quaternion.Slerp(currentRotation, targetRotation, rotationSpeed * elapsedTime);
 
                 RotInfo.Qx = newRotation.X;
@@ -276,6 +283,8 @@ namespace Server.Game.Object.Monster
             S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
             skill.ObjectId = Id;
             skill.SkillInfo.SkillId = skillData.id;
+
+            State = CreatureState.Skill;
             Room.Broadcast(skill);
         }
 
@@ -285,7 +294,30 @@ namespace Server.Game.Object.Monster
             movePacket.ObjectId = Id;
             movePacket.PosInfo = new PositionInfo(PosInfo);
             movePacket.RotInfo = new RotationInfo(RotInfo);
+
+            State = CreatureState.Moving;
             Room.Broadcast(movePacket);
+        }
+        public void BroadcastState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null)
+        {
+            State = newState;
+
+            S_State statePacket = new S_State();
+            statePacket.ObjectId = Id;
+            
+            // State
+            statePacket.MyState = newState;
+            statePacket.PosInfo = posInfo;
+            statePacket.RotInfo = rotInfo;
+
+            // Skill
+            if(skillData != null)
+            { 
+                statePacket.Skilltype = skillData.skillType;
+                _currentSkill = skillData.skillType;
+            }
+
+            Room.Broadcast(statePacket);
         }
         private long GetCurrentTimeMs()
         {
