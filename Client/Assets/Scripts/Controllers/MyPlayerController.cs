@@ -221,13 +221,13 @@ public class MyPlayerController : PlayerController
             // 다른 조건 체크하기
 
             // 스킬 실행
-            skill.Execute();
-
-            // 스킬 실행 UI, TODO 스킬 사용할 수 있는 검증이 다 끝난 곳으로 옮겨야함
-            _playerInterface.UseSkill(KeyToUIEnum(key));
+            //skill.Execute();
 
             // 패킷 보내기
             SendSkillPacket(key);
+
+            // 스킬 실행 UI, TODO 스킬 사용할 수 있는 검증이 다 끝난 곳으로 옮겨야함
+            _playerInterface.UseSkill(KeyToUIEnum(key));
 
             Debug.Log($"스킬 사용! : {key}");
         }
@@ -397,7 +397,10 @@ public class MyPlayerController : PlayerController
     #region Packet
     private void SendSkillPacket(KeyCode key)
     {
-        C_Skill skillPacket = new C_Skill() { Info = new SkillInfo() { KeyCode = (int)key } };
+        string skillName = Enum.GetName(typeof(Character), Managers.Object.Character) + '_' + key.ToString();
+        C_Skill skillPacket = new C_Skill() { 
+            ObjectInfo = ObjInfo,
+            SkillInfo = new SkillInfo() { KeyCode = (int)key, Name = skillName } };
         Managers.Network.Send(skillPacket);
     }
 

@@ -37,6 +37,13 @@ public class PlayerController : CreatureController
 		Debug.Log("Player HIT !");
 	}
 
+    #region Util
+    protected string GetCharacterName()
+    {
+        return Enum.GetName(typeof(CharacterType), ObjInfo.CharType);
+    }
+    #endregion
+
     #region Skill
     public override void UseSkill(KeyCode key)
     {
@@ -59,6 +66,7 @@ public class PlayerController : CreatureController
         State = CreatureState.Idle;
         _coSkill = null;
 
+        // TODO : TEMP
         _animator.SetTrigger("tIdle");
         CheckUpdatedFlag();
     }
@@ -69,9 +77,16 @@ public class PlayerController : CreatureController
 
         foreach (var type in skillTypes)
         {
-            // TODO : 캐릭터 별로 다르게 넣어주기
             // SkillBase를 상속받은 클래스들을 탐색해 생성
             // 클래스의 이름으로 SkillDict에서 SkillData을 검색해 데이터를 채워줌
+
+            // 본인 캐릭터의 스킬 정보만 추출
+            string className = type.Name;
+            int idx = className.IndexOf('_');
+            string charName = idx >= 0 ? className.Substring(0, idx) : className;
+            if(charName != GetCharacterName())
+                continue;
+            
             SkillBase skill = (SkillBase)Activator.CreateInstance(type);
             skill.SkillData = Managers.Data.SkillDict[type.Name];
             skill._player = this;
@@ -84,7 +99,7 @@ public class PlayerController : CreatureController
     {
         SkillBase skillBase = null;
 
-        string skillName = Enum.GetName(typeof(Character), Managers.Object.Character) + '_' + key.ToString();
+        string skillName = GetCharacterName() + '_' + key.ToString();
         if (!_skills.TryGetValue(skillName, out skillBase))
         {
             Debug.Log($"Skill을 찾을 수 없음 : {key}");

@@ -14,4 +14,3 @@ public class Rozzi_Q : SkillBase
         Debug.Log("Play Skill Animation");
     }
 }
-

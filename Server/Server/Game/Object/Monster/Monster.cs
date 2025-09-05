@@ -57,7 +57,6 @@ namespace Server.Game.Object.Monster
                 return;
             _nextSearchTick = Environment.TickCount64 + 1000;
 
-            // 몬스터를 마지막에 공격한 Player를 타겟으로 잡자
             Player target = Room.FindPlayer(p =>
             {
                 Vector3 playerPos = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
@@ -69,6 +68,10 @@ namespace Server.Game.Object.Monster
                 return;
 
             _target = target;
+
+            // 목표를 찾으면 경로 한 번 계산
+            CalculatePath();
+
             State = CreatureState.Moving;
             Console.WriteLine("--> 타겟 찾음! 이동 시작.");
         }
@@ -80,16 +83,17 @@ namespace Server.Game.Object.Monster
             if (_nextMoveTick > Environment.TickCount64)
                 return;
 
-            long tick = (long)(1000 / Speed);
-            _nextMoveTick = Environment.TickCount64 + tick;
-            if (_target == null || _target.Room != Room/* || _target.Hp == 0*/)
+            _nextMoveTick = Environment.TickCount64 + 100;
+
+            if (_target == null || _path.Count == 0 || _target.Room != Room)
             {
                 _target = null;
-                _path.Clear();
                 State = CreatureState.Idle;
+                _path.Clear();
                 return;
             }
 
+            // 스킬 범위 내에 들어오면 스킬 상태로 전환
             if (IsPlayerInSkillRange())
             {
                 State = CreatureState.Skill;
@@ -98,12 +102,15 @@ namespace Server.Game.Object.Monster
             }
 
             Console.WriteLine("추적");
-            AStar();
+
+            // 이동만 담당하는 함수 
+            MoveAlongPath();
+
             BroadcastMove();
         }
 
         // 스킬 시전
-        private long  _skillEndTime = 0; // 스킬 '애니메이션'이 끝나는 시간
+        private long  _skillEndTime = 0;
         bool _selectSkill = false;
         protected virtual void UpdateSkill()
         {
@@ -170,62 +177,81 @@ namespace Server.Game.Object.Monster
         List<Vector3> _path = new List<Vector3>();
         int _pathIdx = 0;
         long _nextCalcPathTick = 0;
-        private void AStar()
+        private void CalculatePath()
         {
-            if (_path.Count == 0 || _nextCalcPathTick < Environment.TickCount64)
+            Vector3 startPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
+            Vector3 endPos = new Vector3(_target.PosInfo.PosX, _target.PosInfo.PosY, _target.PosInfo.PosZ);
+
+            _path = Pathfinding.FindPath(startPos, endPos);
+            _pathIdx = 0;
+
+            if (_path.Count == 0)
             {
-                _nextCalcPathTick = Environment.TickCount64 + 1000;
-
-                Vector3 startPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-                Vector3 endPos = new Vector3(_target.PosInfo.PosX, _target.PosInfo.PosY, _target.PosInfo.PosZ);
-
-                _path = Pathfinding.FindPath(startPos, endPos);
-                _pathIdx = 0;
-
-                // 경로 X 추적 포기
-                if (_path.Count == 0)
-                {
-                    State = CreatureState.Idle;
-                    return;
-                }
-            }
-
-            if (_path.Count > 0)
-            {
-                Vector3 targetPos = _path[_pathIdx];
-                // TODO : FollowToTarget 삽입
-                FollowToPlayer(targetPos);
-
-                float dist = Vector3.Distance(new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ), targetPos);
-                if (dist < 0.5f)
-                {
-                    _pathIdx++;
-                    // 도차쿠
-                    if (_pathIdx >= _path.Count)
-                    {
-                        _path.Clear();
-                        State = CreatureState.Idle;
-                    }
-                }
+                Console.WriteLine($"경로 없음 추적 포기");
+                _target = null;
+                State = CreatureState.Idle;
             }
         }
 
+        // 몬스터의 이동 로직을 담당하는 함수
+        private void MoveAlongPath()
+        {
+            // 경로 인덱스가 유효하지 않으면 종료
+            if (_pathIdx >= _path.Count)
+            {
+                _path.Clear();
+                State = CreatureState.Idle;
+                return;
+            }
+
+            // 다음 웨이포인트로 이동
+            Vector3 nextWaypoint = _path[_pathIdx];
+            FollowToPlayer(nextWaypoint);
+
+            Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
+
+            // 웨이포인트에 충분히 가까워졌는지 확인
+            float distToNextWaypoint = Vector3.Distance(monsterPos, nextWaypoint);
+            Console.WriteLine($"Current Position: {monsterPos}, Next Waypoint: {nextWaypoint}, Distance: {distToNextWaypoint}");
+            if (distToNextWaypoint < 0.5f)
+            {
+                // 다음 웨이포인트로 인덱스 증가
+                _pathIdx++;
+            }
+        }
+
+        private long _lastUpdateTime = 0;
         private void FollowToPlayer(Vector3 targetPos)
         {
+            if (_lastUpdateTime == 0)
+                _lastUpdateTime = Environment.TickCount64;
+
             Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
             Vector3 dir = targetPos - monsterPos;
+            float distance = dir.Length();
 
-            if (dir.LengthSquared() < 0.0001f)
+            if (dir.LengthSquared() < 0.1f)
+            {
+                PosInfo.PosX = targetPos.X;
+                PosInfo.PosY = targetPos.Y;
+                PosInfo.PosZ = targetPos.Z;
                 return;
+            }
 
-            long tick = (long)(1000 / Speed);
-            float tickSeconds = tick / 1000.0f;
-            Vector3 moveDir = Vector3.Normalize(dir);
-            float moveDist = Speed * tickSeconds;
+            long tick = Environment.TickCount64;
+            float elapsedTime = (tick - _lastUpdateTime) / 1000.0f;
+            _lastUpdateTime = tick;
 
-            PosInfo.PosX += moveDir.X * moveDist;
-            //PosInfo.PosY += moveDir.Y * moveDist;
-            PosInfo.PosZ += moveDir.Z * moveDist;
+            float moveStep = Stat.Speed * elapsedTime;
+            moveStep = Math.Min(moveStep, distance);
+
+            // 이동
+            dir = Vector3.Normalize(dir);
+            Vector3 newPos = monsterPos + dir * moveStep;
+
+            PosInfo.PosX = newPos.X;
+            PosInfo.PosY = newPos.Y;
+            PosInfo.PosZ = newPos.Z;
 
             // 회전
             Vector3 flatDir = new Vector3(dir.X, 0, dir.Z);
@@ -235,22 +261,21 @@ namespace Server.Game.Object.Monster
                 float angleRad = (float)Math.Atan2(flatDir.X, flatDir.Z);
                 Quaternion targetRotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angleRad);
 
-                float rotationSpeed = 5.0f;
-                float deltaTime = (float)tick / 1000.0f;
-                Quaternion newRotation = Quaternion.Lerp(currentRotation, targetRotation, rotationSpeed * deltaTime);
-                
-                RotInfo.Qx = targetRotation.X;
-                RotInfo.Qy = targetRotation.Y;
-                RotInfo.Qz = targetRotation.Z;
-                RotInfo.Qw = targetRotation.W;
+                float rotationSpeed = 10.0f;
+                Quaternion newRotation = Quaternion.Slerp(currentRotation, targetRotation, rotationSpeed * elapsedTime);
+
+                RotInfo.Qx = newRotation.X;
+                RotInfo.Qy = newRotation.Y;
+                RotInfo.Qz = newRotation.Z;
+                RotInfo.Qw = newRotation.W;
             }
         }
 
         void BroadcastSkill(SkillData skillData)
         {
-            S_Skill skill = new S_Skill() { Info = new SkillInfo() };
+            S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
             skill.ObjectId = Id;
-            skill.Info.SkillId = skillData.id;
+            skill.SkillInfo.SkillId = skillData.id;
             Room.Broadcast(skill);
         }
 
