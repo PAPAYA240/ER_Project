@@ -36,14 +36,11 @@ namespace Server
 			ConfigManager.LoadConfig();
 			DataManager.LoadData();
 
-			PickRoom pickRoom = RoomManager.Instance.AddPickRoom();
-			//TickRoom(pickRoom, 10);
-
-			//GameRoom room = RoomManager.Instance.Add(1) ;
-			//TickRoom(room, 10);
-
-			// DNS (Domain Name System)
-			string host = Dns.GetHostName();
+			RoomManager.Instance.AddPickRoom();
+            RoomManager.Instance.AddGameRoom(1);
+			
+            // DNS (Domain Name System)
+            string host = Dns.GetHostName();
 			IPHostEntry ipHost = Dns.GetHostEntry(host);
 			IPAddress ipAddr = ipHost.AddressList[0];
 			IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);

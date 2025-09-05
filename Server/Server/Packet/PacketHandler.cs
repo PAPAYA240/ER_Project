@@ -33,11 +33,10 @@ class PacketHandler
         if (player == null)
             return;
 
-        RoomManager.Instance.Remove(clientSession.CurRoom); // Remove PickRoom 
-
-        GameRoom room = RoomManager.Instance.AddGameRoom(1);
+        GameRoom room = RoomManager.Instance.Find(2) as GameRoom;
         if (room == null)
             return;
+            
         clientSession.CurRoom = room.RoomId;
         room.Push(room.EnterGame, player);
     }
