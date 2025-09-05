@@ -19,8 +19,9 @@ namespace Server.Data
         public static Dictionary<string, SkillData> MonsterSkillDict { get; private set; } = new Dictionary<string, SkillData>();
         public static void LoadData()
         {
-            StatDict = LoadJson<Data.StatData, int, StatInfo>("StatData").MakeDict();
-            SkillDict = LoadJson<Data.SkillDict, string, Data.SkillData>("SkillData").MakeDict();
+            // TEM
+            StatDict = LoadJsonServer<Data.StatData, int, StatInfo>("StatData").MakeDict();
+            SkillDict = LoadJsonServer<Data.SkillDict, string, Data.SkillData>("SkillData").MakeDict();
 
             // For MonsterData
             MonsterDict = LoadJson<Data.MonsterDict, string, Data.MonsterData>("MonsterData").MakeDict();
@@ -30,6 +31,13 @@ namespace Server.Data
         static Loader LoadJson<Loader, Key, Value>(string path) where Loader : ILoader<Key, Value>
         {
             string text = File.ReadAllText($"{ConfigManager.Config.dataPath}/{path}.json");
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Loader>(text);
+        }
+
+        // TEMP
+        static Loader LoadJsonServer<Loader, Key, Value>(string path) where Loader : ILoader<Key, Value>
+        {
+            string text = File.ReadAllText($"{ConfigManager.ConfigServer.dataPath}/{path}.json");
             return Newtonsoft.Json.JsonConvert.DeserializeObject<Loader>(text);
         }
     }

@@ -41,11 +41,11 @@ public class RozziController : MyPlayerController
 
         if (State == CreatureState.Idle)
         {
-            PlayAnimation("WAIT");
+            _animator.CrossFadeInFixedTime("WAIT", 0.1f);
         }
         else if (State == CreatureState.Moving)
         {
-            PlayAnimation("RUN");
+            _animator.CrossFadeInFixedTime("RUN", 0.1f);
         }
         else if (State == CreatureState.Skill)
         {

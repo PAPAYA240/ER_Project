@@ -14,6 +14,14 @@ namespace Server.Data
     {
         public static ServerConfig Config { get; private set; }
 
+        //
+        public static ServerConfig ConfigServer { get; private set; }
+        public static void LoadConfigServer()
+        {
+            string text = File.ReadAllText("configServer.json");
+            ConfigServer = Newtonsoft.Json.JsonConvert.DeserializeObject<ServerConfig>(text);
+        }
+
         public static void LoadConfig()
         {
             string text = File.ReadAllText("config.json");
