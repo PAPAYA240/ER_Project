@@ -11,10 +11,8 @@ using Server.Game.Object.Monster.AStar;
 
 namespace Server.Game
 {
-    public class GameRoom : JobSerializer
+    public class GameRoom : Room
     {
-        public int RoomId { get; set; }
-
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
         Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
         Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
@@ -28,7 +26,7 @@ namespace Server.Game
             _monsterManager.Init(this, 1);
         }
 
-        public void Update()
+        public override void Update()
         {
             _monsterManager.Update();
 
@@ -257,8 +255,13 @@ namespace Server.Game
             }
         }
 
+        public override void CheckLastPing()
+        {
+            foreach(Player p in _players.Values)
+            {
+                if (p.Session.CheckTimeout())
+                    p.Session.Disconnect();
+            }
+        }
     }
-
-
-
 }

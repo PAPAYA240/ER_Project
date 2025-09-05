@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -131,5 +132,44 @@ class PacketHandler
             cc.Hp = 0;
             cc.OnDead();
         }
+    }
+
+    public static void S_CharacterHandler(PacketSession session, IMessage packet)
+    {
+        S_Character charPacket = packet as S_Character;
+
+        GameObject go = GameObject.Find("Test");
+        if (go == null) return;
+
+        UI_SelectEvent selectEvent = go.GetComponent<UI_SelectEvent>();
+        if (selectEvent == null) return;
+
+        selectEvent.ChangePickImage(charPacket.CharType, charPacket.PickIdx);
+    }
+
+    public static void S_EnterPickHandler(PacketSession session, IMessage packet)
+    {
+        S_EnterPick enterPickPacket = packet as S_EnterPick;
+
+        GameObject go = GameObject.Find("Test");
+        if(go == null) return;
+
+        UI_SelectEvent selectEvent = go.GetComponent<UI_SelectEvent>();
+        if (selectEvent == null) return;
+
+        selectEvent.SetPickIdx(enterPickPacket.PickIdx);
+    }
+
+    public static void S_LeavePickHandler(PacketSession session, IMessage packet)
+    {
+        S_LeavePick leavePickPacket = packet as S_LeavePick;
+
+        GameObject go = GameObject.Find("Test");
+        if (go == null) return;
+
+        UI_SelectEvent selectEvent = go.GetComponent<UI_SelectEvent>();
+        if (selectEvent == null) return;
+
+        selectEvent.ChangePickImage(CharacterType.CharacterNone, leavePickPacket.PickIdx);
     }
 }
