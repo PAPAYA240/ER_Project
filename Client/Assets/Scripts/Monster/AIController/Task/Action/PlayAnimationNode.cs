@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.UI.GridLayoutGroup;
 
 public interface IStateChangeListener
 {
@@ -30,6 +31,7 @@ public abstract class AnimationControlNode : ActionNode, IStateChangeListener
     public abstract void HandleStateChange(CreatureState newState);
 
 }
+
 // 애니메이션 재생 노드
 public class PlayAnimatorBoolNode : AnimationControlNode
 {
@@ -55,14 +57,22 @@ public class PlayAnimatorBoolNode : AnimationControlNode
     {
     }
 }
+
+// 움직임에 사용될 애니메이션 노드
 public class PlayAnimatorFloatNode : AnimationControlNode
 {
-
     public override NodeStatus Execute(GameObject owner)
     {
         if (Check(owner) == false)
             return NodeStatus.Failure;
 
+        if(monsterController.State != CreatureState.Moving)
+        { 
+            _animator.SetFloat("moveVelocity", 0);
+            return NodeStatus.Failure;
+        }
+
+        Debug.Log("애니메이셔워크 가동 중");
         float speed = _navMeshAgent.velocity.magnitude;
         _animator.SetFloat("moveVelocity", speed);
 
@@ -75,6 +85,7 @@ public class PlayAnimatorFloatNode : AnimationControlNode
 
 }
 
+// 스킬 사용 중에 사용될 애니메이션 노드
 public class PlayAnimatorTriggerNode : AnimationControlNode
 {
     [Tooltip("Animator에 설정된 Trigger 이름")]
@@ -82,38 +93,41 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
 
     [Tooltip("Animator에 설정된 실제 애니메이션 상태의 이름. 예: Skill01State")]
     public string animationStateName;
-    private bool _isTriggerSet = false;
+    private bool _isSentEndPacket = false;
 
     public override NodeStatus Execute(GameObject owner)
     {
         if (Check(owner) == false)
-        {
             return NodeStatus.Failure;
-        }
 
-        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
-        if (_isTriggerSet && stateInfo.normalizedTime >= 1.0f)
+        if(monsterController.State != CreatureState.Skill)
         {
+            _animator.CrossFade("Idle", 0.1f);
             _animator.ResetTrigger(triggerName);
-            _isTriggerSet = false; 
-            monsterController.SendSkillEndPacket(monsterController.Skill);
-            monsterController.Skill = MonsterSkill.MsNone;
-            monsterController.State = CreatureState.Idle;
-            return NodeStatus.Success; 
+            _isSentEndPacket = false;
+            return NodeStatus.Failure; 
         }
 
-        if (_isTriggerSet == false)
+        if (_isSentEndPacket == false)
         {
             _animator.SetTrigger(triggerName);
-            _isTriggerSet = true;
-            Debug.Log("애니메이션 시작");
+            _isSentEndPacket = true;
+            //Debug.Log("애니메이션 시작");
         }
         return NodeStatus.Running;
     }
 
     public override void HandleStateChange(CreatureState newState)
     {
+        if (_animator == null)
+            return;
 
+        if (newState == CreatureState.Idle)
+        {
+            _animator.ResetTrigger(triggerName);
+            _isSentEndPacket = false;
+            //monsterController.SendSkillEndPacket(monsterController.Skill);
+        }
     }
 
 }

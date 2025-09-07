@@ -46,6 +46,7 @@ namespace Server.Data
         public int id;
         public string name;
         public MonsterSkill skillType;
+        public float skillDuration;
         public int damage;
         public ProjectileInfo projectile;
     }

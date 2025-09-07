@@ -92,7 +92,6 @@ class PacketHandler
             {
                 C_SkillEnd broadcastPacket = new C_SkillEnd();
                 broadcastPacket.ObjectInfo = skillEndPacket.ObjectInfo;
-                monster.CheckSkillEnd(skillEndPacket.SkillType);
             }
         });
     }

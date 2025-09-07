@@ -70,10 +70,15 @@ class PacketHandler
      public static void S_StateHandler(PacketSession session, IMessage packet)
     {
         S_State skillPacket = packet as S_State;
+        if (skillPacket == null)
+            return;
 
         GameObject go = Managers.Object.FindById(skillPacket.ObjectId);
         if (go == null)
+        {
+            Debug.Log($"ID {skillPacket.ObjectId}를 가진 몬스터 오브젝트를 찾을 수 없습니다");
             return;
+        }
 
         MonsterController mc = go.GetComponentInChildren<MonsterController>();
         if (mc != null)
