@@ -186,6 +186,8 @@ namespace Server.Game
             ObjectInfo info = player.Info;
 
             // TODO : 스킬 사용 가능 여부 체크
+            if (!player.CanUseSkill(skillPacket))
+                return;
 
             // 스킬 매니저에 정보를 전달해서 체크
             // 오브젝트 ID로 플레이어 특정, 해당 플레이어가 들고 있는 스킬 클래스 검색

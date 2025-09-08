@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace Server.Game
@@ -24,21 +25,27 @@ namespace Server.Game
 
         public Player()
         {
-            ObjectType = GameObjectType.Player;
+            ObjectType = GameObjectType.Player;            
+        }
 
+        public void MakeDict()
+        {
             MakeSkillDict();
             MakeCoolDownDict();
         }
 
         public bool CanUseSkill(C_Skill skillPacket)
         {
+            // 쿨타임 체크
+            if (!CheckCoolTime(skillPacket))
+                return false;
 
-
+            // 스테미나 체크
 
 
             // 체크 끝나면 데이터 변경
             // ex : 쿨타임 돌리기 시작 등
-
+            _ = CoInputCooltime(skillPacket.SkillInfo.KeyCode, FindSkill(skillPacket.SkillInfo.KeyCode).SkillData.cooldown);
             //StartCoroutine(CoInputCooltime(key, skill.SkillData.cooldown));
 
             return true;
@@ -62,7 +69,7 @@ namespace Server.Game
             return false;
         }
 
-        IEnumerator CoInputCooltime(string key, float time)
+        private async Task CoInputCooltime(string key, float time)
         {
             _coolDownDict[key].isCoolDown = true;
 
@@ -71,11 +78,16 @@ namespace Server.Game
             while (sw.Elapsed.TotalSeconds < time)
             {
                 _coolDownDict[key].coolTime = (float)(time - sw.Elapsed.TotalSeconds);
-                yield return null; 
+                await Task.Delay(100); // 0.1초마다 남은 쿨타임 갱신
             }
 
             _coolDownDict[key].isCoolDown = false;
             _coolDownDict[key].coolTime = 0.0f;
+        }
+
+        private Skill FindSkill(string keyCode)
+        {
+            return _skills[keyCode];
         }
 
         private void MakeSkillDict()
