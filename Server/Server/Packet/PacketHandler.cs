@@ -14,14 +14,31 @@ class PacketHandler
     {
         ClientSession clientSession = session as ClientSession;
 
+        clientSession.MyPlayer = ObjectManager.Instance.Add<Player>();
+        {
+            clientSession.MyPlayer.Info.Name = $"Player_{clientSession.MyPlayer.Info.ObjectId}";
+            clientSession.MyPlayer.Info.PosInfo.State = CreatureState.Idle;
+            clientSession.MyPlayer.Info.PosInfo.PosX = 0;
+            clientSession.MyPlayer.Info.PosInfo.PosY = 0;
+            clientSession.MyPlayer.Info.CharType = clientSession.MyCharacter;
+            clientSession.MyPlayer.MakeDict();
+
+            StatInfo stat = null;
+            DataManager.StatDict.TryGetValue(1, out stat);
+            clientSession.MyPlayer.Stat.MergeFrom(stat);
+
+            clientSession.MyPlayer.Session = clientSession;
+        }
+
         Player player = clientSession.MyPlayer;
         if (player == null)
             return;
 
-        GameRoom room = RoomManager.Instance.Find(1);
+        GameRoom room = RoomManager.Instance.Find(2) as GameRoom;
         if (room == null)
             return;
-
+            
+        clientSession.CurRoom = room.RoomId;
         room.Push(room.EnterGame, player);
     }
 
@@ -78,28 +95,31 @@ class PacketHandler
     public static void C_CharacterHandler(PacketSession session, IMessage packet)
     {
         ClientSession clientSession = session as ClientSession;
-        C_Character charPacket = packet as C_Character;
-        clientSession.MyCharacter = charPacket.CharType;
+        C_Character c_charPacket = packet as C_Character;
+        clientSession.MyCharacter = c_charPacket.CharType;
 
-        GameRoom room = RoomManager.Instance.Find(1);
-        if (room == null)
+        PickRoom room = RoomManager.Instance.Find(1) as PickRoom;
+        if(room == null) 
             return;
 
-        clientSession.MyPlayer = ObjectManager.Instance.Add<Player>();
-        {
-            clientSession.MyPlayer.Info.Name = $"Player_{clientSession.MyPlayer.Info.ObjectId}";
-            clientSession.MyPlayer.Info.PosInfo.State = CreatureState.Idle;
-            clientSession.MyPlayer.Info.PosInfo.PosX = 0;
-            clientSession.MyPlayer.Info.PosInfo.PosY = 0;
-            clientSession.MyPlayer.Info.CharType = clientSession.MyCharacter;
+        S_Character s_charPacket = new S_Character();
+        s_charPacket.CharType = c_charPacket.CharType;
+        s_charPacket.PickIdx = c_charPacket.PickIdx;
+        room.Broadcast(s_charPacket, c_charPacket.PickIdx);
 
-            StatInfo stat = null;
-            DataManager.StatDict.TryGetValue(1, out stat);
-            clientSession.MyPlayer.Stat.MergeFrom(stat);
+        //GameRoom room = RoomManager.Instance.Find(2) as GameRoom;
+        //if (room == null)
+        //    return;
 
-            clientSession.MyPlayer.Session = clientSession;
-        }
+
         // PickRoom 클래스 만들고 거기서 호출해야할듯
         //room.Push(pickPacket);
+    }
+
+    public static void C_PingHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+
+        clientSession.LastPing = DateTime.Now;
     }
 }

@@ -12,10 +12,8 @@ using Server.Game.Object.Monster.AStar;
 
 namespace Server.Game
 {
-    public class GameRoom : JobSerializer
+    public class GameRoom : Room
     {
-        public int RoomId { get; set; }
-
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
         Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
         Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
@@ -31,7 +29,7 @@ namespace Server.Game
             _monsterManager.Init(this, 1);
         }
 
-        public void Update()
+        public override void Update()
         {
             _monsterManager.Update();
 
@@ -46,6 +44,8 @@ namespace Server.Game
             }
 
             Flush();
+
+            CheckLastPing();
         }
         public void EnterGame(GameObject gameObject)
         {
@@ -188,7 +188,12 @@ namespace Server.Game
             ObjectInfo info = player.Info;
 
             // TODO : 스킬 사용 가능 여부 체크
+            if (!player.CanUseSkill(skillPacket))
+                return;
 
+            // 스킬 매니저에 정보를 전달해서 체크
+            // 오브젝트 ID로 플레이어 특정, 해당 플레이어가 들고 있는 스킬 클래스 검색
+            // 쿨타임, 스테미나 등 체크
 
 
             // 스킬 사용이 가능하다 판단되면 패킷 전송
@@ -264,8 +269,13 @@ namespace Server.Game
             }
         }
 
+        public override void CheckLastPing()
+        {
+            foreach(Player p in _players.Values)
+            {
+                if (p.Session.CheckTimeout())
+                    p.Session.Disconnect();
+            }
+        }
     }
-
-
-
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace Server.Game
@@ -9,37 +10,58 @@ namespace Server.Game
         public static RoomManager Instance { get; } = new RoomManager();
 
         object _lock = new object();
-        Dictionary<int, GameRoom> _rooms = new Dictionary<int, GameRoom>();
+        Dictionary<int, Room> _rooms = new Dictionary<int, Room>();
         int _roomId = 1;
 
-        public GameRoom Add(int mapId)
+        public GameRoom AddGameRoom(int mapId)
         {
-            GameRoom gameRoom = new GameRoom();
-            gameRoom.Push(gameRoom.Init, mapId);
+            GameRoom room = new GameRoom();
+
+            room.Push(room.Init, mapId);
 
             lock (_lock)
             {
-                gameRoom.RoomId = _roomId;
-                _rooms.Add(_roomId, gameRoom);
+                room.RoomId = _roomId;
+                _rooms.Add(_roomId, room);
                 _roomId++;
+                room.StartTick(10);
             }
 
-            return gameRoom;
+            return room;
+        }
+
+        public PickRoom AddPickRoom()
+        {
+            PickRoom room = new PickRoom();
+            room.Push(room.Init);
+
+            lock (_lock)
+            {
+                room.RoomId = _roomId;
+                _rooms.Add(_roomId, room);
+                _roomId++;
+                room.StartTick(10);
+            }
+
+            return room;
         }
 
         public bool Remove(int roomId)
         {
             lock (_lock)
             {
+                if( _rooms.ContainsKey(roomId) )
+                    _rooms[roomId].StopTick();
+
                 return _rooms.Remove(roomId);
             }
         }
 
-        public GameRoom Find(int roomId)
+        public Room Find(int roomId)
         {
             lock (_lock)
             {
-                GameRoom room = null;
+                Room room = null;
                 if (_rooms.TryGetValue(roomId, out room))
                     return room;
 
