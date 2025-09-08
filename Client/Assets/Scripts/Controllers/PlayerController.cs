@@ -15,11 +15,24 @@ public class PlayerController : CreatureController
 
     protected Dictionary<string, SkillBase> _skills = new Dictionary<string, SkillBase>();
 
+    //Fog
+    //private GameObject _fogOfWarVisionGo;
+    private FogOfWarVision _fogOfWarVision;
+
     protected override void Init()
 	{
 		base.Init();
 		MakeSkillDict();
-        ObjectType = Define.Object.OtherPlayer; 
+        ObjectType = Define.Object.OtherPlayer;
+
+        //Fog
+        //_fogOfWarVisionGo = new GameObject("FogOfWar");
+        //_fogOfWarVisionGo.transform.SetParent(gameObject.transform);
+        //_fogOfWarVision = _fogOfWarVisionGo.GetOrAddComponent<FogOfWarVision>();
+        //_fogOfWarVisionGo.layer = LayerMask.NameToLayer("Fog");
+
+        _fogOfWarVision = gameObject.GetOrAddComponent<FogOfWarVision>();
+        gameObject.layer = LayerMask.NameToLayer("Fog");
     }
 
 	protected override void UpdateController()
