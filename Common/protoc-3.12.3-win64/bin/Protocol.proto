@@ -51,6 +51,9 @@ enum MonsterSkill
     MS_SKILL1 = 3;
     MS_SKILL2 = 4;
     MS_SKILL3 = 5;
+
+    MS_DRONE_ATTACK1 = 6;
+    MS_DRONE_ATTACK2 = 7;
 }
 
 enum AnimType{
@@ -67,6 +70,13 @@ enum CharacterType {
 	HYUNWOO = 3;
 	ABIGAIL = 4;
 	THEODORE = 5;
+}
+
+enum MonsterType {
+	MONSTER_NONE = 0;
+   	 ALPHA = 1;
+   	OMEGA = 2;
+	DRONE = 3;
 }
 
 message C_EnterGame {
@@ -143,6 +153,7 @@ message ObjectInfo{
 	RotationInfo rotInfo = 4;
 	StatInfo statInfo = 5;
 	CharacterType charType = 6;
+	MonsterType monsterType = 7;
 }
 
 message AnimInfo{

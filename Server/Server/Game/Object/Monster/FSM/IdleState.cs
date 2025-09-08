@@ -43,17 +43,19 @@ namespace Server.Game.Object.Monster.FSM
                     target.PosInfo.PosZ
                 );
 
+                // TODO : 나중에 몬스터에 따라서 FSM을 어떻게 나눠줄 지 고민해야 함
                 // 범위 안 → 바로 스킬
                 if (monster.IsSkillRange())
                 {
-                    Console.WriteLine("1 바로 스킬");
-                    monster.ChangeState(new SkillState());
+                    monster.ChangeState(monster.GetSkillState());
                 }
                 else
                 {
                     // 범위 밖 → 추격
-                    Console.WriteLine("바로 추격");
-                    monster.ChangeState(new MovingState());
+                    if(monster.Info.MonsterType != MonsterType.Drone)
+                        monster.ChangeState(new MovingState());
+                    else
+                        monster.ChangeState(monster.GetSkillState());
                 }
             }
         }

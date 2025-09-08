@@ -33,6 +33,8 @@ namespace Server.Game
 
             // Spawn Monster
             _monsterManager.Init(this, 1);
+            _monsterManager.Add(1, MonsterType.Omega);
+           // _monsterManager.Add(1, MonsterType.Drone);
         }
 
         public void Update()

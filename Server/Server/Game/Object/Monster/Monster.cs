@@ -13,6 +13,7 @@ namespace Server.Game.Object.Monster
         void Enter(Monster monster);
         void Execute(Monster monster);
         void Exit(Monster monster);
+
     }
 
     public class Monster : GameObject
@@ -23,7 +24,6 @@ namespace Server.Game.Object.Monster
         List<MonsterSkill> _skills = new List<MonsterSkill>();
         MonsterSkill _currentSkill = MonsterSkill.MsNone;
 
-
         public Player Target { get; set; }
         public List<Vector3> _path = new List<Vector3>();
         public Vector3 _lastPlayerPosition = new Vector3();
@@ -31,17 +31,31 @@ namespace Server.Game.Object.Monster
         private IMonsterState _currentState;
 
         public Monster() => ObjectType = GameObjectType.Monster;
+
+        public IMonsterState GetSkillState()
+        {
+            if (Info.MonsterType == MonsterType.Alpha)
+                return new SkillState(); // Alpha 전용 스킬 상태
+            else if (Info.MonsterType == MonsterType.Omega)
+                return new SkillState(); // Alpha 전용 스킬 상태
+            else if (Info.MonsterType == MonsterType.Drone)
+                return new AimState(); // Drone 전용 애니메이션 상태
+
+            return null; // 기본값
+        }
+
         public void Init(string name)
         {
             MonsterData monsterData = null;
-            DataManager.MonsterDict.TryGetValue(name, out monsterData);
+            if (DataManager.MonsterDict.TryGetValue(name, out monsterData))
+            {
+                Stat.MergeFrom(monsterData.stat);
+                Stat.Hp = Stat.MaxHp;
+                State = CreatureState.Idle;
 
-            Stat.MergeFrom(monsterData.stat);
-            Stat.Hp = Stat.MaxHp;
-            State = CreatureState.Idle;
-
-            if(monsterData.skills != null)
-                _skills.AddRange(monsterData.skills);
+                if (monsterData.skills != null)
+                    _skills.AddRange(monsterData.skills);
+            }
 
             ChangeState(new IdleState());
         }
@@ -95,7 +109,7 @@ namespace Server.Game.Object.Monster
 
         #region Helper Functions
 
-        private float _skillRange = 0.5f;
+        private float _skillRange = 1.0f;
         private float _findRange = 5.0f;
         public bool IsSkillRange() => IsPlayerInSkillRange();
         private bool IsPlayerInSkillRange()
@@ -146,9 +160,7 @@ namespace Server.Game.Object.Monster
                 return;
 
             Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-            Console.WriteLine($"전 {monsterPos}");
             Vector3 nextWaypoint = _path[_pathIdx];
-            Console.WriteLine($"후 {nextWaypoint}");
 
             // 실제 이동
             FollowToPlayer(nextWaypoint);
