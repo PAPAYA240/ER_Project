@@ -44,6 +44,8 @@ namespace Server.Game
             }
 
             Flush();
+
+            CheckLastPing();
         }
         public void EnterGame(GameObject gameObject)
         {

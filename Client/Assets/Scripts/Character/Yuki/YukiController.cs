@@ -15,23 +15,24 @@ public class YukiController : MyPlayerController
 
     protected override void UpdateKeyInput()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            ExecuteSkill(KeyCode.Q);
-        }
-        else if (Input.GetKeyDown(KeyCode.W))
-        {
-            //ExecuteSkill("Rozzi_W");
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            State = CreatureState.Dead;
-        }
-        else if (Input.GetKeyDown(KeyCode.C))
-        {
-            State = CreatureState.Idle;
-            SetBoolAnimation("bFishing", false);
-        }
+        base.UpdateKeyInput();
+        //if (Input.GetKeyDown(KeyCode.Q))
+        //{
+        //    ExecuteSkill(KeyCode.Q);
+        //}
+        //else if (Input.GetKeyDown(KeyCode.W))
+        //{
+        //    //ExecuteSkill("Rozzi_W");
+        //}
+        //else if (Input.GetKeyDown(KeyCode.D))
+        //{
+        //    State = CreatureState.Dead;
+        //}
+        //else if (Input.GetKeyDown(KeyCode.C))
+        //{
+        //    State = CreatureState.Idle;
+        //    SetBoolAnimation("bFishing", false);
+        //}
     }
 
     protected override void UpdateAnimation()
@@ -41,11 +42,11 @@ public class YukiController : MyPlayerController
 
         if (State == CreatureState.Idle)
         {
-            PlayAnimation("WAIT");
+            _animator.CrossFadeInFixedTime("WAIT", 0.1f);
         }
         else if (State == CreatureState.Moving)
         {
-            PlayAnimation("RUN");
+            _animator.CrossFadeInFixedTime("RUN", 0.1f);
         }
         else if (State == CreatureState.Skill)
         {
