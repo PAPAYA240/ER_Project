@@ -81,9 +81,9 @@ class PacketHandler
         if (cc != null)
         {
             GameObjectType objectType = ObjectManager.GetObjectTypeById(cc.Id);
-            //if (objectType == GameObjectType.Player)
-            //    //cc.UseSkill((KeyCode)skillPacket.SkillInfo.KeyCode);
-            /*else*/ if(cc.ObjectType == Define.Object.Monster)
+            if (objectType == GameObjectType.Player)
+                cc.UseSkill(skillPacket.SkillInfo.KeyCode);
+            else if (cc.ObjectType == Define.Object.Monster)
                 cc.UseSkill(skillPacket.SkillInfo.SkillId);
         }
     }

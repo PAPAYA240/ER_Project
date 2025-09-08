@@ -8,6 +8,12 @@ using static Define;
 public class MyPlayerController : PlayerController
 {
     bool _moveKeyPressed = false;
+    Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
+    class CoolTime
+    {
+        public bool isCoolDown;
+        public float coolTime;
+    }
 
     int _mask = (1 << (int)Define.Layer.Map);
     Vector3 _dstPos = Vector3.zero;
@@ -21,6 +27,7 @@ public class MyPlayerController : PlayerController
         Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
 
         ObjectType = Define.Object.MyPlayer;
+        MakeCoolDownDict();
 
         //UI
         GameObject go = Managers.Resource.Instantiate("UI/Scene/PlayerHUD");
@@ -45,15 +52,15 @@ public class MyPlayerController : PlayerController
 
         if (State == CreatureState.Idle)
         {
-            _animator.CrossFadeInFixedTime("WAIT", 0.1f);
+            PlayAnimation("WAIT", 0.1f);
         }
         else if (State == CreatureState.Moving)
         {
-            _animator.CrossFadeInFixedTime("RUN", 0.1f);
+            PlayAnimation("RUN", 0.1f);
         }
         else if (State == CreatureState.Skill)
         {
-
+            ExecuteSkill(KeyCode.Q);
         }
         else
         {
@@ -72,6 +79,8 @@ public class MyPlayerController : PlayerController
                 GetMouseInput();
                 break;
         }
+
+        UpdateKeyInput();
 
         base.UpdateController();
     }
@@ -109,11 +118,35 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    Coroutine _coSkillCooltime;
-    IEnumerator ConInputCooltime(float time)
+    IEnumerator CoInputCooltime(KeyCode key, float time)
     {
-        yield return new WaitForSeconds(time);
-        _coSkillCooltime = null;
+        _coolDownDict[key].isCoolDown = true;
+
+        float elapsed = 0f;
+        while (elapsed < time)
+        {
+            elapsed += Time.deltaTime;
+            _coolDownDict[key].coolTime = time - elapsed;
+            yield return null;
+        }
+
+        _coolDownDict[key].isCoolDown = false;
+        _coolDownDict[key].coolTime = 0.0f;
+    }
+
+    private void MakeCoolDownDict()
+    {
+        foreach (var skill in _skills)
+        {
+            string str = skill.Key.Substring(skill.Key.Length - 1);
+            KeyCode key = (KeyCode)Enum.Parse(typeof(KeyCode), str);
+            _coolDownDict[key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
+        }
+    }
+
+    protected float GetCoolTime(KeyCode key)
+    {
+        return _coolDownDict[key].coolTime;
     }
 
     // Camera
@@ -156,7 +189,19 @@ public class MyPlayerController : PlayerController
     protected void PlayAnimation(string animName, float ratio)
     {
         _animator.CrossFadeInFixedTime(animName, ratio);
-        SendAnimPacket(animName, Time.time);
+        SendAnimPacket(animName, ratio);
+    }
+
+#region Packet
+    private void SendSkillPacket(KeyCode key)
+    {
+        string skillName = Enum.GetName(typeof(Character), Managers.Object.Character) + '_' + key.ToString();
+        C_Skill skillPacket = new C_Skill()
+        {
+            ObjectInfo = ObjInfo,
+            SkillInfo = new SkillInfo() { KeyCode = key.ToString(), Name = skillName }
+        };
+        Managers.Network.Send(skillPacket);
     }
 
     private void SendAnimPacket(string name, float ratio)
@@ -164,6 +209,7 @@ public class MyPlayerController : PlayerController
         C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { Name = name, Ratio = ratio } };
         Managers.Network.Send(animPacket);
     }
+#endregion
 
     void GetMouseInput()
     {
@@ -181,6 +227,56 @@ public class MyPlayerController : PlayerController
                 _moveKeyPressed = true;
             }
         }
+    }
+
+    protected void ExecuteSkill(KeyCode key)
+    {
+        if (!_coolDownDict[key].isCoolDown)
+        {
+            SkillBase skill = FindSkill(key);
+
+            // 쿨타임 체크
+            StartCoroutine(CoInputCooltime(key, skill.MaxCooldown));
+
+            // 다른 조건 체크하기
+
+            // 스킬 실행
+            skill.Execute();
+
+            // 패킷 보내기
+            SendSkillPacket(key);
+
+            // 스킬 실행 UI, TODO 스킬 사용할 수 있는 검증이 다 끝난 곳으로 옮겨야함
+            _playerInterface.UseSkill(KeyToUIEnum(key));
+
+            Debug.Log($"스킬 사용! : {key}");
+        }
+        else
+        {
+            Debug.Log($"스킬 쿨타임 적용 중! : {key} -> {GetCoolTime(key)} 초 남음");
+        }
+    }
+
+#region UI
+    private UI_PlayerInterface.GameObjects KeyToUIEnum(KeyCode key)
+    {
+        switch (key)
+        {
+            case KeyCode.Q:
+                return UI_PlayerInterface.GameObjects.QSkill;
+            case KeyCode.W:
+                return UI_PlayerInterface.GameObjects.WSkill;
+            case KeyCode.E:
+                return UI_PlayerInterface.GameObjects.ESkill;
+            case KeyCode.R:
+                return UI_PlayerInterface.GameObjects.RSkill;
+            case KeyCode.D:
+                return UI_PlayerInterface.GameObjects.DSkill;
+            case KeyCode.F:
+                return UI_PlayerInterface.GameObjects.FSkill;
+        }
+
+        return UI_PlayerInterface.GameObjects.TSkill;
     }
 
     private string CharTypeToCharCode(CharacterType type)
@@ -240,5 +336,59 @@ public class MyPlayerController : PlayerController
         _playerInterface.SetSkillMaxCool(skillEnum, value);
     }
 
+    private void UpdateSkillMaxCool()
+    {
+        // TODO 현재 스킬레벨에 따른 쿨타임과 아이템으로 인한 스킬 가속을 적용하여 UI에 반영
+        // 일단 스킬 가속에 대한 계산이 어떻게 되는지 알아야하고, 스킬들이 레벨마다 어떤 쿨타임을 가질지 데이터(Json)를 만들어줘야함.
+
+        //temp 나중에 스탯에서 가져오든가 해야될듯
+        SkillBase QSkill = FindSkill(KeyCode.Q);
+        SkillBase WSkill = FindSkill(KeyCode.W);
+        SkillBase ESkill = FindSkill(KeyCode.E);
+        SkillBase RSkill = FindSkill(KeyCode.R);
+
+        float skillAcc = 0.0f;
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, CalculateMaxCool(QSkill.CurLevelCooldown, skillAcc));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.WSkill, CalculateMaxCool(WSkill.CurLevelCooldown, skillAcc));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, CalculateMaxCool(ESkill.CurLevelCooldown, skillAcc));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(RSkill.CurLevelCooldown, skillAcc));
+    }
+
+
+    private float CalculateMaxCool(float cooldown, float skillAcc)
+    {
+        // 최종 쿨타임 = 기본 쿨타임 × (100 / (100 + 스킬가속))
+        return cooldown * (100f / (100f + skillAcc));
+    }
+    //private void OnCharSkillLevelUp(SkillEnum skill)
+    //{
+    //    //For QWERT
+    //    skills[GetCharacterName() + "" + skill.ToString()].CurLevel += 1;
+
+    //    float skillAcc = 0.0f;
+    //    //float skillAcc = Stat.GetSkillAcc();
+
+    //    switch (skill)
+    //    {
+    //        case SkillEnum.Q:
+    //            SkillBase QSkill = FindSkill(KeyCode.Q);
+    //            SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, CalculateMaxCool(QSkill.CurLevelCooldown, skillAcc));
+    //            break;
+    //        case SkillEnum.W:
+    //            SkillBase WSkill = FindSkill(KeyCode.W);
+    //            SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.WSkill, CalculateMaxCool(WSkill.CurLevelCooldown, skillAcc));
+    //            break;
+    //        case SkillEnum.E:
+    //            SkillBase ESkill = FindSkill(KeyCode.E);
+    //            SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, CalculateMaxCool(ESkill.CurLevelCooldown, skillAcc));
+    //            break;
+    //        case SkillEnum.R:
+    //            SkillBase RSkill = FindSkill(KeyCode.R);
+    //            SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(RSkill.CurLevelCooldown, skillAcc));
+    //            break;
+    //    }
+
+    //}
+#endregion
 
 }
