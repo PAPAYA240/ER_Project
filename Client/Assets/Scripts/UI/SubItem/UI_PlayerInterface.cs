@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -5,6 +6,7 @@ using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UI_SkillBase;
 
 public class UI_PlayerInterface : UI_Base
 {
@@ -39,6 +41,8 @@ public class UI_PlayerInterface : UI_Base
     public string WeaponCode { get; set; } = "081";
     public string TacticalCode { get; set; } = "4000000";
 
+    public Action<SkillEnum> OnCharSkillLevelUpAction = null;
+
     int _remainSkillPoint = 0; //이건 QWERT에만 적용되야함.
     
     bool _isDead = false;
@@ -55,18 +59,26 @@ public class UI_PlayerInterface : UI_Base
         LoadWeaponSkillImage(WeaponCode);
         LoadTacticalSkillImage(TacticalCode);
 
+        GetObject((int)GameObjects.QSkill).GetComponent<UI_SkillBase>().SkillKeyCode = UI_SkillBase.SkillEnum.Q;
+        GetObject((int)GameObjects.WSkill).GetComponent<UI_SkillBase>().SkillKeyCode = UI_SkillBase.SkillEnum.W;
+        GetObject((int)GameObjects.ESkill).GetComponent<UI_SkillBase>().SkillKeyCode = UI_SkillBase.SkillEnum.E;
+        GetObject((int)GameObjects.RSkill).GetComponent<UI_SkillBase>().SkillKeyCode = UI_SkillBase.SkillEnum.R;
+        GetObject((int)GameObjects.TSkill).GetComponent<UI_SkillBase>().SkillKeyCode = UI_SkillBase.SkillEnum.T;
+        GetObject((int)GameObjects.DSkill).GetComponent<UI_SkillBase>().SkillKeyCode = UI_SkillBase.SkillEnum.D;
+        GetObject((int)GameObjects.FSkill).GetComponent<UI_SkillBase>().SkillKeyCode = UI_SkillBase.SkillEnum.F;
+
         GetObject((int)GameObjects.Death).SetActive(false);
-        GetObject((int)GameObjects.LevelAndExp).GetComponent<UI_Level>().OnLevelUp += LevelUp;
-        GetObject((int)GameObjects.QSkill).GetComponent<UI_SkillBase>().OnLevelUp += CharSkillLevelUp;
-        GetObject((int)GameObjects.WSkill).GetComponent<UI_SkillBase>().OnLevelUp += CharSkillLevelUp;
-        GetObject((int)GameObjects.ESkill).GetComponent<UI_SkillBase>().OnLevelUp += CharSkillLevelUp;
-        GetObject((int)GameObjects.RSkill).GetComponent<UI_SkillBase>().OnLevelUp += CharSkillLevelUp;
-        GetObject((int)GameObjects.TSkill).GetComponent<UI_SkillBase>().OnLevelUp += CharSkillLevelUp;
-        GetObject((int)GameObjects.FSkill).GetComponent<UI_SkillBase>().OnLevelUp += TacticalSkillLevelUp;
+        GetObject((int)GameObjects.LevelAndExp).GetComponent<UI_Level>().OnLevelUp += OnLevelUp;
+        GetObject((int)GameObjects.QSkill).GetComponent<UI_SkillBase>().OnLevelUp += OnCharSkillLevelUp;
+        GetObject((int)GameObjects.WSkill).GetComponent<UI_SkillBase>().OnLevelUp += OnCharSkillLevelUp;
+        GetObject((int)GameObjects.ESkill).GetComponent<UI_SkillBase>().OnLevelUp += OnCharSkillLevelUp;
+        GetObject((int)GameObjects.RSkill).GetComponent<UI_SkillBase>().OnLevelUp += OnCharSkillLevelUp;
+        GetObject((int)GameObjects.TSkill).GetComponent<UI_SkillBase>().OnLevelUp += OnCharSkillLevelUp;
+        GetObject((int)GameObjects.FSkill).GetComponent<UI_SkillBase>().OnLevelUp += OnTacticalSkillLevelUp;
 
         //temp
         //LevelUp(1);
-        LevelUp(4);
+        OnLevelUp(4);
         SpecificSkillLevelUp(GameObjects.TSkill);
         SpecificSkillLevelUp(GameObjects.FSkill);
 
@@ -178,11 +190,12 @@ public class UI_PlayerInterface : UI_Base
         }
     }
 
-    void CharSkillLevelUp()
+    void OnCharSkillLevelUp(SkillEnum skillEnum)
     {
         --_remainSkillPoint;
+        OnCharSkillLevelUpAction?.Invoke(skillEnum);
 
-        if(_remainSkillPoint == 0)
+        if (_remainSkillPoint == 0)
         {
             ActivateSkillLevelUpButton(GameObjects.QSkill, false);
             ActivateSkillLevelUpButton(GameObjects.WSkill, false);
@@ -192,7 +205,7 @@ public class UI_PlayerInterface : UI_Base
         }
     }
 
-    void TacticalSkillLevelUp()
+    void OnTacticalSkillLevelUp(SkillEnum skillEnum)
     {
         ActivateSkillLevelUpButton(GameObjects.FSkill, false);
     }
@@ -354,14 +367,14 @@ public class UI_PlayerInterface : UI_Base
         3 16
         패시브 스킬의 레벨에 따른 스킬 레벨제한
         1 이미 찍혀있음.
-        2
-        3
+        2 5
+        3 9
         */
         return true;
     }
 
 
-    void LevelUp(int newLevel)
+    void OnLevelUp(int newLevel)
     {
         _remainSkillPoint += newLevel;
 

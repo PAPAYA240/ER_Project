@@ -80,8 +80,43 @@ public class PlayerController : CreatureController
             // TODO : 캐릭터 별로 다르게 넣어주기
             // SkillBase를 상속받은 클래스들을 탐색해 생성
             // 클래스의 이름으로 SkillDict에서 SkillData을 검색해 데이터를 채워줌
+
+            // 필요한 것 캐릭터 이름 스트링과 이 스킬이 어떤 번호를 갖는지.
+            string className = type.Name;
+            int idx = className.IndexOf('_');
+            string charName = idx >= 0 ? className.Substring(0, idx) : className;
+            if (charName != GetCharacterName())
+                continue;
+
+            string KeyCode = className.Substring(idx + 1);
+            int skillIdx = 0;
+            if(KeyCode.Equals("T"))
+            {
+                skillIdx = 0;
+            }
+            else if(KeyCode.Equals("Q"))
+            {
+                skillIdx = 1;
+            }
+            else if(KeyCode.Equals("W"))
+            {
+                skillIdx = 2;
+            }
+            else if(KeyCode.Equals("E"))
+            {
+                skillIdx = 3;
+            }
+            else if(KeyCode.Equals("R"))
+            {
+                skillIdx = 4;
+            }
+            else
+            {
+                Debug.Log("Skill Index Error");
+            }
+
             SkillBase skill = (SkillBase)Activator.CreateInstance(type);
-            skill.SkillData = Managers.Data.SkillDict[type.Name];
+            skill.SkillData = Managers.Data.GameData[charName].skills[skillIdx];
             skill._player = this;
             skill._animator = this._animator;
             _skills.Add(type.Name, skill);
