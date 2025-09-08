@@ -31,7 +31,9 @@ class PacketManager
 		_handler.Add((ushort)MsgId.CSkill, PacketHandler.C_SkillHandler);		
 		_onRecv.Add((ushort)MsgId.CAnim, MakePacket<C_Anim>);
 		_handler.Add((ushort)MsgId.CAnim, PacketHandler.C_AnimHandler);		
-		_onRecv.Add((ushort)MsgId.CCharacter, MakePacket<C_Character>);
+		_onRecv.Add((ushort)MsgId.CCharacter, MakePacket<C_Character>);	
+		_onRecv.Add((ushort)MsgId.CPing, MakePacket<C_Ping>);
+		_handler.Add((ushort)MsgId.CPing, PacketHandler.C_PingHandler);
 		_handler.Add((ushort)MsgId.CCharacter, PacketHandler.C_CharacterHandler);		
 		_onRecv.Add((ushort)MsgId.CSkillEnd, MakePacket<C_SkillEnd>);
 		_handler.Add((ushort)MsgId.CSkillEnd, PacketHandler.C_SkillEndHandler);

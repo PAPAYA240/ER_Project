@@ -12,6 +12,11 @@ public class PickScene : BaseScene
         SceneType = Define.Scene.Login;
     }
 
+    private void Start()
+    {
+        
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))

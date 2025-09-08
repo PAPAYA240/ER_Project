@@ -131,7 +131,7 @@ public class UI_CommonSkill : UI_SkillBase
             return;
 
         SetSkillLevel(_skillLevel + 1);
-        OnLevelUp?.Invoke();
+        OnLevelUp?.Invoke(SkillKeyCode);
     }
 
     void ChangeColor(int level, ColorEnum color)

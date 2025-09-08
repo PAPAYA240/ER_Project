@@ -41,6 +41,12 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SDie, PacketHandler.S_DieHandler);		
 		_onRecv.Add((ushort)MsgId.SAnim, MakePacket<S_Anim>);
 		_handler.Add((ushort)MsgId.SAnim, PacketHandler.S_AnimHandler);		
+		_onRecv.Add((ushort)MsgId.SCharacter, MakePacket<S_Character>);
+		_handler.Add((ushort)MsgId.SCharacter, PacketHandler.S_CharacterHandler);		
+		_onRecv.Add((ushort)MsgId.SEnterPick, MakePacket<S_EnterPick>);
+		_handler.Add((ushort)MsgId.SEnterPick, PacketHandler.S_EnterPickHandler);		
+		_onRecv.Add((ushort)MsgId.SLeavePick, MakePacket<S_LeavePick>);
+		_handler.Add((ushort)MsgId.SLeavePick, PacketHandler.S_LeavePickHandler);
 		_onRecv.Add((ushort)MsgId.SState, MakePacket<S_State>);
 		_handler.Add((ushort)MsgId.SState, PacketHandler.S_StateHandler);
 	}

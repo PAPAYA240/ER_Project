@@ -5,6 +5,8 @@ using UnityEngine;
 
 public abstract class UI_SkillBase : UI_Base
 {
+    public enum SkillEnum { Q,W,E,R,T,D,F,NONE }
+
     public override void Init()
     {
         
@@ -21,8 +23,9 @@ public abstract class UI_SkillBase : UI_Base
     }
 
 
-    public Action OnLevelUp = null;
+    public Action<SkillEnum> OnLevelUp = null;
 
+    public SkillEnum SkillKeyCode { get; set; } = SkillEnum.NONE;
     protected int _skillLevel = 0;
     protected int _maxSkillLevel = 5;
 

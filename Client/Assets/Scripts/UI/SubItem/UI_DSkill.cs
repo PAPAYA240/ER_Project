@@ -94,7 +94,11 @@ public class UI_DSkill : UI_SkillBase
 
     public override void SkillLevelUp()
     {
+        if (_skillLevel == _maxSkillLevel)
+            return;
+
         SetSkillLevel(_skillLevel + 1);
+        OnLevelUp?.Invoke(SkillKeyCode);
     }
 
     public override void UseSkill()

@@ -66,7 +66,11 @@ public class UI_TSkill : UI_SkillBase
 
     public override void SkillLevelUp()
     {
+        if (_skillLevel == _maxSkillLevel)
+            return;
+
         SetSkillLevel(_skillLevel + 1);
+        OnLevelUp?.Invoke(SkillKeyCode);
     }
 
     void ChangeColor(int level, ColorEnum color)

@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ServerCore;
-using System.Net;
-using Google.Protobuf.Protocol;
 using Google.Protobuf;
-using Server.Game;
+using Google.Protobuf.Protocol;
 using Server.Data;
+using Server.Game;
+using ServerCore;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Server
 {
@@ -19,6 +20,11 @@ namespace Server
 		public int SessionId { get; set; }
 
 		public CharacterType MyCharacter { get; set; }
+
+		public int CurRoom {  get; set; }
+		public int PickIdx { get; set; }
+
+		public DateTime LastPing { get; set; } = DateTime.Now;
 
 		public void Send(IMessage packet)
 		{
@@ -36,10 +42,18 @@ namespace Server
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");
 
-			// PROTO Test
+            // PROTO Test
 
-			//GameRoom room = RoomManager.Instance.Find(1);
-			//room.Push(room.EnterGame, MyPlayer);
+            PickRoom room = RoomManager.Instance.Find(1) as PickRoom;
+            if (room == null)
+                return;
+
+            if (room.isRoomFull())
+                return;
+
+            PickPlayer pp = new PickPlayer();
+            pp.Session = this;
+			room.Push(room.EnterPick, pp);
         }
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)
@@ -49,10 +63,17 @@ namespace Server
 
 		public override void OnDisconnected(EndPoint endPoint)
 		{
-            GameRoom room = RoomManager.Instance.Find(1);
-			room.Push(room.LeaveGame, MyPlayer.Info.ObjectId);
+            Room room = RoomManager.Instance.Find(CurRoom);
+			if(room is GameRoom gr)
+			{
+                gr.Push(gr.LeaveGame, MyPlayer.Info.ObjectId);
+            }
+			else if(room is PickRoom pr)
+			{
+				pr.Push(pr.LeavePick, PickIdx);
+			}
 
-            SessionManager.Instance.Remove(this);
+			SessionManager.Instance.Remove(this);
 
 			Console.WriteLine($"OnDisconnected : {endPoint}");
 		}
@@ -60,6 +81,11 @@ namespace Server
 		public override void OnSend(int numOfBytes)
 		{
 			//Console.WriteLine($"Transferred bytes: {numOfBytes}");
+		}
+
+		public bool CheckTimeout(int secs = 3)
+		{
+			return (DateTime.Now - LastPing).TotalSeconds > secs;
 		}
 	}
 }
