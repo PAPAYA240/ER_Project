@@ -85,15 +85,6 @@ class PacketHandler
         GameRoom room = RoomManager.Instance.Find(1);
         if (room == null)
             return;
-
-        room.Push(() =>
-        {
-            if (room.TryGetMonster(skillEndPacket.ObjectInfo.ObjectId, out Monster monster))
-            {
-                C_SkillEnd broadcastPacket = new C_SkillEnd();
-                broadcastPacket.ObjectInfo = skillEndPacket.ObjectInfo;
-            }
-        });
     }
   
     public static void C_CharacterHandler(PacketSession session, IMessage packet)

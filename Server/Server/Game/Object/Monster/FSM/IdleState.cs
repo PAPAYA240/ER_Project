@@ -15,11 +15,14 @@ namespace Server.Game.Object.Monster.FSM
 
         public void Enter(Monster monster)
         {
-            monster.BroadcastState(CreatureState.Idle);
+            monster.BroadcastState(CreatureState.Idle, null, null);
         }
 
         public void Execute(Monster monster)
         {
+            if (_lastSkillTime > 0 && Environment.TickCount64 < _lastSkillTime + SKILL_COOLDOWN_MS)
+                return;
+            _nextSearchTick = Environment.TickCount64 + SEARCH_INTERVAL_MS;
             if (_lastSkillTime > 0 && Environment.TickCount64 < _lastSkillTime + SKILL_COOLDOWN_MS)
                 return;
 
@@ -34,25 +37,24 @@ namespace Server.Game.Object.Monster.FSM
             if (target != null)
             {
                 monster.Target = target;
-                monster.Get_CalculatePath();
+                monster._lastPlayerPosition = new Vector3(
+                    target.PosInfo.PosX,
+                    target.PosInfo.PosY,
+                    target.PosInfo.PosZ
+                );
 
-                if (monster.Target != null)
+                // 범위 안 → 바로 스킬
+                if (monster.IsSkillRange())
                 {
-                    // 스킬 범위 내에 들어오면 스킬 상태로 전환
-                    if (monster.IsSkillRange())
-                    {
-                        monster._path.Clear();
-                        monster.ChangeState(new SkillState());
-                        return;
-                    }
-                    else
-                    {
-                        monster._lastPlayerPosition = new Vector3(monster.Target.PosInfo.PosX, monster.Target.PosInfo.PosY, monster.Target.PosInfo.PosZ);
-                        monster.ChangeState(new MovingState());
-                    }
+                    Console.WriteLine("1 바로 스킬");
+                    monster.ChangeState(new SkillState());
                 }
                 else
-                    monster.ChangeState(new IdleState());
+                {
+                    // 범위 밖 → 추격
+                    Console.WriteLine("바로 추격");
+                    monster.ChangeState(new MovingState());
+                }
             }
         }
 

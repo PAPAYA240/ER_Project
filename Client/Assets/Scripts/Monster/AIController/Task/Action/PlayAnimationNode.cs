@@ -61,20 +61,42 @@ public class PlayAnimatorBoolNode : AnimationControlNode
 // 움직임에 사용될 애니메이션 노드
 public class PlayAnimatorFloatNode : AnimationControlNode
 {
+    private Vector3 _lastPos;
+    private bool _isFirstFrame = true;
+
     public override NodeStatus Execute(GameObject owner)
     {
+        // 1. 필요한 컴포넌트가 모두 있는지 확인
         if (Check(owner) == false)
+        {
             return NodeStatus.Failure;
+        }
 
-        if(monsterController.State != CreatureState.Moving)
-        { 
+        // 이동 상태가 아니면 걷기 애니메이션을 멈춥니다.
+        if (monsterController.State != CreatureState.Moving)
+        {
             _animator.SetFloat("moveVelocity", 0);
             return NodeStatus.Failure;
         }
 
-        Debug.Log("애니메이셔워크 가동 중");
-        float speed = _navMeshAgent.velocity.magnitude;
+        // 2. 현재 프레임의 속도 계산
+        float speed = 0;
+        if (!_isFirstFrame)
+        {
+            // 이전 프레임 위치와 현재 위치의 거리를 구합니다.
+            float distance = Vector3.Distance(owner.transform.position, _lastPos);
+
+            // `Time.deltaTime`으로 나눠 초당 속도를 계산합니다.
+            speed = distance / Time.deltaTime;
+        }
+
+        _isFirstFrame = false;
+
+        // 3. 애니메이션 파라미터 업데이트
         _animator.SetFloat("moveVelocity", speed);
+
+        // 4. 다음 프레임을 위해 현재 위치를 저장
+        _lastPos = owner.transform.position;
 
         return NodeStatus.Running;
     }
@@ -100,10 +122,12 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
         if (Check(owner) == false)
             return NodeStatus.Failure;
 
+        Debug.Log("스킬 애니메이션 가동 중");
         if(monsterController.State != CreatureState.Skill)
         {
-            _animator.CrossFade("Idle", 0.1f);
+            Debug.Log("애니메이션 멈추기");
             _animator.ResetTrigger(triggerName);
+            _animator.CrossFade("Idle", 0.1f);
             _isSentEndPacket = false;
             return NodeStatus.Failure; 
         }
@@ -112,7 +136,6 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
         {
             _animator.SetTrigger(triggerName);
             _isSentEndPacket = true;
-            //Debug.Log("애니메이션 시작");
         }
         return NodeStatus.Running;
     }
