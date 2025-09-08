@@ -99,9 +99,9 @@ class PacketHandler
         if (skillEndPacket == null)
             return;
         
-        GameRoom room = RoomManager.Instance.Find(1);
-        if (room == null)
-            return;
+        //GameRoom room = RoomManager.Instance.Find(1);
+       // if (room == null)
+         //   return;
     }
   
     public static void C_CharacterHandler(PacketSession session, IMessage packet)
