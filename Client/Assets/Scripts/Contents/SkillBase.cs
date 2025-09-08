@@ -15,18 +15,17 @@ public abstract class SkillBase
 
     SkillData _skillData = new SkillData();
 
-    public int CurLevel { get; set; }
+    public int CurLevel { get; set; } 
     public int MaxLevel { get { return SkillData.maxLevel; } }
     public float Cooldown { get; set; }
     public float MaxCooldown { get; set; }
-    public float CurLevelCooldown
-    {
-        get
-        {
-            if (CurLevel > 0 && CurLevel <= MaxLevel)
+    public float CurLevelCooldown { 
+        get 
+        { 
+            if(CurLevel > 0 &&  CurLevel <= MaxLevel)
                 return SkillData.levels[CurLevel].cooldown;
             return SkillData.levels[0].cooldown;
-        }
+        } 
     }
 
     public virtual SkillData SkillData

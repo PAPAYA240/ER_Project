@@ -43,6 +43,7 @@ namespace Data
         public List<SkillLevel> levels;
     }
 
+    [Serializable]
     public class Mechanics
     {
         public string targetType;
@@ -52,7 +53,7 @@ namespace Data
         public float radius;
         public float range;
 
-        public ProjectileData projectile;
+        public ProjectileData projectile; 
     }
 
     [Serializable]
@@ -85,6 +86,7 @@ namespace Data
         public int staminaCost;
         public List<EffectData> effects;
     }
+
     [Serializable]
     public class EffectData
     {
@@ -136,6 +138,7 @@ namespace Data
             return dict;
         }
     }
+
 
     #endregion
 }

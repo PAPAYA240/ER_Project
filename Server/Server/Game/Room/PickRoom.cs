@@ -21,7 +21,7 @@ namespace Server.Game
         public override void Update()
         {
             Flush();
-
+            CheckStartGame();
             CheckLastPing();
         }
 
@@ -86,6 +86,31 @@ namespace Server.Game
 
                 if (player.Session.CheckTimeout())
                     player.Session.Disconnect();
+            }
+        }
+
+        public void CheckStartGame()
+        {
+            bool everyPlayerStartGame = true;
+            for(int i = 0; i < 4; ++i)
+            {
+                if (_pickPlayers[i] == null)
+                    continue;
+                if(_pickPlayers[i].Session.MyPlayer == null)
+                {
+                    everyPlayerStartGame = false;
+                    break;
+                }
+            }
+
+            if (everyPlayerStartGame)
+            {
+                for (int i = 0; i < 4; ++i)
+                {
+                    if (_pickPlayers[i] == null)
+                        continue;
+                    LeavePick(i);
+                }
             }
         }
     }

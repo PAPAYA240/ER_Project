@@ -35,9 +35,13 @@ public class PlayerController : CreatureController
     #endregion
 
     protected override void UpdateController()
+    #region Skill
+    public override void UseSkill(string keyCode)
     {
         base.UpdateController();
     }
+        SkillBase skill = FindSkill(keyCode);
+        skill.Execute();
 
     public override void UseSkill(string keyCode)
     {
@@ -124,11 +128,11 @@ public class PlayerController : CreatureController
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
     }
 
-    protected SkillBase FindSkill(KeyCode keyCode)
+    protected SkillBase FindSkill(string keyCode)
     {
         SkillBase skillBase = null;
 
-        string skillName = GetCharacterName() + '_' + keyCode.ToString();
+        string skillName = GetCharacterName() + '_' + keyCode;
         if (!_skills.TryGetValue(skillName, out skillBase))
         {
             Debug.Log($"Skill을 찾을 수 없음 : {keyCode}");
