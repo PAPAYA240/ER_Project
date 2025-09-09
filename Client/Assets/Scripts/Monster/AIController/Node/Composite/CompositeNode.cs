@@ -9,6 +9,7 @@ using UnityEngine;
 public abstract class CompositeNode : Node
 {
     public List<Node> children = new List<Node>();
+    protected Node _runningChild = null;
     public void AddChild(Node child)
     {
         children.Add(child);

@@ -6,6 +6,7 @@ using Google.Protobuf.Protocol;
 using Server;
 using Server.Data;
 using Server.Game;
+using Server.Game.Object.Monster;
 using ServerCore;
 
 class PacketHandler
@@ -21,6 +22,7 @@ class PacketHandler
             clientSession.MyPlayer.Info.PosInfo.PosX = 0;
             clientSession.MyPlayer.Info.PosInfo.PosY = 0;
             clientSession.MyPlayer.Info.CharType = clientSession.MyCharacter;
+            clientSession.MyPlayer.MakeDict();
 
             StatInfo stat = null;
             DataManager.StatDict.TryGetValue(clientSession.MyCharacter, out stat);
@@ -91,6 +93,17 @@ class PacketHandler
         room.Push(room.HandleAnim, player, animPacket);
     }
 
+    public static void C_SkillEndHandler(PacketSession session, IMessage packet)
+    {
+        C_SkillEnd skillEndPacket = packet as C_SkillEnd;
+        if (skillEndPacket == null)
+            return;
+        
+        //GameRoom room = RoomManager.Instance.Find(1);
+       // if (room == null)
+         //   return;
+    }
+  
     public static void C_CharacterHandler(PacketSession session, IMessage packet)
     {
         ClientSession clientSession = session as ClientSession;

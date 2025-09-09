@@ -1,10 +1,13 @@
+using Data;
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
 using static Define;
+using static UI_PlayerInterface;
+using static UI_SkillBase;
 
 public class MyPlayerController : PlayerController
 {
@@ -22,6 +25,7 @@ public class MyPlayerController : PlayerController
     //UI
     //UI_PlayerHUD _playerHUD = null;
     UI_PlayerInterface _playerInterface = null;
+
     protected override void Init()
     {
         base.Init();
@@ -38,12 +42,20 @@ public class MyPlayerController : PlayerController
         _playerInterface.CharacterName = Enum.GetName(typeof(CharacterType), ObjInfo.CharType);
         _playerInterface.WeaponCode = CharTypeToWeaponCode(ObjInfo.CharType);
         _playerInterface.Init();
-        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, FindSkill(KeyCode.Q).SkillData.cooldown);
-        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.WSkill, FindSkill(KeyCode.W).SkillData.cooldown);
-        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, FindSkill(KeyCode.E).SkillData.cooldown);
-        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, FindSkill(KeyCode.R).SkillData.cooldown);
-        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.DSkill, _coolDownDict[KeyCode.D].coolTime);
-        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.FSkill, _coolDownDict[KeyCode.F].coolTime);
+        _playerInterface.OnCharSkillLevelUpAction += OnCharSkillLevelUp;
+
+        //레벨업이벤트를 여기서 바인딩 해주고 싶어
+        //쉬운 방법 겟 오브젝트를 퍼블릭으로 연다.
+        // 바인드 해주는 함수를 하나 만든다. 근데 하나가 아닐지도 모름.
+        //_playerInterface.Get
+
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, FindSkill(KeyCode.Q).MaxCooldown);
+        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, FindSkill(KeyCode.Q).SkillData.levels[0].cooldown);
+        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.WSkill, FindSkill(KeyCode.W).SkillData.levels[0].cooldown);
+        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, FindSkill(KeyCode.E).SkillData.levels[0].cooldown);
+        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, FindSkill(KeyCode.R).SkillData.levels[0].cooldown);
+        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.DSkill, );
+        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.FSkill, );
     }
 
     // 매 틱 Update에서 호출됨
@@ -216,7 +228,7 @@ public class MyPlayerController : PlayerController
             SkillBase skill = FindSkill(key);
 
             // 쿨타임 체크
-            StartCoroutine(CoInputCooltime(key, skill.SkillData.cooldown));
+            StartCoroutine(CoInputCooltime(key, skill.MaxCooldown));
 
             // 다른 조건 체크하기
 
@@ -347,23 +359,59 @@ public class MyPlayerController : PlayerController
         _playerInterface.SetSkillMaxCool(skillEnum, value);
     }
 
-    private void UpdateUISkillMaxCool()
+    private void UpdateSkillMaxCool()
     {
         // TODO 현재 스킬레벨에 따른 쿨타임과 아이템으로 인한 스킬 가속을 적용하여 UI에 반영
         // 일단 스킬 가속에 대한 계산이 어떻게 되는지 알아야하고, 스킬들이 레벨마다 어떤 쿨타임을 가질지 데이터(Json)를 만들어줘야함.
 
         //temp 나중에 스탯에서 가져오든가 해야될듯
+        SkillBase QSkill = FindSkill(KeyCode.Q);
+        SkillBase WSkill = FindSkill(KeyCode.W);
+        SkillBase ESkill = FindSkill(KeyCode.E);
+        SkillBase RSkill = FindSkill(KeyCode.R);
+
         float skillAcc = 0.0f;
-        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, CalculateMaxCool(FindSkill(KeyCode.Q).SkillData.cooldown, skillAcc));
-        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.WSkill, CalculateMaxCool(FindSkill(KeyCode.W).SkillData.cooldown, skillAcc));
-        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, CalculateMaxCool(FindSkill(KeyCode.E).SkillData.cooldown, skillAcc));
-        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(FindSkill(KeyCode.R).SkillData.cooldown, skillAcc));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, CalculateMaxCool(QSkill.CurLevelCooldown, skillAcc));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.WSkill, CalculateMaxCool(WSkill.CurLevelCooldown, skillAcc));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, CalculateMaxCool(ESkill.CurLevelCooldown, skillAcc));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(RSkill.CurLevelCooldown, skillAcc));
     }
+
 
     private float CalculateMaxCool(float cooldown, float skillAcc)
     {
         // 최종 쿨타임 = 기본 쿨타임 × (100 / (100 + 스킬가속))
         return cooldown * (100f / (100f + skillAcc));
+    }
+
+    private void OnCharSkillLevelUp(SkillEnum skill)
+    {
+        //For QWERT
+        _skills[GetCharacterName() + "_" + skill.ToString()].CurLevel += 1;
+
+        float skillAcc = 0.0f;
+        //float skillAcc = Stat.GetSkillAcc();
+
+        switch (skill)
+        {
+            case SkillEnum.Q:
+                SkillBase QSkill = FindSkill(KeyCode.Q);
+                SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, CalculateMaxCool(QSkill.CurLevelCooldown, skillAcc));
+                break;
+            case SkillEnum.W:
+                SkillBase WSkill = FindSkill(KeyCode.W);
+                SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.WSkill, CalculateMaxCool(WSkill.CurLevelCooldown, skillAcc));
+                break;
+            case SkillEnum.E:
+                SkillBase ESkill = FindSkill(KeyCode.E);
+                SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, CalculateMaxCool(ESkill.CurLevelCooldown, skillAcc));
+                break;
+            case SkillEnum.R:
+                SkillBase RSkill = FindSkill(KeyCode.R);
+                SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(RSkill.CurLevelCooldown, skillAcc));
+                break;
+        }
+
     }
 
     #endregion
@@ -400,10 +448,10 @@ public class MyPlayerController : PlayerController
         string skillName = Enum.GetName(typeof(Character), Managers.Object.Character) + '_' + key.ToString();
         C_Skill skillPacket = new C_Skill() { 
             ObjectInfo = ObjInfo,
-            SkillInfo = new SkillInfo() { KeyCode = (int)key, Name = skillName } };
+            SkillInfo = new SkillInfo() { KeyCode = key.ToString(), Name = skillName } };
         Managers.Network.Send(skillPacket);
     }
-
+    
     private void SendAnimPacket(string name, AnimType type, float value)
     {
         int hash = Animator.StringToHash(name);

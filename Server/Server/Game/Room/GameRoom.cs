@@ -20,6 +20,10 @@ namespace Server.Game
 
         MonsterManager _monsterManager = new MonsterManager();
 
+        public bool TryGetMonster(int objectId, out Monster monster)
+        {
+            return _monsters.TryGetValue(objectId, out monster);
+        }
         public void Init(int mapId)
         {
             string navMeshFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "navmesh_data.json");
@@ -27,6 +31,8 @@ namespace Server.Game
 
             // Spawn Monster
             _monsterManager.Init(this, 1);
+            _monsterManager.Add(1, MonsterType.Omega);
+           // _monsterManager.Add(1, MonsterType.Drone);
         }
 
         public override void Update()
@@ -188,6 +194,8 @@ namespace Server.Game
             ObjectInfo info = player.Info;
 
             // TODO : 스킬 사용 가능 여부 체크
+            if (!player.CanUseSkill(skillPacket))
+                return;
 
             // 스킬 매니저에 정보를 전달해서 체크
             // 오브젝트 ID로 플레이어 특정, 해당 플레이어가 들고 있는 스킬 클래스 검색

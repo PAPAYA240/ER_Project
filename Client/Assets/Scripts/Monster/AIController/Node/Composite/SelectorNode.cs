@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-
 public class SelectorNode : CompositeNode
 {
     private int _currentIdx = 0;

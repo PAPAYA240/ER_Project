@@ -22,7 +22,7 @@ namespace Server.Data
             = new Dictionary<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>();
 
         public static Dictionary<string, MonsterData> MonsterDict { get; private set; } = new Dictionary<string, MonsterData>();
-        public static Dictionary<string, SkillData> MonsterSkillDict { get; private set; } = new Dictionary<string, SkillData>();
+        public static Dictionary<MonsterSkill, MonsterSkillData> MonsterSkillDict { get; private set; } = new Dictionary<MonsterSkill, MonsterSkillData>();
         public static void LoadData()
         {
             // TEM
@@ -33,7 +33,7 @@ namespace Server.Data
 
             // For MonsterData
             MonsterDict = LoadJson<Data.MonsterDict, string, Data.MonsterData>("MonsterData").MakeDict();
-            MonsterSkillDict = LoadJson<Data.SkillDict, string, Data.SkillData>("MonsterSkillData").MakeDict();
+            MonsterSkillDict = LoadJson<Data.MonsterSkillDict, MonsterSkill, Data.MonsterSkillData>("MonsterSkillData").MakeDict();
         }
 
         static Loader LoadJson<Loader, Key, Value>(string path) where Loader : ILoader<Key, Value>
