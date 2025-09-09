@@ -93,7 +93,8 @@ class PacketHandler
             GameObjectType objectType = ObjectManager.GetObjectTypeById(cc.Id);
             if (objectType == GameObjectType.Player)
             {
-                cc.UseSkill(skillPacket.SkillInfo.KeyCode);
+                cc.UseSkill((KeyCode)skillPacket.SkillInfo.KeyCode);
+                Debug.Log("스킬 패킷 받기");
             }
         }
     }
@@ -110,7 +111,7 @@ class PacketHandler
         if (pc != null)
         {
             if (pc.ObjectType == Define.Object.OtherPlayer)
-                pc.PlayAnimation(animPacket.AnimInfo);
+                pc.PlayAnimFromServer(animPacket.AnimInfo);
         }
     }
     

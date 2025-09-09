@@ -39,3 +39,4 @@ public class DataManager
         return Newtonsoft.Json.JsonConvert.DeserializeObject<Loader>(text);
     }
 }
+

@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using static Define;
 using static UI_PlayerInterface;
 using static UI_SkillBase;
@@ -15,8 +14,8 @@ public class MyPlayerController : PlayerController
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
     class CoolTime
     {
-        public bool    isCoolDown;
-        public float   coolTime;
+        public bool isCoolDown;
+        public float coolTime;
     }
 
     int _mask = (1 << (int)Define.Layer.Map);
@@ -58,7 +57,29 @@ public class MyPlayerController : PlayerController
         //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.FSkill, );
     }
 
-    // 매 틱 Update에서 호출됨
+    protected override void UpdateAnimation()
+    {
+        if (_animator == null)
+            return;
+
+        if (State == CreatureState.Idle)
+        {
+            PlayAnimation("WAIT", 0.1f);
+        }
+        else if (State == CreatureState.Moving)
+        {
+            PlayAnimation("RUN", 0.1f);
+        }
+        else if (State == CreatureState.Skill)
+        {
+            ExecuteSkill(KeyCode.Q);
+        }
+        else
+        {
+
+        }
+    }
+
     protected override void UpdateController()
     {
         switch (State)
@@ -71,60 +92,19 @@ public class MyPlayerController : PlayerController
                 break;
         }
 
-        TempKeyInput();
-
         UpdateKeyInput();
 
         base.UpdateController();
     }
 
-    protected virtual void UpdateKeyInput()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            ExecuteSkill(KeyCode.Q);
-        }
-        else if (Input.GetKeyDown(KeyCode.W))
-        {
-            ExecuteSkill(KeyCode.W);
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            State = CreatureState.Dead;
-        }
-        else if (Input.GetKeyDown(KeyCode.C))
-        {
-            State = CreatureState.Idle;
-            SetBoolAnimation("bFishing", false);
-        }
-    }
-
-    protected override void UpdateAnimation()
-    {
-        if (_animator == null)
-            return;
-
-        if (State == CreatureState.Idle)
-        {
-        }
-        else if (State == CreatureState.Moving)
-        {
-        }
-        else if (State == CreatureState.Skill)
-        {
-        }
-        else if (State == CreatureState.Dead)
-        {
-        }
-    }
-
     protected override void UpdateIdle()
     {
+        // 이동 상태로 갈지 확인
         if (_moveKeyPressed)
         {
             State = CreatureState.Moving;
             return;
-        }       
+        }
     }
 
     protected override void UpdateMoving()
@@ -147,105 +127,6 @@ public class MyPlayerController : PlayerController
             CellPos = transform.position;
             RotInfo = transform.rotation;
             CheckUpdatedFlag();
-        }
-    }
-
-    protected override void UpdateSkill()
-    {
-    }
-
-    protected override void UpdateDead()
-    {
-    }
-
-    // Camera
-    [SerializeField]
-    public Vector3 _offset = new Vector3(0, 10, -10);
-    [SerializeField]
-    public float smoothSpeed = 5f;
-    void LateUpdate()
-    {
-        Vector3 targetPos = transform.position + _offset;
-        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, targetPos, smoothSpeed * Time.deltaTime);
-        Camera.main.transform.LookAt(transform.position);
-    }
-
-    void GetMouseInput()
-    {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f, _mask);
-
-        if (Input.GetMouseButton(1))
-        {
-            if (raycastHit)
-            {
-                _dstPos = hit.point;
-                State = CreatureState.Moving;
-
-                _moveKeyPressed = true;
-            }
-        }
-    }
-
-    void TempKeyInput()
-    {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f, _mask);
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            if (_navMeshAgent == null)
-                return;
-
-            Vector3 targetPos = Managers.Map.CalcResultPos(transform.position, hit.point);
-            _navMeshAgent.Warp(targetPos);
-            _dstPos = targetPos;
-            CellPos = transform.position;
-            RotInfo = transform.rotation;
-            CheckUpdatedFlag();
-        }
-    }
-
-    protected override void CheckUpdatedFlag()
-    {
-        if (_updated)
-        {
-            C_Move movePacket = new C_Move();
-            movePacket.PosInfo = PosInfo;
-            movePacket.RotInfo = RotInfo;
-            Managers.Network.Send(movePacket);
-            _updated = false;
-        }
-    }
-
-    #region Skill
-    protected void ExecuteSkill(KeyCode key)
-    {
-        if (!_coolDownDict[key].isCoolDown)
-        {
-            SkillBase skill = FindSkill(key);
-
-            // 쿨타임 체크
-            StartCoroutine(CoInputCooltime(key, skill.MaxCooldown));
-
-            // 다른 조건 체크하기
-
-            // 스킬 실행
-            //skill.Execute();
-
-            // 패킷 보내기
-            SendSkillPacket(key);
-
-            // 스킬 실행 UI, TODO 스킬 사용할 수 있는 검증이 다 끝난 곳으로 옮겨야함
-            _playerInterface.UseSkill(KeyToUIEnum(key));
-
-            Debug.Log($"스킬 사용! : {key}");
-        }
-        else
-        {
-            Debug.Log($"스킬 쿨타임 적용 중! : {key} -> {GetCoolTime(key)} 초 남음");
         }
     }
 
@@ -279,9 +160,94 @@ public class MyPlayerController : PlayerController
     {
         return _coolDownDict[key].coolTime;
     }
-    #endregion
 
-    #region UI
+    // Camera
+    [SerializeField]
+    public Vector3 _offset = new Vector3(0, 10, -10);
+    [SerializeField]
+    public float smoothSpeed = 5f;
+    void LateUpdate()
+    {
+        Vector3 targetPos = transform.position + _offset;
+        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, targetPos, smoothSpeed * Time.deltaTime);
+        Camera.main.transform.LookAt(transform.position);
+    }
+
+    // 키보드 입력
+    protected virtual void UpdateKeyInput()
+    {
+        if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.R))
+        {
+            State = CreatureState.Skill;
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+
+        }
+    }
+
+    protected override void CheckUpdatedFlag()
+    {
+        if (_updated)
+        {
+            C_Move movePacket = new C_Move();
+            movePacket.PosInfo = PosInfo;
+            movePacket.RotInfo = RotInfo;
+            Managers.Network.Send(movePacket);
+            _updated = false;
+        }
+    }
+
+    protected void PlayAnimation(string animName, float ratio)
+    {
+        _animator.CrossFadeInFixedTime(animName, ratio);
+        SendAnimPacket(animName, ratio);
+    }
+
+    void GetMouseInput()
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f, _mask);
+
+        if (Input.GetMouseButton(1))
+        {
+            if (raycastHit)
+            {
+                _dstPos = hit.point;
+                State = CreatureState.Moving;
+
+                _moveKeyPressed = true;
+            }
+        }
+    }
+
+    protected void ExecuteSkill(KeyCode key)
+    {
+        if (!_coolDownDict[key].isCoolDown)
+        {
+            SkillBase skill = FindSkill(key);
+
+            // 쿨타임 체크
+            StartCoroutine(CoInputCooltime(key, skill.MaxCooldown));
+
+            // 다른 조건 체크하기
+
+            // 패킷 보내기
+            SendSkillPacket(key);
+
+            // 스킬 실행 UI, TODO 스킬 사용할 수 있는 검증이 다 끝난 곳으로 옮겨야함
+            _playerInterface.UseSkill(KeyToUIEnum(key));
+
+            Debug.Log($"스킬 사용! : {key}");
+        }
+        else
+        {
+            Debug.Log($"스킬 쿨타임 적용 중! : {key} -> {GetCoolTime(key)} 초 남음");
+        }
+    }
+
+#region UI
     private UI_PlayerInterface.GameObjects KeyToUIEnum(KeyCode key)
     {
         switch (key)
@@ -328,6 +294,7 @@ public class MyPlayerController : PlayerController
 
         return result;
     }
+
     private string CharTypeToWeaponCode(CharacterType type)
     {
         string result = "";
@@ -416,47 +383,23 @@ public class MyPlayerController : PlayerController
 
     #endregion
 
-    #region Animation
-    protected void PlayAnimation(string animName)
-    {
-        _animator.Play(animName);
-        SendAnimPacket(animName, AnimType.Play, Time.time);
-    }
-
-    protected void TriggerAnimation(string triggerName)
-    {
-        _animator.SetTrigger(triggerName);
-        SendAnimPacket(triggerName, AnimType.Trigger, 0f);
-    }
-
-    protected void SetBoolAnimation(string boolName, bool value)
-    {
-        _animator.SetBool(boolName, value);
-        SendAnimPacket(boolName, AnimType.Bool, value == true ? 1f : 0f);
-    }
-
-    protected void SetFloatAnimation(string floatName, float value)
-    {
-        _animator.SetFloat(floatName, value);
-        SendAnimPacket(floatName, AnimType.Float, value);
-    }
-    #endregion
-
     #region Packet
     private void SendSkillPacket(KeyCode key)
     {
         string skillName = Enum.GetName(typeof(Character), Managers.Object.Character) + '_' + key.ToString();
-        C_Skill skillPacket = new C_Skill() { 
+        C_Skill skillPacket = new C_Skill()
+        {
             ObjectInfo = ObjInfo,
-            SkillInfo = new SkillInfo() { KeyCode = (int)key, Name = skillName } };
+            SkillInfo = new SkillInfo() { KeyCode = (int)key, Name = skillName }
+        };
         Managers.Network.Send(skillPacket);
+        Debug.Log("스킬 패킷 보내기");
     }
-    
-    private void SendAnimPacket(string name, AnimType type, float value)
+
+    private void SendAnimPacket(string name, float ratio)
     {
-        int hash = Animator.StringToHash(name);
-        C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { Hash = hash, Type = type, Value = value } };
-        Managers.Network.Send(animPacket);       
+        C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { Name = name, Ratio = ratio } };
+        Managers.Network.Send(animPacket);
     }
     #endregion
 }
