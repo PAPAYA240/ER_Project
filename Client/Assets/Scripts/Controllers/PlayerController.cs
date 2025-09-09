@@ -4,39 +4,40 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Windows;
 using static Define;
 
 public class PlayerController : CreatureController
 {
-	protected Coroutine _coSkill;
+    protected Coroutine _coSkill;
     protected bool _rangedSkill = false;
 
     protected Dictionary<string, SkillBase> _skills = new Dictionary<string, SkillBase>();
 
+    float length;
+
     protected override void Init()
-	{
-		base.Init();
-		MakeSkillDict();
-        ObjectType = Define.Object.OtherPlayer; 
+    {
+        base.Init();
+        MakeSkillDict();
+        ObjectType = Define.Object.OtherPlayer;
     }
 
-	protected override void UpdateController()
-	{		
-		base.UpdateController();
-	}
+    protected override void UpdateController()
+    {
+        base.UpdateController();
+    }
 
     protected virtual void CheckUpdatedFlag()
-	{
+    {
 
-	}
+    }
 
     public override void OnDamaged()
-	{
-		Debug.Log("Player HIT !");
-	}
+    {
+        Debug.Log("Player HIT !");
+    }
 
     #region Util
     protected string GetCharacterName()
@@ -45,14 +46,13 @@ public class PlayerController : CreatureController
     }
     #endregion
 
+
     #region Skill
-    public override void UseSkill(string keyCode)
+    public override void UseSkill(KeyCode keyCode)
     {
         SkillBase skill = FindSkill(keyCode);
         skill.Execute();
 
-        if (_coSkill != null)
-            StopCoroutine(_coSkill);
         _coSkill = StartCoroutine("CoStartSkill");
         Debug.Log("스킬 코루틴 시작");
     }
@@ -62,13 +62,20 @@ public class PlayerController : CreatureController
         // 대기 시간
         _rangedSkill = false;
         State = CreatureState.Skill;
-        float length = _animator.GetCurrentAnimatorStateInfo(0).length;
-        yield return new WaitForSeconds(length);
+        yield return new WaitForSeconds(0.1f);
+        AnimatorClipInfo[] clipInfos = _animator.GetCurrentAnimatorClipInfo(0);
+        float length = 0;
+        if (clipInfos.Length > 0)
+        {
+            length = clipInfos[0].clip.length / _animator.speed;
+            Debug.Log($"Clip Name: {clipInfos[0].clip.name}, Length: {length}");
+        }
+        yield return new WaitForSeconds(length - 0.1f);
         State = CreatureState.Idle;
         _coSkill = null;
+        Debug.Log("스킬 코루틴 종료");
 
         // TODO : TEMP
-        _animator.SetTrigger("tIdle");
         CheckUpdatedFlag();
     }
 
@@ -102,6 +109,11 @@ public class PlayerController : CreatureController
         }
     }
 
+    public void PlayAnimFromServer(AnimInfo animInfo)
+    {
+        _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
+    }
+
     protected SkillBase FindSkill(KeyCode keyCode)
     {
         SkillBase skillBase = null;
@@ -128,47 +140,6 @@ public class PlayerController : CreatureController
         }
 
         return skillBase;
-    }
-    #endregion
-
-    #region Animation
-    protected override void UpdateAnimation()
-    {
-        if (_animator == null)
-            return;
-
-        if (State == CreatureState.Idle)
-        {
-        }
-        else if (State == CreatureState.Moving)
-        {
-        }
-        else if (State == CreatureState.Skill)
-        {
-        }
-        else
-        {
-        }
-    }
-
-    // 서버로부터 애니메이션 정보를 받아와 다른 플레이어의 애니메이션 재생용
-    public virtual void PlayAnimation(AnimInfo animInfo)
-    {
-        switch (animInfo.Type)
-        {
-            case AnimType.Play:
-                _animator.Play(animInfo.Hash, 0, Time.time - animInfo.Value);
-                break;
-            case AnimType.Trigger:
-                _animator.SetTrigger(animInfo.Hash);
-                break;
-            case AnimType.Bool:
-                _animator.SetBool(animInfo.Hash, animInfo.Value != 0f);
-                break;
-            case AnimType.Float:
-                _animator.SetFloat(animInfo.Hash, animInfo.Value);
-                break;
-        }
     }
     #endregion
 }

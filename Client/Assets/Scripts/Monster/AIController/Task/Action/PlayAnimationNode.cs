@@ -1,7 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEngine.UI.GridLayoutGroup;
 
 public interface IStateChangeListener
 {
@@ -37,6 +36,7 @@ public class PlayAnimatorBoolNode : AnimationControlNode
 {
     public string paramName;
     public bool valueToSet;
+    public string stateName;
 
     public override NodeStatus Execute(GameObject owner)
     {
@@ -44,12 +44,18 @@ public class PlayAnimatorBoolNode : AnimationControlNode
             return NodeStatus.Failure;
 
         if (string.IsNullOrEmpty(paramName))
-        {
-            Debug.LogError("No param");
             return NodeStatus.Failure;
+
+        Debug.Log($"PlayAnimatorTriggerNode Execute: State={monsterController.State}, Skill={monsterController.Skill}");
+        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.normalizedTime >= 0.95f)
+        {
+            monsterController.isSpawned = true;
+            _animator.SetBool(paramName, false);
+            return NodeStatus.Success;
         }
 
-        _animator.SetBool(paramName, valueToSet);
+        _animator.SetBool(paramName, true);
         return NodeStatus.Running;
     }
 
@@ -68,9 +74,7 @@ public class PlayAnimatorFloatNode : AnimationControlNode
     {
         // 1. 필요한 컴포넌트가 모두 있는지 확인
         if (Check(owner) == false)
-        {
             return NodeStatus.Failure;
-        }
 
         // 이동 상태가 아니면 걷기 애니메이션을 멈춥니다.
         if (monsterController.State != CreatureState.Moving)
@@ -122,10 +126,8 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
         if (Check(owner) == false)
             return NodeStatus.Failure;
 
-        Debug.Log("스킬 애니메이션 가동 중");
         if(monsterController.State != CreatureState.Skill)
         {
-            Debug.Log("애니메이션 멈추기");
             _animator.ResetTrigger(triggerName);
             _animator.CrossFade("Idle", 0.1f);
             _isSentEndPacket = false;

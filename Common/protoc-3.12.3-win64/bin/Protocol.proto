@@ -202,10 +202,8 @@ message ObjectInfo{
 }
 
 message AnimInfo{
-	int32 hash = 1;
-	AnimType type = 2;
-	float value = 3;
-	float time = 4;
+	string name = 1;
+	float ratio = 2;
 }
 
 message S_ChangeHp{

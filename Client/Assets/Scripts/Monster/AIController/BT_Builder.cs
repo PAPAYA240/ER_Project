@@ -36,6 +36,7 @@ public class BehaviorTreeBuilder
         node.name = data.Name;
         if (data.Properties != null)
         {
+        Debug.Log($"Attemptinor type: {data.Name}");
             // JsonConvert.PopulateObject(data.Properties.ToString(), node);
             using (var reader = data.Properties.CreateReader())
             {
@@ -61,7 +62,10 @@ public class BehaviorTreeBuilder
     {
         Type type = Type.GetType(typeName);
         if (null == type)
+        {
+            Debug.Log($"Could not find type: {typeName}");
             return null;
+        }
 
         Node node = ScriptableObject.CreateInstance(type) as Node;
         return node;

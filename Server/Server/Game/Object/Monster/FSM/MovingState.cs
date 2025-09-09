@@ -39,7 +39,6 @@ namespace Server.Game.Object.Monster.FSM
 
             if (monster._path == null || monster._path.Count == 0)
             {
-                Console.WriteLine("문제1");
                 monster.ChangeState(new IdleState());
                 return;
             }
@@ -47,7 +46,6 @@ namespace Server.Game.Object.Monster.FSM
             if (monster.IsSkillRange())
             {
                 monster._path.Clear();
-                Console.WriteLine("스킬1");
                 monster.ChangeState(new SkillState());
                 return;
             }
