@@ -13,6 +13,7 @@ public class MyPlayerController : PlayerController
 {
     bool _moveKeyPressed = false;
     bool _isUseSkill = false;
+    KeyCode _keyCode = KeyCode.None;
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
     class CoolTime
     {
@@ -103,7 +104,7 @@ public class MyPlayerController : PlayerController
         UpdateKeyInput();
 
         if (_isUseSkill)
-            ExecuteSkill(KeyCode.Q);
+            ExecuteSkill();
 
         base.UpdateController();
     }
@@ -188,9 +189,25 @@ public class MyPlayerController : PlayerController
     // 키보드 입력
     protected virtual void UpdateKeyInput()
     {
-        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.R))
+        if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))
         {
             _isUseSkill = true;
+            _keyCode = KeyCode.Q;
+        }
+        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.W))
+        {
+            _isUseSkill = true;
+            _keyCode = KeyCode.W;
+        }
+        else if (Input.GetKeyDown(KeyCode.E))
+        {
+            _isUseSkill = true;
+            _keyCode = KeyCode.E;
+        }
+        else if (Input.GetKeyDown(KeyCode.R))
+        {
+            _isUseSkill = true;
+            _keyCode = KeyCode.R;
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
@@ -234,23 +251,21 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    protected void ExecuteSkill(KeyCode key)
+    protected void ExecuteSkill()
     {
         _isUseSkill = false;
 
-        if (!_coolDownDict[key].isCoolDown)
+        if (!_coolDownDict[_keyCode].isCoolDown)
         {
-            State = CreatureState.Skill;
-
             // 다른 조건 체크하기
 
             // 패킷 보내기
-            SendSkillPacket(key);
+            SendSkillPacket(_keyCode);
 
             // 스킬 실행 UI, TODO 스킬 사용할 수 있는 검증이 다 끝난 곳으로 옮겨야함
-            _playerInterface.UseSkill(KeyToUIEnum(key));
+            _playerInterface.UseSkill(KeyToUIEnum(_keyCode));
 
-            Debug.Log($"스킬 사용! : {key}");
+            Debug.Log($"스킬 사용! : {_keyCode}");
         }
     }
 
