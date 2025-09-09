@@ -48,7 +48,7 @@ public class PlayerController : CreatureController
 
 
     #region Skill
-    public override void UseSkill(string keyCode)
+    public override void UseSkill(KeyCode keyCode)
     {
         SkillBase skill = FindSkill(keyCode);
         skill.Execute();

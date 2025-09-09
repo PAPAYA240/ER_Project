@@ -390,9 +390,10 @@ public class MyPlayerController : PlayerController
         C_Skill skillPacket = new C_Skill()
         {
             ObjectInfo = ObjInfo,
-            SkillInfo = new SkillInfo() { KeyCode = key.ToString(), Name = skillName }
+            SkillInfo = new SkillInfo() { KeyCode = (int)key, Name = skillName }
         };
         Managers.Network.Send(skillPacket);
+        Debug.Log("스킬 패킷 보내기");
     }
 
     private void SendAnimPacket(string name, float ratio)
