@@ -121,7 +121,7 @@ public class MyPlayerController : PlayerController
         }
         else
         {
-            transform.position += moveDir.normalized * Speed * Time.deltaTime;
+            transform.position += Speed * Time.deltaTime * moveDir.normalized;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDir), 20 * Time.deltaTime);
             State = CreatureState.Moving;
             CellPos = transform.position;

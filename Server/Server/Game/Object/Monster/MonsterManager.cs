@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml.Linq;
+using System.Linq;
 using Google.Protobuf.Protocol;
 using Server.Data;
-using static Google.Protobuf.WellKnownTypes.Field.Types;
 
 namespace Server.Game.Object.Monster
 {
@@ -12,17 +10,24 @@ namespace Server.Game.Object.Monster
     {
         GameRoom _room;
         int _monsterCount = 0;
-        int _keepMonsterCount = 10;
+        int _keepMonsterCount = 0;
         long _nextSpawnTick = 0;
+
+        Stack<MonsterType> reserveMonster = new Stack<MonsterType>();
         public void Init(GameRoom room, int keepMonsterCount = 0)
         {
             _room = room;
             _keepMonsterCount = keepMonsterCount;
         }
 
-        public void Add(int monsterCnt)
+        public void Add(int monsterCnt, MonsterType type = MonsterType.MonsterNone)
         {
-            _monsterCount += monsterCnt;
+            _keepMonsterCount += monsterCnt;
+            if (type != MonsterType.MonsterNone)
+            { 
+                for (int i = 0; i < monsterCnt; i++)
+                    reserveMonster.Push(type);
+            }
         }
 
         public void Update()
@@ -31,7 +36,6 @@ namespace Server.Game.Object.Monster
                 return;
 
             if (_nextSpawnTick > Environment.TickCount64) return; 
-
             _nextSpawnTick = Environment.TickCount64 + 1000;
 
             if (_monsterCount < _keepMonsterCount) 
@@ -40,18 +44,26 @@ namespace Server.Game.Object.Monster
 
         private void Spawn()
         {
+            if (reserveMonster.Count() == 0)
+            {
+                _keepMonsterCount = 0;
+                Console.WriteLine("Monster Spawn 실패");
+                return;
+            }
+
             Monster monster = ObjectManager.Instance.Add<Monster>();
-            monster.Info.Name = $"Monster_TestMonster";
+            monster.Info.Name = $"{monster.Id} Monster";
             monster.Info.PosInfo.State = CreatureState.Idle;
             monster.Info.PosInfo.PosX = 0;
             monster.Info.PosInfo.PosY = 0;
+            monster.Info.MonsterType = reserveMonster.Peek();
+            reserveMonster.Pop();
 
             StatInfo stat = null;
-            DataManager.StatDict.TryGetValue(2, out stat);
+            DataManager.StatDict.TryGetValue(CharacterType.Rozzi, out stat); // TEMP
             monster.Stat.MergeFrom(stat);
 
-            monster.Init("Alpha");
-            //monster.Cell = new Vector3(0, 0, 0);
+            monster.Init(monster.Info.MonsterType.ToString());
             _room.Push(_room.EnterGame, monster);
             _monsterCount++;
         }

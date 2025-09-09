@@ -9,6 +9,7 @@ using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game.Object.Monster;
 using Server.Game.Object.Monster.AStar;
+using static Server.Data.DataUtils;
 
 namespace Server.Game
 {
@@ -20,6 +21,10 @@ namespace Server.Game
 
         MonsterManager _monsterManager = new MonsterManager();
 
+        public bool TryGetMonster(int objectId, out Monster monster)
+        {
+            return _monsters.TryGetValue(objectId, out monster);
+        }
         public void Init(int mapId)
         {
             string navMeshFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "navmesh_data.json");
@@ -27,6 +32,8 @@ namespace Server.Game
 
             // Spawn Monster
             _monsterManager.Init(this, 1);
+            _monsterManager.Add(1, MonsterType.Omega);
+           // _monsterManager.Add(1, MonsterType.Drone);
         }
 
         public override void Update()
@@ -203,40 +210,41 @@ namespace Server.Game
             skill.SkillInfo = skillPacket.SkillInfo;
             Broadcast(skill);
 
-            Data.SkillData skillData = null;
+            SkillData skillData = null;
+            Dictionary<KeyCode, SkillData> skills = DataManager.SkillDict[info.CharType];
 
-            if (DataManager.SkillDict.TryGetValue(skillPacket.SkillInfo.Name, out skillData) == false)
+            if (skills.TryGetValue((KeyCode)skillPacket.SkillInfo.KeyCode, out skillData) == false)
                 return;
 
-            switch (skillData.skillType)
-            {
-                case SkillType.SkillAuto:
-                    {
-                        //// 데미지 판정
-                        //Vector2Int skillPos = player.GetFrontCellPos(info.PosInfo.MoveDir);
-                        //GameObject target = Map.Find(skillPos);
-                        //if (target != null)
-                        //{
-                        //    Console.WriteLine("Hit GameObject!");
-                        //}
-                    }
-                    break;
-                case SkillType.SkillProjectile:
-                    {
-                        Arrow arrow = ObjectManager.Instance.Add<Arrow>();
-                        if (arrow == null)
-                            return;
+            //switch (skillData.type)
+            //{
+            //    case SkillType.SkillAuto:
+            //        {
+            //            //// 데미지 판정
+            //            //Vector2Int skillPos = player.GetFrontCellPos(info.PosInfo.MoveDir);
+            //            //GameObject target = Map.Find(skillPos);
+            //            //if (target != null)
+            //            //{
+            //            //    Console.WriteLine("Hit GameObject!");
+            //            //}
+            //        }
+            //        break;
+            //    case SkillType.SkillProjectile:
+            //        {
+            //            Arrow arrow = ObjectManager.Instance.Add<Arrow>();
+            //            if (arrow == null)
+            //                return;
 
-                        arrow.Owner = player;
-                        arrow.Data = skillData;
-                        arrow.PosInfo.State = CreatureState.Moving;
-                        arrow.PosInfo.PosX = player.PosInfo.PosX;
-                        arrow.PosInfo.PosY = player.PosInfo.PosY;
-                        arrow.Speed = skillData.projectile.speed;
-                        Push(EnterGame, arrow);
-                    }
-                    break;
-            }
+            //            arrow.Owner = player;
+            //            arrow.Data = skillData;
+            //            arrow.PosInfo.State = CreatureState.Moving;
+            //            arrow.PosInfo.PosX = player.PosInfo.PosX;
+            //            arrow.PosInfo.PosY = player.PosInfo.PosY;
+            //            arrow.Speed = skillData.projectile.speed;
+            //            Push(EnterGame, arrow);
+            //        }
+            //        break;
+            //}
         }
 
         public void HandleAnim(Player player, C_Anim animPacket)

@@ -19,10 +19,12 @@ enum MsgId {
   C_ANIM = 11;
   S_ANIM = 12;
   C_CHARACTER = 13;
-  S_CHARACTER = 14;
-  S_ENTER_PICK = 15;
-  S_LEAVE_PICK = 16;
-  C_PING = 17;
+  S_STATE = 14;
+  C_SKILL_END = 15;
+  S_CHARACTER = 16;
+  S_ENTER_PICK = 17;
+  S_LEAVE_PICK = 18;
+  C_PING = 19;
 }
 
 enum CreatureState{
@@ -45,6 +47,26 @@ enum SkillType{
 	SKILL_PROJECTILE = 2;
 }
 
+enum MonsterSkill
+{
+    MS_NONE = 0;
+    MS_ATTACK1 = 1;
+    MS_ATTACK2 = 2;
+    MS_SKILL1 = 3;
+    MS_SKILL2 = 4;
+    MS_SKILL3 = 5;
+
+    MS_DRONE_ATTACK1 = 6;
+    MS_DRONE_ATTACK2 = 7;
+}
+
+enum AnimType{
+	PLAY = 0;
+	TRIGGER = 1;
+	BOOL = 2;
+	FLOAT = 3;
+}
+
 enum CharacterType {
 	CHARACTER_NONE = 0;
     ROZZI = 1;
@@ -52,6 +74,40 @@ enum CharacterType {
 	HYUNWOO = 3;
 	ABIGAIL = 4;
 	THEODORE = 5;
+}
+
+enum MonsterType {
+	MONSTER_NONE = 0;
+   	 ALPHA = 1;
+   	OMEGA = 2;
+	DRONE = 3;
+}
+
+enum Weapon {
+    WEAPON_NONE = 0;
+    DAGGER = 1;
+    TWO_HANDED_SWORD = 2;
+    AXE = 3;
+    DUAL_SWORDS = 4;
+    PISTOL = 5;
+    ASSAULT_RIFLE = 6;
+    SNIPER_RIFLE = 7;
+    RAPIER = 8;
+    SPEAR = 9;
+    HAMMER = 10;
+    BAT = 11;
+    THROW = 12;
+    SHURIKEN = 13;
+    BOW = 14;
+    CROSSBOW = 15;
+    GLOVE = 16;
+    TONFA = 17;
+    GUITAR = 18;
+    NUNCHAKU = 19;
+    WHIP = 20;
+    CAMERA = 21;
+    ARCANA = 22;
+    V_F_PROSTHETIC = 23;
 }
 
 message C_EnterGame {
@@ -65,7 +121,15 @@ message S_EnterGame {
 message S_LeaveGame {
 
 }
-
+message S_State
+{
+	int32 ObjectId = 1;
+	CreatureState MyState = 2;
+	PositionInfo PosInfo = 3;
+	RotationInfo RotInfo = 4;
+	MonsterSkill skilltype = 5;
+	int32 sequenceId = 6;
+}
 message S_Spawn {
   repeated ObjectInfo objects = 1;
 }
@@ -83,6 +147,11 @@ message S_Move{
   int32 objectId = 1;
   PositionInfo posInfo = 2;
   RotationInfo rotInfo = 3;
+}
+
+message C_SkillEnd {
+	ObjectInfo objectInfo = 1;
+	MonsterSkill skillType = 2; 
 }
 
 message C_Skill{
@@ -129,6 +198,7 @@ message ObjectInfo{
 	RotationInfo rotInfo = 4;
 	StatInfo statInfo = 5;
 	CharacterType charType = 6;
+	MonsterType monsterType = 7;
 }
 
 message AnimInfo{
@@ -161,17 +231,32 @@ message RotationInfo{
 }
 
 message StatInfo{
-	int32 level = 1;
-	int32 hp = 2;
-	int32 maxHp = 3;
-	int32 attack = 4;
-	float speed = 5;
-	int32 totalHp = 6;
+	string name = 1;
+	float attack = 2;
+	float defense = 3;
+	int32 hp = 4;
+	int32 maxHp = 5;
+	float hpRegen = 6;
+	int32 stamina = 7;
+	float staminaRegen = 8;
+	float attackSpeed = 9;
+	float moveSpeed = 10;
+}
+
+message WeaponMasteryInfo{
+	float attackSpeed = 1;
+	float basicAtkAmp = 2;
+	float skillAmp = 3;
+}
+
+message WeaponInfo{
+	float range = 1;
+	float attackSpeed = 2;
 }
 
 message SkillInfo{
 	int32 skillId = 1;
-	string keyCode = 2;
+	int32 keyCode = 2;
 	string name = 3;
 }
 

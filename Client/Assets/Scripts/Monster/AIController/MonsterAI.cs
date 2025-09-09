@@ -10,9 +10,22 @@ public class MonsterAI : MonoBehaviour
     private float _tickInterval = 0.2f;
     private float _timer = 0f;
 
+    private MonsterController _monsterController;
+    private List<IStateChangeListener> _stateListeners = new List<IStateChangeListener>();
+
     void Start()
     {
         CreateBehaviorTree();
+
+        _monsterController = GetComponentInChildren<MonsterController>();
+        
+        FindAllListeners(_rootNodes);
+
+        if (_monsterController != null)
+        {
+            foreach (var listener in _stateListeners)
+                _monsterController.OnStateChanged += listener.HandleStateChange;
+        }
     }
 
     void Update()
@@ -36,5 +49,30 @@ public class MonsterAI : MonoBehaviour
             _rootNodes.Add(rootNode);
         }
         return _rootNodes;
+    }
+    void OnDisable()
+    {
+        if (_monsterController != null)
+        {
+            foreach (var listener in _stateListeners)
+            {
+                _monsterController.OnStateChanged -= listener.HandleStateChange;
+            }
+        }
+    }
+
+    private void FindAllListeners(List<Node> nodes)
+    {
+        foreach (var node in nodes)
+        {
+            if (node is IStateChangeListener listener)
+            {
+                _stateListeners.Add(listener);
+            }
+            if (node is CompositeNode composite)
+            {
+                FindAllListeners(composite.children);
+            }
+        }
     }
 }
