@@ -61,6 +61,7 @@ public class ObjectManager
             mc.Id = info.ObjectId;
             mc.PosInfo = info.PosInfo;
             mc.Stat = info.StatInfo;
+            mc.monsterType = info.MonsterType;
             mc.SyncPos();
         }
 
