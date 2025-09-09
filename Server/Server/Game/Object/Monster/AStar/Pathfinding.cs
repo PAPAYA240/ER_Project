@@ -377,12 +377,6 @@ namespace Server.Game.Object.Monster.AStar
             Vector3 apex = startPos;
             smoothedPath.Add(apex);
 
-            Console.WriteLine("깔때기 알고리즘이 만든 최종 경로:");
-            for (int i = 0; i < smoothedPath.Count; i++)
-            {
-                Console.WriteLine($"Waypoint {i}: {smoothedPath[i]}");
-            }
-
             // 왼쪽/오른쪽 경계 변
             Vector3 portalLeft = apex;
             Vector3 portalRight = apex;

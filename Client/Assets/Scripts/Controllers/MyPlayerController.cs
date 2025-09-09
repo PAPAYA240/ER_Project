@@ -451,7 +451,7 @@ public class MyPlayerController : PlayerController
             SkillInfo = new SkillInfo() { KeyCode = key.ToString(), Name = skillName } };
         Managers.Network.Send(skillPacket);
     }
-
+    
     private void SendAnimPacket(string name, AnimType type, float value)
     {
         int hash = Animator.StringToHash(name);

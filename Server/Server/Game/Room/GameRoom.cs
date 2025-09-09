@@ -20,6 +20,10 @@ namespace Server.Game
 
         MonsterManager _monsterManager = new MonsterManager();
 
+        public bool TryGetMonster(int objectId, out Monster monster)
+        {
+            return _monsters.TryGetValue(objectId, out monster);
+        }
         public void Init(int mapId)
         {
             string navMeshFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "navmesh_data.json");
@@ -27,6 +31,8 @@ namespace Server.Game
 
             // Spawn Monster
             _monsterManager.Init(this, 1);
+            _monsterManager.Add(1, MonsterType.Omega);
+           // _monsterManager.Add(1, MonsterType.Drone);
         }
 
         public override void Update()

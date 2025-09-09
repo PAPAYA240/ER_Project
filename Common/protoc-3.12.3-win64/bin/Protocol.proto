@@ -19,10 +19,12 @@ enum MsgId {
   C_ANIM = 11;
   S_ANIM = 12;
   C_CHARACTER = 13;
-  S_CHARACTER = 14;
-  S_ENTER_PICK = 15;
-  S_LEAVE_PICK = 16;
-  C_PING = 17;
+  S_STATE = 14;
+  C_SKILL_END = 15;
+  S_CHARACTER = 16;
+  S_ENTER_PICK = 17;
+  S_LEAVE_PICK = 18;
+  C_PING = 19;
 }
 
 enum CreatureState{
@@ -45,6 +47,19 @@ enum SkillType{
 	SKILL_PROJECTILE = 2;
 }
 
+enum MonsterSkill
+{
+    MS_NONE = 0;
+    MS_ATTACK1 = 1;
+    MS_ATTACK2 = 2;
+    MS_SKILL1 = 3;
+    MS_SKILL2 = 4;
+    MS_SKILL3 = 5;
+
+    MS_DRONE_ATTACK1 = 6;
+    MS_DRONE_ATTACK2 = 7;
+}
+
 enum AnimType{
 	PLAY = 0;
 	TRIGGER = 1;
@@ -61,6 +76,13 @@ enum CharacterType {
 	THEODORE = 5;
 }
 
+enum MonsterType {
+	MONSTER_NONE = 0;
+   	 ALPHA = 1;
+   	OMEGA = 2;
+	DRONE = 3;
+}
+
 message C_EnterGame {
 	ObjectInfo player = 1;
 }
@@ -72,7 +94,15 @@ message S_EnterGame {
 message S_LeaveGame {
 
 }
-
+message S_State
+{
+	int32 ObjectId = 1;
+	CreatureState MyState = 2;
+	PositionInfo PosInfo = 3;
+	RotationInfo RotInfo = 4;
+	MonsterSkill skilltype = 5;
+	int32 sequenceId = 6;
+}
 message S_Spawn {
   repeated ObjectInfo objects = 1;
 }
@@ -90,6 +120,11 @@ message S_Move{
   int32 objectId = 1;
   PositionInfo posInfo = 2;
   RotationInfo rotInfo = 3;
+}
+
+message C_SkillEnd {
+	ObjectInfo objectInfo = 1;
+	MonsterSkill skillType = 2; 
 }
 
 message C_Skill{
@@ -136,6 +171,7 @@ message ObjectInfo{
 	RotationInfo rotInfo = 4;
 	StatInfo statInfo = 5;
 	CharacterType charType = 6;
+	MonsterType monsterType = 7;
 }
 
 message AnimInfo{

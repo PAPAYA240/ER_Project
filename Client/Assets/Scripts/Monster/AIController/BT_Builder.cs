@@ -35,8 +35,13 @@ public class BehaviorTreeBuilder
 
         node.name = data.Name;
         if (data.Properties != null)
-            JsonConvert.PopulateObject(data.Properties.ToString(), node);
-
+        {
+            // JsonConvert.PopulateObject(data.Properties.ToString(), node);
+            using (var reader = data.Properties.CreateReader())
+            {
+                JsonSerializer.CreateDefault().Populate(reader, node);
+            }
+        }
         if (data.Children != null && data.Children.Count > 0)
         {
             if (node is CompositeNode compositeNode)

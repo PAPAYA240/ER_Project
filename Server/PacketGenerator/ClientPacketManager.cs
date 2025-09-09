@@ -23,20 +23,26 @@ class PacketManager
 
 	public void Register()
 	{		
-		_onRecv.Add((ushort)MsgId.CEnterGame, MakePacket<C_EnterGame>);
-		_handler.Add((ushort)MsgId.CEnterGame, PacketHandler.C_EnterGameHandler);		
-		_onRecv.Add((ushort)MsgId.CMove, MakePacket<C_Move>);
-		_handler.Add((ushort)MsgId.CMove, PacketHandler.C_MoveHandler);		
-		_onRecv.Add((ushort)MsgId.CSkill, MakePacket<C_Skill>);
-		_handler.Add((ushort)MsgId.CSkill, PacketHandler.C_SkillHandler);		
-		_onRecv.Add((ushort)MsgId.CAnim, MakePacket<C_Anim>);
-		_handler.Add((ushort)MsgId.CAnim, PacketHandler.C_AnimHandler);		
-		_onRecv.Add((ushort)MsgId.CCharacter, MakePacket<C_Character>);
-		_handler.Add((ushort)MsgId.CCharacter, PacketHandler.C_CharacterHandler);		
-		_onRecv.Add((ushort)MsgId.CSkillEnd, MakePacket<C_SkillEnd>);
-		_handler.Add((ushort)MsgId.CSkillEnd, PacketHandler.C_SkillEndHandler);		
-		_onRecv.Add((ushort)MsgId.CPing, MakePacket<C_Ping>);
-		_handler.Add((ushort)MsgId.CPing, PacketHandler.C_PingHandler);
+		_onRecv.Add((ushort)MsgId.SEnterGame, MakePacket<S_EnterGame>);
+		_handler.Add((ushort)MsgId.SEnterGame, PacketHandler.S_EnterGameHandler);		
+		_onRecv.Add((ushort)MsgId.SLeaveGame, MakePacket<S_LeaveGame>);
+		_handler.Add((ushort)MsgId.SLeaveGame, PacketHandler.S_LeaveGameHandler);		
+		_onRecv.Add((ushort)MsgId.SSpawn, MakePacket<S_Spawn>);
+		_handler.Add((ushort)MsgId.SSpawn, PacketHandler.S_SpawnHandler);		
+		_onRecv.Add((ushort)MsgId.SDespawn, MakePacket<S_Despawn>);
+		_handler.Add((ushort)MsgId.SDespawn, PacketHandler.S_DespawnHandler);		
+		_onRecv.Add((ushort)MsgId.SMove, MakePacket<S_Move>);
+		_handler.Add((ushort)MsgId.SMove, PacketHandler.S_MoveHandler);		
+		_onRecv.Add((ushort)MsgId.SSkill, MakePacket<S_Skill>);
+		_handler.Add((ushort)MsgId.SSkill, PacketHandler.S_SkillHandler);		
+		_onRecv.Add((ushort)MsgId.SChangeHp, MakePacket<S_ChangeHp>);
+		_handler.Add((ushort)MsgId.SChangeHp, PacketHandler.S_ChangeHpHandler);		
+		_onRecv.Add((ushort)MsgId.SDie, MakePacket<S_Die>);
+		_handler.Add((ushort)MsgId.SDie, PacketHandler.S_DieHandler);		
+		_onRecv.Add((ushort)MsgId.SAnim, MakePacket<S_Anim>);
+		_handler.Add((ushort)MsgId.SAnim, PacketHandler.S_AnimHandler);		
+		_onRecv.Add((ushort)MsgId.SState, MakePacket<S_State>);
+		_handler.Add((ushort)MsgId.SState, PacketHandler.S_StateHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)
