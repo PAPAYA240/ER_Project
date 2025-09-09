@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System;
+using Google.Protobuf;
 
 namespace Server.Game.Object.Monster
 {
@@ -85,11 +86,11 @@ namespace Server.Game.Object.Monster
                 monster.Info.PosInfo.State = CreatureState.Idle;
                 monster.Info.PosInfo.PosX = 0;
                 monster.Info.PosInfo.PosY = 0;
-                monster.Info.MonsterType = type; 
+                monster.Info.MonsterType = type;
 
-                StatInfo stat = null;
-                DataManager.StatDict.TryGetValue(2, out stat);
-                monster.Stat.MergeFrom(stat);
+                MonsterData monsterStat = null;
+                DataManager.MonsterDict.TryGetValue(type.ToString(), out monsterStat);
+                monster.Stat.MergeFrom(monsterStat.stat);
 
                 monster.Init(monster.Info.MonsterType.ToString());
                 _room.Push(_room.EnterGame, monster);
@@ -113,9 +114,9 @@ namespace Server.Game.Object.Monster
                 monster.Info.Name = $"{monster.Id} Monster";
                 monster.Info.PosInfo.State = CreatureState.Idle;
 
-                StatInfo stat = null;
-                DataManager.StatDict.TryGetValue(2, out stat);
-                monster.Stat.MergeFrom(stat);
+                MonsterData monsterStat = null;
+                DataManager.MonsterDict.TryGetValue(type.ToString(), out monsterStat);
+                monster.Stat.MergeFrom(monsterStat.stat);
 
                 monster.Init(monster.Info.MonsterType.ToString());
                 _room.Push(_room.EnterGame, monster);
