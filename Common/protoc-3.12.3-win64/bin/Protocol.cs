@@ -72,7 +72,7 @@ namespace Google.Protobuf.Protocol {
             "bk1hc3RlcnlJbmZvEhMKC2F0dGFja1NwZWVkGAEgASgCEhMKC2Jhc2ljQXRr",
             "QW1wGAIgASgCEhAKCHNraWxsQW1wGAMgASgCIjAKCldlYXBvbkluZm8SDQoF",
             "cmFuZ2UYASABKAISEwoLYXR0YWNrU3BlZWQYAiABKAIiOwoJU2tpbGxJbmZv",
-            "Eg8KB3NraWxsSWQYASABKAUSDwoHa2V5Q29kZRgCIAEoCRIMCgRuYW1lGAMg",
+            "Eg8KB3NraWxsSWQYASABKAUSDwoHa2V5Q29kZRgCIAEoBRIMCgRuYW1lGAMg",
             "ASgJIhYKBkNfUGluZxIMCgRwaW5nGAEgASgIKq8CCgVNc2dJZBIQCgxDX0VO",
             "VEVSX0dBTUUQABIQCgxTX0VOVEVSX0dBTUUQARIQCgxTX0xFQVZFX0dBTUUQ",
             "AhILCgdTX1NQQVdOEAMSDQoJU19ERVNQQVdOEAQSCgoGQ19NT1ZFEAUSCgoG",
@@ -4912,12 +4912,12 @@ namespace Google.Protobuf.Protocol {
 
     /// <summary>Field number for the "keyCode" field.</summary>
     public const int KeyCodeFieldNumber = 2;
-    private string keyCode_ = "";
+    private int keyCode_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string KeyCode {
+    public int KeyCode {
       get { return keyCode_; }
       set {
-        keyCode_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        keyCode_ = value;
       }
     }
 
@@ -4955,7 +4955,7 @@ namespace Google.Protobuf.Protocol {
     public override int GetHashCode() {
       int hash = 1;
       if (SkillId != 0) hash ^= SkillId.GetHashCode();
-      if (KeyCode.Length != 0) hash ^= KeyCode.GetHashCode();
+      if (KeyCode != 0) hash ^= KeyCode.GetHashCode();
       if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -4974,9 +4974,9 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(8);
         output.WriteInt32(SkillId);
       }
-      if (KeyCode.Length != 0) {
-        output.WriteRawTag(18);
-        output.WriteString(KeyCode);
+      if (KeyCode != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(KeyCode);
       }
       if (Name.Length != 0) {
         output.WriteRawTag(26);
@@ -4993,8 +4993,8 @@ namespace Google.Protobuf.Protocol {
       if (SkillId != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(SkillId);
       }
-      if (KeyCode.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(KeyCode);
+      if (KeyCode != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(KeyCode);
       }
       if (Name.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
@@ -5013,7 +5013,7 @@ namespace Google.Protobuf.Protocol {
       if (other.SkillId != 0) {
         SkillId = other.SkillId;
       }
-      if (other.KeyCode.Length != 0) {
+      if (other.KeyCode != 0) {
         KeyCode = other.KeyCode;
       }
       if (other.Name.Length != 0) {
@@ -5034,8 +5034,8 @@ namespace Google.Protobuf.Protocol {
             SkillId = input.ReadInt32();
             break;
           }
-          case 18: {
-            KeyCode = input.ReadString();
+          case 16: {
+            KeyCode = input.ReadInt32();
             break;
           }
           case 26: {

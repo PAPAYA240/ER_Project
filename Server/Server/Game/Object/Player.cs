@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
+using static Server.Data.DataUtils;
 
 namespace Server.Game
 {
@@ -15,8 +16,8 @@ namespace Server.Game
     {
         public ClientSession Session { get; set; }
 
-        protected Dictionary<string, Skill> _skills = new Dictionary<string, Skill>();  // key : KeyCode
-        Dictionary<string, CoolTime> _coolDownDict = new Dictionary<string, CoolTime>();
+        protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
+        Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
         class CoolTime
         {
             public bool isCoolDown;     // 쿨타임이 돌고 있는지 (false : 사용 가능)
@@ -36,7 +37,7 @@ namespace Server.Game
 
         public bool CanUseSkill(C_Skill skillPacket)
         {
-            string keyCode = skillPacket.SkillInfo.KeyCode;
+            KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
 
             // 쿨타임 체크
             if (!CheckCoolTime(keyCode))
@@ -62,15 +63,15 @@ namespace Server.Game
             //base.OnDead(attacker);
         }
 
-        private bool CheckCoolTime(string keyCode)
+        private bool CheckCoolTime(KeyCode key)
         {
-            if (!_coolDownDict[keyCode].isCoolDown)
+            if (!_coolDownDict[key].isCoolDown)
                 return true;
 
             return false;
         }
 
-        private async Task CoInputCooltime(string key, float time)
+        private async Task CoInputCooltime(KeyCode key, float time)
         {
             _coolDownDict[key].isCoolDown = true;
 
@@ -86,17 +87,15 @@ namespace Server.Game
             _coolDownDict[key].coolTime = 0.0f;
         }
 
-        private Skill FindSkill(string keyCode)
+        private Skill FindSkill(KeyCode key)
         {
-            return _skills[keyCode];
+            return _skills[key];
         }
 
         private void MakeSkillDict()
         {
             // 본인 캐릭터의 스킬 정보만 추출
-            string myCharName = Enum.GetName(typeof(CharacterType), Info.CharType);
-            CharacterData charData = DataManager.GameData[myCharName];
-            Dictionary<string, SkillData> skills = charData.skills;
+            Dictionary<KeyCode, SkillData> skills = DataManager.SkillDict[Info.CharType];
             foreach (var skillData in skills)
             {
                 Skill skill = new Skill();
@@ -110,8 +109,7 @@ namespace Server.Game
         {
             foreach (var skill in _skills)
             {
-                string keyCode = skill.Key;
-                _coolDownDict[keyCode] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
+                _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
             }
         }
     }

@@ -428,7 +428,7 @@
               }
             ]
           },
-          "2":{
+          "2": {
             "damage": 120,
             "cooldown": 25,
             "staminaCost": 90,
@@ -470,7 +470,7 @@
               }
             ]
           },
-          "3":{
+          "3": {
             "damage": 180,
             "cooldown": 25,
             "staminaCost": 90,
@@ -510,6 +510,357 @@
                 "duration": 1,
                 "condition": "Boom"
               }
+            ]
+          }
+        }
+      }
+    },
+    "Yuki": {
+      "T": {
+        "name": "완벽한 옷매무새",
+        "description": "유키가 적에게 피해를 입힐 때 단추를 1개 소모하여 추가 스킬 피해를 입힙니다. 단추가 없을 때는 적용되지 않습니다. 단추는 비전투 상태가 되거나, 옷매무새 정리를 사용하면 최대치로 회복할 수 있습니다.",
+        "type": "Passive",
+        "maxLevel": 3,
+        "icon": "Icons/Hyunwoo_P",
+        "mechanics": {
+          "targetType": "NonTarget",
+          "damageType": "Physical"
+        },
+        "levels": {
+          "1": {
+            "damage": 40
+          },
+          "2": {
+            "damage": 40
+          },
+          "3": {
+            "damage": 40
+          }
+        }
+      },
+      "Q": {
+        "name": "머리치기!",
+        "description": "유키의 다음 기본 공격에 추가 피해를 입히고 이동 속도를 감소시킵니다. 완벽한 옷매무새 단추가 있다면 기절시킵니다.",
+        "type": "Normal",
+        "maxLevel": 5,
+        "mechanics": {
+          "targetType": "TargetUnit",
+          "damageType": "Physical"
+        },
+        "scaling": {
+          "adRatio": "100"
+        },
+        "levels": {
+          "1": {
+            "damage": 40,
+            "cooldown": 6,
+            "staminaCost": 90,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 0.3
+              },
+              {
+                "type": "Untargetable"
+              }
+            ]
+          },
+          "2": {
+            "damage": 60,
+            "cooldown": 6,
+            "staminaCost": 80,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 0.3
+              },
+              {
+                "type": "Untargetable"
+              }
+            ]
+          },
+          "3": {
+            "damage": 80,
+            "cooldown": 6,
+            "staminaCost": 70,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 0.3
+              },
+              {
+                "type": "Untargetable"
+              }
+            ]
+          },
+          "4": {
+            "damage": 100,
+            "cooldown": 6,
+            "staminaCost": 60,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 0.3
+              },
+              {
+                "type": "Untargetable"
+              }
+            ]
+          },
+          "5": {
+            "damage": 120,
+            "cooldown": 6,
+            "staminaCost": 50,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 0.3
+              },
+              {
+                "type": "Untargetable"
+              }
+            ]
+          }
+        }
+      },
+      "W": {
+        "name": "옷매무새 정리",
+        "description": "지속 효과: 피해를 입힐 때마다 쿨다운이 감소합니다. 유키가 옷매무새를 정리합니다. 옷매무새를 정리할 동안 받는 피해가 감소하고, 빗겨치고 일격의 쿨다운이 감소됩니다. 정리가 마무리 되면 완벽한 옷매무새 단추를 회복합니다.",
+        "type": "Normal",
+        "maxLevel": 5,
+        "mechanics": {
+          "targetType": "Passive",
+          "damageType": "Buff"
+        },
+        "scaling": {
+          "adRatio": "0"
+        },
+        "levels": {
+          "1": {
+            "damage": 0,
+            "cooldown": 15,
+            "staminaCost": 50,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "defense",
+                "value": 10
+              },
+              {
+                "type": "CDR",
+                "value": 3,
+                "condition": "Hit"
+              }
+            ]
+          },
+          "2": {
+            "damage": 0,
+            "cooldown": 14,
+            "staminaCost": 50,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "defense",
+                "value": 10
+              },
+              {
+                "type": "CDR",
+                "value": 3,
+                "condition": "Hit"
+              }
+            ]
+          },
+          "3": {
+            "damage": 0,
+            "cooldown": 13,
+            "staminaCost": 50,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "defense",
+                "value": 10
+              },
+              {
+                "type": "CDR",
+                "value": 3,
+                "condition": "Hit"
+              }
+            ]
+          },
+          "4": {
+            "damage": 0,
+            "cooldown": 12,
+            "staminaCost": 50,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "defense",
+                "value": 10
+              },
+              {
+                "type": "CDR",
+                "value": 3,
+                "condition": "Hit"
+              }
+            ]
+          },
+          "5": {
+            "damage": 0,
+            "cooldown": 11,
+            "staminaCost": 50,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "defense",
+                "value": 10
+              },
+              {
+                "type": "CDR",
+                "value": 3,
+                "condition": "Hit"
+              }
+            ]
+          }
+        }
+      },
+      "E": {
+        "name": "빗겨치고 일격",
+        "description": "유키가 지정한 방향으로 돌진해서 가장 먼저 부딪힌 적에게 스킬 피해를 입힙니다. 일정 시간 동안 공격 속도가 감소되고 유키의 빗겨치고 일격의 쿨다운이 감소합니다.",
+        "type": "Normal",
+        "maxLevel": 5,
+        "mechanics": {
+          "targetType": "TargetUnit",
+          "damageType": "Physical"
+        },
+        "scaling": {
+          "adRatio": "100"
+        },
+        "levels": {
+          "1": {
+            "damage": 40,
+            "cooldown": 15,
+            "staminaCost": 50,
+            "effects": [
+              {
+                "type": "Dash",
+                "condition": "Hit"
+              },
+              {
+                "type": "CDR",
+                "value": 3,
+                "condition": "Hit"
+              }
+            ]
+          },
+          "2": {
+            "damage": 75,
+            "cooldown": 14,
+            "staminaCost": 50,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 0.3
+              },
+              {
+                "type": "Untargetable"
+              }
+            ]
+          },
+          "3": {
+            "damage": 110,
+            "cooldown": 13,
+            "staminaCost": 50,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 0.3
+              },
+              {
+                "type": "Untargetable"
+              }
+            ]
+          },
+          "4": {
+            "damage": 145,
+            "cooldown": 12,
+            "staminaCost": 50,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 0.3
+              },
+              {
+                "type": "Untargetable"
+              }
+            ]
+          },
+          "5": {
+            "damage": 180,
+            "cooldown": 11,
+            "staminaCost": 50,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 0.3
+              },
+              {
+                "type": "Untargetable"
+              }
+            ]
+          }
+        }
+      },
+      "R": {
+        "name": "화무십일홍(花無十日紅)",
+        "description": "유키가 검에 손을 가져가서 순식간에 공간을 베어 버립니다. 유키는 자신이 벤 적에게 피해를 입히고 표시를 남겨 이동 속도를 감소시킵니다. 유키가 검을 검집에 집어 넣는 순간 표시가 터지며 대상의 최대 체력의 일정 비율만큼 고정 피해를 입힙니다.",
+        "type": "Ultimate",
+        "maxLevel": 3,
+        "mechanics": {
+          "targetType": "TargetArea",
+          "damageType": "Physical"
+        },
+        "scaling": {
+          "adRatio": 200
+        },
+        "levels": {
+          "1": {
+            "damage": 200,
+            "cooldown": 90,
+            "staminaCost": 100,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "speed",
+                "value": -99,
+                "duration": 1
+              }
+            ]
+          },
+          "2": {
+            "damage": 250,
+            "cooldown": 75,
+            "staminaCost": 125,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "speed",
+                "value": -99,
+                "duration": 1
+              }
+            ]
+          },
+          "3": {
+            "damage": 300,
+            "cooldown": 60,
+            "staminaCost": 150,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "speed",
+                "value": -99,
+                "duration": 1
+              }
+            ]
           }
         }
       }

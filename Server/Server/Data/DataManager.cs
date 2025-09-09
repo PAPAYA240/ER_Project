@@ -29,10 +29,10 @@ namespace Server.Data
         public static void LoadData()
         {
             // For PlayerData
-            StatDict = LoadJson<Data.StatData, int, StatInfo>("StatData", "player").MakeDict();
-            GameData = LoadJson<Data.GameData, string, Data.CharacterData>("newSkillData", "player").MakeDict();
-            WeaponDict = LoadJsonServer<Data.WeaponData, Weapon, WeaponInfo>("WeaponData", "player").MakeDict();
-            WeaponMasteryDict = LoadJsonServer<Data.WeaponMasteryData, CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>("WeaponMasteryData", "player").MakeDict();
+            StatDict = LoadJson<Data.StatData, CharacterType, StatInfo>("StatData", "player").MakeDict();
+            SkillDict = LoadJson<Data.GameData, CharacterType, Dictionary<KeyCode, SkillData>>("newSkillData", "player").MakeDict();
+            WeaponDict = LoadJson<Data.WeaponData, Weapon, WeaponInfo>("WeaponData", "player").MakeDict();
+            WeaponMasteryDict = LoadJson<Data.WeaponMasteryData, CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>("WeaponMasteryData", "player").MakeDict();
 
             // For MonsterData
             MonsterDict = LoadJson<Data.MonsterDict, string, Data.MonsterData>("MonsterData", "monster").MakeDict();

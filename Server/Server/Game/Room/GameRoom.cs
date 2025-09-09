@@ -9,6 +9,7 @@ using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game.Object.Monster;
 using Server.Game.Object.Monster.AStar;
+using static Server.Data.DataUtils;
 
 namespace Server.Game
 {
@@ -210,11 +211,9 @@ namespace Server.Game
             Broadcast(skill);
 
             SkillData skillData = null;
-            string myCharName = Enum.GetName(typeof(CharacterType), info.CharType);
-            CharacterData charData = DataManager.GameData[myCharName];
-            Dictionary<string, SkillData> skills = charData.skills;
+            Dictionary<KeyCode, SkillData> skills = DataManager.SkillDict[info.CharType];
 
-            if (skills.TryGetValue(skillPacket.SkillInfo.KeyCode, out skillData) == false)
+            if (skills.TryGetValue((KeyCode)skillPacket.SkillInfo.KeyCode, out skillData) == false)
                 return;
 
             //switch (skillData.type)

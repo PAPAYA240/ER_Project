@@ -6,31 +6,52 @@ using UnityEngine;
 
 namespace Data
 {
-    #region Test
-
+    #region Stat
     [Serializable]
-    public class GameData : ILoader<String, CharacterData>
+    public class StatData : ILoader<CharacterType, StatInfo>
     {
-        public List<CharacterData> characters = new List<CharacterData>();
+        public List<StatInfo> stats = new List<StatInfo>();
 
-        public Dictionary<string, CharacterData> MakeDict()
+        public Dictionary<CharacterType, StatInfo> MakeDict()
         {
-            Dictionary<string, CharacterData> dict = new Dictionary<string, CharacterData>();
-            foreach (CharacterData Data in characters)
+            Dictionary<CharacterType, StatInfo> dict = new Dictionary<CharacterType, StatInfo>();
+            foreach (StatInfo stat in stats)
             {
-                dict.Add(Data.name, Data);
-
+                stat.Hp = stat.MaxHp;
+                dict.Add((CharacterType)Enum.Parse(typeof(CharacterType), stat.Name), stat);
             }
             return dict;
         }
     }
+    #endregion
 
+    #region Skill
     [Serializable]
-    public class CharacterData
+    public class GameData : ILoader<CharacterType, Dictionary<KeyCode, SkillData>>
     {
-        public string id;
-        public string name;
-        public Dictionary<string, SkillData> skills;
+        public Dictionary<string, Dictionary<string, SkillData>> characters = new Dictionary<string, Dictionary<string, SkillData>>();
+
+        public Dictionary<CharacterType, Dictionary<KeyCode, SkillData>> MakeDict()
+        {
+            var nestedDict = new Dictionary<CharacterType, Dictionary<KeyCode, SkillData>>();
+
+            foreach (var chars in characters)
+            {
+                CharacterType chartype = (CharacterType)Enum.Parse(typeof(CharacterType), chars.Key);
+
+                var dict = new Dictionary<KeyCode, SkillData>();
+                foreach (var skills in chars.Value)
+                {
+                    KeyCode keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), skills.Key);
+
+                    dict.Add(keyCode, skills.Value);
+                }
+
+                nestedDict.Add(chartype, dict);
+            }
+
+            return nestedDict;
+        }
     }
 
     [Serializable]
@@ -43,7 +64,7 @@ namespace Data
         public int maxLevel;
         public Mechanics mechanics;
         public Scaling scaling;
-        public List<SkillLevel> levels;
+        public Dictionary<int, SkillLevel> levels;
     }
 
     [Serializable]
@@ -56,7 +77,7 @@ namespace Data
         public float radius;
         public float range;
 
-        public ProjectileData projectile; 
+        public ProjectileData projectile;
     }
 
     [Serializable]
@@ -70,7 +91,6 @@ namespace Data
         public bool isPiercing;
         public bool isHoming;
     }
-
 
     [Serializable]
     public class Scaling
@@ -99,27 +119,9 @@ namespace Data
         public float duration; // 지속시간
         public string condition; // 옵션 (예: "HP<50%")
     }
-
     #endregion
 
-
-
     #region Skill
-    //[Serializable]
-    //public class SkillData
-    //{
-    //    public int id;
-    //    public string name;
-    //    public float cooldown;
-    //    public float lastUsedTime;
-    //    public int manaCost;
-    //    public string uiTag;
-
-    //    public int damage;
-    //    public SkillType skillType;
-    //    public ProjectileInfo projectile;
-    //}
-
     public class ProjectileInfo
     {
         public string name;
@@ -127,21 +129,5 @@ namespace Data
         public int range;
         public string prefab;
     }
-
-    [Serializable]
-    public class SkillDict : ILoader<string, SkillData>
-    {
-        public List<SkillData> skillData = new List<SkillData>();
-
-        public Dictionary<string, SkillData> MakeDict()
-        {
-            Dictionary<string, SkillData> dict = new Dictionary<string, SkillData>();
-            foreach (SkillData data in skillData)
-                dict.Add(data.name, data);
-            return dict;
-        }
-    }
-
-
     #endregion
 }

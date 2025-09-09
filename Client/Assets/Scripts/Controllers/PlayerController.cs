@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Windows;
 using static Define;
 
 public class PlayerController : CreatureController
@@ -74,6 +75,7 @@ public class PlayerController : CreatureController
     protected void MakeSkillDict()
     {
         var skillTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsSubclassOf(typeof(SkillBase)) && !t.IsAbstract);
+        Dictionary<KeyCode, Data.SkillData> skills = DataManager.SkillDict[ObjInfo.CharType];
 
         foreach (var type in skillTypes)
         {
@@ -87,10 +89,13 @@ public class PlayerController : CreatureController
             if (charName != GetCharacterName())
                 continue;
 
-            string KeyCode = className.Substring(idx + 1);
+            string keyCode = className.Substring(idx + 1);
+            if(!Enum.TryParse<KeyCode>(keyCode, out var result))
+                Debug.Log($"KeyCode를 찾을 수 없음 : {keyCode}");
 
             SkillBase skill = (SkillBase)Activator.CreateInstance(type);
-            skill.SkillData = Managers.Data.GameData[charName].skills[KeyCode];
+
+            skill.SkillData = skills[result];
             skill._player = this;
             skill._animator = this._animator;
             _skills.Add(type.Name, skill);
