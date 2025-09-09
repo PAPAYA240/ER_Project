@@ -80,7 +80,7 @@ namespace Server.Game
             while (sw.Elapsed.TotalSeconds < time)
             {
                 _coolDownDict[key].coolTime = (float)(time - sw.Elapsed.TotalSeconds);
-                await Task.Delay(100); // 0.1초마다 남은 쿨타임 갱신
+                await Task.Delay(10); // 0.01초마다 남은 쿨타임 갱신
             }
 
             _coolDownDict[key].isCoolDown = false;

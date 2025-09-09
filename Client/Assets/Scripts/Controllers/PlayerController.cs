@@ -11,13 +11,21 @@ using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 public class PlayerController : CreatureController
 {
-    protected Coroutine _coSkill;
-    protected bool _rangedSkill = false;
-
+    bool _isKeyInput = false;
     protected Dictionary<string, SkillBase> _skills = new Dictionary<string, SkillBase>();
-
+    
     //Fog
     private FogOfWarVision _fogOfWarVision;
+
+    public bool IsKeyInput
+    {
+        get { return _isKeyInput; }
+        set
+        {
+            _isKeyInput = value;
+            Debug.Log($"IsKeyInput changed: {value}");
+        }
+    }
 
     protected override void Init()
 	{
@@ -56,16 +64,20 @@ public class PlayerController : CreatureController
     #region Skill
     public override void UseSkill(S_Skill skillPacket)
     {
+        Debug.Log("스킬 패킷 받기");
+
         // 서버에서 스킬 사용을 허락받으면
-        if(skillPacket.CanUse)
+        if (skillPacket.CanUse)
         {
             SkillBase skill = FindSkill((KeyCode)skillPacket.SkillInfo.KeyCode);
             skill.Execute();
 
             if (Define.Object.MyPlayer == ObjectType)
+            {
                 Managers.Object.MyPlayer.StartCoCoolTime((KeyCode)skillPacket.SkillInfo.KeyCode, skill.CurLevelCooldown);
+            }
 
-            _coSkill = StartCoroutine("CoStartSkill");
+            StartCoroutine(CoStartSkill());
             Debug.Log("스킬 코루틴 시작");
         }
     }
@@ -73,7 +85,7 @@ public class PlayerController : CreatureController
     IEnumerator CoStartSkill()
     {
         // 대기 시간
-        _rangedSkill = false;
+        IsKeyInput = true;
         State = CreatureState.Skill;
         yield return new WaitForSeconds(0.1f);
         AnimatorClipInfo[] clipInfos = _animator.GetCurrentAnimatorClipInfo(0);
@@ -85,7 +97,7 @@ public class PlayerController : CreatureController
         }
         yield return new WaitForSeconds(length - 0.1f);
         State = CreatureState.Idle;
-        _coSkill = null;
+        IsKeyInput = false;
         Debug.Log("스킬 코루틴 종료");
 
         // TODO : TEMP
