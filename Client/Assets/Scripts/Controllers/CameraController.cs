@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CameraController : MonoBehaviour
 {
@@ -18,7 +19,10 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
+        PhysicsRaycaster raycaster = GetComponent<PhysicsRaycaster>();
 
+        if (raycaster == null)
+            gameObject.AddComponent<PhysicsRaycaster>();
     }
 
     void LateUpdate()

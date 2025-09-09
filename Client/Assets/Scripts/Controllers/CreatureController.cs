@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using Google.Protobuf.Protocol;
+using UnityEditor;
 using UnityEngine;
 using static Define;
 
@@ -50,9 +51,10 @@ public class CreatureController : BaseController
     }
 
 	protected override void Init()
-	{
+    {
 		base.Init();
-		//AddHpBar();
+
+        //AddHpBar();
     }
 	
 	public virtual void OnDamaged()
