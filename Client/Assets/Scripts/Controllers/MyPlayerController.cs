@@ -141,7 +141,7 @@ public class MyPlayerController : PlayerController
         }
         else
         {
-            transform.position += moveDir.normalized * Speed * Time.deltaTime;
+            transform.position += Speed * Time.deltaTime * moveDir.normalized;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDir), 20 * Time.deltaTime);
             State = CreatureState.Moving;
             CellPos = transform.position;
@@ -448,7 +448,7 @@ public class MyPlayerController : PlayerController
         string skillName = Enum.GetName(typeof(Character), Managers.Object.Character) + '_' + key.ToString();
         C_Skill skillPacket = new C_Skill() { 
             ObjectInfo = ObjInfo,
-            SkillInfo = new SkillInfo() { KeyCode = key.ToString(), Name = skillName } };
+            SkillInfo = new SkillInfo() { KeyCode = (int)key, Name = skillName } };
         Managers.Network.Send(skillPacket);
     }
     

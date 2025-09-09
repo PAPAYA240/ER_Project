@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Google.Protobuf.Protocol;
+using static Server.Data.DataUtils;
 
 namespace Server.Data
 {
@@ -13,31 +14,34 @@ namespace Server.Data
 
     public class DataManager
     {
-        public static Dictionary<int, StatInfo> StatDict { get; private set; } = new Dictionary<int, StatInfo>();
-        public static Dictionary<string, Data.SkillData> SkillDict { get; private set; } = new Dictionary<string, Data.SkillData>();
+        public static Dictionary<CharacterType, StatInfo> StatDict { get; private set; } = new Dictionary<CharacterType, StatInfo>();
+        public static Dictionary<CharacterType, Dictionary<KeyCode, SkillData>> SkillDict { get; private set; } 
+            = new Dictionary<CharacterType, Dictionary<KeyCode, SkillData>>();
+
+        public static Dictionary<Weapon, WeaponInfo> WeaponDict { get; private set; } = new Dictionary<Weapon, WeaponInfo>();
+
+        public static Dictionary<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>> WeaponMasteryDict { get; private set; }
+            = new Dictionary<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>();
+
         public static Dictionary<string, MonsterData> MonsterDict { get; private set; } = new Dictionary<string, MonsterData>();
         public static Dictionary<MonsterSkill, MonsterSkillData> MonsterSkillDict { get; private set; } = new Dictionary<MonsterSkill, MonsterSkillData>();
+
         public static void LoadData()
         {
-            // TEM
-            StatDict = LoadJsonServer<Data.StatData, int, StatInfo>("StatData").MakeDict();
-            SkillDict = LoadJsonServer<Data.SkillDict, string, Data.SkillData>("SkillData").MakeDict();
+            // For PlayerData
+            StatDict = LoadJson<Data.StatData, CharacterType, StatInfo>("StatData", "player").MakeDict();
+            SkillDict = LoadJson<Data.GameData, CharacterType, Dictionary<KeyCode, SkillData>>("newSkillData", "player").MakeDict();
+            WeaponDict = LoadJson<Data.WeaponData, Weapon, WeaponInfo>("WeaponData", "player").MakeDict();
+            WeaponMasteryDict = LoadJson<Data.WeaponMasteryData, CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>("WeaponMasteryData", "player").MakeDict();
 
             // For MonsterData
-            MonsterDict = LoadJson<Data.MonsterDict, string, Data.MonsterData>("MonsterData").MakeDict();
-            MonsterSkillDict = LoadJson<Data.MonsterSkillDict, MonsterSkill, Data.MonsterSkillData>("MonsterSkillData").MakeDict();
+            MonsterDict = LoadJson<Data.MonsterDict, string, Data.MonsterData>("MonsterData", "monster").MakeDict();
+            MonsterSkillDict = LoadJson<Data.MonsterSkillDict, MonsterSkill, Data.MonsterSkillData>("MonsterSkillData", "monster").MakeDict();
         }
 
-        static Loader LoadJson<Loader, Key, Value>(string path) where Loader : ILoader<Key, Value>
+        static Loader LoadJson<Loader, Key, Value>(string path, string key) where Loader : ILoader<Key, Value>
         {
-            string text = File.ReadAllText($"{ConfigManager.Config.dataPath}/{path}.json");
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Loader>(text);
-        }
-
-        // TEMP
-        static Loader LoadJsonServer<Loader, Key, Value>(string path) where Loader : ILoader<Key, Value>
-        {
-            string text = File.ReadAllText($"{ConfigManager.ConfigServer.dataPath}/{path}.json");
+            string text = File.ReadAllText($"{ConfigManager.Config.dataPaths[key]}/{path}.json");
             return Newtonsoft.Json.JsonConvert.DeserializeObject<Loader>(text);
         }
     }

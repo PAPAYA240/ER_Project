@@ -271,12 +271,12 @@ namespace Server.Game.Object.Monster
 
         void BroadcastSkill(SkillData skillData)
         {
-            S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
-            skill.ObjectId = Id;
-            skill.SkillInfo.SkillId = skillData.id;
-
-            State = CreatureState.Skill;
-            Room.Broadcast(skill);
+            //S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
+            //skill.ObjectId = Id;
+            //skill.SkillInfo.SkillId = skillData.id;
+            //
+            //State = CreatureState.Skill;
+            //Room.Broadcast(skill);
         }
 
         void BroadcastMove()

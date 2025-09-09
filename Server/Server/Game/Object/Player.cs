@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
+using static Server.Data.DataUtils;
 
 namespace Server.Game
 {
@@ -15,8 +16,8 @@ namespace Server.Game
     {
         public ClientSession Session { get; set; }
 
-        protected Dictionary<string, Skill> _skills = new Dictionary<string, Skill>();
-        Dictionary<string, CoolTime> _coolDownDict = new Dictionary<string, CoolTime>();
+        protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
+        Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
         class CoolTime
         {
             public bool isCoolDown;     // 쿨타임이 돌고 있는지 (false : 사용 가능)
@@ -36,8 +37,10 @@ namespace Server.Game
 
         public bool CanUseSkill(C_Skill skillPacket)
         {
+            KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
+
             // 쿨타임 체크
-            if (!CheckCoolTime(skillPacket))
+            if (!CheckCoolTime(keyCode))
                 return false;
 
             // 스테미나 체크
@@ -45,13 +48,12 @@ namespace Server.Game
 
             // 체크 끝나면 데이터 변경
             // ex : 쿨타임 돌리기 시작 등
-            _ = CoInputCooltime(skillPacket.SkillInfo.KeyCode, FindSkill(skillPacket.SkillInfo.KeyCode).SkillData.cooldown);
-            //StartCoroutine(CoInputCooltime(key, skill.SkillData.cooldown));
+            _ = CoInputCooltime(keyCode, FindSkill(keyCode).CurLevelCooldown);
 
             return true;
         }
 
-        public override void OnDamaged(GameObject attacker, int damage)
+        public override void OnDamaged(GameObject attacker, float damage)
         {
             base.OnDamaged(attacker, damage);
         }
@@ -61,15 +63,15 @@ namespace Server.Game
             //base.OnDead(attacker);
         }
 
-        private bool CheckCoolTime(C_Skill skillPacket)
+        private bool CheckCoolTime(KeyCode key)
         {
-            if (!_coolDownDict[skillPacket.SkillInfo.KeyCode].isCoolDown)
+            if (!_coolDownDict[key].isCoolDown)
                 return true;
 
             return false;
         }
 
-        private async Task CoInputCooltime(string key, float time)
+        private async Task CoInputCooltime(KeyCode key, float time)
         {
             _coolDownDict[key].isCoolDown = true;
 
@@ -85,28 +87,21 @@ namespace Server.Game
             _coolDownDict[key].coolTime = 0.0f;
         }
 
-        private Skill FindSkill(string keyCode)
+        private Skill FindSkill(KeyCode key)
         {
-            return _skills[keyCode];
+            return _skills[key];
         }
 
         private void MakeSkillDict()
         {
             // 본인 캐릭터의 스킬 정보만 추출
-            string myCharName = Enum.GetName(typeof(CharacterType), Info.CharType);
-            foreach (var skillData in DataManager.SkillDict)
+            Dictionary<KeyCode, SkillData> skills = DataManager.SkillDict[Info.CharType];
+            foreach (var skillData in skills)
             {
-                string skillName = skillData.Key;
-                int idx = skillName.IndexOf('_');
-                string charName = idx >= 0 ? skillName.Substring(0, idx) : skillName;
-                if (myCharName != charName)
-                    continue;
-
                 Skill skill = new Skill();
                 skill.SkillData = skillData.Value;
 
-                string key = skillData.Key.Substring(skillData.Key.Length - 1);
-                _skills.Add(key, skill);
+                _skills.Add(skillData.Key, skill);
             }
         }
 
@@ -114,8 +109,7 @@ namespace Server.Game
         {
             foreach (var skill in _skills)
             {
-                string keyCode = skill.Key;
-                _coolDownDict[keyCode] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
+                _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
             }
         }
     }

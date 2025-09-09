@@ -33,9 +33,6 @@ namespace Server
 
 		static void Main(string[] args)
 		{
-			// TEMP
-			ConfigManager.LoadConfigServer();
-
 			ConfigManager.LoadConfig();
 			DataManager.LoadData();
 
