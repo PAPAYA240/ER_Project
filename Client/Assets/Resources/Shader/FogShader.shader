@@ -3,14 +3,22 @@ Shader "Unlit/FogShader"
     // --------------- (A) Properties: 머티리얼 인스펙터에 노출될 변수들 ---------------
     Properties
     {
-        //_BaseMap ("Base Minimap Texture", 2D) = "white" {} // 기본 미니맵 이미지 텍스처
         _VisionMask ("Vision Mask (R8)", 2D) = "white" {}   // R8 시야 마스크 텍스처
+
+        // --- 여기에 Stencil 관련 Properties를 추가합니다 ---
+        _StencilComp ("Stencil Comparison", Float) = 8       // UnityEngine.Rendering.CompareFunction.Always
+        _Stencil ("Stencil ID", Float) = 0
+        _StencilOp ("Stencil Operation", Float) = 0          // UnityEngine.Rendering.StencilOp.Keep
+        _StencilWriteMask ("Stencil Write Mask", Float) = 255
+        _StencilReadMask ("Stencil Read Mask", Float) = 255
+        _ColorMask ("Color Mask", Float) = 15 // R, G, B, A
+        // --------------------------------------------------
     }
 
     // --------------- (B) SubShader: 셰이더의 핵심 렌더링 로직 ---------------
     SubShader
     {
-        Tags { "RenderType"="Transparent" "Queue"="Transparent" } // 투명 오브젝트임을 명시
+        Tags { "RenderType"="Transparent" "Queue"="Transparent" "IgnoreProjector"="True" "PreviewType"="Plane" } // 투명 오브젝트임을 명시
         LOD 100 // Level of Detail (LOD) - 최소한의 품질 수준
 
         // --- (C) Blend: 투명도 계산 방식 설정 ---
@@ -19,6 +27,17 @@ Shader "Unlit/FogShader"
         // --------------- (D) Pass: 실제 렌더링을 한 번 수행하는 부분 ---------------
         Pass
         {
+             // --- 여기에 Stencil 블록을 추가합니다 ---
+            Stencil
+            {
+                Ref [_Stencil]
+                Comp [_StencilComp]
+                Pass [_StencilOp]
+                ReadMask [_StencilReadMask]
+                WriteMask [_StencilWriteMask]
+            }
+            // ------------------------------------
+
             CGPROGRAM // CG/HLSL 코드 시작
             #pragma vertex vert // 'vert' 함수를 정점 셰이더로 사용 선언
             #pragma fragment frag // 'frag' 함수를 프래그먼트 셰이더로 사용 선언

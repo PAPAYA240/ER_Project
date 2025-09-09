@@ -26,6 +26,16 @@ public class MyPlayerController : PlayerController
     //UI_PlayerHUD _playerHUD = null;
     UI_PlayerInterface _playerInterface = null;
 
+    private void Start()
+    {
+        
+    }
+
+    public void ManualInit()
+    {
+        Init();
+    }
+
     protected override void Init()
     {
         base.Init();
@@ -43,6 +53,10 @@ public class MyPlayerController : PlayerController
         _playerInterface.WeaponCode = CharTypeToWeaponCode(ObjInfo.CharType);
         _playerInterface.Init();
         _playerInterface.OnCharSkillLevelUpAction += OnCharSkillLevelUp;
+
+        
+        UI_Minimap minimap = GetComponentInChildren<UI_Minimap>();
+        minimap.ActivatePlayerIcon(UI_MinimapCharIcon.IconType.MyPlayer, this);
 
         //레벨업이벤트를 여기서 바인딩 해주고 싶어
         //쉬운 방법 겟 오브젝트를 퍼블릭으로 연다.

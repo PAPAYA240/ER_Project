@@ -7,7 +7,7 @@ using UnityEngine.AI;
 public class FogOfWarVision : MonoBehaviour
 {
     public int _rayCount = 200;          // 레이 개수 (360도를 나눌 개수)
-    public float _viewDistance = 8f;     // 시야 거리
+    public float _viewDistance = 12f;     // 시야 거리
     public LayerMask _obstacleMask;      // 벽/장애물 레이어
 
     Mesh _mesh;
@@ -21,7 +21,7 @@ public class FogOfWarVision : MonoBehaviour
         _origin = transform.position;
         Material _mat = GetComponent<MeshRenderer>().material;
 
-        Color whiteTransparent = new Color(1f, 1f, 1f, 1f); // 흰색 (RGB 1,1,1)에 투명도 적용
+        Color whiteTransparent = new Color(1f, 1f, 1f, 1f); 
         _mat.color = whiteTransparent;
     }
 
@@ -47,18 +47,11 @@ public class FogOfWarVision : MonoBehaviour
             Vector3 vertex;
 
             // Raycast로 시야 차단 체크
-            //NavMeshHit hit;
             //nMA.Raycast(/*내위치, 타겟위치,아웃 히트, 네비메시점 올 에리어*/);
             if (NavMesh.Raycast(_origin, _origin + dir * _viewDistance, out NavMeshHit hit, NavMesh.AllAreas))
                 vertex = hit.position;
             else
                 vertex = _origin + dir * _viewDistance;
-
-            //if(Physics.Raycast(_origin, dir, out hit, _viewDistance, _obstacleMask))
-            //    vertex = hit.point;
-            //else
-            //    vertex = _origin + dir * _viewDistance;
-
 
             // 로컬 좌표 변환
             vertices.Add(transform.InverseTransformPoint(vertex));
