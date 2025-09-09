@@ -25,6 +25,7 @@ enum MsgId {
   S_ENTER_PICK = 17;
   S_LEAVE_PICK = 18;
   C_PING = 19;
+  S_VISIBLE_OBJECTS = 20;
 }
 
 enum CreatureState{
@@ -264,4 +265,9 @@ message SkillInfo{
 
 message C_Ping{
 	bool ping = 1;
+}
+
+message S_VisibleObjects{
+	int32 objectId = 1;
+	repeated int32 visibleObjectIds = 2;
 }

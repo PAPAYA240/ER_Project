@@ -1,9 +1,10 @@
-﻿using Google.Protobuf;
-using Google.Protobuf.Protocol;
-using ServerCore;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Google.Protobuf;
+using Google.Protobuf.Protocol;
+using ServerCore;
 using UnityEngine;
 using static MonsterController;
 
@@ -195,5 +196,21 @@ class PacketHandler
         if (selectEvent == null) return;
 
         selectEvent.ChangePickImage(CharacterType.CharacterNone, leavePickPacket.PickIdx);
+    }
+
+    public static void S_VisibleObjectsHandler(PacketSession session, IMessage packet)
+    {
+        S_VisibleObjects visibleObjectsPkt = packet as S_VisibleObjects;
+
+        GameObject go = Managers.Object.FindById(visibleObjectsPkt.ObjectId);
+        if (go == null)
+            return;
+
+        MyPlayerController mpc = go.GetComponent<MyPlayerController>();
+        if(mpc == null) 
+            return;
+
+        mpc.VisibleObjectIds.Clear(); // 나중에 렌더링 하고나서 바로 Clear하는게 나을듯?
+        mpc.VisibleObjectIds = visibleObjectsPkt.VisibleObjectIds.ToHashSet();
     }
 }

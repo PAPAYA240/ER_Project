@@ -50,6 +50,11 @@ namespace Server.Game
                 projectile.Update();
             }
 
+            foreach(Player player in _players.Values)
+            {
+                player.Update();
+            }
+
             Flush();
 
             CheckLastPing();

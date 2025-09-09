@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using static Server.Data.DataUtils;
+using System.Linq;
 
 namespace Server.Game
 {
@@ -27,6 +28,13 @@ namespace Server.Game
         public Player()
         {
             ObjectType = GameObjectType.Player;            
+        }
+
+        public override void Update()
+        {
+            List<int> objectIds = ObjectManager.Instance.GetPlayersInRange(this);
+
+            // 몬스터, 와드, 상자, 채집 등등 추가 필요
         }
 
         public void MakeDict()

@@ -22,9 +22,25 @@ public class MyPlayerController : PlayerController
     int _mask = (1 << (int)Define.Layer.Map);
     Vector3 _dstPos = Vector3.zero;
 
+    public float AttackSpeed
+    {
+        get
+        {
+            float baseSpeed = Stat.AttackSpeed + MyWeapon.AttackSpeed;
+            float multiplier = 1 + WeaponMasteryAS + ItemAttackSpeed;
+            return baseSpeed * multiplier;
+        }
+    }
+
     //UI
     //UI_PlayerHUD _playerHUD = null;
     UI_PlayerInterface _playerInterface = null;
+
+    public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
+    public WeaponInfo MyWeapon { get; set; } = new WeaponInfo();
+
+    public float WeaponMasteryAS { get; set; }
+    public float ItemAttackSpeed { get; set; } = 0;
 
     protected override void Init()
     {
