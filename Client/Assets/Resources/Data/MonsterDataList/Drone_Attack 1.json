@@ -3,19 +3,50 @@
   "Type": "SequenceNode",
   "Children": [
     {
-      "Name": "DroneAttack1",
-      "Type": "IsKeyPressedNode",
-      "Properties": {
-        "skillId": "MsDroneAttack1"
-      }
+      "Name": "OnceOnlySpawn",
+      "Type": "SelectorNode",
+      "Children": [
+        {
+          "Name": "CheckIfSpawned",
+          "Type": "IsSpawnedCheckNode"
+        },
+        {
+          "Name": "SpawnActions",
+          "Type": "SequenceNode",
+          "Children": [
+            {
+              "Name": "PlayAnimatorBoolNode",
+              "Type": "PlayAnimatorBoolNode",
+              "Properties": {
+                "paramName": "bAppear",
+                "valueToSet": "true",
+                "stateName": "AttackDrone_01_appear"
+              }
+            }
+          ]
+        }
+      ]
     },
     {
-      "Name": "DroneAttack1",
-      "Type": "PlayAnimatorTriggerNode",
-      "Properties": {
-        "triggerName": "tAttack01",
-        "animationStateName": "AttackDrone_01_atk01"
-      }
+      "Name": "AttackSequence",
+      "Type": "SequenceNode",
+      "Children": [
+        {
+          "Name": "DroneAttack1",
+          "Type": "IsKeyPressedNode",
+          "Properties": {
+            "skillId": "MsDroneAttack1"
+          }
+        },
+        {
+          "Name": "DroneAttack1",
+          "Type": "PlayAnimatorTriggerNode",
+          "Properties": {
+            "triggerName": "tAttack01",
+            "animationStateName": "AttackDrone_01_atk01"
+          }
+        }
+      ]
     }
   ]
 }

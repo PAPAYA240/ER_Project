@@ -59,14 +59,7 @@ class PacketHandler
         if (cc.ObjectType == Define.Object.OtherPlayer)
         {
             cc.SyncPos();
-        }
-        else if (cc.ObjectType == Define.Object.Monster)
-        {
-            MonsterController mc = go.GetComponentInChildren<MonsterController>();
-            if (mc == null)
-                return;
-            //mc.OnRecvMovePacket(movePacket);
-        }          
+        }      
     }
      public static void S_StateHandler(PacketSession session, IMessage packet)
     {
@@ -102,11 +95,6 @@ class PacketHandler
             {
                 cc.UseSkill((KeyCode)skillPacket.SkillInfo.KeyCode);
                 Debug.Log("스킬 패킷 받기");
-            }
-            else if (cc.ObjectType == Define.Object.Monster)
-            {
-                MonsterController mc = go.GetComponentInChildren<MonsterController>();
-                //mc.OnRecvSkillPacket(skillPacket);
             }
         }
     }

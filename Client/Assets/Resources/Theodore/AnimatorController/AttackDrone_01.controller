@@ -273,9 +273,6 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: tEndAppear
   m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: tEndAppear
-    m_EventTreshold: 0
   - m_ConditionMode: 2
     m_ConditionEvent: bAppear
     m_EventTreshold: 0
@@ -482,9 +479,6 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: tAppear
-    m_EventTreshold: 0
   - m_ConditionMode: 1
     m_ConditionEvent: bAppear
     m_EventTreshold: 0
@@ -741,7 +735,7 @@ AnimatorStateMachine:
     m_Position: {x: 0, y: 100, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102333328649228784}
-    m_Position: {x: 250, y: 100, z: 0}
+    m_Position: {x: 250, y: 80, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102894858046496057}
     m_Position: {x: 500, y: 100, z: 0}

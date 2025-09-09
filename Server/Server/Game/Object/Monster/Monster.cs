@@ -84,9 +84,6 @@ namespace Server.Game.Object.Monster
         }
         protected MonsterSkillData DecideAndUseSkill()
         {
-            if (_skills.Count == 0)
-                return null;
-
             int skillIdx = new Random().Next(0, _skills.Count);
             MonsterSkill skillName = _skills[skillIdx];
 
@@ -163,7 +160,7 @@ namespace Server.Game.Object.Monster
             Vector3 nextWaypoint = _path[_pathIdx];
 
             // 실제 이동
-            FollowToPlayer(nextWaypoint);
+            FollowToTarget(nextWaypoint);
 
             // 이동 후 도착 체크
             Vector3 newMonsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
@@ -199,7 +196,7 @@ namespace Server.Game.Object.Monster
         private long _lastUpdateTime = 0;
 
         private float FIXED_MOVE_STEP = 0.8f;
-        private void FollowToPlayer(Vector3 targetPos)
+        private void FollowToTarget(Vector3 targetPos)
         {
             Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
             Vector3 dir = targetPos - monsterPos;
@@ -240,35 +237,37 @@ namespace Server.Game.Object.Monster
             float distanceToTarget = Vector3.Distance(monsterPos, targetPos);
             Vector3 dirQ;
             if (distanceToTarget <= _findRange)
-                dirQ = PlayerPos - newPos;
+                dirQ = PlayerPos - monsterPos;
             else
-                dirQ = targetPos - newPos;
-            dirQ = Vector3.Normalize(dirQ);
-            // 몬스터가 앞뒤로만 움직이도록 y축 값 제거
-            Vector3 flatDir = new Vector3(dirQ.X, 0, dirQ.Z);
+                dirQ = targetPos - monsterPos;
 
-            if (flatDir.LengthSquared() > 0.0001f)
-            {
-                flatDir = Vector3.Normalize(flatDir);
-
-                float angleRad = (float)Math.Atan2(flatDir.X, flatDir.Z);
-
-                Quaternion targetRotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angleRad);
-
-                float rotationSpeed = 2.0f;
-                float t = (float)Math.Clamp(rotationSpeed * elapsedTime, 0f, 1f);
-
-                Quaternion currentRotation = new Quaternion(RotInfo.Qx, RotInfo.Qy, RotInfo.Qz, RotInfo.Qw);
-                Quaternion newRotation = Quaternion.Slerp(currentRotation, targetRotation, t);
-
-                // 새 회전 정보 적용
-                RotInfo.Qx = newRotation.X;
-                RotInfo.Qy = newRotation.Y;
-                RotInfo.Qz = newRotation.Z;
-                RotInfo.Qw = newRotation.W;
-            }
+            RotateToTarget(dirQ, elapsedTime);
         }
+        public void RotateToTarget(Vector3 dirQ, double elapsedTime, float rotationSpeed = 2.0f)
+        {
+            if (dirQ.LengthSquared() < 0.0001f)
+            {
+                return; // 방향 벡터가 너무 작으면 회전하지 않음
+            }
+            dirQ= Vector3.Normalize(dirQ);
+            Vector3 flatDir = new Vector3(dirQ.X, 0, dirQ.Z);
+            flatDir = Vector3.Normalize(flatDir);
 
+            // [3] 회전 각도 및 쿼터니언 계산
+            float angleRad = (float)Math.Atan2(flatDir.X, flatDir.Z);
+            Quaternion targetRotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angleRad);
+
+            // [4] 부드러운 회전 보간 (Slerp)
+            float t = (float)Math.Clamp(rotationSpeed * elapsedTime, 0f, 1f);
+            Quaternion currentRotation = new Quaternion(RotInfo.Qx, RotInfo.Qy, RotInfo.Qz, RotInfo.Qw);
+            Quaternion newRotation = Quaternion.Slerp(currentRotation, targetRotation, t);
+
+            // [5] 몬스터의 회전 정보 업데이트
+            RotInfo.Qx = newRotation.X;
+            RotInfo.Qy = newRotation.Y;
+            RotInfo.Qz = newRotation.Z;
+            RotInfo.Qw = newRotation.W;
+        }
 
         void BroadcastSkill(SkillData skillData)
         {
@@ -306,7 +305,10 @@ namespace Server.Game.Object.Monster
             {
                 statePacket.Skilltype = skillData.skillType;
                 _currentSkill = skillData.skillType;
-                // 위치/회전 정보는 null로 유지
+
+                // 드론 때문에 잠깐 추가
+                statePacket.PosInfo = posInfo;
+                statePacket.RotInfo = rotInfo;
             }
             else
             {

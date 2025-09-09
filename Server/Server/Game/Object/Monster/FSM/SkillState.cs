@@ -30,26 +30,22 @@ namespace Server.Game.Object.Monster.FSM
 
             if (timeout)
             {
-                Console.WriteLine("2. 타임아웃");
                if (monster.Target != null && monster.Target.Room == monster.Room)
                 {
                     if (monster.IsSkillRange())
                     {
-                         Console.WriteLine("2 바로 스킬");
                         // 아직도 범위 안 → 다시 스킬
                         monster.ChangeState(new SkillState());
                     }
                     else
                     {
                         // 범위 밖 → 이동 추격
-                         Console.WriteLine("바로 움직임");
                         monster.ChangeState(new MovingState());
                     }
                 }
                 else
                 {
                     // 타겟이 없으면 Idle
-                    Console.WriteLine("타겟 없음");
                     monster.ChangeState(new IdleState());
                 }
             }
