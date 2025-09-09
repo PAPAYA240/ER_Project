@@ -675,7 +675,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4604949375246734}
-  - component: {fileID: 136975000900860031}
   m_Layer: 0
   m_Name: Omega
   m_TagString: Untagged
@@ -699,29 +698,6 @@ Transform:
   - {fileID: 4469591255116159}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
---- !u!136 &136975000900860031
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1337517058658120}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.95
-  m_Height: 2.7
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.47, z: 0}
 --- !u!1 &1345775028044007
 GameObject:
   m_ObjectHideFlags: 0
@@ -987,6 +963,7 @@ GameObject:
   - component: {fileID: 1442160883390357309}
   - component: {fileID: 5436007510401939844}
   - component: {fileID: 394807638893448977}
+  - component: {fileID: 2320957169268408809}
   m_Layer: 0
   m_Name: Monster_Omega
   m_TagString: Untagged
@@ -1082,6 +1059,29 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 0
+--- !u!136 &2320957169268408809
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1501969193402853}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.95
+  m_Height: 2.7
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.47, z: 0}
 --- !u!1 &1511787012194081
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using Assets.Scripts.Highlight;
 using Google.Protobuf.Protocol;
 using System;
 using UnityEngine;
@@ -16,12 +17,18 @@ public class MonsterController : CreatureController
 
     // TODO : 임시 변수, 나중에 블랙 보드 만들면 없앨 부분
     public bool isSpawned = false;
+   
     protected override void Init()
 	{
         Skill = MonsterSkill.MsAttack1;
-        ObjectType = Define.Object.Monster;
+        ObjectType = Define.Object.Monster; 
         _navMeshAgent = GetComponentInParent<NavMeshAgent>();
 		base.Init();
+
+        // 하이라이트 이펙트 추가
+        Renderer renderer = this.GetComponentInChildren<Renderer>();
+        if (renderer != null)
+            this.gameObject.AddComponent<HighlightEffect>();
 
         _navMeshAgent.updateRotation = false;
         _animator.applyRootMotion = false;
