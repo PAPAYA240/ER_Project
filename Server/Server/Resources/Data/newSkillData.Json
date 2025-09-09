@@ -1,0 +1,549 @@
+{
+  "characters": [
+    {
+      "id": "021",
+      "name": "Rozzi",
+      "skills": [
+        {
+          "id": "Passive",
+          "name": "더블샷",
+          "description": "로지는 스킬을 사용한 후 일정시간 이내에 기본 공격을 하면 빠르게 두 번 연속 발사하여 기본 공격 피해를 입힙니다.",
+          "type": "Passive",
+          "maxLevel": 3,
+          "icon": "Icons/Hyunwoo_P",
+          "mechanics": {
+            "targetType": "TargetUnit",
+            "damageType": "Physical"
+          },
+          "levels": [
+            {
+              "level": 1,
+              "damage": 55
+            },
+            {
+              "level": 2,
+              "damage": 60
+            },
+            {
+              "level": 3,
+              "damage": 65
+            }
+          ]
+        },
+        {
+          "id": "Q",
+          "name": "이지샷",
+          "description": "로지가 지정한 방향으로 총을 발사하여 경로상의 적들에게 스킬 피해를 입힙니다. 총에 맞은 대상이 있으면 일정시간 이내의 다음 이동 명령에 빠르게 돌진하며, 이지샷의 쿨다운이 감소합니다.",
+          "type": "Normal",
+          "maxLevel": 5,
+          "mechanics": {
+            "targetType": "TargetArea",
+            "damageType": "Magic"
+          },
+          "scaling": {
+            "adRatio" : "100"
+          },
+          "levels": [
+            {
+              "level": 1,
+              "damage": 30,
+              "cooldown": 5,
+              "staminaCost": 40,
+              "effects": [
+                {
+                  "type": "Dash",
+                  "condition": "Hit"
+                },
+                {
+                  "type": "CDR",
+                  "value": 40,
+                  "condition": "Hit"
+                }
+              ]
+            },
+            {
+              "level": 2,
+              "damage": 55,
+              "cooldown": 5,
+              "staminaCost": 45,
+              "effects": [
+                {
+                  "type": "Dash",
+                  "condition": "Hit"
+                },
+                {
+                  "type": "CDR",
+                  "value": 40,
+                  "condition": "Hit"
+                }
+              ]
+            },
+            {
+              "level": 3,
+              "damage": 80,
+              "cooldown": 5,
+              "staminaCost": 50,
+              "effects": [
+                {
+                  "type": "Dash",
+                  "condition": "Hit"
+                },
+                {
+                  "type": "CDR",
+                  "value": 40,
+                  "condition": "Hit"
+                }
+              ]
+            },
+            {
+              "level": 4,
+              "damage": 105,
+              "cooldown": 5,
+              "staminaCost": 55,
+              "effects": [
+                {
+                  "type": "Dash",
+                  "condition": "Hit"
+                },
+                {
+                  "type": "CDR",
+                  "value": 40,
+                  "condition": "Hit"
+                }
+              ]
+            },
+            {
+              "level": 5,
+              "damage": 130,
+              "cooldown": 5,
+              "staminaCost": 60,
+              "effects": [
+                {
+                  "type": "Dash",
+                  "condition": "Hit"
+                },
+                {
+                  "type": "CDR",
+                  "value": 40,
+                  "condition": "Hit"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "W",
+          "name": "스핀샷",
+          "description": "로지가 총을 난사하여 주변의 적들에게 스킬 피해를 입히고, 방어력과 치유 효과를 감소 시킵니다. 로지는 난사하는 동안 이동 속도가 증가하며, 적중한 대상이 있다면 쿨다운이 감소합니다.",
+          "type": "Normal",
+          "maxLevel": 5,
+          "mechanics": {
+            "targetType": "TargetArea",
+            "damageType": "Magic"
+          },
+          "scaling": {
+            "adRatio": "80"
+          },
+          "levels": [
+            {
+              "level": 1,
+              "damage": 30,
+              "cooldown": 5,
+              "staminaCost": 30,
+              "effects": [
+                {
+                  "type": "Debuff",
+                  "stat": "defense",
+                  "value": -11,
+                  "duration": 3,
+                  "condition": "Hit"
+                },
+                {
+                  "type": "Debuff",
+                  "stat": "healing",
+                  "value": -45,
+                  "duration": 3,
+                  "condition": "Hit"
+                },
+                {
+                  "type": "Buff",
+                  "stat": "speed",
+                  "value": 120
+                },
+                {
+                  "type": "CDR",
+                  "value": 40,
+                  "condition" : "Hit"
+                }
+              ]
+            },
+            {
+              "level": 2,
+              "damage": 60,
+              "cooldown": 5,
+              "staminaCost": 35,
+              "effects": [
+                {
+                  "type": "Debuff",
+                  "stat": "defense",
+                  "value": -12,
+                  "duration": 3,
+                  "condition": "Hit"
+                },
+                {
+                  "type": "Debuff",
+                  "stat": "healing",
+                  "value": -45,
+                  "duration": 3,
+                  "condition": "Hit"
+                },
+                {
+                  "type": "Buff",
+                  "stat": "speed",
+                  "value": 120
+                },
+                {
+                  "type": "CDR",
+                  "value": 40,
+                  "condition": "Hit"
+                }
+              ]
+            },
+            {
+              "level": 3,
+              "damage": 90,
+              "cooldown": 5,
+              "staminaCost": 40,
+              "effects": [
+                {
+                  "type": "Debuff",
+                  "stat": "defense",
+                  "value": -13,
+                  "duration": 3,
+                  "condition": "Hit"
+                },
+                {
+                  "type": "Debuff",
+                  "stat": "healing",
+                  "value": -45,
+                  "duration": 3,
+                  "condition": "Hit"
+                },
+                {
+                  "type": "Buff",
+                  "stat": "speed",
+                  "value": 120
+                },
+                {
+                  "type": "CDR",
+                  "value": 40,
+                  "condition": "Hit"
+                }
+              ]
+            },
+            {
+              "level": 4,
+              "damage": 120,
+              "cooldown": 5,
+              "staminaCost": 45,
+              "effects": [
+                {
+                  "type": "Debuff",
+                  "stat": "defense",
+                  "value": -14,
+                  "duration": 3,
+                  "condition": "Hit"
+                },
+                {
+                  "type": "Debuff",
+                  "stat": "healing",
+                  "value": -45,
+                  "duration": 3,
+                  "condition": "Hit"
+                },
+                {
+                  "type": "Buff",
+                  "stat": "speed",
+                  "value": 120
+                },
+                {
+                  "type": "CDR",
+                  "value": 40,
+                  "condition": "Hit"
+                }
+              ]
+            },
+            {
+              "level": 5,
+              "damage": 150,
+              "cooldown": 5,
+              "staminaCost": 50,
+              "effects": [
+                {
+                  "type": "Debuff",
+                  "stat": "defense",
+                  "value": -15,
+                  "duration" : 3,
+                  "condition": "Hit"
+                },
+                {
+                  "type": "Debuff",
+                  "stat": "healing",
+                  "value": -45,
+                  "duration": 3,
+                  "condition": "Hit"
+                },
+                {
+                  "type": "Buff",
+                  "stat": "speed",
+                  "value": 120
+                },
+                {
+                  "type": "CDR",
+                  "value": 40,
+                  "condition": "Hit"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "E",
+          "name": "에어샷",
+          "description": "로지가 지정한 대상을 점프하여 넘어가며 대상이 있던 위치에 총을 발사하여 스킬 피해를 입히고 기절시킵니다. 로지는 점프하는 동안 대상 지정 불가 상태가 됩니다.",
+          "type": "Normal",
+          "maxLevel": 5,
+          "mechanics": {
+            "targetType": "TargetUnit",
+            "damageType": "Magic"
+          },
+          "scaling": {
+            "adRatio": "50"
+          },
+          "levels": [
+            {
+              "level": 1,
+              "damage": 30,
+              "cooldown": 18,
+              "staminaCost": 60,
+              "effects": [
+                {
+                  "type": "Stun",
+                  "duration": 0.3
+                },
+                {
+                  "type": "Untargetable"
+                }
+              ]
+            },
+            {
+              "level": 2,
+              "damage": 50,
+              "cooldown": 17,
+              "staminaCost": 70,
+              "effects": [
+                {
+                  "type": "Stun",
+                  "duration": 0.3
+                },
+                {
+                  "type": "Untargetable"
+                }
+              ]
+            },
+            {
+              "level": 3,
+              "damage": 70,
+              "cooldown": 16,
+              "staminaCost": 80,
+              "effects": [
+                {
+                  "type": "Stun",
+                  "duration": 0.3
+                },
+                {
+                  "type": "Untargetable"
+                }
+              ]
+            },
+            {
+              "level": 4,
+              "damage": 90,
+              "cooldown": 15,
+              "staminaCost": 90,
+              "effects": [
+                {
+                  "type": "Stun",
+                  "duration": 0.3
+                },
+                {
+                  "type": "Untargetable"
+                }
+              ]
+            },
+            {
+              "level": 5,
+              "damage": 110,
+              "cooldown": 14,
+              "staminaCost": 100,
+              "effects": [
+                {
+                  "type": "Stun",
+                  "duration": 0.3
+                },
+                {
+                  "type": "Untargetable"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "R",
+          "name": "셈텍스탄 MK-ll",
+          "description": "로지가 적이나 지면에 부착되고 잠시 후에 폭발하는 폭탄을 발사합니다. 폭탄을 적에게 붙였다면 이동속도가 감소하고, 폭발할 때 스킬 피해를 입힙니다. 폭탄이 부착된 대상은 로지에게 시야를 공유합니다. 부착된 폭탄이 터지기 전에 대상에게 기본 공격을 5회 적중하면 즉시 터지며 대상 최대 체력의 일정 비율만큼의 고정 피해를 입히고, 이동 속도를 감소시킵니다. 스킬을 적중하면 2회 공격으로 간주합니다. 폭탄을 즉시 터트리면 이 스킬의 쿨다운이 감소하고, 이동 속도가 증가합니다.",
+          "type": "Ultimate",
+          "maxLevel": 3,
+          "mechanics": {
+            "targetType": "TargetArea",
+            "damageType": "Magic"
+          },
+          "scaling": {
+            "adRatio": 0.5
+          },
+          "levels": [
+            {
+              "level": 1,
+              "damage": 60,
+              "cooldown": 25,
+              "staminaCost": 90,
+              "effects": [
+                {
+                  "type": "Debuff",
+                  "stat": "speed",
+                  "value": -30,
+                  "duration": 3
+                },
+                {
+                  "type": "VisionShare",
+                  "duration": 3
+                },
+                {
+                  "type": "Debuff",
+                  "stat": "speed",
+                  "value": -30,
+                  "duration": 1,
+                  "condition": "Boom"
+                },
+                {
+                  "type": "Damage",
+                  "stat": "hp",
+                  "value": 0.04,
+                  "condition": "Boom"
+                },
+                {
+                  "type": "CDR",
+                  "value": 50,
+                  "condition": "Boom"
+                },
+                {
+                  "type": "Buff",
+                  "stat": "speed",
+                  "value": 30,
+                  "duration": 1,
+                  "condition": "Boom"
+                }
+              ]
+            },
+            {
+              "level": 2,
+              "damage": 120,
+              "cooldown": 25,
+              "staminaCost": 90,
+              "effects": [
+                {
+                  "type": "Debuff",
+                  "stat": "speed",
+                  "value": -30,
+                  "duration": 3
+                },
+                {
+                  "type": "VisionShare",
+                  "duration": 3
+                },
+                {
+                  "type": "Damage",
+                  "stat": "hp",
+                  "value": 0.07,
+                  "condition": "Boom"
+                },
+                {
+                  "type": "Debuff",
+                  "stat": "speed",
+                  "value": -30,
+                  "duration": 1,
+                  "condition": "Boom"
+                },
+                {
+                  "type": "CDR",
+                  "value": 50,
+                  "condition": "Boom"
+                },
+                {
+                  "type": "Buff",
+                  "stat": "speed",
+                  "value": 30,
+                  "duration": 1,
+                  "condition": "Boom"
+                }
+              ]
+            },
+            {
+              "level": 3,
+              "damage": 180,
+              "cooldown": 25,
+              "staminaCost": 90,
+              "effects": [
+                {
+                  "type": "Debuff",
+                  "stat": "speed",
+                  "value": -30,
+                  "duration": 3
+                },
+                {
+                  "type": "VisionShare",
+                  "duration": 3
+                },
+                {
+                  "type": "Damage",
+                  "stat": "hp",
+                  "value": 0.1,
+                  "condition": "Boom"
+                },
+                {
+                  "type": "Debuff",
+                  "stat": "speed",
+                  "value": -30,
+                  "duration": 1,
+                  "condition": "Boom"
+                },
+                {
+                  "type": "CDR",
+                  "value": 50,
+                  "condition": "Boom"
+                },
+                {
+                  "type": "Buff",
+                  "stat": "speed",
+                  "value": 30,
+                  "duration": 1,
+                  "condition": "Boom"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

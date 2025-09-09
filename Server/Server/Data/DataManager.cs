@@ -14,14 +14,16 @@ namespace Server.Data
     public class DataManager
     {
         public static Dictionary<int, StatInfo> StatDict { get; private set; } = new Dictionary<int, StatInfo>();
-        public static Dictionary<string, Data.SkillData> SkillDict { get; private set; } = new Dictionary<string, Data.SkillData>();
+        //public static Dictionary<string, Data.SkillData> SkillDict { get; private set; } = new Dictionary<string, Data.SkillData>();
+        public static Dictionary<string, Data.CharacterData> GameData { get; private set; } = new Dictionary<string, Data.CharacterData>();
         public static Dictionary<string, MonsterData> MonsterDict { get; private set; } = new Dictionary<string, MonsterData>();
         public static Dictionary<string, SkillData> MonsterSkillDict { get; private set; } = new Dictionary<string, SkillData>();
         public static void LoadData()
         {
             // TEM
             StatDict = LoadJsonServer<Data.StatData, int, StatInfo>("StatData").MakeDict();
-            SkillDict = LoadJsonServer<Data.SkillDict, string, Data.SkillData>("SkillData").MakeDict();
+            //SkillDict = LoadJsonServer<Data.SkillDict, string, Data.SkillData>("SkillData").MakeDict();
+            GameData = LoadJson<Data.GameData, string, Data.CharacterData>("newSkillData").MakeDict();
 
             // For MonsterData
             MonsterDict = LoadJson<Data.MonsterDict, string, Data.MonsterData>("MonsterData").MakeDict();

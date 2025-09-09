@@ -203,40 +203,43 @@ namespace Server.Game
             skill.SkillInfo = skillPacket.SkillInfo;
             Broadcast(skill);
 
-            Data.SkillData skillData = null;
+            SkillData skillData = null;
+            string myCharName = Enum.GetName(typeof(CharacterType), info.CharType);
+            CharacterData charData = DataManager.GameData[myCharName];
+            Dictionary<string, SkillData> skills = charData.skills;
 
-            if (DataManager.SkillDict.TryGetValue(skillPacket.SkillInfo.Name, out skillData) == false)
+            if (skills.TryGetValue(skillPacket.SkillInfo.KeyCode, out skillData) == false)
                 return;
 
-            switch (skillData.skillType)
-            {
-                case SkillType.SkillAuto:
-                    {
-                        //// 데미지 판정
-                        //Vector2Int skillPos = player.GetFrontCellPos(info.PosInfo.MoveDir);
-                        //GameObject target = Map.Find(skillPos);
-                        //if (target != null)
-                        //{
-                        //    Console.WriteLine("Hit GameObject!");
-                        //}
-                    }
-                    break;
-                case SkillType.SkillProjectile:
-                    {
-                        Arrow arrow = ObjectManager.Instance.Add<Arrow>();
-                        if (arrow == null)
-                            return;
+            //switch (skillData.type)
+            //{
+            //    case SkillType.SkillAuto:
+            //        {
+            //            //// 데미지 판정
+            //            //Vector2Int skillPos = player.GetFrontCellPos(info.PosInfo.MoveDir);
+            //            //GameObject target = Map.Find(skillPos);
+            //            //if (target != null)
+            //            //{
+            //            //    Console.WriteLine("Hit GameObject!");
+            //            //}
+            //        }
+            //        break;
+            //    case SkillType.SkillProjectile:
+            //        {
+            //            Arrow arrow = ObjectManager.Instance.Add<Arrow>();
+            //            if (arrow == null)
+            //                return;
 
-                        arrow.Owner = player;
-                        arrow.Data = skillData;
-                        arrow.PosInfo.State = CreatureState.Moving;
-                        arrow.PosInfo.PosX = player.PosInfo.PosX;
-                        arrow.PosInfo.PosY = player.PosInfo.PosY;
-                        arrow.Speed = skillData.projectile.speed;
-                        Push(EnterGame, arrow);
-                    }
-                    break;
-            }
+            //            arrow.Owner = player;
+            //            arrow.Data = skillData;
+            //            arrow.PosInfo.State = CreatureState.Moving;
+            //            arrow.PosInfo.PosX = player.PosInfo.PosX;
+            //            arrow.PosInfo.PosY = player.PosInfo.PosY;
+            //            arrow.Speed = skillData.projectile.speed;
+            //            Push(EnterGame, arrow);
+            //        }
+            //        break;
+            //}
         }
 
         public void HandleAnim(Player player, C_Anim animPacket)

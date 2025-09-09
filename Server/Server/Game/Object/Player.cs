@@ -15,7 +15,7 @@ namespace Server.Game
     {
         public ClientSession Session { get; set; }
 
-        protected Dictionary<string, Skill> _skills = new Dictionary<string, Skill>();
+        protected Dictionary<string, Skill> _skills = new Dictionary<string, Skill>();  // key : KeyCode
         Dictionary<string, CoolTime> _coolDownDict = new Dictionary<string, CoolTime>();
         class CoolTime
         {
@@ -36,8 +36,10 @@ namespace Server.Game
 
         public bool CanUseSkill(C_Skill skillPacket)
         {
+            string keyCode = skillPacket.SkillInfo.KeyCode;
+
             // 쿨타임 체크
-            if (!CheckCoolTime(skillPacket))
+            if (!CheckCoolTime(keyCode))
                 return false;
 
             // 스테미나 체크
@@ -45,8 +47,7 @@ namespace Server.Game
 
             // 체크 끝나면 데이터 변경
             // ex : 쿨타임 돌리기 시작 등
-            _ = CoInputCooltime(skillPacket.SkillInfo.KeyCode, FindSkill(skillPacket.SkillInfo.KeyCode).SkillData.cooldown);
-            //StartCoroutine(CoInputCooltime(key, skill.SkillData.cooldown));
+            _ = CoInputCooltime(keyCode, FindSkill(keyCode).CurLevelCooldown);
 
             return true;
         }
@@ -61,9 +62,9 @@ namespace Server.Game
             //base.OnDead(attacker);
         }
 
-        private bool CheckCoolTime(C_Skill skillPacket)
+        private bool CheckCoolTime(string keyCode)
         {
-            if (!_coolDownDict[skillPacket.SkillInfo.KeyCode].isCoolDown)
+            if (!_coolDownDict[keyCode].isCoolDown)
                 return true;
 
             return false;
@@ -94,19 +95,14 @@ namespace Server.Game
         {
             // 본인 캐릭터의 스킬 정보만 추출
             string myCharName = Enum.GetName(typeof(CharacterType), Info.CharType);
-            foreach (var skillData in DataManager.SkillDict)
+            CharacterData charData = DataManager.GameData[myCharName];
+            Dictionary<string, SkillData> skills = charData.skills;
+            foreach (var skillData in skills)
             {
-                string skillName = skillData.Key;
-                int idx = skillName.IndexOf('_');
-                string charName = idx >= 0 ? skillName.Substring(0, idx) : skillName;
-                if (myCharName != charName)
-                    continue;
-
                 Skill skill = new Skill();
                 skill.SkillData = skillData.Value;
 
-                string key = skillData.Key.Substring(skillData.Key.Length - 1);
-                _skills.Add(key, skill);
+                _skills.Add(skillData.Key, skill);
             }
         }
 

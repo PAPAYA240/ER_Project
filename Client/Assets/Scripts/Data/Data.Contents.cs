@@ -17,7 +17,10 @@ namespace Data
         {
             Dictionary<string, CharacterData> dict = new Dictionary<string, CharacterData>();
             foreach (CharacterData Data in characters)
+            {
                 dict.Add(Data.name, Data);
+
+            }
             return dict;
         }
     }
@@ -27,7 +30,7 @@ namespace Data
     {
         public string id;
         public string name;
-        public List<SkillData> skills;
+        public Dictionary<string, SkillData> skills;
     }
 
     [Serializable]

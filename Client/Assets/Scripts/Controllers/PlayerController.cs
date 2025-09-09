@@ -88,34 +88,9 @@ public class PlayerController : CreatureController
                 continue;
 
             string KeyCode = className.Substring(idx + 1);
-            int skillIdx = 0;
-            if(KeyCode.Equals("T"))
-            {
-                skillIdx = 0;
-            }
-            else if(KeyCode.Equals("Q"))
-            {
-                skillIdx = 1;
-            }
-            else if(KeyCode.Equals("W"))
-            {
-                skillIdx = 2;
-            }
-            else if(KeyCode.Equals("E"))
-            {
-                skillIdx = 3;
-            }
-            else if(KeyCode.Equals("R"))
-            {
-                skillIdx = 4;
-            }
-            else
-            {
-                Debug.Log("Skill Index Error");
-            }
 
             SkillBase skill = (SkillBase)Activator.CreateInstance(type);
-            skill.SkillData = Managers.Data.GameData[charName].skills[skillIdx];
+            skill.SkillData = Managers.Data.GameData[charName].skills[KeyCode];
             skill._player = this;
             skill._animator = this._animator;
             _skills.Add(type.Name, skill);
