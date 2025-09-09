@@ -242,7 +242,7 @@ namespace Server.Game.Object.Monster
             float elapsedTime = (tick - _lastUpdateTime) / 1000.0f;
             _lastUpdateTime = tick;
 
-            float moveStep = Stat.Speed * elapsedTime;
+            float moveStep = Stat.MoveSpeed * elapsedTime;
             moveStep = Math.Min(moveStep, distance);
 
             // 이동

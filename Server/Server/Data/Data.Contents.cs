@@ -2,23 +2,25 @@
 using System.Collections.Generic;
 using System.Text;
 using Google.Protobuf.Protocol;
+using Lucene.Net.Support;
+using static Lucene.Net.Util.AttributeSource;
 
 namespace Server.Data
 {
     #region Stat
     [Serializable]
-    public class StatData : ILoader<int, StatInfo>
+    public class StatData : ILoader<CharacterType, StatInfo>
     {
         public List<StatInfo> stats = new List<StatInfo>();
 
-        public Dictionary<int, StatInfo> MakeDict()
+        public Dictionary<CharacterType, StatInfo> MakeDict()
         {
-            Dictionary<int, StatInfo> dict = new Dictionary<int, StatInfo>();
+            Dictionary<CharacterType, StatInfo> dict = new Dictionary<CharacterType, StatInfo>();
             foreach (StatInfo stat in stats)
             {
                 stat.Hp = stat.MaxHp;
-                dict.Add(stat.Level, stat);
-            }                
+                dict.Add((CharacterType)Enum.Parse(typeof(CharacterType), stat.Name), stat);
+            }
             return dict;
         }
     }
@@ -88,4 +90,52 @@ namespace Server.Data
     }
     #endregion
 
+    #region StatGrowth
+
+    #endregion
+
+    #region Weapon
+    public class WeaponData : ILoader<Weapon, WeaponInfo>
+    {
+        public Dictionary<string, WeaponInfo> stats = new Dictionary<string, WeaponInfo>();
+
+        public Dictionary<Weapon, WeaponInfo> MakeDict()
+        {
+            Dictionary<Weapon, WeaponInfo> dict = new Dictionary<Weapon, WeaponInfo>();
+            foreach (var pair in stats)
+            {
+                dict.Add((Weapon)Enum.Parse(typeof(Weapon), pair.Key), pair.Value);
+            }
+            return dict;
+        }
+    }
+    #endregion
+
+    #region WeaponMastery
+    public class WeaponMasteryData : ILoader<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>
+    {
+        public Dictionary<string, Dictionary<string, WeaponMasteryInfo>> stats
+        = new Dictionary<string, Dictionary<string, WeaponMasteryInfo>>();
+        
+        public Dictionary<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>> MakeDict()
+        {
+            var nestedDict = new Dictionary<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>();
+            foreach(var stat in stats)
+            {
+                CharacterType charType = (CharacterType)Enum.Parse(typeof(CharacterType), stat.Key);
+                var newDict = new Dictionary<Weapon, WeaponMasteryInfo>();
+                
+                foreach (var dict in stat.Value)
+                {
+                    Weapon key = (Weapon)Enum.Parse(typeof(Weapon), dict.Key);
+                    newDict.Add(key, dict.Value);
+                }
+
+                nestedDict.Add(charType, newDict);
+            }
+
+            return nestedDict;
+        }
+    }
+    #endregion
 }

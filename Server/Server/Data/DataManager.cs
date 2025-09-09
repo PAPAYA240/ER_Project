@@ -13,15 +13,23 @@ namespace Server.Data
 
     public class DataManager
     {
-        public static Dictionary<int, StatInfo> StatDict { get; private set; } = new Dictionary<int, StatInfo>();
+        public static Dictionary<CharacterType, StatInfo> StatDict { get; private set; } = new Dictionary<CharacterType, StatInfo>();
         public static Dictionary<string, Data.SkillData> SkillDict { get; private set; } = new Dictionary<string, Data.SkillData>();
+
+        public static Dictionary<Weapon, WeaponInfo> WeaponDict { get; private set; } = new Dictionary<Weapon, WeaponInfo>();
+
+        public static Dictionary<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>> WeaponMasteryDict { get; private set; }
+            = new Dictionary<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>();
+
         public static Dictionary<string, MonsterData> MonsterDict { get; private set; } = new Dictionary<string, MonsterData>();
         public static Dictionary<string, SkillData> MonsterSkillDict { get; private set; } = new Dictionary<string, SkillData>();
         public static void LoadData()
         {
             // TEM
-            StatDict = LoadJsonServer<Data.StatData, int, StatInfo>("StatData").MakeDict();
+            StatDict = LoadJsonServer<Data.StatData, CharacterType, StatInfo>("StatData").MakeDict();
             SkillDict = LoadJsonServer<Data.SkillDict, string, Data.SkillData>("SkillData").MakeDict();
+            WeaponDict = LoadJsonServer<Data.WeaponData, Weapon, WeaponInfo>("WeaponData").MakeDict();
+            WeaponMasteryDict = LoadJsonServer<Data.WeaponMasteryData, CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>("WeaponMasteryData").MakeDict();
 
             // For MonsterData
             MonsterDict = LoadJson<Data.MonsterDict, string, Data.MonsterData>("MonsterData").MakeDict();

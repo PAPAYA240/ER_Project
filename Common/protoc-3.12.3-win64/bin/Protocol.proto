@@ -61,6 +61,33 @@ enum CharacterType {
 	THEODORE = 5;
 }
 
+enum Weapon {
+    WEAPON_NONE = 0;
+    DAGGER = 1;
+    TWO_HANDED_SWORD = 2;
+    AXE = 3;
+    DUAL_SWORDS = 4;
+    PISTOL = 5;
+    ASSAULT_RIFLE = 6;
+    SNIPER_RIFLE = 7;
+    RAPIER = 8;
+    SPEAR = 9;
+    HAMMER = 10;
+    BAT = 11;
+    THROW = 12;
+    SHURIKEN = 13;
+    BOW = 14;
+    CROSSBOW = 15;
+    GLOVE = 16;
+    TONFA = 17;
+    GUITAR = 18;
+    NUNCHAKU = 19;
+    WHIP = 20;
+    CAMERA = 21;
+    ARCANA = 22;
+    V_F_PROSTHETIC = 23;
+}
+
 message C_EnterGame {
 	ObjectInfo player = 1;
 }
@@ -170,12 +197,27 @@ message RotationInfo{
 }
 
 message StatInfo{
-	int32 level = 1;
-	int32 hp = 2;
-	int32 maxHp = 3;
-	int32 attack = 4;
-	float speed = 5;
-	int32 totalHp = 6;
+	string name = 1;
+	float attack = 2;
+	float defense = 3;
+	int32 hp = 4;
+	int32 maxHp = 5;
+	float hpRegen = 6;
+	int32 stamina = 7;
+	float staminaRegen = 8;
+	float attackSpeed = 9;
+	float moveSpeed = 10;
+}
+
+message WeaponMasteryInfo{
+	float attackSpeed = 1;
+	float basicAtkAmp = 2;
+	float skillAmp = 3;
+}
+
+message WeaponInfo{
+	float range = 1;
+	float attackSpeed = 2;
 }
 
 message SkillInfo{

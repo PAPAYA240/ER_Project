@@ -23,7 +23,7 @@ class PacketHandler
             clientSession.MyPlayer.Info.CharType = clientSession.MyCharacter;
 
             StatInfo stat = null;
-            DataManager.StatDict.TryGetValue(1, out stat);
+            DataManager.StatDict.TryGetValue(clientSession.MyCharacter, out stat);
             clientSession.MyPlayer.Stat.MergeFrom(stat);
 
             clientSession.MyPlayer.Session = clientSession;

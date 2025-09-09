@@ -24,7 +24,7 @@ namespace Server.Game
             ObjectType = GameObjectType.Player;
         }
 
-        public override void OnDamaged(GameObject attacker, int damage)
+        public override void OnDamaged(GameObject attacker, float damage)
         {
             base.OnDamaged(attacker, damage);
         }

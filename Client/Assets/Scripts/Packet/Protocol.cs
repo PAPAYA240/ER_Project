@@ -56,29 +56,41 @@ namespace Google.Protobuf.Protocol {
             "GAIgASgFImAKDFBvc2l0aW9uSW5mbxImCgVzdGF0ZRgBIAEoDjIXLlByb3Rv",
             "Y29sLkNyZWF0dXJlU3RhdGUSDAoEcG9zWBgCIAEoAhIMCgRwb3NZGAMgASgC",
             "EgwKBHBvc1oYBCABKAIiPgoMUm90YXRpb25JbmZvEgoKAnF4GAEgASgCEgoK",
-            "AnF5GAIgASgCEgoKAnF6GAMgASgCEgoKAnF3GAQgASgCImQKCFN0YXRJbmZv",
-            "Eg0KBWxldmVsGAEgASgFEgoKAmhwGAIgASgFEg0KBW1heEhwGAMgASgFEg4K",
-            "BmF0dGFjaxgEIAEoBRINCgVzcGVlZBgFIAEoAhIPCgd0b3RhbEhwGAYgASgF",
-            "IjsKCVNraWxsSW5mbxIPCgdza2lsbElkGAEgASgFEg8KB2tleUNvZGUYAiAB",
-            "KAUSDAoEbmFtZRgDIAEoCSIWCgZDX1BpbmcSDAoEcGluZxgBIAEoCCqRAgoF",
-            "TXNnSWQSEAoMQ19FTlRFUl9HQU1FEAASEAoMU19FTlRFUl9HQU1FEAESEAoM",
-            "U19MRUFWRV9HQU1FEAISCwoHU19TUEFXThADEg0KCVNfREVTUEFXThAEEgoK",
-            "BkNfTU9WRRAFEgoKBlNfTU9WRRAGEgsKB0NfU0tJTEwQBxILCgdTX1NLSUxM",
-            "EAgSDwoLU19DSEFOR0VfSFAQCRIJCgVTX0RJRRAKEgoKBkNfQU5JTRALEgoK",
-            "BlNfQU5JTRAMEg8KC0NfQ0hBUkFDVEVSEA0SDwoLU19DSEFSQUNURVIQDhIQ",
-            "CgxTX0VOVEVSX1BJQ0sQDxIQCgxTX0xFQVZFX1BJQ0sQEBIKCgZDX1BJTkcQ",
-            "ESo6Cg1DcmVhdHVyZVN0YXRlEggKBElETEUQABIKCgZNT1ZJTkcQARIJCgVT",
-            "S0lMTBACEggKBERFQUQQAypDCg5HYW1lT2JqZWN0VHlwZRIICgROT05FEAAS",
-            "CgoGUExBWUVSEAESCwoHTU9OU1RFUhACEg4KClBST0pFQ1RJTEUQAypBCglT",
-            "a2lsbFR5cGUSDgoKU0tJTExfTk9ORRAAEg4KClNLSUxMX0FVVE8QARIUChBT",
-            "S0lMTF9QUk9KRUNUSUxFEAIqNgoIQW5pbVR5cGUSCAoEUExBWRAAEgsKB1RS",
-            "SUdHRVIQARIICgRCT09MEAISCQoFRkxPQVQQAypgCg1DaGFyYWN0ZXJUeXBl",
-            "EhIKDkNIQVJBQ1RFUl9OT05FEAASCQoFUk9aWkkQARIICgRZVUtJEAISCwoH",
-            "SFlVTldPTxADEgsKB0FCSUdBSUwQBBIMCghUSEVPRE9SRRAFQhuqAhhHb29n",
-            "bGUuUHJvdG9idWYuUHJvdG9jb2xiBnByb3RvMw=="));
+            "AnF5GAIgASgCEgoKAnF6GAMgASgCEgoKAnF3GAQgASgCIrQBCghTdGF0SW5m",
+            "bxIMCgRuYW1lGAEgASgJEg4KBmF0dGFjaxgCIAEoAhIPCgdkZWZlbnNlGAMg",
+            "ASgCEgoKAmhwGAQgASgFEg0KBW1heEhwGAUgASgFEg8KB2hwUmVnZW4YBiAB",
+            "KAISDwoHc3RhbWluYRgHIAEoBRIUCgxzdGFtaW5hUmVnZW4YCCABKAISEwoL",
+            "YXR0YWNrU3BlZWQYCSABKAISEQoJbW92ZVNwZWVkGAogASgCIk8KEVdlYXBv",
+            "bk1hc3RlcnlJbmZvEhMKC2F0dGFja1NwZWVkGAEgASgCEhMKC2Jhc2ljQXRr",
+            "QW1wGAIgASgCEhAKCHNraWxsQW1wGAMgASgCIjAKCldlYXBvbkluZm8SDQoF",
+            "cmFuZ2UYASABKAISEwoLYXR0YWNrU3BlZWQYAiABKAIiOwoJU2tpbGxJbmZv",
+            "Eg8KB3NraWxsSWQYASABKAUSDwoHa2V5Q29kZRgCIAEoBRIMCgRuYW1lGAMg",
+            "ASgJIhYKBkNfUGluZxIMCgRwaW5nGAEgASgIKpECCgVNc2dJZBIQCgxDX0VO",
+            "VEVSX0dBTUUQABIQCgxTX0VOVEVSX0dBTUUQARIQCgxTX0xFQVZFX0dBTUUQ",
+            "AhILCgdTX1NQQVdOEAMSDQoJU19ERVNQQVdOEAQSCgoGQ19NT1ZFEAUSCgoG",
+            "U19NT1ZFEAYSCwoHQ19TS0lMTBAHEgsKB1NfU0tJTEwQCBIPCgtTX0NIQU5H",
+            "RV9IUBAJEgkKBVNfRElFEAoSCgoGQ19BTklNEAsSCgoGU19BTklNEAwSDwoL",
+            "Q19DSEFSQUNURVIQDRIPCgtTX0NIQVJBQ1RFUhAOEhAKDFNfRU5URVJfUElD",
+            "SxAPEhAKDFNfTEVBVkVfUElDSxAQEgoKBkNfUElORxARKjoKDUNyZWF0dXJl",
+            "U3RhdGUSCAoESURMRRAAEgoKBk1PVklORxABEgkKBVNLSUxMEAISCAoEREVB",
+            "RBADKkMKDkdhbWVPYmplY3RUeXBlEggKBE5PTkUQABIKCgZQTEFZRVIQARIL",
+            "CgdNT05TVEVSEAISDgoKUFJPSkVDVElMRRADKkEKCVNraWxsVHlwZRIOCgpT",
+            "S0lMTF9OT05FEAASDgoKU0tJTExfQVVUTxABEhQKEFNLSUxMX1BST0pFQ1RJ",
+            "TEUQAio2CghBbmltVHlwZRIICgRQTEFZEAASCwoHVFJJR0dFUhABEggKBEJP",
+            "T0wQAhIJCgVGTE9BVBADKmAKDUNoYXJhY3RlclR5cGUSEgoOQ0hBUkFDVEVS",
+            "X05PTkUQABIJCgVST1paSRABEggKBFlVS0kQAhILCgdIWVVOV09PEAMSCwoH",
+            "QUJJR0FJTBAEEgwKCFRIRU9ET1JFEAUqyAIKBldlYXBvbhIPCgtXRUFQT05f",
+            "Tk9ORRAAEgoKBkRBR0dFUhABEhQKEFRXT19IQU5ERURfU1dPUkQQAhIHCgNB",
+            "WEUQAxIPCgtEVUFMX1NXT1JEUxAEEgoKBlBJU1RPTBAFEhEKDUFTU0FVTFRf",
+            "UklGTEUQBhIQCgxTTklQRVJfUklGTEUQBxIKCgZSQVBJRVIQCBIJCgVTUEVB",
+            "UhAJEgoKBkhBTU1FUhAKEgcKA0JBVBALEgkKBVRIUk9XEAwSDAoIU0hVUklL",
+            "RU4QDRIHCgNCT1cQDhIMCghDUk9TU0JPVxAPEgkKBUdMT1ZFEBASCQoFVE9O",
+            "RkEQERIKCgZHVUlUQVIQEhIMCghOVU5DSEFLVRATEggKBFdISVAQFBIKCgZD",
+            "QU1FUkEQFRIKCgZBUkNBTkEQFhISCg5WX0ZfUFJPU1RIRVRJQxAXQhuqAhhH",
+            "b29nbGUuUHJvdG9idWYuUHJvdG9jb2xiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), }, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), typeof(global::Google.Protobuf.Protocol.Weapon), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_EnterGame), global::Google.Protobuf.Protocol.C_EnterGame.Parser, new[]{ "Player" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_EnterGame), global::Google.Protobuf.Protocol.S_EnterGame.Parser, new[]{ "Player" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_LeaveGame), global::Google.Protobuf.Protocol.S_LeaveGame.Parser, null, null, null, null, null),
@@ -100,7 +112,9 @@ namespace Google.Protobuf.Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Die), global::Google.Protobuf.Protocol.S_Die.Parser, new[]{ "ObjectId", "AttackerId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.PositionInfo), global::Google.Protobuf.Protocol.PositionInfo.Parser, new[]{ "State", "PosX", "PosY", "PosZ" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.RotationInfo), global::Google.Protobuf.Protocol.RotationInfo.Parser, new[]{ "Qx", "Qy", "Qz", "Qw" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.StatInfo), global::Google.Protobuf.Protocol.StatInfo.Parser, new[]{ "Level", "Hp", "MaxHp", "Attack", "Speed", "TotalHp" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.StatInfo), global::Google.Protobuf.Protocol.StatInfo.Parser, new[]{ "Name", "Attack", "Defense", "Hp", "MaxHp", "HpRegen", "Stamina", "StaminaRegen", "AttackSpeed", "MoveSpeed" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.WeaponMasteryInfo), global::Google.Protobuf.Protocol.WeaponMasteryInfo.Parser, new[]{ "AttackSpeed", "BasicAtkAmp", "SkillAmp" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.WeaponInfo), global::Google.Protobuf.Protocol.WeaponInfo.Parser, new[]{ "Range", "AttackSpeed" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.SkillInfo), global::Google.Protobuf.Protocol.SkillInfo.Parser, new[]{ "SkillId", "KeyCode", "Name" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_Ping), global::Google.Protobuf.Protocol.C_Ping.Parser, new[]{ "Ping" }, null, null, null, null)
           }));
@@ -164,6 +178,33 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("HYUNWOO")] Hyunwoo = 3,
     [pbr::OriginalName("ABIGAIL")] Abigail = 4,
     [pbr::OriginalName("THEODORE")] Theodore = 5,
+  }
+
+  public enum Weapon {
+    [pbr::OriginalName("WEAPON_NONE")] None = 0,
+    [pbr::OriginalName("DAGGER")] Dagger = 1,
+    [pbr::OriginalName("TWO_HANDED_SWORD")] TwoHandedSword = 2,
+    [pbr::OriginalName("AXE")] Axe = 3,
+    [pbr::OriginalName("DUAL_SWORDS")] DualSwords = 4,
+    [pbr::OriginalName("PISTOL")] Pistol = 5,
+    [pbr::OriginalName("ASSAULT_RIFLE")] AssaultRifle = 6,
+    [pbr::OriginalName("SNIPER_RIFLE")] SniperRifle = 7,
+    [pbr::OriginalName("RAPIER")] Rapier = 8,
+    [pbr::OriginalName("SPEAR")] Spear = 9,
+    [pbr::OriginalName("HAMMER")] Hammer = 10,
+    [pbr::OriginalName("BAT")] Bat = 11,
+    [pbr::OriginalName("THROW")] Throw = 12,
+    [pbr::OriginalName("SHURIKEN")] Shuriken = 13,
+    [pbr::OriginalName("BOW")] Bow = 14,
+    [pbr::OriginalName("CROSSBOW")] Crossbow = 15,
+    [pbr::OriginalName("GLOVE")] Glove = 16,
+    [pbr::OriginalName("TONFA")] Tonfa = 17,
+    [pbr::OriginalName("GUITAR")] Guitar = 18,
+    [pbr::OriginalName("NUNCHAKU")] Nunchaku = 19,
+    [pbr::OriginalName("WHIP")] Whip = 20,
+    [pbr::OriginalName("CAMERA")] Camera = 21,
+    [pbr::OriginalName("ARCANA")] Arcana = 22,
+    [pbr::OriginalName("V_F_PROSTHETIC")] VFProsthetic = 23,
   }
 
   #endregion
@@ -3616,12 +3657,16 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public StatInfo(StatInfo other) : this() {
-      level_ = other.level_;
+      name_ = other.name_;
+      attack_ = other.attack_;
+      defense_ = other.defense_;
       hp_ = other.hp_;
       maxHp_ = other.maxHp_;
-      attack_ = other.attack_;
-      speed_ = other.speed_;
-      totalHp_ = other.totalHp_;
+      hpRegen_ = other.hpRegen_;
+      stamina_ = other.stamina_;
+      staminaRegen_ = other.staminaRegen_;
+      attackSpeed_ = other.attackSpeed_;
+      moveSpeed_ = other.moveSpeed_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -3630,19 +3675,41 @@ namespace Google.Protobuf.Protocol {
       return new StatInfo(this);
     }
 
-    /// <summary>Field number for the "level" field.</summary>
-    public const int LevelFieldNumber = 1;
-    private int level_;
+    /// <summary>Field number for the "name" field.</summary>
+    public const int NameFieldNumber = 1;
+    private string name_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Level {
-      get { return level_; }
+    public string Name {
+      get { return name_; }
       set {
-        level_ = value;
+        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "attack" field.</summary>
+    public const int AttackFieldNumber = 2;
+    private float attack_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Attack {
+      get { return attack_; }
+      set {
+        attack_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "defense" field.</summary>
+    public const int DefenseFieldNumber = 3;
+    private float defense_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Defense {
+      get { return defense_; }
+      set {
+        defense_ = value;
       }
     }
 
     /// <summary>Field number for the "hp" field.</summary>
-    public const int HpFieldNumber = 2;
+    public const int HpFieldNumber = 4;
     private int hp_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Hp {
@@ -3653,7 +3720,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "maxHp" field.</summary>
-    public const int MaxHpFieldNumber = 3;
+    public const int MaxHpFieldNumber = 5;
     private int maxHp_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int MaxHp {
@@ -3663,36 +3730,58 @@ namespace Google.Protobuf.Protocol {
       }
     }
 
-    /// <summary>Field number for the "attack" field.</summary>
-    public const int AttackFieldNumber = 4;
-    private int attack_;
+    /// <summary>Field number for the "hpRegen" field.</summary>
+    public const int HpRegenFieldNumber = 6;
+    private float hpRegen_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Attack {
-      get { return attack_; }
+    public float HpRegen {
+      get { return hpRegen_; }
       set {
-        attack_ = value;
+        hpRegen_ = value;
       }
     }
 
-    /// <summary>Field number for the "speed" field.</summary>
-    public const int SpeedFieldNumber = 5;
-    private float speed_;
+    /// <summary>Field number for the "stamina" field.</summary>
+    public const int StaminaFieldNumber = 7;
+    private int stamina_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public float Speed {
-      get { return speed_; }
+    public int Stamina {
+      get { return stamina_; }
       set {
-        speed_ = value;
+        stamina_ = value;
       }
     }
 
-    /// <summary>Field number for the "totalHp" field.</summary>
-    public const int TotalHpFieldNumber = 6;
-    private int totalHp_;
+    /// <summary>Field number for the "staminaRegen" field.</summary>
+    public const int StaminaRegenFieldNumber = 8;
+    private float staminaRegen_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int TotalHp {
-      get { return totalHp_; }
+    public float StaminaRegen {
+      get { return staminaRegen_; }
       set {
-        totalHp_ = value;
+        staminaRegen_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "attackSpeed" field.</summary>
+    public const int AttackSpeedFieldNumber = 9;
+    private float attackSpeed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float AttackSpeed {
+      get { return attackSpeed_; }
+      set {
+        attackSpeed_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "moveSpeed" field.</summary>
+    public const int MoveSpeedFieldNumber = 10;
+    private float moveSpeed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float MoveSpeed {
+      get { return moveSpeed_; }
+      set {
+        moveSpeed_ = value;
       }
     }
 
@@ -3709,24 +3798,32 @@ namespace Google.Protobuf.Protocol {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Level != other.Level) return false;
+      if (Name != other.Name) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Attack, other.Attack)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Defense, other.Defense)) return false;
       if (Hp != other.Hp) return false;
       if (MaxHp != other.MaxHp) return false;
-      if (Attack != other.Attack) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Speed, other.Speed)) return false;
-      if (TotalHp != other.TotalHp) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(HpRegen, other.HpRegen)) return false;
+      if (Stamina != other.Stamina) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(StaminaRegen, other.StaminaRegen)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AttackSpeed, other.AttackSpeed)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MoveSpeed, other.MoveSpeed)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (Level != 0) hash ^= Level.GetHashCode();
+      if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (Attack != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Attack);
+      if (Defense != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Defense);
       if (Hp != 0) hash ^= Hp.GetHashCode();
       if (MaxHp != 0) hash ^= MaxHp.GetHashCode();
-      if (Attack != 0) hash ^= Attack.GetHashCode();
-      if (Speed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Speed);
-      if (TotalHp != 0) hash ^= TotalHp.GetHashCode();
+      if (HpRegen != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(HpRegen);
+      if (Stamina != 0) hash ^= Stamina.GetHashCode();
+      if (StaminaRegen != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(StaminaRegen);
+      if (AttackSpeed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AttackSpeed);
+      if (MoveSpeed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MoveSpeed);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -3740,29 +3837,45 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (Level != 0) {
-        output.WriteRawTag(8);
-        output.WriteInt32(Level);
+      if (Name.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Name);
+      }
+      if (Attack != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(Attack);
+      }
+      if (Defense != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(Defense);
       }
       if (Hp != 0) {
-        output.WriteRawTag(16);
+        output.WriteRawTag(32);
         output.WriteInt32(Hp);
       }
       if (MaxHp != 0) {
-        output.WriteRawTag(24);
+        output.WriteRawTag(40);
         output.WriteInt32(MaxHp);
       }
-      if (Attack != 0) {
-        output.WriteRawTag(32);
-        output.WriteInt32(Attack);
+      if (HpRegen != 0F) {
+        output.WriteRawTag(53);
+        output.WriteFloat(HpRegen);
       }
-      if (Speed != 0F) {
-        output.WriteRawTag(45);
-        output.WriteFloat(Speed);
+      if (Stamina != 0) {
+        output.WriteRawTag(56);
+        output.WriteInt32(Stamina);
       }
-      if (TotalHp != 0) {
-        output.WriteRawTag(48);
-        output.WriteInt32(TotalHp);
+      if (StaminaRegen != 0F) {
+        output.WriteRawTag(69);
+        output.WriteFloat(StaminaRegen);
+      }
+      if (AttackSpeed != 0F) {
+        output.WriteRawTag(77);
+        output.WriteFloat(AttackSpeed);
+      }
+      if (MoveSpeed != 0F) {
+        output.WriteRawTag(85);
+        output.WriteFloat(MoveSpeed);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -3772,8 +3885,14 @@ namespace Google.Protobuf.Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (Level != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Level);
+      if (Name.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (Attack != 0F) {
+        size += 1 + 4;
+      }
+      if (Defense != 0F) {
+        size += 1 + 4;
       }
       if (Hp != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Hp);
@@ -3781,14 +3900,20 @@ namespace Google.Protobuf.Protocol {
       if (MaxHp != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(MaxHp);
       }
-      if (Attack != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Attack);
-      }
-      if (Speed != 0F) {
+      if (HpRegen != 0F) {
         size += 1 + 4;
       }
-      if (TotalHp != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(TotalHp);
+      if (Stamina != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Stamina);
+      }
+      if (StaminaRegen != 0F) {
+        size += 1 + 4;
+      }
+      if (AttackSpeed != 0F) {
+        size += 1 + 4;
+      }
+      if (MoveSpeed != 0F) {
+        size += 1 + 4;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -3801,8 +3926,14 @@ namespace Google.Protobuf.Protocol {
       if (other == null) {
         return;
       }
-      if (other.Level != 0) {
-        Level = other.Level;
+      if (other.Name.Length != 0) {
+        Name = other.Name;
+      }
+      if (other.Attack != 0F) {
+        Attack = other.Attack;
+      }
+      if (other.Defense != 0F) {
+        Defense = other.Defense;
       }
       if (other.Hp != 0) {
         Hp = other.Hp;
@@ -3810,14 +3941,20 @@ namespace Google.Protobuf.Protocol {
       if (other.MaxHp != 0) {
         MaxHp = other.MaxHp;
       }
-      if (other.Attack != 0) {
-        Attack = other.Attack;
+      if (other.HpRegen != 0F) {
+        HpRegen = other.HpRegen;
       }
-      if (other.Speed != 0F) {
-        Speed = other.Speed;
+      if (other.Stamina != 0) {
+        Stamina = other.Stamina;
       }
-      if (other.TotalHp != 0) {
-        TotalHp = other.TotalHp;
+      if (other.StaminaRegen != 0F) {
+        StaminaRegen = other.StaminaRegen;
+      }
+      if (other.AttackSpeed != 0F) {
+        AttackSpeed = other.AttackSpeed;
+      }
+      if (other.MoveSpeed != 0F) {
+        MoveSpeed = other.MoveSpeed;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -3830,28 +3967,386 @@ namespace Google.Protobuf.Protocol {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 8: {
-            Level = input.ReadInt32();
+          case 10: {
+            Name = input.ReadString();
             break;
           }
-          case 16: {
-            Hp = input.ReadInt32();
+          case 21: {
+            Attack = input.ReadFloat();
             break;
           }
-          case 24: {
-            MaxHp = input.ReadInt32();
+          case 29: {
+            Defense = input.ReadFloat();
             break;
           }
           case 32: {
-            Attack = input.ReadInt32();
+            Hp = input.ReadInt32();
             break;
           }
-          case 45: {
-            Speed = input.ReadFloat();
+          case 40: {
+            MaxHp = input.ReadInt32();
             break;
           }
-          case 48: {
-            TotalHp = input.ReadInt32();
+          case 53: {
+            HpRegen = input.ReadFloat();
+            break;
+          }
+          case 56: {
+            Stamina = input.ReadInt32();
+            break;
+          }
+          case 69: {
+            StaminaRegen = input.ReadFloat();
+            break;
+          }
+          case 77: {
+            AttackSpeed = input.ReadFloat();
+            break;
+          }
+          case 85: {
+            MoveSpeed = input.ReadFloat();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class WeaponMasteryInfo : pb::IMessage<WeaponMasteryInfo> {
+    private static readonly pb::MessageParser<WeaponMasteryInfo> _parser = new pb::MessageParser<WeaponMasteryInfo>(() => new WeaponMasteryInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<WeaponMasteryInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[22]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WeaponMasteryInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WeaponMasteryInfo(WeaponMasteryInfo other) : this() {
+      attackSpeed_ = other.attackSpeed_;
+      basicAtkAmp_ = other.basicAtkAmp_;
+      skillAmp_ = other.skillAmp_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WeaponMasteryInfo Clone() {
+      return new WeaponMasteryInfo(this);
+    }
+
+    /// <summary>Field number for the "attackSpeed" field.</summary>
+    public const int AttackSpeedFieldNumber = 1;
+    private float attackSpeed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float AttackSpeed {
+      get { return attackSpeed_; }
+      set {
+        attackSpeed_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "basicAtkAmp" field.</summary>
+    public const int BasicAtkAmpFieldNumber = 2;
+    private float basicAtkAmp_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float BasicAtkAmp {
+      get { return basicAtkAmp_; }
+      set {
+        basicAtkAmp_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "skillAmp" field.</summary>
+    public const int SkillAmpFieldNumber = 3;
+    private float skillAmp_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float SkillAmp {
+      get { return skillAmp_; }
+      set {
+        skillAmp_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as WeaponMasteryInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(WeaponMasteryInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AttackSpeed, other.AttackSpeed)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(BasicAtkAmp, other.BasicAtkAmp)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(SkillAmp, other.SkillAmp)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (AttackSpeed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AttackSpeed);
+      if (BasicAtkAmp != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(BasicAtkAmp);
+      if (SkillAmp != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(SkillAmp);
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (AttackSpeed != 0F) {
+        output.WriteRawTag(13);
+        output.WriteFloat(AttackSpeed);
+      }
+      if (BasicAtkAmp != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(BasicAtkAmp);
+      }
+      if (SkillAmp != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(SkillAmp);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (AttackSpeed != 0F) {
+        size += 1 + 4;
+      }
+      if (BasicAtkAmp != 0F) {
+        size += 1 + 4;
+      }
+      if (SkillAmp != 0F) {
+        size += 1 + 4;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(WeaponMasteryInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.AttackSpeed != 0F) {
+        AttackSpeed = other.AttackSpeed;
+      }
+      if (other.BasicAtkAmp != 0F) {
+        BasicAtkAmp = other.BasicAtkAmp;
+      }
+      if (other.SkillAmp != 0F) {
+        SkillAmp = other.SkillAmp;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 13: {
+            AttackSpeed = input.ReadFloat();
+            break;
+          }
+          case 21: {
+            BasicAtkAmp = input.ReadFloat();
+            break;
+          }
+          case 29: {
+            SkillAmp = input.ReadFloat();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class WeaponInfo : pb::IMessage<WeaponInfo> {
+    private static readonly pb::MessageParser<WeaponInfo> _parser = new pb::MessageParser<WeaponInfo>(() => new WeaponInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<WeaponInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[23]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WeaponInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WeaponInfo(WeaponInfo other) : this() {
+      range_ = other.range_;
+      attackSpeed_ = other.attackSpeed_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WeaponInfo Clone() {
+      return new WeaponInfo(this);
+    }
+
+    /// <summary>Field number for the "range" field.</summary>
+    public const int RangeFieldNumber = 1;
+    private float range_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Range {
+      get { return range_; }
+      set {
+        range_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "attackSpeed" field.</summary>
+    public const int AttackSpeedFieldNumber = 2;
+    private float attackSpeed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float AttackSpeed {
+      get { return attackSpeed_; }
+      set {
+        attackSpeed_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as WeaponInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(WeaponInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Range, other.Range)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AttackSpeed, other.AttackSpeed)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Range != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Range);
+      if (AttackSpeed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AttackSpeed);
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Range != 0F) {
+        output.WriteRawTag(13);
+        output.WriteFloat(Range);
+      }
+      if (AttackSpeed != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(AttackSpeed);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Range != 0F) {
+        size += 1 + 4;
+      }
+      if (AttackSpeed != 0F) {
+        size += 1 + 4;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(WeaponInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Range != 0F) {
+        Range = other.Range;
+      }
+      if (other.AttackSpeed != 0F) {
+        AttackSpeed = other.AttackSpeed;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 13: {
+            Range = input.ReadFloat();
+            break;
+          }
+          case 21: {
+            AttackSpeed = input.ReadFloat();
             break;
           }
         }
@@ -3868,7 +4363,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[22]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[24]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4053,7 +4548,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[23]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[25]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

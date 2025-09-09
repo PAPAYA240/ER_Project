@@ -25,8 +25,8 @@ namespace Server.Game
 
         public float Speed
         {
-            get { return Stat.Speed; }
-            set { Stat.Speed = value; }
+            get { return Stat.MoveSpeed; }
+            set { Stat.MoveSpeed = value; }
         }
 
         public int Hp
@@ -53,12 +53,12 @@ namespace Server.Game
 
         }
 
-        public virtual void OnDamaged(GameObject attacker, int damage)
+        public virtual void OnDamaged(GameObject attacker, float damage)
         {
             if (Room == null)
                 return;
 
-            Stat.Hp = Math.Max(Stat.Hp - damage, 0);
+            Stat.Hp = Math.Max((int)(Stat.Hp - damage), 0);
 
             S_ChangeHp changePacket = new S_ChangeHp();
             changePacket.ObjectId = Id;

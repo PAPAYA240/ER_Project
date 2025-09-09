@@ -47,7 +47,7 @@ namespace Server.Game.Object.Monster
             monster.Info.PosInfo.PosY = 0;
 
             StatInfo stat = null;
-            DataManager.StatDict.TryGetValue(2, out stat);
+            DataManager.StatDict.TryGetValue(CharacterType.Rozzi, out stat); // TEMP
             monster.Stat.MergeFrom(stat);
 
             monster.Init("Alpha");

@@ -10,6 +10,8 @@ public class BaseController : MonoBehaviour
 {
     public int Id { get; set; }
 
+    float _speedCoeff = 3.2f;
+
     StatInfo _stat = new StatInfo();
     public virtual StatInfo Stat
     {
@@ -19,16 +21,14 @@ public class BaseController : MonoBehaviour
             if (_stat.Equals(value))
                 return;
 
-            _stat.Hp = value.Hp;
-            _stat.MaxHp = value.MaxHp;
-            _stat.Speed = value.Speed;
+            _stat.MergeFrom(value);
         }
     }
 
     public float Speed
     {
-        get { return Stat.Speed; }
-        set { Stat.Speed = value; }
+        get { return Stat.MoveSpeed * _speedCoeff; }
+        set { Stat.MoveSpeed = value; }
     }
 
     public virtual int Hp
