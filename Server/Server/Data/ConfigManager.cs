@@ -8,19 +8,11 @@ namespace Server.Data
     [Serializable]
     public class ServerConfig
     {
-        public string dataPath;
+        public Dictionary<string, string> dataPaths;
     }
     public class ConfigManager
     {
         public static ServerConfig Config { get; private set; }
-
-        //
-        public static ServerConfig ConfigServer { get; private set; }
-        public static void LoadConfigServer()
-        {
-            string text = File.ReadAllText("configServer.json");
-            ConfigServer = Newtonsoft.Json.JsonConvert.DeserializeObject<ServerConfig>(text);
-        }
 
         public static void LoadConfig()
         {

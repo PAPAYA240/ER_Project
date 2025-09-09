@@ -1,59 +1,129 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml.Linq;
-using Google.Protobuf.Protocol;
+﻿using Google.Protobuf.Protocol;
 using Server.Data;
-using static Google.Protobuf.WellKnownTypes.Field.Types;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.IO;
+using System;
+using Google.Protobuf;
 
 namespace Server.Game.Object.Monster
 {
+    public class RawMonsterData
+    {
+        public MonsterType monsterType;
+        public float xPos;
+        public float yPos;
+        public float zPos;
+    }
+
+    public class RawMonsterList
+    {
+        public List<RawMonsterData> monsters;
+    }
+    public class MonsterDataProcessor
+    {
+        private const string MonsterDataFileName = "SpawnMonsterData.json";
+        public RawMonsterList ProcessAndGetJson()
+        {
+            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string dataFilePath = Path.Combine(baseDirectory, "Data", MonsterDataFileName);
+            if (!File.Exists(dataFilePath))
+            {
+                Console.WriteLine($"파일을 찾을 수 없습니다: {dataFilePath}");
+                return null;
+            }
+
+            // 1. 원본 JSON 파일 읽기
+            string rawJson = File.ReadAllText(dataFilePath);
+
+            // 2. 원본 JSON을 C# 객체로 역직렬화
+            RawMonsterList rawList = JsonConvert.DeserializeObject<RawMonsterList>(rawJson);
+
+            // 3. 새로운 리스트를 만들어 데이터를 가공
+            RawMonsterList cleanedList = new RawMonsterList();
+            cleanedList.monsters = new List<RawMonsterData>();
+
+            foreach (var rawData in rawList.monsters)
+            {
+                // 정수 monsterType을 문자열로 변환
+                MonsterType monsterTypeName = rawData.monsterType;
+
+                cleanedList.monsters.Add(new RawMonsterData
+                {
+                    monsterType = monsterTypeName,
+                    xPos = (float)rawData.xPos,
+                    yPos = (float)rawData.yPos,
+                    zPos = (float)rawData.zPos
+                });
+            }
+            return cleanedList;
+        }
+    }
+
     public class MonsterManager
     {
         GameRoom _room;
-        int _monsterCount = 0;
-        int _keepMonsterCount = 10;
-        long _nextSpawnTick = 0;
+        int _keepMonsterCount = 0;
+
         public void Init(GameRoom room, int keepMonsterCount = 0)
         {
             _room = room;
-            _keepMonsterCount = keepMonsterCount;
+            MonsterDataProcessor processor = new MonsterDataProcessor();
+           
+            SpawnMonstersFromJson(processor.ProcessAndGetJson());
         }
 
-        public void Add(int monsterCnt)
+        public void Add(int monsterCnt, MonsterType type = MonsterType.MonsterNone)
         {
-            _monsterCount += monsterCnt;
-        }
-
-        public void Update()
-        {
-            if (_room == null)
+            if (type == MonsterType.MonsterNone)
                 return;
 
-            if (_nextSpawnTick > Environment.TickCount64) return; 
+            for (int i = 0; i < monsterCnt; i++)
+            {
+                // 몬스터를 즉시 생성하는 Spawn 로직을 이곳에 복사합니다.
+                Monster monster = ObjectManager.Instance.Add<Monster>();
+                monster.Info.Name = $"{monster.Id} Monster";
+                monster.Info.PosInfo.State = CreatureState.Idle;
+                monster.Info.PosInfo.PosX = 0;
+                monster.Info.PosInfo.PosY = 0;
+                monster.Info.MonsterType = type;
 
-            _nextSpawnTick = Environment.TickCount64 + 1000;
+                MonsterData monsterStat = null;
+                DataManager.MonsterDict.TryGetValue(type.ToString(), out monsterStat);
+                monster.Stat.MergeFrom(monsterStat.stat);
 
-            if (_monsterCount < _keepMonsterCount) 
-                Spawn();
+                monster.Init(monster.Info.MonsterType.ToString());
+                _room.Push(_room.EnterGame, monster);
+            }
         }
-
-        private void Spawn()
+        public void SpawnMonstersFromJson(RawMonsterList monsterList)
         {
-            Monster monster = ObjectManager.Instance.Add<Monster>();
-            monster.Info.Name = $"Monster_TestMonster";
-            monster.Info.PosInfo.State = CreatureState.Idle;
-            monster.Info.PosInfo.PosX = 0;
-            monster.Info.PosInfo.PosY = 0;
+            if (_room == null || monsterList == null)
+                return;
 
-            StatInfo stat = null;
-            DataManager.StatDict.TryGetValue(2, out stat);
-            monster.Stat.MergeFrom(stat);
+            foreach (var monsterData in monsterList.monsters)
+            {
+                Monster monster = ObjectManager.Instance.Add<Monster>();
 
-            monster.Init("Alpha");
-            //monster.Cell = new Vector3(0, 0, 0);
-            _room.Push(_room.EnterGame, monster);
-            _monsterCount++;
+                monster.Info.PosInfo.PosX = monsterData.xPos;
+                monster.Info.PosInfo.PosY = monsterData.yPos;
+                monster.Info.PosInfo.PosZ = monsterData.zPos;
+
+                MonsterType type =monsterData.monsterType;
+                monster.Info.MonsterType = type;
+                monster.Info.Name = $"{monster.Id} Monster";
+                monster.Info.PosInfo.State = CreatureState.Idle;
+
+                MonsterData monsterStat = null;
+                DataManager.MonsterDict.TryGetValue(type.ToString(), out monsterStat);
+                monster.Stat.MergeFrom(monsterStat.stat);
+
+                monster.Init(monster.Info.MonsterType.ToString());
+                _room.Push(_room.EnterGame, monster);
+            }
+        }
+        public void Update()
+        {
         }
     }
 }

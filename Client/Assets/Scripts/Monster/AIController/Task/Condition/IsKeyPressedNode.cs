@@ -1,19 +1,35 @@
 ﻿using Google.Protobuf.Protocol;
 using UnityEngine;
-using static MonsterController;
-
 
 public class IsKeyPressedNode : DecoratorNode
  {
-     public MonsterSkill skillId = MonsterSkill.Attack1;
-
-    // TODO : _child => 제어할 애니메이션을 집어넣을 예정
+    public MonsterSkill skillId;
     public override NodeStatus Execute(GameObject agent)
      {
         MonsterController monsterController = agent.GetComponentInChildren<MonsterController>();
         if(!monsterController || monsterController.Skill != skillId || monsterController.State != CreatureState.Skill)
+       { 
             return NodeStatus.Failure;
+        }
+         Debug.Log($"{skillId}");
         return NodeStatus.Success;
     }
  }
+
+//public class CheckConditionNode : DecoratorNode
+//{
+//    public string key;
+//    public string op;
+//    public string value;
+
+//    public override NodeStatus Execute(GameObject owner)
+//    {
+//        if (op == "equal")
+//        {
+//             if (isSpawned.ToString().ToLower() == value.ToLower())
+//                 return NodeStatus.Success;
+//        }
+//         return NodeStatus.Failure;
+//    }
+//}
 

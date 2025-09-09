@@ -59,14 +59,24 @@ class PacketHandler
         if (cc.ObjectType == Define.Object.OtherPlayer)
         {
             cc.SyncPos();
-        }
-        else if (cc.ObjectType == Define.Object.Monster)
+        }      
+    }
+     public static void S_StateHandler(PacketSession session, IMessage packet)
+    {
+        S_State skillPacket = packet as S_State;
+        if (skillPacket == null)
+            return;
+
+        GameObject go = Managers.Object.FindById(skillPacket.ObjectId);
+        if (go == null)
         {
-            MonsterController mc = go.GetComponentInChildren<MonsterController>();
-            if (mc == null)
-                return;
-            mc.OnRecvMovePacket(movePacket);
-        }          
+            Debug.Log($"ID {skillPacket.ObjectId}를 가진 몬스터 오브젝트를 찾을 수 없습니다");
+            return;
+        }
+
+        MonsterController mc = go.GetComponentInChildren<MonsterController>();
+        if (mc != null)
+            mc.OnRecvStatePacket(skillPacket);  
     }
 
     public static void S_SkillHandler(PacketSession session, IMessage packet)
@@ -82,9 +92,10 @@ class PacketHandler
         {
             GameObjectType objectType = ObjectManager.GetObjectTypeById(cc.Id);
             if (objectType == GameObjectType.Player)
-                cc.UseSkill(skillPacket.SkillInfo.KeyCode);
-            else if(cc.ObjectType == Define.Object.Monster)
-                cc.UseSkill(skillPacket.SkillInfo.SkillId);
+            {
+                cc.UseSkill((KeyCode)skillPacket.SkillInfo.KeyCode);
+                Debug.Log("스킬 패킷 받기");
+            }
         }
     }
 
@@ -100,10 +111,11 @@ class PacketHandler
         if (pc != null)
         {
             if (pc.ObjectType == Define.Object.OtherPlayer)
-                pc.PlayAnimation(animPacket.AnimInfo);
+                pc.PlayAnimFromServer(animPacket.AnimInfo);
         }
     }
-
+    
+    
     public static void S_ChangeHpHandler(PacketSession session, IMessage packet)
     {
         S_ChangeHp changePacket = packet as S_ChangeHp;

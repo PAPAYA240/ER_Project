@@ -35,8 +35,14 @@ public class BehaviorTreeBuilder
 
         node.name = data.Name;
         if (data.Properties != null)
-            JsonConvert.PopulateObject(data.Properties.ToString(), node);
-
+        {
+        Debug.Log($"Attemptinor type: {data.Name}");
+            // JsonConvert.PopulateObject(data.Properties.ToString(), node);
+            using (var reader = data.Properties.CreateReader())
+            {
+                JsonSerializer.CreateDefault().Populate(reader, node);
+            }
+        }
         if (data.Children != null && data.Children.Count > 0)
         {
             if (node is CompositeNode compositeNode)
@@ -56,7 +62,10 @@ public class BehaviorTreeBuilder
     {
         Type type = Type.GetType(typeName);
         if (null == type)
+        {
+            Debug.Log($"Could not find type: {typeName}");
             return null;
+        }
 
         Node node = ScriptableObject.CreateInstance(type) as Node;
         return node;

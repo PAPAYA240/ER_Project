@@ -1,25 +1,59 @@
 {
   "stats": [
     {
-      "level": "1",
-      "maxHp": "200",
-      "attack": "20",
-      "speed":  "10.0",
-      "totalExp": "0"
+      "name": "Abigail",
+      "attack": "40",
+      "defense": "50",
+      "maxHp": "950",
+      "hpRegen": "1.4",
+      "stamina": "430",
+      "staminaRegen": "3",
+      "attackSpeed": "0.12",
+      "moveSpeed": "3.5"
     },
     {
-      "level": "2",
-      "maxHp": "250",
-      "attack": "25",
-      "speed": "10.0",
-      "totalExp": "10"
+      "name": "Hyunwoo",
+      "attack": "40",
+      "defense": "51",
+      "maxHp": "1000",
+      "hpRegen": "1.8",
+      "stamina": "850",
+      "staminaRegen": "3.8",
+      "attackSpeed": "0.14",
+      "moveSpeed": "3.55"
     },
     {
-      "level": "3",
-      "maxHp": "300",
+      "name": "Rozzi",
       "attack": "30",
-      "speed": "10.0",
-      "totalExp": "20"
+      "defense": "53",
+      "maxHp": "910",
+      "hpRegen": "0.6",
+      "stamina": "440",
+      "staminaRegen": "3.1",
+      "attackSpeed": "0.11",
+      "moveSpeed": "3.45"
+    },
+    {
+      "name": "Theodore",
+      "attack": "40",
+      "defense": "50",
+      "maxHp": "900",
+      "hpRegen": "1.3",
+      "stamina": "500",
+      "staminaRegen": "3.6",
+      "attackSpeed": "0.1",
+      "moveSpeed": "3.5"
+    },
+    {
+      "name": "Yuki",
+      "attack": "33",
+      "defense": "50",
+      "maxHp": "920",
+      "hpRegen": "1.58",
+      "stamina": "410",
+      "staminaRegen": "3.6",
+      "attackSpeed": "0.11",
+      "moveSpeed": "3.5"
     }
   ]
 } 

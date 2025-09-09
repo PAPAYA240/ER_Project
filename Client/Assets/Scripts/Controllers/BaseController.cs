@@ -1,7 +1,7 @@
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
-using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
 using static Define;
@@ -9,6 +9,8 @@ using static Define;
 public class BaseController : MonoBehaviour
 {
     public int Id { get; set; }
+
+    float _speedCoeff = 3.2f;
 
     StatInfo _stat = new StatInfo();
     public virtual StatInfo Stat
@@ -19,16 +21,14 @@ public class BaseController : MonoBehaviour
             if (_stat.Equals(value))
                 return;
 
-            _stat.Hp = value.Hp;
-            _stat.MaxHp = value.MaxHp;
-            _stat.Speed = value.Speed;
+            _stat.MergeFrom(value);
         }
     }
 
     public float Speed
     {
-        get { return Stat.Speed; }
-        set { Stat.Speed = value; }
+        get { return Stat.MoveSpeed * _speedCoeff; }
+        set { Stat.MoveSpeed = value; }
     }
 
     public virtual int Hp
@@ -62,10 +62,10 @@ public class BaseController : MonoBehaviour
         get { return _rotationInfo; }
         set
         {
-            if (value == null)  
+            if (value == null)
                 return;
 
-            if (_rotationInfo.Equals(value)) 
+            if (_rotationInfo.Equals(value))
                 return;
 
             _rotationInfo.Qx = value.Qx;
@@ -124,33 +124,7 @@ public class BaseController : MonoBehaviour
         }
     }
 
-    protected virtual void UpdateAnimation()
-    {
-        if (_animator == null)
-            return;
-
-        if (State == CreatureState.Idle)
-        {
-        }
-        else if (State == CreatureState.Moving)
-        {
-        }
-        else if (State == CreatureState.Skill)
-        {
-        }
-        else
-        {
-        }
-    }
-
-    protected virtual void Init()
-    {
-        _animator = GetComponentInChildren<Animator>();
-        _navMeshAgent = GetComponent<NavMeshAgent>();
-        SyncPos();
-
-        UpdateAnimation();
-    }
+    protected virtual void UpdateAnimation() {}
 
     void Start()
     {
@@ -160,6 +134,15 @@ public class BaseController : MonoBehaviour
     void Update()
     {
         UpdateController();
+    }
+
+    protected virtual void Init()
+    {
+        _animator = GetComponentInChildren<Animator>();
+        _navMeshAgent = GetComponent<NavMeshAgent>();
+        SyncPos();
+
+        UpdateAnimation();
     }
 
     protected virtual void UpdateController()
@@ -182,18 +165,26 @@ public class BaseController : MonoBehaviour
     }
 
     protected virtual void UpdateIdle()
-    {       
+    {
     }
 
+    // 스르륵 이동하는 것을 처리
     protected virtual void UpdateMoving()
     {
     }
 
+    protected virtual void MoveToNextPos()
+    {
+
+    }
+
     protected virtual void UpdateSkill()
     {
+
     }
 
     protected virtual void UpdateDead()
     {
+
     }
 }
