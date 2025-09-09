@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.XPath;
 using Google.Protobuf.Protocol;
 using Lucene.Net.Support;
 using static Lucene.Net.Util.AttributeSource;
+using static Server.Data.DataUtils;
 
 namespace Server.Data
 {
@@ -27,32 +29,112 @@ namespace Server.Data
     #endregion
 
     #region Skill
+
+    [Serializable]
+    public class GameData : ILoader<CharacterType, Dictionary<KeyCode, SkillData>>
+    {
+        public Dictionary<string, Dictionary<string, SkillData>> characters = new Dictionary<string, Dictionary<string, SkillData>>();
+
+        public Dictionary<CharacterType, Dictionary<KeyCode, SkillData>> MakeDict()
+        {
+            var nestedDict = new Dictionary<CharacterType, Dictionary<KeyCode, SkillData>>();
+
+            foreach(var chars in characters)
+            {
+                CharacterType chartype = (CharacterType)Enum.Parse(typeof(CharacterType), chars.Key);
+
+                var dict = new Dictionary<KeyCode, SkillData> ();
+                foreach (var skills in chars.Value)
+                {
+                    KeyCode keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), skills.Key);
+
+                    dict.Add(keyCode, skills.Value);
+                }
+
+                nestedDict.Add(chartype, dict);
+            }
+
+            return nestedDict;
+        }
+    }
+
     [Serializable]
     public class SkillData
     {
-        public int id;
+        public string id;
         public string name;
-        public float cooldown;
-        public float animationTime; 
-        public float lastUsedTime;
-        public int manaCost;
-        public string uiTag;
-
-        public int damage;
-        public SkillType skillType;
-        public ProjectileInfo projectile;
+        public string description;
+        public string type;
+        public int maxLevel;
+        public Mechanics mechanics;
+        public Scaling scaling;
+        public Dictionary<int, SkillLevel> levels;
     }
 
-    public class MonsterSkillData
+    [Serializable]
+    public class Mechanics
+    {
+        public string targetType;
+        public string damageType;
+        public float castTime;
+        public bool areaOfEffect; //잘모름
+        public float radius;
+        public float range;
+
+        public ProjectileData projectile;
+    }
+
+    [Serializable]
+    public class ProjectileData
+    {
+        public bool enabled;
+        public float speed;
+        public float width;
+        public float lifetime;
+        public int maxTargets;
+        public bool isPiercing;
+        public bool isHoming;
+    }
+
+
+    [Serializable]
+    public class Scaling
+    {
+        public float adRatio;
+        public float apRatio;
+        public float hpRatio;
+    }
+
+    [Serializable]
+    public class SkillLevel
+    {
+        public int level;
+        public float damage;
+        public float cooldown;
+        public int staminaCost;
+        public List<EffectData> effects;
+    }
+
+    [Serializable]
+    public class EffectData
+    {
+        public string type;    // Buff / Debuff / Burn 등
+        public string stat;    // MoveSpeed / Defense / AttackSpeed 등
+        public float value;    // 수치 (%는 그냥 숫자로 저장)
+        public float duration; // 지속시간
+        public string condition; // 옵션 (예: "HP<50%")
+    }
+    #endregion
+
+    #region Monster
+    [Serializable]
+    public class MonsterData
     {
         public int id;
         public string name;
-        public MonsterSkill skillType;
-        public float skillDuration;
-        public int damage;
-        public ProjectileInfo projectile;
+        public StatInfo stat;
+        public List<MonsterSkill> skills;
     }
-
     public class ProjectileInfo
     {
         public string name;
@@ -62,17 +144,25 @@ namespace Server.Data
     }
 
     [Serializable]
-    public class SkillDict : ILoader<string, SkillData>
+    public class MonsterDict : ILoader<string, MonsterData>
     {
-        public List<SkillData> skillData = new List<SkillData>();
-
-        public Dictionary<string, SkillData> MakeDict()
+        public List<MonsterData> monsters = new List<MonsterData>();
+        public Dictionary<string, MonsterData> MakeDict()
         {
-            Dictionary<string, SkillData> dict = new Dictionary<string, SkillData>();
-            foreach (SkillData skillData in skillData)
-                dict.Add(skillData.name, skillData);
+            Dictionary<string, MonsterData> dict = new Dictionary<string, MonsterData>();
+            foreach (MonsterData monster in monsters)
+                dict.Add(monster.name, monster);
             return dict;
         }
+    }
+    public class MonsterSkillData
+    {
+        public int id;
+        public string name;
+        public MonsterSkill skillType;
+        public float skillDuration;
+        public int damage;
+        public ProjectileInfo projectile;
     }
 
     [Serializable]
@@ -90,31 +180,8 @@ namespace Server.Data
             return dict;
         }
     }
-  
-    #endregion
 
-    #region Monster
-    [Serializable]
-    public class MonsterData
-    {
-        public int id;
-        public string name;
-        public StatInfo stat;
-        public List<MonsterSkill> skills;
-    }
 
-    [Serializable]
-    public class MonsterDict : ILoader<string, MonsterData>
-    {
-        public List<MonsterData> monsters = new List<MonsterData>();
-        public Dictionary<string, MonsterData> MakeDict()
-        {
-            Dictionary<string, MonsterData> dict = new Dictionary<string, MonsterData>();
-            foreach (MonsterData monster in monsters)
-                dict.Add(monster.name, monster);
-            return dict;
-        }
-    }
     #endregion
 
     #region StatGrowth

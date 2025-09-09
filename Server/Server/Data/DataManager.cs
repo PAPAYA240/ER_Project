@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Google.Protobuf.Protocol;
+using static Server.Data.DataUtils;
 
 namespace Server.Data
 {
@@ -14,7 +15,8 @@ namespace Server.Data
     public class DataManager
     {
         public static Dictionary<CharacterType, StatInfo> StatDict { get; private set; } = new Dictionary<CharacterType, StatInfo>();
-        public static Dictionary<string, Data.SkillData> SkillDict { get; private set; } = new Dictionary<string, Data.SkillData>();
+        public static Dictionary<CharacterType, Dictionary<KeyCode, SkillData>> SkillDict { get; private set; } 
+            = new Dictionary<CharacterType, Dictionary<KeyCode, SkillData>>();
 
         public static Dictionary<Weapon, WeaponInfo> WeaponDict { get; private set; } = new Dictionary<Weapon, WeaponInfo>();
 
@@ -27,7 +29,7 @@ namespace Server.Data
         {
             // TEM
             StatDict = LoadJsonServer<Data.StatData, CharacterType, StatInfo>("StatData").MakeDict();
-            SkillDict = LoadJsonServer<Data.SkillDict, string, Data.SkillData>("SkillData").MakeDict();
+            SkillDict = LoadJsonServer<Data.GameData, CharacterType, Dictionary<KeyCode, SkillData>>("newSkillData").MakeDict();
             WeaponDict = LoadJsonServer<Data.WeaponData, Weapon, WeaponInfo>("WeaponData").MakeDict();
             WeaponMasteryDict = LoadJsonServer<Data.WeaponMasteryData, CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>("WeaponMasteryData").MakeDict();
 
