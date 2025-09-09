@@ -72,5 +72,5 @@ public class CreatureController : BaseController
 
     public virtual void UseSkill(int skillId) {}
 
-    public virtual void UseSkill(KeyCode keyCode) {}
+    public virtual void UseSkill(S_Skill skillPacket) {}
 }

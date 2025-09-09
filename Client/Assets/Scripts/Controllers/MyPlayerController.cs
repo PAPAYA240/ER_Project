@@ -11,6 +11,7 @@ using static UI_SkillBase;
 public class MyPlayerController : PlayerController
 {
     bool _moveKeyPressed = false;
+    bool _isUseSkill = false;
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
     class CoolTime
     {
@@ -94,6 +95,9 @@ public class MyPlayerController : PlayerController
 
         UpdateKeyInput();
 
+        if (_isUseSkill)
+            ExecuteSkill(KeyCode.Q);
+
         base.UpdateController();
     }
 
@@ -176,11 +180,11 @@ public class MyPlayerController : PlayerController
     // 키보드 입력
     protected virtual void UpdateKeyInput()
     {
-        if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.E) || Input.GetKey(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.R))
         {
-            State = CreatureState.Skill;
+            _isUseSkill = true;
         }
-        else if (Input.GetKey(KeyCode.D))
+        else if (Input.GetKeyDown(KeyCode.D))
         {
 
         }
@@ -226,10 +230,12 @@ public class MyPlayerController : PlayerController
     {
         if (!_coolDownDict[key].isCoolDown)
         {
+            State = CreatureState.Skill;
+
             SkillBase skill = FindSkill(key);
 
             // 쿨타임 체크
-            StartCoroutine(CoInputCooltime(key, skill.MaxCooldown));
+            StartCoroutine(CoInputCooltime(key, skill.CurLevelCooldown));
 
             // 다른 조건 체크하기
 
@@ -243,6 +249,7 @@ public class MyPlayerController : PlayerController
         }
         else
         {
+            _isUseSkill = false;
             Debug.Log($"스킬 쿨타임 적용 중! : {key} -> {GetCoolTime(key)} 초 남음");
         }
     }

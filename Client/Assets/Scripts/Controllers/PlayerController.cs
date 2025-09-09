@@ -7,6 +7,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.Windows;
 using static Define;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 public class PlayerController : CreatureController
 {
@@ -48,13 +49,24 @@ public class PlayerController : CreatureController
 
 
     #region Skill
-    public override void UseSkill(KeyCode keyCode)
+    public override void UseSkill(S_Skill skillPacket)
     {
-        SkillBase skill = FindSkill(keyCode);
-        skill.Execute();
+        // 사용 불가능한 상태
+        if(!skillPacket.CanUse)
+        {
+            State = CreatureState.Idle;
+            _coSkill = null;
+            CheckUpdatedFlag();
+        }
+        // 사용 가능한 상태
+        else
+        {
+            SkillBase skill = FindSkill((KeyCode)skillPacket.SkillInfo.KeyCode);
+            skill.Execute();
 
-        _coSkill = StartCoroutine("CoStartSkill");
-        Debug.Log("스킬 코루틴 시작");
+            _coSkill = StartCoroutine("CoStartSkill");
+            Debug.Log("스킬 코루틴 시작");
+        }                  
     }
 
     IEnumerator CoStartSkill()
