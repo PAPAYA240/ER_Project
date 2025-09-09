@@ -24,19 +24,6 @@ namespace Server.Data
     }
     #endregion
 
-    #region Skill
-    [Serializable]
-    public class SkillData
-    {
-        public int id;
-        public string name;
-        public float cooldown;
-        public float animationTime;
-        public float lastUsedTime;
-        public int manaCost;
-        public string uiTag;
-    }
-
     public class MonsterSkillData
     {
         public int id;
@@ -157,24 +144,7 @@ namespace Server.Data
                 dict.Add(skillData.name, skillData);
             return dict;
         }
-    }
-
-    [Serializable]
-    public class MonsterSkillDict : ILoader<MonsterSkill, MonsterSkillData>
-    {
-        public List<MonsterSkillData> skillData = new List<MonsterSkillData>();
-
-        public Dictionary<MonsterSkill, MonsterSkillData> MakeDict()
-        {
-            Dictionary<MonsterSkill, MonsterSkillData> dict = new Dictionary<MonsterSkill, MonsterSkillData>();
-            foreach (MonsterSkillData data in skillData)
-            {
-                dict.Add(data.skillType, data);
-            }
-            return dict;
-        }
-    }
-  
+    }  
     #endregion
 
     #region Monster
@@ -199,6 +169,21 @@ namespace Server.Data
             return dict;
         }
     }
-    #endregion
 
+    [Serializable]
+    public class MonsterSkillDict : ILoader<MonsterSkill, MonsterSkillData>
+    {
+        public List<MonsterSkillData> skillData = new List<MonsterSkillData>();
+
+        public Dictionary<MonsterSkill, MonsterSkillData> MakeDict()
+        {
+            Dictionary<MonsterSkill, MonsterSkillData> dict = new Dictionary<MonsterSkill, MonsterSkillData>();
+            foreach (MonsterSkillData data in skillData)
+            {
+                dict.Add(data.skillType, data);
+            }
+            return dict;
+        }
+    }
+    #endregion
 }
