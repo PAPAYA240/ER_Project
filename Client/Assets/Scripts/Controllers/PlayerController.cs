@@ -56,22 +56,18 @@ public class PlayerController : CreatureController
     #region Skill
     public override void UseSkill(S_Skill skillPacket)
     {
-        // 사용 불가능한 상태
-        if(!skillPacket.CanUse)
-        {
-            State = CreatureState.Idle;
-            _coSkill = null;
-            CheckUpdatedFlag();
-        }
-        // 사용 가능한 상태
-        else
+        // 서버에서 스킬 사용을 허락받으면
+        if(skillPacket.CanUse)
         {
             SkillBase skill = FindSkill((KeyCode)skillPacket.SkillInfo.KeyCode);
             skill.Execute();
 
+            if (Define.Object.MyPlayer == ObjectType)
+                Managers.Object.MyPlayer.StartCoCoolTime((KeyCode)skillPacket.SkillInfo.KeyCode, skill.CurLevelCooldown);
+
             _coSkill = StartCoroutine("CoStartSkill");
             Debug.Log("스킬 코루틴 시작");
-        }                  
+        }
     }
 
     IEnumerator CoStartSkill()

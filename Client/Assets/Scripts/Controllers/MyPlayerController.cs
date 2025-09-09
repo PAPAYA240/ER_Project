@@ -3,6 +3,7 @@ using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using static Define;
 using static UI_PlayerInterface;
@@ -85,14 +86,6 @@ public class MyPlayerController : PlayerController
         {
             PlayAnimation("RUN", 0.1f);
         }
-        else if (State == CreatureState.Skill)
-        {
-            ExecuteSkill(KeyCode.Q);
-        }
-        else
-        {
-
-        }
     }
 
     protected override void UpdateController()
@@ -162,6 +155,7 @@ public class MyPlayerController : PlayerController
 
         _coolDownDict[key].isCoolDown = false;
         _coolDownDict[key].coolTime = 0.0f;
+        Debug.Log("쿨타임 끝");
     }
 
     private void MakeCoolDownDict()
@@ -242,14 +236,11 @@ public class MyPlayerController : PlayerController
 
     protected void ExecuteSkill(KeyCode key)
     {
+        _isUseSkill = false;
+
         if (!_coolDownDict[key].isCoolDown)
         {
             State = CreatureState.Skill;
-
-            SkillBase skill = FindSkill(key);
-
-            // 쿨타임 체크
-            StartCoroutine(CoInputCooltime(key, skill.CurLevelCooldown));
 
             // 다른 조건 체크하기
 
@@ -261,11 +252,12 @@ public class MyPlayerController : PlayerController
 
             Debug.Log($"스킬 사용! : {key}");
         }
-        else
-        {
-            _isUseSkill = false;
-            Debug.Log($"스킬 쿨타임 적용 중! : {key} -> {GetCoolTime(key)} 초 남음");
-        }
+    }
+
+    public void StartCoCoolTime(KeyCode key, float coolTime)
+    {
+        // 쿨타임 체크
+        StartCoroutine(CoInputCooltime(key, coolTime));
     }
 
 #region UI
