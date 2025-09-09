@@ -204,25 +204,6 @@ public class MyPlayerController : PlayerController
         SendAnimPacket(animName, ratio);
     }
 
-#region Packet
-    private void SendSkillPacket(KeyCode key)
-    {
-        string skillName = Enum.GetName(typeof(Character), Managers.Object.Character) + '_' + key.ToString();
-        C_Skill skillPacket = new C_Skill()
-        {
-            ObjectInfo = ObjInfo,
-            SkillInfo = new SkillInfo() { KeyCode = key.ToString(), Name = skillName }
-        };
-        Managers.Network.Send(skillPacket);
-    }
-
-    private void SendAnimPacket(string name, float ratio)
-    {
-        C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { Name = name, Ratio = ratio } };
-        Managers.Network.Send(animPacket);
-    }
-#endregion
-
     void GetMouseInput()
     {
         RaycastHit hit;
@@ -251,9 +232,6 @@ public class MyPlayerController : PlayerController
             StartCoroutine(CoInputCooltime(key, skill.MaxCooldown));
 
             // 다른 조건 체크하기
-
-            // 스킬 실행
-            skill.Execute();
 
             // 패킷 보내기
             SendSkillPacket(key);
@@ -405,47 +383,22 @@ public class MyPlayerController : PlayerController
 
     #endregion
 
-    #region Animation
-    protected void PlayAnimation(string animName)
-    {
-        _animator.Play(animName);
-        SendAnimPacket(animName, AnimType.Play, Time.time);
-    }
-
-    protected void TriggerAnimation(string triggerName)
-    {
-        _animator.SetTrigger(triggerName);
-        SendAnimPacket(triggerName, AnimType.Trigger, 0f);
-    }
-
-    protected void SetBoolAnimation(string boolName, bool value)
-    {
-        _animator.SetBool(boolName, value);
-        SendAnimPacket(boolName, AnimType.Bool, value == true ? 1f : 0f);
-    }
-
-    protected void SetFloatAnimation(string floatName, float value)
-    {
-        _animator.SetFloat(floatName, value);
-        SendAnimPacket(floatName, AnimType.Float, value);
-    }
-    #endregion
-
     #region Packet
     private void SendSkillPacket(KeyCode key)
     {
         string skillName = Enum.GetName(typeof(Character), Managers.Object.Character) + '_' + key.ToString();
-        C_Skill skillPacket = new C_Skill() { 
+        C_Skill skillPacket = new C_Skill()
+        {
             ObjectInfo = ObjInfo,
-            SkillInfo = new SkillInfo() { KeyCode = key.ToString(), Name = skillName } };
+            SkillInfo = new SkillInfo() { KeyCode = key.ToString(), Name = skillName }
+        };
         Managers.Network.Send(skillPacket);
     }
 
-    private void SendAnimPacket(string name, AnimType type, float value)
+    private void SendAnimPacket(string name, float ratio)
     {
-        int hash = Animator.StringToHash(name);
-        C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { Hash = hash, Type = type, Value = value } };
-        Managers.Network.Send(animPacket);       
+        C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { Name = name, Ratio = ratio } };
+        Managers.Network.Send(animPacket);
     }
     #endregion
 }

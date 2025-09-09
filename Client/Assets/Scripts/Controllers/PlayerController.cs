@@ -23,8 +23,19 @@ public class PlayerController : CreatureController
         ObjectType = Define.Object.OtherPlayer;
     }
 
-    protected override void UpdateAnimation()
+    protected override void UpdateController()
     {
+        base.UpdateController();
+    }
+
+    protected virtual void CheckUpdatedFlag()
+    {
+
+    }
+
+    public override void OnDamaged()
+    {
+        Debug.Log("Player HIT !");
     }
 
     #region Util
@@ -34,19 +45,12 @@ public class PlayerController : CreatureController
     }
     #endregion
 
-    protected override void UpdateController()
+
     #region Skill
     public override void UseSkill(string keyCode)
     {
-        base.UpdateController();
-    }
         SkillBase skill = FindSkill(keyCode);
         skill.Execute();
-
-    public override void UseSkill(string keyCode)
-    {
-        //SkillBase skill = FindSkill(keyCode);
-        //skill.Execute();
 
         _coSkill = StartCoroutine("CoStartSkill");
         Debug.Log("스킬 코루틴 시작");
@@ -113,26 +117,16 @@ public class PlayerController : CreatureController
         }
     }
 
-    protected virtual void CheckUpdatedFlag()
-    {
-
-    }
-
-    public override void OnDamaged()
-    {
-        Debug.Log("Player HIT !");
-    }
-
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
     }
 
-    protected SkillBase FindSkill(string keyCode)
+    protected SkillBase FindSkill(KeyCode keyCode)
     {
         SkillBase skillBase = null;
 
-        string skillName = GetCharacterName() + '_' + keyCode;
+        string skillName = GetCharacterName() + '_' + keyCode.ToString();
         if (!_skills.TryGetValue(skillName, out skillBase))
         {
             Debug.Log($"Skill을 찾을 수 없음 : {keyCode}");
@@ -155,4 +149,5 @@ public class PlayerController : CreatureController
 
         return skillBase;
     }
+    #endregion
 }

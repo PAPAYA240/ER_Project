@@ -8039,7 +8039,6 @@ GameObject:
   - component: {fileID: 3958512736305224170}
   - component: {fileID: 3738198292861195234}
   - component: {fileID: 463829431879195986}
-  - component: {fileID: 3678567831513456090}
   m_Layer: 24
   m_Name: Yuki
   m_TagString: Untagged
@@ -8087,18 +8086,6 @@ CapsuleCollider:
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &463829431879195986
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7580278686804700714}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55e86d03b5ee90343aeb5c705c87e670, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &3678567831513456090
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
