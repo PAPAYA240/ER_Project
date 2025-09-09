@@ -60,7 +60,7 @@ namespace Server.Game.Object.Monster
             reserveMonster.Pop();
 
             StatInfo stat = null;
-            DataManager.StatDict.TryGetValue(2, out stat);
+            DataManager.StatDict.TryGetValue(CharacterType.Rozzi, out stat); // TEMP
             monster.Stat.MergeFrom(stat);
 
             monster.Init(monster.Info.MonsterType.ToString());

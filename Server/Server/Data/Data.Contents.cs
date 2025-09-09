@@ -1,68 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.XPath;
 using Google.Protobuf.Protocol;
+using Lucene.Net.Support;
+using static Lucene.Net.Util.AttributeSource;
+using static Server.Data.DataUtils;
 
 namespace Server.Data
 {
     #region Stat
     [Serializable]
-    public class StatData : ILoader<int, StatInfo>
+    public class StatData : ILoader<CharacterType, StatInfo>
     {
         public List<StatInfo> stats = new List<StatInfo>();
 
-        public Dictionary<int, StatInfo> MakeDict()
+        public Dictionary<CharacterType, StatInfo> MakeDict()
         {
-            Dictionary<int, StatInfo> dict = new Dictionary<int, StatInfo>();
+            Dictionary<CharacterType, StatInfo> dict = new Dictionary<CharacterType, StatInfo>();
             foreach (StatInfo stat in stats)
             {
                 stat.Hp = stat.MaxHp;
-                dict.Add(stat.Level, stat);
-            }                
+                dict.Add((CharacterType)Enum.Parse(typeof(CharacterType), stat.Name), stat);
+            }
             return dict;
         }
     }
     #endregion
 
-    public class MonsterSkillData
-    {
-        public int id;
-        public string name;
-        public MonsterSkill skillType;
-        public float skillDuration;
-        public int damage;
-        public ProjectileInfo projectile;
-    }
-
-    public class ProjectileInfo
-    {
-        public string name;
-        public float speed;
-        public int range;
-        public string prefab;
-    }
-
     #region Skill
-    [Serializable]
-    public class GameData : ILoader<String, CharacterData>
-    {
-        public List<CharacterData> characters = new List<CharacterData>();
 
-        public Dictionary<string, CharacterData> MakeDict()
+    [Serializable]
+    public class GameData : ILoader<CharacterType, Dictionary<KeyCode, SkillData>>
+    {
+        public Dictionary<string, Dictionary<string, SkillData>> characters = new Dictionary<string, Dictionary<string, SkillData>>();
+
+        public Dictionary<CharacterType, Dictionary<KeyCode, SkillData>> MakeDict()
         {
-            Dictionary<string, CharacterData> dict = new Dictionary<string, CharacterData>();
-            foreach (CharacterData Data in characters)
-                dict.Add(Data.name, Data);
-            return dict;
-        }
-    }
+            var nestedDict = new Dictionary<CharacterType, Dictionary<KeyCode, SkillData>>();
 
-    [Serializable]
-    public class CharacterData
-    {
-        public string id;
-        public string name;
-        public Dictionary<string, SkillData> skills;
+            foreach(var chars in characters)
+            {
+                CharacterType chartype = (CharacterType)Enum.Parse(typeof(CharacterType), chars.Key);
+
+                var dict = new Dictionary<KeyCode, SkillData> ();
+                foreach (var skills in chars.Value)
+                {
+                    KeyCode keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), skills.Key);
+
+                    dict.Add(keyCode, skills.Value);
+                }
+
+                nestedDict.Add(chartype, dict);
+            }
+
+            return nestedDict;
+        }
     }
 
     [Serializable]
@@ -75,7 +68,7 @@ namespace Server.Data
         public int maxLevel;
         public Mechanics mechanics;
         public Scaling scaling;
-        public List<SkillLevel> levels;
+        public Dictionary<int, SkillLevel> levels;
     }
 
     [Serializable]
@@ -102,7 +95,6 @@ namespace Server.Data
         public bool isPiercing;
         public bool isHoming;
     }
-
 
     [Serializable]
     public class Scaling
@@ -131,20 +123,6 @@ namespace Server.Data
         public float duration; // 지속시간
         public string condition; // 옵션 (예: "HP<50%")
     }
-
-    [Serializable]
-    public class SkillDict : ILoader<string, SkillData>
-    {
-        public List<SkillData> skillData = new List<SkillData>();
-
-        public Dictionary<string, SkillData> MakeDict()
-        {
-            Dictionary<string, SkillData> dict = new Dictionary<string, SkillData>();
-            foreach (SkillData skillData in skillData)
-                dict.Add(skillData.name, skillData);
-            return dict;
-        }
-    }  
     #endregion
 
     #region Monster
@@ -155,6 +133,14 @@ namespace Server.Data
         public string name;
         public StatInfo stat;
         public List<MonsterSkill> skills;
+    }
+
+    public class ProjectileInfo
+    {
+        public string name;
+        public float speed;
+        public int range;
+        public string prefab;
     }
 
     [Serializable]
@@ -170,6 +156,16 @@ namespace Server.Data
         }
     }
 
+    public class MonsterSkillData
+    {
+        public int id;
+        public string name;
+        public MonsterSkill skillType;
+        public float skillDuration;
+        public int damage;
+        public ProjectileInfo projectile;
+    }
+
     [Serializable]
     public class MonsterSkillDict : ILoader<MonsterSkill, MonsterSkillData>
     {
@@ -183,6 +179,55 @@ namespace Server.Data
                 dict.Add(data.skillType, data);
             }
             return dict;
+        }
+    }
+    #endregion
+
+    #region StatGrowth
+
+    #endregion
+
+    #region Weapon
+    public class WeaponData : ILoader<Weapon, WeaponInfo>
+    {
+        public Dictionary<string, WeaponInfo> stats = new Dictionary<string, WeaponInfo>();
+
+        public Dictionary<Weapon, WeaponInfo> MakeDict()
+        {
+            Dictionary<Weapon, WeaponInfo> dict = new Dictionary<Weapon, WeaponInfo>();
+            foreach (var pair in stats)
+            {
+                dict.Add((Weapon)Enum.Parse(typeof(Weapon), pair.Key), pair.Value);
+            }
+            return dict;
+        }
+    }
+    #endregion
+
+    #region WeaponMastery
+    public class WeaponMasteryData : ILoader<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>
+    {
+        public Dictionary<string, Dictionary<string, WeaponMasteryInfo>> stats
+        = new Dictionary<string, Dictionary<string, WeaponMasteryInfo>>();
+        
+        public Dictionary<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>> MakeDict()
+        {
+            var nestedDict = new Dictionary<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>();
+            foreach(var stat in stats)
+            {
+                CharacterType charType = (CharacterType)Enum.Parse(typeof(CharacterType), stat.Key);
+                var newDict = new Dictionary<Weapon, WeaponMasteryInfo>();
+                
+                foreach (var dict in stat.Value)
+                {
+                    Weapon key = (Weapon)Enum.Parse(typeof(Weapon), dict.Key);
+                    newDict.Add(key, dict.Value);
+                }
+
+                nestedDict.Add(charType, newDict);
+            }
+
+            return nestedDict;
         }
     }
     #endregion

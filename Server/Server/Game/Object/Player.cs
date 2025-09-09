@@ -52,7 +52,7 @@ namespace Server.Game
             return true;
         }
 
-        public override void OnDamaged(GameObject attacker, int damage)
+        public override void OnDamaged(GameObject attacker, float damage)
         {
             base.OnDamaged(attacker, damage);
         }
