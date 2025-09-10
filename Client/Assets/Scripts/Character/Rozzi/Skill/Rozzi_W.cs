@@ -9,7 +9,7 @@ public class Rozzi_W : SkillBase
 {
     public override void Execute()
     {
-        PlayAnimation("tSkill02");
+        _animator.CrossFadeInFixedTime("ROZZI_W", 0.1f);
 
         Debug.Log("Play Skill Animation");
     }

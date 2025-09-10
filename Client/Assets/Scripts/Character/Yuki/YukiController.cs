@@ -16,47 +16,11 @@ public class YukiController : MyPlayerController
     protected override void UpdateKeyInput()
     {
         base.UpdateKeyInput();
-        //if (Input.GetKeyDown(KeyCode.Q))
-        //{
-        //    ExecuteSkill(KeyCode.Q);
-        //}
-        //else if (Input.GetKeyDown(KeyCode.W))
-        //{
-        //    //ExecuteSkill("Rozzi_W");
-        //}
-        //else if (Input.GetKeyDown(KeyCode.D))
-        //{
-        //    State = CreatureState.Dead;
-        //}
-        //else if (Input.GetKeyDown(KeyCode.C))
-        //{
-        //    State = CreatureState.Idle;
-        //    SetBoolAnimation("bFishing", false);
-        //}
     }
 
     protected override void UpdateAnimation()
     {
-        if (_animator == null)
-            return;
-
-        if (State == CreatureState.Idle)
-        {
-            _animator.CrossFadeInFixedTime("WAIT", 0.1f);
-        }
-        else if (State == CreatureState.Moving)
-        {
-            _animator.CrossFadeInFixedTime("RUN", 0.1f);
-        }
-        else if (State == CreatureState.Skill)
-        {
-
-        }
-        else if (State == CreatureState.Dead)
-        {
-            TriggerAnimation("tDeath");
-            //SetBoolAnimation("bFishing", true);
-        }
+        base.UpdateAnimation();
     }
 
     protected override void UpdateIdle()

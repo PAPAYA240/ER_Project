@@ -1,0 +1,75 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using static UI_MinimapCharIcon;
+
+public class UI_Minimap : UI_Base
+{
+    // 월드 오브젝트와 미니맵의 연동
+    // 플레이어들(8명) 위치를 받아와서 갱신. > 내가 어떤 팀인지 우리팀 누군지 알아야 됨.
+    // 각 팀 진영은 항상 보이게 처리. > 포그 메시를 각 진영 것을 그려놓는다.
+    // 얘는 관리하는 애는 아니고 보여주는, 갱신하는 친구다.
+    // 그래도 캐릭터 아이콘 정도는 새로 생성해줘야할 듯
+    // 방에 들어가면 그 방 안에 있는 플레이어들 정보를 토대로 아이콘을 생성
+    // 방에 누가 들어오면 모든 플레이어에게 들어왔다고 알림 > 그러면 새로 아이콘을 생성해서 추가.
+    // 아이콘을 생성하는 코드가 필요하고, 월드 투 미니맵을 어떻게 할지도.
+
+    enum GameObjects
+    {
+        CharIcon_0,
+        CharIcon_1,
+        CharIcon_2,
+        CharIcon_3,
+        CharIcon_4,
+        CharIcon_5,
+        CharIcon_6,
+        CharIcon_7
+    }
+
+    int _charNum = 0;
+
+    public override void Init()
+    {
+        Bind<GameObject>(typeof(GameObjects));
+
+        GetObject((int)GameObjects.CharIcon_0).SetActive(false);
+        GetObject((int)GameObjects.CharIcon_1).SetActive(false);
+        GetObject((int)GameObjects.CharIcon_2).SetActive(false);
+        GetObject((int)GameObjects.CharIcon_3).SetActive(false);
+        GetObject((int)GameObjects.CharIcon_4).SetActive(false);
+        GetObject((int)GameObjects.CharIcon_5).SetActive(false);
+        GetObject((int)GameObjects.CharIcon_6).SetActive(false);
+        GetObject((int)GameObjects.CharIcon_7).SetActive(false);
+    }
+    private void Awake()
+    {
+        Init();
+    }
+
+    void Start()
+    {
+        
+    }
+
+    void Update()
+    {
+        
+    }
+
+    public void ActivatePlayerIcon(IconType iconType, PlayerController pc)
+    {
+        string objName = "CharIcon_" + _charNum;
+        _charNum++;
+        GameObjects obj = Enum.Parse<GameObjects>(objName);
+
+        GameObject go = GetObject((int)obj);
+
+        go.SetActive(true);
+
+        UI_MinimapCharIcon ui_MinimapCharIcon = go.GetComponent<UI_MinimapCharIcon>();
+        ui_MinimapCharIcon.Type = iconType;
+        ui_MinimapCharIcon.SetCharIcon(pc.ObjInfo.CharType);
+        ui_MinimapCharIcon.Target = pc;
+    }
+}

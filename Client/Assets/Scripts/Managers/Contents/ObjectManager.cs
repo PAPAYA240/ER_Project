@@ -35,6 +35,7 @@ public class ObjectManager
                 MyPlayer.Stat = info.StatInfo;
                 MyPlayer.SyncPos();
                 MyPlayer.ObjInfo = info;
+                MyPlayer.ManualInit();
             }
             else
             {
@@ -48,6 +49,7 @@ public class ObjectManager
                 pc.Stat = info.StatInfo;
                 pc.SyncPos();
                 pc.ObjInfo = info;
+                Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.TeamPlayer, pc);
             }
         }
         else if (objectType == GameObjectType.Monster)
@@ -61,6 +63,7 @@ public class ObjectManager
             mc.Id = info.ObjectId;
             mc.PosInfo = info.PosInfo;
             mc.Stat = info.StatInfo;
+            mc.monsterType = info.MonsterType;
             mc.SyncPos();
         }
 

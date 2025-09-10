@@ -1,3 +1,4 @@
+using Assets.Scripts.Highlight;
 using Google.Protobuf.Protocol;
 using System;
 using UnityEngine;
@@ -10,14 +11,24 @@ public class MonsterController : CreatureController
     private System.Random _random = new System.Random();
     private S_Move _pendingMovePacket = null;
     public Action<CreatureState> OnStateChanged; // State 변경 시에 호출
-    public MonsterSkill Skill { get;  set; } 
+    public MonsterSkill Skill { get;  set; }
 
+    public MonsterType monsterType;
+
+    // TODO : 임시 변수, 나중에 블랙 보드 만들면 없앨 부분
+    public bool isSpawned = false;
+   
     protected override void Init()
 	{
         Skill = MonsterSkill.MsAttack1;
-        ObjectType = Define.Object.Monster;
+        ObjectType = Define.Object.Monster; 
         _navMeshAgent = GetComponentInParent<NavMeshAgent>();
 		base.Init();
+
+        // 하이라이트 이펙트 추가
+        Renderer renderer = this.GetComponentInChildren<Renderer>();
+        if (renderer != null)
+            this.gameObject.AddComponent<HighlightEffect>();
 
         _navMeshAgent.updateRotation = false;
         _animator.applyRootMotion = false;
@@ -49,20 +60,24 @@ public class MonsterController : CreatureController
     Vector3 _currentPos;
     Quaternion _targetRotation;
     // 서버에서 패킷을 받을 때 호출되는 함수
-    public void OnMovePacket(S_State movePacket)
+    public void OnMovePacket(S_State packet)
     {
         if (_navMeshAgent == null)
             return;
 
-        _currentPos = new Vector3(movePacket.PosInfo.PosX, movePacket.PosInfo.PosY, movePacket.PosInfo.PosZ);
+        _currentPos = new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ);
         _navMeshAgent.SetDestination(_currentPos);
-        _targetRotation = new Quaternion(movePacket.RotInfo.Qx, movePacket.RotInfo.Qy, movePacket.RotInfo.Qz, movePacket.RotInfo.Qw);
+        _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
 
     public void OnSkillPacket(S_State packet)
     {
         _navMeshAgent.ResetPath();
         Skill = packet.Skilltype;
+
+        _currentPos = new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ);
+        _navMeshAgent.SetDestination(_currentPos);
+        _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
 
 

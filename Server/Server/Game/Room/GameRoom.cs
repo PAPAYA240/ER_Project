@@ -32,7 +32,7 @@ namespace Server.Game
 
             // Spawn Monster
             _monsterManager.Init(this, 1);
-            _monsterManager.Add(1, MonsterType.Omega);
+            // _monsterManager.Add(1, MonsterType.Omega);
            // _monsterManager.Add(1, MonsterType.Drone);
         }
 
@@ -198,19 +198,23 @@ namespace Server.Game
                 return;
 
             ObjectInfo info = player.Info;
+            S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
 
             // TODO : 스킬 사용 가능 여부 체크
             if (!player.CanUseSkill(skillPacket))
-                return;
+            {
+                skill.CanUse = false;
+                Broadcast(skill);
+                return; 
+            }
 
             // 스킬 매니저에 정보를 전달해서 체크
-            // 오브젝트 ID로 플레이어 특정, 해당 플레이어가 들고 있는 스킬 클래스 검색
             // 쿨타임, 스테미나 등 체크
 
 
             // 스킬 사용이 가능하다 판단되면 패킷 전송
             info.PosInfo.State = CreatureState.Skill;
-            S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
+            skill.CanUse = true;
             skill.ObjectId = info.ObjectId;
             skill.SkillInfo = skillPacket.SkillInfo;
             Broadcast(skill);

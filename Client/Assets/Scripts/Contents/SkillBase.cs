@@ -24,7 +24,7 @@ public abstract class SkillBase
         { 
             if(CurLevel > 0 &&  CurLevel <= MaxLevel)
                 return SkillData.levels[CurLevel].cooldown;
-            return SkillData.levels[0].cooldown;
+            return SkillData.levels[1].cooldown;
         } 
     }
 

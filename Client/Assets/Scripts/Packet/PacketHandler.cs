@@ -60,14 +60,7 @@ class PacketHandler
         if (cc.ObjectType == Define.Object.OtherPlayer)
         {
             cc.SyncPos();
-        }
-        else if (cc.ObjectType == Define.Object.Monster)
-        {
-            MonsterController mc = go.GetComponentInChildren<MonsterController>();
-            if (mc == null)
-                return;
-            //mc.OnRecvMovePacket(movePacket);
-        }          
+        }      
     }
      public static void S_StateHandler(PacketSession session, IMessage packet)
     {
@@ -101,12 +94,8 @@ class PacketHandler
             GameObjectType objectType = ObjectManager.GetObjectTypeById(cc.Id);
             if (objectType == GameObjectType.Player)
             {
-                cc.UseSkill(skillPacket.SkillInfo.KeyCode);
-            }
-            else if (cc.ObjectType == Define.Object.Monster)
-            {
-                MonsterController mc = go.GetComponentInChildren<MonsterController>();
-                //mc.OnRecvSkillPacket(skillPacket);
+                cc.UseSkill(skillPacket);
+                Debug.Log("스킬 패킷 받기");
             }
         }
     }
@@ -123,7 +112,7 @@ class PacketHandler
         if (pc != null)
         {
             if (pc.ObjectType == Define.Object.OtherPlayer)
-                pc.PlayAnimation(animPacket.AnimInfo);
+                pc.PlayAnimFromServer(animPacket.AnimInfo);
         }
     }
     

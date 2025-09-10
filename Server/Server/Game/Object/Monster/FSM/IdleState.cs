@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
 using System;
+using System.Diagnostics;
 using System.Numerics;
 
 namespace Server.Game.Object.Monster.FSM
@@ -13,8 +14,14 @@ namespace Server.Game.Object.Monster.FSM
         private long _lastSkillTime = 0; // 마지막 스킬 사용 시간
         private float _searchCellDist = 1000.0f; // 탐색 거리
 
+        private const float loadingTime = 2.0f;
+        private long _loadingDurationMs;
+        private long _enterTime;
         public void Enter(Monster monster)
         {
+            _enterTime = Environment.TickCount64;
+            _loadingDurationMs = (long)(loadingTime * 1000);
+
             monster.BroadcastState(CreatureState.Idle, null, null);
         }
 
@@ -23,9 +30,7 @@ namespace Server.Game.Object.Monster.FSM
             if (_lastSkillTime > 0 && Environment.TickCount64 < _lastSkillTime + SKILL_COOLDOWN_MS)
                 return;
             _nextSearchTick = Environment.TickCount64 + SEARCH_INTERVAL_MS;
-            if (_lastSkillTime > 0 && Environment.TickCount64 < _lastSkillTime + SKILL_COOLDOWN_MS)
-                return;
-
+           
             // 플레이어 판단
             Player target = monster.Room.FindPlayer(p =>
             {
@@ -62,6 +67,7 @@ namespace Server.Game.Object.Monster.FSM
 
         public void Exit(Monster monster)
         {
+            _enterTime = Environment.TickCount64;
         }
     }
 }
