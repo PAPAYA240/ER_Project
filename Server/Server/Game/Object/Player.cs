@@ -30,13 +30,6 @@ namespace Server.Game
             ObjectType = GameObjectType.Player;            
         }
 
-        public override void Update()
-        {
-            List<int> objectIds = ObjectManager.Instance.GetPlayersInRange(this);
-
-            // 몬스터, 와드, 상자, 채집 등등 추가 필요
-        }
-
         public void MakeDict()
         {
             MakeSkillDict();
@@ -119,6 +112,14 @@ namespace Server.Game
             {
                 _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
             }
+        }
+
+        public void SendVisibleObjsPkt(List<int> Ids)
+        {
+            S_VisibleObjects visibleObjsPkt = new S_VisibleObjects();
+            visibleObjsPkt.ObjectId = Id;
+            visibleObjsPkt.VisibleObjectIds.AddRange(Ids);
+            Session.Send(visibleObjsPkt);
         }
     }
 }

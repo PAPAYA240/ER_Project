@@ -21,6 +21,8 @@ namespace Server.Game
 
         MonsterManager _monsterManager = new MonsterManager();
 
+        bool _teamToggle = false;
+
         public bool TryGetMonster(int objectId, out Monster monster)
         {
             return _monsters.TryGetValue(objectId, out monster);
@@ -52,7 +54,11 @@ namespace Server.Game
 
             foreach(Player player in _players.Values)
             {
-                player.Update();
+                List<int> visibleObjs = new List<int>();
+                visibleObjs.AddRange(GetObjectsInRange(_players, player));
+                visibleObjs.AddRange(GetObjectsInRange(_monsters, player));
+                visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
+                player.SendVisibleObjsPkt(visibleObjs);
             }
 
             Flush();
@@ -71,6 +77,7 @@ namespace Server.Game
                 Player player = gameObject as Player;
                 _players.Add(gameObject.Id, player);
                 player.Room = this;
+                player.Info.Team = AssignTeam();
 
                 // 본인한테 정보 전송
                 {
@@ -293,6 +300,29 @@ namespace Server.Game
                 if (p.Session.CheckTimeout())
                     p.Session.Disconnect();
             }
+        }
+
+        int AssignTeam()
+        {
+            _teamToggle = !_teamToggle;
+            return _teamToggle ? 1 : 2;
+        }
+
+        List<int> GetObjectsInRange<T>(Dictionary<int, T> dict, Player player, int range = 8) where T : GameObject
+        {
+            List<int> result = new List<int>();
+
+            foreach (GameObject go in dict.Values)
+            {
+                if (go.PosInfo.Distance(player.PosInfo) < range)
+                {
+                    if (go.Id == player.Id)
+                        continue;
+                    result.Add(go.Id);
+                }
+
+            }
+            return result;
         }
     }
 }
