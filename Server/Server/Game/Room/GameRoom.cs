@@ -54,7 +54,11 @@ namespace Server.Game
 
             foreach(Player player in _players.Values)
             {
-                player.Update();
+                List<int> visibleObjs = new List<int>();
+                visibleObjs.AddRange(GetObjectsInRange(_players, player));
+                visibleObjs.AddRange(GetObjectsInRange(_monsters, player));
+                visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
+                player.SendVisibleObjsPkt(visibleObjs);
             }
 
             Flush();
@@ -302,6 +306,23 @@ namespace Server.Game
         {
             _teamToggle = !_teamToggle;
             return _teamToggle ? 1 : 2;
+        }
+
+        List<int> GetObjectsInRange<T>(Dictionary<int, T> dict, Player player, int range = 8) where T : GameObject
+        {
+            List<int> result = new List<int>();
+
+            foreach (GameObject go in dict.Values)
+            {
+                if (go.PosInfo.Distance(player.PosInfo) < range)
+                {
+                    if (go.Id == player.Id)
+                        continue;
+                    result.Add(go.Id);
+                }
+
+            }
+            return result;
         }
     }
 }

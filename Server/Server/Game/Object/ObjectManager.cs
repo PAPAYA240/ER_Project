@@ -75,23 +75,5 @@ namespace Server.Game
 
             return null;
         }
-
-        public List<int> GetPlayersInRange(Player player, int range = 8)
-        {
-            List<int> result = new List<int>();
-
-            foreach (Player p in _players.Values) 
-            {
-                if (p.PosInfo.Distance(player.PosInfo) < range)
-                {
-                    if (p.Id == player.Id)
-                        continue;
-                    result.Add(p.Id);
-                }
-                    
-            }
-
-            return result;
-        }
     }
 }

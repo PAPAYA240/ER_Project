@@ -111,6 +111,12 @@ enum Weapon {
     V_F_PROSTHETIC = 23;
 }
 
+enum SkillShape{
+	CIRCLE = 0;
+	RECTANGLE = 1;
+	SECTOR = 2;
+}
+
 message C_EnterGame {
 	ObjectInfo player = 1;
 }
