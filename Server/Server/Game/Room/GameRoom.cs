@@ -21,6 +21,8 @@ namespace Server.Game
 
         MonsterManager _monsterManager = new MonsterManager();
 
+        bool _teamToggle = false;
+
         public bool TryGetMonster(int objectId, out Monster monster)
         {
             return _monsters.TryGetValue(objectId, out monster);
@@ -71,6 +73,7 @@ namespace Server.Game
                 Player player = gameObject as Player;
                 _players.Add(gameObject.Id, player);
                 player.Room = this;
+                player.Info.Team = AssignTeam();
 
                 // 본인한테 정보 전송
                 {
@@ -293,6 +296,12 @@ namespace Server.Game
                 if (p.Session.CheckTimeout())
                     p.Session.Disconnect();
             }
+        }
+
+        int AssignTeam()
+        {
+            _teamToggle = !_teamToggle;
+            return _teamToggle ? 1 : 2;
         }
     }
 }
