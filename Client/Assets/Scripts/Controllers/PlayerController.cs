@@ -96,8 +96,8 @@ public class PlayerController : CreatureController
             Debug.Log($"Clip Name: {clipInfos[0].clip.name}, Length: {length}");
         }
         yield return new WaitForSeconds(length - 0.1f);
-        State = CreatureState.Idle;
-        IsKeyInput = false;
+        //State = CreatureState.Idle;
+        //IsKeyInput = false;
         Debug.Log("스킬 코루틴 종료");
 
         // TODO : TEMP

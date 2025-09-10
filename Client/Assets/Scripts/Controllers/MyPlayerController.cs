@@ -198,12 +198,12 @@ public class MyPlayerController : PlayerController
             _isUseSkill = true;
             _keyCode = KeyCode.W;
         }
-        else if (Input.GetKeyDown(KeyCode.E))
+        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
         {
             _isUseSkill = true;
             _keyCode = KeyCode.E;
         }
-        else if (Input.GetKeyDown(KeyCode.R))
+        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))
         {
             _isUseSkill = true;
             _keyCode = KeyCode.R;
