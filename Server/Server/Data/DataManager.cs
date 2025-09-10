@@ -35,8 +35,8 @@ namespace Server.Data
             WeaponMasteryDict = LoadJson<Data.WeaponMasteryData, CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>("WeaponMasteryData", "player").MakeDict();
 
             // For MonsterData
-            MonsterDict = LoadJson<Data.MonsterDict, string, Data.MonsterData>("MonsterData", "monster").MakeDict();
-            MonsterSkillDict = LoadJson<Data.MonsterSkillDict, MonsterSkill, Data.MonsterSkillData>("MonsterSkillData", "monster").MakeDict();
+            MonsterDict = LoadJson<Data.MonsterDict, string, Data.MonsterData>("MonsterData/MonsterData", "monster").MakeDict();
+            MonsterSkillDict = LoadJson<Data.MonsterSkillDict, MonsterSkill, Data.MonsterSkillData>("MonsterData/MonsterSkillData", "monster").MakeDict();
         }
 
         static Loader LoadJson<Loader, Key, Value>(string path, string key) where Loader : ILoader<Key, Value>

@@ -84,23 +84,25 @@ namespace Google.Protobuf.Protocol {
             "AypDCg5HYW1lT2JqZWN0VHlwZRIICgROT05FEAASCgoGUExBWUVSEAESCwoH",
             "TU9OU1RFUhACEg4KClBST0pFQ1RJTEUQAypBCglTa2lsbFR5cGUSDgoKU0tJ",
             "TExfTk9ORRAAEg4KClNLSUxMX0FVVE8QARIUChBTS0lMTF9QUk9KRUNUSUxF",
-            "EAIqlAEKDE1vbnN0ZXJTa2lsbBILCgdNU19OT05FEAASDgoKTVNfQVRUQUNL",
+            "EAIq6QEKDE1vbnN0ZXJTa2lsbBILCgdNU19OT05FEAASDgoKTVNfQVRUQUNL",
             "MRABEg4KCk1TX0FUVEFDSzIQAhINCglNU19TS0lMTDEQAxINCglNU19TS0lM",
             "TDIQBBINCglNU19TS0lMTDMQBRIUChBNU19EUk9ORV9BVFRBQ0sxEAYSFAoQ",
-            "TVNfRFJPTkVfQVRUQUNLMhAHKjYKCEFuaW1UeXBlEggKBFBMQVkQABILCgdU",
-            "UklHR0VSEAESCAoEQk9PTBACEgkKBUZMT0FUEAMqYAoNQ2hhcmFjdGVyVHlw",
-            "ZRISCg5DSEFSQUNURVJfTk9ORRAAEgkKBVJPWlpJEAESCAoEWVVLSRACEgsK",
-            "B0hZVU5XT08QAxILCgdBQklHQUlMEAQSDAoIVEhFT0RPUkUQBSpACgtNb25z",
-            "dGVyVHlwZRIQCgxNT05TVEVSX05PTkUQABIJCgVBTFBIQRABEgkKBU9NRUdB",
-            "EAISCQoFRFJPTkUQAyrIAgoGV2VhcG9uEg8KC1dFQVBPTl9OT05FEAASCgoG",
-            "REFHR0VSEAESFAoQVFdPX0hBTkRFRF9TV09SRBACEgcKA0FYRRADEg8KC0RV",
-            "QUxfU1dPUkRTEAQSCgoGUElTVE9MEAUSEQoNQVNTQVVMVF9SSUZMRRAGEhAK",
-            "DFNOSVBFUl9SSUZMRRAHEgoKBlJBUElFUhAIEgkKBVNQRUFSEAkSCgoGSEFN",
-            "TUVSEAoSBwoDQkFUEAsSCQoFVEhST1cQDBIMCghTSFVSSUtFThANEgcKA0JP",
-            "VxAOEgwKCENST1NTQk9XEA8SCQoFR0xPVkUQEBIJCgVUT05GQRAREgoKBkdV",
-            "SVRBUhASEgwKCE5VTkNIQUtVEBMSCAoEV0hJUBAUEgoKBkNBTUVSQRAVEgoK",
-            "BkFSQ0FOQRAWEhIKDlZfRl9QUk9TVEhFVElDEBdCG6oCGEdvb2dsZS5Qcm90",
-            "b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
+            "TVNfRFJPTkVfQVRUQUNLMhAHEhQKEE1TX0dBTU1BX0FUVEFDSzEQCBITCg9N",
+            "U19HQU1NQV9TS0lMTDEQCRITCg9NU19HQU1NQV9TS0lMTDIQChITCg9NU19H",
+            "QU1NQV9TS0lMTDMQCyo2CghBbmltVHlwZRIICgRQTEFZEAASCwoHVFJJR0dF",
+            "UhABEggKBEJPT0wQAhIJCgVGTE9BVBADKmAKDUNoYXJhY3RlclR5cGUSEgoO",
+            "Q0hBUkFDVEVSX05PTkUQABIJCgVST1paSRABEggKBFlVS0kQAhILCgdIWVVO",
+            "V09PEAMSCwoHQUJJR0FJTBAEEgwKCFRIRU9ET1JFEAUqSwoLTW9uc3RlclR5",
+            "cGUSEAoMTU9OU1RFUl9OT05FEAASCQoFQUxQSEEQARIJCgVPTUVHQRACEgkK",
+            "BURST05FEAMSCQoFR0FNTUEQBCrIAgoGV2VhcG9uEg8KC1dFQVBPTl9OT05F",
+            "EAASCgoGREFHR0VSEAESFAoQVFdPX0hBTkRFRF9TV09SRBACEgcKA0FYRRAD",
+            "Eg8KC0RVQUxfU1dPUkRTEAQSCgoGUElTVE9MEAUSEQoNQVNTQVVMVF9SSUZM",
+            "RRAGEhAKDFNOSVBFUl9SSUZMRRAHEgoKBlJBUElFUhAIEgkKBVNQRUFSEAkS",
+            "CgoGSEFNTUVSEAoSBwoDQkFUEAsSCQoFVEhST1cQDBIMCghTSFVSSUtFThAN",
+            "EgcKA0JPVxAOEgwKCENST1NTQk9XEA8SCQoFR0xPVkUQEBIJCgVUT05GQRAR",
+            "EgoKBkdVSVRBUhASEgwKCE5VTkNIQUtVEBMSCAoEV0hJUBAUEgoKBkNBTUVS",
+            "QRAVEgoKBkFSQ0FOQRAWEhIKDlZfRl9QUk9TVEhFVElDEBdCG6oCGEdvb2ds",
+            "ZS5Qcm90b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.MonsterSkill), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.Weapon), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -190,6 +192,10 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("MS_SKILL3")] MsSkill3 = 5,
     [pbr::OriginalName("MS_DRONE_ATTACK1")] MsDroneAttack1 = 6,
     [pbr::OriginalName("MS_DRONE_ATTACK2")] MsDroneAttack2 = 7,
+    [pbr::OriginalName("MS_GAMMA_ATTACK1")] MsGammaAttack1 = 8,
+    [pbr::OriginalName("MS_GAMMA_SKILL1")] MsGammaSkill1 = 9,
+    [pbr::OriginalName("MS_GAMMA_SKILL2")] MsGammaSkill2 = 10,
+    [pbr::OriginalName("MS_GAMMA_SKILL3")] MsGammaSkill3 = 11,
   }
 
   public enum AnimType {
@@ -213,6 +219,7 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("ALPHA")] Alpha = 1,
     [pbr::OriginalName("OMEGA")] Omega = 2,
     [pbr::OriginalName("DRONE")] Drone = 3,
+    [pbr::OriginalName("GAMMA")] Gamma = 4,
   }
 
   public enum Weapon {

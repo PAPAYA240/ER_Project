@@ -29,6 +29,9 @@ namespace Server.Game.Object.Monster
         private const float _skillRange = 2.0f;
         private const float _findRange = 1000.0f;
 
+        // TODO : 감마 총알 예시
+        public float _delaySkillAnimationTimer = 0;
+
         public Player Target { get; set; }
         public List<Vector3> _path = new List<Vector3>();
 
@@ -53,7 +56,8 @@ namespace Server.Game.Object.Monster
 
         public override void Update()
         {
-             _currentState?.Execute(this);
+            if(_currentState != null)
+                _currentState?.Execute(this);
         }
 
         // 스킬 선택
@@ -100,6 +104,19 @@ namespace Server.Game.Object.Monster
             float distanceToTarget = Vector3.Distance(monsterPos, targetPos);
 
             return distanceToTarget <= _skillRange;
+        }
+        
+        public Player FindTarget(Monster monster)
+        {
+            // 플레이어 판단
+            monster.Target = monster.Room.FindPlayer(p =>
+            {
+                Vector3 playerPos = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
+                Vector3 monsterPos = new Vector3(monster.PosInfo.PosX, monster.PosInfo.PosY, monster.PosInfo.PosZ);
+                return monster.IsFindTargetRange(Vector3.Distance(monsterPos, playerPos));
+            });
+
+            return monster.Target;
         }
 
         public int _pathIdx = 0;

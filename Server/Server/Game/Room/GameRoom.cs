@@ -28,6 +28,7 @@ namespace Server.Game
 
             // Spawn Monster
             _monsterManager.Init(this);
+            _monsterManager.Add(1, MonsterType.Gamma);
         }
 
         public override void Update()

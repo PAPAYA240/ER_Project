@@ -1,10 +1,8 @@
-using Lucene.Net.Util;
 using Server.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
-using System.Xml.Linq;
 
 namespace Server.Game.Object.Monster.AStar
 {

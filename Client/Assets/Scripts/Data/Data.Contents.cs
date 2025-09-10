@@ -119,9 +119,7 @@ namespace Data
         public float duration; // 지속시간
         public string condition; // 옵션 (예: "HP<50%")
     }
-    #endregion
 
-    #region Skill
     public class ProjectileInfo
     {
         public string name;
@@ -129,5 +127,35 @@ namespace Data
         public int range;
         public string prefab;
     }
+    #endregion
+
+    #region Skill
+
+    public class MonsterSkillData
+    {
+        public int id;
+        public string name;
+        public MonsterSkill skillType;
+        public float skillDuration;
+        public int damage;
+        public ProjectileInfo projectile;
+    }
+
+    [Serializable]
+    public class MonsterSkillDict : ILoader<MonsterSkill, MonsterSkillData>
+    {
+        public List<MonsterSkillData> skillData = new List<MonsterSkillData>();
+
+        public Dictionary<MonsterSkill, MonsterSkillData> MakeDict()
+        {
+            Dictionary<MonsterSkill, MonsterSkillData> dict = new Dictionary<MonsterSkill, MonsterSkillData>();
+            foreach (MonsterSkillData data in skillData)
+            {
+                dict.Add(data.skillType, data);
+            }
+            return dict;
+        }
+    }
+
     #endregion
 }

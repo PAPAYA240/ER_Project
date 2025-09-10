@@ -163,6 +163,7 @@ namespace Server.Data
         public MonsterSkill skillType;
         public float skillDuration;
         public int damage;
+        public float skillCoolTime;
         public ProjectileInfo projectile;
     }
 

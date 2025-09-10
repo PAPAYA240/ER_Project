@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Server.Game.Object.Monster.FSM
 {
@@ -10,35 +11,48 @@ namespace Server.Game.Object.Monster.FSM
         private static FSMManager _instance = new FSMManager();
         public static FSMManager Instance { get { return _instance; } }
 
-        private Dictionary<MonsterType, IMonsterState> _skillStates = new Dictionary<MonsterType, IMonsterState>();
-        private IMonsterState _movingState;
-        private IMonsterState _idleState;
 
         private FSMManager()
         {
-            _movingState = new MovingState();
-            _idleState = new IdleState();
-
-            _skillStates.Add(MonsterType.Alpha, new SkillState());
-            _skillStates.Add(MonsterType.Omega, new SkillState());
-            _skillStates.Add(MonsterType.Drone, new AimState());
         }
 
         public IMonsterState GetSkillState(MonsterType type)
         {
-            if (_skillStates.TryGetValue(type, out IMonsterState state))
-                return state;
+            if (type == MonsterType.Alpha || type == MonsterType.Omega)
+                return new SkillState();
+            if (type == MonsterType.Drone || type == MonsterType.Gamma)
+                return new AimState();
             return null;
         }
 
-        public IMonsterState GetMovingState()
-        {
-            return _movingState;
-        }
+        public IMonsterState GetMovingState() { return new MovingState();  }
+        public IMonsterState GetIdleState() { return new IdleState();  }
 
-        public IMonsterState GetIdleState()
+        // 타겟을 찾은 경우
+        public IMonsterState EvaluateTargetForNextState(Monster monster)
         {
-            return _idleState;
+            switch (monster.Info.MonsterType)
+            {
+                // 근거리 몬스터
+                case MonsterType.Alpha:
+                case MonsterType.Omega:
+                    if (monster.IsSkillRange())
+                    {
+                        return GetSkillState(monster.Info.MonsterType);
+                    }
+                    else
+                    {
+                        return GetMovingState();
+                    }
+
+                // 원거리 몬스터
+                case MonsterType.Drone:
+                case MonsterType.Gamma:
+                    return GetSkillState(monster.Info.MonsterType);
+
+                default:
+                    return GetIdleState();
+            }
         }
     }
 }

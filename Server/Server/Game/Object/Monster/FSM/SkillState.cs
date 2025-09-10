@@ -18,36 +18,21 @@ namespace Server.Game.Object.Monster.FSM
             _isClientEndReceived = false;
             long durationInMilliseconds = (long)(skillData.skillDuration * 1000f);
             _skillEndTime = Environment.TickCount64 + durationInMilliseconds;
+            monster._delaySkillAnimationTimer = skillData.skillCoolTime;
 
             monster.BroadcastState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
         }
 
         public void Execute(Monster monster)
         {
-            bool timeout = Environment.TickCount64 >= _skillEndTime;
             bool clientEnded = _isClientEndReceived;
 
-            if (timeout)
-            {
-               if (monster.Target != null && monster.Target.Room == monster.Room)
-                {
-                    if (monster.IsSkillRange())  // 아직도 범위 안 → 다시 스킬
-                        monster.ChangeState(FSMManager.Instance.GetSkillState(monster.Info.MonsterType));
-                    else // 범위 밖 → 이동 추격
-                        monster.ChangeState(FSMManager.Instance.GetMovingState());
-                }
-                else
-                    monster.ChangeState(FSMManager.Instance.GetIdleState());
-            }
+            if (Environment.TickCount64 >= _skillEndTime)
+                 monster.ChangeState(FSMManager.Instance.GetIdleState());
         }
 
         public void Exit(Monster monster)
         {
-        }
-        public void SetClientEndReceived()
-        {
-            _isClientEndReceived = true;
-            _skillEndTime = 0;
         }
     }
 }
