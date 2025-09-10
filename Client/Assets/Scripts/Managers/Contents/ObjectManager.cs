@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Google.Protobuf.Protocol;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.PlayerLoop;
+using UnityEngine.UIElements;
 
 public class ObjectManager
 {
@@ -16,6 +19,11 @@ public class ObjectManager
 		int type = (id >> 24) & 0x7F;
 		return (GameObjectType)type;
 	}
+
+    public void Update()
+    {
+        SetObjectVisible();
+    }
 
 	public void Add(ObjectInfo info, bool myPlayer = false)
 	{
@@ -77,6 +85,33 @@ public class ObjectManager
             //ac.PosInfo = info.PosInfo;
             //ac.Stat = info.StatInfo;
             //ac.SyncPos();
+        }
+    }
+
+    private void SetObjectVisible()
+    {
+        if (MyPlayer == null)
+            return;
+
+        HashSet<int> hash = MyPlayer.VisibleObjectIds;
+
+        foreach (var keyValue in _objects)
+        {
+            int key = keyValue.Key;
+            if (MyPlayer.ObjInfo.ObjectId == key)
+                continue;
+
+            GameObject go = keyValue.Value;
+
+            bool isVisible = false;
+
+            if (!NavMesh.Raycast(MyPlayer.transform.position, go.transform.position, out NavMeshHit hit, NavMesh.AllAreas) && hash.Contains(key))
+                isVisible = true; /*장애물없고 시야 범위 내에 있으면*/
+
+            foreach (var r in go.GetComponentsInChildren<Renderer>())
+            {
+                r.enabled = isVisible;
+            }
         }
     }
 
