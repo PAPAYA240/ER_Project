@@ -3,25 +3,21 @@ using UnityEngine;
 
 namespace Assets.Scripts.Highlight
 {
+    // 스키닝 메시 + 아웃라인 머터리얼 + 충돌 캡슐 필요
+
     public class HighlightEffect : MonoBehaviour
     {
         private Renderer myRenderer;
         private Material outlineMaterial;
-        private Material[] originalMaterials; // 원래 재질 배열을 저장할 변수
+        private Material[] originalMaterials; 
 
         void Start()
         {
             myRenderer = GetComponentInChildren<Renderer>();
             outlineMaterial = Resources.Load<Material>("Material/Outline/Outline");
-            if (outlineMaterial == null)
+            if (outlineMaterial == null || myRenderer == null)
             {
-                Debug.LogError("아웃라인 머터리얼 ㄹ못찾음.");
-                return;
-            }
-
-            if (myRenderer == null)
-            {
-                Debug.LogError("Renderer 추가하셈.");
+                Debug.LogError("outline Material || myRenderer 이 null 이다.");
                 return;
             }
 
@@ -38,7 +34,6 @@ namespace Assets.Scripts.Highlight
 
             newMaterials.Add(outlineMaterial);
 
-            // 3. 렌더러에 새로운 재질 배열을 할당하여 하이라이트를 적용합니다.
             myRenderer.materials = newMaterials.ToArray();
         }
 
@@ -52,9 +47,7 @@ namespace Assets.Scripts.Highlight
         void OnDestroy()
         {
             if (outlineMaterial != null)
-            {
                 Destroy(outlineMaterial);
-            }
         }
     }
 }

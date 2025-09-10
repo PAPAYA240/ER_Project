@@ -8,10 +8,8 @@ public class IsKeyPressedNode : DecoratorNode
      {
         MonsterController monsterController = agent.GetComponentInChildren<MonsterController>();
         if(!monsterController || monsterController.Skill != skillId || monsterController.State != CreatureState.Skill)
-       { 
             return NodeStatus.Failure;
-        }
-         Debug.Log($"{skillId}");
+
         return NodeStatus.Success;
     }
  }

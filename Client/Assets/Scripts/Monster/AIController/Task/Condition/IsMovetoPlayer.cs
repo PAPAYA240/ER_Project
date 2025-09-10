@@ -7,7 +7,7 @@ public class IsMovetoPlayer : DecoratorNode
     {
         MonsterController monster = agent.GetComponentInChildren<MonsterController>();
         if (monster == null)
-        {    return NodeStatus.Failure;}
+            return NodeStatus.Failure;
         return (monster.State == CreatureState.Moving) ? NodeStatus.Success : NodeStatus.Failure;
     }
 }

@@ -1,6 +1,8 @@
 using Lucene.Net.Util;
+using Server.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Numerics;
 using System.Xml.Linq;
 
@@ -44,10 +46,14 @@ namespace Server.Game.Object.Monster.AStar
     public static class Pathfinding
     {
         private static NavMeshExportData _navMeshData;
-        private static List<Node> _triangleNodes; 
+        private static List<Node> _triangleNodes;
 
-        public static void Initialize(string navMeshFilePath)
+        public static void Initialize()
         {
+            string basePath = ConfigManager.Config.dataPaths["monster"];
+            string navMeshFilePath = Path.Combine(basePath, "MonsterData/navmesh_data.json");
+            string navMeshJsonText = File.ReadAllText(navMeshFilePath);
+
             _navMeshData = NavMeshExportData.LoadFromJson(navMeshFilePath);
             if (_navMeshData == null)
             {

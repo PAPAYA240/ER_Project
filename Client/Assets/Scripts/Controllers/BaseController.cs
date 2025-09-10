@@ -168,7 +168,7 @@ public class BaseController : MonoBehaviour
     {
     }
 
-    // ½º¸£¸¤ ÀÌµ¿ÇÏ´Â °ÍÀ» Ã³¸®
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
     protected virtual void UpdateMoving()
     {
     }

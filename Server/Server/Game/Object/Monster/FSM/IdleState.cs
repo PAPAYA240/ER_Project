@@ -7,21 +7,14 @@ namespace Server.Game.Object.Monster.FSM
 {
     public class IdleState : IMonsterState
     {
-        private long _nextSearchTick = 0;
-        private const int SEARCH_INTERVAL_MS = 1000;
-
         private const long SKILL_COOLDOWN_MS = 300;
-        private long _lastSkillTime = 0; // 마지막 스킬 사용 시간
-        private float _searchCellDist = 1000.0f; // 탐색 거리
+        private const int SEARCH_INTERVAL_MS = 1000;
+        private long _nextSearchTick = 0;
 
-        private const float loadingTime = 2.0f;
-        private long _loadingDurationMs;
-        private long _enterTime;
+        private long _lastSkillTime = 0; // 마지막 스킬 사용 시간
+
         public void Enter(Monster monster)
         {
-            _enterTime = Environment.TickCount64;
-            _loadingDurationMs = (long)(loadingTime * 1000);
-
             monster.BroadcastState(CreatureState.Idle, null, null);
         }
 
@@ -36,38 +29,42 @@ namespace Server.Game.Object.Monster.FSM
             {
                 Vector3 playerPos = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
                 Vector3 monsterPos = new Vector3(monster.PosInfo.PosX, monster.PosInfo.PosY, monster.PosInfo.PosZ);
-                return Vector3.Distance(monsterPos, playerPos) <= _searchCellDist;
+                return monster.IsFindTargetRange(Vector3.Distance(monsterPos, playerPos));
             });
 
             if (target != null)
             {
                 monster.Target = target;
-                monster._lastPlayerPosition = new Vector3(
-                    target.PosInfo.PosX,
-                    target.PosInfo.PosY,
-                    target.PosInfo.PosZ
-                );
-
+               
                 // TODO : 나중에 몬스터에 따라서 FSM을 어떻게 나눠줄 지 고민해야 함
                 // 범위 안 → 바로 스킬
                 if (monster.IsSkillRange())
                 {
-                    monster.ChangeState(monster.GetSkillState());
+                    IMonsterState skillState = FSMManager.Instance.GetSkillState(monster.Info.MonsterType);
+                    if(skillState != null)
+                        monster.ChangeState(skillState);
                 }
                 else
                 {
-                    // 범위 밖 → 추격
-                    if(monster.Info.MonsterType != MonsterType.Drone)
-                        monster.ChangeState(new MovingState());
+                    if (monster.Info.MonsterType != MonsterType.Drone)
+                    {
+                        IMonsterState movingState = FSMManager.Instance.GetMovingState();
+                        monster.ChangeState(movingState);
+                    }
                     else
-                        monster.ChangeState(monster.GetSkillState());
+                    {
+                        IMonsterState skillState = FSMManager.Instance.GetSkillState(monster.Info.MonsterType);
+                        if (skillState != null)
+                            monster.ChangeState(skillState);
+                    }
                 }
             }
         }
 
-        public void Exit(Monster monster)
+        public void Exit(Monster monster) 
         {
-            _enterTime = Environment.TickCount64;
+            _nextSearchTick = 0;
+            _lastSkillTime = 0;
         }
     }
 }

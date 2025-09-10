@@ -26,7 +26,6 @@ public abstract class AnimationControlNode : ActionNode, IStateChangeListener
 
         return (monsterController != null && _animator != null && _navMeshAgent != null);
     }
-
     public abstract void HandleStateChange(CreatureState newState);
 
 }
@@ -35,7 +34,6 @@ public abstract class AnimationControlNode : ActionNode, IStateChangeListener
 public class PlayAnimatorBoolNode : AnimationControlNode
 {
     public string paramName;
-    public bool valueToSet;
     public string stateName;
 
     public override NodeStatus Execute(GameObject owner)
@@ -72,43 +70,33 @@ public class PlayAnimatorFloatNode : AnimationControlNode
 
     public override NodeStatus Execute(GameObject owner)
     {
-        // 1. 필요한 컴포넌트가 모두 있는지 확인
         if (Check(owner) == false)
             return NodeStatus.Failure;
 
-        // 이동 상태가 아니면 걷기 애니메이션을 멈춥니다.
         if (monsterController.State != CreatureState.Moving)
         {
             _animator.SetFloat("moveVelocity", 0);
             return NodeStatus.Failure;
         }
 
-        // 2. 현재 프레임의 속도 계산
         float speed = 0;
         if (!_isFirstFrame)
         {
-            // 이전 프레임 위치와 현재 위치의 거리를 구합니다.
             float distance = Vector3.Distance(owner.transform.position, _lastPos);
 
-            // `Time.deltaTime`으로 나눠 초당 속도를 계산합니다.
             speed = distance / Time.deltaTime;
         }
 
         _isFirstFrame = false;
 
-        // 3. 애니메이션 파라미터 업데이트
         _animator.SetFloat("moveVelocity", speed);
 
-        // 4. 다음 프레임을 위해 현재 위치를 저장
         _lastPos = owner.transform.position;
 
         return NodeStatus.Running;
     }
 
-    public override void HandleStateChange(CreatureState newState)
-    {
-    }
-
+    public override void HandleStateChange(CreatureState newState) { }
 }
 
 // 스킬 사용 중에 사용될 애니메이션 노드
@@ -150,9 +138,8 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
         if (newState == CreatureState.Idle)
         {
             _animator.ResetTrigger(triggerName);
+            _animator.CrossFade("Idle", 0.1f);
             _isSentEndPacket = false;
-            //monsterController.SendSkillEndPacket(monsterController.Skill);
         }
     }
-
 }
