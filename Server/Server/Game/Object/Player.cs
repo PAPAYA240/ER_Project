@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using static Server.Data.DataUtils;
+using System.Linq;
 
 namespace Server.Game
 {
@@ -111,6 +112,14 @@ namespace Server.Game
             {
                 _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
             }
+        }
+
+        public void SendVisibleObjsPkt(List<int> Ids)
+        {
+            S_VisibleObjects visibleObjsPkt = new S_VisibleObjects();
+            visibleObjsPkt.ObjectId = Id;
+            visibleObjsPkt.VisibleObjectIds.AddRange(Ids);
+            Session.Send(visibleObjsPkt);
         }
     }
 }
