@@ -287,9 +287,9 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: walk
-    m_EventTreshold: 0
+  - m_ConditionMode: 3
+    m_ConditionEvent: moveVelocity
+    m_EventTreshold: 0.25
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102875473649619933}
   m_Solo: 0
@@ -481,15 +481,9 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-<<<<<<< Updated upstream
   - m_ConditionMode: 4
     m_ConditionEvent: moveVelocity
     m_EventTreshold: 2.5
-=======
-  - m_ConditionMode: 2
-    m_ConditionEvent: walk
-    m_EventTreshold: 0
->>>>>>> Stashed changes
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 0}
   m_Solo: 0
@@ -1136,7 +1130,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 1102259954350012355}
-    m_Position: {x: 500, y: -200, z: 0}
+    m_Position: {x: 0, y: 0, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102011013791815714}
     m_Position: {x: 250, y: 0, z: 0}
@@ -1169,11 +1163,7 @@ AnimatorStateMachine:
     m_Position: {x: 500, y: 200, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102875473649619933}
-<<<<<<< Updated upstream
     m_Position: {x: 790, y: 220, z: 0}
-=======
-    m_Position: {x: 760, y: 280, z: 0}
->>>>>>> Stashed changes
   - serializedVersion: 1
     m_State: {fileID: 1102284151989486261}
     m_Position: {x: 0, y: 300, z: 0}
