@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.PlayerLoop;
@@ -22,7 +23,7 @@ public class ObjectManager
 
     public void Update()
     {
-        SetObjectVisible();
+        //SetObjectVisible();
     }
 
 	public void Add(ObjectInfo info, bool myPlayer = false)
@@ -88,7 +89,7 @@ public class ObjectManager
         }
     }
 
-    private void SetObjectVisible()
+    public void SetObjectVisible()
     {
         if (MyPlayer == null)
             return;
@@ -105,7 +106,23 @@ public class ObjectManager
 
             bool isVisible = false;
 
-            if (!NavMesh.Raycast(MyPlayer.transform.position, go.transform.position, out NavMeshHit hit, NavMesh.AllAreas) && hash.Contains(key))
+            //Vector3 playerPos = MyPlayer.transform.position;
+            //Vector3 targetPos = go.transform.position;
+
+            //NavMeshHit hit;
+
+            //if (NavMesh.SamplePosition(playerPos, out hit, 1, NavMesh.AllAreas))
+            //    playerPos = hit.position;
+
+            //if (NavMesh.SamplePosition(targetPos, out hit, 1, NavMesh.AllAreas))
+            //    targetPos = hit.position;
+
+            //playerPos.y = 0.5f;
+            //targetPos.y = 0.5f;
+
+            //Vector3 dir = targetPos - playerPos;
+
+            if (hash.Contains(key) /*&& !NavMesh.Raycast(playerPos, targetPos, out hit, NavMesh.AllAreas)*/)
                 isVisible = true; /*장애물없고 시야 범위 내에 있으면*/
 
             foreach (var r in go.GetComponentsInChildren<Renderer>())
