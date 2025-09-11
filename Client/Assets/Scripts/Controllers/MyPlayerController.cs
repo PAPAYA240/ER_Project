@@ -12,6 +12,7 @@ public class MyPlayerController : PlayerController
 {
     bool _moveKeyPressed = false;
     bool _isUseSkill = false;
+    KeyCode _keyCode = KeyCode.None;
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
     class CoolTime
     {
@@ -22,9 +23,25 @@ public class MyPlayerController : PlayerController
     int _mask = (1 << (int)Define.Layer.Map);
     Vector3 _dstPos = Vector3.zero;
 
+    public float AttackSpeed
+    {
+        get
+        {
+            float baseSpeed = Stat.AttackSpeed + MyWeapon.AttackSpeed;
+            float multiplier = 1 + WeaponMasteryAS + ItemAttackSpeed;
+            return baseSpeed * multiplier;
+        }
+    }
+
     //UI
     //UI_PlayerHUD _playerHUD = null;
     UI_PlayerInterface _playerInterface = null;
+
+    public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
+    public WeaponInfo MyWeapon { get; set; } = new WeaponInfo();
+
+    public float WeaponMasteryAS { get; set; }
+    public float ItemAttackSpeed { get; set; } = 0;
 
     private void Start()
     {
@@ -85,14 +102,6 @@ public class MyPlayerController : PlayerController
         {
             PlayAnimation("RUN", 0.1f);
         }
-        else if (State == CreatureState.Skill)
-        {
-            ExecuteSkill(KeyCode.Q);
-        }
-        else
-        {
-
-        }
     }
 
     protected override void UpdateController()
@@ -110,7 +119,7 @@ public class MyPlayerController : PlayerController
         UpdateKeyInput();
 
         if (_isUseSkill)
-            ExecuteSkill(KeyCode.Q);
+            ExecuteSkill();
 
         base.UpdateController();
     }
@@ -162,6 +171,7 @@ public class MyPlayerController : PlayerController
 
         _coolDownDict[key].isCoolDown = false;
         _coolDownDict[key].coolTime = 0.0f;
+        Debug.Log("쿨타임 끝");
     }
 
     private void MakeCoolDownDict()
@@ -194,9 +204,25 @@ public class MyPlayerController : PlayerController
     // 키보드 입력
     protected virtual void UpdateKeyInput()
     {
-        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.R))
+        if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))
         {
             _isUseSkill = true;
+            _keyCode = KeyCode.Q;
+        }
+        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.W))
+        {
+            _isUseSkill = true;
+            _keyCode = KeyCode.W;
+        }
+        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
+        {
+            _isUseSkill = true;
+            _keyCode = KeyCode.E;
+        }
+        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))
+        {
+            _isUseSkill = true;
+            _keyCode = KeyCode.R;
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
@@ -240,32 +266,28 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    protected void ExecuteSkill(KeyCode key)
+    protected void ExecuteSkill()
     {
-        if (!_coolDownDict[key].isCoolDown)
+        _isUseSkill = false;
+
+        if (!_coolDownDict[_keyCode].isCoolDown)
         {
-            State = CreatureState.Skill;
-
-            SkillBase skill = FindSkill(key);
-
-            // 쿨타임 체크
-            StartCoroutine(CoInputCooltime(key, skill.CurLevelCooldown));
-
             // 다른 조건 체크하기
 
             // 패킷 보내기
-            SendSkillPacket(key);
+            SendSkillPacket(_keyCode);
 
             // 스킬 실행 UI, TODO 스킬 사용할 수 있는 검증이 다 끝난 곳으로 옮겨야함
-            _playerInterface.UseSkill(KeyToUIEnum(key));
+            _playerInterface.UseSkill(KeyToUIEnum(_keyCode));
 
-            Debug.Log($"스킬 사용! : {key}");
+            Debug.Log($"스킬 사용! : {_keyCode}");
         }
-        else
-        {
-            _isUseSkill = false;
-            Debug.Log($"스킬 쿨타임 적용 중! : {key} -> {GetCoolTime(key)} 초 남음");
-        }
+    }
+
+    public void StartCoCoolTime(KeyCode key, float coolTime)
+    {
+        // 쿨타임 체크
+        StartCoroutine(CoInputCooltime(key, coolTime));
     }
 
 #region UI

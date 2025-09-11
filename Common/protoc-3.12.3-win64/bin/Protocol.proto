@@ -25,6 +25,7 @@ enum MsgId {
   S_ENTER_PICK = 17;
   S_LEAVE_PICK = 18;
   C_PING = 19;
+  S_VISIBLE_OBJECTS = 20;
 }
 
 enum CreatureState{
@@ -116,6 +117,12 @@ enum Weapon {
     V_F_PROSTHETIC = 23;
 }
 
+enum SkillShape{
+	CIRCLE = 0;
+	RECTANGLE = 1;
+	SECTOR = 2;
+}
+
 message C_EnterGame {
 	ObjectInfo player = 1;
 }
@@ -149,12 +156,14 @@ message S_Despawn{
 message C_Move{
   PositionInfo posInfo = 1;
   RotationInfo rotInfo = 2;
+  bool isWarp = 3;
 }
 
 message S_Move{
   int32 objectId = 1;
   PositionInfo posInfo = 2;
   RotationInfo rotInfo = 3;
+  bool isWarp = 4;
 }
 
 message C_SkillEnd {
@@ -208,6 +217,7 @@ message ObjectInfo{
 	StatInfo statInfo = 5;
 	CharacterType charType = 6;
 	MonsterType monsterType = 7;
+	int32 team = 8;
 }
 
 message AnimInfo{
@@ -271,4 +281,9 @@ message SkillInfo{
 
 message C_Ping{
 	bool ping = 1;
+}
+
+message S_VisibleObjects{
+	int32 objectId = 1;
+	repeated int32 visibleObjectIds = 2;
 }

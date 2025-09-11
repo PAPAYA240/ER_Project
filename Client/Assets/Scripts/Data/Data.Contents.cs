@@ -12,15 +12,15 @@ namespace Data
     [Serializable]
     public class StatData : ILoader<CharacterType, StatInfo>
     {
-        public List<StatInfo> stats = new List<StatInfo>();
+        public Dictionary<string, StatInfo> stats = new Dictionary<string, StatInfo>();
 
         public Dictionary<CharacterType, StatInfo> MakeDict()
         {
             Dictionary<CharacterType, StatInfo> dict = new Dictionary<CharacterType, StatInfo>();
-            foreach (StatInfo stat in stats)
+            foreach (var pair in stats)
             {
-                stat.Hp = stat.MaxHp;
-                dict.Add((CharacterType)Enum.Parse(typeof(CharacterType), stat.Name), stat);
+                pair.Value.Hp = pair.Value.MaxHp;
+                dict.Add((CharacterType)Enum.Parse(typeof(CharacterType), pair.Key), pair.Value);
             }
             return dict;
         }
