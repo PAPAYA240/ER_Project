@@ -1,0 +1,26 @@
+
+// Skill01 Ready -> Skill01
+{
+  "Name": "Root",
+  "Type": "SequenceNode",
+  "Children": [
+    {
+      "Name": "CheckEKey",
+      "Type": "IsKeyPressedNode",
+      "Properties": {
+        "skillId": "MsGammaSkill2"
+      }
+    },
+    {
+      "Name": "Skill02",
+      "Type": "PlayAnimatorTriggerNode",
+      "Properties": {
+        "triggerName": "tSkill02",
+        "animationStateName": "Autobot_01_skill02_end",
+        "boolName": "bSkill02",
+        "bLoop" : true
+      }
+    }
+  ]
+}
+

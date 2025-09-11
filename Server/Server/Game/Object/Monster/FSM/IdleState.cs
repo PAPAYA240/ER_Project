@@ -1,73 +1,67 @@
 ﻿using Google.Protobuf.Protocol;
+using Server.Data;
 using System;
 using System.Diagnostics;
 using System.Numerics;
+using System.Threading;
 
 namespace Server.Game.Object.Monster.FSM
 {
     public class IdleState : IMonsterState
     {
-        private long _nextSearchTick = 0;
         private const int SEARCH_INTERVAL_MS = 1000;
-
-        private const long SKILL_COOLDOWN_MS = 300;
-        private long _lastSkillTime = 0; // 마지막 스킬 사용 시간
-        private float _searchCellDist = 1000.0f; // 탐색 거리
-
-        private const float loadingTime = 2.0f;
-        private long _loadingDurationMs;
-        private long _enterTime;
+        private long _nextSearchTick = 0;
+        private float _delayTimer = 0;
         public void Enter(Monster monster)
         {
-            _enterTime = Environment.TickCount64;
-            _loadingDurationMs = (long)(loadingTime * 1000);
-
             monster.BroadcastState(CreatureState.Idle, null, null);
+            _delayTimer = Environment.TickCount64 + (long)(monster._delaySkillAnimationTimer * 1000f);
         }
 
         public void Execute(Monster monster)
         {
-            if (_lastSkillTime > 0 && Environment.TickCount64 < _lastSkillTime + SKILL_COOLDOWN_MS)
-                return;
+            if (Environment.TickCount64 < _nextSearchTick)
+                return; 
             _nextSearchTick = Environment.TickCount64 + SEARCH_INTERVAL_MS;
-           
-            // 플레이어 판단
-            Player target = monster.Room.FindPlayer(p =>
-            {
-                Vector3 playerPos = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
-                Vector3 monsterPos = new Vector3(monster.PosInfo.PosX, monster.PosInfo.PosY, monster.PosInfo.PosZ);
-                return Vector3.Distance(monsterPos, playerPos) <= _searchCellDist;
-            });
 
+            if (monster.FindTarget(monster) != null)
+            {
+                if (Environment.TickCount64 < _delayTimer)
+                    return;
+                IMonsterState nextState = FSMManager.Instance.EvaluateTargetForNextState(monster);
+                monster.ChangeState(nextState);
+            }
+           // else
+           //     _delayTimer = Environment.TickCount64 + (long)(monster._delaySkillAnimationTimer * 1000f);
+
+            if (monster.Info.MonsterType == MonsterType.Gamma ||
+               monster.Info.MonsterType == MonsterType.Drone)
+                LookAtTarget(monster);
+        }
+       
+        private long _lastUpdateTime = 0;
+        private void LookAtTarget(Monster monster)
+        {
+            Player target = monster.Target;
             if (target != null)
             {
-                monster.Target = target;
-                monster._lastPlayerPosition = new Vector3(
-                    target.PosInfo.PosX,
-                    target.PosInfo.PosY,
-                    target.PosInfo.PosZ
-                );
+                long tick = Environment.TickCount64;
+                double elapsedTime = (tick - _lastUpdateTime) / 1000.0;
+                _lastUpdateTime = tick;
 
-                // TODO : 나중에 몬스터에 따라서 FSM을 어떻게 나눠줄 지 고민해야 함
-                // 범위 안 → 바로 스킬
-                if (monster.IsSkillRange())
-                {
-                    monster.ChangeState(monster.GetSkillState());
-                }
-                else
-                {
-                    // 범위 밖 → 추격
-                    if(monster.Info.MonsterType != MonsterType.Drone)
-                        monster.ChangeState(new MovingState());
-                    else
-                        monster.ChangeState(monster.GetSkillState());
-                }
+                Vector3 targetPos = new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ);
+                Vector3 monsterPos = new Vector3(monster.PosInfo.PosX, monster.PosInfo.PosY, monster.PosInfo.PosZ);
+                Vector3 dirQ = targetPos - monsterPos;
+                monster.LookAtTarget(dirQ, elapsedTime, false);
+
+                monster.BroadcastState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
             }
         }
 
-        public void Exit(Monster monster)
+        public void Exit(Monster monster) 
         {
-            _enterTime = Environment.TickCount64;
+            _nextSearchTick = 0;
+            _lastUpdateTime = 0;
         }
     }
 }

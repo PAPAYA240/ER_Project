@@ -1,4 +1,9 @@
-﻿using Google.Protobuf.Protocol;
+﻿using Assets.Scripts.Effect;
+using Data;
+using Google.Protobuf.Protocol;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -26,7 +31,6 @@ public abstract class AnimationControlNode : ActionNode, IStateChangeListener
 
         return (monsterController != null && _animator != null && _navMeshAgent != null);
     }
-
     public abstract void HandleStateChange(CreatureState newState);
 
 }
@@ -35,9 +39,7 @@ public abstract class AnimationControlNode : ActionNode, IStateChangeListener
 public class PlayAnimatorBoolNode : AnimationControlNode
 {
     public string paramName;
-    public bool valueToSet;
     public string stateName;
-
     public override NodeStatus Execute(GameObject owner)
     {
         if(Check(owner) == false)
@@ -46,15 +48,15 @@ public class PlayAnimatorBoolNode : AnimationControlNode
         if (string.IsNullOrEmpty(paramName))
             return NodeStatus.Failure;
 
-        Debug.Log($"PlayAnimatorTriggerNode Execute: State={monsterController.State}, Skill={monsterController.Skill}");
         AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+
         if (stateInfo.normalizedTime >= 0.95f)
         {
             monsterController.isSpawned = true;
             _animator.SetBool(paramName, false);
             return NodeStatus.Success;
         }
-
+       
         _animator.SetBool(paramName, true);
         return NodeStatus.Running;
     }
@@ -72,43 +74,33 @@ public class PlayAnimatorFloatNode : AnimationControlNode
 
     public override NodeStatus Execute(GameObject owner)
     {
-        // 1. 필요한 컴포넌트가 모두 있는지 확인
         if (Check(owner) == false)
             return NodeStatus.Failure;
 
-        // 이동 상태가 아니면 걷기 애니메이션을 멈춥니다.
         if (monsterController.State != CreatureState.Moving)
         {
             _animator.SetFloat("moveVelocity", 0);
             return NodeStatus.Failure;
         }
 
-        // 2. 현재 프레임의 속도 계산
         float speed = 0;
         if (!_isFirstFrame)
         {
-            // 이전 프레임 위치와 현재 위치의 거리를 구합니다.
             float distance = Vector3.Distance(owner.transform.position, _lastPos);
 
-            // `Time.deltaTime`으로 나눠 초당 속도를 계산합니다.
             speed = distance / Time.deltaTime;
         }
 
         _isFirstFrame = false;
 
-        // 3. 애니메이션 파라미터 업데이트
         _animator.SetFloat("moveVelocity", speed);
 
-        // 4. 다음 프레임을 위해 현재 위치를 저장
         _lastPos = owner.transform.position;
 
         return NodeStatus.Running;
     }
 
-    public override void HandleStateChange(CreatureState newState)
-    {
-    }
-
+    public override void HandleStateChange(CreatureState newState) { }
 }
 
 // 스킬 사용 중에 사용될 애니메이션 노드
@@ -116,6 +108,8 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
 {
     [Tooltip("Animator에 설정된 Trigger 이름")]
     public string triggerName;
+    public string boolName;
+    public bool bLoop = false;
 
     [Tooltip("Animator에 설정된 실제 애니메이션 상태의 이름. 예: Skill01State")]
     public string animationStateName;
@@ -138,6 +132,15 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
         {
             _animator.SetTrigger(triggerName);
             _isSentEndPacket = true;
+
+            // TODO : 이펙트 재생 임의,  EffectNode로 분할 예정
+            DataManager.MonsterSkillDict.TryGetValue(monsterController.Skill, out List<EffectData> data);
+            if (data != null)
+                FXManager.Instance.PlayEffect(data, monsterController.transform, monsterController.TargetPosition);
+
+            // 루프가 필요할 시에 bool 값으로도 조절함
+            if (bLoop)
+                _animator.SetBool(boolName, true);
         }
         return NodeStatus.Running;
     }
@@ -146,13 +149,14 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
     {
         if (_animator == null)
             return;
-
         if (newState == CreatureState.Idle)
         {
             _animator.ResetTrigger(triggerName);
+            _animator.CrossFade("Idle", 0.1f);
             _isSentEndPacket = false;
-            //monsterController.SendSkillEndPacket(monsterController.Skill);
+
+            if (bLoop)
+                _animator.SetBool(boolName, false);
         }
     }
-
 }

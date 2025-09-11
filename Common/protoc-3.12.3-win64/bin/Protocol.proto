@@ -59,6 +59,11 @@ enum MonsterSkill
 
     MS_DRONE_ATTACK1 = 6;
     MS_DRONE_ATTACK2 = 7;
+
+    MS_GAMMA_ATTACK1 = 8;
+    MS_GAMMA_SKILL1 = 9;
+    MS_GAMMA_SKILL2 = 10;
+    MS_GAMMA_SKILL3 = 11;
 }
 
 enum AnimType{
@@ -79,9 +84,10 @@ enum CharacterType {
 
 enum MonsterType {
 	MONSTER_NONE = 0;
-   	 ALPHA = 1;
+   	ALPHA = 1;
    	OMEGA = 2;
 	DRONE = 3;
+        GAMMA = 4;
 }
 
 enum Weapon {
@@ -136,7 +142,9 @@ message S_State
 	RotationInfo RotInfo = 4;
 	MonsterSkill skilltype = 5;
 	int32 sequenceId = 6;
+	PositionInfo targetPosition = 7;
 }
+
 message S_Spawn {
   repeated ObjectInfo objects = 1;
 }
