@@ -429,11 +429,10 @@ public class MyPlayerController : PlayerController
     #region Packet
     private void SendSkillPacket(KeyCode key)
     {
-        string skillName = Enum.GetName(typeof(Character), Managers.Object.Character) + '_' + key.ToString();
         C_Skill skillPacket = new C_Skill()
         {
             ObjectInfo = ObjInfo,
-            SkillInfo = new SkillInfo() { KeyCode = (int)key, Name = skillName }
+            SkillInfo = new SkillInfo() { KeyCode = (int)key }
         };
         Managers.Network.Send(skillPacket);
         Debug.Log("스킬 패킷 보내기");

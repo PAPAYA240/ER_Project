@@ -242,16 +242,16 @@ message RotationInfo{
 }
 
 message StatInfo{
-	string name = 1;
-	float attack = 2;
-	float defense = 3;
-	int32 hp = 4;
-	int32 maxHp = 5;
-	float hpRegen = 6;
-	int32 stamina = 7;
-	float staminaRegen = 8;
-	float attackSpeed = 9;
-	float moveSpeed = 10;
+	float attack = 1;
+	float defense = 2;
+	int32 hp = 3;
+	int32 maxHp = 4;
+	float hpRegen = 5;
+	int32 stamina = 6;
+	float staminaRegen = 7;
+	float attackSpeed = 8;
+	float moveSpeed = 9;
+	int32 exp = 10;
 }
 
 message WeaponMasteryInfo{
@@ -268,7 +268,6 @@ message WeaponInfo{
 message SkillInfo{
 	int32 skillId = 1;
 	int32 keyCode = 2;
-	string name = 3;
 }
 
 message C_Ping{

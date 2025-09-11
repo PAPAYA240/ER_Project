@@ -12,7 +12,7 @@ public class UI_SelectEvent : MonoBehaviour
     List<Image> _images = new List<Image>();
     Dictionary<CharacterType, Sprite> _sprites = new Dictionary<CharacterType, Sprite>();
 
-    public void Awake()
+    public void Start()
     {
         LoadPickSprites();
     }
