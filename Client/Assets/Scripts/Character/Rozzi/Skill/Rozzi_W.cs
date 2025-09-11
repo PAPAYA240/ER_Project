@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,6 @@ public class Rozzi_W : SkillBase
     {
         _animator.CrossFadeInFixedTime("ROZZI_W", 0.1f);
 
-        Debug.Log("Play Skill Animation");
+        // Debug.Log("Play Skill Animation");
     }
 }
