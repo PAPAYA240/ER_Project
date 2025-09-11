@@ -29,6 +29,12 @@ public class CreatureController : BaseController
         set { base.Hp = value; UpdateHpBar(); }
     }
 
+    public override int Stamina
+    {
+        get { return Stat.Stamina; }
+        set { base.Stamina = value; /* UpdateStatmina(); */ }
+    }
+
     protected void AddHpBar()
     {
         GameObject go = Managers.Resource.Instantiate("UI/HpBar", transform);
@@ -75,4 +81,16 @@ public class CreatureController : BaseController
     public virtual void UseSkill(int skillId) {}
 
     public virtual void UseSkill(S_Skill skillPacket) {}
+
+    public void ChangeStat(StatInfo growth)
+    {
+        Stat.Attack += growth.Attack;
+        Stat.Defense += growth.Defense;
+        Stat.MaxHp += growth.MaxHp;
+        Stat.HpRegen += growth.HpRegen;
+        Stat.Stamina += growth.MaxStamina;
+        Stat.MaxStamina += growth.MaxStamina;
+        Stat.StaminaRegen += growth.StaminaRegen;
+        Hp = Stat.Hp + growth.MaxHp;
+    }
 }

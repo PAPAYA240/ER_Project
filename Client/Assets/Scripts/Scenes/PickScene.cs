@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class PickScene : BaseScene
 {
+    public int PickIdx {  get; set; }
+
     protected override void Init()
     {
         base.Init();

@@ -28,6 +28,16 @@ namespace Server.Data
         }
     }
 
+    public class ExpData : ILoader<int, int>
+    {
+        public Dictionary<int, int> exp = new Dictionary<int, int>();
+
+        public Dictionary<int, int> MakeDict()
+        {
+            return exp;
+        }
+    }
+
     public class StatGrowthData : ILoader<CharacterType, StatInfo>
     {
         public Dictionary<string, StatInfo> growth = new Dictionary<string, StatInfo>();

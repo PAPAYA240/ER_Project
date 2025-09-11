@@ -44,16 +44,6 @@ namespace Server
 
             // PROTO Test
 
-            PickRoom room = RoomManager.Instance.Find(1) as PickRoom;
-            if (room == null)
-                return;
-
-            if (room.isRoomFull())
-                return;
-
-            PickPlayer pp = new PickPlayer();
-            pp.Session = this;
-			room.Push(room.EnterPick, pp);
         }
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)

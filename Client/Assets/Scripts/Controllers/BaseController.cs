@@ -40,6 +40,12 @@ public class BaseController : MonoBehaviour
         }
     }
 
+    public virtual int Stamina
+    {
+        get { return Stat.Stamina; }
+        set { Stat.Stamina = value; }
+    }
+
     protected bool _updated = false;
 
     PositionInfo _positionInfo = new PositionInfo();

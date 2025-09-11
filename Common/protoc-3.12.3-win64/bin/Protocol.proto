@@ -26,6 +26,8 @@ enum MsgId {
   S_LEAVE_PICK = 18;
   C_PING = 19;
   S_VISIBLE_OBJECTS = 20;
+  S_LEVEL_UP = 21;
+  C_READY = 22;
 }
 
 enum CreatureState{
@@ -256,10 +258,12 @@ message StatInfo{
 	int32 maxHp = 4;
 	float hpRegen = 5;
 	int32 stamina = 6;
-	float staminaRegen = 7;
-	float attackSpeed = 8;
-	float moveSpeed = 9;
-	int32 exp = 10;
+	int32 maxStamina = 7;
+	float staminaRegen = 8;
+	float attackSpeed = 9;
+	float moveSpeed = 10;
+	int32 exp = 11;
+	int32 level = 12;
 }
 
 message WeaponMasteryInfo{
@@ -285,4 +289,13 @@ message C_Ping{
 message S_VisibleObjects{
 	int32 objectId = 1;
 	repeated int32 visibleObjectIds = 2;
+}
+
+message S_LevelUp{
+	int32 objectId = 1;
+	StatInfo statGrowth = 2;
+}
+
+message C_Ready{
+	bool ready = 1;
 }
