@@ -105,6 +105,7 @@ namespace Assets.Scripts.Effect
                         spawnPosition = data.position;
                         break;
                 }
+
                 // 이펙트가 바라볼 방향
                 Quaternion spawnQuat = Quaternion.identity;
                 spawnQuat = casterTransform.rotation;
