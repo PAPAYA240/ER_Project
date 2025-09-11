@@ -554,6 +554,7 @@ GameObject:
   m_Component:
   - component: {fileID: 710356719923666424}
   - component: {fileID: 5021250955521430936}
+  - component: {fileID: 6029281910509001356}
   m_Layer: 0
   m_Name: Rozzi_S002
   m_TagString: Untagged
@@ -599,6 +600,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6029281910509001356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 897187067598497633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38bbf0c8ec18e0747b035ba9e225aad8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _controller: {fileID: 0}
 --- !u!1 &911785483801927538
 GameObject:
   m_ObjectHideFlags: 0
