@@ -1,0 +1,114 @@
+{
+  "effectData": [
+    {
+      "prefabName": "FX_BI_Gamma_skill01_Laser",
+      "skillType": "MsGammaSkill1",
+      "target": "Self",
+      "duration": 3.3,
+      "delayTime": 1.25,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "prefabName": "FX_BI_Gamma_skill02_Attack",
+      "skillType": "MsGammaSkill2",
+      "target": "Self",
+      "duration": 5.5,
+      "delayTime": 1.25,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "prefabName": "FX_BI_Gamma_skill02_Shot",
+      "skillType": "MsGammaSkill2",
+      "target": "Self",
+      "duration": 5.5,
+      "delayTime": 1.25,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "prefabName": "Projectile_FX_BI_Gamma_skill03_Explosion",
+      "skillType": "MsGammaSkill3",
+      "target": "Target",
+      "duration": 5.5,
+      "delayTime": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+
+    {
+      "prefabName": "FX_BI_Omega_skill01_Hit",
+      "skillType": "MsSkill1",
+      "target": "Self",
+      "duration": 4,
+      "delayTime": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "prefabName": "FX_BI_Omega_skill01_HitRange",
+      "skillType": "MsSkill1",
+      "target": "Self",
+      "duration": 4,
+      "delayTime": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "prefabName": "FX_BI_Omega_Skill02_HitRange",
+      "skillType": "MsSkill2",
+      "target": "Self",
+      "duration": 3,
+      "delayTime": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "prefabName": "FX_BI_Omega_skill01_Hit",
+      "skillType": "MsSkill2",
+      "target": "Self",
+      "duration": 3,
+      "delayTime": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+
+    {
+      "prefabName": "FX_BI_AttackDrone_Normal_Attack_01",
+      "skillType": "MsDroneAttack1",
+      "target": "Self",
+      "duration": 1.5,
+      "delayTime": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  ]
+}

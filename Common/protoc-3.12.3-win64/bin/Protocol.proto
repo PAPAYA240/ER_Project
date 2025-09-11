@@ -135,7 +135,9 @@ message S_State
 	RotationInfo RotInfo = 4;
 	MonsterSkill skilltype = 5;
 	int32 sequenceId = 6;
+	PositionInfo targetPosition = 7;
 }
+
 message S_Spawn {
   repeated ObjectInfo objects = 1;
 }

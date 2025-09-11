@@ -13,6 +13,7 @@ namespace Server.Game.Object.Monster.FSM
         private long _skillEndTime = 0; 
 
         private bool _isClientEndReceived = false; // 클라에게 종료 패킷을 받았는가?
+
         private long _lastUpdateTime = 0;
 
 
@@ -21,6 +22,9 @@ namespace Server.Game.Object.Monster.FSM
             skillData =monster.Get_DecideAndUseSkill();
             if (skillData == null)
                 return;
+
+           // if(monster.Info.MonsterType == MonsterType.Gamma)
+           //     DataManager.MonsterSkillDict.TryGetValue(MonsterSkill.MsGammaSkill3, out skillData);
 
             _skillEndTime = Environment.TickCount64 + (long)(skillData.skillDuration * 1000f);
             monster._delaySkillAnimationTimer = skillData.skillCoolTime;

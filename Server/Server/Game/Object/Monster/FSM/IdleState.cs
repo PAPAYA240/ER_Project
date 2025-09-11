@@ -15,7 +15,7 @@ namespace Server.Game.Object.Monster.FSM
         public void Enter(Monster monster)
         {
             monster.BroadcastState(CreatureState.Idle, null, null);
-            _delayTimer = Environment.TickCount64 + (long)(3.0f * 1000f);
+            _delayTimer = Environment.TickCount64 + (long)(monster._delaySkillAnimationTimer * 1000f);
         }
 
         public void Execute(Monster monster)
@@ -31,8 +31,8 @@ namespace Server.Game.Object.Monster.FSM
                 IMonsterState nextState = FSMManager.Instance.EvaluateTargetForNextState(monster);
                 monster.ChangeState(nextState);
             }
-            else
-                _delayTimer = Environment.TickCount64 + (long)(monster._delaySkillAnimationTimer * 1000f);
+           // else
+           //     _delayTimer = Environment.TickCount64 + (long)(monster._delaySkillAnimationTimer * 1000f);
 
             if (monster.Info.MonsterType == MonsterType.Gamma ||
                monster.Info.MonsterType == MonsterType.Drone)

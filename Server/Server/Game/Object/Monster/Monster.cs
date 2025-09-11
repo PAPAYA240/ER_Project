@@ -32,6 +32,7 @@ namespace Server.Game.Object.Monster
         // TODO : 감마 총알 예시
         public float _delaySkillAnimationTimer = 0;
 
+        // Targeting
         public Player Target { get; set; }
         public List<Vector3> _path = new List<Vector3>();
 
@@ -287,6 +288,8 @@ namespace Server.Game.Object.Monster
 
             statePacket.MyState = newState;
 
+            if (Target != null)
+                statePacket.TargetPosition = Target.PosInfo;
             if (skillData != null)
             {
                 statePacket.Skilltype = skillData.skillType;

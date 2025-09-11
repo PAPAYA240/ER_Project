@@ -1,5 +1,9 @@
-﻿using Google.Protobuf.Protocol;
+﻿using Assets.Scripts.Effect;
+using Data;
+using Google.Protobuf.Protocol;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -129,8 +133,13 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
             _animator.SetTrigger(triggerName);
             _isSentEndPacket = true;
 
+            // TODO : 이펙트 재생 임의,  EffectNode로 분할 예정
+            DataManager.MonsterSkillDict.TryGetValue(monsterController.Skill, out List<EffectData> data);
+            if (data != null)
+                FXManager.Instance.PlayEffect(data, monsterController.transform, monsterController.TargetPosition);
+
             // 루프가 필요할 시에 bool 값으로도 조절함
-            if(bLoop)
+            if (bLoop)
                 _animator.SetBool(boolName, true);
         }
         return NodeStatus.Running;

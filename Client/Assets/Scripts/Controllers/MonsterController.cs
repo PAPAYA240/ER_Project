@@ -1,4 +1,6 @@
+using Assets.Scripts.Effect;
 using Assets.Scripts.Highlight;
+using Data;
 using Google.Protobuf.Protocol;
 using System;
 using UnityEngine;
@@ -15,8 +17,8 @@ public class MonsterController : CreatureController
     public float _rotationSpeed = 10f;
 
     private System.Random _random = new System.Random();
-    Quaternion _targetRotation;
-
+    Quaternion _nextRotation;
+    public Vector3 TargetPosition { get; private set; }
     // 애니메이션 끝났을 때 호출
     public Action<CreatureState> OnStateChanged; 
 
@@ -37,7 +39,7 @@ public class MonsterController : CreatureController
 
     protected override void UpdateController()
     {
-          transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, Time.deltaTime * _rotationSpeed);
+          transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
           transform.rotation = transform.rotation;
     }
 
@@ -59,15 +61,16 @@ public class MonsterController : CreatureController
             return;
 
         _navMeshAgent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
-        _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
+        _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
+    bool isEffectPlayed = false;
     public void OnSkillPacket(S_State packet)
     {
         _navMeshAgent.ResetPath();
         Skill = packet.Skilltype;
 
         _navMeshAgent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
-        _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
+        _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
     public void OnRecvStatePacket(S_State packet)
     {
@@ -79,6 +82,8 @@ public class MonsterController : CreatureController
         _lastReceivedSequenceId = packet.SequenceId;
 
         State = packet.MyState;
+        TargetPosition = new Vector3(packet.TargetPosition.PosX, packet.TargetPosition.PosY, packet.TargetPosition.PosZ);
+
         if (_navMeshAgent == null)
             return;
 
@@ -91,6 +96,7 @@ public class MonsterController : CreatureController
                 OnMovePacket(packet);
                 break;
             case CreatureState.Skill:
+               
                 OnSkillPacket(packet);
                 break;
             case CreatureState.Dead:
@@ -98,6 +104,7 @@ public class MonsterController : CreatureController
         }
     }
     #endregion
+  
 
     #region 컴포넌트 추가
     private bool Add_Component()

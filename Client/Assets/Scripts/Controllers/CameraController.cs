@@ -23,6 +23,8 @@ public class CameraController : MonoBehaviour
 
         if (raycaster == null)
             gameObject.AddComponent<PhysicsRaycaster>();
+
+        Camera.main.cullingMask |= (1 << LayerMask.NameToLayer("FX"));
     }
 
     void LateUpdate()
