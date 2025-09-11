@@ -10,7 +10,7 @@ using static UI_SkillBase;
 
 public class MyPlayerController : PlayerController
 {
-    bool _moveKeyPressed = false;
+    protected bool _moveKeyPressed = false;
     bool _isUseSkill = false;
     KeyCode _keyCode = KeyCode.None;
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
@@ -20,8 +20,8 @@ public class MyPlayerController : PlayerController
         public float coolTime;
     }
 
-    int _mask = (1 << (int)Define.Layer.Map);
-    Vector3 _dstPos = Vector3.zero;
+    protected int _mask = (1 << (int)Define.Layer.Map);
+    protected Vector3 _dstPos = Vector3.zero;
 
     public float AttackSpeed
     {
@@ -248,7 +248,7 @@ public class MyPlayerController : PlayerController
         SendAnimPacket(animName, ratio);
     }
 
-    void GetMouseInput()
+    protected virtual void GetMouseInput()
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
