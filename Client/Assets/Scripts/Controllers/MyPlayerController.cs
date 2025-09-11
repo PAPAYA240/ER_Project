@@ -7,6 +7,7 @@ using UnityEngine;
 using static Define;
 using static UI_PlayerInterface;
 using static UI_SkillBase;
+using static UnityEngine.GraphicsBuffer;
 
 public class MyPlayerController : PlayerController
 {
@@ -258,10 +259,26 @@ public class MyPlayerController : PlayerController
         {
             if (raycastHit)
             {
-                _dstPos = hit.point;
-                State = CreatureState.Moving;
+                // 1. 몬스터인지 확인
+                //MonsterController monster = hit.collider.GetComponent<MonsterController>();
+                //if (monster != null)
+                //{
+                //    // 공격 로직 실행
+                //    State = CreatureState.Attack;
+                //    //_target = monster; // 공격 대상 저장
 
-                _moveKeyPressed = true;
+                //    // 애니메이션 트리거나 호출
+                //    _animator.CrossFade("YUKI_ATK_1", 0.1f);
+
+                //    Debug.Log($"공격 대상: {monster.name}");
+                //}
+                //else
+                {
+                    // 2. 몬스터가 아니면 → 이동
+                    _dstPos = hit.point;
+                    State = CreatureState.Moving;
+                    _moveKeyPressed = true;
+                }
             }
         }
     }
