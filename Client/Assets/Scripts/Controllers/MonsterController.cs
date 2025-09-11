@@ -1,4 +1,6 @@
+using Assets.Scripts.Effect;
 using Assets.Scripts.Highlight;
+using Data;
 using Google.Protobuf.Protocol;
 using System;
 using UnityEngine;
@@ -6,43 +8,39 @@ using UnityEngine.AI;
 
 public class MonsterController : CreatureController
 {
+    // 패킷
     private int _lastReceivedSequenceId = -1;
 
-    private System.Random _random = new System.Random();
-    private S_Move _pendingMovePacket = null;
-    public Action<CreatureState> OnStateChanged; // State 변경 시에 호출
+    // 몬스터 정보
     public MonsterSkill Skill { get;  set; }
+    public MonsterType _monsterType;
+    public float _rotationSpeed = 10f;
 
-    public MonsterType monsterType;
+    private System.Random _random = new System.Random();
+    Quaternion _nextRotation;
+    public Vector3 TargetPosition { get; private set; }
+    // 애니메이션 끝났을 때 호출
+    public Action<CreatureState> OnStateChanged; 
 
     // TODO : 임시 변수, 나중에 블랙 보드 만들면 없앨 부분
     public bool isSpawned = false;
    
     protected override void Init()
 	{
-        Skill = MonsterSkill.MsAttack1;
         ObjectType = Define.Object.Monster; 
-        _navMeshAgent = GetComponentInParent<NavMeshAgent>();
 		base.Init();
 
-        // 하이라이트 이펙트 추가
-        Renderer renderer = this.GetComponentInChildren<Renderer>();
-        if (renderer != null)
-            this.gameObject.AddComponent<HighlightEffect>();
-
-        _navMeshAgent.updateRotation = false;
-        _animator.applyRootMotion = false;
+        if (!Add_Component())
+        {
+            Debug.LogError("MonsterController Add_Component : 컴포넌트 추가 실패");
+            return;
+        }
     }
 
-    public float rotationInterpolationSpeed = 10f;
     protected override void UpdateController()
     {
-            transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, Time.deltaTime * rotationInterpolationSpeed);
-            transform.rotation = transform.rotation;
-    }
-
-    protected override void UpdateMoving()
-    {
+          transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
+          transform.rotation = transform.rotation;
     }
 
     public override void OnDamaged()
@@ -51,49 +49,44 @@ public class MonsterController : CreatureController
 		//Managers.Resource.Destroy(gameObject);
 	}
 
+    #region 패킷
     public void OnIdlePacket(S_State movePacket)
     {
         _navMeshAgent.SetDestination(transform.position);
         OnStateChanged?.Invoke(State);
     }
-
-    Vector3 _currentPos;
-    Quaternion _targetRotation;
-    // 서버에서 패킷을 받을 때 호출되는 함수
     public void OnMovePacket(S_State packet)
     {
         if (_navMeshAgent == null)
             return;
 
-        _currentPos = new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ);
-        _navMeshAgent.SetDestination(_currentPos);
-        _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
+        _navMeshAgent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+        _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
-
+    bool isEffectPlayed = false;
     public void OnSkillPacket(S_State packet)
     {
         _navMeshAgent.ResetPath();
         Skill = packet.Skilltype;
 
-        _currentPos = new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ);
-        _navMeshAgent.SetDestination(_currentPos);
-        _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
+        _navMeshAgent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+        _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
-
-
     public void OnRecvStatePacket(S_State packet)
     {
         if (packet.SequenceId <= _lastReceivedSequenceId)
         {
-            Debug.Log($"오래된 패킷 무시: 현재 시퀀스 ID {_lastReceivedSequenceId}, 받은 시퀀스 ID {packet.SequenceId}");
+            Debug.Log($"오래된 패킷{packet.SequenceId} 무시");
             return;
         }
         _lastReceivedSequenceId = packet.SequenceId;
 
         State = packet.MyState;
+        TargetPosition = new Vector3(packet.TargetPosition.PosX, packet.TargetPosition.PosY, packet.TargetPosition.PosZ);
+
         if (_navMeshAgent == null)
             return;
-        
+
         switch (State)
         {
             case CreatureState.Idle:
@@ -101,27 +94,37 @@ public class MonsterController : CreatureController
                 break;
             case CreatureState.Moving:
                 OnMovePacket(packet);
-            break;
+                break;
             case CreatureState.Skill:
+               
                 OnSkillPacket(packet);
                 break;
             case CreatureState.Dead:
-                //_navMeshAgent.SetDestination(transform.position);
-             break;
+                break;
         }
     }
+    #endregion
+  
 
-    public void OnSkillAnimationEnd()
+    #region 컴포넌트 추가
+    private bool Add_Component()
     {
+        _navMeshAgent = GetComponentInParent<NavMeshAgent>();
+        if (_navMeshAgent == null)
+            return false;
+        _navMeshAgent.updateRotation = false;
+
+        Renderer renderer = this.GetComponentInChildren<Renderer>();
+        if (renderer == null)
+            return false;
+        this.gameObject.AddComponent<HighlightEffect>();
+
+        if (_animator == null)
+            return false;
+        _animator.applyRootMotion = false;
+
+        return true;
     }
-    public void SendSkillEndPacket(MonsterSkill _type)
-    {
-        C_SkillEnd skillPacket = new C_SkillEnd()
-        {
-            ObjectInfo = ObjInfo,
-            SkillType = _type
-        };
-        Managers.Network.Send(skillPacket);
-    }
+    #endregion
 }
 

@@ -36,8 +36,7 @@ public class BehaviorTreeBuilder
         node.name = data.Name;
         if (data.Properties != null)
         {
-        Debug.Log($"Attemptinor type: {data.Name}");
-            // JsonConvert.PopulateObject(data.Properties.ToString(), node);
+            Debug.Log($"BT_Builder() Animation Json 파싱 실패 : {data.Name}");
             using (var reader = data.Properties.CreateReader())
             {
                 JsonSerializer.CreateDefault().Populate(reader, node);
@@ -63,70 +62,11 @@ public class BehaviorTreeBuilder
         Type type = Type.GetType(typeName);
         if (null == type)
         {
-            Debug.Log($"Could not find type: {typeName}");
+            Debug.Log($" BT_Builder 타입을 찾을 수 없음: {typeName}");
             return null;
         }
 
         Node node = ScriptableObject.CreateInstance(type) as Node;
         return node;
     }
-
-#if UNITY_EDITOR
-    public BehaviorTreeBuilder Selector(string name = "Selector")
-    {
-        var selector = ScriptableObject.CreateInstance<SelectorNode>();
-        selector.name = name;
-
-        AddNodeToParent(selector);
-        _parentNodeStack.Push(selector);
-        return this;
-    }
-
-     public BehaviorTreeBuilder Sequence(string name = "Sequence")
-    {
-        var sequence = ScriptableObject.CreateInstance<SequenceNode>();
-        sequence.name = name;
-
-        AddNodeToParent(sequence);
-        _parentNodeStack.Push(sequence);
-        return this;
-    }
-    public BehaviorTreeBuilder Action(ActionNode action)
-    {
-        AddNodeToParent(action);
-        return this;
-    }
-    public BehaviorTreeBuilder Condition(DecoratorNode decorator)
-    {
-        AddNodeToParent(decorator);
-        return this;
-    }
-    public BehaviorTreeBuilder End()
-    {
-        if (_parentNodeStack.Count > 0)
-        {
-            _parentNodeStack.Pop();
-        }
-        return this;
-    }
-    public Node Build()
-    {
-        while (_parentNodeStack.Count > 0)
-        {
-            _parentNodeStack.Pop();
-        }
-        return _root;
-    }
-    private void AddNodeToParent(Node node)
-    {
-        if (_parentNodeStack.Count > 0)
-        {
-            _parentNodeStack.Peek().children.Add(node);
-        }
-        else
-         {
-              _root = node;
-         }
-     }
-#endif
 }

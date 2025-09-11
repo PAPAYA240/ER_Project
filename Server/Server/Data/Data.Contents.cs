@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 using System.Xml.XPath;
 using Google.Protobuf.Protocol;
@@ -127,19 +128,46 @@ namespace Server.Data
         public int staminaCost;
         public List<EffectData> effects;
     }
+#endregion
 
+    #region Effect
     [Serializable]
     public class EffectData
     {
+        public enum EEffectTarget
+        {
+            Self,
+            Target,
+            Ground,
+        }
+
         public string type;    // Buff / Debuff / Burn 등
         public string stat;    // MoveSpeed / Defense / AttackSpeed 등
         public float value;    // 수치 (%는 그냥 숫자로 저장)
         public float duration; // 지속시간
         public string condition; // 옵션 (예: "HP<50%")
+
+        public string prefabName; // 프리팹 이름
+        public float delayTime; // 이펙트 시작 시간
+        public Vector3 position;
+        public Quaternion rotation;
+        public string sound;
+        public EEffectTarget target; // 이펙트가 표시될 위치
+
+        public EffectData(string name, EEffectTarget target, float duration, string sound, Vector3 position = default(Vector3), Quaternion rotation = default(Quaternion))
+        {
+            this.prefabName = name;
+            this.target = target;
+            this.duration = duration;
+            this.sound = sound;
+            this.position = position;
+            this.rotation = rotation;
+        }
     }
+
     #endregion
 
-    #region Monster
+    #region Monster Skill
     [Serializable]
     public class MonsterData
     {
@@ -177,7 +205,7 @@ namespace Server.Data
         public MonsterSkill skillType;
         public float skillDuration;
         public int damage;
-        public ProjectileInfo projectile;
+        public float skillCoolTime;
     }
 
     [Serializable]
