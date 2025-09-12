@@ -26,8 +26,8 @@ public class MyPlayerController : PlayerController
         public float coolTime;
     }
 
-    int _mask = (1 << (int)Define.Layer.Map);
-    Vector3 _dstPos = Vector3.zero;
+    protected int _mask = (1 << (int)Define.Layer.Map);
+    protected Vector3 _dstPos = Vector3.zero;
 
     public float AttackSpeed
     {
@@ -41,7 +41,7 @@ public class MyPlayerController : PlayerController
 
     //UI
     //UI_PlayerHUD _playerHUD = null;
-    UI_PlayerInterface _playerInterface = null;
+    protected UI_PlayerInterface _playerInterface = null;
 
     public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
     public WeaponInfo MyWeapon { get; set; } = new WeaponInfo();
@@ -477,7 +477,7 @@ public class MyPlayerController : PlayerController
         return cooldown * (100f / (100f + skillAcc));
     }
 
-    private void OnCharSkillLevelUp(SkillEnum skill)
+    protected void OnCharSkillLevelUp(SkillEnum skill)
     {
         //For QWERT
         _skills[GetCharacterName() + "_" + skill.ToString()].CurLevel += 1;
@@ -512,11 +512,10 @@ public class MyPlayerController : PlayerController
     #region Packet
     private void SendSkillPacket(KeyCode key)
     {
-        string skillName = Enum.GetName(typeof(Character), Managers.Object.Character) + '_' + key.ToString();
         C_Skill skillPacket = new C_Skill()
         {
             ObjectInfo = ObjInfo,
-            SkillInfo = new SkillInfo() { KeyCode = (int)key, Name = skillName }
+            SkillInfo = new SkillInfo() { KeyCode = (int)key }
         };
         Managers.Network.Send(skillPacket);
         Debug.Log("스킬 패킷 보내기");

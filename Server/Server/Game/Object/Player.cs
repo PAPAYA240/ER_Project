@@ -116,5 +116,22 @@ namespace Server.Game
             visibleObjsPkt.VisibleObjectIds.AddRange(Ids);
             Session.Send(visibleObjsPkt);
         }
+
+        public int CheckLevelUp()
+        {
+            int levelUp = 0;
+            while (true)
+            {
+                int requiredExp = DataManager.ExpDict[Stat.Level];
+                if (requiredExp <= Stat.Exp)
+                {
+                    levelUp++;
+                    Stat.Exp -= requiredExp;
+                }
+                else
+                    break;
+            }
+            return levelUp;
+        }
     }
 }

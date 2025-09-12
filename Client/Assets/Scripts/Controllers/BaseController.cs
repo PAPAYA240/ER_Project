@@ -40,6 +40,12 @@ public class BaseController : MonoBehaviour
         }
     }
 
+    public virtual int Stamina
+    {
+        get { return Stat.Stamina; }
+        set { Stat.Stamina = value; }
+    }
+
     protected bool _updated = false;
 
     PositionInfo _positionInfo = new PositionInfo();
@@ -161,6 +167,9 @@ public class BaseController : MonoBehaviour
             case CreatureState.Dead:
                 UpdateDead();
                 break;
+            case CreatureState.Rest:
+                UpdateRest();
+                break;
         }
     }
 
@@ -184,6 +193,11 @@ public class BaseController : MonoBehaviour
     }
 
     protected virtual void UpdateDead()
+    {
+
+    }
+
+    protected virtual void UpdateRest()
     {
 
     }

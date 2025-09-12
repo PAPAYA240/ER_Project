@@ -166,7 +166,7 @@ class PacketHandler
         S_EnterPick enterPickPacket = packet as S_EnterPick;
 
         GameObject go = GameObject.Find("Test");
-        if(go == null) return;
+        if (go == null) return;
 
         UI_SelectEvent selectEvent = go.GetComponent<UI_SelectEvent>();
         if (selectEvent == null) return;
@@ -201,5 +201,20 @@ class PacketHandler
 
         mpc.VisibleObjectIds.Clear(); // 나중에 렌더링 하고나서 바로 Clear하는게 나을듯?
         mpc.VisibleObjectIds = visibleObjectsPkt.VisibleObjectIds.ToHashSet();
+    }
+
+    public static void S_LevelUpHandler(PacketSession session, IMessage packet)
+    {
+        S_LevelUp levelUpPkt = packet as S_LevelUp;
+
+        GameObject go = Managers.Object.FindById(levelUpPkt.ObjectId);
+        if (go == null)
+            return;
+
+        CreatureController cc = go.GetComponent<CreatureController>();
+        if (cc == null)
+            return;
+        
+        cc.ChangeStat(levelUpPkt.StatGrowth);        
     }
 }
