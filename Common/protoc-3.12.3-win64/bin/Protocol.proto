@@ -35,6 +35,7 @@ enum CreatureState{
   MOVING = 1;
   SKILL = 2;
   DEAD = 3;
+  REST = 4;
 }
 
 enum GameObjectType{

@@ -167,6 +167,9 @@ public class BaseController : MonoBehaviour
             case CreatureState.Dead:
                 UpdateDead();
                 break;
+            case CreatureState.Rest:
+                UpdateRest();
+                break;
         }
     }
 
@@ -190,6 +193,11 @@ public class BaseController : MonoBehaviour
     }
 
     protected virtual void UpdateDead()
+    {
+
+    }
+
+    protected virtual void UpdateRest()
     {
 
     }

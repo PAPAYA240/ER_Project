@@ -11,8 +11,8 @@ using static UI_SkillBase;
 public class MyPlayerController : PlayerController
 {
     protected bool _moveKeyPressed = false;
-    bool _isUseSkill = false;
-    KeyCode _keyCode = KeyCode.None;
+    protected bool _isUseSkill = false;
+    protected KeyCode _keyCode = KeyCode.None;
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
     class CoolTime
     {
@@ -35,7 +35,7 @@ public class MyPlayerController : PlayerController
 
     //UI
     //UI_PlayerHUD _playerHUD = null;
-    UI_PlayerInterface _playerInterface = null;
+    protected UI_PlayerInterface _playerInterface = null;
 
     public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
     public WeaponInfo MyWeapon { get; set; } = new WeaponInfo();
@@ -394,7 +394,7 @@ public class MyPlayerController : PlayerController
         return cooldown * (100f / (100f + skillAcc));
     }
 
-    private void OnCharSkillLevelUp(SkillEnum skill)
+    protected void OnCharSkillLevelUp(SkillEnum skill)
     {
         //For QWERT
         _skills[GetCharacterName() + "_" + skill.ToString()].CurLevel += 1;
