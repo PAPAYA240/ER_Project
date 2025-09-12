@@ -9,7 +9,7 @@ public class IsSpawnedCheckNode : DecoratorNode
         MonsterController monsterState = agent.GetComponent<MonsterController>();
         if (monsterState != null && monsterState.isSpawned)
             return NodeStatus.Success;
-
+     
         return NodeStatus.Failure;
     }
 }

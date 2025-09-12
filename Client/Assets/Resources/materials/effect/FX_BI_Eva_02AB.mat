@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FX_BI_Eva_02AB
+  m_Shader: {fileID: 4800000, guid: ef1ad4bdc9be64e48803e8444d69bbc1, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 0
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties:
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+      _B_tex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 2, y: 2}
+        m_Offset: {x: 0, y: 0}
+      _G_tex:
+        m_Texture: {fileID: 2800000, guid: 6788099106eb44042a871b88a283a611, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+      _R_tex:
+        m_Texture: {fileID: 2800000, guid: 93d6401e69c5a5b4aa7d2db3cb3584e9, type: 3}
+        m_Scale: {x: -0.32, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: {}
+    m_Floats:
+      _A_Speed: 0
+      _B_Speed: 0
+      _C_Speed: 5
+      _Cutoff: 0.895
+      _D_Speed: 0
+      _RotateSpeed: 1
+      _ZTestMode: 2
+      _stvalue: 0.81
+      _value: 8
+    m_Colors:
+      _Color: {r: 1, g: 0.4669811, b: 0.728265, a: 1}
+  m_BuildTextureStacks: []

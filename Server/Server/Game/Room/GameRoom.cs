@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Numerics;
-using System.Text;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
@@ -29,19 +26,15 @@ namespace Server.Game
         }
         public void Init(int mapId)
         {
-            string navMeshFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "navmesh_data.json");
-            Pathfinding.Initialize(navMeshFilePath);
+            Pathfinding.Initialize();
 
             // Spawn Monster
-            _monsterManager.Init(this, 1);
-            // _monsterManager.Add(1, MonsterType.Omega);
-           // _monsterManager.Add(1, MonsterType.Drone);
+            _monsterManager.Init(this);
+            _monsterManager.Add(1, MonsterType.Gamma);
         }
 
         public override void Update()
         {
-            _monsterManager.Update();
-
             foreach (Monster monster in _monsters.Values)
             {
                 monster.Update();

@@ -47,7 +47,7 @@ public class MonsterSaverEditor : MonoBehaviour
         foreach (MonsterController monsterInfo in monstersInScene)
         {
             Vector3 pos = monsterInfo.transform.position;
-            MonsterSaveData data = new MonsterSaveData(monsterInfo.monsterType, pos);
+            MonsterSaveData data = new MonsterSaveData(monsterInfo._monsterType, pos);
             monsterList.monsters.Add(data);
         }
 

@@ -10,7 +10,7 @@ using static UI_SkillBase;
 
 public class MyPlayerController : PlayerController
 {
-    bool _moveKeyPressed = false;
+    protected bool _moveKeyPressed = false;
     bool _isUseSkill = false;
     KeyCode _keyCode = KeyCode.None;
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
@@ -20,8 +20,8 @@ public class MyPlayerController : PlayerController
         public float coolTime;
     }
 
-    int _mask = (1 << (int)Define.Layer.Map);
-    Vector3 _dstPos = Vector3.zero;
+    protected int _mask = (1 << (int)Define.Layer.Map);
+    protected Vector3 _dstPos = Vector3.zero;
 
     public float AttackSpeed
     {
@@ -214,12 +214,12 @@ public class MyPlayerController : PlayerController
             _isUseSkill = true;
             _keyCode = KeyCode.W;
         }
-        else if (Input.GetKeyDown(KeyCode.E))
+        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
         {
             _isUseSkill = true;
             _keyCode = KeyCode.E;
         }
-        else if (Input.GetKeyDown(KeyCode.R))
+        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))
         {
             _isUseSkill = true;
             _keyCode = KeyCode.R;
@@ -248,7 +248,7 @@ public class MyPlayerController : PlayerController
         SendAnimPacket(animName, ratio);
     }
 
-    void GetMouseInput()
+    protected virtual void GetMouseInput()
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -438,11 +438,10 @@ public class MyPlayerController : PlayerController
     #region Packet
     private void SendSkillPacket(KeyCode key)
     {
-        string skillName = Enum.GetName(typeof(Character), Managers.Object.Character) + '_' + key.ToString();
         C_Skill skillPacket = new C_Skill()
         {
             ObjectInfo = ObjInfo,
-            SkillInfo = new SkillInfo() { KeyCode = (int)key, Name = skillName }
+            SkillInfo = new SkillInfo() { KeyCode = (int)key }
         };
         Managers.Network.Send(skillPacket);
         Debug.Log("스킬 패킷 보내기");

@@ -4,7 +4,6 @@ using UnityEngine;
 [RequireComponent(typeof(MonsterController))]
 public class MonsterAI : MonoBehaviour
 {
-    // 루트 노드
     private List<Node> _rootNodes = new List<Node>();
 
     private float _tickInterval = 0.2f;
@@ -33,6 +32,7 @@ public class MonsterAI : MonoBehaviour
         _timer += Time.deltaTime;
         if (_timer < _tickInterval)
             return;
+
         _timer = 0f;
         foreach (var rootNode in _rootNodes)
             rootNode.Execute(this.gameObject);
@@ -40,7 +40,7 @@ public class MonsterAI : MonoBehaviour
 
     private List<Node> CreateBehaviorTree()
     {
-        TextAsset[] jsonAssets = Resources.LoadAll<TextAsset>("Data/MonsterDataList");
+        TextAsset[] jsonAssets = Resources.LoadAll<TextAsset>("Data/MonsterData/MonsterDataSkillList");
 
         var builder = new BehaviorTreeBuilder();
         foreach (var jsonAsset in jsonAssets)
@@ -55,9 +55,7 @@ public class MonsterAI : MonoBehaviour
         if (_monsterController != null)
         {
             foreach (var listener in _stateListeners)
-            {
                 _monsterController.OnStateChanged -= listener.HandleStateChange;
-            }
         }
     }
 
@@ -66,13 +64,10 @@ public class MonsterAI : MonoBehaviour
         foreach (var node in nodes)
         {
             if (node is IStateChangeListener listener)
-            {
                 _stateListeners.Add(listener);
-            }
+
             if (node is CompositeNode composite)
-            {
                 FindAllListeners(composite.children);
-            }
         }
     }
 }

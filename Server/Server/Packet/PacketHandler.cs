@@ -134,4 +134,20 @@ class PacketHandler
 
         clientSession.LastPing = DateTime.Now;
     }
+
+    public static void C_ReadyHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+
+        PickRoom room = RoomManager.Instance.Find(1) as PickRoom;
+        if (room == null)
+            return;
+
+        if (room.isRoomFull())
+            return;
+
+        PickPlayer pp = new PickPlayer();
+        pp.Session = clientSession;
+        room.Push(room.EnterPick, pp);
+    }
 }
