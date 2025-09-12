@@ -1,0 +1,118 @@
+{
+  "hitbox": {
+    "Abigail": {
+      "Q": {
+        "shape": "Circle",
+        "type" : "Skill_Track",
+        "radius": 3.5,
+        "duration": 0.6
+      },
+      "W": {
+        "shape": "Sector",
+        "type": "Skill_Static",
+        "radius": 6,
+        "angle": 70,
+        "duration":  0.5
+      },
+      "E": {
+        "type": "Skill_Static"
+      },
+      "R": {
+        "shape": "Circle",
+        "type": "Skill_Track",
+        "radius": 4.2,
+        "duration": 0.81
+      }
+    },
+    "Hyunwoo": {
+      "Q": {
+        "shape": "Sector",
+        "type": "Skill_Static",
+        "radius": 2.2,
+        "angle": 90,
+        "duration": 0.2
+      },
+      "W": {
+        "type": "Skill_Static"
+      },
+      "E": {
+        "type": "Skill_Track"
+      },
+      "R": {
+        "shape": "Ray",
+        "type": "Skill_Static",
+        "charge": true,
+        "width": 3,
+        "duration": 0.3,
+        "maxDistance": 3.6
+      }
+    },
+    "Rozzi": {
+      "Q": {
+        "shape": "Ray",
+        "type": "Skill_Static",
+        "width": 0.5,
+        "duration": 0.4,
+        "maxDistance": 3.6
+      },
+      "W": {
+        "shape": "Circle",
+        "type": "Skill_Track",
+        "radius": 2.8,
+        "duration": 0.6
+      },
+      "E": {
+        "type": "Skill_Static"
+      },
+      "R": {
+        "shape": "Circle",
+        "type": "Skill_Projectile",
+        "radius": 1,
+        "speed": 4,
+        "duration": 0.6,
+        "maxDistance": 6
+      }
+    },
+    "Theodore": {
+      "Q": {
+        "shape": "Ray",
+        "type": "Skill_Static",
+        "charge": true,
+        "width": 2.8,
+        "minDistance": 7,
+        "maxDistance": 12
+      },
+      "W": {
+        "shape": "Rectangle",
+        "type": "Skill_Static"
+      },
+      "E": {
+        "shape": "Circle",
+        "type": "Skill_Projectile",
+        "maxDistance": 8
+      },
+      "R": {
+        "shape": "Rectangle",
+        "type": "Skill_Projectile",
+        "maxDistance": 12
+      }
+    },
+    "Yuki": {
+      "Q": {
+        "type": "Skill_Static"
+      },
+      "W": {
+        "type": "Skill_Static"
+      },
+      "E": {
+        "type": "Skill_Track"
+      },
+      "R": {
+        "shape": "Sector",
+        "type": "Skill_Static",
+        "radius": 5,
+        "angle": 180
+      }
+    }
+  }
+} 

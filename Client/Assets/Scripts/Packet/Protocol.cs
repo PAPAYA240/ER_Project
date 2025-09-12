@@ -74,44 +74,51 @@ namespace Google.Protobuf.Protocol {
             "EVdlYXBvbk1hc3RlcnlJbmZvEhMKC2F0dGFja1NwZWVkGAEgASgCEhMKC2Jh",
             "c2ljQXRrQW1wGAIgASgCEhAKCHNraWxsQW1wGAMgASgCIjAKCldlYXBvbklu",
             "Zm8SDQoFcmFuZ2UYASABKAISEwoLYXR0YWNrU3BlZWQYAiABKAIiLQoJU2tp",
-            "bGxJbmZvEg8KB3NraWxsSWQYASABKAUSDwoHa2V5Q29kZRgCIAEoBSIWCgZD",
-            "X1BpbmcSDAoEcGluZxgBIAEoCCI+ChBTX1Zpc2libGVPYmplY3RzEhAKCG9i",
-            "amVjdElkGAEgASgFEhgKEHZpc2libGVPYmplY3RJZHMYAiADKAUiRQoJU19M",
-            "ZXZlbFVwEhAKCG9iamVjdElkGAEgASgFEiYKCnN0YXRHcm93dGgYAiABKAsy",
-            "Ei5Qcm90b2NvbC5TdGF0SW5mbyIYCgdDX1JlYWR5Eg0KBXJlYWR5GAEgASgI",
-            "KuMCCgVNc2dJZBIQCgxDX0VOVEVSX0dBTUUQABIQCgxTX0VOVEVSX0dBTUUQ",
-            "ARIQCgxTX0xFQVZFX0dBTUUQAhILCgdTX1NQQVdOEAMSDQoJU19ERVNQQVdO",
-            "EAQSCgoGQ19NT1ZFEAUSCgoGU19NT1ZFEAYSCwoHQ19TS0lMTBAHEgsKB1Nf",
-            "U0tJTEwQCBIPCgtTX0NIQU5HRV9IUBAJEgkKBVNfRElFEAoSCgoGQ19BTklN",
-            "EAsSCgoGU19BTklNEAwSDwoLQ19DSEFSQUNURVIQDRILCgdTX1NUQVRFEA4S",
-            "DwoLQ19TS0lMTF9FTkQQDxIPCgtTX0NIQVJBQ1RFUhAQEhAKDFNfRU5URVJf",
-            "UElDSxAREhAKDFNfTEVBVkVfUElDSxASEgoKBkNfUElORxATEhUKEVNfVklT",
-            "SUJMRV9PQkpFQ1RTEBQSDgoKU19MRVZFTF9VUBAVEgsKB0NfUkVBRFkQFio6",
-            "Cg1DcmVhdHVyZVN0YXRlEggKBElETEUQABIKCgZNT1ZJTkcQARIJCgVTS0lM",
-            "TBACEggKBERFQUQQAypDCg5HYW1lT2JqZWN0VHlwZRIICgROT05FEAASCgoG",
-            "UExBWUVSEAESCwoHTU9OU1RFUhACEg4KClBST0pFQ1RJTEUQAypBCglTa2ls",
-            "bFR5cGUSDgoKU0tJTExfTk9ORRAAEg4KClNLSUxMX0FVVE8QARIUChBTS0lM",
-            "TF9QUk9KRUNUSUxFEAIq6QEKDE1vbnN0ZXJTa2lsbBILCgdNU19OT05FEAAS",
-            "DgoKTVNfQVRUQUNLMRABEg4KCk1TX0FUVEFDSzIQAhINCglNU19TS0lMTDEQ",
-            "AxINCglNU19TS0lMTDIQBBINCglNU19TS0lMTDMQBRIUChBNU19EUk9ORV9B",
-            "VFRBQ0sxEAYSFAoQTVNfRFJPTkVfQVRUQUNLMhAHEhQKEE1TX0dBTU1BX0FU",
-            "VEFDSzEQCBITCg9NU19HQU1NQV9TS0lMTDEQCRITCg9NU19HQU1NQV9TS0lM",
-            "TDIQChITCg9NU19HQU1NQV9TS0lMTDMQCyo2CghBbmltVHlwZRIICgRQTEFZ",
-            "EAASCwoHVFJJR0dFUhABEggKBEJPT0wQAhIJCgVGTE9BVBADKmAKDUNoYXJh",
-            "Y3RlclR5cGUSEgoOQ0hBUkFDVEVSX05PTkUQABIJCgVST1paSRABEggKBFlV",
-            "S0kQAhILCgdIWVVOV09PEAMSCwoHQUJJR0FJTBAEEgwKCFRIRU9ET1JFEAUq",
-            "SwoLTW9uc3RlclR5cGUSEAoMTU9OU1RFUl9OT05FEAASCQoFQUxQSEEQARIJ",
-            "CgVPTUVHQRACEgkKBURST05FEAMSCQoFR0FNTUEQBCrIAgoGV2VhcG9uEg8K",
-            "C1dFQVBPTl9OT05FEAASCgoGREFHR0VSEAESFAoQVFdPX0hBTkRFRF9TV09S",
-            "RBACEgcKA0FYRRADEg8KC0RVQUxfU1dPUkRTEAQSCgoGUElTVE9MEAUSEQoN",
-            "QVNTQVVMVF9SSUZMRRAGEhAKDFNOSVBFUl9SSUZMRRAHEgoKBlJBUElFUhAI",
-            "EgkKBVNQRUFSEAkSCgoGSEFNTUVSEAoSBwoDQkFUEAsSCQoFVEhST1cQDBIM",
-            "CghTSFVSSUtFThANEgcKA0JPVxAOEgwKCENST1NTQk9XEA8SCQoFR0xPVkUQ",
-            "EBIJCgVUT05GQRAREgoKBkdVSVRBUhASEgwKCE5VTkNIQUtVEBMSCAoEV0hJ",
-            "UBAUEgoKBkNBTUVSQRAVEgoKBkFSQ0FOQRAWEhIKDlZfRl9QUk9TVEhFVElD",
-            "EBcqMwoKU2tpbGxTaGFwZRIKCgZDSVJDTEUQABINCglSRUNUQU5HTEUQARIK",
-            "CgZTRUNUT1IQAkIbqgIYR29vZ2xlLlByb3RvYnVmLlByb3RvY29sYgZwcm90",
-            "bzM="));
+            "bGxJbmZvEg8KB3NraWxsSWQYASABKAUSDwoHa2V5Q29kZRgCIAEoBSKFAgoL",
+            "U2tpbGxIaXRib3gSDQoFc2hhcGUYASABKAkSDAoEdHlwZRgCIAEoCRIOCgZj",
+            "aGFyZ2UYAyABKAgSEgoKbG9va09mZnNldBgEIAEoAhITCgtyaWdodE9mZnNl",
+            "dBgFIAEoAhIMCgRkaXJYGAYgASgCEgwKBGRpclkYByABKAISDgoGcmFkaXVz",
+            "GAggASgCEg0KBWFuZ2xlGAkgASgCEg0KBXdpZHRoGAogASgCEg4KBmhlaWdo",
+            "dBgLIAEoAhIQCghkdXJhdGlvbhgMIAEoAhINCgVzcGVlZBgNIAEoAhIQCght",
+            "aW5SYW5nZRgOIAEoAhITCgttYXhEaXN0YW5jZRgPIAEoAiIWCgZDX1BpbmcS",
+            "DAoEcGluZxgBIAEoCCI+ChBTX1Zpc2libGVPYmplY3RzEhAKCG9iamVjdElk",
+            "GAEgASgFEhgKEHZpc2libGVPYmplY3RJZHMYAiADKAUiRQoJU19MZXZlbFVw",
+            "EhAKCG9iamVjdElkGAEgASgFEiYKCnN0YXRHcm93dGgYAiABKAsyEi5Qcm90",
+            "b2NvbC5TdGF0SW5mbyIYCgdDX1JlYWR5Eg0KBXJlYWR5GAEgASgIKuMCCgVN",
+            "c2dJZBIQCgxDX0VOVEVSX0dBTUUQABIQCgxTX0VOVEVSX0dBTUUQARIQCgxT",
+            "X0xFQVZFX0dBTUUQAhILCgdTX1NQQVdOEAMSDQoJU19ERVNQQVdOEAQSCgoG",
+            "Q19NT1ZFEAUSCgoGU19NT1ZFEAYSCwoHQ19TS0lMTBAHEgsKB1NfU0tJTEwQ",
+            "CBIPCgtTX0NIQU5HRV9IUBAJEgkKBVNfRElFEAoSCgoGQ19BTklNEAsSCgoG",
+            "U19BTklNEAwSDwoLQ19DSEFSQUNURVIQDRILCgdTX1NUQVRFEA4SDwoLQ19T",
+            "S0lMTF9FTkQQDxIPCgtTX0NIQVJBQ1RFUhAQEhAKDFNfRU5URVJfUElDSxAR",
+            "EhAKDFNfTEVBVkVfUElDSxASEgoKBkNfUElORxATEhUKEVNfVklTSUJMRV9P",
+            "QkpFQ1RTEBQSDgoKU19MRVZFTF9VUBAVEgsKB0NfUkVBRFkQFio6Cg1DcmVh",
+            "dHVyZVN0YXRlEggKBElETEUQABIKCgZNT1ZJTkcQARIJCgVTS0lMTBACEggK",
+            "BERFQUQQAypDCg5HYW1lT2JqZWN0VHlwZRIICgROT05FEAASCgoGUExBWUVS",
+            "EAESCwoHTU9OU1RFUhACEg4KClBST0pFQ1RJTEUQAypkCglTa2lsbFR5cGUS",
+            "DgoKU0tJTExfTk9ORRAAEg4KClNLSUxMX0FVVE8QARIUChBTS0lMTF9QUk9K",
+            "RUNUSUxFEAISEAoMU0tJTExfU1RBVElDEAMSDwoLU0tJTExfVFJBQ0sQBCrp",
+            "AQoMTW9uc3RlclNraWxsEgsKB01TX05PTkUQABIOCgpNU19BVFRBQ0sxEAES",
+            "DgoKTVNfQVRUQUNLMhACEg0KCU1TX1NLSUxMMRADEg0KCU1TX1NLSUxMMhAE",
+            "Eg0KCU1TX1NLSUxMMxAFEhQKEE1TX0RST05FX0FUVEFDSzEQBhIUChBNU19E",
+            "Uk9ORV9BVFRBQ0syEAcSFAoQTVNfR0FNTUFfQVRUQUNLMRAIEhMKD01TX0dB",
+            "TU1BX1NLSUxMMRAJEhMKD01TX0dBTU1BX1NLSUxMMhAKEhMKD01TX0dBTU1B",
+            "X1NLSUxMMxALKjYKCEFuaW1UeXBlEggKBFBMQVkQABILCgdUUklHR0VSEAES",
+            "CAoEQk9PTBACEgkKBUZMT0FUEAMqYAoNQ2hhcmFjdGVyVHlwZRISCg5DSEFS",
+            "QUNURVJfTk9ORRAAEgkKBVJPWlpJEAESCAoEWVVLSRACEgsKB0hZVU5XT08Q",
+            "AxILCgdBQklHQUlMEAQSDAoIVEhFT0RPUkUQBSpLCgtNb25zdGVyVHlwZRIQ",
+            "CgxNT05TVEVSX05PTkUQABIJCgVBTFBIQRABEgkKBU9NRUdBEAISCQoFRFJP",
+            "TkUQAxIJCgVHQU1NQRAEKsgCCgZXZWFwb24SDwoLV0VBUE9OX05PTkUQABIK",
+            "CgZEQUdHRVIQARIUChBUV09fSEFOREVEX1NXT1JEEAISBwoDQVhFEAMSDwoL",
+            "RFVBTF9TV09SRFMQBBIKCgZQSVNUT0wQBRIRCg1BU1NBVUxUX1JJRkxFEAYS",
+            "EAoMU05JUEVSX1JJRkxFEAcSCgoGUkFQSUVSEAgSCQoFU1BFQVIQCRIKCgZI",
+            "QU1NRVIQChIHCgNCQVQQCxIJCgVUSFJPVxAMEgwKCFNIVVJJS0VOEA0SBwoD",
+            "Qk9XEA4SDAoIQ1JPU1NCT1cQDxIJCgVHTE9WRRAQEgkKBVRPTkZBEBESCgoG",
+            "R1VJVEFSEBISDAoITlVOQ0hBS1UQExIICgRXSElQEBQSCgoGQ0FNRVJBEBUS",
+            "CgoGQVJDQU5BEBYSEgoOVl9GX1BST1NUSEVUSUMQFypMCgpTa2lsbFNoYXBl",
+            "Eg4KClNIQVBFX05PTkUQABIKCgZDSVJDTEUQARIHCgNSQVkQAhINCglSRUNU",
+            "QU5HTEUQAxIKCgZTRUNUT1IQBEIbqgIYR29vZ2xlLlByb3RvYnVmLlByb3Rv",
+            "Y29sYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.MonsterSkill), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.Weapon), typeof(global::Google.Protobuf.Protocol.SkillShape), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -142,6 +149,7 @@ namespace Google.Protobuf.Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.WeaponMasteryInfo), global::Google.Protobuf.Protocol.WeaponMasteryInfo.Parser, new[]{ "AttackSpeed", "BasicAtkAmp", "SkillAmp" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.WeaponInfo), global::Google.Protobuf.Protocol.WeaponInfo.Parser, new[]{ "Range", "AttackSpeed" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.SkillInfo), global::Google.Protobuf.Protocol.SkillInfo.Parser, new[]{ "SkillId", "KeyCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.SkillHitbox), global::Google.Protobuf.Protocol.SkillHitbox.Parser, new[]{ "Shape", "Type", "Charge", "LookOffset", "RightOffset", "DirX", "DirY", "Radius", "Angle", "Width", "Height", "Duration", "Speed", "MinRange", "MaxDistance" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_Ping), global::Google.Protobuf.Protocol.C_Ping.Parser, new[]{ "Ping" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_VisibleObjects), global::Google.Protobuf.Protocol.S_VisibleObjects.Parser, new[]{ "ObjectId", "VisibleObjectIds" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_LevelUp), global::Google.Protobuf.Protocol.S_LevelUp.Parser, new[]{ "ObjectId", "StatGrowth" }, null, null, null, null),
@@ -196,6 +204,8 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("SKILL_NONE")] SkillNone = 0,
     [pbr::OriginalName("SKILL_AUTO")] SkillAuto = 1,
     [pbr::OriginalName("SKILL_PROJECTILE")] SkillProjectile = 2,
+    [pbr::OriginalName("SKILL_STATIC")] SkillStatic = 3,
+    [pbr::OriginalName("SKILL_TRACK")] SkillTrack = 4,
   }
 
   public enum MonsterSkill {
@@ -265,9 +275,11 @@ namespace Google.Protobuf.Protocol {
   }
 
   public enum SkillShape {
-    [pbr::OriginalName("CIRCLE")] Circle = 0,
-    [pbr::OriginalName("RECTANGLE")] Rectangle = 1,
-    [pbr::OriginalName("SECTOR")] Sector = 2,
+    [pbr::OriginalName("SHAPE_NONE")] ShapeNone = 0,
+    [pbr::OriginalName("CIRCLE")] Circle = 1,
+    [pbr::OriginalName("RAY")] Ray = 2,
+    [pbr::OriginalName("RECTANGLE")] Rectangle = 3,
+    [pbr::OriginalName("SECTOR")] Sector = 4,
   }
 
   #endregion
@@ -5193,6 +5205,527 @@ namespace Google.Protobuf.Protocol {
 
   }
 
+  public sealed partial class SkillHitbox : pb::IMessage<SkillHitbox> {
+    private static readonly pb::MessageParser<SkillHitbox> _parser = new pb::MessageParser<SkillHitbox>(() => new SkillHitbox());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<SkillHitbox> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[27]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SkillHitbox() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SkillHitbox(SkillHitbox other) : this() {
+      shape_ = other.shape_;
+      type_ = other.type_;
+      charge_ = other.charge_;
+      lookOffset_ = other.lookOffset_;
+      rightOffset_ = other.rightOffset_;
+      dirX_ = other.dirX_;
+      dirY_ = other.dirY_;
+      radius_ = other.radius_;
+      angle_ = other.angle_;
+      width_ = other.width_;
+      height_ = other.height_;
+      duration_ = other.duration_;
+      speed_ = other.speed_;
+      minRange_ = other.minRange_;
+      maxDistance_ = other.maxDistance_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SkillHitbox Clone() {
+      return new SkillHitbox(this);
+    }
+
+    /// <summary>Field number for the "shape" field.</summary>
+    public const int ShapeFieldNumber = 1;
+    private string shape_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Shape {
+      get { return shape_; }
+      set {
+        shape_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "type" field.</summary>
+    public const int TypeFieldNumber = 2;
+    private string type_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Type {
+      get { return type_; }
+      set {
+        type_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "charge" field.</summary>
+    public const int ChargeFieldNumber = 3;
+    private bool charge_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Charge {
+      get { return charge_; }
+      set {
+        charge_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "lookOffset" field.</summary>
+    public const int LookOffsetFieldNumber = 4;
+    private float lookOffset_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float LookOffset {
+      get { return lookOffset_; }
+      set {
+        lookOffset_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "rightOffset" field.</summary>
+    public const int RightOffsetFieldNumber = 5;
+    private float rightOffset_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float RightOffset {
+      get { return rightOffset_; }
+      set {
+        rightOffset_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "dirX" field.</summary>
+    public const int DirXFieldNumber = 6;
+    private float dirX_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float DirX {
+      get { return dirX_; }
+      set {
+        dirX_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "dirY" field.</summary>
+    public const int DirYFieldNumber = 7;
+    private float dirY_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float DirY {
+      get { return dirY_; }
+      set {
+        dirY_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "radius" field.</summary>
+    public const int RadiusFieldNumber = 8;
+    private float radius_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Radius {
+      get { return radius_; }
+      set {
+        radius_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "angle" field.</summary>
+    public const int AngleFieldNumber = 9;
+    private float angle_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Angle {
+      get { return angle_; }
+      set {
+        angle_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "width" field.</summary>
+    public const int WidthFieldNumber = 10;
+    private float width_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Width {
+      get { return width_; }
+      set {
+        width_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "height" field.</summary>
+    public const int HeightFieldNumber = 11;
+    private float height_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Height {
+      get { return height_; }
+      set {
+        height_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "duration" field.</summary>
+    public const int DurationFieldNumber = 12;
+    private float duration_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Duration {
+      get { return duration_; }
+      set {
+        duration_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "speed" field.</summary>
+    public const int SpeedFieldNumber = 13;
+    private float speed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Speed {
+      get { return speed_; }
+      set {
+        speed_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "minRange" field.</summary>
+    public const int MinRangeFieldNumber = 14;
+    private float minRange_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float MinRange {
+      get { return minRange_; }
+      set {
+        minRange_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "maxDistance" field.</summary>
+    public const int MaxDistanceFieldNumber = 15;
+    private float maxDistance_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float MaxDistance {
+      get { return maxDistance_; }
+      set {
+        maxDistance_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as SkillHitbox);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(SkillHitbox other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Shape != other.Shape) return false;
+      if (Type != other.Type) return false;
+      if (Charge != other.Charge) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(LookOffset, other.LookOffset)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(RightOffset, other.RightOffset)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(DirX, other.DirX)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(DirY, other.DirY)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Radius, other.Radius)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Angle, other.Angle)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Width, other.Width)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Height, other.Height)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Duration, other.Duration)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Speed, other.Speed)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MinRange, other.MinRange)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MaxDistance, other.MaxDistance)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Shape.Length != 0) hash ^= Shape.GetHashCode();
+      if (Type.Length != 0) hash ^= Type.GetHashCode();
+      if (Charge != false) hash ^= Charge.GetHashCode();
+      if (LookOffset != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(LookOffset);
+      if (RightOffset != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(RightOffset);
+      if (DirX != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(DirX);
+      if (DirY != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(DirY);
+      if (Radius != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Radius);
+      if (Angle != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Angle);
+      if (Width != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Width);
+      if (Height != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Height);
+      if (Duration != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Duration);
+      if (Speed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Speed);
+      if (MinRange != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MinRange);
+      if (MaxDistance != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MaxDistance);
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Shape.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Shape);
+      }
+      if (Type.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Type);
+      }
+      if (Charge != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(Charge);
+      }
+      if (LookOffset != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(LookOffset);
+      }
+      if (RightOffset != 0F) {
+        output.WriteRawTag(45);
+        output.WriteFloat(RightOffset);
+      }
+      if (DirX != 0F) {
+        output.WriteRawTag(53);
+        output.WriteFloat(DirX);
+      }
+      if (DirY != 0F) {
+        output.WriteRawTag(61);
+        output.WriteFloat(DirY);
+      }
+      if (Radius != 0F) {
+        output.WriteRawTag(69);
+        output.WriteFloat(Radius);
+      }
+      if (Angle != 0F) {
+        output.WriteRawTag(77);
+        output.WriteFloat(Angle);
+      }
+      if (Width != 0F) {
+        output.WriteRawTag(85);
+        output.WriteFloat(Width);
+      }
+      if (Height != 0F) {
+        output.WriteRawTag(93);
+        output.WriteFloat(Height);
+      }
+      if (Duration != 0F) {
+        output.WriteRawTag(101);
+        output.WriteFloat(Duration);
+      }
+      if (Speed != 0F) {
+        output.WriteRawTag(109);
+        output.WriteFloat(Speed);
+      }
+      if (MinRange != 0F) {
+        output.WriteRawTag(117);
+        output.WriteFloat(MinRange);
+      }
+      if (MaxDistance != 0F) {
+        output.WriteRawTag(125);
+        output.WriteFloat(MaxDistance);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Shape.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Shape);
+      }
+      if (Type.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Type);
+      }
+      if (Charge != false) {
+        size += 1 + 1;
+      }
+      if (LookOffset != 0F) {
+        size += 1 + 4;
+      }
+      if (RightOffset != 0F) {
+        size += 1 + 4;
+      }
+      if (DirX != 0F) {
+        size += 1 + 4;
+      }
+      if (DirY != 0F) {
+        size += 1 + 4;
+      }
+      if (Radius != 0F) {
+        size += 1 + 4;
+      }
+      if (Angle != 0F) {
+        size += 1 + 4;
+      }
+      if (Width != 0F) {
+        size += 1 + 4;
+      }
+      if (Height != 0F) {
+        size += 1 + 4;
+      }
+      if (Duration != 0F) {
+        size += 1 + 4;
+      }
+      if (Speed != 0F) {
+        size += 1 + 4;
+      }
+      if (MinRange != 0F) {
+        size += 1 + 4;
+      }
+      if (MaxDistance != 0F) {
+        size += 1 + 4;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(SkillHitbox other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Shape.Length != 0) {
+        Shape = other.Shape;
+      }
+      if (other.Type.Length != 0) {
+        Type = other.Type;
+      }
+      if (other.Charge != false) {
+        Charge = other.Charge;
+      }
+      if (other.LookOffset != 0F) {
+        LookOffset = other.LookOffset;
+      }
+      if (other.RightOffset != 0F) {
+        RightOffset = other.RightOffset;
+      }
+      if (other.DirX != 0F) {
+        DirX = other.DirX;
+      }
+      if (other.DirY != 0F) {
+        DirY = other.DirY;
+      }
+      if (other.Radius != 0F) {
+        Radius = other.Radius;
+      }
+      if (other.Angle != 0F) {
+        Angle = other.Angle;
+      }
+      if (other.Width != 0F) {
+        Width = other.Width;
+      }
+      if (other.Height != 0F) {
+        Height = other.Height;
+      }
+      if (other.Duration != 0F) {
+        Duration = other.Duration;
+      }
+      if (other.Speed != 0F) {
+        Speed = other.Speed;
+      }
+      if (other.MinRange != 0F) {
+        MinRange = other.MinRange;
+      }
+      if (other.MaxDistance != 0F) {
+        MaxDistance = other.MaxDistance;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Shape = input.ReadString();
+            break;
+          }
+          case 18: {
+            Type = input.ReadString();
+            break;
+          }
+          case 24: {
+            Charge = input.ReadBool();
+            break;
+          }
+          case 37: {
+            LookOffset = input.ReadFloat();
+            break;
+          }
+          case 45: {
+            RightOffset = input.ReadFloat();
+            break;
+          }
+          case 53: {
+            DirX = input.ReadFloat();
+            break;
+          }
+          case 61: {
+            DirY = input.ReadFloat();
+            break;
+          }
+          case 69: {
+            Radius = input.ReadFloat();
+            break;
+          }
+          case 77: {
+            Angle = input.ReadFloat();
+            break;
+          }
+          case 85: {
+            Width = input.ReadFloat();
+            break;
+          }
+          case 93: {
+            Height = input.ReadFloat();
+            break;
+          }
+          case 101: {
+            Duration = input.ReadFloat();
+            break;
+          }
+          case 109: {
+            Speed = input.ReadFloat();
+            break;
+          }
+          case 117: {
+            MinRange = input.ReadFloat();
+            break;
+          }
+          case 125: {
+            MaxDistance = input.ReadFloat();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
   public sealed partial class C_Ping : pb::IMessage<C_Ping> {
     private static readonly pb::MessageParser<C_Ping> _parser = new pb::MessageParser<C_Ping>(() => new C_Ping());
     private pb::UnknownFieldSet _unknownFields;
@@ -5201,7 +5734,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[27]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[28]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5330,7 +5863,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[28]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[29]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5480,7 +6013,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[29]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[30]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5643,7 +6176,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[30]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[31]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

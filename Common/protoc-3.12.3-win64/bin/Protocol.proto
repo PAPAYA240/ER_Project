@@ -48,6 +48,8 @@ enum SkillType{
 	SKILL_NONE = 0;
 	SKILL_AUTO = 1;
 	SKILL_PROJECTILE = 2;
+	SKILL_STATIC = 3;
+	SKILL_TRACK = 4;
 }
 
 enum MonsterSkill
@@ -120,9 +122,11 @@ enum Weapon {
 }
 
 enum SkillShape{
-	CIRCLE = 0;
-	RECTANGLE = 1;
-	SECTOR = 2;
+	SHAPE_NONE = 0;
+	CIRCLE = 1;
+	RAY = 2;
+	RECTANGLE = 3;
+	SECTOR = 4;
 }
 
 message C_EnterGame {
@@ -280,6 +284,24 @@ message WeaponInfo{
 message SkillInfo{
 	int32 skillId = 1;
 	int32 keyCode = 2;
+}
+
+message SkillHitbox{
+	string shape = 1;
+	string type = 2;
+	bool charge = 3;
+	float lookOffset = 4;
+	float rightOffset = 5;
+	float dirX = 6;
+	float dirY = 7;
+	float radius = 8;
+	float angle = 9;
+	float width = 10;
+	float height = 11;
+	float duration = 12;
+	float speed = 13;
+	float minRange = 14;
+	float maxDistance = 15;
 }
 
 message C_Ping{
