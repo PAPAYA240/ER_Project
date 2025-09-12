@@ -13,6 +13,11 @@ public class MyPlayerController : PlayerController
 {
     bool _moveKeyPressed = false;
     bool _isUseSkill = false;
+
+    bool _isAttackLoop = false;
+    int _attackIndex = 0;
+    Coroutine _attackRoutine;
+
     KeyCode _keyCode = KeyCode.None;
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
     class CoolTime
@@ -96,12 +101,13 @@ public class MyPlayerController : PlayerController
             return;
 
         if (State == CreatureState.Idle)
-        {
             PlayAnimation("WAIT", 0.1f);
-        }
         else if (State == CreatureState.Moving)
-        {
             PlayAnimation("RUN", 0.1f);
+        else if (State == CreatureState.Attack)
+        {
+            Debug.Log($"평타 코루틴 시작");
+            _attackRoutine = StartCoroutine(CoAttackLoop());
         }
     }
 
@@ -113,6 +119,9 @@ public class MyPlayerController : PlayerController
                 GetMouseInput();
                 break;
             case CreatureState.Moving:
+                GetMouseInput();
+                break;
+            case CreatureState.Attack:
                 GetMouseInput();
                 break;
         }
@@ -249,37 +258,94 @@ public class MyPlayerController : PlayerController
         SendAnimPacket(animName, ratio);
     }
 
+    // 평타 반복 코루틴
+    IEnumerator CoAttackLoop()
+    {
+        while (true)
+        {
+            string animName = (_attackIndex == 0) ? "ATTACK_1" : "ATTACK_2";
+            PlayAnimation(animName, 0f);
+
+            _attackIndex = 1 - _attackIndex;
+
+            yield return null;
+
+            yield return new WaitUntil(() =>
+            {
+                AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+
+                if (stateInfo.IsName(animName) && stateInfo.normalizedTime >= 0.9f)
+                    return true;
+
+                if (!stateInfo.IsName(animName) && !_isAttackLoop)
+                    return true;
+
+                return false;
+            });
+
+            if (!_isAttackLoop)
+            {
+                State = CreatureState.Idle;
+                _attackRoutine = null;
+                Debug.Log($"평타 코루틴 끝");
+
+                StartCoroutine(CoComboResetTimer());
+
+                yield break;
+            }
+        }
+    }
+
+    // 평타 콤보 초기화 코루틴
+    private IEnumerator CoComboResetTimer()
+    {
+        float timer = 0f;
+
+        while (timer < 2f)
+        {
+            if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButton(1))
+                yield break;
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        _attackIndex = 0;
+        Debug.Log("콤보 리셋!");
+    }
+
     void GetMouseInput()
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f, _mask);
 
-        if (Input.GetMouseButton(1))
+        // Shift 누르고 우클릭 시 → 평타 애니메이션
+        if (Input.GetKey(KeyCode.LeftShift))
         {
-            if (raycastHit)
+            if (Input.GetMouseButton(1))
             {
-                // 1. 몬스터인지 확인
-                //MonsterController monster = hit.collider.GetComponent<MonsterController>();
-                //if (monster != null)
-                //{
-                //    // 공격 로직 실행
-                //    State = CreatureState.Attack;
-                //    //_target = monster; // 공격 대상 저장
-
-                //    // 애니메이션 트리거나 호출
-                //    _animator.CrossFade("YUKI_ATK_1", 0.1f);
-
-                //    Debug.Log($"공격 대상: {monster.name}");
-                //}
-                //else
+                if (_attackRoutine == null)
                 {
-                    // 2. 몬스터가 아니면 → 이동
-                    _dstPos = hit.point;
-                    State = CreatureState.Moving;
-                    _moveKeyPressed = true;
+                    _isAttackLoop = true;
+                    State = CreatureState.Attack;
                 }
             }
+
+        }
+        else if (Input.GetMouseButton(1))
+        {
+            // 그냥 우클릭 시 → 이동 처리
+            if (raycastHit)
+            {
+                _dstPos = hit.point;
+                State = CreatureState.Moving;
+                _moveKeyPressed = true;
+            }
+        }
+        else
+        {
+            _isAttackLoop = false;
         }
     }
 

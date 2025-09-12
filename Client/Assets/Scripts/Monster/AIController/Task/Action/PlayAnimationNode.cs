@@ -135,8 +135,8 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
 
             // TODO : 이펙트 재생 임의,  EffectNode로 분할 예정
             DataManager.MonsterSkillDict.TryGetValue(monsterController.Skill, out List<EffectData> data);
-            if (data != null)
-                FXManager.Instance.PlayEffect(data, monsterController.transform, monsterController.TargetPosition);
+            //if (data != null)
+            //    FXManager.Instance.PlayEffect(data, monsterController.transform, monsterController.TargetPosition);
 
             // 루프가 필요할 시에 bool 값으로도 조절함
             if (bLoop)
