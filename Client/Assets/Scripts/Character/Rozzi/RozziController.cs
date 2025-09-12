@@ -32,6 +32,12 @@ public class RozziController : MyPlayerController
     protected override void UpdateAnimation()
     {
         base.UpdateAnimation();
+
+        if(_agent != null && State != CreatureState.Moving)
+        {
+            _agent.isStopped = true;
+            _agent.ResetPath();
+        }
     }
 
     protected override void UpdateController()
