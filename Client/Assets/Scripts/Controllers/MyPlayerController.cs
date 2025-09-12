@@ -11,14 +11,16 @@ using static UnityEngine.GraphicsBuffer;
 
 public class MyPlayerController : PlayerController
 {
-    bool _moveKeyPressed = false;
-    bool _isUseSkill = false;
+
+    protected bool _moveKeyPressed = false;
+
+    protected bool _isUseSkill = false;
 
     bool _isAttackLoop = false;
     int _attackIndex = 0;
     Coroutine _attackRoutine;
 
-    KeyCode _keyCode = KeyCode.None;
+    protected KeyCode _keyCode = KeyCode.None;
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
     class CoolTime
     {
@@ -314,7 +316,7 @@ public class MyPlayerController : PlayerController
         Debug.Log("콤보 리셋!");
     }
 
-    void GetMouseInput()
+    protected virtual void GetMouseInput()
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
