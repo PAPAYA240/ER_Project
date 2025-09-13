@@ -22,7 +22,7 @@ namespace Server.Game.Object.Monster
 
         // Monster 정보
         List<MonsterSkill> _skills = new List<MonsterSkill>();  // 사용 가능한 스킬 목록
-        MonsterSkill _currentSkill = MonsterSkill.MsNone; // 현재 사용 중인 스킬
+        public MonsterSkill CurrentSkill { get; private set; } // 현재 사용 중인 스킬
         private IMonsterState _currentState;
 
         // 탐지 정보
@@ -293,7 +293,7 @@ namespace Server.Game.Object.Monster
             if (skillData != null)
             {
                 statePacket.Skilltype = skillData.skillType;
-                _currentSkill = skillData.skillType;
+                CurrentSkill = skillData.skillType;
             }
 
             statePacket.PosInfo = posInfo;

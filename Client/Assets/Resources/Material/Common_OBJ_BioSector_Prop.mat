@@ -8,16 +8,16 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Common_OBJ_BioSector_Prop
-  m_Shader: {fileID: 47, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: 0e9d5a909a1f7e84882a534d0d11e49f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _EMISSION
-  - _NORMALMAP
-  - _SPECGLOSSMAP
+  m_ValidKeywords: []
   m_InvalidKeywords:
+  - _EMISSION
   - _LIGHTING_ON
   - _MACRO_WAVES_ON
+  - _NORMALMAP
+  - _SPECGLOSSMAP
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -68,6 +68,18 @@ Material:
         m_Texture: {fileID: 2800000, guid: be2d0cef82913f048867aeb2547154f2, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _BumpScale: 2
@@ -97,6 +109,8 @@ Material:
     - _NormalTiling: 4.0999985
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _QueueControl: 0
+    - _QueueOffset: 0
     - _RT_REFRACTION: 0
     - _ReflectionFresnel: 2.54
     - _ReflectionRefraction: 0.006
@@ -114,7 +128,13 @@ Material:
     - _USE_VC_INTERSECTION: 0
     - _UVSec: 0
     - _Unlit: 0
+    - _UseAoMap: 0
+    - _UseColorMap: 1
+    - _UseEmissiveMap: 1
     - _UseIntersectionFoam: 0
+    - _UseMetallicMap: 0
+    - _UseNormalMap: 1
+    - _UseRoughnessMap: 1
     - _WaveFoam: 0.032
     - _WaveHeight: 0.24
     - _WaveSize: 2.0000002
@@ -128,7 +148,22 @@ Material:
     - _EmissionColor: {r: 1.0745099, g: 1.4980392, b: 1.4980392, a: 1}
     - _FresnelColor: {r: 0.9044118, g: 0.96049017, b: 1, a: 1}
     - _RimColor: {r: 0.9811321, g: 0.9811321, b: 0.9811321, a: 0.5372549}
+    - _UvOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _UvTiling: {r: 1, g: 1, b: 0, a: 0}
     - _WaterColor: {r: 0, g: 0.25805703, b: 0.33017722, a: 0}
     - _WaterShallowColor: {r: 0.41910613, g: 1, b: 0.8798174, a: 1}
     - _WaveDirection: {r: -1, g: 0, b: 1, a: 0}
   m_BuildTextureStacks: []
+--- !u!114 &7468896706847731586
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 7

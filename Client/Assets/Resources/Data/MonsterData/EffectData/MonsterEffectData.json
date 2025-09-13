@@ -16,8 +16,8 @@
       "prefabName": "FX_BI_Gamma_skill02_Attack",
       "skillType": "MsGammaSkill2",
       "target": "Self",
-      "duration": 5.5,
-      "delayTime": 1.25,
+      "duration": 5.45,
+      "delayTime": 1.8,
       "position": {
         "x": 0,
         "y": 0,
@@ -28,8 +28,8 @@
       "prefabName": "FX_BI_Gamma_skill02_Shot",
       "skillType": "MsGammaSkill2",
       "target": "Self",
-      "duration": 5.5,
-      "delayTime": 1.25,
+      "duration": 5.45,
+      "delayTime": 1.8,
       "position": {
         "x": 0,
         "y": 0,
@@ -37,11 +37,23 @@
       }
     },
     {
-      "prefabName": "Projectile_FX_BI_Gamma_skill03_Explosion",
+      "prefabName": "Projectile_FX_BI_Gamma_skill03_Explosion1",
       "skillType": "MsGammaSkill3",
       "target": "Target",
-      "duration": 5.5,
+      "duration": 2,
       "delayTime": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "prefabName": "Projectile_FX_BI_Gamma_skill03_Explosion2",
+      "skillType": "MsGammaSkill3",
+      "target": "Target",
+      "duration": 0.5,
+      "delayTime": 1.5,
       "position": {
         "x": 0,
         "y": 0,
@@ -74,22 +86,10 @@
       }
     },
     {
-      "prefabName": "FX_BI_Omega_Skill02_HitRange",
-      "skillType": "MsSkill2",
+      "prefabName": "FX_BI_AttackDrone_Normal_Attack_01",
+      "skillType": "MsDroneAttack1",
       "target": "Self",
-      "duration": 3,
-      "delayTime": 0,
-      "position": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      }
-    },
-    {
-      "prefabName": "FX_BI_Omega_skill01_Hit",
-      "skillType": "MsSkill2",
-      "target": "Self",
-      "duration": 3,
+      "duration": 1.5,
       "delayTime": 0,
       "position": {
         "x": 0,
@@ -99,10 +99,46 @@
     },
 
     {
-      "prefabName": "FX_BI_AttackDrone_Normal_Attack_01",
-      "skillType": "MsDroneAttack1",
+      "prefabName": "Omega_Slash",
+      "skillType": "MsAttack1",
       "target": "Self",
-      "duration": 1.5,
+      "duration": 1,
+      "delayTime": 0.07,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "prefabName": "Omega_Slash",
+      "skillType": "MsSkill1",
+      "target": "Self",
+      "duration": 1,
+      "delayTime": 2,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "prefabName": "Omega_Skill2",
+      "skillType": "MsSkill2",
+      "target": "Target",
+      "duration": 2,
+      "delayTime": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "prefabName": "Omega_Skill2_2",
+      "skillType": "MsSkill2",
+      "target": "Target",
+      "duration": 2,
       "delayTime": 0,
       "position": {
         "x": 0,

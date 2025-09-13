@@ -11,12 +11,18 @@
       }
     },
     {
-      "Name": "Attack2",
-      "Type": "PlayAnimatorTriggerNode",
-      "Properties": {
-        "triggerName": "tAttack02",
-        "animationStateName": "Monster_Alpha_atk02"
-      }
+      "Name": "ParallelNodeRoot",
+      "Type": "ParallelNode",
+      "Children": [
+        {
+          "Name": "Attack2",
+          "Type": "PlayAnimatorTriggerNode",
+          "Properties": {
+            "triggerName": "tAttack02",
+            "animationStateName": "Monster_Alpha_atk02"
+          }
+        }
+      ]
     }
   ]
 }

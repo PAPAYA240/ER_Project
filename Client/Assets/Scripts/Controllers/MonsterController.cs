@@ -1,4 +1,3 @@
-using Assets.Scripts.Effect;
 using Assets.Scripts.Highlight;
 using Data;
 using Google.Protobuf.Protocol;
@@ -24,29 +23,39 @@ public class MonsterController : CreatureController
 
     // TODO : 임시 변수, 나중에 블랙 보드 만들면 없앨 부분
     public bool isSpawned = false;
-   
+
+    // Material 
+    private Renderer monsterRenderer;
+    private Material originalMaterial;
+    private Material skillMaterial;
+
     protected override void Init()
 	{
         ObjectType = Define.Object.Monster; 
 		base.Init();
-
         if (!Add_Component())
         {
             Debug.LogError("MonsterController Add_Component : 컴포넌트 추가 실패");
             return;
         }
+
     }
 
     protected override void UpdateController()
     {
           transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
           transform.rotation = transform.rotation;
+
+        if(Skill == MonsterSkill.MsSkill2 && State == CreatureState.Skill)
+            monsterRenderer.material = skillMaterial;
+        else
+            monsterRenderer.material = originalMaterial;
     }
 
     public override void OnDamaged()
 	{
-		//Managers.Object.Remove(Id);
-		//Managers.Resource.Destroy(gameObject);
+		Managers.Object.Remove(Id);
+		Managers.Resource.Destroy(gameObject);
 	}
 
     #region 패킷
@@ -90,6 +99,7 @@ public class MonsterController : CreatureController
         switch (State)
         {
             case CreatureState.Idle:
+                if(ObjInfo.MonsterType == MonsterType.Alpha)
                 OnIdlePacket(packet);
                 break;
             case CreatureState.Moving:
@@ -114,8 +124,13 @@ public class MonsterController : CreatureController
             return false;
         _navMeshAgent.updateRotation = false;
 
-        Renderer renderer = this.GetComponentInChildren<Renderer>();
-        if (renderer == null)
+        monsterRenderer = this.GetComponentInChildren<Renderer>();
+        if (monsterRenderer == null)
+            return false;
+        
+        originalMaterial = monsterRenderer.material;
+        skillMaterial = Resources.Load<Material>("materials/effect/auraMaterial");
+        if (skillMaterial == null)
             return false;
         this.gameObject.AddComponent<HighlightEffect>();
 

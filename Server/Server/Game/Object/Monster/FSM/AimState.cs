@@ -2,6 +2,7 @@
 using Google.Protobuf.Protocol;
 using Server.Data;
 using System;
+using System.Diagnostics;
 using System.Numerics;
 
 namespace Server.Game.Object.Monster.FSM
@@ -16,15 +17,14 @@ namespace Server.Game.Object.Monster.FSM
 
         private long _lastUpdateTime = 0;
 
-
         public void Enter(Monster monster)
         {
             skillData =monster.Get_DecideAndUseSkill();
             if (skillData == null)
                 return;
 
-           // if(monster.Info.MonsterType == MonsterType.Gamma)
-           //     DataManager.MonsterSkillDict.TryGetValue(MonsterSkill.MsGammaSkill3, out skillData);
+           //if(monster.Info.MonsterType == MonsterType.Gamma)
+           //    DataManager.MonsterSkillDict.TryGetValue(MonsterSkill.MsGammaSkill2, out skillData);
 
             _skillEndTime = Environment.TickCount64 + (long)(skillData.skillDuration * 1000f);
             monster._delaySkillAnimationTimer = skillData.skillCoolTime;
@@ -34,7 +34,7 @@ namespace Server.Game.Object.Monster.FSM
         public void Execute(Monster monster)
         {
             bool timeout = Environment.TickCount64 >= _skillEndTime;
-          
+
             if (monster.Info.MonsterType == MonsterType.Drone)
                 LookAtTarget(monster);
             monster.BroadcastState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);

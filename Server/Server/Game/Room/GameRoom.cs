@@ -30,7 +30,7 @@ namespace Server.Game
 
             // Spawn Monster
             _monsterManager.Init(this);
-            _monsterManager.Add(1, MonsterType.Gamma);
+           // _monsterManager.Add(1, MonsterType.Gamma);
         }
 
         public override void Update()
@@ -97,6 +97,8 @@ namespace Server.Game
             else if (type == GameObjectType.Monster)
             {
                 Monster monster = gameObject as Monster;
+                if (_monsters == null)
+                    return;
                 _monsters.Add(gameObject.Id, monster); 
                 monster.Room = this;
             }

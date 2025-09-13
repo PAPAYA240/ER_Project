@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Assets.Scripts.Effect;
 using Google.Protobuf.Protocol;
 using UnityEngine;
 using static Data.MonsterSkillDict;

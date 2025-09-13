@@ -12,12 +12,23 @@
       }
     },
     {
-      "Name": "Skill02",
-      "Type": "PlayAnimatorTriggerNode",
-      "Properties": {
-        "triggerName": "tSkill02",
-        "animationStateName": "Monster_Alpha_skill02"
-      }
+      "Name": "ParallelNodeRoot",
+      "Type": "ParallelNode",
+      "Children": [
+        {
+          "Name": "Skill02",
+          "Type": "PlayAnimatorTriggerNode",
+          "Properties": {
+            "triggerName": "tSkill02",
+            "animationStateName": "Monster_Alpha_skill02",
+          }
+        },
+        {
+          "Name": "Skill03_Effect",
+          "Type": "PlayEffectNode"
+        }
+
+      ]
     }
   ]
 }
