@@ -43,8 +43,8 @@ public class MonsterController : CreatureController
 
     protected override void UpdateController()
     {
-          transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
-          transform.rotation = transform.rotation;
+       transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
+       transform.rotation = transform.rotation;
 
         if(Skill == MonsterSkill.MsSkill2 && State == CreatureState.Skill)
             monsterRenderer.material = skillMaterial;
@@ -62,8 +62,12 @@ public class MonsterController : CreatureController
     public void OnIdlePacket(S_State movePacket)
     {
         _navMeshAgent.SetDestination(transform.position);
+
+        Skill = MonsterSkill.MsNone;
+
         OnStateChanged?.Invoke(State);
     }
+
     public void OnMovePacket(S_State packet)
     {
         if (_navMeshAgent == null)
@@ -72,7 +76,7 @@ public class MonsterController : CreatureController
         _navMeshAgent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
         _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
-    bool isEffectPlayed = false;
+
     public void OnSkillPacket(S_State packet)
     {
         _navMeshAgent.ResetPath();
@@ -81,6 +85,7 @@ public class MonsterController : CreatureController
         _navMeshAgent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
         _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
+
     public void OnRecvStatePacket(S_State packet)
     {
         if (packet.SequenceId <= _lastReceivedSequenceId)
@@ -99,7 +104,6 @@ public class MonsterController : CreatureController
         switch (State)
         {
             case CreatureState.Idle:
-                if(ObjInfo.MonsterType == MonsterType.Alpha)
                 OnIdlePacket(packet);
                 break;
             case CreatureState.Moving:

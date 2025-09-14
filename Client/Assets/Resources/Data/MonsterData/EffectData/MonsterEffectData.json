@@ -13,29 +13,18 @@
       }
     },
     {
-      "prefabName": "FX_BI_Gamma_skill02_Attack",
+      "prefabName": "FX_Gamma_Skill2",
       "skillType": "MsGammaSkill2",
       "target": "Self",
-      "duration": 5.45,
+      "duration": 5,
       "delayTime": 1.8,
       "position": {
         "x": 0,
-        "y": 0,
-        "z": 0
+        "y": 1,
+        "z": 1
       }
     },
-    {
-      "prefabName": "FX_BI_Gamma_skill02_Shot",
-      "skillType": "MsGammaSkill2",
-      "target": "Self",
-      "duration": 5.45,
-      "delayTime": 1.8,
-      "position": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      }
-    },
+   
     {
       "prefabName": "Projectile_FX_BI_Gamma_skill03_Explosion1",
       "skillType": "MsGammaSkill3",
@@ -62,7 +51,7 @@
     },
 
     {
-      "prefabName": "FX_BI_Omega_skill01_Hit",
+      "prefabName": "Omega_Skill1",
       "skillType": "MsSkill1",
       "target": "Self",
       "duration": 4,
@@ -74,11 +63,11 @@
       }
     },
     {
-      "prefabName": "FX_BI_Omega_skill01_HitRange",
+      "prefabName": "Omega_Skill1_2",
       "skillType": "MsSkill1",
       "target": "Self",
-      "duration": 4,
-      "delayTime": 0,
+      "duration": 1,
+      "delayTime": 2,
       "position": {
         "x": 0,
         "y": 0,
@@ -111,18 +100,6 @@
       }
     },
     {
-      "prefabName": "Omega_Slash",
-      "skillType": "MsSkill1",
-      "target": "Self",
-      "duration": 1,
-      "delayTime": 2,
-      "position": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      }
-    },
-    {
       "prefabName": "Omega_Skill2",
       "skillType": "MsSkill2",
       "target": "Target",
@@ -140,6 +117,19 @@
       "target": "Target",
       "duration": 2,
       "delayTime": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    
+    {
+      "prefabName": "Omega_Attack2",
+      "skillType": "MsAttack2",
+      "target": "Self",
+      "duration": 1.5,
+      "delayTime": 0.2,
       "position": {
         "x": 0,
         "y": 0,

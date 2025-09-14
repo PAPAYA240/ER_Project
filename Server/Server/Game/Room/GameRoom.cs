@@ -30,16 +30,11 @@ namespace Server.Game
 
             // Spawn Monster
             _monsterManager.Init(this);
-           // _monsterManager.Add(1, MonsterType.Gamma);
+            _monsterManager.Add(1, MonsterType.Gamma);
         }
 
         public override void Update()
         {
-            foreach (Monster monster in _monsters.Values)
-            {
-                monster.Update();
-            }
-
             foreach (Projectile projectile in _projectiles.Values)
             {
                 projectile.Update();
@@ -52,6 +47,11 @@ namespace Server.Game
                 visibleObjs.AddRange(GetObjectsInRange(_monsters, player));
                 visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
                 player.SendVisibleObjsPkt(visibleObjs);
+            }
+
+            foreach (Monster monster in _monsters.Values)
+            {
+                monster.Update();
             }
 
             Flush();

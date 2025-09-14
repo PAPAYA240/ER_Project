@@ -59,10 +59,11 @@ public class FXManager : MonoBehaviour
             GameObject fxPrefab = fxPrefabs[data.prefabName];
             Vector3 spawnPosition = Vector3.zero;
             Transform parentTransform = null;
+
             switch (data.target)
             {
                 case EEffectTarget.Self:
-                    spawnPosition = casterTransform.position;
+                    spawnPosition = casterTransform.position + data.position;
                     parentTransform = casterTransform; // TODO : 캐릭터에 붙이느냐 붙이지 않느냐도 판단할 것(이펙트 따라다니면 붙이고 아님..말고)
                     break;
                 case EEffectTarget.Target:

@@ -122,11 +122,16 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
             if (bLoop)
                 _animator.SetBool(boolName, true);
 
-            return NodeStatus.Success;
+            return NodeStatus.Running;
         }
+
+        //if (_animator.GetCurrentAnimatorStateInfo(0).IsName(animationStateName) || _animator.IsInTransition(0))
+        //    return NodeStatus.Running;
+
         return NodeStatus.Running;
     }
 
+    bool isSuccessed = false;
     public override void HandleStateChange(CreatureState newState)
     {
         if (_animator == null)

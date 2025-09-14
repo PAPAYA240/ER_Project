@@ -26,8 +26,9 @@
         }
       ]
     },
+
     {
-      "Name": "AttackSequence",
+      "Name": "Root",
       "Type": "SequenceNode",
       "Children": [
         {
@@ -38,12 +39,22 @@
           }
         },
         {
-          "Name": "DroneAttack1",
-          "Type": "PlayAnimatorTriggerNode",
-          "Properties": {
-            "triggerName": "tAttack01",
-            "animationStateName": "AttackDrone_01_atk01"
-          }
+          "Name": "ParallelNodeRoot",
+          "Type": "ParallelNode",
+          "Children": [
+            {
+              "Name": "DroneAttack1",
+              "Type": "PlayAnimatorTriggerNode",
+              "Properties": {
+                "triggerName": "tAttack01",
+                "animationStateName": "AttackDrone_01_atk01"
+              }
+            },
+            {
+              "Name": "Skill03_Effect",
+              "Type": "PlayEffectNode"
+            }
+          ]
         }
       ]
     }

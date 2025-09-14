@@ -42,6 +42,7 @@ namespace Server.Game.Object.Monster
         {
             if (!Add_MonsterData(name))
                 return;
+
             ChangeState(new IdleState());
         }
        

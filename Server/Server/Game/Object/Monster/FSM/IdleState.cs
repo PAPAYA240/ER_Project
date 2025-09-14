@@ -14,8 +14,9 @@ namespace Server.Game.Object.Monster.FSM
         private float _delayTimer = 0;
         public void Enter(Monster monster)
         {
-            monster.BroadcastState(CreatureState.Idle, null, null);
+            if (monster.Info.MonsterType == MonsterType.Alpha)
             _delayTimer = Environment.TickCount64 + (long)(monster._delaySkillAnimationTimer * 1000f);
+            monster.BroadcastState(CreatureState.Idle, null, null);
         }
 
         public void Execute(Monster monster)
@@ -28,6 +29,7 @@ namespace Server.Game.Object.Monster.FSM
             {
                 if (Environment.TickCount64 < _delayTimer)
                     return;
+
                 IMonsterState nextState = FSMManager.Instance.EvaluateTargetForNextState(monster);
                 monster.ChangeState(nextState);
             }
@@ -54,13 +56,15 @@ namespace Server.Game.Object.Monster.FSM
                 Vector3 dirQ = targetPos - monsterPos;
                 monster.LookAtTarget(dirQ, elapsedTime, false);
 
-                monster.BroadcastState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
+                monster.BroadcastState(CreatureState.Idle, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
             }
         }
 
         public void Exit(Monster monster) 
         {
             _nextSearchTick = 0;
+            _delayTimer = 0;
+
             _lastUpdateTime = 0;
         }
     }
