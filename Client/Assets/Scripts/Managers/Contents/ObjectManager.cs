@@ -21,11 +21,6 @@ public class ObjectManager
 		return (GameObjectType)type;
 	}
 
-    public void Update()
-    {
-        //SetObjectVisible();
-    }
-
     public static GameObjectType GetObjectTypeById(GameObject go)
     {
         BaseController bs = go.GetComponent<BaseController>();

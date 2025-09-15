@@ -537,15 +537,6 @@ public class MyPlayerController : PlayerController
     }
     #endregion
 
-    #region Rendering
-
-    public void SetVisibleObject()
-    {
-        //foreach()
-    }
-
-    #endregion
-
     #region UI
     private UI_PlayerInterface.GameObjects KeyToUIEnum(KeyCode key)
     {
