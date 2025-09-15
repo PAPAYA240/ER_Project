@@ -201,6 +201,7 @@ class PacketHandler
 
         mpc.VisibleObjectIds.Clear(); // 나중에 렌더링 하고나서 바로 Clear하는게 나을듯?
         mpc.VisibleObjectIds = visibleObjectsPkt.VisibleObjectIds.ToHashSet();
+        Managers.Object.SetObjectVisible();
     }
 
     public static void S_LevelUpHandler(PacketSession session, IMessage packet)
