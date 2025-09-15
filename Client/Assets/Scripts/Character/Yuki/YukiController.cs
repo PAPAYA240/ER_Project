@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class YukiController : MyPlayerController
 {
-    protected override void UpdateSkillKeyIntput()
+    protected override void UpdateSkillKeyInput()
     {
         if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))
         {

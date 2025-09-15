@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using static UI_MinimapCharIcon;
 
 public class UI_Minimap : UI_Base
@@ -14,6 +15,13 @@ public class UI_Minimap : UI_Base
     // 방에 들어가면 그 방 안에 있는 플레이어들 정보를 토대로 아이콘을 생성
     // 방에 누가 들어오면 모든 플레이어에게 들어왔다고 알림 > 그러면 새로 아이콘을 생성해서 추가.
     // 아이콘을 생성하는 코드가 필요하고, 월드 투 미니맵을 어떻게 할지도.
+
+    public enum Images
+    {
+        TurbineIconLeft,
+        TurbineIconCenter,
+        TurbineIconRight
+    }
 
     enum GameObjects
     {
@@ -31,6 +39,7 @@ public class UI_Minimap : UI_Base
 
     public override void Init()
     {
+        Bind<Image>(typeof(Images));
         Bind<GameObject>(typeof(GameObjects));
 
         GetObject((int)GameObjects.CharIcon_0).SetActive(false);
@@ -71,5 +80,10 @@ public class UI_Minimap : UI_Base
         ui_MinimapCharIcon.Type = iconType;
         ui_MinimapCharIcon.SetCharIcon(pc.ObjInfo.CharType);
         ui_MinimapCharIcon.Target = pc;
+    }
+
+    public void SetTurbineImage(Images img, Sprite sprite)
+    {
+        GetImage((int)img).sprite = sprite;
     }
 }
