@@ -87,6 +87,7 @@ public class PlayerController : CreatureController
                 Managers.Object.MyPlayer.StartCoCoolTime(keyCode);
             }
 
+            State = CreatureState.Skill;
             //StartCoroutine(CoStartSkill());
             Debug.Log("스킬 코루틴 시작");
         }
@@ -111,6 +112,7 @@ public class PlayerController : CreatureController
         }
     }
 
+    // TODO : 이름 바꾸기?
     protected virtual void Skill_Q()
     {
         PlayAnimation("SKILL_Q", 0.1f);

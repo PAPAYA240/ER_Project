@@ -10,11 +10,6 @@ using UnityEngine;
 
 public class SkillBase
 {
-    public PlayerController _player;
-    public Animator _animator;
-
-    public KeyCode _keyCode;
-
     SkillData _skillData = new SkillData();
     public virtual SkillData SkillData
     {
@@ -32,7 +27,8 @@ public class SkillBase
     public int MaxLevel { get { return SkillData.maxLevel; } }
     public float Cooldown { get; set; }
     public float MaxCooldown { get; set; }
-    public float CurLevelCooldown { 
+    public float CurLevelCooldown 
+    { 
         get 
         { 
             if(CurLevel > 0 &&  CurLevel <= MaxLevel)

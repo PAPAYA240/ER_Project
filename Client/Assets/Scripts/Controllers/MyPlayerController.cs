@@ -575,8 +575,6 @@ public class MyPlayerController : PlayerController
                 Debug.Log($"KeyCode를 찾을 수 없음 : {keyCode}");
 
             skill.SkillData = skills[result];
-            skill._player = this;
-            skill._animator = this._animator;
             _skills.Add(keyCode, skill);
         }
     }
