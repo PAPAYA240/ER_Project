@@ -688,10 +688,20 @@ public class MyPlayerController : PlayerController
     #region Packet
     private void SendSkillPacket(KeyCode key)
     {
+        int targetId = -1;
+        if (_targetMonster)
+        {
+            MonsterController monster = _targetMonster.GetComponentInChildren<MonsterController>();
+            if (monster)
+            {
+                targetId = monster.ObjInfo.ObjectId;
+            }
+        }
         C_Skill skillPacket = new C_Skill()
         {
             ObjectInfo = ObjInfo,
-            SkillInfo = new SkillInfo() { KeyCode = (int)key }
+            SkillInfo = new SkillInfo() { KeyCode = (int)key },
+            TargetId = targetId
         };
         Managers.Network.Send(skillPacket);
         Debug.Log("스킬 패킷 보내기");

@@ -46,7 +46,7 @@ namespace Server.Game.Object.Monster.FSM
 
         private void LookAtTarget(Monster monster)
         {
-            Player target = monster.Target;
+            Player target = monster.PlayerTarget;
             if (target != null)
             {
                 long tick = Environment.TickCount64;

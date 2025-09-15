@@ -19,14 +19,14 @@ public class PlayEffectNode : ActionNode, IStateChangeListener
              if (DataManager.MonsterSkillDict.TryGetValue(monster.Skill, out List<EffectData> data))
              {
                 // TODO : Slash는 나중에 손 위치에 맞춰주기
-                 Managers.FX.PlayEffect(data, monster.transform, monster.TargetPosition, monster.transform.rotation);
+                 Managers.FX.PlayEffect(data, monster.transform, monster._targetPos, monster.transform.rotation);
              }
          }
          else
          {
              if (DataManager.MonsterSkillDict.TryGetValue(monster.Skill, out List<EffectData> data))
              {
-                 Managers.FX.PlayEffect(data, monster.transform, monster.TargetPosition);
+                 Managers.FX.PlayEffect(data, monster.transform, monster._targetPos);
              }
          }
          return NodeStatus.Success;

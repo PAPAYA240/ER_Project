@@ -1,9 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
-using Server.Data;
 using System;
-using System.Diagnostics;
 using System.Numerics;
-using System.Threading;
 
 namespace Server.Game.Object.Monster.FSM
 {
@@ -14,8 +11,9 @@ namespace Server.Game.Object.Monster.FSM
         private float _delayTimer = 0;
         public void Enter(Monster monster)
         {
-            if (monster.Info.MonsterType == MonsterType.Alpha)
-            _delayTimer = Environment.TickCount64 + (long)(monster._delaySkillAnimationTimer * 1000f);
+            // 스킬 delay를 위한 것
+             _delayTimer = Environment.TickCount64 + (long)(monster._delaySkillAnimationTimer * 1000f);
+
             monster.BroadcastState(CreatureState.Idle, null, null);
         }
 
@@ -25,6 +23,7 @@ namespace Server.Game.Object.Monster.FSM
                 return; 
             _nextSearchTick = Environment.TickCount64 + SEARCH_INTERVAL_MS;
 
+            // 1. 몬스터 타겟  찾기
             if (monster.FindTarget(monster) != null)
             {
                 if (Environment.TickCount64 < _delayTimer)
@@ -33,18 +32,26 @@ namespace Server.Game.Object.Monster.FSM
                 IMonsterState nextState = FSMManager.Instance.EvaluateTargetForNextState(monster);
                 monster.ChangeState(nextState);
             }
-           // else
-           //     _delayTimer = Environment.TickCount64 + (long)(monster._delaySkillAnimationTimer * 1000f);
 
-            if (monster.Info.MonsterType == MonsterType.Gamma ||
-               monster.Info.MonsterType == MonsterType.Drone)
-                LookAtTarget(monster);
+            // 2. 찾는 타겟이 없으면 Spawn으로 돌아가야 함
+            if (monster.PlayerTarget == null)
+            {
+                 if (!monster.IsArrivalSpawn())
+                    monster.ChangeState(FSMManager.Instance.GetMovingState());
+                return;
+            }
+            else
+            {
+                if (monster.Info.MonsterType == MonsterType.Gamma ||
+                   monster.Info.MonsterType == MonsterType.Drone)
+                    LookAtTarget(monster);
+            }
         }
        
         private long _lastUpdateTime = 0;
         private void LookAtTarget(Monster monster)
         {
-            Player target = monster.Target;
+            Player target = monster.PlayerTarget;
             if (target != null)
             {
                 long tick = Environment.TickCount64;
@@ -64,7 +71,6 @@ namespace Server.Game.Object.Monster.FSM
         {
             _nextSearchTick = 0;
             _delayTimer = 0;
-
             _lastUpdateTime = 0;
         }
     }
