@@ -88,7 +88,7 @@ public class PlayerController : CreatureController
                 Managers.Object.MyPlayer.StartCoCoolTime((KeyCode)skillPacket.SkillInfo.KeyCode, skill.CurLevelCooldown);
             }
 
-            StartCoroutine(CoStartSkill());
+            //StartCoroutine(CoStartSkill());
             Debug.Log("스킬 코루틴 시작");
         }
     }
