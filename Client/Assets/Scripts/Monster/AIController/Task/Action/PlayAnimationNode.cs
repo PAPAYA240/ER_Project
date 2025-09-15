@@ -135,7 +135,6 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
         return NodeStatus.Running;
     }
 
-    bool isSuccessed = false;
     public override void HandleStateChange(CreatureState newState)
     {
         if (_animator == null)

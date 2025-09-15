@@ -5,9 +5,6 @@ using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class ParallelNode : CompositeNode, IStateChangeListener
 {
-    private int _successIdx = 0;
-    private int _failureIdx = 0;
-
     private List<NodeStatus> _childStates;
 
     bool _finished = false;
