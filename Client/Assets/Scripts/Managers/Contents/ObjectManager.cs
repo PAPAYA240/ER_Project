@@ -2,11 +2,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UIElements;
+#if UNITY_EDITOR
+using UnityEditor.PackageManager.UI;
+#endif
 
 public class ObjectManager
 {
