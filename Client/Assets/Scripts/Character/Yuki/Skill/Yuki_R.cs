@@ -8,10 +8,10 @@ using UnityEngine;
 
 public class Yuki_R : SkillBase
 {
-    public override void Execute()
-    {
-        _animator.CrossFadeInFixedTime("YUKI_R", 0.1f);
+    //public override void Execute()
+    //{
+    //    _animator.CrossFadeInFixedTime("YUKI_R", 0.1f);
 
-        Debug.Log("Play Skill Animation");
-    }
+    //    Debug.Log("Play Skill Animation");
+    //}
 }

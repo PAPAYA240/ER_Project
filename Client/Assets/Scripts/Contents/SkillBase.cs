@@ -8,12 +8,25 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public abstract class SkillBase
+public class SkillBase
 {
     public PlayerController _player;
     public Animator _animator;
 
+    public KeyCode _keyCode;
+
     SkillData _skillData = new SkillData();
+    public virtual SkillData SkillData
+    {
+        get { return _skillData; }
+        set
+        {
+            if (_skillData.Equals(value))
+                return;
+
+            _skillData = value;
+        }
+    }
 
     public int CurLevel { get; set; } 
     public int MaxLevel { get { return SkillData.maxLevel; } }
@@ -27,28 +40,5 @@ public abstract class SkillBase
             return SkillData.levels[1].cooldown;
         } 
     }
-
-    public virtual SkillData SkillData
-    {
-        get { return _skillData; }
-        set
-        {
-            if (_skillData.Equals(value))
-                return;
-
-            _skillData = value;
-        }
-    }
-
-    public virtual void PlayAnimation(string triggerName)
-    {
-        if (_player == null || _animator == null)
-            return;
-
-        _animator.SetTrigger(triggerName);
-        //_animator.Play(triggerName);
-    }
-
-    public abstract void Execute();
 }
 

@@ -3,6 +3,8 @@ using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.AI;
 using static Define;
@@ -22,6 +24,9 @@ public class MyPlayerController : PlayerController
     Coroutine _attackRoutine;
 
     protected KeyCode _keyCode = KeyCode.None;
+
+    protected Dictionary<string, SkillBase> _skills = new Dictionary<string, SkillBase>();
+
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
     class CoolTime
     {
@@ -81,6 +86,7 @@ public class MyPlayerController : PlayerController
         Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
 
         ObjectType = Define.Object.MyPlayer;
+        MakeSkillDict();
         MakeCoolDownDict();
 
         // NavMesh Agent
@@ -498,6 +504,34 @@ public class MyPlayerController : PlayerController
         }
     }
 
+    protected SkillBase FindSkill(KeyCode keyCode)
+    {
+        SkillBase skillBase = null;
+
+        string skillName = GetCharacterName() + '_' + keyCode.ToString();
+        if (!_skills.TryGetValue(skillName, out skillBase))
+        {
+            Debug.Log($"Skill을 찾을 수 없음 : {keyCode}");
+            return null;
+        }
+
+        return skillBase;
+    }
+
+    protected SkillBase FindSkill(string keyCode)
+    {
+        SkillBase skillBase = null;
+
+        string skillName = GetCharacterName() + '_' + keyCode;
+        if (!_skills.TryGetValue(skillName, out skillBase))
+        {
+            Debug.Log($"Skill을 찾을 수 없음 : {keyCode}");
+            return null;
+        }
+
+        return skillBase;
+    }
+
     protected float GetCoolTime(KeyCode key)
     {
         return _coolDownDict[key].coolTime;
@@ -524,6 +558,42 @@ public class MyPlayerController : PlayerController
         _coolDownDict[key].isCoolDown = false;
         _coolDownDict[key].coolTime = 0.0f;
         Debug.Log("쿨타임 끝");
+    }
+
+    protected void MakeSkillDict()
+    {
+        Dictionary<KeyCode, Data.SkillData> skills = DataManager.SkillDict[ObjInfo.CharType];
+
+        // 스킬 개수
+        for(int i = 0; i < 5; i++)
+        {
+            SkillBase skill = new SkillBase();
+            skill.SkillData = skills
+        }
+
+        foreach (var type in skillTypes)
+        {
+            // SkillBase를 상속받은 클래스들을 탐색해 생성
+            // 클래스의 이름으로 SkillDict에서 SkillData을 검색해 데이터를 채워줌
+
+            // 필요한 것 캐릭터 이름 스트링과 이 스킬이 어떤 번호를 갖는지.
+            string className = type.Name;
+            int idx = className.IndexOf('_');
+            string charName = idx >= 0 ? className.Substring(0, idx) : className;
+            if (charName != GetCharacterName())
+                continue;
+
+            string keyCode = className.Substring(idx + 1);
+            if (!Enum.TryParse<KeyCode>(keyCode, out var result))
+                Debug.Log($"KeyCode를 찾을 수 없음 : {keyCode}");
+
+            SkillBase skill = (SkillBase)Activator.CreateInstance(type);
+
+            skill.SkillData = skills[result];
+            skill._player = this;
+            skill._animator = this._animator;
+            _skills.Add(type.Name, skill);
+        }
     }
 
     private void MakeCoolDownDict()

@@ -14,7 +14,6 @@ public class PlayerController : CreatureController
     bool _isKeyInput = false;
     int _atkCount = 1;
     int _maxAtkCount = 2;
-    protected Dictionary<string, SkillBase> _skills = new Dictionary<string, SkillBase>();
     
     //Fog
     private FogOfWarVision _fogOfWarVision;
@@ -44,7 +43,7 @@ public class PlayerController : CreatureController
     protected override void Init()
 	{
 		base.Init();
-		MakeSkillDict();
+		
         ObjectType = Define.Object.OtherPlayer;
 
         //Fog
@@ -113,67 +112,10 @@ public class PlayerController : CreatureController
         CheckUpdatedFlag();
     }
 
-    protected void MakeSkillDict()
-    {
-        var skillTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsSubclassOf(typeof(SkillBase)) && !t.IsAbstract);
-        Dictionary<KeyCode, Data.SkillData> skills = DataManager.SkillDict[ObjInfo.CharType];
-
-        foreach (var type in skillTypes)
-        {
-            // SkillBase를 상속받은 클래스들을 탐색해 생성
-            // 클래스의 이름으로 SkillDict에서 SkillData을 검색해 데이터를 채워줌
-
-            // 필요한 것 캐릭터 이름 스트링과 이 스킬이 어떤 번호를 갖는지.
-            string className = type.Name;
-            int idx = className.IndexOf('_');
-            string charName = idx >= 0 ? className.Substring(0, idx) : className;
-            if (charName != GetCharacterName())
-                continue;
-
-            string keyCode = className.Substring(idx + 1);
-            if(!Enum.TryParse<KeyCode>(keyCode, out var result))
-                Debug.Log($"KeyCode를 찾을 수 없음 : {keyCode}");
-
-            SkillBase skill = (SkillBase)Activator.CreateInstance(type);
-
-            skill.SkillData = skills[result];
-            skill._player = this;
-            skill._animator = this._animator;
-            _skills.Add(type.Name, skill);
-        }
-    }
-
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
     }
-
-    protected SkillBase FindSkill(KeyCode keyCode)
-    {
-        SkillBase skillBase = null;
-
-        string skillName = GetCharacterName() + '_' + keyCode.ToString();
-        if (!_skills.TryGetValue(skillName, out skillBase))
-        {
-            Debug.Log($"Skill을 찾을 수 없음 : {keyCode}");
-            return null;
-        }
-
-        return skillBase;
-    }
-
-    protected SkillBase FindSkill(string keyCode)
-    {
-        SkillBase skillBase = null;
-
-        string skillName = GetCharacterName() + '_' + keyCode;
-        if (!_skills.TryGetValue(skillName, out skillBase))
-        {
-            Debug.Log($"Skill을 찾을 수 없음 : {keyCode}");
-            return null;
-        }
-
-        return skillBase;
-    }
+  
     #endregion
 }
