@@ -12,14 +12,24 @@
       }
     },
     {
-      "Name": "Skill02",
-      "Type": "PlayAnimatorTriggerNode",
-      "Properties": {
-        "triggerName": "tSkill02",
-        "animationStateName": "Autobot_01_skill02_end",
-        "boolName": "bSkill02",
-        "bLoop" : true
-      }
+      "Name": "ParallelNodeRoot",
+      "Type": "ParallelNode",
+      "Children": [
+        {
+          "Name": "Skill02",
+          "Type": "PlayAnimatorTriggerNode",
+          "Properties": {
+            "triggerName": "tSkill02",
+            "animationStateName": "Autobot_01_skill02_end",
+            "boolName": "bSkill02",
+            "bLoop": true
+          }
+        },
+        {
+          "Name": "Skill03_Effect",
+          "Type": "PlayEffectNode"
+        }
+      ]
     }
   ]
 }

@@ -12,12 +12,22 @@
       }
     },
     {
-      "Name": "Skill01",
-      "Type": "PlayAnimatorTriggerNode",
-      "Properties": {
-        "triggerName": "tSkill01",
-        "animationStateName": "Autobot_01_skill01_atk"
-      }
+      "Name": "ParallelNodeRoot",
+      "Type": "ParallelNode",
+      "Children": [
+        {
+          "Name": "Skill01",
+          "Type": "PlayAnimatorTriggerNode",
+          "Properties": {
+            "triggerName": "tSkill01",
+            "animationStateName": "Autobot_01_skill01_atk"
+          }
+        },
+        {
+          "Name": "Skill03_Effect",
+          "Type": "PlayEffectNode"
+        }
+      ]
     }
   ]
 }

@@ -35,11 +35,6 @@ namespace Server.Game
 
         public override void Update()
         {
-            foreach (Monster monster in _monsters.Values)
-            {
-                monster.Update();
-            }
-
             foreach (Projectile projectile in _projectiles.Values)
             {
                 projectile.Update();
@@ -52,6 +47,11 @@ namespace Server.Game
                 visibleObjs.AddRange(GetObjectsInRange(_monsters, player));
                 visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
                 player.SendVisibleObjsPkt(visibleObjs);
+            }
+
+            foreach (Monster monster in _monsters.Values)
+            {
+                monster.Update();
             }
 
             Flush();
@@ -97,6 +97,8 @@ namespace Server.Game
             else if (type == GameObjectType.Monster)
             {
                 Monster monster = gameObject as Monster;
+                if (_monsters == null)
+                    return;
                 _monsters.Add(gameObject.Id, monster); 
                 monster.Room = this;
             }

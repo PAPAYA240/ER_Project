@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Assets.Scripts.Effect;
 using Google.Protobuf.Protocol;
 using UnityEngine;
 using static Data.MonsterSkillDict;
@@ -143,7 +142,7 @@ namespace Data
         public string prefabName;
         public float delayTime;
         public string skillType;
-        public Vector3 position;
+        public Vector3 position; // 부모or 기본 포지션에 추가적으로 옮겨줄 위치
         public Quaternion rotation;
         public string sound;
         public EEffectTarget target; // 이펙트가 표시될 위치
