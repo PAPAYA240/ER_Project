@@ -7,12 +7,20 @@ using UnityEngine;
 using static Define;
 using static UI_PlayerInterface;
 using static UI_SkillBase;
+using static UnityEngine.GraphicsBuffer;
 
 public class MyPlayerController : PlayerController
 {
+
     protected bool _moveKeyPressed = false;
-    bool _isUseSkill = false;
-    KeyCode _keyCode = KeyCode.None;
+
+    protected bool _isUseSkill = false;
+
+    bool _isAttackLoop = false;
+    int _attackIndex = 0;
+    Coroutine _attackRoutine;
+
+    protected KeyCode _keyCode = KeyCode.None;
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
     class CoolTime
     {
@@ -35,7 +43,7 @@ public class MyPlayerController : PlayerController
 
     //UI
     //UI_PlayerHUD _playerHUD = null;
-    UI_PlayerInterface _playerInterface = null;
+    protected UI_PlayerInterface _playerInterface = null;
 
     public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
     public WeaponInfo MyWeapon { get; set; } = new WeaponInfo();
@@ -95,12 +103,13 @@ public class MyPlayerController : PlayerController
             return;
 
         if (State == CreatureState.Idle)
-        {
             PlayAnimation("WAIT", 0.1f);
-        }
         else if (State == CreatureState.Moving)
-        {
             PlayAnimation("RUN", 0.1f);
+        else if (State == CreatureState.Attack)
+        {
+            Debug.Log($"평타 코루틴 시작");
+            _attackRoutine = StartCoroutine(CoAttackLoop());
         }
     }
 
@@ -112,6 +121,9 @@ public class MyPlayerController : PlayerController
                 GetMouseInput();
                 break;
             case CreatureState.Moving:
+                GetMouseInput();
+                break;
+            case CreatureState.Attack:
                 GetMouseInput();
                 break;
         }
@@ -248,21 +260,94 @@ public class MyPlayerController : PlayerController
         SendAnimPacket(animName, ratio);
     }
 
+    // 평타 반복 코루틴
+    IEnumerator CoAttackLoop()
+    {
+        while (true)
+        {
+            string animName = (_attackIndex == 0) ? "ATTACK_1" : "ATTACK_2";
+            PlayAnimation(animName, 0f);
+
+            _attackIndex = 1 - _attackIndex;
+
+            yield return null;
+
+            yield return new WaitUntil(() =>
+            {
+                AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+
+                if (stateInfo.IsName(animName) && stateInfo.normalizedTime >= 0.9f)
+                    return true;
+
+                if (!stateInfo.IsName(animName) && !_isAttackLoop)
+                    return true;
+
+                return false;
+            });
+
+            if (!_isAttackLoop)
+            {
+                State = CreatureState.Idle;
+                _attackRoutine = null;
+                Debug.Log($"평타 코루틴 끝");
+
+                StartCoroutine(CoComboResetTimer());
+
+                yield break;
+            }
+        }
+    }
+
+    // 평타 콤보 초기화 코루틴
+    private IEnumerator CoComboResetTimer()
+    {
+        float timer = 0f;
+
+        while (timer < 2f)
+        {
+            if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButton(1))
+                yield break;
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        _attackIndex = 0;
+        Debug.Log("콤보 리셋!");
+    }
+
     protected virtual void GetMouseInput()
     {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f, _mask);
 
-        if (Input.GetMouseButton(1))
+        // Shift 누르고 우클릭 시 → 평타 애니메이션
+        if (Input.GetKey(KeyCode.LeftShift))
         {
+            if (Input.GetMouseButton(1))
+            {
+                if (_attackRoutine == null)
+                {
+                    _isAttackLoop = true;
+                    State = CreatureState.Attack;
+                }
+            }
+
+        }
+        else if (Input.GetMouseButton(1))
+        {
+            // 그냥 우클릭 시 → 이동 처리
             if (raycastHit)
             {
                 _dstPos = hit.point;
                 State = CreatureState.Moving;
-
                 _moveKeyPressed = true;
             }
+        }
+        else
+        {
+            _isAttackLoop = false;
         }
     }
 
@@ -394,7 +479,7 @@ public class MyPlayerController : PlayerController
         return cooldown * (100f / (100f + skillAcc));
     }
 
-    private void OnCharSkillLevelUp(SkillEnum skill)
+    protected void OnCharSkillLevelUp(SkillEnum skill)
     {
         //For QWERT
         _skills[GetCharacterName() + "_" + skill.ToString()].CurLevel += 1;

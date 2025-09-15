@@ -35,6 +35,8 @@ public class MonsterController : CreatureController
             Debug.LogError("MonsterController Add_Component : 컴포넌트 추가 실패");
             return;
         }
+
+        this.gameObject.layer = LayerMask.NameToLayer("Monster");
     }
 
     protected override void UpdateController()

@@ -78,7 +78,7 @@ public class UI_PlayerInterface : UI_Base
 
         //temp
         //LevelUp(1);
-        OnLevelUp(4);
+        OnLevelUp(10);
         SpecificSkillLevelUp(GameObjects.TSkill);
         SpecificSkillLevelUp(GameObjects.FSkill);
 
@@ -210,7 +210,7 @@ public class UI_PlayerInterface : UI_Base
         ActivateSkillLevelUpButton(GameObjects.FSkill, false);
     }
 
-    void SpecificSkillLevelUp(GameObjects objEnum)
+    public void SpecificSkillLevelUp(GameObjects objEnum)
     {
         switch (objEnum)
         {
