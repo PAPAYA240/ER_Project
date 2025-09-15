@@ -74,7 +74,7 @@ GameObject:
   - component: {fileID: 4042253166892106108}
   - component: {fileID: 7642596804028868247}
   - component: {fileID: 2679619122953559633}
-  - component: {fileID: -7146807279183779772}
+  - component: {fileID: 7552628817844763543}
   m_Layer: 0
   m_Name: MyYuki
   m_TagString: Untagged
@@ -143,7 +143,7 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &-7146807279183779772
+--- !u!114 &7552628817844763543
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -152,7 +152,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 128468080864130828}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d07a4ac14489814e9692da7473da8c6, type: 3}
+  m_Script: {fileID: 11500000, guid: 884a97f57617eb0428d34ce2a8bd5f5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _offset: {x: 0, y: 10, z: -10}
@@ -4410,6 +4410,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38bbf0c8ec18e0747b035ba9e225aad8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _controller: {fileID: 0}
 --- !u!1 &8039773792476112242
 GameObject:
   m_ObjectHideFlags: 0

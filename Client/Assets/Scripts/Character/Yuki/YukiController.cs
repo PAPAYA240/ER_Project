@@ -8,32 +8,31 @@ using UnityEngine;
 
 public class YukiController : MyPlayerController
 {
-    protected override void Init()
+    protected override void UpdateSkillKeyIntput()
     {
-        base.Init();
-    }
+        if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))
+        {
+            _isUseSkill = true;
+            _keyCode = KeyCode.Q;
+        }
+        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.W))
+        {
+            _isUseSkill = true;
+            _keyCode = KeyCode.W;
+        }
+        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
+        {
+            _isUseSkill = true;
+            _keyCode = KeyCode.E;
+        }
+        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))
+        {
+            _isUseSkill = true;
+            _keyCode = KeyCode.R;
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
 
-    protected override void UpdateKeyInput()
-    {
-        base.UpdateKeyInput();
-    }
-
-    protected override void UpdateAnimation()
-    {
-        base.UpdateAnimation();
-    }
-
-    protected override void UpdateIdle()
-    {
-        base.UpdateIdle();
-    }
-
-    protected override void UpdateMoving()
-    {
-        base.UpdateMoving();
-    }
-
-    protected override void UpdateDead()
-    {
+        }
     }
 }

@@ -23,21 +23,4 @@ public class AnimatorEvent : MonoBehaviour
         _controller.IsKeyInput = false;
         Debug.Log("스킬 종료 (Animation Event)");
     }
-
-    //public void OnAttackEnd()
-    //{
-    //    if (_controller == null)
-    //        return;
-
-    //    if (_controller.AttackCount < _controller.MaxAttackCount)
-    //    {
-    //        _controller.AttackCount++;
-    //        _controller.State = CreatureState.Idle;
-    //    }
-    //    else
-    //    {
-    //        _controller.AttackCount = 1;
-    //        _controller.State = CreatureState.Idle;
-    //    }
-    //}
 }
