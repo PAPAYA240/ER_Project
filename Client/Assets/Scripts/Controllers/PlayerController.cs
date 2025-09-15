@@ -79,17 +79,56 @@ public class PlayerController : CreatureController
         // 서버에서 스킬 사용을 허락받으면
         if (skillPacket.CanUse)
         {
-            SkillBase skill = FindSkill((KeyCode)skillPacket.SkillInfo.KeyCode);
-            skill.Execute();
+            KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
+            ExecuteSkill(keyCode);
 
             if (Define.Object.MyPlayer == ObjectType)
             {
-                Managers.Object.MyPlayer.StartCoCoolTime((KeyCode)skillPacket.SkillInfo.KeyCode, skill.CurLevelCooldown);
+                Managers.Object.MyPlayer.StartCoCoolTime(keyCode);
             }
 
             //StartCoroutine(CoStartSkill());
             Debug.Log("스킬 코루틴 시작");
         }
+    }
+
+    protected void ExecuteSkill(KeyCode keyCode)
+    {
+        switch (keyCode)
+        {
+            case KeyCode.Q:
+                Skill_Q();
+                break;
+            case KeyCode.W:
+                Skill_W();
+                break;
+            case KeyCode.E:
+                Skill_E();
+                break;
+            case KeyCode.R:
+                Skill_R();
+                break;
+        }
+    }
+
+    protected virtual void Skill_Q()
+    {
+        PlayAnimation("SKILL_Q", 0.1f);
+    }
+
+    protected virtual void Skill_W()
+    {
+        PlayAnimation("SKILL_W", 0.1f);
+    }
+
+    protected virtual void Skill_E()
+    {
+        PlayAnimation("SKILL_E", 0.1f);
+    }
+
+    protected virtual void Skill_R()
+    {
+        PlayAnimation("SKILL_R", 0.1f);
     }
 
     IEnumerator CoStartSkill()
@@ -110,6 +149,11 @@ public class PlayerController : CreatureController
 
         // TODO : TEMP
         CheckUpdatedFlag();
+    }
+
+    protected virtual void PlayAnimation(string animName, float ratio)
+    {
+        _animator.CrossFadeInFixedTime(animName, ratio);
     }
 
     public void PlayAnimFromServer(AnimInfo animInfo)

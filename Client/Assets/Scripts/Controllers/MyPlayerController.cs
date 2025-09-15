@@ -8,6 +8,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.AI;
 using static Define;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 using static UI_PlayerInterface;
 using static UI_SkillBase;
 using static UnityEngine.GraphicsBuffer;
@@ -383,7 +384,7 @@ public class MyPlayerController : PlayerController
         }
         else
         {
-            UpdateSkillKeyIntput();
+            UpdateSkillKeyInput();
         }
 
         // 처음 X를 눌렀고 Idle이나 Moving 상태였을 때 -> Rest 상태로 변경
@@ -402,7 +403,7 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    protected virtual void UpdateSkillKeyIntput() { }
+    protected virtual void UpdateSkillKeyInput() { }
 
     protected virtual void GetMouseInput()
     {
@@ -478,7 +479,7 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region Animation
-    protected void PlayAnimation(string animName, float ratio)
+    protected override void PlayAnimation(string animName, float ratio)
     {
         _animator.CrossFadeInFixedTime(animName, ratio);
         SendAnimPacket(animName, ratio);
@@ -508,8 +509,7 @@ public class MyPlayerController : PlayerController
     {
         SkillBase skillBase = null;
 
-        string skillName = GetCharacterName() + '_' + keyCode.ToString();
-        if (!_skills.TryGetValue(skillName, out skillBase))
+        if (!_skills.TryGetValue(keyCode.ToString(), out skillBase))
         {
             Debug.Log($"Skill을 찾을 수 없음 : {keyCode}");
             return null;
@@ -522,8 +522,7 @@ public class MyPlayerController : PlayerController
     {
         SkillBase skillBase = null;
 
-        string skillName = GetCharacterName() + '_' + keyCode;
-        if (!_skills.TryGetValue(skillName, out skillBase))
+        if (!_skills.TryGetValue(keyCode, out skillBase))
         {
             Debug.Log($"Skill을 찾을 수 없음 : {keyCode}");
             return null;
@@ -537,10 +536,12 @@ public class MyPlayerController : PlayerController
         return _coolDownDict[key].coolTime;
     }
 
-    public void StartCoCoolTime(KeyCode key, float coolTime)
+    public void StartCoCoolTime(KeyCode key)
     {
+        SkillBase skill = FindSkill(key);
+
         // 쿨타임 체크
-        StartCoroutine(CoInputCooltime(key, coolTime));
+        StartCoroutine(CoInputCooltime(key, skill.CurLevelCooldown));
     }
 
     IEnumerator CoInputCooltime(KeyCode key, float time)
@@ -564,35 +565,19 @@ public class MyPlayerController : PlayerController
     {
         Dictionary<KeyCode, Data.SkillData> skills = DataManager.SkillDict[ObjInfo.CharType];
 
-        // 스킬 개수
-        for(int i = 0; i < 5; i++)
+        // Q, W, E, R
+        foreach(Key key in Enum.GetValues(typeof(Key)))
         {
             SkillBase skill = new SkillBase();
-            skill.SkillData = skills
-        }
 
-        foreach (var type in skillTypes)
-        {
-            // SkillBase를 상속받은 클래스들을 탐색해 생성
-            // 클래스의 이름으로 SkillDict에서 SkillData을 검색해 데이터를 채워줌
-
-            // 필요한 것 캐릭터 이름 스트링과 이 스킬이 어떤 번호를 갖는지.
-            string className = type.Name;
-            int idx = className.IndexOf('_');
-            string charName = idx >= 0 ? className.Substring(0, idx) : className;
-            if (charName != GetCharacterName())
-                continue;
-
-            string keyCode = className.Substring(idx + 1);
+            string keyCode = key.ToString();
             if (!Enum.TryParse<KeyCode>(keyCode, out var result))
                 Debug.Log($"KeyCode를 찾을 수 없음 : {keyCode}");
-
-            SkillBase skill = (SkillBase)Activator.CreateInstance(type);
 
             skill.SkillData = skills[result];
             skill._player = this;
             skill._animator = this._animator;
-            _skills.Add(type.Name, skill);
+            _skills.Add(keyCode, skill);
         }
     }
 
@@ -600,8 +585,7 @@ public class MyPlayerController : PlayerController
     {
         foreach (var skill in _skills)
         {
-            string str = skill.Key.Substring(skill.Key.Length - 1);
-            KeyCode key = (KeyCode)Enum.Parse(typeof(KeyCode), str);
+            KeyCode key = (KeyCode)Enum.Parse(typeof(KeyCode), skill.Key);
             _coolDownDict[key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
         }
     }
@@ -713,7 +697,7 @@ public class MyPlayerController : PlayerController
     protected void OnCharSkillLevelUp(SkillEnum skill)
     {
         //For QWERT
-        _skills[GetCharacterName() + "_" + skill.ToString()].CurLevel += 1;
+        _skills[skill.ToString()].CurLevel += 1;
 
         float skillAcc = 0.0f;
         //float skillAcc = Stat.GetSkillAcc();

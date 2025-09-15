@@ -14,7 +14,7 @@ using static UI_SkillBase;
 
 public class RozziController : MyPlayerController
 {
-    protected override void UpdateSkillKeyIntput()
+    protected override void UpdateSkillKeyInput()
     {
         if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))
         {
@@ -41,5 +41,25 @@ public class RozziController : MyPlayerController
 
         }
     }
+
+    //protected override void Skill_Q()
+    //{
+        
+    //}
+
+    //protected override void Skill_W()
+    //{
+
+    //}
+
+    //protected override void Skill_E()
+    //{
+
+    //}
+
+    //protected override void Skill_R()
+    //{
+
+    //}
 }
 
