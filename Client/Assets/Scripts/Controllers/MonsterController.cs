@@ -39,6 +39,7 @@ public class MonsterController : CreatureController
             return;
         }
 
+        this.gameObject.layer = LayerMask.NameToLayer("Monster");
     }
 
     protected override void UpdateController()

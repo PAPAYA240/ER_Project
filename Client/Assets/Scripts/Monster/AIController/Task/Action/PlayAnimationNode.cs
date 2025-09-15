@@ -1,6 +1,12 @@
 ﻿using Google.Protobuf.Protocol;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+
+#if UNITY_EDITOR
+using UnityEditor.Experimental.GraphView;
+#endif
 
 public interface IStateChangeListener
 {

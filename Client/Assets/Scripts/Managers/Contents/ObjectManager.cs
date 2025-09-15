@@ -17,7 +17,13 @@ public class ObjectManager
 		return (GameObjectType)type;
 	}
 
-	public void Add(ObjectInfo info, bool myPlayer = false)
+    public static GameObjectType GetObjectTypeById(GameObject go)
+    {
+        BaseController bs = go.GetComponent<BaseController>();
+        return GetObjectTypeById(bs.Id);
+    }
+
+    public void Add(ObjectInfo info, bool myPlayer = false)
 	{
 		GameObjectType objectType = GetObjectTypeById(info.ObjectId);
 
