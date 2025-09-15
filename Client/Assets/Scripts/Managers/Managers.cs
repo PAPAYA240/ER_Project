@@ -11,6 +11,8 @@ public class Managers : MonoBehaviour
     MapManager _map = new MapManager();
     ObjectManager _obj = new ObjectManager();
     NetworkManager _network = new NetworkManager();
+    private FXManager _fx;
+    public static FXManager FX { get { return s_instance._fx; } }
 
     public static MapManager Map { get { return Instance._map; } }
     public static ObjectManager Object { get { return Instance._obj; } }
@@ -54,14 +56,18 @@ public class Managers : MonoBehaviour
                 go = new GameObject { name = "@Managers" };
                 go.AddComponent<Managers>();
             }
-
             DontDestroyOnLoad(go);
             s_instance = go.GetComponent<Managers>();
+
+            GameObject fxManagerGo = new GameObject { name = "FXManager" };
+            fxManagerGo.transform.parent = go.transform;
+            s_instance._fx = fxManagerGo.AddComponent<FXManager>();
 
             s_instance._network.Init();
             s_instance._data.Init();
             s_instance._pool.Init();
             s_instance._sound.Init();
+            s_instance._fx.Init();
         }		
 	}
 
@@ -71,5 +77,6 @@ public class Managers : MonoBehaviour
         Scene.Clear();
         UI.Clear();
         Pool.Clear();
+        FX.Clear();
     }
 }

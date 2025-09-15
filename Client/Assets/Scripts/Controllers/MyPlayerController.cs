@@ -4,15 +4,24 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using static Define;
 using static UI_PlayerInterface;
 using static UI_SkillBase;
+using static UnityEngine.GraphicsBuffer;
 
 public class MyPlayerController : PlayerController
 {
+    #region Variable
     protected bool _moveKeyPressed = false;
-    bool _isUseSkill = false;
-    KeyCode _keyCode = KeyCode.None;
+
+    protected bool _isUseSkill = false;
+
+    bool _isAttackLoop = false;
+    int _attackIndex = 0;
+    Coroutine _attackRoutine;
+
+    protected KeyCode _keyCode = KeyCode.None;
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
     class CoolTime
     {
@@ -35,7 +44,7 @@ public class MyPlayerController : PlayerController
 
     //UI
     //UI_PlayerHUD _playerHUD = null;
-    UI_PlayerInterface _playerInterface = null;
+    protected UI_PlayerInterface _playerInterface = null;
 
     public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
     public WeaponInfo MyWeapon { get; set; } = new WeaponInfo();
@@ -43,9 +52,22 @@ public class MyPlayerController : PlayerController
     public float WeaponMasteryAS { get; set; }
     public float ItemAttackSpeed { get; set; } = 0;
 
-    private void Start()
+    // State : Moving
+    protected NavMeshAgent _agent;
+    protected bool _isTargetOn;
+    protected GameObject _targetMonster;
+
+    // State : Rest
+    protected bool _isResting = false;
+    protected Coroutine _coRest;
+
+    // TEMP
+    protected float _attackRange;
+    #endregion
+
+    #region Init
+    void Start()
     {
-        
     }
 
     public void ManualInit()
@@ -60,6 +82,15 @@ public class MyPlayerController : PlayerController
 
         ObjectType = Define.Object.MyPlayer;
         MakeCoolDownDict();
+
+        // NavMesh Agent
+        _agent = GetComponent<NavMeshAgent>();
+        _agent.speed = Speed;
+        _agent.acceleration = 999;
+        _agent.angularSpeed = 720;
+        _agent.stoppingDistance = 0.1f;
+
+        _attackRange = 3.0f;
 
         //UI
         GameObject go = Managers.Resource.Instantiate("UI/Scene/PlayerHUD");
@@ -88,19 +119,35 @@ public class MyPlayerController : PlayerController
         //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.DSkill, );
         //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.FSkill, );
     }
+    #endregion
 
+    #region Update Animation & Controller
     protected override void UpdateAnimation()
     {
+        // 상태가 전환되면 한 번만 호출됨
+
         if (_animator == null)
             return;
 
         if (State == CreatureState.Idle)
-        {
             PlayAnimation("WAIT", 0.1f);
-        }
         else if (State == CreatureState.Moving)
-        {
             PlayAnimation("RUN", 0.1f);
+        else if (State == CreatureState.Attack)
+        {
+            Debug.Log($"평타 코루틴 시작");
+            _attackRoutine = StartCoroutine(CoAttackLoop());
+        }
+        else if (State == CreatureState.Rest)
+        {
+            PlayAnimation("REST_START", 0.1f);
+        }
+
+        // TODO 
+        if (_agent != null && State != CreatureState.Moving)
+        {
+            _agent.isStopped = true;
+            _agent.ResetPath();
         }
     }
 
@@ -114,6 +161,9 @@ public class MyPlayerController : PlayerController
             case CreatureState.Moving:
                 GetMouseInput();
                 break;
+            case CreatureState.Attack:
+                GetMouseInput();
+                break;
         }
 
         UpdateKeyInput();
@@ -124,6 +174,20 @@ public class MyPlayerController : PlayerController
         base.UpdateController();
     }
 
+    protected override void CheckUpdatedFlag()
+    {
+        if (_updated)
+        {
+            C_Move movePacket = new C_Move();
+            movePacket.PosInfo = PosInfo;
+            movePacket.RotInfo = RotInfo;
+            Managers.Network.Send(movePacket);
+            _updated = false;
+        }
+    }
+    #endregion
+
+    #region State
     protected override void UpdateIdle()
     {
         // 이동 상태로 갈지 확인
@@ -136,25 +200,313 @@ public class MyPlayerController : PlayerController
 
     protected override void UpdateMoving()
     {
-        Vector3 moveDir = _dstPos - transform.position;
-        moveDir.y = 0.0f;
+        // 목적지까지 실제로 움직임
+        // 목적지까지 도착했으면 Moving 상태 종료 -> Idle
 
-        float dist = moveDir.magnitude;
-        if (dist < Speed * Time.deltaTime)
+        if (_agent == null)
+            return;
+
+        if (!_agent.pathPending)
         {
-            transform.position = _dstPos;
+            // 목적지 도착
+            if (_agent.remainingDistance <= _agent.stoppingDistance)
+            {
+                State = CreatureState.Idle;
+                _moveKeyPressed = false;
+
+                CellPos = transform.position;
+                RotInfo = transform.rotation;
+                CheckUpdatedFlag();
+            }
+            // 이동 중
+            else
+            {
+                State = CreatureState.Moving;
+                CellPos = transform.position;
+                RotInfo = transform.rotation;
+                CheckUpdatedFlag();
+            }
+
+            if (_isTargetOn)
+                LookAtTarget();
+        }
+    }
+
+    protected override void UpdateRest()
+    {
+        // TODO : 쉬는 동안 자원 회복
+    }
+
+    protected override void UpdateDead()
+    {
+    }
+    #endregion
+
+    #region State : Moving
+    protected void LookAtTarget()
+    {
+        // 타겟을 바라보도록 방향 조정
+
+        Vector3 lookDir = (_targetMonster.transform.position - transform.position).normalized;
+        lookDir.y = 0f;
+
+        if (lookDir != Vector3.zero)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 10f);
+        }
+    }
+    #endregion
+
+    #region State : Attack
+    // 평타 반복 코루틴
+    IEnumerator CoAttackLoop()
+    {
+        while (true)
+        {
+            string animName = (_attackIndex == 0) ? "ATTACK_1" : "ATTACK_2";
+            PlayAnimation(animName, 0.1f);
+
+            _attackIndex = 1 - _attackIndex;
+
+            yield return null;
+
+            yield return new WaitUntil(() =>
+            {
+                AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+
+                if (stateInfo.IsName(animName) && stateInfo.normalizedTime >= 0.9f)
+                    return true;
+
+                if (!stateInfo.IsName(animName) && !_isAttackLoop)
+                    return true;
+
+                return false;
+            });
+
+            if (!_isAttackLoop)
+            {
+                State = CreatureState.Idle;
+                _attackRoutine = null;
+                Debug.Log($"평타 코루틴 끝");
+
+                StartCoroutine(CoComboResetTimer());
+
+                yield break;
+            }
+        }
+    }
+
+    // 평타 콤보 초기화 코루틴
+    private IEnumerator CoComboResetTimer()
+    {
+        float timer = 0f;
+
+        while (timer < 2f)
+        {
+            if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButton(1))
+                yield break;
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        _attackIndex = 0;
+        Debug.Log("콤보 리셋!");
+    }
+    #endregion
+
+    #region State : Rest
+    protected void ExitRest()
+    {
+        // 휴식 종료 애니메이션 재생
+        // 종료 시점을 체크
+
+        PlayAnimation("REST_END", 0.1f);
+        _coRest = StartCoroutine(CoRestEnd());
+    }
+
+    IEnumerator CoRestEnd()
+    {
+        // 애니메이션 종료 시점을 체크해서 Idle or Moving 상태로 전환
+
+        yield return new WaitForSeconds(0.1f);
+
+        float elapsed = 0f;
+
+        AnimatorClipInfo[] clipInfos = _animator.GetCurrentAnimatorClipInfo(0);
+        if (clipInfos.Length > 0)
+        {
+            float length = clipInfos[0].clip.length;
+            while (elapsed < length - 0.1f)
+            {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+        }
+
+        _isResting = false;
+
+        if (_moveKeyPressed)
+            State = CreatureState.Moving;
+        else
             State = CreatureState.Idle;
-            _moveKeyPressed = false;
+    }
+    #endregion
+
+    #region Input
+    protected virtual void UpdateKeyInput()
+    {
+        if (Input.GetKey(KeyCode.LeftControl))
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                _playerInterface.SpecificSkillLevelUp(GameObjects.QSkill);
+            }
+            else if (Input.GetKeyDown(KeyCode.W))
+            {
+                _playerInterface.SpecificSkillLevelUp(GameObjects.WSkill);
+            }
+            else if (Input.GetKeyDown(KeyCode.E))
+            {
+                _playerInterface.SpecificSkillLevelUp(GameObjects.ESkill);
+            }
+            else if (Input.GetKeyDown(KeyCode.R))
+            {
+                _playerInterface.SpecificSkillLevelUp(GameObjects.RSkill);
+            }
         }
         else
         {
-            transform.position += Speed * Time.deltaTime * moveDir.normalized;
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDir), 20 * Time.deltaTime);
-            State = CreatureState.Moving;
-            CellPos = transform.position;
-            RotInfo = transform.rotation;
-            CheckUpdatedFlag();
+            UpdateSkillKeyIntput();
         }
+
+        // 처음 X를 눌렀고 Idle이나 Moving 상태였을 때 -> Rest 상태로 변경
+        // 다시 X를 누르면 -> 휴식 종료
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            if (!_isResting && (State == CreatureState.Idle || State == CreatureState.Moving))
+            {
+                State = CreatureState.Rest;
+                _isResting = true;
+            }
+            else if (_isResting)
+            {
+                ExitRest();
+            }
+        }
+    }
+
+    protected virtual void UpdateSkillKeyIntput() { }
+
+    protected virtual void GetMouseInput()
+    {
+        // Shift + 우클릭 -> 평타 애니메이션
+        // 마우스 우클릭이 눌렸을 경우 유효한 곳이 클릭 되었다면 해당 위치를 목적지로 설정 -> Moving 상태로 변경
+        // 몬스터 클릭 시 평타 사거리만큼 떨어진 곳으로 설정
+
+        // Shift 누르고 우클릭 시 → 평타 애니메이션
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            if (Input.GetMouseButton(1))
+            {
+                if (_attackRoutine == null)
+                {
+                    _isAttackLoop = true;
+                    State = CreatureState.Attack;
+                }
+            }
+
+        }
+        // 그냥 우클릭 시 → 이동 처리
+        else if (Input.GetMouseButton(1))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
+
+            GameObject targetObject = hit.collider.gameObject;
+            Vector3 targetPos;
+
+            // 마우스와 충돌한 물체가
+            // 몬스터인 경우
+            if (targetObject.layer == LayerMask.NameToLayer("Monster"))
+            {
+                _isTargetOn = true;
+                _targetMonster = targetObject;
+
+                Vector3 monsterPos = targetObject.transform.position;
+                Vector3 dir = (monsterPos - transform.position).normalized;
+
+                float distance = Vector3.Distance(transform.position, monsterPos);
+
+                // TODO : 실제 사거리 가져와야함!
+                // 이미 사거리 안이라면 제자리
+                if (distance <= _attackRange)
+                    targetPos = transform.position;
+                else
+                    targetPos = monsterPos - dir * _attackRange;
+            }
+            // 맵일 경우
+            else
+            {
+                _isTargetOn = false;
+                _targetMonster = null;
+
+                targetPos = hit.point;
+            }
+
+            // 최종 목적지 설정
+            if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
+            {
+                _agent.SetDestination(navHit.position);
+                State = CreatureState.Moving;
+
+                _moveKeyPressed = true;
+            }
+        }
+        else
+        {
+            _isAttackLoop = false;
+        }
+    }
+    #endregion
+
+    #region Animation
+    protected void PlayAnimation(string animName, float ratio)
+    {
+        _animator.CrossFadeInFixedTime(animName, ratio);
+        SendAnimPacket(animName, ratio);
+    }
+    #endregion  
+
+    #region Skill
+    protected void ExecuteSkill()
+    {
+        _isUseSkill = false;
+
+        if (!_coolDownDict[_keyCode].isCoolDown)
+        {
+            // 다른 조건 체크하기
+
+            // 패킷 보내기
+            SendSkillPacket(_keyCode);
+
+            // 스킬 실행 UI, TODO 스킬 사용할 수 있는 검증이 다 끝난 곳으로 옮겨야함
+            _playerInterface.UseSkill(KeyToUIEnum(_keyCode));
+
+            Debug.Log($"스킬 사용! : {_keyCode}");
+        }
+    }
+
+    protected float GetCoolTime(KeyCode key)
+    {
+        return _coolDownDict[key].coolTime;
+    }
+
+    public void StartCoCoolTime(KeyCode key, float coolTime)
+    {
+        // 쿨타임 체크
+        StartCoroutine(CoInputCooltime(key, coolTime));
     }
 
     IEnumerator CoInputCooltime(KeyCode key, float time)
@@ -183,112 +535,7 @@ public class MyPlayerController : PlayerController
             _coolDownDict[key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
         }
     }
-
-    protected float GetCoolTime(KeyCode key)
-    {
-        return _coolDownDict[key].coolTime;
-    }
-
-    // Camera
-    [SerializeField]
-    public Vector3 _offset = new Vector3(0, 10, -10);
-    [SerializeField]
-    public float smoothSpeed = 5f;
-    void LateUpdate()
-    {
-        Vector3 targetPos = transform.position + _offset;
-        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, targetPos, smoothSpeed * Time.deltaTime);
-        Camera.main.transform.LookAt(transform.position);
-    }
-
-    // 키보드 입력
-    protected virtual void UpdateKeyInput()
-    {
-        if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))
-        {
-            _isUseSkill = true;
-            _keyCode = KeyCode.Q;
-        }
-        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.W))
-        {
-            _isUseSkill = true;
-            _keyCode = KeyCode.W;
-        }
-        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
-        {
-            _isUseSkill = true;
-            _keyCode = KeyCode.E;
-        }
-        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))
-        {
-            _isUseSkill = true;
-            _keyCode = KeyCode.R;
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-
-        }
-    }
-
-    protected override void CheckUpdatedFlag()
-    {
-        if (_updated)
-        {
-            C_Move movePacket = new C_Move();
-            movePacket.PosInfo = PosInfo;
-            movePacket.RotInfo = RotInfo;
-            Managers.Network.Send(movePacket);
-            _updated = false;
-        }
-    }
-
-    protected void PlayAnimation(string animName, float ratio)
-    {
-        _animator.CrossFadeInFixedTime(animName, ratio);
-        SendAnimPacket(animName, ratio);
-    }
-
-    protected virtual void GetMouseInput()
-    {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f, _mask);
-
-        if (Input.GetMouseButton(1))
-        {
-            if (raycastHit)
-            {
-                _dstPos = hit.point;
-                State = CreatureState.Moving;
-
-                _moveKeyPressed = true;
-            }
-        }
-    }
-
-    protected void ExecuteSkill()
-    {
-        _isUseSkill = false;
-
-        if (!_coolDownDict[_keyCode].isCoolDown)
-        {
-            // 다른 조건 체크하기
-
-            // 패킷 보내기
-            SendSkillPacket(_keyCode);
-
-            // 스킬 실행 UI, TODO 스킬 사용할 수 있는 검증이 다 끝난 곳으로 옮겨야함
-            _playerInterface.UseSkill(KeyToUIEnum(_keyCode));
-
-            Debug.Log($"스킬 사용! : {_keyCode}");
-        }
-    }
-
-    public void StartCoCoolTime(KeyCode key, float coolTime)
-    {
-        // 쿨타임 체크
-        StartCoroutine(CoInputCooltime(key, coolTime));
-    }
+    #endregion
 
     #region Rendering
 
@@ -396,14 +643,13 @@ public class MyPlayerController : PlayerController
         SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(RSkill.CurLevelCooldown, skillAcc));
     }
 
-
     private float CalculateMaxCool(float cooldown, float skillAcc)
     {
         // 최종 쿨타임 = 기본 쿨타임 × (100 / (100 + 스킬가속))
         return cooldown * (100f / (100f + skillAcc));
     }
 
-    private void OnCharSkillLevelUp(SkillEnum skill)
+    protected void OnCharSkillLevelUp(SkillEnum skill)
     {
         //For QWERT
         _skills[GetCharacterName() + "_" + skill.ToString()].CurLevel += 1;
@@ -433,6 +679,19 @@ public class MyPlayerController : PlayerController
 
     }
 
+    #endregion
+
+    #region Camera
+    [SerializeField]
+    public Vector3 _offset = new Vector3(0, 10, -10);
+    [SerializeField]
+    public float smoothSpeed = 5f;
+    void LateUpdate()
+    {
+        Vector3 targetPos = transform.position + _offset;
+        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, targetPos, smoothSpeed * Time.deltaTime);
+        Camera.main.transform.LookAt(transform.position);
+    }
     #endregion
 
     #region Packet

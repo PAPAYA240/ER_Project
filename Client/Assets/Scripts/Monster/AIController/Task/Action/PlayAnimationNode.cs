@@ -1,8 +1,4 @@
-﻿using Assets.Scripts.Effect;
-using Data;
-using Google.Protobuf.Protocol;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -102,7 +98,6 @@ public class PlayAnimatorFloatNode : AnimationControlNode
 
         return NodeStatus.Running;
     }
-
     public override void HandleStateChange(CreatureState newState) { }
 }
 
@@ -122,29 +117,21 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
     {
         if (Check(owner) == false)
             return NodeStatus.Failure;
-
-        if(monsterController.State != CreatureState.Skill)
-        {
-            _animator.ResetTrigger(triggerName);
-            _animator.CrossFade("Idle", 0.1f);
-            _isSentEndPacket = false;
-            return NodeStatus.Failure; 
-        }
-
+       
         if (_isSentEndPacket == false)
         {
             _animator.SetTrigger(triggerName);
             _isSentEndPacket = true;
 
-            // TODO : 이펙트 재생 임의,  EffectNode로 분할 예정
-            DataManager.MonsterSkillDict.TryGetValue(monsterController.Skill, out List<EffectData> data);
-            if (data != null)
-                FXManager.Instance.PlayEffect(data, monsterController.transform, monsterController.TargetPosition);
-
-            // 루프가 필요할 시에 bool 값으로도 조절함
             if (bLoop)
                 _animator.SetBool(boolName, true);
+
+            return NodeStatus.Running;
         }
+
+        //if (_animator.GetCurrentAnimatorStateInfo(0).IsName(animationStateName) || _animator.IsInTransition(0))
+        //    return NodeStatus.Running;
+
         return NodeStatus.Running;
     }
 
@@ -152,10 +139,11 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
     {
         if (_animator == null)
             return;
+
         if (newState == CreatureState.Idle)
         {
             _animator.ResetTrigger(triggerName);
-            _animator.CrossFade("Idle", 0.1f);
+            //_animator.CrossFade("Idle", 0.1f);
             _isSentEndPacket = false;
 
             if (bLoop)

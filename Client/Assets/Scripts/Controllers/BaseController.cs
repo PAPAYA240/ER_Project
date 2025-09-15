@@ -167,14 +167,30 @@ public class BaseController : MonoBehaviour
             case CreatureState.Dead:
                 UpdateDead();
                 break;
+            case CreatureState.Rest:
+                UpdateRest();
+                break;
         }
     }
 
+    // 뼈 찾는 함수
+    public Transform FindInDescendants(Transform parent, string name)
+    {
+        if (parent.name == name)
+            return parent;
+
+        foreach (Transform child in parent)
+        {
+            Transform result = FindInDescendants(child, name);
+            if (result != null)
+                return result;
+        }
+        return null;
+    }
     protected virtual void UpdateIdle()
     {
     }
 
-    // ������ �̵��ϴ� ���� ó��
     protected virtual void UpdateMoving()
     {
     }
@@ -190,6 +206,11 @@ public class BaseController : MonoBehaviour
     }
 
     protected virtual void UpdateDead()
+    {
+
+    }
+
+    protected virtual void UpdateRest()
     {
 
     }

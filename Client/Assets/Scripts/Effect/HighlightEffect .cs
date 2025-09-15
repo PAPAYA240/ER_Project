@@ -3,8 +3,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Highlight
 {
-    // 스키닝 메시 + 아웃라인 머터리얼 + 충돌 캡슐 필요
-
+    // 이거 쓰려면 스키닝 메시 + 아웃라인 머터리얼 + 충돌 캡슐 필요
     public class HighlightEffect : MonoBehaviour
     {
         private Renderer myRenderer;

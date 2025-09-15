@@ -12,6 +12,8 @@ using static System.Runtime.CompilerServices.RuntimeHelpers;
 public class PlayerController : CreatureController
 {
     bool _isKeyInput = false;
+    int _atkCount = 1;
+    int _maxAtkCount = 2;
     protected Dictionary<string, SkillBase> _skills = new Dictionary<string, SkillBase>();
     
     //Fog
@@ -25,6 +27,18 @@ public class PlayerController : CreatureController
             _isKeyInput = value;
             Debug.Log($"IsKeyInput changed: {value}");
         }
+    }
+
+    public int AttackCount
+    {
+        get { return _atkCount; }
+        set { _atkCount = value; }
+    }
+
+    public int MaxAttackCount
+    {
+        get { return _maxAtkCount; }
+        set { _maxAtkCount = value; }
     }
 
     protected override void Init()
@@ -43,10 +57,7 @@ public class PlayerController : CreatureController
         base.UpdateController();
     }
 
-    protected virtual void CheckUpdatedFlag()
-    {
-
-    }
+    protected virtual void CheckUpdatedFlag() {}
 
     public override void OnDamaged()
     {
@@ -77,7 +88,7 @@ public class PlayerController : CreatureController
                 Managers.Object.MyPlayer.StartCoCoolTime((KeyCode)skillPacket.SkillInfo.KeyCode, skill.CurLevelCooldown);
             }
 
-            StartCoroutine(CoStartSkill());
+            //StartCoroutine(CoStartSkill());
             Debug.Log("스킬 코루틴 시작");
         }
     }
@@ -96,8 +107,6 @@ public class PlayerController : CreatureController
             Debug.Log($"Clip Name: {clipInfos[0].clip.name}, Length: {length}");
         }
         yield return new WaitForSeconds(length - 0.1f);
-        //State = CreatureState.Idle;
-        //IsKeyInput = false;
         Debug.Log("스킬 코루틴 종료");
 
         // TODO : TEMP

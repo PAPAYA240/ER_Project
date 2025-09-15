@@ -46,7 +46,10 @@ namespace Server.Game.Object.Monster.FSM
             if (monster.IsSkillRange())
             {
                 monster._path.Clear();
-                monster.ChangeState(FSMManager.Instance.GetSkillState(monster.Info.MonsterType));
+
+                IMonsterState nextState = FSMManager.Instance.EvaluateTargetForNextState(monster);
+                monster.ChangeState(nextState);
+
                 return;
             }
 
