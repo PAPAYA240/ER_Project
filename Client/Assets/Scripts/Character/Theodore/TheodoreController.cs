@@ -7,7 +7,8 @@ public class TheodoreController : MyPlayerController
 {
     Material passiveMaterial, originMaterial;
     Renderer myRenderer;
-    GameObject[] weapons;
+
+    Transform handL;
     protected override void Init()
     {
         base.Init();
@@ -21,7 +22,7 @@ public class TheodoreController : MyPlayerController
         GameObject weapon = Managers.Resource.Instantiate($"Creature/Weapon/WP_Theodore_SP01_Sniperrifle_LOD");
         if (weapon != null)
         {
-            Transform handL = this.FindInDescendants(transform, "Weapon_L");
+            handL = this.FindInDescendants(transform, "Equip_R");
             if (handL != null)
             {
                 weapon.transform.SetParent(handL);
@@ -33,6 +34,33 @@ public class TheodoreController : MyPlayerController
                 Debug.LogError("Weapon_L 트랜스폼을 찾을 수 없습니다.");
         }
     }
+    //float speed = 10f;
+    //void Update()
+    //{
+    //    if (bThrow)
+    //    {
+    //        weapons[1].transform.Translate(forwardDirection * speed * Time.deltaTime, Space.World);
+
+    //        float distance = Vector3.Distance(weapons[1].transform.position, _startPosition);
+    //        if (distance >= 10f)
+    //        {
+    //            bThrow = false;
+    //            weapons[1].SetActive(false);
+    //        }
+    //    }
+    //}
+    //bool bThrow = false;
+    //Vector3 forwardDirection;
+    //Vector3 _startPosition;
+    //private void Throw()
+    //{
+    //    GameObject weapon = weapons[1];
+    //    weapon.SetActive(true);
+    //    bThrow = true;
+    //    weapon.transform.position = this.transform.position;
+    //    forwardDirection = this.transform.forward;
+    //    _startPosition = this.transform.position;
+    //}
 
     protected override void UpdateSkillKeyInput()
     {
