@@ -21,7 +21,7 @@ public class AnimatorEvent : MonoBehaviour
 
         _controller.State = CreatureState.Idle;
         _controller.IsKeyInput = false;
-        Debug.Log("스킬 종료 (Animation Event)");
+        Debug.Log("(Animation Event)");
     }
 
     //public void OnAttackEnd()

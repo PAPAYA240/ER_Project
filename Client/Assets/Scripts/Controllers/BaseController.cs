@@ -81,7 +81,7 @@ public class BaseController : MonoBehaviour
         }
     }
 
-    ObjectInfo _ObjectInfo = new ObjectInfo();
+    ObjectInfo _ObjectInfo;
     public ObjectInfo ObjInfo
     {
         get { return _ObjectInfo; }
@@ -146,6 +146,7 @@ public class BaseController : MonoBehaviour
     {
         _animator = GetComponentInChildren<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
+
         SyncPos();
 
         UpdateAnimation();

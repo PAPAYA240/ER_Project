@@ -84,6 +84,8 @@ public class MyPlayerController : PlayerController
     protected override void Init()
     {
         base.Init();
+
+        layerName = _animator.GetLayerName(0);
         Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
 
         ObjectType = Define.Object.MyPlayer;
@@ -481,6 +483,10 @@ public class MyPlayerController : PlayerController
     #region Animation
     protected override void PlayAnimation(string animName, float ratio)
     {
+        int layerIndex = _animator.GetLayerIndex(layerName);
+        if (layerIndex == -1)
+            return;
+
         _animator.CrossFadeInFixedTime(animName, ratio);
         SendAnimPacket(animName, ratio);
     }
