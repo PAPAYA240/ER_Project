@@ -1,8 +1,14 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Google.Protobuf.Protocol;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.PlayerLoop;
+using UnityEngine.UIElements;
+#if UNITY_EDITOR
+using UnityEditor.PackageManager.UI;
+#endif
 
 public class ObjectManager
 {
@@ -23,7 +29,7 @@ public class ObjectManager
         return GetObjectTypeById(bs.Id);
     }
 
-    public void Add(ObjectInfo info, bool myPlayer = false)
+	public void Add(ObjectInfo info, bool myPlayer = false)
 	{
 		GameObjectType objectType = GetObjectTypeById(info.ObjectId);
 
@@ -83,6 +89,49 @@ public class ObjectManager
             //ac.PosInfo = info.PosInfo;
             //ac.Stat = info.StatInfo;
             //ac.SyncPos();
+        }
+    }
+
+    public void SetObjectVisible()
+    {
+        if (MyPlayer == null)
+            return;
+
+        HashSet<int> hash = MyPlayer.VisibleObjectIds;
+
+        foreach (var keyValue in _objects)
+        {
+            int key = keyValue.Key;
+            if (MyPlayer.ObjInfo.ObjectId == key)
+                continue;
+
+            GameObject go = keyValue.Value;
+
+            bool isVisible = false;
+
+            //Vector3 playerPos = MyPlayer.transform.position;
+            //Vector3 targetPos = go.transform.position;
+
+            //NavMeshHit hit;
+
+            //if (NavMesh.SamplePosition(playerPos, out hit, 1, NavMesh.AllAreas))
+            //    playerPos = hit.position;
+
+            //if (NavMesh.SamplePosition(targetPos, out hit, 1, NavMesh.AllAreas))
+            //    targetPos = hit.position;
+
+            //playerPos.y = 0.5f;
+            //targetPos.y = 0.5f;
+
+            //Vector3 dir = targetPos - playerPos;
+
+            if (hash.Contains(key) /*&& !NavMesh.Raycast(playerPos, targetPos, out hit, NavMesh.AllAreas)*/)
+                isVisible = true; /*장애물없고 시야 범위 내에 있으면*/
+
+            foreach (var r in go.GetComponentsInChildren<Renderer>())
+            {
+                r.enabled = isVisible;
+            }
         }
     }
 

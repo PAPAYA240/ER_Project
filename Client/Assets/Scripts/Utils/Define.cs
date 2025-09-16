@@ -53,4 +53,6 @@ public class Define
     {
         Map = 11,
     }
+
+    public enum Key { Q, W, E, R }
 }
