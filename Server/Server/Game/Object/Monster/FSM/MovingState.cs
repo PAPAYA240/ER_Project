@@ -1,5 +1,7 @@
 ﻿using Google.Protobuf.Protocol;
 using System;
+using System.Numerics;
+using System.Threading;
 
 namespace Server.Game.Object.Monster.FSM
 {
@@ -12,7 +14,17 @@ namespace Server.Game.Object.Monster.FSM
 
         public void Enter(Monster monster)
         {
-            monster.Get_CalculatePath();
+            // 플레이어가 없으면 스포너로 이동
+            if (monster.PlayerTarget == null)
+            {
+                monster.Get_CalculatePath(monster.spawnPosition);
+            }
+            else // 플레이어를 찾아 이동
+            {
+                Player player = monster.PlayerTarget;
+                Vector3 playerPos = new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ);
+                monster.Get_CalculatePath(playerPos);
+            }
 
             _nextMoveTick = 0;
             _nextCalcPathTick = Environment.TickCount64 + RECALC_PATH_INTERVAL_MS;
@@ -24,16 +36,27 @@ namespace Server.Game.Object.Monster.FSM
                 return;
             _nextMoveTick = Environment.TickCount64 + MOVE_INTERVAL_MS;
 
-            if (monster.Target == null || monster.Target.Room != monster.Room)
+            if (monster.PlayerTarget == null)
             {
-                monster.ChangeState(FSMManager.Instance.GetIdleState());
+                if(ReturnToSpawn(monster))
+                    monster.ChangeState(FSMManager.Instance.GetIdleState());
+                return;
+            }
+
+            // 타겟 찾는 범위를 넘어간다면 
+            if (!monster.IsFindTargetRange() || monster.PlayerTarget.Room != monster.Room)
+            {
+                TargetNotFound(monster);
                 return;
             }
 
             // 버벅임 방지를 위해 한 번 더 관찰
             if (_nextCalcPathTick < Environment.TickCount64)
             {
-                monster.Get_CalculatePath();
+                Player player = monster.PlayerTarget;
+                Vector3 playerPos = new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ);
+                monster.Get_CalculatePath(playerPos);
+
                 _nextCalcPathTick = Environment.TickCount64 + RECALC_PATH_INTERVAL_MS;
             }
 
@@ -49,7 +72,6 @@ namespace Server.Game.Object.Monster.FSM
 
                 IMonsterState nextState = FSMManager.Instance.EvaluateTargetForNextState(monster);
                 monster.ChangeState(nextState);
-
                 return;
             }
 
@@ -57,6 +79,29 @@ namespace Server.Game.Object.Monster.FSM
             monster.Get_MoveAlongPath();
             monster.BroadcastState(CreatureState.Moving, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
         }
+
+        // 타겟을 찾지 못하는 상태라면 호출
+        private void TargetNotFound(Monster monster)
+        {
+            // TODO : 플레이어가 가지고 있는 Monster Target을 임의로 지워주기
+            if (monster.PlayerTarget.Target == monster)
+                monster.PlayerTarget.Target = null;
+
+            monster.PlayerTarget = null;
+            monster.ChangeState(FSMManager.Instance.GetIdleState());
+        }
+
+        private bool ReturnToSpawn(Monster monster)
+        {
+            if (monster.IsArrivalSpawn())
+                return true;
+
+            // 스폰 장소로 돌아가기
+            monster.Get_MoveAlongPath();
+            monster.BroadcastState(CreatureState.Moving, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
+            return false;
+        }
+
         public void Exit(Monster monster) 
         {
             _nextMoveTick = 0;

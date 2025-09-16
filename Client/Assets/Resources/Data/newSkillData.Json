@@ -133,7 +133,7 @@
         "levels": {
           "1": {
             "damage": 30,
-            "cooldown": 5,
+            "cooldown": 2,
             "staminaCost": 30,
             "effects": [
               {
@@ -303,7 +303,7 @@
         "levels": {
           "1": {
             "damage": 30,
-            "cooldown": 18,
+            "cooldown": 4,
             "staminaCost": 60,
             "effects": [
               {
@@ -388,7 +388,7 @@
         "levels": {
           "1": {
             "damage": 60,
-            "cooldown": 25,
+            "cooldown": 5,
             "staminaCost": 90,
             "effects": [
               {
@@ -859,6 +859,521 @@
                 "stat": "speed",
                 "value": -99,
                 "duration": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    "Theodore": {
+      "T": {
+        "name": "에너지 프로토콜",
+        "description": "테오도르가 적에게 기본 공격을 하면 에너지 포의 쿨다운이 크게 감소하고, 다른 기본 스킬의 쿨다운이 감소합니다.",
+        "type": "Passive",
+        "maxLevel": 3,
+        "icon": "Icons/Hyunwoo_P",
+        "mechanics": {
+          "targetType": "TargetUnit",
+          "damageType": "Physical"
+        },
+        "levels": {
+          "1": {
+            "damage": 55
+          },
+          "2": {
+            "damage": 60
+          },
+          "3": {
+            "damage": 65
+          }
+        }
+      },
+      "Q": {
+        "name": "에너지 포",
+        "description": "테오도르가 1.5초에 걸쳐 자신의 레일건에 에너지를 충전하며 이동 속도가 20%까지 서서히 감소합니다.",
+        "type": "Normal",
+        "maxLevel": 5,
+        "mechanics": {
+          "targetType": "TargetArea",
+          "damageType": "Magic"
+        },
+        "scaling": {
+          "adRatio": "100"
+        },
+        "levels": {
+          "1": {
+            "damage": 30,
+            "cooldown": 2,
+            "staminaCost": 40,
+            "effects": [
+              {
+                "type": "Dash",
+                "condition": "Hit"
+              },
+              {
+                "type": "CDR",
+                "value": 40,
+                "condition": "Hit"
+              }
+            ]
+          },
+          "2": {
+            "damage": 55,
+            "cooldown": 5,
+            "staminaCost": 45,
+            "effects": [
+              {
+                "type": "Dash",
+                "condition": "Hit"
+              },
+              {
+                "type": "CDR",
+                "value": 40,
+                "condition": "Hit"
+              }
+            ]
+          },
+          "3": {
+            "damage": 80,
+            "cooldown": 5,
+            "staminaCost": 50,
+            "effects": [
+              {
+                "type": "Dash",
+                "condition": "Hit"
+              },
+              {
+                "type": "CDR",
+                "value": 40,
+                "condition": "Hit"
+              }
+            ]
+          },
+          "4": {
+            "damage": 105,
+            "cooldown": 5,
+            "staminaCost": 55,
+            "effects": [
+              {
+                "type": "Dash",
+                "condition": "Hit"
+              },
+              {
+                "type": "CDR",
+                "value": 40,
+                "condition": "Hit"
+              }
+            ]
+          },
+          "5": {
+            "damage": 130,
+            "cooldown": 5,
+            "staminaCost": 60,
+            "effects": [
+              {
+                "type": "Dash",
+                "condition": "Hit"
+              },
+              {
+                "type": "CDR",
+                "value": 40,
+                "condition": "Hit"
+              }
+            ]
+          }
+        }
+      },
+      "W": {
+        "name": "증폭 스크린",
+        "description": "테오도르가 지정한 위치에 7초 동안 유지되는 증폭 스크린을 생성합니다.",
+        "type": "Normal",
+        "maxLevel": 5,
+        "mechanics": {
+          "targetType": "TargetArea",
+          "damageType": "Magic"
+        },
+        "scaling": {
+          "adRatio": "80"
+        },
+        "levels": {
+          "1": {
+            "damage": 30,
+            "cooldown": 5,
+            "staminaCost": 30,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "defense",
+                "value": -11,
+                "duration": 3,
+                "condition": "Hit"
+              },
+              {
+                "type": "Debuff",
+                "stat": "healing",
+                "value": -45,
+                "duration": 3,
+                "condition": "Hit"
+              },
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 120
+              },
+              {
+                "type": "CDR",
+                "value": 40,
+                "condition": "Hit"
+              }
+            ]
+          },
+          "2": {
+            "damage": 60,
+            "cooldown": 5,
+            "staminaCost": 35,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "defense",
+                "value": -12,
+                "duration": 3,
+                "condition": "Hit"
+              },
+              {
+                "type": "Debuff",
+                "stat": "healing",
+                "value": -45,
+                "duration": 3,
+                "condition": "Hit"
+              },
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 120
+              },
+              {
+                "type": "CDR",
+                "value": 40,
+                "condition": "Hit"
+              }
+            ]
+          },
+          "3": {
+            "damage": 90,
+            "cooldown": 5,
+            "staminaCost": 40,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "defense",
+                "value": -13,
+                "duration": 3,
+                "condition": "Hit"
+              },
+              {
+                "type": "Debuff",
+                "stat": "healing",
+                "value": -45,
+                "duration": 3,
+                "condition": "Hit"
+              },
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 120
+              },
+              {
+                "type": "CDR",
+                "value": 40,
+                "condition": "Hit"
+              }
+            ]
+          },
+          "4": {
+            "damage": 120,
+            "cooldown": 5,
+            "staminaCost": 45,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "defense",
+                "value": -14,
+                "duration": 3,
+                "condition": "Hit"
+              },
+              {
+                "type": "Debuff",
+                "stat": "healing",
+                "value": -45,
+                "duration": 3,
+                "condition": "Hit"
+              },
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 120
+              },
+              {
+                "type": "CDR",
+                "value": 40,
+                "condition": "Hit"
+              }
+            ]
+          },
+          "5": {
+            "damage": 150,
+            "cooldown": 5,
+            "staminaCost": 50,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "defense",
+                "value": -15,
+                "duration": 3,
+                "condition": "Hit"
+              },
+              {
+                "type": "Debuff",
+                "stat": "healing",
+                "value": -45,
+                "duration": 3,
+                "condition": "Hit"
+              },
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 120
+              },
+              {
+                "type": "CDR",
+                "value": 40,
+                "condition": "Hit"
+              }
+            ]
+          }
+        }
+      },
+      "E": {
+        "name": "스파크탄",
+        "description": "에너지 포 또는 스파크탄 적중 시 다음 기본 공격 사거리가 1 증가합니다.",
+        "type": "Normal",
+        "maxLevel": 5,
+        "mechanics": {
+          "targetType": "TargetUnit",
+          "damageType": "Magic"
+        },
+        "scaling": {
+          "adRatio": "50"
+        },
+        "levels": {
+          "1": {
+            "damage": 30,
+            "cooldown": 18,
+            "staminaCost": 60,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 0.3
+              },
+              {
+                "type": "Untargetable"
+              }
+            ]
+          },
+          "2": {
+            "damage": 50,
+            "cooldown": 17,
+            "staminaCost": 70,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 0.3
+              },
+              {
+                "type": "Untargetable"
+              }
+            ]
+          },
+          "3": {
+            "damage": 70,
+            "cooldown": 16,
+            "staminaCost": 80,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 0.3
+              },
+              {
+                "type": "Untargetable"
+              }
+            ]
+          },
+          "4": {
+            "damage": 90,
+            "cooldown": 15,
+            "staminaCost": 90,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 0.3
+              },
+              {
+                "type": "Untargetable"
+              }
+            ]
+          },
+          "5": {
+            "damage": 110,
+            "cooldown": 14,
+            "staminaCost": 100,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 0.3
+              },
+              {
+                "type": "Untargetable"
+              }
+            ]
+          }
+        }
+      },
+      "R": {
+        "name": "에너지 필드",
+        "description": "테오도르가 에너지를 최대로 끌어올려 지정한 방향으로 4초 동안 유지되는 에너지 필드를 생성해 같은 방향으로 이동하는 아군의 이동 속도를 증가시키고, 강력한 에너지 파동을 발사하여 적에게 스킬 피해를 입힙니다.",
+        "type": "Ultimate",
+        "maxLevel": 3,
+        "mechanics": {
+          "targetType": "TargetArea",
+          "damageType": "Magic"
+        },
+        "scaling": {
+          "adRatio": 0.5
+        },
+        "levels": {
+          "1": {
+            "damage": 60,
+            "cooldown": 25,
+            "staminaCost": 90,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "speed",
+                "value": -30,
+                "duration": 3
+              },
+              {
+                "type": "VisionShare",
+                "duration": 3
+              },
+              {
+                "type": "Debuff",
+                "stat": "speed",
+                "value": -30,
+                "duration": 1,
+                "condition": "Boom"
+              },
+              {
+                "type": "Damage",
+                "stat": "hp",
+                "value": 0.04,
+                "condition": "Boom"
+              },
+              {
+                "type": "CDR",
+                "value": 50,
+                "condition": "Boom"
+              },
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 30,
+                "duration": 1,
+                "condition": "Boom"
+              }
+            ]
+          },
+          "2": {
+            "damage": 120,
+            "cooldown": 25,
+            "staminaCost": 90,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "speed",
+                "value": -30,
+                "duration": 3
+              },
+              {
+                "type": "VisionShare",
+                "duration": 3
+              },
+              {
+                "type": "Damage",
+                "stat": "hp",
+                "value": 0.07,
+                "condition": "Boom"
+              },
+              {
+                "type": "Debuff",
+                "stat": "speed",
+                "value": -30,
+                "duration": 1,
+                "condition": "Boom"
+              },
+              {
+                "type": "CDR",
+                "value": 50,
+                "condition": "Boom"
+              },
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 30,
+                "duration": 1,
+                "condition": "Boom"
+              }
+            ]
+          },
+          "3": {
+            "damage": 180,
+            "cooldown": 25,
+            "staminaCost": 90,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "speed",
+                "value": -30,
+                "duration": 3
+              },
+              {
+                "type": "VisionShare",
+                "duration": 3
+              },
+              {
+                "type": "Damage",
+                "stat": "hp",
+                "value": 0.1,
+                "condition": "Boom"
+              },
+              {
+                "type": "Debuff",
+                "stat": "speed",
+                "value": -30,
+                "duration": 1,
+                "condition": "Boom"
+              },
+              {
+                "type": "CDR",
+                "value": 50,
+                "condition": "Boom"
+              },
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 30,
+                "duration": 1,
+                "condition": "Boom"
               }
             ]
           }
