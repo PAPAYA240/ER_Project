@@ -23,11 +23,12 @@ enum MsgId {
   C_SKILL_END = 15;
   S_CHARACTER = 16;
   S_ENTER_PICK = 17;
-  S_LEAVE_PICK = 18;
-  C_PING = 19;
-  S_VISIBLE_OBJECTS = 20;
-  S_LEVEL_UP = 21;
-  C_READY = 22;
+  S_SPAWN_PICK = 18;
+  S_LEAVE_PICK = 19;
+  C_PING = 20;
+  S_VISIBLE_OBJECTS = 21;
+  S_LEVEL_UP = 22;
+  C_READY = 23;
 }
 
 enum CreatureState{
@@ -213,6 +214,17 @@ message S_Character{
 
 message S_EnterPick{
 	int32 pickIdx = 1;
+	string userName = 2;
+}
+
+message S_SpawnPick{
+	repeated PickScenePlayerInfo players = 1;
+}
+
+message PickScenePlayerInfo{
+	int32 pickIdx = 1;
+	string userName = 2;
+	CharacterType charType = 3;
 }
 
 message S_LeavePick{

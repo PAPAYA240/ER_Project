@@ -152,26 +152,56 @@ class PacketHandler
     {
         S_Character charPacket = packet as S_Character;
 
-        GameObject go = GameObject.Find("Test");
+        GameObject go = GameObject.Find("PickScene");
         if (go == null) return;
 
-        UI_SelectEvent selectEvent = go.GetComponent<UI_SelectEvent>();
-        if (selectEvent == null) return;
+        PickScene pickScene = go.GetComponent<PickScene>();
+        if (pickScene == null) return;
 
-        selectEvent.ChangePickImage(charPacket.CharType, charPacket.PickIdx);
+        pickScene.ChangePickImage(charPacket.CharType, charPacket.PickIdx);
+
+        //GameObject go = GameObject.Find("Test");
+        //if (go == null) return;
+
+        //UI_SelectEvent selectEvent = go.GetComponent<UI_SelectEvent>();
+        //if (selectEvent == null) return;
+
+        //selectEvent.ChangePickImage(charPacket.CharType, charPacket.PickIdx);
     }
 
     public static void S_EnterPickHandler(PacketSession session, IMessage packet)
     {
         S_EnterPick enterPickPacket = packet as S_EnterPick;
 
-        GameObject go = GameObject.Find("Test");
+        GameObject go = GameObject.Find("PickScene");
         if (go == null) return;
 
-        UI_SelectEvent selectEvent = go.GetComponent<UI_SelectEvent>();
-        if (selectEvent == null) return;
+        PickScene pickScene = go.GetComponent<PickScene>();
+        if (pickScene == null) return;
 
-        selectEvent.SetPickIdx(enterPickPacket.PickIdx);
+        pickScene.PickIdx = enterPickPacket.PickIdx;
+        pickScene.NickName = enterPickPacket.UserName;
+
+        //GameObject go = GameObject.Find("Test");
+        //if (go == null) return;
+
+        //UI_SelectEvent selectEvent = go.GetComponent<UI_SelectEvent>();
+        //if (selectEvent == null) return;
+
+        //selectEvent.SetPickIdx(enterPickPacket.PickIdx);
+    }
+    public static void S_SpawnPickHandler(PacketSession session, IMessage packet)
+    {
+        S_SpawnPick spawnPickPacket = packet as S_SpawnPick;
+
+        GameObject go = GameObject.Find("PickScene");
+        if (go == null) return;
+
+        PickScene pickScene = go.GetComponent<PickScene>();
+        if (pickScene == null) return;
+
+        foreach(PickScenePlayerInfo pspi in spawnPickPacket.Players)
+            pickScene.Spawn(pspi.UserName, pspi.PickIdx, pspi.CharType);
     }
 
     public static void S_LeavePickHandler(PacketSession session, IMessage packet)

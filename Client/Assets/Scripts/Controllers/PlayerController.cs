@@ -14,9 +14,12 @@ public class PlayerController : CreatureController
     bool _isKeyInput = false;
     int _atkCount = 1;
     int _maxAtkCount = 2;
-    
+
     //Fog
     private FogOfWarVision _fogOfWarVision;
+
+    // 레이어
+    protected string layerName;
 
     public bool IsKeyInput
     {
@@ -41,9 +44,9 @@ public class PlayerController : CreatureController
     }
 
     protected override void Init()
-	{
-		base.Init();
-		
+    {
+        base.Init();
+
         ObjectType = Define.Object.OtherPlayer;
 
         //Fog
@@ -56,7 +59,7 @@ public class PlayerController : CreatureController
         base.UpdateController();
     }
 
-    protected virtual void CheckUpdatedFlag() {}
+    protected virtual void CheckUpdatedFlag() { }
 
     public override void OnDamaged()
     {
@@ -69,7 +72,6 @@ public class PlayerController : CreatureController
         return Enum.GetName(typeof(CharacterType), ObjInfo.CharType);
     }
     #endregion
-
 
     #region Skill
     public override void UseSkill(S_Skill skillPacket)
@@ -115,25 +117,13 @@ public class PlayerController : CreatureController
     }
 
     // TODO : 이름 바꾸기?
-    protected virtual void Skill_Q()
-    {
-        PlayAnimation("SKILL_Q", 0.1f);
-    }
+    protected virtual void Skill_Q() { }
 
-    protected virtual void Skill_W()
-    {
-        PlayAnimation("SKILL_W", 0.1f);
-    }
+    protected virtual void Skill_W() { }
 
-    protected virtual void Skill_E()
-    {
-        PlayAnimation("SKILL_E", 0.1f);
-    }
+    protected virtual void Skill_E() { }
 
-    protected virtual void Skill_R()
-    {
-        PlayAnimation("SKILL_R", 0.1f);
-    }
+    protected virtual void Skill_R() { }
 
     IEnumerator CoStartSkill()
     {
@@ -154,9 +144,15 @@ public class PlayerController : CreatureController
         // TODO : TEMP
         CheckUpdatedFlag();
     }
+    #endregion
 
+    #region Animation
     protected virtual void PlayAnimation(string animName, float ratio)
     {
+        int layerIndex = _animator.GetLayerIndex(layerName);
+        if (layerIndex == -1)
+            return;
+
         _animator.CrossFadeInFixedTime(animName, ratio);
     }
 
@@ -164,7 +160,6 @@ public class PlayerController : CreatureController
     {
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
     }
-  
     #endregion
 
     #region SkillMesh

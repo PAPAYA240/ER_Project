@@ -64,8 +64,6 @@ public class UI_SelectEvent : MonoBehaviour
 
     public void OnButtonStartClick()
     {
-
-
         Managers.Scene.LoadScene(Define.Scene.Game);
     }
 
@@ -87,5 +85,8 @@ public class UI_SelectEvent : MonoBehaviour
 
         sprite = Resources.Load<Sprite>("Textures/CharFull_Yuki_S005");
         _sprites.Add(CharacterType.Yuki, sprite);
+
+        sprite = Resources.Load<Sprite>("Textures/CharFull_Theodore_S000");
+        _sprites.Add(CharacterType.Theodore, sprite);
     }
 }

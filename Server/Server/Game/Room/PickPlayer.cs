@@ -11,6 +11,7 @@ namespace Server.Game
         public PickRoom Room { get; set; }
         public ClientSession Session { get; set; }
 
-        public CharacterType CharacterType { get; set; }
+        //public CharacterType CharacterType { get; set; }
+        public string UserName { get; set; }
     }
 }

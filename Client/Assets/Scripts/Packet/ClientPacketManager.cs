@@ -47,6 +47,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SCharacter, PacketHandler.S_CharacterHandler);		
 		_onRecv.Add((ushort)MsgId.SEnterPick, MakePacket<S_EnterPick>);
 		_handler.Add((ushort)MsgId.SEnterPick, PacketHandler.S_EnterPickHandler);		
+		_onRecv.Add((ushort)MsgId.SSpawnPick, MakePacket<S_SpawnPick>);
+		_handler.Add((ushort)MsgId.SSpawnPick, PacketHandler.S_SpawnPickHandler);		
 		_onRecv.Add((ushort)MsgId.SLeavePick, MakePacket<S_LeavePick>);
 		_handler.Add((ushort)MsgId.SLeavePick, PacketHandler.S_LeavePickHandler);		
 		_onRecv.Add((ushort)MsgId.SVisibleObjects, MakePacket<S_VisibleObjects>);

@@ -59,7 +59,6 @@ public class MyPlayerController : PlayerController
     public float ItemAttackSpeed { get; set; } = 0;
 
     // State : Moving
-    protected NavMeshAgent _agent;
     protected bool _isTargetOn;
     protected GameObject _targetMonster;
 
@@ -84,6 +83,8 @@ public class MyPlayerController : PlayerController
     protected override void Init()
     {
         base.Init();
+
+        layerName = _animator.GetLayerName(0);
         Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
 
         ObjectType = Define.Object.MyPlayer;
@@ -148,13 +149,6 @@ public class MyPlayerController : PlayerController
         else if (State == CreatureState.Rest)
         {
             PlayAnimation("REST_START", 0.1f);
-        }
-
-        // TODO 
-        if (_agent != null && State != CreatureState.Moving)
-        {
-            _agent.isStopped = true;
-            _agent.ResetPath();
         }
     }
 
@@ -235,7 +229,7 @@ public class MyPlayerController : PlayerController
             }
 
             if (_isTargetOn)
-                LookAtTarget();
+                LookAtTargetMonster();
         }
     }
 
@@ -250,17 +244,58 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region State : Moving
-    protected void LookAtTarget()
+    protected void LookAtTarget(Vector3 targetPos, bool snapToTarget = false, float speed = 10.0f)
     {
         // 타겟을 바라보도록 방향 조정
-
-        Vector3 lookDir = (_targetMonster.transform.position - transform.position).normalized;
+        // snapToTarget : Target을 바로 바라볼지
+        Vector3 lookDir = (targetPos - transform.position).normalized;
         lookDir.y = 0f;
 
         if (lookDir != Vector3.zero)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 10f);
+            if(!snapToTarget)
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * speed);
+            else
+                transform.rotation = Quaternion.LookRotation(lookDir);
         }
+    }
+
+    protected void LookAtTargetMonster(bool snapToTarget = false, float speed = 10.0f)
+    {
+        // 타겟을 바라보도록 방향 조정
+        LookAtTarget(_targetMonster.transform.position, snapToTarget, speed);
+    }
+
+    protected Vector3 GetReachablePosition(Vector3 startPos, Vector3 targetPos, out NavMeshHit navHit)
+    {
+        if (NavMesh.Raycast(startPos, targetPos, out NavMeshHit rayHit, NavMesh.AllAreas))
+        {
+            targetPos = rayHit.position;
+        }
+
+        // 최종 목적지 설정
+        if (NavMesh.SamplePosition(targetPos, out navHit, 1.0f, NavMesh.AllAreas))
+        {
+            return navHit.position;
+        }
+
+        return Vector3.zero;
+    }
+    
+    protected Vector3 GetTargetPos(float range, bool isMaxDistance = true)
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
+
+        Vector3 dir = (hit.point - transform.position).normalized;
+
+        if(!isMaxDistance && (hit.point - transform.position).magnitude < range)
+        {
+            return hit.point;
+        }
+
+        return transform.position + dir * range;
     }
     #endregion
 
@@ -353,10 +388,7 @@ public class MyPlayerController : PlayerController
 
         _isResting = false;
 
-        if (_moveKeyPressed)
-            State = CreatureState.Moving;
-        else
-            State = CreatureState.Idle;
+        SetMovementState();
     }
     #endregion
 
@@ -427,41 +459,22 @@ public class MyPlayerController : PlayerController
         // 그냥 우클릭 시 → 이동 처리
         else if (Input.GetMouseButton(1))
         {
-            RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
+            Vector3 targetPos = FindMonster();
 
-            GameObject targetObject = hit.collider.gameObject;
-            Vector3 targetPos;
-
-            // 마우스와 충돌한 물체가
-            // 몬스터인 경우
-            if (targetObject.layer == LayerMask.NameToLayer("Monster"))
+            // 몬스터를 못 찾았을 때 -> 지형 클릭
+            if (targetPos == Vector3.zero)
             {
-                _isTargetOn = true;
-                _targetMonster = targetObject;
+                int mapMask = 1 << LayerMask.NameToLayer("Map");
+                if (Physics.Raycast(ray, out RaycastHit rayHit, 1000.0f, mapMask))
+                {
+                    _isTargetOn = false;
+                    _targetMonster = null;
 
-                Vector3 monsterPos = targetObject.transform.position;
-                Vector3 dir = (monsterPos - transform.position).normalized;
-
-                float distance = Vector3.Distance(transform.position, monsterPos);
-
-                // TODO : 실제 사거리 가져와야함!
-                // 이미 사거리 안이라면 제자리
-                if (distance <= _attackRange)
-                    targetPos = transform.position;
-                else
-                    targetPos = monsterPos - dir * _attackRange;
+                    targetPos = rayHit.point;
+                }
             }
-            // 맵일 경우
-            else
-            {
-                _isTargetOn = false;
-                _targetMonster = null;
-
-                targetPos = hit.point;
-            }
-
+          
             // 최종 목적지 설정
             if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
             {
@@ -476,11 +489,45 @@ public class MyPlayerController : PlayerController
             _isAttackLoop = false;
         }
     }
+
+    protected Vector3 FindMonster()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        Vector3 targetPos = Vector3.zero;
+        float radius = 0.02f;
+        int monsterMask = 1 << LayerMask.NameToLayer("Monster");
+        if (Physics.SphereCast(ray, radius, out RaycastHit sphereHit, 1000.0f, monsterMask))
+        {
+            _isTargetOn = true;
+            _targetMonster = sphereHit.collider.gameObject;
+
+            Vector3 monsterPos = _targetMonster.transform.position;
+            Vector3 dir = (monsterPos - transform.position).normalized;
+
+            float distance = Vector3.Distance(transform.position, monsterPos);
+
+            // TODO : 실제 사거리 가져와야함!
+            // 이미 사거리 안이라면 제자리
+            if (distance <= _attackRange)
+                targetPos = transform.position;
+            else
+                targetPos = monsterPos - dir * _attackRange;
+
+            return targetPos;
+        }
+
+        return Vector3.zero;
+    }
     #endregion
 
     #region Animation
     protected override void PlayAnimation(string animName, float ratio)
     {
+        int layerIndex = _animator.GetLayerIndex(layerName);
+        if (layerIndex == -1)
+            return;
+
         _animator.CrossFadeInFixedTime(animName, ratio);
         SendAnimPacket(animName, ratio);
     }
@@ -491,7 +538,7 @@ public class MyPlayerController : PlayerController
     {
         _isUseSkill = false;
 
-        if (!_coolDownDict[_keyCode].isCoolDown)
+        if (State != CreatureState.Skill && !_coolDownDict[_keyCode].isCoolDown)
         {
             // 다른 조건 체크하기
 
@@ -734,6 +781,32 @@ public class MyPlayerController : PlayerController
         Vector3 targetPos = transform.position + _offset;
         Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, targetPos, smoothSpeed * Time.deltaTime);
         Camera.main.transform.LookAt(transform.position);
+    }
+    #endregion
+
+    #region Util
+    protected void UpdateTransform()
+    {
+        CellPos = transform.position;
+        RotInfo = transform.rotation;
+        CheckUpdatedFlag();
+    }
+
+    protected void SetMovementState()
+    {
+        if (_moveKeyPressed)
+            State = CreatureState.Moving;
+        else
+            State = CreatureState.Idle;
+    }
+
+    protected float GetCurrentAnimClipLength()
+    {
+        AnimatorClipInfo[] clipInfos = _animator.GetCurrentAnimatorClipInfo(0);
+        if (clipInfos.Length > 0)
+            return clipInfos[0].clip.length;
+
+        return 0.0f;
     }
     #endregion
 
