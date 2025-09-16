@@ -64,19 +64,19 @@ public class UI_CharPickButton : UI_Base
         switch (charName)
         {
             case "Rozzi":
-                GetText((int)Texts.Text).text = "����";
+                GetText((int)Texts.Text).text = "로지";
                 break;
             case "Yuki":
-                GetText((int)Texts.Text).text = "��Ű";
+                GetText((int)Texts.Text).text = "유키";
                 break;
             case "Hyunwoo":
-                GetText((int)Texts.Text).text = "����";
+                GetText((int)Texts.Text).text = "현우";
                 break;
             case "Abigail":
-                GetText((int)Texts.Text).text = "�ƺ����";
+                GetText((int)Texts.Text).text = "아비게일";
                 break;
             case "Theodore":
-                GetText((int)Texts.Text).text = "�׿�����";
+                GetText((int)Texts.Text).text = "테오도르";
                 break;
         }
 
