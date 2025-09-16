@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -12,7 +13,6 @@ public class UI_CharPickButton : UI_Base
         Text
     }
 
-
     enum Buttons
     {
         Button
@@ -25,6 +25,9 @@ public class UI_CharPickButton : UI_Base
         ButtonBg,
         ButtonBgOver
     }
+
+    public string Name = "";
+    public Action<string> OnClicked = null; 
 
     public override void Init()
     {
@@ -55,6 +58,7 @@ public class UI_CharPickButton : UI_Base
 
     public void SetChar(string charName)
     {
+        Name = charName;
         GetButton((int)Buttons.Button).image.sprite = Managers.Resource.Load<Sprite>($"Sprite/CharResult_{charName}_S000");
 
         switch (charName)
@@ -95,5 +99,10 @@ public class UI_CharPickButton : UI_Base
     void OnPointerExit(PointerEventData data)
     {
         MouseOverEvent(false);
+    }
+
+    public void OnClickedEvent()
+    {
+        OnClicked?.Invoke(Name);
     }
 }
