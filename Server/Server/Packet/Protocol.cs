@@ -24,98 +24,105 @@ namespace Google.Protobuf.Protocol {
     static ProtocolReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg5Qcm90b2NvbC5wcm90bxIIUHJvdG9jb2wiMwoLQ19FbnRlckdhbWUSJAoG",
-            "cGxheWVyGAEgASgLMhQuUHJvdG9jb2wuT2JqZWN0SW5mbyIzCgtTX0VudGVy",
-            "R2FtZRIkCgZwbGF5ZXIYASABKAsyFC5Qcm90b2NvbC5PYmplY3RJbmZvIg0K",
-            "C1NfTGVhdmVHYW1lIoYCCgdTX1N0YXRlEhAKCE9iamVjdElkGAEgASgFEigK",
-            "B015U3RhdGUYAiABKA4yFy5Qcm90b2NvbC5DcmVhdHVyZVN0YXRlEicKB1Bv",
-            "c0luZm8YAyABKAsyFi5Qcm90b2NvbC5Qb3NpdGlvbkluZm8SJwoHUm90SW5m",
-            "bxgEIAEoCzIWLlByb3RvY29sLlJvdGF0aW9uSW5mbxIpCglza2lsbHR5cGUY",
-            "BSABKA4yFi5Qcm90b2NvbC5Nb25zdGVyU2tpbGwSEgoKc2VxdWVuY2VJZBgG",
-            "IAEoBRIuCg50YXJnZXRQb3NpdGlvbhgHIAEoCzIWLlByb3RvY29sLlBvc2l0",
-            "aW9uSW5mbyIwCgdTX1NwYXduEiUKB29iamVjdHMYASADKAsyFC5Qcm90b2Nv",
-            "bC5PYmplY3RJbmZvIh4KCVNfRGVzcGF3bhIRCglvYmplY3RJZHMYASADKAUi",
-            "agoGQ19Nb3ZlEicKB3Bvc0luZm8YASABKAsyFi5Qcm90b2NvbC5Qb3NpdGlv",
-            "bkluZm8SJwoHcm90SW5mbxgCIAEoCzIWLlByb3RvY29sLlJvdGF0aW9uSW5m",
-            "bxIOCgZpc1dhcnAYAyABKAgifAoGU19Nb3ZlEhAKCG9iamVjdElkGAEgASgF",
-            "EicKB3Bvc0luZm8YAiABKAsyFi5Qcm90b2NvbC5Qb3NpdGlvbkluZm8SJwoH",
-            "cm90SW5mbxgDIAEoCzIWLlByb3RvY29sLlJvdGF0aW9uSW5mbxIOCgZpc1dh",
-            "cnAYBCABKAgiYQoKQ19Ta2lsbEVuZBIoCgpvYmplY3RJbmZvGAEgASgLMhQu",
-            "UHJvdG9jb2wuT2JqZWN0SW5mbxIpCglza2lsbFR5cGUYAiABKA4yFi5Qcm90",
-            "b2NvbC5Nb25zdGVyU2tpbGwibQoHQ19Ta2lsbBIoCgpvYmplY3RJbmZvGAEg",
-            "ASgLMhQuUHJvdG9jb2wuT2JqZWN0SW5mbxImCglza2lsbEluZm8YAiABKAsy",
-            "Ey5Qcm90b2NvbC5Ta2lsbEluZm8SEAoIdGFyZ2V0SWQYAyABKAUiUwoHU19T",
-            "a2lsbBIOCgZjYW5Vc2UYASABKAgSEAoIb2JqZWN0SWQYAiABKAUSJgoJc2tp",
-            "bGxJbmZvGAMgASgLMhMuUHJvdG9jb2wuU2tpbGxJbmZvIi4KBkNfQW5pbRIk",
-            "CghhbmltSW5mbxgBIAEoCzISLlByb3RvY29sLkFuaW1JbmZvIkAKBlNfQW5p",
-            "bRIQCghvYmplY3RJZBgBIAEoBRIkCghhbmltSW5mbxgCIAEoCzISLlByb3Rv",
-            "Y29sLkFuaW1JbmZvIkkKC0NfQ2hhcmFjdGVyEikKCGNoYXJUeXBlGAEgASgO",
-            "MhcuUHJvdG9jb2wuQ2hhcmFjdGVyVHlwZRIPCgdwaWNrSWR4GAIgASgFIkkK",
-            "C1NfQ2hhcmFjdGVyEikKCGNoYXJUeXBlGAEgASgOMhcuUHJvdG9jb2wuQ2hh",
-            "cmFjdGVyVHlwZRIPCgdwaWNrSWR4GAIgASgFIh4KC1NfRW50ZXJQaWNrEg8K",
-            "B3BpY2tJZHgYASABKAUiHgoLU19MZWF2ZVBpY2sSDwoHcGlja0lkeBgBIAEo",
-            "BSKJAgoKT2JqZWN0SW5mbxIQCghvYmplY3RJZBgBIAEoBRIMCgRuYW1lGAIg",
-            "ASgJEicKB3Bvc0luZm8YAyABKAsyFi5Qcm90b2NvbC5Qb3NpdGlvbkluZm8S",
-            "JwoHcm90SW5mbxgEIAEoCzIWLlByb3RvY29sLlJvdGF0aW9uSW5mbxIkCghz",
-            "dGF0SW5mbxgFIAEoCzISLlByb3RvY29sLlN0YXRJbmZvEikKCGNoYXJUeXBl",
-            "GAYgASgOMhcuUHJvdG9jb2wuQ2hhcmFjdGVyVHlwZRIqCgttb25zdGVyVHlw",
-            "ZRgHIAEoDjIVLlByb3RvY29sLk1vbnN0ZXJUeXBlEgwKBHRlYW0YCCABKAUi",
-            "JwoIQW5pbUluZm8SDAoEbmFtZRgBIAEoCRINCgVyYXRpbxgCIAEoAiIqCgpT",
-            "X0NoYW5nZUhwEhAKCG9iamVjdElkGAEgASgFEgoKAmhwGAIgASgFIi0KBVNf",
-            "RGllEhAKCG9iamVjdElkGAEgASgFEhIKCmF0dGFja2VySWQYAiABKAUiYAoM",
-            "UG9zaXRpb25JbmZvEiYKBXN0YXRlGAEgASgOMhcuUHJvdG9jb2wuQ3JlYXR1",
-            "cmVTdGF0ZRIMCgRwb3NYGAIgASgCEgwKBHBvc1kYAyABKAISDAoEcG9zWhgE",
-            "IAEoAiI+CgxSb3RhdGlvbkluZm8SCgoCcXgYASABKAISCgoCcXkYAiABKAIS",
-            "CgoCcXoYAyABKAISCgoCcXcYBCABKAIi1gEKCFN0YXRJbmZvEg4KBmF0dGFj",
-            "axgBIAEoAhIPCgdkZWZlbnNlGAIgASgCEgoKAmhwGAMgASgFEg0KBW1heEhw",
-            "GAQgASgFEg8KB2hwUmVnZW4YBSABKAISDwoHc3RhbWluYRgGIAEoBRISCgpt",
-            "YXhTdGFtaW5hGAcgASgFEhQKDHN0YW1pbmFSZWdlbhgIIAEoAhITCgthdHRh",
-            "Y2tTcGVlZBgJIAEoAhIRCgltb3ZlU3BlZWQYCiABKAISCwoDZXhwGAsgASgF",
-            "Eg0KBWxldmVsGAwgASgFIk8KEVdlYXBvbk1hc3RlcnlJbmZvEhMKC2F0dGFj",
-            "a1NwZWVkGAEgASgCEhMKC2Jhc2ljQXRrQW1wGAIgASgCEhAKCHNraWxsQW1w",
-            "GAMgASgCIjAKCldlYXBvbkluZm8SDQoFcmFuZ2UYASABKAISEwoLYXR0YWNr",
-            "U3BlZWQYAiABKAIiLQoJU2tpbGxJbmZvEg8KB3NraWxsSWQYASABKAUSDwoH",
-            "a2V5Q29kZRgCIAEoBSIWCgZDX1BpbmcSDAoEcGluZxgBIAEoCCI+ChBTX1Zp",
-            "c2libGVPYmplY3RzEhAKCG9iamVjdElkGAEgASgFEhgKEHZpc2libGVPYmpl",
-            "Y3RJZHMYAiADKAUiRQoJU19MZXZlbFVwEhAKCG9iamVjdElkGAEgASgFEiYK",
-            "CnN0YXRHcm93dGgYAiABKAsyEi5Qcm90b2NvbC5TdGF0SW5mbyIYCgdDX1Jl",
-            "YWR5Eg0KBXJlYWR5GAEgASgIKuMCCgVNc2dJZBIQCgxDX0VOVEVSX0dBTUUQ",
-            "ABIQCgxTX0VOVEVSX0dBTUUQARIQCgxTX0xFQVZFX0dBTUUQAhILCgdTX1NQ",
-            "QVdOEAMSDQoJU19ERVNQQVdOEAQSCgoGQ19NT1ZFEAUSCgoGU19NT1ZFEAYS",
-            "CwoHQ19TS0lMTBAHEgsKB1NfU0tJTEwQCBIPCgtTX0NIQU5HRV9IUBAJEgkK",
-            "BVNfRElFEAoSCgoGQ19BTklNEAsSCgoGU19BTklNEAwSDwoLQ19DSEFSQUNU",
-            "RVIQDRILCgdTX1NUQVRFEA4SDwoLQ19TS0lMTF9FTkQQDxIPCgtTX0NIQVJB",
-            "Q1RFUhAQEhAKDFNfRU5URVJfUElDSxAREhAKDFNfTEVBVkVfUElDSxASEgoK",
-            "BkNfUElORxATEhUKEVNfVklTSUJMRV9PQkpFQ1RTEBQSDgoKU19MRVZFTF9V",
-            "UBAVEgsKB0NfUkVBRFkQFipQCg1DcmVhdHVyZVN0YXRlEggKBElETEUQABIK",
-            "CgZNT1ZJTkcQARIKCgZBVFRBQ0sQAhIJCgVTS0lMTBADEggKBERFQUQQBBII",
-            "CgRSRVNUEAUqQwoOR2FtZU9iamVjdFR5cGUSCAoETk9ORRAAEgoKBlBMQVlF",
-            "UhABEgsKB01PTlNURVIQAhIOCgpQUk9KRUNUSUxFEAMqQQoJU2tpbGxUeXBl",
-            "Eg4KClNLSUxMX05PTkUQABIOCgpTS0lMTF9BVVRPEAESFAoQU0tJTExfUFJP",
-            "SkVDVElMRRACKukBCgxNb25zdGVyU2tpbGwSCwoHTVNfTk9ORRAAEg4KCk1T",
-            "X0FUVEFDSzEQARIOCgpNU19BVFRBQ0syEAISDQoJTVNfU0tJTEwxEAMSDQoJ",
-            "TVNfU0tJTEwyEAQSDQoJTVNfU0tJTEwzEAUSFAoQTVNfRFJPTkVfQVRUQUNL",
-            "MRAGEhQKEE1TX0RST05FX0FUVEFDSzIQBxIUChBNU19HQU1NQV9BVFRBQ0sx",
-            "EAgSEwoPTVNfR0FNTUFfU0tJTEwxEAkSEwoPTVNfR0FNTUFfU0tJTEwyEAoS",
-            "EwoPTVNfR0FNTUFfU0tJTEwzEAsqNgoIQW5pbVR5cGUSCAoEUExBWRAAEgsK",
-            "B1RSSUdHRVIQARIICgRCT09MEAISCQoFRkxPQVQQAypgCg1DaGFyYWN0ZXJU",
-            "eXBlEhIKDkNIQVJBQ1RFUl9OT05FEAASCQoFUk9aWkkQARIICgRZVUtJEAIS",
-            "CwoHSFlVTldPTxADEgsKB0FCSUdBSUwQBBIMCghUSEVPRE9SRRAFKksKC01v",
-            "bnN0ZXJUeXBlEhAKDE1PTlNURVJfTk9ORRAAEgkKBUFMUEhBEAESCQoFT01F",
-            "R0EQAhIJCgVEUk9ORRADEgkKBUdBTU1BEAQqyAIKBldlYXBvbhIPCgtXRUFQ",
-            "T05fTk9ORRAAEgoKBkRBR0dFUhABEhQKEFRXT19IQU5ERURfU1dPUkQQAhIH",
-            "CgNBWEUQAxIPCgtEVUFMX1NXT1JEUxAEEgoKBlBJU1RPTBAFEhEKDUFTU0FV",
-            "TFRfUklGTEUQBhIQCgxTTklQRVJfUklGTEUQBxIKCgZSQVBJRVIQCBIJCgVT",
-            "UEVBUhAJEgoKBkhBTU1FUhAKEgcKA0JBVBALEgkKBVRIUk9XEAwSDAoIU0hV",
-            "UklLRU4QDRIHCgNCT1cQDhIMCghDUk9TU0JPVxAPEgkKBUdMT1ZFEBASCQoF",
-            "VE9ORkEQERIKCgZHVUlUQVIQEhIMCghOVU5DSEFLVRATEggKBFdISVAQFBIK",
-            "CgZDQU1FUkEQFRIKCgZBUkNBTkEQFhISCg5WX0ZfUFJPU1RIRVRJQxAXKjMK",
-            "ClNraWxsU2hhcGUSCgoGQ0lSQ0xFEAASDQoJUkVDVEFOR0xFEAESCgoGU0VD",
-            "VE9SEAJCG6oCGEdvb2dsZS5Qcm90b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
+            "Cg5Qcm90b2NvbC5wcm90bxIIUHJvdG9jb2wiIAoLQ19FbnRlckdhbWUSEQoJ",
+            "ZW50ZXJHYW1lGAEgASgIIjMKC1NfRW50ZXJHYW1lEiQKBnBsYXllchgBIAEo",
+            "CzIULlByb3RvY29sLk9iamVjdEluZm8iDQoLU19MZWF2ZUdhbWUihgIKB1Nf",
+            "U3RhdGUSEAoIT2JqZWN0SWQYASABKAUSKAoHTXlTdGF0ZRgCIAEoDjIXLlBy",
+            "b3RvY29sLkNyZWF0dXJlU3RhdGUSJwoHUG9zSW5mbxgDIAEoCzIWLlByb3Rv",
+            "Y29sLlBvc2l0aW9uSW5mbxInCgdSb3RJbmZvGAQgASgLMhYuUHJvdG9jb2wu",
+            "Um90YXRpb25JbmZvEikKCXNraWxsdHlwZRgFIAEoDjIWLlByb3RvY29sLk1v",
+            "bnN0ZXJTa2lsbBISCgpzZXF1ZW5jZUlkGAYgASgFEi4KDnRhcmdldFBvc2l0",
+            "aW9uGAcgASgLMhYuUHJvdG9jb2wuUG9zaXRpb25JbmZvIjAKB1NfU3Bhd24S",
+            "JQoHb2JqZWN0cxgBIAMoCzIULlByb3RvY29sLk9iamVjdEluZm8iHgoJU19E",
+            "ZXNwYXduEhEKCW9iamVjdElkcxgBIAMoBSJqCgZDX01vdmUSJwoHcG9zSW5m",
+            "bxgBIAEoCzIWLlByb3RvY29sLlBvc2l0aW9uSW5mbxInCgdyb3RJbmZvGAIg",
+            "ASgLMhYuUHJvdG9jb2wuUm90YXRpb25JbmZvEg4KBmlzV2FycBgDIAEoCCJ8",
+            "CgZTX01vdmUSEAoIb2JqZWN0SWQYASABKAUSJwoHcG9zSW5mbxgCIAEoCzIW",
+            "LlByb3RvY29sLlBvc2l0aW9uSW5mbxInCgdyb3RJbmZvGAMgASgLMhYuUHJv",
+            "dG9jb2wuUm90YXRpb25JbmZvEg4KBmlzV2FycBgEIAEoCCJhCgpDX1NraWxs",
+            "RW5kEigKCm9iamVjdEluZm8YASABKAsyFC5Qcm90b2NvbC5PYmplY3RJbmZv",
+            "EikKCXNraWxsVHlwZRgCIAEoDjIWLlByb3RvY29sLk1vbnN0ZXJTa2lsbCJt",
+            "CgdDX1NraWxsEigKCm9iamVjdEluZm8YASABKAsyFC5Qcm90b2NvbC5PYmpl",
+            "Y3RJbmZvEiYKCXNraWxsSW5mbxgCIAEoCzITLlByb3RvY29sLlNraWxsSW5m",
+            "bxIQCgh0YXJnZXRJZBgDIAEoBSJTCgdTX1NraWxsEg4KBmNhblVzZRgBIAEo",
+            "CBIQCghvYmplY3RJZBgCIAEoBRImCglza2lsbEluZm8YAyABKAsyEy5Qcm90",
+            "b2NvbC5Ta2lsbEluZm8iLgoGQ19BbmltEiQKCGFuaW1JbmZvGAEgASgLMhIu",
+            "UHJvdG9jb2wuQW5pbUluZm8iQAoGU19BbmltEhAKCG9iamVjdElkGAEgASgF",
+            "EiQKCGFuaW1JbmZvGAIgASgLMhIuUHJvdG9jb2wuQW5pbUluZm8iSQoLQ19D",
+            "aGFyYWN0ZXISKQoIY2hhclR5cGUYASABKA4yFy5Qcm90b2NvbC5DaGFyYWN0",
+            "ZXJUeXBlEg8KB3BpY2tJZHgYAiABKAUiSQoLU19DaGFyYWN0ZXISKQoIY2hh",
+            "clR5cGUYASABKA4yFy5Qcm90b2NvbC5DaGFyYWN0ZXJUeXBlEg8KB3BpY2tJ",
+            "ZHgYAiABKAUiHgoLU19FbnRlclBpY2sSDwoHcGlja0lkeBgBIAEoBSIeCgtT",
+            "X0xlYXZlUGljaxIPCgdwaWNrSWR4GAEgASgFIokCCgpPYmplY3RJbmZvEhAK",
+            "CG9iamVjdElkGAEgASgFEgwKBG5hbWUYAiABKAkSJwoHcG9zSW5mbxgDIAEo",
+            "CzIWLlByb3RvY29sLlBvc2l0aW9uSW5mbxInCgdyb3RJbmZvGAQgASgLMhYu",
+            "UHJvdG9jb2wuUm90YXRpb25JbmZvEiQKCHN0YXRJbmZvGAUgASgLMhIuUHJv",
+            "dG9jb2wuU3RhdEluZm8SKQoIY2hhclR5cGUYBiABKA4yFy5Qcm90b2NvbC5D",
+            "aGFyYWN0ZXJUeXBlEioKC21vbnN0ZXJUeXBlGAcgASgOMhUuUHJvdG9jb2wu",
+            "TW9uc3RlclR5cGUSDAoEdGVhbRgIIAEoBSInCghBbmltSW5mbxIMCgRuYW1l",
+            "GAEgASgJEg0KBXJhdGlvGAIgASgCIioKClNfQ2hhbmdlSHASEAoIb2JqZWN0",
+            "SWQYASABKAUSCgoCaHAYAiABKAUiLQoFU19EaWUSEAoIb2JqZWN0SWQYASAB",
+            "KAUSEgoKYXR0YWNrZXJJZBgCIAEoBSJgCgxQb3NpdGlvbkluZm8SJgoFc3Rh",
+            "dGUYASABKA4yFy5Qcm90b2NvbC5DcmVhdHVyZVN0YXRlEgwKBHBvc1gYAiAB",
+            "KAISDAoEcG9zWRgDIAEoAhIMCgRwb3NaGAQgASgCIj4KDFJvdGF0aW9uSW5m",
+            "bxIKCgJxeBgBIAEoAhIKCgJxeRgCIAEoAhIKCgJxehgDIAEoAhIKCgJxdxgE",
+            "IAEoAiLWAQoIU3RhdEluZm8SDgoGYXR0YWNrGAEgASgCEg8KB2RlZmVuc2UY",
+            "AiABKAISCgoCaHAYAyABKAUSDQoFbWF4SHAYBCABKAUSDwoHaHBSZWdlbhgF",
+            "IAEoAhIPCgdzdGFtaW5hGAYgASgFEhIKCm1heFN0YW1pbmEYByABKAUSFAoM",
+            "c3RhbWluYVJlZ2VuGAggASgCEhMKC2F0dGFja1NwZWVkGAkgASgCEhEKCW1v",
+            "dmVTcGVlZBgKIAEoAhILCgNleHAYCyABKAUSDQoFbGV2ZWwYDCABKAUiTwoR",
+            "V2VhcG9uTWFzdGVyeUluZm8SEwoLYXR0YWNrU3BlZWQYASABKAISEwoLYmFz",
+            "aWNBdGtBbXAYAiABKAISEAoIc2tpbGxBbXAYAyABKAIiMAoKV2VhcG9uSW5m",
+            "bxINCgVyYW5nZRgBIAEoAhITCgthdHRhY2tTcGVlZBgCIAEoAiItCglTa2ls",
+            "bEluZm8SDwoHc2tpbGxJZBgBIAEoBRIPCgdrZXlDb2RlGAIgASgFIoICCgtT",
+            "a2lsbEhpdGJveBINCgVzaGFwZRgBIAEoCRIMCgR0eXBlGAIgASgJEg4KBmNo",
+            "YXJnZRgDIAEoCBISCgpsb29rT2Zmc2V0GAQgASgCEhMKC3JpZ2h0T2Zmc2V0",
+            "GAUgASgCEgwKBGRpclgYBiABKAISDAoEZGlyWRgHIAEoAhIOCgZyYWRpdXMY",
+            "CCABKAISDQoFYW5nbGUYCSABKAISDQoFd2lkdGgYCiABKAISDgoGaGVpZ2h0",
+            "GAsgASgCEhAKCGR1cmF0aW9uGAwgASgCEg0KBXNwZWVkGA0gASgCEhAKCG1p",
+            "blJhbmdlGA4gASgCEhAKCG1heFJhbmdlGA8gASgCIhYKBkNfUGluZxIMCgRw",
+            "aW5nGAEgASgIIj4KEFNfVmlzaWJsZU9iamVjdHMSEAoIb2JqZWN0SWQYASAB",
+            "KAUSGAoQdmlzaWJsZU9iamVjdElkcxgCIAMoBSJFCglTX0xldmVsVXASEAoI",
+            "b2JqZWN0SWQYASABKAUSJgoKc3RhdEdyb3d0aBgCIAEoCzISLlByb3RvY29s",
+            "LlN0YXRJbmZvIhgKB0NfUmVhZHkSDQoFcmVhZHkYASABKAgq4wIKBU1zZ0lk",
+            "EhAKDENfRU5URVJfR0FNRRAAEhAKDFNfRU5URVJfR0FNRRABEhAKDFNfTEVB",
+            "VkVfR0FNRRACEgsKB1NfU1BBV04QAxINCglTX0RFU1BBV04QBBIKCgZDX01P",
+            "VkUQBRIKCgZTX01PVkUQBhILCgdDX1NLSUxMEAcSCwoHU19TS0lMTBAIEg8K",
+            "C1NfQ0hBTkdFX0hQEAkSCQoFU19ESUUQChIKCgZDX0FOSU0QCxIKCgZTX0FO",
+            "SU0QDBIPCgtDX0NIQVJBQ1RFUhANEgsKB1NfU1RBVEUQDhIPCgtDX1NLSUxM",
+            "X0VORBAPEg8KC1NfQ0hBUkFDVEVSEBASEAoMU19FTlRFUl9QSUNLEBESEAoM",
+            "U19MRUFWRV9QSUNLEBISCgoGQ19QSU5HEBMSFQoRU19WSVNJQkxFX09CSkVD",
+            "VFMQFBIOCgpTX0xFVkVMX1VQEBUSCwoHQ19SRUFEWRAWKlAKDUNyZWF0dXJl",
+            "U3RhdGUSCAoESURMRRAAEgoKBk1PVklORxABEgoKBkFUVEFDSxACEgkKBVNL",
+            "SUxMEAMSCAoEREVBRBAEEggKBFJFU1QQBSpDCg5HYW1lT2JqZWN0VHlwZRII",
+            "CgROT05FEAASCgoGUExBWUVSEAESCwoHTU9OU1RFUhACEg4KClBST0pFQ1RJ",
+            "TEUQAypkCglTa2lsbFR5cGUSDgoKU0tJTExfTk9ORRAAEg4KClNLSUxMX0FV",
+            "VE8QARIUChBTS0lMTF9QUk9KRUNUSUxFEAISEAoMU0tJTExfU1RBVElDEAMS",
+            "DwoLU0tJTExfVFJBQ0sQBCrpAQoMTW9uc3RlclNraWxsEgsKB01TX05PTkUQ",
+            "ABIOCgpNU19BVFRBQ0sxEAESDgoKTVNfQVRUQUNLMhACEg0KCU1TX1NLSUxM",
+            "MRADEg0KCU1TX1NLSUxMMhAEEg0KCU1TX1NLSUxMMxAFEhQKEE1TX0RST05F",
+            "X0FUVEFDSzEQBhIUChBNU19EUk9ORV9BVFRBQ0syEAcSFAoQTVNfR0FNTUFf",
+            "QVRUQUNLMRAIEhMKD01TX0dBTU1BX1NLSUxMMRAJEhMKD01TX0dBTU1BX1NL",
+            "SUxMMhAKEhMKD01TX0dBTU1BX1NLSUxMMxALKjYKCEFuaW1UeXBlEggKBFBM",
+            "QVkQABILCgdUUklHR0VSEAESCAoEQk9PTBACEgkKBUZMT0FUEAMqYAoNQ2hh",
+            "cmFjdGVyVHlwZRISCg5DSEFSQUNURVJfTk9ORRAAEgkKBVJPWlpJEAESCAoE",
+            "WVVLSRACEgsKB0hZVU5XT08QAxILCgdBQklHQUlMEAQSDAoIVEhFT0RPUkUQ",
+            "BSpLCgtNb25zdGVyVHlwZRIQCgxNT05TVEVSX05PTkUQABIJCgVBTFBIQRAB",
+            "EgkKBU9NRUdBEAISCQoFRFJPTkUQAxIJCgVHQU1NQRAEKsgCCgZXZWFwb24S",
+            "DwoLV0VBUE9OX05PTkUQABIKCgZEQUdHRVIQARIUChBUV09fSEFOREVEX1NX",
+            "T1JEEAISBwoDQVhFEAMSDwoLRFVBTF9TV09SRFMQBBIKCgZQSVNUT0wQBRIR",
+            "Cg1BU1NBVUxUX1JJRkxFEAYSEAoMU05JUEVSX1JJRkxFEAcSCgoGUkFQSUVS",
+            "EAgSCQoFU1BFQVIQCRIKCgZIQU1NRVIQChIHCgNCQVQQCxIJCgVUSFJPVxAM",
+            "EgwKCFNIVVJJS0VOEA0SBwoDQk9XEA4SDAoIQ1JPU1NCT1cQDxIJCgVHTE9W",
+            "RRAQEgkKBVRPTkZBEBESCgoGR1VJVEFSEBISDAoITlVOQ0hBS1UQExIICgRX",
+            "SElQEBQSCgoGQ0FNRVJBEBUSCgoGQVJDQU5BEBYSEgoOVl9GX1BST1NUSEVU",
+            "SUMQFypMCgpTa2lsbFNoYXBlEg4KClNIQVBFX05PTkUQABIKCgZDSVJDTEUQ",
+            "ARIHCgNSQVkQAhINCglSRUNUQU5HTEUQAxIKCgZTRUNUT1IQBEIbqgIYR29v",
+            "Z2xlLlByb3RvYnVmLlByb3RvY29sYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.MonsterSkill), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.Weapon), typeof(global::Google.Protobuf.Protocol.SkillShape), }, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_EnterGame), global::Google.Protobuf.Protocol.C_EnterGame.Parser, new[]{ "Player" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_EnterGame), global::Google.Protobuf.Protocol.C_EnterGame.Parser, new[]{ "EnterGame" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_EnterGame), global::Google.Protobuf.Protocol.S_EnterGame.Parser, new[]{ "Player" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_LeaveGame), global::Google.Protobuf.Protocol.S_LeaveGame.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_State), global::Google.Protobuf.Protocol.S_State.Parser, new[]{ "ObjectId", "MyState", "PosInfo", "RotInfo", "Skilltype", "SequenceId", "TargetPosition" }, null, null, null, null),
@@ -142,6 +149,7 @@ namespace Google.Protobuf.Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.WeaponMasteryInfo), global::Google.Protobuf.Protocol.WeaponMasteryInfo.Parser, new[]{ "AttackSpeed", "BasicAtkAmp", "SkillAmp" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.WeaponInfo), global::Google.Protobuf.Protocol.WeaponInfo.Parser, new[]{ "Range", "AttackSpeed" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.SkillInfo), global::Google.Protobuf.Protocol.SkillInfo.Parser, new[]{ "SkillId", "KeyCode" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.SkillHitbox), global::Google.Protobuf.Protocol.SkillHitbox.Parser, new[]{ "Shape", "Type", "Charge", "LookOffset", "RightOffset", "DirX", "DirY", "Radius", "Angle", "Width", "Height", "Duration", "Speed", "MinRange", "MaxRange" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_Ping), global::Google.Protobuf.Protocol.C_Ping.Parser, new[]{ "Ping" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_VisibleObjects), global::Google.Protobuf.Protocol.S_VisibleObjects.Parser, new[]{ "ObjectId", "VisibleObjectIds" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_LevelUp), global::Google.Protobuf.Protocol.S_LevelUp.Parser, new[]{ "ObjectId", "StatGrowth" }, null, null, null, null),
@@ -198,6 +206,8 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("SKILL_NONE")] SkillNone = 0,
     [pbr::OriginalName("SKILL_AUTO")] SkillAuto = 1,
     [pbr::OriginalName("SKILL_PROJECTILE")] SkillProjectile = 2,
+    [pbr::OriginalName("SKILL_STATIC")] SkillStatic = 3,
+    [pbr::OriginalName("SKILL_TRACK")] SkillTrack = 4,
   }
 
   public enum MonsterSkill {
@@ -267,9 +277,11 @@ namespace Google.Protobuf.Protocol {
   }
 
   public enum SkillShape {
-    [pbr::OriginalName("CIRCLE")] Circle = 0,
-    [pbr::OriginalName("RECTANGLE")] Rectangle = 1,
-    [pbr::OriginalName("SECTOR")] Sector = 2,
+    [pbr::OriginalName("SHAPE_NONE")] ShapeNone = 0,
+    [pbr::OriginalName("CIRCLE")] Circle = 1,
+    [pbr::OriginalName("RAY")] Ray = 2,
+    [pbr::OriginalName("RECTANGLE")] Rectangle = 3,
+    [pbr::OriginalName("SECTOR")] Sector = 4,
   }
 
   #endregion
@@ -300,7 +312,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public C_EnterGame(C_EnterGame other) : this() {
-      player_ = other.player_ != null ? other.player_.Clone() : null;
+      enterGame_ = other.enterGame_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -309,14 +321,14 @@ namespace Google.Protobuf.Protocol {
       return new C_EnterGame(this);
     }
 
-    /// <summary>Field number for the "player" field.</summary>
-    public const int PlayerFieldNumber = 1;
-    private global::Google.Protobuf.Protocol.ObjectInfo player_;
+    /// <summary>Field number for the "enterGame" field.</summary>
+    public const int EnterGameFieldNumber = 1;
+    private bool enterGame_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Google.Protobuf.Protocol.ObjectInfo Player {
-      get { return player_; }
+    public bool EnterGame {
+      get { return enterGame_; }
       set {
-        player_ = value;
+        enterGame_ = value;
       }
     }
 
@@ -333,14 +345,14 @@ namespace Google.Protobuf.Protocol {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (!object.Equals(Player, other.Player)) return false;
+      if (EnterGame != other.EnterGame) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (player_ != null) hash ^= Player.GetHashCode();
+      if (EnterGame != false) hash ^= EnterGame.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -354,9 +366,9 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (player_ != null) {
-        output.WriteRawTag(10);
-        output.WriteMessage(Player);
+      if (EnterGame != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(EnterGame);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -366,8 +378,8 @@ namespace Google.Protobuf.Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (player_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Player);
+      if (EnterGame != false) {
+        size += 1 + 1;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -380,11 +392,8 @@ namespace Google.Protobuf.Protocol {
       if (other == null) {
         return;
       }
-      if (other.player_ != null) {
-        if (player_ == null) {
-          Player = new global::Google.Protobuf.Protocol.ObjectInfo();
-        }
-        Player.MergeFrom(other.Player);
+      if (other.EnterGame != false) {
+        EnterGame = other.EnterGame;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -397,11 +406,8 @@ namespace Google.Protobuf.Protocol {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 10: {
-            if (player_ == null) {
-              Player = new global::Google.Protobuf.Protocol.ObjectInfo();
-            }
-            input.ReadMessage(Player);
+          case 8: {
+            EnterGame = input.ReadBool();
             break;
           }
         }
@@ -5223,6 +5229,527 @@ namespace Google.Protobuf.Protocol {
 
   }
 
+  public sealed partial class SkillHitbox : pb::IMessage<SkillHitbox> {
+    private static readonly pb::MessageParser<SkillHitbox> _parser = new pb::MessageParser<SkillHitbox>(() => new SkillHitbox());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<SkillHitbox> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[27]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SkillHitbox() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SkillHitbox(SkillHitbox other) : this() {
+      shape_ = other.shape_;
+      type_ = other.type_;
+      charge_ = other.charge_;
+      lookOffset_ = other.lookOffset_;
+      rightOffset_ = other.rightOffset_;
+      dirX_ = other.dirX_;
+      dirY_ = other.dirY_;
+      radius_ = other.radius_;
+      angle_ = other.angle_;
+      width_ = other.width_;
+      height_ = other.height_;
+      duration_ = other.duration_;
+      speed_ = other.speed_;
+      minRange_ = other.minRange_;
+      maxRange_ = other.maxRange_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SkillHitbox Clone() {
+      return new SkillHitbox(this);
+    }
+
+    /// <summary>Field number for the "shape" field.</summary>
+    public const int ShapeFieldNumber = 1;
+    private string shape_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Shape {
+      get { return shape_; }
+      set {
+        shape_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "type" field.</summary>
+    public const int TypeFieldNumber = 2;
+    private string type_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Type {
+      get { return type_; }
+      set {
+        type_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "charge" field.</summary>
+    public const int ChargeFieldNumber = 3;
+    private bool charge_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Charge {
+      get { return charge_; }
+      set {
+        charge_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "lookOffset" field.</summary>
+    public const int LookOffsetFieldNumber = 4;
+    private float lookOffset_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float LookOffset {
+      get { return lookOffset_; }
+      set {
+        lookOffset_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "rightOffset" field.</summary>
+    public const int RightOffsetFieldNumber = 5;
+    private float rightOffset_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float RightOffset {
+      get { return rightOffset_; }
+      set {
+        rightOffset_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "dirX" field.</summary>
+    public const int DirXFieldNumber = 6;
+    private float dirX_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float DirX {
+      get { return dirX_; }
+      set {
+        dirX_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "dirY" field.</summary>
+    public const int DirYFieldNumber = 7;
+    private float dirY_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float DirY {
+      get { return dirY_; }
+      set {
+        dirY_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "radius" field.</summary>
+    public const int RadiusFieldNumber = 8;
+    private float radius_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Radius {
+      get { return radius_; }
+      set {
+        radius_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "angle" field.</summary>
+    public const int AngleFieldNumber = 9;
+    private float angle_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Angle {
+      get { return angle_; }
+      set {
+        angle_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "width" field.</summary>
+    public const int WidthFieldNumber = 10;
+    private float width_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Width {
+      get { return width_; }
+      set {
+        width_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "height" field.</summary>
+    public const int HeightFieldNumber = 11;
+    private float height_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Height {
+      get { return height_; }
+      set {
+        height_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "duration" field.</summary>
+    public const int DurationFieldNumber = 12;
+    private float duration_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Duration {
+      get { return duration_; }
+      set {
+        duration_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "speed" field.</summary>
+    public const int SpeedFieldNumber = 13;
+    private float speed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Speed {
+      get { return speed_; }
+      set {
+        speed_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "minRange" field.</summary>
+    public const int MinRangeFieldNumber = 14;
+    private float minRange_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float MinRange {
+      get { return minRange_; }
+      set {
+        minRange_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "maxRange" field.</summary>
+    public const int MaxRangeFieldNumber = 15;
+    private float maxRange_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float MaxRange {
+      get { return maxRange_; }
+      set {
+        maxRange_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as SkillHitbox);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(SkillHitbox other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Shape != other.Shape) return false;
+      if (Type != other.Type) return false;
+      if (Charge != other.Charge) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(LookOffset, other.LookOffset)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(RightOffset, other.RightOffset)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(DirX, other.DirX)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(DirY, other.DirY)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Radius, other.Radius)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Angle, other.Angle)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Width, other.Width)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Height, other.Height)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Duration, other.Duration)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Speed, other.Speed)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MinRange, other.MinRange)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MaxRange, other.MaxRange)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Shape.Length != 0) hash ^= Shape.GetHashCode();
+      if (Type.Length != 0) hash ^= Type.GetHashCode();
+      if (Charge != false) hash ^= Charge.GetHashCode();
+      if (LookOffset != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(LookOffset);
+      if (RightOffset != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(RightOffset);
+      if (DirX != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(DirX);
+      if (DirY != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(DirY);
+      if (Radius != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Radius);
+      if (Angle != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Angle);
+      if (Width != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Width);
+      if (Height != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Height);
+      if (Duration != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Duration);
+      if (Speed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Speed);
+      if (MinRange != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MinRange);
+      if (MaxRange != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MaxRange);
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Shape.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Shape);
+      }
+      if (Type.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Type);
+      }
+      if (Charge != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(Charge);
+      }
+      if (LookOffset != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(LookOffset);
+      }
+      if (RightOffset != 0F) {
+        output.WriteRawTag(45);
+        output.WriteFloat(RightOffset);
+      }
+      if (DirX != 0F) {
+        output.WriteRawTag(53);
+        output.WriteFloat(DirX);
+      }
+      if (DirY != 0F) {
+        output.WriteRawTag(61);
+        output.WriteFloat(DirY);
+      }
+      if (Radius != 0F) {
+        output.WriteRawTag(69);
+        output.WriteFloat(Radius);
+      }
+      if (Angle != 0F) {
+        output.WriteRawTag(77);
+        output.WriteFloat(Angle);
+      }
+      if (Width != 0F) {
+        output.WriteRawTag(85);
+        output.WriteFloat(Width);
+      }
+      if (Height != 0F) {
+        output.WriteRawTag(93);
+        output.WriteFloat(Height);
+      }
+      if (Duration != 0F) {
+        output.WriteRawTag(101);
+        output.WriteFloat(Duration);
+      }
+      if (Speed != 0F) {
+        output.WriteRawTag(109);
+        output.WriteFloat(Speed);
+      }
+      if (MinRange != 0F) {
+        output.WriteRawTag(117);
+        output.WriteFloat(MinRange);
+      }
+      if (MaxRange != 0F) {
+        output.WriteRawTag(125);
+        output.WriteFloat(MaxRange);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Shape.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Shape);
+      }
+      if (Type.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Type);
+      }
+      if (Charge != false) {
+        size += 1 + 1;
+      }
+      if (LookOffset != 0F) {
+        size += 1 + 4;
+      }
+      if (RightOffset != 0F) {
+        size += 1 + 4;
+      }
+      if (DirX != 0F) {
+        size += 1 + 4;
+      }
+      if (DirY != 0F) {
+        size += 1 + 4;
+      }
+      if (Radius != 0F) {
+        size += 1 + 4;
+      }
+      if (Angle != 0F) {
+        size += 1 + 4;
+      }
+      if (Width != 0F) {
+        size += 1 + 4;
+      }
+      if (Height != 0F) {
+        size += 1 + 4;
+      }
+      if (Duration != 0F) {
+        size += 1 + 4;
+      }
+      if (Speed != 0F) {
+        size += 1 + 4;
+      }
+      if (MinRange != 0F) {
+        size += 1 + 4;
+      }
+      if (MaxRange != 0F) {
+        size += 1 + 4;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(SkillHitbox other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Shape.Length != 0) {
+        Shape = other.Shape;
+      }
+      if (other.Type.Length != 0) {
+        Type = other.Type;
+      }
+      if (other.Charge != false) {
+        Charge = other.Charge;
+      }
+      if (other.LookOffset != 0F) {
+        LookOffset = other.LookOffset;
+      }
+      if (other.RightOffset != 0F) {
+        RightOffset = other.RightOffset;
+      }
+      if (other.DirX != 0F) {
+        DirX = other.DirX;
+      }
+      if (other.DirY != 0F) {
+        DirY = other.DirY;
+      }
+      if (other.Radius != 0F) {
+        Radius = other.Radius;
+      }
+      if (other.Angle != 0F) {
+        Angle = other.Angle;
+      }
+      if (other.Width != 0F) {
+        Width = other.Width;
+      }
+      if (other.Height != 0F) {
+        Height = other.Height;
+      }
+      if (other.Duration != 0F) {
+        Duration = other.Duration;
+      }
+      if (other.Speed != 0F) {
+        Speed = other.Speed;
+      }
+      if (other.MinRange != 0F) {
+        MinRange = other.MinRange;
+      }
+      if (other.MaxRange != 0F) {
+        MaxRange = other.MaxRange;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Shape = input.ReadString();
+            break;
+          }
+          case 18: {
+            Type = input.ReadString();
+            break;
+          }
+          case 24: {
+            Charge = input.ReadBool();
+            break;
+          }
+          case 37: {
+            LookOffset = input.ReadFloat();
+            break;
+          }
+          case 45: {
+            RightOffset = input.ReadFloat();
+            break;
+          }
+          case 53: {
+            DirX = input.ReadFloat();
+            break;
+          }
+          case 61: {
+            DirY = input.ReadFloat();
+            break;
+          }
+          case 69: {
+            Radius = input.ReadFloat();
+            break;
+          }
+          case 77: {
+            Angle = input.ReadFloat();
+            break;
+          }
+          case 85: {
+            Width = input.ReadFloat();
+            break;
+          }
+          case 93: {
+            Height = input.ReadFloat();
+            break;
+          }
+          case 101: {
+            Duration = input.ReadFloat();
+            break;
+          }
+          case 109: {
+            Speed = input.ReadFloat();
+            break;
+          }
+          case 117: {
+            MinRange = input.ReadFloat();
+            break;
+          }
+          case 125: {
+            MaxRange = input.ReadFloat();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
   public sealed partial class C_Ping : pb::IMessage<C_Ping> {
     private static readonly pb::MessageParser<C_Ping> _parser = new pb::MessageParser<C_Ping>(() => new C_Ping());
     private pb::UnknownFieldSet _unknownFields;
@@ -5231,7 +5758,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[27]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[28]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5360,7 +5887,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[28]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[29]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5510,7 +6037,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[29]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[30]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5673,7 +6200,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[30]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[31]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

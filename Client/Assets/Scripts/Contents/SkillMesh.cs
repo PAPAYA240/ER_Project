@@ -42,10 +42,10 @@ public class SkillMesh : MonoBehaviour
         visualObject.transform.SetParent(transform);
 
         var lr = visualObject.AddComponent<LineRenderer>();
-        lr.startWidth = 0.05f;
-        lr.endWidth = 0.05f;
-        lr.material = new Material(Shader.Find("Sprites/Default"));
-        lr.startColor = lr.endColor = new UnityEngine.Color(1f, 0f, 0f, 0.5f);
+        lr.startWidth = lr.endWidth = 0.05f;
+        Material originalMat = Resources.Load<Material>("Prefabs/Debug/hitbox");
+        lr.material = Instantiate(originalMat);
+        //lr.startColor = lr.endColor = new UnityEngine.Color(1f, 0f, 0f, 0.5f);
         lr.useWorldSpace = false;
 
         Enum.TryParse<SkillType>(_hitbox.Type, out SkillType type);
@@ -85,17 +85,6 @@ public class SkillMesh : MonoBehaviour
                 Destroy(visualObject);
                 visualObject = null;
                 break;
-        }
-
-        if (visualObject != null)
-        {
-
-            // 디버그용 Material 적용
-            var renderer = visualObject.GetComponent<Renderer>();
-            renderer.material = new Material(Shader.Find("Standard"))
-            {
-                color = new UnityEngine.Color(1f, 0f, 0f, 0.3f)
-            };
         }
     }
 
@@ -144,6 +133,6 @@ public class SkillMesh : MonoBehaviour
         if (visualObject != null)
             Destroy(visualObject);
 
-        Destroy(gameObject);
+        Destroy(this.gameObject);
     }
 }
