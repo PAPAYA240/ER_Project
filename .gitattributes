@@ -1,2 +1,9 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Unity 에셋 자동 Smart Merge
+*.prefab merge=unityyamlmerge
+*.unity merge=unityyamlmerge
+*.anim merge=unityyamlmerge
+*.controller merge=unityyamlmerge
+*.asset merge=unityyamlmerge

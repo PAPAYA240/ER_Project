@@ -20,20 +20,20 @@ public class SkillMesh : MonoBehaviour
 
     private GameObject visualObject;
 
-    public void Init(SkillHitbox hitbox, Transform playerTransform, float chargeRatio = 1) // 투사체일 경우엔 투사체의 transform을 넣어줘야함
+    public void Init(SkillHitbox hitbox, Transform playerTransform, int team = 0, float chargeRatio = 1) // 투사체일 경우엔 투사체의 transform을 넣어줘야함
     {
         _hitbox = hitbox;
         _playerTransform = playerTransform;
         ChargeRatio = chargeRatio;
 
         Enum.TryParse<SkillShape>(_hitbox.Shape, out SkillShape shape);
-        CreateVisual(shape);
+        CreateVisual(shape, team);
 
         if (_hitbox.Duration > 0f)
             StartCoroutine(AutoDestroy(_hitbox.Duration));
     }
 
-    private void CreateVisual(SkillShape shape)
+    private void CreateVisual(SkillShape shape, int team)
     {
         if (visualObject != null)
             Destroy(visualObject);
@@ -45,7 +45,24 @@ public class SkillMesh : MonoBehaviour
         lr.startWidth = lr.endWidth = 0.05f;
         Material originalMat = Resources.Load<Material>("Prefabs/Debug/hitbox");
         lr.material = Instantiate(originalMat);
-        //lr.startColor = lr.endColor = new UnityEngine.Color(1f, 0f, 0f, 0.5f);
+
+        UnityEngine.Color color;
+        switch (team)
+        {
+            case 0:
+                color = new UnityEngine.Color(1, 0.92f, 0.016f, 1);
+                break;
+            case 1:
+                color = new UnityEngine.Color(1, 0, 1, 1);
+                break;
+            case 2:
+                color = new UnityEngine.Color(0, 0, 1, 1);
+                break;
+            default:
+                color = new UnityEngine.Color(0, 1, 0, 1);
+                break;
+        }
+        lr.startColor = lr.endColor = color;
         lr.useWorldSpace = false;
 
         Enum.TryParse<SkillType>(_hitbox.Type, out SkillType type);

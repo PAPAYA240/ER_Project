@@ -170,7 +170,7 @@ public class PlayerController : CreatureController
         GameObject go = Managers.Resource.Instantiate("Debug/SkillMesh", gameObject.transform);
         SkillMesh sm = go.GetComponent<SkillMesh>();
         if (sm == null) return;
-        sm.Init(skillHitbox, gameObject.transform);
+        sm.Init(skillHitbox, gameObject.transform, ObjInfo.Team);
     }
 
     #endregion
