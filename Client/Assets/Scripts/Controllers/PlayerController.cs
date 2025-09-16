@@ -70,7 +70,6 @@ public class PlayerController : CreatureController
     }
     #endregion
 
-
     #region Skill
     public override void UseSkill(S_Skill skillPacket)
     {
@@ -113,25 +112,13 @@ public class PlayerController : CreatureController
     }
 
     // TODO : 이름 바꾸기?
-    protected virtual void Skill_Q()
-    {
-        PlayAnimation("SKILL_Q", 0.1f);
-    }
+    protected virtual void Skill_Q() { }
 
-    protected virtual void Skill_W()
-    {
-        PlayAnimation("SKILL_W", 0.1f);
-    }
+    protected virtual void Skill_W() { }
 
-    protected virtual void Skill_E()
-    {
-        PlayAnimation("SKILL_E", 0.1f);
-    }
+    protected virtual void Skill_E() { }
 
-    protected virtual void Skill_R()
-    {
-        PlayAnimation("SKILL_R", 0.1f);
-    }
+    protected virtual void Skill_R() { }
 
     IEnumerator CoStartSkill()
     {
@@ -152,7 +139,9 @@ public class PlayerController : CreatureController
         // TODO : TEMP
         CheckUpdatedFlag();
     }
+    #endregion
 
+    #region Animation
     protected virtual void PlayAnimation(string animName, float ratio)
     {
         _animator.CrossFadeInFixedTime(animName, ratio);
@@ -162,6 +151,5 @@ public class PlayerController : CreatureController
     {
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
     }
-  
     #endregion
 }

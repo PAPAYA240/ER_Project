@@ -115,6 +115,7 @@ public class BaseController : MonoBehaviour
 
     protected Animator _animator;
     protected NavMeshAgent _navMeshAgent;
+    protected NavMeshAgent _agent;  // Player
 
     public virtual CreatureState State
     {
@@ -123,6 +124,13 @@ public class BaseController : MonoBehaviour
         {
             if (PosInfo.State == value)
                 return;
+
+            if (_agent != null && _agent.isActiveAndEnabled &&
+                (State == CreatureState.Moving && value != CreatureState.Moving))
+            {
+                _agent.isStopped = true;
+                _agent.ResetPath();
+            }
 
             PosInfo.State = value;
             UpdateAnimation();
