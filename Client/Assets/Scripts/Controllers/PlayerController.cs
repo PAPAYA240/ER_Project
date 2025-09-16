@@ -90,6 +90,8 @@ public class PlayerController : CreatureController
 
             StartCoroutine(CoStartSkill());
             Debug.Log("스킬 코루틴 시작");
+
+            CreateSkillMesh((KeyCode)skillPacket.SkillInfo.KeyCode);
         }
     }
 
@@ -175,5 +177,18 @@ public class PlayerController : CreatureController
 
         return skillBase;
     }
+    #endregion
+
+    #region SkillMesh
+
+    void CreateSkillMesh(KeyCode keyCode)
+    {
+        SkillHitbox skillHitbox = DataManager.SkillHitboxDict[ObjInfo.CharType][keyCode];
+        GameObject go = Managers.Resource.Instantiate("Debug/SkillMesh", gameObject.transform);
+        SkillMesh sm = go.GetComponent<SkillMesh>();
+        if (sm == null) return;
+        sm.Init(skillHitbox, gameObject.transform);
+    }
+
     #endregion
 }

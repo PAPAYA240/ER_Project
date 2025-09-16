@@ -132,7 +132,7 @@ enum SkillShape{
 }
 
 message C_EnterGame {
-	ObjectInfo player = 1;
+	bool enterGame = 1;
 }
 
 message S_EnterGame {
@@ -303,7 +303,7 @@ message SkillHitbox{
 	float duration = 12;
 	float speed = 13;
 	float minRange = 14;
-	float maxDistance = 15;
+	float maxRange = 15;
 }
 
 message C_Ping{
