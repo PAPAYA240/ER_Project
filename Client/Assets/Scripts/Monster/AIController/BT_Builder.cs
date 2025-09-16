@@ -36,11 +36,8 @@ public class BehaviorTreeBuilder
         node.name = data.Name;
         if (data.Properties != null)
         {
-            Debug.Log($"BT_Builder() Animation Json 파싱 실패 : {data.Name}");
             using (var reader = data.Properties.CreateReader())
-            {
                 JsonSerializer.CreateDefault().Populate(reader, node);
-            }
         }
         if (data.Children != null && data.Children.Count > 0)
         {

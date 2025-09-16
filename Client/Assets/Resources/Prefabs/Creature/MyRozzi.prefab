@@ -2722,7 +2722,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.9
+  m_Radius: 0.93
   m_Height: 2.66
   m_Direction: 1
   m_Center: {x: 0, y: 0.53, z: 0}
@@ -2762,10 +2762,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _offset: {x: 0, y: 10, z: -10}
   smoothSpeed: 5
-  agentSpeed: 10
-  agentAcc: 999
-  agentAngular: 500
-  agentStop: 0.04
 --- !u!1 &4552065746279300795
 GameObject:
   m_ObjectHideFlags: 0
