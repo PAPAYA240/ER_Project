@@ -28,10 +28,6 @@ namespace Server.Game.Object.Monster.FSM
             _skillEndTime = Environment.TickCount64 + durationInMilliseconds;
             monster._delaySkillAnimationTimer = skillData.skillCoolTime;
 
-            //lastSwapTime = 0;
-            //originPos = new Vector3(monster.PosInfo.PosX, monster.PosInfo.PosY, monster.PosInfo.PosZ);
-            //targetPos = new Vector3(monster.Target.PosInfo.PosX, monster.Target.PosInfo.PosY, monster.Target.PosInfo.PosZ);
-
             LookAtTarget(monster);
             monster.BroadcastState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
         }
@@ -40,18 +36,8 @@ namespace Server.Game.Object.Monster.FSM
         {
             bool clientEnded = _isClientEndReceived;
 
-            // switch (monster.CurrentSkill)
-            // {
-            //     case MonsterSkill.MsSkill2:
-            //         DashLeft(monster);
-            //         monster.BroadcastState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
-            //         break;
-            // }
-
             if (Environment.TickCount64 >= _skillEndTime)
-            {
                 monster.ChangeState(FSMManager.Instance.GetIdleState());
-            }
         }
 
         private float lastSwapTime;
@@ -66,7 +52,7 @@ namespace Server.Game.Object.Monster.FSM
             else
             {
                 if (Environment.TickCount64 - lastSwapTime >= 500)
-                    targetPos = new Vector3(monster.Target.PosInfo.PosX, monster.Target.PosInfo.PosY, monster.Target.PosInfo.PosZ);
+                    targetPos = new Vector3(monster.PlayerTarget.PosInfo.PosX, monster.PlayerTarget.PosInfo.PosY, monster.PlayerTarget.PosInfo.PosZ);
 
                 return;
             }
@@ -79,7 +65,7 @@ namespace Server.Game.Object.Monster.FSM
         private long _lastUpdateTime = 0;
         private void LookAtTarget(Monster monster)
         {
-            Player target = monster.Target;
+            Player target = monster.PlayerTarget;
             if (target != null)
             {
                 long tick = Environment.TickCount64;

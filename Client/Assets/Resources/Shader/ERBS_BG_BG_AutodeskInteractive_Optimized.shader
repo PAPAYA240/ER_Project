@@ -14,7 +14,7 @@ Shader "ERBS_BG/BG_AutodeskInteractive_Optimized" {
 		[Toggle(_ANIMATEDEMISSION)] _IsAnimatedEmission ("Animated Emission", Float) = 0
 		_AnimatedEmissionTex ("Emissive Animation Gradient Texture", 2D) = "white" {}
 		_ScrollSpeedEmit ("Emissive Animation Scroll Speed", Float) = 0.5
-		[Enum(UnityEngine.Material.GlobalIlluminationFlags)] _GIFlag ("Global Illumination", Float) = 0
+		[Enum(UnityEngine.MaterialGlobalIlluminationFlags)] _GIFlag ("Global Illumination", Float) = 0
 		_EmissiveValue ("EmissiveValue", Float) = 0
 		[HDR] _EmissionColor ("EmissionColor", Vector) = (0,0,0,0)
 		_EmissiveMask ("EmissiveMask", 2D) = "white" {}

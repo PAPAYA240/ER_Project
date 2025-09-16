@@ -1,13 +1,12 @@
 ﻿using Google.Protobuf.Protocol;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
+#endif
 
 public class ParallelNode : CompositeNode, IStateChangeListener
 {
-    private int _successIdx = 0;
-    private int _failureIdx = 0;
-
     private List<NodeStatus> _childStates;
 
     bool _finished = false;

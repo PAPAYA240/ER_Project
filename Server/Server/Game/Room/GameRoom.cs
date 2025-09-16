@@ -19,11 +19,11 @@ namespace Server.Game
         MonsterManager _monsterManager = new MonsterManager();
 
         bool _teamToggle = false;
-
         public bool TryGetMonster(int objectId, out Monster monster)
         {
             return _monsters.TryGetValue(objectId, out monster);
         }
+
         public void Init(int mapId)
         {
             Pathfinding.Initialize();
@@ -98,9 +98,11 @@ namespace Server.Game
             {
                 Monster monster = gameObject as Monster;
                 if (_monsters == null)
-                    return;
-                _monsters.Add(gameObject.Id, monster); 
+                    _monsters = new Dictionary<int, Monster>();
+
                 monster.Room = this;
+                _monsters.Add(gameObject.Id, monster);
+
             }
             else if (type == GameObjectType.Projectile)
             {
@@ -209,6 +211,10 @@ namespace Server.Game
                 Broadcast(skill);
                 return; 
             }
+
+            // TODO : (임시) 몬스터 찾아주기, 공격 범위에 나간다면 target 은 null로 전달해야 함
+            TryGetMonster(skillPacket.TargetId, out Monster target);
+            player.Target = target;
 
             // 스킬 매니저에 정보를 전달해서 체크
             // 쿨타임, 스테미나 등 체크

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading;
 using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game.Object.Monster.AStar;
@@ -24,16 +25,19 @@ namespace Server.Game.Object.Monster
         List<MonsterSkill> _skills = new List<MonsterSkill>();  // 사용 가능한 스킬 목록
         public MonsterSkill CurrentSkill { get; private set; } // 현재 사용 중인 스킬
         private IMonsterState _currentState;
+        public Vector3 spawnPosition = new Vector3();
 
         // 탐지 정보
-        private const float _skillRange = 2.0f;
-        private const float _findRange = 1000.0f;
+        private const float _skillRange = 3.0f;
+        private const float _findRange = 30.0f;
 
         // TODO : 감마 총알 예시
         public float _delaySkillAnimationTimer = 0;
 
+
         // Targeting
-        public Player Target { get; set; }
+        public Player PlayerTarget { get; set; }
+
         public List<Vector3> _path = new List<Vector3>();
 
         public Monster() => ObjectType = GameObjectType.Monster;
@@ -78,7 +82,7 @@ namespace Server.Game.Object.Monster
                 return null;
             }
 
-            Target.OnDamaged(this, skillData.damage + Stat.Attack);
+            PlayerTarget.OnDamaged(this, skillData.damage + Stat.Attack);
 
             return skillData;
         }
@@ -91,46 +95,65 @@ namespace Server.Game.Object.Monster
 
         #region Helper Functions
 
-        public bool IsFindTargetRange(float dist)
+        public bool IsFindTargetRange()
         {
-            return (dist <= _findRange);
+            if (PlayerTarget == null)
+                return false;
+
+            Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
+            Vector3 targetPos = new Vector3(PlayerTarget.PosInfo.PosX, PlayerTarget.PosInfo.PosY, PlayerTarget.PosInfo.PosZ);
+            float distanceToTarget = Vector3.Distance(monsterPos, targetPos);
+
+            return distanceToTarget <= _findRange;
         }
         public bool IsSkillRange() => IsPlayerInSkillRange();
         private bool IsPlayerInSkillRange()
         {
-            if (Target == null)
+            if (PlayerTarget == null)
                 return false;
 
             Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-            Vector3 targetPos = new Vector3(Target.PosInfo.PosX, Target.PosInfo.PosY, Target.PosInfo.PosZ);
+            Vector3 targetPos = new Vector3(PlayerTarget.PosInfo.PosX, PlayerTarget.PosInfo.PosY, PlayerTarget.PosInfo.PosZ);
             float distanceToTarget = Vector3.Distance(monsterPos, targetPos);
 
             return distanceToTarget <= _skillRange;
         }
-        
+        public bool IsArrivalSpawn()
+        {
+            Vector3 monsterPos = new Vector3(this.PosInfo.PosX, this.PosInfo.PosY, this.PosInfo.PosZ);
+            float distanceToWaypoint = Vector3.Distance(monsterPos, spawnPosition);
+            if (distanceToWaypoint < 0.1f)
+                return true;
+            return false;
+        }
+
         public Player FindTarget(Monster monster)
         {
             // 플레이어 판단
-            monster.Target = monster.Room.FindPlayer(p =>
+            monster.PlayerTarget = monster.Room.FindPlayer(p =>
             {
                 Vector3 playerPos = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
                 Vector3 monsterPos = new Vector3(monster.PosInfo.PosX, monster.PosInfo.PosY, monster.PosInfo.PosZ);
-                return monster.IsFindTargetRange(Vector3.Distance(monsterPos, playerPos));
-            });
 
-            return monster.Target;
+                Monster targetMonster = p.Target as Monster;
+                if (targetMonster == this)
+                    return true;
+                else
+                    return false;
+                //return monster.IsFindTargetRange(Vector3.Distance(monsterPos, playerPos));
+            });
+            return monster.PlayerTarget;
         }
 
         public int _pathIdx = 0;
-        public void Get_CalculatePath() =>CalculatePath();
-        private void CalculatePath()
+        public void Get_CalculatePath(Vector3 targetPos) =>CalculatePath(targetPos);
+        private void CalculatePath(Vector3 targetPos)
         {
-            if (Target == null || Target.Room != Room)
-                return;
+            //if (PlayerTarget == null || PlayerTarget.Room != Room)
+            //    return;
 
             Vector3 startPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-            Vector3 endPos = new Vector3(Target.PosInfo.PosX, Target.PosInfo.PosY, Target.PosInfo.PosZ);
-            _path = Pathfinding.FindPath(startPos, endPos);
+            _path = Pathfinding.FindPath(startPos, targetPos);
             _pathIdx = 0;
 
             if (_path != null && _path.Count > 0)
@@ -144,7 +167,6 @@ namespace Server.Game.Object.Monster
             }
         }
         // 몬스터의 이동 로직을 담당하는 함수
-        const float MOVE_STEP_INTERPOL = 3.0f;
         public void Get_MoveAlongPath() => MoveAlongPath();
         private void MoveAlongPath()
         {
@@ -154,15 +176,7 @@ namespace Server.Game.Object.Monster
             Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
             Vector3 nextWaypoint = _path[_pathIdx];
 
-            // 실제 이동
-            FollowToTarget(nextWaypoint);
-
-            // 이동 후 도착 체크
-            Vector3 newMonsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-
-            float distanceToWaypoint = Vector3.Distance(newMonsterPos, nextWaypoint);
-
-            if (distanceToWaypoint < MOVE_STEP_INTERPOL)
+            if (CheckArrival(nextWaypoint))
             {
                 _pathIdx++;
                 if (_pathIdx >= _path.Count)
@@ -170,26 +184,24 @@ namespace Server.Game.Object.Monster
                     _path.Clear();
                     ChangeState(new IdleState());
                 }
-                // 다음 웨이포인트는 다음 틱에서 처리
             }
 
-            // 이동 후 현재 상태 브로드캐스트
+            // 실제 이동
+            FollowToTarget(nextWaypoint);
             BroadcastState(CreatureState.Moving, PosInfo, RotInfo);
         }
 
-        private Vector3 MoveTowards(Vector3 current, Vector3 target, float maxDistanceDelta)
+        const float MOVE_STEP_INTERPOL = 3.0f;
+        private bool CheckArrival(Vector3 targetPos)
         {
-            Vector3 toVector = target - current;
-            float dist = toVector.Length();
+            Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
+            float distanceToWaypoint = Vector3.Distance(monsterPos, targetPos);
 
-            if (dist <= maxDistanceDelta || dist == 0f)
-                return target;
+            return distanceToWaypoint < MOVE_STEP_INTERPOL;
 
-            return current + toVector / dist * maxDistanceDelta;
         }
 
         private long _lastUpdateTime = 0;
-
         private const float FIXED_MOVE_STEP = 0.8f;
         private void FollowToTarget(Vector3 targetPos)
         {
@@ -213,7 +225,7 @@ namespace Server.Game.Object.Monster
                 return;
             }
 
-            // 경과 시간 계산
+            // =========== 경과 시간 계산 =========== 
             double elapsedTime = (tick - _lastUpdateTime) / 1000.0;
             _lastUpdateTime = tick;
 
@@ -227,8 +239,10 @@ namespace Server.Game.Object.Monster
             PosInfo.PosY = newPos.Y;
             PosInfo.PosZ = newPos.Z;
 
-            // 회전
-            Vector3 PlayerPos = new Vector3(Target.PosInfo.PosX, Target.PosInfo.PosY, Target.PosInfo.PosZ);
+            // =========== 회전 =========== 
+            if (PlayerTarget == null) return;
+
+            Vector3 PlayerPos = new Vector3(PlayerTarget.PosInfo.PosX, PlayerTarget.PosInfo.PosY, PlayerTarget.PosInfo.PosZ);
             float distanceToTarget = Vector3.Distance(monsterPos, targetPos);
             Vector3 dirQ;
             if (distanceToTarget <= _findRange)
@@ -289,8 +303,8 @@ namespace Server.Game.Object.Monster
 
             statePacket.MyState = newState;
 
-            if (Target != null)
-                statePacket.TargetPosition = Target.PosInfo;
+            if (PlayerTarget != null)
+                statePacket.TargetPosition = PlayerTarget.PosInfo;
             if (skillData != null)
             {
                 statePacket.Skilltype = skillData.skillType;
@@ -313,6 +327,7 @@ namespace Server.Game.Object.Monster
                 Stat.MergeFrom(monsterData.stat);
                 Stat.Hp = Stat.MaxHp;
                 State = CreatureState.Idle;
+                spawnPosition = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
 
                 if (monsterData.skills != null)
                     _skills.AddRange(monsterData.skills);
