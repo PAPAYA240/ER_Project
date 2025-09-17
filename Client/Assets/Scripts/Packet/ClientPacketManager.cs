@@ -54,7 +54,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SVisibleObjects, MakePacket<S_VisibleObjects>);
 		_handler.Add((ushort)MsgId.SVisibleObjects, PacketHandler.S_VisibleObjectsHandler);		
 		_onRecv.Add((ushort)MsgId.SLevelUp, MakePacket<S_LevelUp>);
-		_handler.Add((ushort)MsgId.SLevelUp, PacketHandler.S_LevelUpHandler);
+		_handler.Add((ushort)MsgId.SLevelUp, PacketHandler.S_LevelUpHandler);		
+		_onRecv.Add((ushort)MsgId.SFx, MakePacket<S_Fx>);
+		_handler.Add((ushort)MsgId.SFx, PacketHandler.S_FxHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

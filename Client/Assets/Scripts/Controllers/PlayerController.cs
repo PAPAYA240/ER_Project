@@ -1,4 +1,5 @@
-﻿using Google.Protobuf.Protocol;
+﻿using Data;
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -113,6 +114,9 @@ public class PlayerController : CreatureController
             case KeyCode.R:
                 Skill_R();
                 break;
+            case KeyCode.F:
+                PassiveSkill();
+                break;
         }
     }
 
@@ -124,6 +128,7 @@ public class PlayerController : CreatureController
     protected virtual void Skill_E() { }
 
     protected virtual void Skill_R() { }
+    protected virtual void PassiveSkill() { }
 
     IEnumerator CoStartSkill()
     {
@@ -155,12 +160,19 @@ public class PlayerController : CreatureController
 
         _animator.CrossFadeInFixedTime(animName, ratio);
     }
+    public virtual void OnAttackTiming() { }
 
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
     }
+
     #endregion
+
+    public void PlayEffectFromServer(EffectInfo fxInfo)
+    {
+        Managers.FX.PlayEffect(Find_EffectList((KeyCode)fxInfo.KeyCode), this.transform);
+    }
 
     #region SkillMesh
 
@@ -174,4 +186,12 @@ public class PlayerController : CreatureController
     }
 
     #endregion
+
+    protected List<EffectData> Find_EffectList(KeyCode key)
+    {
+        var skillDict = DataManager.PlayerFxDict[ObjInfo.CharType];
+        if (skillDict.ContainsKey(key))
+            return skillDict[key];
+        return null;
+    }
 }

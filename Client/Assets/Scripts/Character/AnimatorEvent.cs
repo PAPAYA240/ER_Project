@@ -23,6 +23,13 @@ public class AnimatorEvent : MonoBehaviour
         _controller.IsKeyInput = false;
         Debug.Log("(Animation Event)");
     }
+    public void OnAttackTiming()
+    {
+        if (_controller == null)
+            return;
+
+        _controller.OnAttackTiming();
+    }
 
     //public void OnAttackEnd()
     //{

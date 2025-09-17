@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Google.Protobuf.Protocol;
 using UnityEngine;
-using static Data.MonsterSkillDict;
 
 namespace Data
 {
@@ -187,18 +185,17 @@ namespace Data
     }
 
     [Serializable]
-    public class EffectDict : ILoader<MonsterSkill, List<EffectData>>
+    public class MonsterEffectDict : ILoader<MonsterSkill, List<EffectData>>
     {
         public List<EffectData> effectData = new List<EffectData>();
 
         public Dictionary<MonsterSkill, List<EffectData>> MakeDict()
         {
-            Dictionary<MonsterSkill, List<EffectData>> dict = new Dictionary<MonsterSkill, List<EffectData>>();
+            var dict = new Dictionary<MonsterSkill, List<EffectData>>();
             foreach (EffectData data in effectData)
             {
                 if (Enum.TryParse<MonsterSkill>(data.skillType, out MonsterSkill monsterSkill))
                 {
-                    Debug.Log($"Parsing skill: '{data.prefabName}'");
                     if (dict.ContainsKey(monsterSkill))
                         dict[monsterSkill].Add(data);
                     else
@@ -206,6 +203,32 @@ namespace Data
                 }
             }
             return dict;
+        }
+    }
+
+    [Serializable]
+    public class PlayerEffectDict : ILoader<CharacterType, Dictionary<KeyCode, List<EffectData>>>
+    {
+        public Dictionary<string, Dictionary<string, List<EffectData>>> effects
+            = new Dictionary<string, Dictionary<string, List<EffectData>>>();
+
+        public Dictionary<CharacterType, Dictionary<KeyCode, List<EffectData>>> MakeDict()
+        {
+            var nestedDict = new Dictionary<CharacterType, Dictionary<KeyCode, List<EffectData>>>();
+
+            foreach (var chars in effects)
+            {
+                CharacterType charType = (CharacterType)Enum.Parse(typeof(CharacterType), chars.Key);
+                var skillDict = new Dictionary<KeyCode, List<EffectData>>();
+
+                foreach (var skills in chars.Value)
+                {
+                    KeyCode keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), skills.Key);
+                    skillDict.Add(keyCode, skills.Value);
+                }
+                nestedDict.Add(charType, skillDict);
+            }
+            return nestedDict;
         }
     }
     #endregion

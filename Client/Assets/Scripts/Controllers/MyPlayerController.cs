@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.AI;
 using static Define;
@@ -531,24 +532,27 @@ public class MyPlayerController : PlayerController
         _animator.CrossFadeInFixedTime(animName, ratio);
         SendAnimPacket(animName, ratio);
     }
-    #endregion  
+
+    #endregion
 
     #region Skill
     protected void ExecuteSkill()
     {
         _isUseSkill = false;
-
-        if (State != CreatureState.Skill && !_coolDownDict[_keyCode].isCoolDown)
+        if (_coolDownDict.ContainsKey(_keyCode))
         {
-            // 다른 조건 체크하기
+            if (State != CreatureState.Skill && !_coolDownDict[_keyCode].isCoolDown)
+            {
+                // 다른 조건 체크하기
 
-            // 패킷 보내기
-            SendSkillPacket(_keyCode);
+                // 패킷 보내기
+                SendSkillPacket(_keyCode);
 
-            // 스킬 실행 UI, TODO 스킬 사용할 수 있는 검증이 다 끝난 곳으로 옮겨야함
-            _playerInterface.UseSkill(KeyToUIEnum(_keyCode));
+                // 스킬 실행 UI, TODO 스킬 사용할 수 있는 검증이 다 끝난 곳으로 옮겨야함
+                _playerInterface.UseSkill(KeyToUIEnum(_keyCode));
 
-            Debug.Log($"스킬 사용! : {_keyCode}");
+                Debug.Log($"스킬 사용! : {_keyCode}");
+            }
         }
     }
 
@@ -830,6 +834,15 @@ public class MyPlayerController : PlayerController
         };
         Managers.Network.Send(skillPacket);
         Debug.Log("스킬 패킷 보내기");
+    }
+
+    protected void SendFXPacket(KeyCode key)
+    {
+        C_Fx fxPacket = new C_Fx();
+
+        fxPacket.FxInfo = new EffectInfo() { KeyCode = (int)_keyCode };
+
+        Managers.Network.Send(fxPacket);
     }
 
     private void SendAnimPacket(string name, float ratio)

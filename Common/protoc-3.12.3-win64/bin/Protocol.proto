@@ -20,7 +20,7 @@ enum MsgId {
   S_ANIM = 12;
   C_CHARACTER = 13;
   S_STATE = 14;
-  C_SKILL_END = 15;
+  C_FX = 15;
   S_CHARACTER = 16;
   S_ENTER_PICK = 17;
   S_SPAWN_PICK = 18;
@@ -29,6 +29,7 @@ enum MsgId {
   S_VISIBLE_OBJECTS = 21;
   S_LEVEL_UP = 22;
   C_READY = 23;
+  S_FX = 24;
 }
 
 enum CreatureState{
@@ -143,6 +144,7 @@ message S_EnterGame {
 message S_LeaveGame {
 
 }
+
 message S_State
 {
 	int32 ObjectId = 1;
@@ -191,6 +193,14 @@ message S_Skill{
 	bool canUse = 1;
 	int32 objectId = 2;
 	SkillInfo skillInfo = 3;
+}
+
+message C_Fx{
+	EffectInfo fxInfo = 1;
+}
+message S_Fx{
+	int32 objectId = 1;
+	EffectInfo fxInfo = 2;
 }
 
 message C_Anim{
@@ -247,10 +257,16 @@ message AnimInfo{
 	float ratio = 2;
 }
 
+message EffectInfo{
+	int32 keyCode = 1;
+
+}
+
 message S_ChangeHp{
 	int32 objectId = 1;
 	int32 hp = 2;
 }
+
 
  message S_Die{
 	 int32 objectId = 1;
@@ -285,6 +301,7 @@ message StatInfo{
 	int32 exp = 11;
 	int32 level = 12;
 }
+
 
 message WeaponMasteryInfo{
 	float attackSpeed = 1;

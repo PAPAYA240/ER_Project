@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
+using System.Numerics;
 using System.Text;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
@@ -92,18 +94,21 @@ class PacketHandler
 
         room.Push(room.HandleAnim, player, animPacket);
     }
-
-    public static void C_SkillEndHandler(PacketSession session, IMessage packet)
+    public static void C_FxHandler(PacketSession session, IMessage effectPacket)
     {
-        C_SkillEnd skillEndPacket = packet as C_SkillEnd;
-        if (skillEndPacket == null)
+        C_Fx skillPacket = effectPacket as C_Fx;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
             return;
-        
-        //GameRoom room = RoomManager.Instance.Find(1);
-       // if (room == null)
-         //   return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleVF, player, skillPacket);
     }
-  
     public static void C_CharacterHandler(PacketSession session, IMessage packet)
     {
         ClientSession clientSession = session as ClientSession;

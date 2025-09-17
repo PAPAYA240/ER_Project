@@ -248,4 +248,20 @@ class PacketHandler
         
         cc.ChangeStat(levelUpPkt.StatGrowth);        
     }
+
+    public static void S_FxHandler(PacketSession session, IMessage packet)
+    {
+        S_Fx effectPacket = packet as S_Fx;
+
+        GameObject go = Managers.Object.FindById(effectPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc != null)
+        {
+            if (pc.ObjectType == Define.Object.OtherPlayer)
+                pc.PlayEffectFromServer(effectPacket.FxInfo);
+        }
+    }
 }
