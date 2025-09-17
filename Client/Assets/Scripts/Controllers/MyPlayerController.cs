@@ -396,6 +396,7 @@ public class MyPlayerController : PlayerController
     #region Input
     protected virtual void UpdateKeyInput()
     {
+        // LeftCtrl + Q/W/E/R : 스킬 레벨업
         if (Input.GetKey(KeyCode.LeftControl))
         {
             if (Input.GetKeyDown(KeyCode.Q))
@@ -415,15 +416,29 @@ public class MyPlayerController : PlayerController
                 _playerInterface.SpecificSkillLevelUp(GameObjects.RSkill);
             }
         }
+        // Q, W, E, R, T, D, F
         else
         {
             if(!_isResting)
                 UpdateSkillKeyInput();
         }
 
+        // S : 공격, 이동 중지
+        if(Input.GetKeyDown(KeyCode.S))
+        {
+            if (State == CreatureState.Attack || State == CreatureState.Moving)
+                State = CreatureState.Idle;
+        }
+        // H : 이동 중지
+        else if(Input.GetKeyDown(KeyCode.H))
+        {
+            if(State == CreatureState.Moving)
+                State = CreatureState.Idle;
+        }
+        // X : 휴식
         // 처음 X를 눌렀고 Idle이나 Moving 상태였을 때 -> Rest 상태로 변경
         // 다시 X를 누르면 -> 휴식 종료
-        if (Input.GetKeyDown(KeyCode.X))
+        else if (Input.GetKeyDown(KeyCode.X))
         {
             if (!_isResting && (State == CreatureState.Idle || State == CreatureState.Moving))
             {
@@ -462,7 +477,7 @@ public class MyPlayerController : PlayerController
         else if (Input.GetMouseButton(1))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Vector3 targetPos = FindMonster();
+            Vector3 targetPos = TryGetAttackPosition();
 
             // 몬스터를 못 찾았을 때 -> 지형 클릭
             if (targetPos == Vector3.zero)
@@ -497,7 +512,10 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    protected Vector3 FindMonster()
+    // 마우스 위치에 몬스터가 있을때,
+    // 이미 사거리 안이라면 제자리 위치 반환
+    // 사거리 밖이라면 몬스터로부터 사거리만큼 떨어진 위치 반환
+    protected Vector3 TryGetAttackPosition()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -525,6 +543,29 @@ public class MyPlayerController : PlayerController
         }
 
         return Vector3.zero;
+    }
+
+    // 시야 범위 내 && 평타 사거리 내 가장 가까운 몬스터 반환
+    protected GameObject FindAttackableMonster()
+    {
+        GameObject targetObject = null;
+        float minDistance = _attackRange;
+        foreach(int num in VisibleObjectIds)
+        {
+            GameObjectType type = ObjectManager.GetObjectTypeById(num);
+            if(type == GameObjectType.Monster)
+            {
+                GameObject go = Managers.Object.FindById(num);
+                float distance = Vector3.Distance(go.transform.position, transform.position);
+                if(distance <= minDistance)
+                {
+                    targetObject = go;
+                    minDistance = distance;
+                }
+            }
+        }
+
+        return targetObject;
     }
     #endregion
 
@@ -584,6 +625,12 @@ public class MyPlayerController : PlayerController
         }
 
         return skillBase;
+    }
+
+    protected void SetSkillInput(KeyCode keyCode)
+    {
+        _isUseSkill = true;
+        _keyCode = keyCode;
     }
 
     protected float GetCoolTime(KeyCode key)

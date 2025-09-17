@@ -15,6 +15,7 @@ using static UnityEngine.GraphicsBuffer;
 
 public class RozziController : MyPlayerController
 {
+    // Q
     private Coroutine _coSkillQ = null;
     private bool _canDash = false;
     private bool _isDashing = false;
@@ -22,38 +23,37 @@ public class RozziController : MyPlayerController
     private float _dashRange = 4.0f;
     private Vector3 _targetPos;
 
+    // W
     private Coroutine _coSkillW = null;
 
+    // E
     private Coroutine _coSkillE = null;
     private float _animRatio = 0.4f;
     private float _jumpRange = 4.0f;
 
+    // F
     private float _warpRange = 4.0f;
 
     protected override void UpdateSkillKeyInput()
     {
         if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))
         {
-            _isUseSkill = true;
-            _keyCode = KeyCode.Q;
+            SetSkillInput(KeyCode.Q);
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.W))
         {
-            _isUseSkill = true;
-            _keyCode = KeyCode.W;
+            SetSkillInput(KeyCode.W);
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
         {
             if(FindMonster() != Vector3.zero)
             {
-                _isUseSkill = true;
-                _keyCode = KeyCode.E;
+                SetSkillInput(KeyCode.E);
             }
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))
         {
-            _isUseSkill = true;
-            _keyCode = KeyCode.R;
+            SetSkillInput(KeyCode.R);
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
