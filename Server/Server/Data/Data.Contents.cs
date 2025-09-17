@@ -72,7 +72,6 @@ namespace Server.Data
                 foreach (var skills in chars.Value)
                 {
                     KeyCode keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), skills.Key);
-
                     dict.Add(keyCode, skills.Value);
                 }
 
@@ -138,7 +137,35 @@ namespace Server.Data
         public int staminaCost;
         public List<EffectData> effects;
     }
-#endregion
+    #endregion
+
+    #region Hitbox
+    [Serializable]
+    public class HitboxData : ILoader<CharacterType, Dictionary<KeyCode, SkillHitbox>>
+    {
+
+        public Dictionary<string, Dictionary<string, SkillHitbox>> hitbox = new Dictionary<string, Dictionary<string, SkillHitbox>>();
+
+        public Dictionary<CharacterType, Dictionary<KeyCode, SkillHitbox>> MakeDict()
+        {
+            var nestedDict = new Dictionary<CharacterType, Dictionary<KeyCode, SkillHitbox>>();
+
+            foreach (var chars in hitbox)
+            {
+                CharacterType chartype = (CharacterType)Enum.Parse(typeof(CharacterType), chars.Key);
+                var dict = new Dictionary<KeyCode, SkillHitbox>();
+                foreach (var skills in chars.Value)
+                {
+                    KeyCode keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), skills.Key);
+                    dict.Add(keyCode, skills.Value);
+                }
+                nestedDict.Add(chartype, dict);
+            }
+
+            return nestedDict;
+        }
+    }
+    #endregion
 
     #region Effect
     [Serializable]

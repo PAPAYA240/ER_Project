@@ -123,17 +123,14 @@ namespace Server.Game
         public int CheckLevelUp()
         {
             int levelUp = 0;
-            while (true)
+            while (DataManager.ExpDict.ContainsKey(Stat.Level) &&
+                Stat.Exp >= DataManager.ExpDict[Stat.Level])
             {
-                int requiredExp = DataManager.ExpDict[Stat.Level];
-                if (requiredExp <= Stat.Exp)
-                {
-                    levelUp++;
-                    Stat.Exp -= requiredExp;
-                }
-                else
-                    break;
+                Stat.Exp -= DataManager.ExpDict[Stat.Level];
+                Stat.Level++;
+                levelUp++;
             }
+
             return levelUp;
         }
     }

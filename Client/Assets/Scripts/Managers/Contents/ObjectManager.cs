@@ -45,6 +45,8 @@ public class ObjectManager
                 MyPlayer.Id = info.ObjectId;
                 MyPlayer.PosInfo = info.PosInfo;
                 MyPlayer.Stat = info.StatInfo;
+                MyPlayer.Stat.Hp = info.StatInfo.MaxHp;
+                MyPlayer.Stat.Stamina = info.StatInfo.MaxStamina;
                 MyPlayer.SyncPos();
                 MyPlayer.ObjInfo = info;
                 MyPlayer.ManualInit();
