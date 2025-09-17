@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -34,7 +34,7 @@ public class UI_PlayerInterface : UI_Base
         Credit
     }
 
-    //TODO ���������� �� ��ҵ��� ����?
+    //TODO 디파인으로 각 요소들을 관리?
     public string CharacterName { get; set; } = "Hyunwoo";
     public int SkinNumber { get; set; } = 0;
     public string CharacterCode { get; set; } = "007";
@@ -43,7 +43,7 @@ public class UI_PlayerInterface : UI_Base
 
     public Action<SkillEnum> OnCharSkillLevelUpAction = null;
 
-    int _remainSkillPoint = 0; //�̰� QWERT���� ����Ǿ���.
+    int _remainSkillPoint = 0; //이건 QWERT에만 적용되야함.
     
     bool _isDead = false;
     float _respawnCool = 0.0f;
@@ -78,7 +78,7 @@ public class UI_PlayerInterface : UI_Base
 
         //temp
         //LevelUp(1);
-        OnLevelUp(10);
+        OnLevelUp(2);
         SpecificSkillLevelUp(GameObjects.TSkill);
         SpecificSkillLevelUp(GameObjects.FSkill);
 
@@ -101,7 +101,7 @@ public class UI_PlayerInterface : UI_Base
 
             if(_respawnCool <= Mathf.Epsilon)
             {
-                //TODO ��Ȱ
+                //TODO 부활
                 GetObject((int)GameObjects.Death).SetActive(false);
             }
         }
@@ -202,6 +202,14 @@ public class UI_PlayerInterface : UI_Base
             ActivateSkillLevelUpButton(GameObjects.ESkill, false);
             ActivateSkillLevelUpButton(GameObjects.RSkill, false);
             ActivateSkillLevelUpButton(GameObjects.TSkill, false);
+        }
+        else
+        {
+            ActivateSkillLevelUpButton(GameObjects.QSkill, true);
+            ActivateSkillLevelUpButton(GameObjects.WSkill, true);
+            ActivateSkillLevelUpButton(GameObjects.ESkill, true);
+            ActivateSkillLevelUpButton(GameObjects.RSkill, true);
+            ActivateSkillLevelUpButton(GameObjects.TSkill, true);
         }
     }
 
@@ -327,7 +335,7 @@ public class UI_PlayerInterface : UI_Base
 
     public void ActivateCombatImg(bool activate)
     {
-        //������ �̹��� ǥ��
+        //전투중 이미지 표시
         GameObject go = GetObject((int)GameObjects.LevelAndExp);
         if (go == null)
             return;
@@ -352,21 +360,21 @@ public class UI_PlayerInterface : UI_Base
         }
 
         /*
-        ��ų ������ ��ȯ �ް� 
-        �Ǵ��ؼ� ����
+        스킬 레벨을 반환 받고 
+        판단해서 리턴
          
-        �Ϲ� ��ų�� ������ ���� ��ų �������� 
+        일반 스킬의 레벨에 따른 스킬 레벨제한 
         1 1
         2 3
         3 5
         4 7
         5 9
-        �ñر� ��ų�� ������ ���� ��ų ��������
+        궁극기 스킬의 레벨에 따른 스킬 레벨제한
         1 6
         2 11
         3 16
-        �нú� ��ų�� ������ ���� ��ų ��������
-        1 �̹� ��������.
+        패시브 스킬의 레벨에 따른 스킬 레벨제한
+        1 이미 찍혀있음.
         2 5
         3 9
         */
@@ -374,11 +382,11 @@ public class UI_PlayerInterface : UI_Base
     }
 
 
-    void OnLevelUp(int newLevel)
+    public void OnLevelUp(int levelUpCnt)
     {
-        _remainSkillPoint += newLevel;
+        _remainSkillPoint += levelUpCnt;
 
-        //TODO ������ ��ư Ȱ��ȭ ���� : �Ϲ� ��ų / �ñر� / �нú� ���������.
+        //TODO 레벨업 버튼 활성화 조건 : 일반 스킬 / 궁극기 / 패시브 나뉘어야함.
         ///CanSkillLevelUp
         ActivateSkillLevelUpButton(GameObjects.QSkill, true);
         ActivateSkillLevelUpButton(GameObjects.WSkill, true);

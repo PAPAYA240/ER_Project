@@ -18,6 +18,7 @@ namespace Server.Game
         Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
 
         MonsterManager _monsterManager = new MonsterManager();
+        CollisionManager _collisionManager = new CollisionManager();
 
         bool _teamToggle = false;
 
@@ -57,8 +58,20 @@ namespace Server.Game
 
             Flush();
 
+            _collisionManager.Update();
+            _collisionManager.CheckCollision(_players, _monsters, _projectiles);
+
+            foreach (Player player in _players.Values)
+            {
+                int levelUpCnt = player.CheckLevelUp();
+                if(levelUpCnt > 0)
+                    BroadcastLevelUp(player.Id, levelUpCnt, player.Info.CharType);
+            }
+
+            BroadcastVisibleObjs();
             CheckLastPing();
         }
+
         public void EnterGame(GameObject gameObject)
         {
             if (gameObject == null)
@@ -75,6 +88,9 @@ namespace Server.Game
 
                 // 본인한테 정보 전송
                 {
+                    // Temp Cobalt Exp
+                    player.Info.StatInfo.Exp = 15800;
+
                     S_EnterGame enterPacket = new S_EnterGame();
                     enterPacket.Player = player.Info;
                     player.Session.Send(enterPacket);
@@ -244,35 +260,7 @@ namespace Server.Game
             if (skills.TryGetValue((KeyCode)skillPacket.SkillInfo.KeyCode, out skillData) == false)
                 return;
 
-            //switch (skillData.type)
-            //{
-            //    case SkillType.SkillAuto:
-            //        {
-            //            //// 데미지 판정
-            //            //Vector2Int skillPos = player.GetFrontCellPos(info.PosInfo.MoveDir);
-            //            //GameObject target = Map.Find(skillPos);
-            //            //if (target != null)
-            //            //{
-            //            //    Console.WriteLine("Hit GameObject!");
-            //            //}
-            //        }
-            //        break;
-            //    case SkillType.SkillProjectile:
-            //        {
-            //            Arrow arrow = ObjectManager.Instance.Add<Arrow>();
-            //            if (arrow == null)
-            //                return;
-
-            //            arrow.Owner = player;
-            //            arrow.Data = skillData;
-            //            arrow.PosInfo.State = CreatureState.Moving;
-            //            arrow.PosInfo.PosX = player.PosInfo.PosX;
-            //            arrow.PosInfo.PosY = player.PosInfo.PosY;
-            //            arrow.Speed = skillData.projectile.speed;
-            //            Push(EnterGame, arrow);
-            //        }
-            //        break;
-            //}
+            _collisionManager.AddHitbox(player, info.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode);
         }
 
         public void HandleAnim(Player player, C_Anim animPacket)
@@ -348,6 +336,31 @@ namespace Server.Game
 
             }
             return result;
+        }
+
+        void BroadcastVisibleObjs()
+        {
+            foreach (Player player in _players.Values)
+            {
+                List<int> visibleObjs = new List<int>();
+                visibleObjs.AddRange(GetObjectsInRange(_players, player));
+                visibleObjs.AddRange(GetObjectsInRange(_monsters, player));
+                visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
+                player.SendVisibleObjsPkt(visibleObjs);
+            }
+        }
+
+        void BroadcastLevelUp(int objectId, int levelUpCnt, CharacterType charType)
+        {
+            S_LevelUp levelUpPkt = new S_LevelUp();
+            levelUpPkt.ObjectId = objectId;
+            levelUpPkt.LevelUpCnt = levelUpCnt;
+
+            StatInfo statInfo = DataManager.StatGrowthDict[charType];
+            statInfo.MultiplyForGrowth(levelUpCnt);
+            levelUpPkt.StatGrowth = statInfo;
+
+            Broadcast(levelUpPkt);
         }
     }
 }

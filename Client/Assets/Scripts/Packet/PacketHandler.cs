@@ -168,6 +168,31 @@ class PacketHandler
 
         //selectEvent.ChangePickImage(charPacket.CharType, charPacket.PickIdx);
     }
+    public static void S_TraitHandler(PacketSession session, IMessage packet)
+    {
+        S_Trait traitPacket = packet as S_Trait;
+
+        GameObject go = GameObject.Find("PickScene");
+        if (go == null) return;
+
+        PickScene pickScene = go.GetComponent<PickScene>();
+        if (pickScene == null) return;
+
+        pickScene.ChangeTraitImage(traitPacket.TraitType, traitPacket.PickIdx);
+    }
+
+    public static void S_WeaponHandler(PacketSession session, IMessage packet)
+    {
+        S_Weapon weaponPacket = packet as S_Weapon;
+
+        GameObject go = GameObject.Find("PickScene");
+        if (go == null) return;
+
+        PickScene pickScene = go.GetComponent<PickScene>();
+        if (pickScene == null) return;
+
+        pickScene.ChangeWeaponImage(weaponPacket.WeaponType, weaponPacket.PickIdx);
+    }
 
     public static void S_EnterPickHandler(PacketSession session, IMessage packet)
     {
@@ -181,6 +206,7 @@ class PacketHandler
 
         pickScene.PickIdx = enterPickPacket.PickIdx;
         pickScene.NickName = enterPickPacket.UserName;
+        pickScene.ChangeBar(enterPickPacket.PickIdx);
 
         //GameObject go = GameObject.Find("Test");
         //if (go == null) return;
@@ -201,7 +227,7 @@ class PacketHandler
         if (pickScene == null) return;
 
         foreach(PickScenePlayerInfo pspi in spawnPickPacket.Players)
-            pickScene.Spawn(pspi.UserName, pspi.PickIdx, pspi.CharType);
+            pickScene.Spawn(pspi);
     }
 
     public static void S_LeavePickHandler(PacketSession session, IMessage packet)
@@ -245,8 +271,16 @@ class PacketHandler
         CreatureController cc = go.GetComponent<CreatureController>();
         if (cc == null)
             return;
-        
-        cc.ChangeStat(levelUpPkt.StatGrowth);        
+
+        cc.ObjInfo.StatInfo.Level += levelUpPkt.LevelUpCnt;
+
+        cc.ChangeStat(levelUpPkt.StatGrowth);
+
+        MyPlayerController mpc = Managers.Object.MyPlayer;
+        if (null == mpc)
+            return;
+
+        mpc.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
     }
 
     public static void S_FxHandler(PacketSession session, IMessage packet)

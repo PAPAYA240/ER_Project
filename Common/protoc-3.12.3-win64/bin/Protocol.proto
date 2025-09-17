@@ -30,6 +30,10 @@ enum MsgId {
   S_LEVEL_UP = 22;
   C_READY = 23;
   S_FX = 24;
+  C_TRAIT = 25;
+  S_TRAIT = 26;
+  C_WEAPON = 27;
+  S_WEAPON = 28;
 }
 
 enum CreatureState{
@@ -101,7 +105,7 @@ enum MonsterType {
 enum Weapon {
     WEAPON_NONE = 0;
     DAGGER = 1;
-    TWO_HANDED_SWORD = 2;
+    TWO_HAND_SWORD = 2;
     AXE = 3;
     DUAL_SWORDS = 4;
     PISTOL = 5;
@@ -131,6 +135,25 @@ enum SkillShape{
 	RAY = 2;
 	RECTANGLE = 3;
 	SECTOR = 4;
+}
+
+enum TraitType{
+	FRAILTY_INFLICTION = 0;		
+    VAMPIRIC_BLOODLINE = 1;		
+    ADRENALINE = 2;		
+    ACCELERATER = 3;		
+    STELLAR_CHARGE = 4;		
+    GHOST_LIGHT = 5;		
+    RED_SPRITE = 6;		
+    SIPHON_MAELSTORM = 7;		
+    DIAMOND_SHARD = 8;		
+    IRONCLAD = 9;		
+    HEAVY_KNEEPADS = 10;	
+    BITTER_RETRIBUTION = 11;	
+    HEALING_FACTOR = 12;	
+    AMPLIFICATION_DRONE = 13;	
+    HEALING_DRONE = 14;	
+    SENTINEL = 15;	
 }
 
 message C_EnterGame {
@@ -222,6 +245,26 @@ message S_Character{
 	int32 pickIdx = 2;
 }
 
+message C_Trait{
+	TraitType traitType = 1;
+	int32 pickIdx = 2;
+}
+
+message S_Trait{
+	TraitType traitType = 1;
+	int32 pickIdx = 2;
+}
+
+message C_Weapon{
+	Weapon weaponType = 1;
+	int32 pickIdx = 2;
+}
+
+message S_Weapon{
+	Weapon weaponType = 1;
+	int32 pickIdx = 2;
+}
+
 message S_EnterPick{
 	int32 pickIdx = 1;
 	string userName = 2;
@@ -235,6 +278,8 @@ message PickScenePlayerInfo{
 	int32 pickIdx = 1;
 	string userName = 2;
 	CharacterType charType = 3;
+	TraitType traitType = 4;
+	Weapon weaponType = 5;
 }
 
 message S_LeavePick{
@@ -348,7 +393,8 @@ message S_VisibleObjects{
 
 message S_LevelUp{
 	int32 objectId = 1;
-	StatInfo statGrowth = 2;
+	int32 levelUpCnt = 2;
+	StatInfo statGrowth = 3;
 }
 
 message C_Ready{

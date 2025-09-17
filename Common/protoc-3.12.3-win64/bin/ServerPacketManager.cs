@@ -38,7 +38,11 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CPing, MakePacket<C_Ping>);
 		_handler.Add((ushort)MsgId.CPing, PacketHandler.C_PingHandler);		
 		_onRecv.Add((ushort)MsgId.CReady, MakePacket<C_Ready>);
-		_handler.Add((ushort)MsgId.CReady, PacketHandler.C_ReadyHandler);
+		_handler.Add((ushort)MsgId.CReady, PacketHandler.C_ReadyHandler);		
+		_onRecv.Add((ushort)MsgId.CTrait, MakePacket<C_Trait>);
+		_handler.Add((ushort)MsgId.CTrait, PacketHandler.C_TraitHandler);		
+		_onRecv.Add((ushort)MsgId.CWeapon, MakePacket<C_Weapon>);
+		_handler.Add((ushort)MsgId.CWeapon, PacketHandler.C_WeaponHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)
