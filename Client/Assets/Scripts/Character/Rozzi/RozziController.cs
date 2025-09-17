@@ -125,7 +125,7 @@ public class RozziController : MyPlayerController
 
     IEnumerator CoStartDash()
     {
-        PlayAnimation("SKILL_Q_DASH", 0.0f);
+        PlayAnimation("SKILL_Q_DASH", 0.1f);
 
         _isDashing = true;
         _agent.enabled = false;
