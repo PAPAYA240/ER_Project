@@ -331,7 +331,8 @@ message S_VisibleObjects{
 
 message S_LevelUp{
 	int32 objectId = 1;
-	StatInfo statGrowth = 2;
+	int32 levelUpCnt = 2;
+	StatInfo statGrowth = 3;
 }
 
 message C_Ready{

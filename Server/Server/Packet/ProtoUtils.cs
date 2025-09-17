@@ -14,4 +14,20 @@ namespace Google.Protobuf.Protocol
             return (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
         }
     }
+
+    public sealed partial class StatInfo
+    {
+        public void MultiplyForGrowth(int levelUpCnt)
+        {
+            Attack *= levelUpCnt;
+            Defense *= levelUpCnt;
+            //Hp *= levelUpCnt;
+            MaxHp *= levelUpCnt;
+            HpRegen *= levelUpCnt;
+            //Stamina *= levelUpCnt;
+            MaxStamina *= levelUpCnt;
+            StaminaRegen *= levelUpCnt;
+            AttackSpeed *= levelUpCnt;
+        }
+    }
 }

@@ -120,16 +120,18 @@ namespace Server.Game
             Session.Send(visibleObjsPkt);
         }
 
-        public void CheckLevelUp()
+        public int CheckLevelUp()
         {
+            int levelUp = 0;
             while (DataManager.ExpDict.ContainsKey(Stat.Level) &&
                 Stat.Exp >= DataManager.ExpDict[Stat.Level])
             {
                 Stat.Exp -= DataManager.ExpDict[Stat.Level];
                 Stat.Level++;
-
-                // Send LevelUp Packet
+                levelUp++;
             }
+
+            return levelUp;
         }
     }
 }

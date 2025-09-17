@@ -245,7 +245,8 @@ class PacketHandler
         CreatureController cc = go.GetComponent<CreatureController>();
         if (cc == null)
             return;
-        
-        cc.ChangeStat(levelUpPkt.StatGrowth);        
+
+        cc.ObjInfo.StatInfo.Level += levelUpPkt.LevelUpCnt;
+        cc.ChangeStat(levelUpPkt.StatGrowth);
     }
 }
