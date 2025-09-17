@@ -1,17 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using Google.Protobuf;
+﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Game.Object.Monster;
 using Server.Game.Object.Monster.AStar;
+using System;
+using System.Collections.Generic;
+using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace Server.Game
 {
     public class PickRoom : Room
     {
-        PickPlayer[] _pickPlayers = new PickPlayer[4];
+        const int _maxPlayer = 8;
+
+        PickPlayer[] _pickPlayers = new PickPlayer[_maxPlayer];
 
         public void Init()
         {
@@ -39,7 +42,7 @@ namespace Server.Game
         public void EnterPick(PickPlayer pp)
         {
             int pickIdx = 0;
-            for(int i = 0; i < 4; ++i)
+            for(int i = 0; i < _maxPlayer; ++i)
             {
                 if (_pickPlayers[i] == null)
                 {
@@ -47,13 +50,61 @@ namespace Server.Game
                     break;
                 }   
             }
+            
+            string userName = "UserName_" + pickIdx;
 
             _pickPlayers[pickIdx] = pp;
-            S_EnterPick enterPickPacket = new S_EnterPick();
-            enterPickPacket.PickIdx = pickIdx;
-            pp.Session.Send(enterPickPacket);
-            pp.Session.PickIdx = pickIdx;
-            pp.Session.CurRoom = RoomId;
+
+            //본인한테 정보 전송
+            {
+                S_EnterPick enterPickPacket = new S_EnterPick();
+                enterPickPacket.PickIdx = pickIdx;
+                enterPickPacket.UserName = userName;
+                pp.Session.Send(enterPickPacket);
+                pp.Session.PickIdx = pickIdx;
+                pp.Session.CurRoom = RoomId;
+                pp.UserName = userName;
+
+                S_SpawnPick spawnPacket = new S_SpawnPick();
+
+                foreach (PickPlayer player in _pickPlayers)
+                {
+                    if (player == null)
+                        continue;
+
+                    if (player.Session.PickIdx != pickIdx)
+                    {
+                        PickScenePlayerInfo pspi = new PickScenePlayerInfo();
+                        pspi.CharType = player.Session.MyCharacter;
+                        pspi.PickIdx = player.Session.PickIdx;
+                        pspi.UserName = player.UserName;
+
+                        spawnPacket.Players.Add(pspi);
+                    }
+                }
+
+                pp.Session.Send(spawnPacket);
+            }
+
+            //타인한테 정보 전송
+            {
+                PickScenePlayerInfo pspi = new PickScenePlayerInfo();
+                pspi.CharType = CharacterType.CharacterNone;
+                pspi.PickIdx = pickIdx;
+                pspi.UserName = userName;
+
+                S_SpawnPick spawnPacket = new S_SpawnPick();
+                spawnPacket.Players.Add(pspi);
+
+                foreach (PickPlayer player in _pickPlayers)
+                {
+                    if (player == null)
+                        continue;
+
+                    if (player.Session.PickIdx != pickIdx)
+                        player.Session.Send(spawnPacket);
+                }
+            }
         }
 
         public void LeavePick(int pickIdx)
@@ -67,7 +118,7 @@ namespace Server.Game
 
         public void Broadcast(IMessage packet, int pickIdx = -1)
         {
-            for(int i = 0; i < 4; ++i)
+            for(int i = 0; i < _maxPlayer; ++i)
             {
                 if (i == pickIdx) 
                     continue;
@@ -92,7 +143,7 @@ namespace Server.Game
         public void CheckStartGame()
         {
             bool everyPlayerStartGame = true;
-            for(int i = 0; i < 4; ++i)
+            for(int i = 0; i < _maxPlayer; ++i)
             {
                 if (_pickPlayers[i] == null)
                     continue;
@@ -105,7 +156,7 @@ namespace Server.Game
 
             if (everyPlayerStartGame)
             {
-                for (int i = 0; i < 4; ++i)
+                for (int i = 0; i < _maxPlayer; ++i)
                 {
                     if (_pickPlayers[i] == null)
                         continue;

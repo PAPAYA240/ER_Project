@@ -21,7 +21,7 @@ public class UI_UltimateSkill : UI_SkillBase
 
     enum Images
     {
-        // Ãß°¡ ÇÒ°Å¸é ¹ØÀ¸·Î¸¸ À§¿¡ ¹«¾ùÀ» Ãß°¡ÇÏÁö ¸» °Í. ÀÌ¹ÌÁö Àß ¸ø ¹Ù²ñ.
+        // ï¿½ß°ï¿½ ï¿½Ò°Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½. ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ù²ï¿½.
         Level_1,
         Level_2,
         Level_3,
@@ -82,14 +82,14 @@ public class UI_UltimateSkill : UI_SkillBase
         if (_skillLevel == 0)
             return;
         //temp
-        //Äð´Ù¿îÅ¸ÀÌ¸Ó°¡ È°¼ºÈ­ µÇ¾î ÀÖÀ¸¸é ¼Â Äð´Ù¿îÀ» È£ÃâÇØ¼­ ÄðÅ¸ÀÓÀ» Áö¼ÓÀûÀ¸·Î °»½Å
+        //ï¿½ï¿½Ù¿ï¿½Å¸ï¿½Ì¸Ó°ï¿½ È°ï¿½ï¿½È­ ï¿½Ç¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ù¿ï¿½ï¿½ï¿½ È£ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (GetObject(_cooldownTimer).activeSelf && _remainCool > 0.0f)
         {
             _remainCool = Math.Max(0.0f, _remainCool - Time.deltaTime);
 
             if (_remainCool > 0.0f)
             {
-                // ÄðÅ¸ÀÓÀÌ ³²¾ÆÀÖÀ»¶§
+                // ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 GetImage((int)Images.CooldownFill).fillAmount = _remainCool / _maxCool;
                 SetCoolDown(_remainCool);
             }
@@ -101,9 +101,9 @@ public class UI_UltimateSkill : UI_SkillBase
 
         if(null != ui_PlayerInterface)
         {
-            if(IsEnoughStamina(ui_PlayerInterface.GetStamina())) //½ºÅ×¹Ì³Ê°¡ ÃæºÐÇÏ¸é
+            if(IsEnoughStamina(ui_PlayerInterface.GetStamina())) //ï¿½ï¿½ï¿½×¹Ì³Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
                 ActivateStamina(false);
-            else //½ºÅ×¹Ì³Ê°¡ ºÎÁ·ÇÏ¸é
+            else //ï¿½ï¿½ï¿½×¹Ì³Ê°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½
                 ActivateStamina(true);
         }
         
@@ -111,7 +111,7 @@ public class UI_UltimateSkill : UI_SkillBase
 
     void SetSkillLevel(int level)
     {
-        //TODO ·¹º§ Ã¼Å© ÀÌ·¸°Ô ÇØ¾ßµÇ³ª
+        //TODO ï¿½ï¿½ï¿½ï¿½ Ã¼Å© ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Ø¾ßµÇ³ï¿½
         if (level < 0 || level > _maxSkillLevel)
             return;
         if (level == 1)
@@ -162,8 +162,8 @@ public class UI_UltimateSkill : UI_SkillBase
 
     public override void UseSkill() 
     {
-        //½ºÅ³À» »ç¿ëÇÏ¸é Å¸ÀÌ¸Ó¸¦ È°¼ºÈ­
-        //È°¼ºÈ­ µÇ¸é ½ºÅ³ÀÌ ¾îµÎ¿öÁö°í ÄðÅ¸ÀÓÀÌ Ç¥½ÃµÊ.
+        //ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ Å¸ï¿½Ì¸Ó¸ï¿½ È°ï¿½ï¿½È­
+        //È°ï¿½ï¿½È­ ï¿½Ç¸ï¿½ ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½Î¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½Ãµï¿½.
         GetObject(_cooldownTimer).SetActive(true);
         //temp
         _remainCool = _maxCool;

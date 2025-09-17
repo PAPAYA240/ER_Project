@@ -12,7 +12,7 @@ public class UI_TraitButton : UI_Base
 
     private Material _material;
 
-    private static UI_TraitButton _currentSelected;
+    public static UI_TraitButton CurrentSelected { get; private set; }
 
     public Action<bool> OnSelected = null;
 
@@ -54,16 +54,16 @@ public class UI_TraitButton : UI_Base
     {
         if (isSelected)
         {
-            // 이전에 선택된 객체가 있다면, 그 객체를 흑백으로 돌립니다.
-            if (_currentSelected != null && _currentSelected != this)
+            // 이전에 선택된 객체가 있다면, 그 객체를 흑백돌림
+            if (CurrentSelected != null && CurrentSelected != this)
             {
-                _currentSelected.SetSelected(false); // 재귀 호출 방지를 위해 false
+                CurrentSelected.SetSelected(false); // 재귀 호출 방지를 위해 false
             }
             // 컬러
             ApplyBlendValue(0f);
             SetTextActivate(true);
             OnSelected?.Invoke(true);
-            _currentSelected = this; 
+            CurrentSelected = this; 
         }
         else
         {
@@ -71,9 +71,9 @@ public class UI_TraitButton : UI_Base
             ApplyBlendValue(1f);
             SetTextActivate(false);
             OnSelected?.Invoke(false);
-            if (_currentSelected == this)
+            if (CurrentSelected == this)
             {
-                _currentSelected = null; 
+                CurrentSelected = null; 
             }
         }
     }

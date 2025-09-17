@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using static Server.Data.DataUtils;
 using System.Linq;
+using System.Numerics;
 
 namespace Server.Game
 {
@@ -14,6 +15,7 @@ namespace Server.Game
 
         protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
         Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
+        
         class CoolTime
         {
             public bool isCoolDown;     // 쿨타임이 돌고 있는지 (false : 사용 가능)
@@ -67,6 +69,7 @@ namespace Server.Game
             return false;
         }
 
+
         private async Task CoInputCooltime(KeyCode key, float time)
         {
             _coolDownDict[key].isCoolDown = true;
@@ -117,21 +120,16 @@ namespace Server.Game
             Session.Send(visibleObjsPkt);
         }
 
-        public int CheckLevelUp()
+        public void CheckLevelUp()
         {
-            int levelUp = 0;
-            while (true)
+            while (DataManager.ExpDict.ContainsKey(Stat.Level) &&
+                Stat.Exp >= DataManager.ExpDict[Stat.Level])
             {
-                int requiredExp = DataManager.ExpDict[Stat.Level];
-                if (requiredExp <= Stat.Exp)
-                {
-                    levelUp++;
-                    Stat.Exp -= requiredExp;
-                }
-                else
-                    break;
+                Stat.Exp -= DataManager.ExpDict[Stat.Level];
+                Stat.Level++;
+
+                // Send LevelUp Packet
             }
-            return levelUp;
         }
     }
 }

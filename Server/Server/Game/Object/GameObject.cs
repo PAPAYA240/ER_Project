@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using Google.Protobuf.Protocol;
+using Server.Game.Object.Monster;
 
 namespace Server.Game
 {
@@ -22,6 +23,7 @@ namespace Server.Game
 
         public RotationInfo RotInfo { get; private set; } = new RotationInfo();
         public StatInfo Stat { get; private set; } = new StatInfo();
+        public Monster Target { get; internal set; }
 
         public float Speed
         {
@@ -40,6 +42,7 @@ namespace Server.Game
             get { return PosInfo.State; }
             set { PosInfo.State = value; }
         }
+
 
         public GameObject() 
         {

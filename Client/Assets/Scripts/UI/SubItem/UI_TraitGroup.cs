@@ -58,7 +58,7 @@ public class UI_TraitGroup : UI_Base
     {
         if (isSelected)
         {
-            // 이전에 선택된 객체가 있다면, 그 객체를 흑백으로 돌립니다.
+            // 이전에 선택된 객체가 있다면, 그 객체를 흑백으로 돌림
             if (_currentSelected != null && _currentSelected != this)
             {
                 _currentSelected.SetSelected(false); // 재귀 호출 방지를 위해 false
@@ -96,6 +96,7 @@ public class UI_TraitGroup : UI_Base
         }
     }
 
+    //셰이더 프로퍼티 수정 함수
     private void ApplyBlendValue(float blendValue)
     {
         if (_material == null)

@@ -17,7 +17,7 @@ public class MonsterController : CreatureController
 
     private System.Random _random = new System.Random();
     Quaternion _nextRotation;
-    public Vector3 TargetPosition { get; private set; }
+    public Vector3 _targetPos { get; private set; }
     // 애니메이션 끝났을 때 호출
     public Action<CreatureState> OnStateChanged; 
 
@@ -60,9 +60,15 @@ public class MonsterController : CreatureController
 	}
 
     #region 패킷
-    public void OnIdlePacket(S_State movePacket)
+    public void OnIdlePacket(S_State packet)
     {
-        _navMeshAgent.SetDestination(transform.position);
+        if (_navMeshAgent == null)
+            return;
+
+        if(packet.PosInfo != null)
+            _navMeshAgent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+        if(packet.RotInfo != null)
+            _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
 
         Skill = MonsterSkill.MsNone;
 
@@ -97,7 +103,8 @@ public class MonsterController : CreatureController
         _lastReceivedSequenceId = packet.SequenceId;
 
         State = packet.MyState;
-        TargetPosition = new Vector3(packet.TargetPosition.PosX, packet.TargetPosition.PosY, packet.TargetPosition.PosZ);
+        if(packet.TargetPosition != null)
+            _targetPos = new Vector3(packet.TargetPosition.PosX, packet.TargetPosition.PosY, packet.TargetPosition.PosZ);
 
         if (_navMeshAgent == null)
             return;

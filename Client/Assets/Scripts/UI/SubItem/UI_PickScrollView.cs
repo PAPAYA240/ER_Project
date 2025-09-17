@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,8 +10,9 @@ public class UI_PickScrollView : UI_Base
         Content 
     }
 
-    List<GameObject> _buttonList = new List<GameObject>();
+    Dictionary<string, GameObject> _buttonList = new Dictionary<string, GameObject>();
 
+    public Action<string> OnButtonClicked = null; 
 
     public override void Init()
     {
@@ -27,10 +29,10 @@ public class UI_PickScrollView : UI_Base
     void Start()
     {
         AddCharButton("Rozzi");
-        AddCharButton("Abigail");
+        //AddCharButton("Abigail");
         AddCharButton("Yuki");
-        AddCharButton("Theodore");
-        AddCharButton("Hyunwoo");
+        //AddCharButton("Theodore");
+        //AddCharButton("Hyunwoo");
     }
 
     void Update()
@@ -43,10 +45,20 @@ public class UI_PickScrollView : UI_Base
         GameObject go = Managers.Resource.Instantiate("UI/SubItem/CharPickButton");
         if(null != go)
         {
-            go.GetComponent<UI_CharPickButton>().SetChar(charName);
+            UI_CharPickButton ui = go.GetComponent<UI_CharPickButton>();
+            if(ui != null)
+            {
+                ui.SetChar(charName);
+                ui.OnClicked += OnClickedPickButton;
+            }
             go.transform.SetParent(GetObject((int)GameObjects.Content).transform);
             go.GetComponent<RectTransform>().localScale = new Vector3(0.5f, 0.5f, 0.5f);
-            _buttonList.Add(go);
+            _buttonList.Add(charName, go);
         }
+    }
+
+    public void OnClickedPickButton(string Name)
+    {
+        OnButtonClicked?.Invoke(Name);
     }
 }
