@@ -15,7 +15,7 @@ namespace Server.Game
 
         protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
         Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
-        
+
         class CoolTime
         {
             public bool isCoolDown;     // 쿨타임이 돌고 있는지 (false : 사용 가능)
@@ -120,16 +120,18 @@ namespace Server.Game
             Session.Send(visibleObjsPkt);
         }
 
-        public void CheckLevelUp()
+        public int CheckLevelUp()
         {
+            int levelUp = 0;
             while (DataManager.ExpDict.ContainsKey(Stat.Level) &&
                 Stat.Exp >= DataManager.ExpDict[Stat.Level])
             {
                 Stat.Exp -= DataManager.ExpDict[Stat.Level];
                 Stat.Level++;
-
-                // Send LevelUp Packet
+                levelUp++;
             }
+
+            return levelUp;
         }
     }
 }

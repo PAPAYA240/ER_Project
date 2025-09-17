@@ -20,7 +20,7 @@ enum MsgId {
   S_ANIM = 12;
   C_CHARACTER = 13;
   S_STATE = 14;
-  C_SKILL_END = 15;
+  C_FX = 15;
   S_CHARACTER = 16;
   S_ENTER_PICK = 17;
   S_SPAWN_PICK = 18;
@@ -29,6 +29,11 @@ enum MsgId {
   S_VISIBLE_OBJECTS = 21;
   S_LEVEL_UP = 22;
   C_READY = 23;
+  S_FX = 24;
+  C_TRAIT = 25;
+  S_TRAIT = 26;
+  C_WEAPON = 27;
+  S_WEAPON = 28;
 }
 
 enum CreatureState{
@@ -100,7 +105,7 @@ enum MonsterType {
 enum Weapon {
     WEAPON_NONE = 0;
     DAGGER = 1;
-    TWO_HANDED_SWORD = 2;
+    TWO_HAND_SWORD = 2;
     AXE = 3;
     DUAL_SWORDS = 4;
     PISTOL = 5;
@@ -132,6 +137,25 @@ enum SkillShape{
 	SECTOR = 4;
 }
 
+enum TraitType{
+	FRAILTY_INFLICTION = 0;		
+    VAMPIRIC_BLOODLINE = 1;		
+    ADRENALINE = 2;		
+    ACCELERATER = 3;		
+    STELLAR_CHARGE = 4;		
+    GHOST_LIGHT = 5;		
+    RED_SPRITE = 6;		
+    SIPHON_MAELSTORM = 7;		
+    DIAMOND_SHARD = 8;		
+    IRONCLAD = 9;		
+    HEAVY_KNEEPADS = 10;	
+    BITTER_RETRIBUTION = 11;	
+    HEALING_FACTOR = 12;	
+    AMPLIFICATION_DRONE = 13;	
+    HEALING_DRONE = 14;	
+    SENTINEL = 15;	
+}
+
 message C_EnterGame {
 	bool enterGame = 1;
 }
@@ -143,6 +167,7 @@ message S_EnterGame {
 message S_LeaveGame {
 
 }
+
 message S_State
 {
 	int32 ObjectId = 1;
@@ -193,6 +218,14 @@ message S_Skill{
 	SkillInfo skillInfo = 3;
 }
 
+message C_Fx{
+	EffectInfo fxInfo = 1;
+}
+message S_Fx{
+	int32 objectId = 1;
+	EffectInfo fxInfo = 2;
+}
+
 message C_Anim{
 	AnimInfo animInfo = 1;
 }
@@ -212,6 +245,26 @@ message S_Character{
 	int32 pickIdx = 2;
 }
 
+message C_Trait{
+	TraitType traitType = 1;
+	int32 pickIdx = 2;
+}
+
+message S_Trait{
+	TraitType traitType = 1;
+	int32 pickIdx = 2;
+}
+
+message C_Weapon{
+	Weapon weaponType = 1;
+	int32 pickIdx = 2;
+}
+
+message S_Weapon{
+	Weapon weaponType = 1;
+	int32 pickIdx = 2;
+}
+
 message S_EnterPick{
 	int32 pickIdx = 1;
 	string userName = 2;
@@ -225,6 +278,8 @@ message PickScenePlayerInfo{
 	int32 pickIdx = 1;
 	string userName = 2;
 	CharacterType charType = 3;
+	TraitType traitType = 4;
+	Weapon weaponType = 5;
 }
 
 message S_LeavePick{
@@ -247,10 +302,16 @@ message AnimInfo{
 	float ratio = 2;
 }
 
+message EffectInfo{
+	int32 keyCode = 1;
+
+}
+
 message S_ChangeHp{
 	int32 objectId = 1;
 	int32 hp = 2;
 }
+
 
  message S_Die{
 	 int32 objectId = 1;
@@ -285,6 +346,7 @@ message StatInfo{
 	int32 exp = 11;
 	int32 level = 12;
 }
+
 
 message WeaponMasteryInfo{
 	float attackSpeed = 1;
@@ -331,7 +393,8 @@ message S_VisibleObjects{
 
 message S_LevelUp{
 	int32 objectId = 1;
-	StatInfo statGrowth = 2;
+	int32 levelUpCnt = 2;
+	StatInfo statGrowth = 3;
 }
 
 message C_Ready{

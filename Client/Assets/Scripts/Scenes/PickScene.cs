@@ -1,8 +1,9 @@
-using Google.Protobuf.Protocol;
+ï»¿using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UI_SelectedCharacterImage;
 
 public class PickScene : BaseScene
 {
@@ -17,12 +18,11 @@ public class PickScene : BaseScene
         get { return _nickname; } 
         set { _nickname = value; ChangeNickname(_nickname, PickIdx); } 
     }
-    //´ÙÀ½ ¾À¿¡ ³Ñ°Ü¾ß µÇ´Â Á¤º¸ ¹× ÇöÀç °¡Áö°í ÀÖ¾î¾ß µÉ Á¤º¸
-    // ÀÌ ¾À¿¡¼­ ¸î¹øÂ° ÀÎµ¦½ºÀÎÁö ( 0 ~ 7)
-    // Ä³¸¯ÅÍ
-    // ´Ğ³×ÀÓ
-    // ¹«±â
-    // Æ¯¼º
+    // ë‹¤ìŒ ì”¬ì— ë„˜ê²¨ì•¼ ë˜ëŠ” ì •ë³´ ë° í˜„ì¬ ê°€ì§€ê³  ìˆì–´ì•¼ ë  ì •ë³´
+    // ì´ ì”¬ì—ì„œ ëª‡ë²ˆì§¸ ì¸ë±ìŠ¤ì¸ì§€ ( 0 ~ 7)
+    // ìºë¦­í„°
+    // ë‹‰ë„¤ì„
+    // TODO ë¬´ê¸° íŠ¹ì„± íŒ€ ì •ë³´
 
     protected override void Init()
     {
@@ -56,12 +56,18 @@ public class PickScene : BaseScene
     {
         if (Enum.TryParse(charName, out _characterType))
         {
-            C_Character pickPacket = new C_Character();
-            pickPacket.CharType = _characterType;
-            pickPacket.PickIdx = PickIdx;
-            Managers.Network.Send(pickPacket);
+            C_Character charPacket = new C_Character();
+            charPacket.CharType = _characterType;
+            charPacket.PickIdx = PickIdx;
+            Managers.Network.Send(charPacket);
+
+            C_Weapon weaponPacket = new C_Weapon();
+            weaponPacket.WeaponType = CharTypeToWeaponType(_characterType);
+            weaponPacket.PickIdx = PickIdx;
+            Managers.Network.Send(weaponPacket);
 
             ChangePickImage(_characterType, PickIdx);
+            ChangeWeaponImage(CharTypeToWeaponType(_characterType), PickIdx);
         }
     }
 
@@ -71,6 +77,9 @@ public class PickScene : BaseScene
             return;
 
         _pickSceneUI.ChangePickImage(charType, idx);
+
+        if(PickIdx == idx)
+            _pickSceneUI.ChangeFullSizeImage(charType);
     }
 
     private void ChangeNickname(string nickname, int idx)
@@ -81,9 +90,65 @@ public class PickScene : BaseScene
         _pickSceneUI.ChangeNickname(nickname, idx);
     }
 
-    public void Spawn(string nickname, int idx, CharacterType type)
+    public void ChangeBar(int idx)
     {
-        ChangePickImage(type, idx);
-        ChangeNickname(nickname, idx);
+        if (_pickSceneUI == null)
+            return;
+
+        BarType barType;
+
+        if (PickIdx == idx)
+            barType = BarType.My;
+        else if ((PickIdx + idx) % 2 == 1) //ë”í•œê²Œ í™€ìˆ˜ë©´ ì 
+            barType = BarType.Enemy;
+        else
+            barType = BarType.Team;
+
+        _pickSceneUI.ChangeBar(barType, idx);
+    }
+
+    public void ChangeTraitImage(TraitType traitType, int idx)
+    {
+        if (_pickSceneUI == null)
+            return;
+
+        _pickSceneUI.ChangeTraitImage(traitType, idx);
+    }
+
+    public void ChangeWeaponImage(Weapon weaponType, int idx)
+    {
+        if (_pickSceneUI == null)
+            return;
+
+        _pickSceneUI.ChangeWeaponImage(weaponType, idx);
+    }
+
+    //TEMP
+    private Weapon CharTypeToWeaponType(CharacterType charType)
+    {
+        switch (charType)
+        {
+            case CharacterType.Rozzi:
+                return Weapon.Pistol; 
+            case CharacterType.Yuki:
+                return Weapon.TwoHandSword;
+            case CharacterType.Abigail:
+                return Weapon.Axe; 
+            case CharacterType.Hyunwoo:
+                return Weapon.Glove; 
+            case CharacterType.Theodore:
+                return Weapon.SniperRifle; 
+        }
+
+        return Weapon.None;
+    }
+
+    public void Spawn(PickScenePlayerInfo info)
+    {
+        ChangePickImage(info.CharType, info.PickIdx);
+        ChangeNickname(info.UserName, info.PickIdx);
+        ChangeBar(info.PickIdx);
+        ChangeTraitImage(info.TraitType, info.PickIdx);
+        ChangeWeaponImage(info.WeaponType, info.PickIdx);
     }
 }

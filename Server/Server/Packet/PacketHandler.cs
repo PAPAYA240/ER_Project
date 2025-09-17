@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
+using System.Numerics;
 using System.Text;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
@@ -92,18 +94,21 @@ class PacketHandler
 
         room.Push(room.HandleAnim, player, animPacket);
     }
-
-    public static void C_SkillEndHandler(PacketSession session, IMessage packet)
+    public static void C_FxHandler(PacketSession session, IMessage effectPacket)
     {
-        C_SkillEnd skillEndPacket = packet as C_SkillEnd;
-        if (skillEndPacket == null)
+        C_Fx skillPacket = effectPacket as C_Fx;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
             return;
-        
-        //GameRoom room = RoomManager.Instance.Find(1);
-       // if (room == null)
-         //   return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleVF, player, skillPacket);
     }
-  
     public static void C_CharacterHandler(PacketSession session, IMessage packet)
     {
         ClientSession clientSession = session as ClientSession;
@@ -126,6 +131,37 @@ class PacketHandler
 
         // PickRoom 클래스 만들고 거기서 호출해야할듯
         //room.Push(pickPacket);
+    }
+    public static void C_TraitHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_Trait c_traitPacket = packet as C_Trait;
+        clientSession.TraitType = c_traitPacket.TraitType;
+
+        PickRoom room = RoomManager.Instance.Find(1) as PickRoom;
+        if(room == null) 
+            return;
+
+        S_Trait s_traitPacket = new S_Trait();
+        s_traitPacket.TraitType = c_traitPacket.TraitType;
+        s_traitPacket.PickIdx = c_traitPacket.PickIdx;
+        room.Broadcast(s_traitPacket, c_traitPacket.PickIdx);
+    }
+
+    public static void C_WeaponHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_Weapon c_weaponPacket = packet as C_Weapon;
+        clientSession.WeaponType = c_weaponPacket.WeaponType;
+
+        PickRoom room = RoomManager.Instance.Find(1) as PickRoom;
+        if(room == null) 
+            return;
+
+        S_Weapon s_weaponPacket = new S_Weapon();
+        s_weaponPacket.WeaponType = c_weaponPacket.WeaponType;
+        s_weaponPacket.PickIdx = c_weaponPacket.PickIdx;
+        room.Broadcast(s_weaponPacket, c_weaponPacket.PickIdx);
     }
 
     public static void C_PingHandler(PacketSession session, IMessage packet)

@@ -48,6 +48,9 @@ public class FXManager : MonoBehaviour
 
     public void PlayEffect(List<EffectData> effectData, Transform casterTransform, Vector3 targetPos = new Vector3(), Quaternion rot = new Quaternion())
     {
+        if (effectData == null)
+            return;
+
         foreach (EffectData data in effectData)
         {
             if (!fxPrefabs.ContainsKey(data.prefabName))

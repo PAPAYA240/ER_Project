@@ -11,7 +11,7 @@ public class UI_SelectedCharacterImage : UI_Base
 
     static Color _red = new Color(1, 0.125f, 0.125f); 
     static Color _green = new Color(0.125f, 1, 0.125f); 
-    static Color _blue = new Color(0.125f, 0.125f, 1);
+    static Color _blue = new Color(0.125f, 0.375f, 1);
 
     public enum BarType { None, My, Team, Enemy }
 
@@ -63,11 +63,11 @@ public class UI_SelectedCharacterImage : UI_Base
     }
     public void SetTraitSkill(string skillCode)
     {
-        GetImage((int)Images.TraitSkillIcon).sprite = Managers.Resource.Load<Sprite>($"TraitSkillIcon_${skillCode}");
+        GetImage((int)Images.TraitSkillIcon).sprite = Managers.Resource.Load<Sprite>($"Sprite/TraitSkillIcon_{skillCode}");
     }
     public void SetWeaponSkill(string weaponName)
     {
-        Image img = GetImage((int)Images.TraitSkillIcon);
+        Image img = GetImage((int)Images.WeaponImage);
         img.sprite = Managers.Resource.Load<Sprite>($"Sprite/Ico_Ability_{weaponName}");
         Vector2 size = img.sprite.rect.size;
         img.gameObject.GetComponent<RectTransform>().sizeDelta = size;

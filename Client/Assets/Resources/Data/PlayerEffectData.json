@@ -1,0 +1,43 @@
+{
+  "effects": {
+    "Theodore": {
+      "Q": [
+        {
+          "prefabName": "FX_Skill1_OutCircle",
+          "target": "Self",
+          "duration": 5,
+          "delayTime": 0,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        {
+          "prefabName": "FX_Skill1_InCircle",
+          "target": "Self",
+          "duration": 5,
+          "delayTime": 0,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ],
+      "W": [
+        {
+          "prefabName": "FX_PassiveShideld",
+          "target": "Self",
+          "duration": 5,
+          "delayTime": 0,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ]
+    }
+  }
+}

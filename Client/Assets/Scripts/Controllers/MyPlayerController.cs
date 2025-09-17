@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.AI;
 using static Define;
@@ -50,7 +51,7 @@ public class MyPlayerController : PlayerController
 
     //UI
     //UI_PlayerHUD _playerHUD = null;
-    protected UI_PlayerInterface _playerInterface = null;
+    public UI_PlayerInterface PlayerInterface { get; protected set; }
 
     public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
     public WeaponInfo MyWeapon { get; set; } = new WeaponInfo();
@@ -103,12 +104,12 @@ public class MyPlayerController : PlayerController
         //UI
         GameObject go = Managers.Resource.Instantiate("UI/Scene/PlayerHUD");
         go.transform.SetParent(gameObject.transform);
-        _playerInterface = go.GetComponentInChildren<UI_PlayerInterface>();
-        _playerInterface.CharacterCode = CharTypeToCharCode(ObjInfo.CharType);
-        _playerInterface.CharacterName = Enum.GetName(typeof(CharacterType), ObjInfo.CharType);
-        _playerInterface.WeaponCode = CharTypeToWeaponCode(ObjInfo.CharType);
-        _playerInterface.Init();
-        _playerInterface.OnCharSkillLevelUpAction += OnCharSkillLevelUp;
+        PlayerInterface = go.GetComponentInChildren<UI_PlayerInterface>();
+        PlayerInterface.CharacterCode = CharTypeToCharCode(ObjInfo.CharType);
+        PlayerInterface.CharacterName = Enum.GetName(typeof(CharacterType), ObjInfo.CharType);
+        PlayerInterface.WeaponCode = CharTypeToWeaponCode(ObjInfo.CharType);
+        PlayerInterface.Init();
+        PlayerInterface.OnCharSkillLevelUpAction += OnCharSkillLevelUp;
 
         
         UI_Minimap minimap = GetComponentInChildren<UI_Minimap>();
@@ -117,7 +118,7 @@ public class MyPlayerController : PlayerController
         //레벨업이벤트를 여기서 바인딩 해주고 싶어
         //쉬운 방법 겟 오브젝트를 퍼블릭으로 연다.
         // 바인드 해주는 함수를 하나 만든다. 근데 하나가 아닐지도 모름.
-        //_playerInterface.Get
+        //PlayerInterface.Get
 
         SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, FindSkill(KeyCode.Q).MaxCooldown);
         //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, FindSkill(KeyCode.Q).SkillData.levels[0].cooldown);
@@ -399,19 +400,19 @@ public class MyPlayerController : PlayerController
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                _playerInterface.SpecificSkillLevelUp(GameObjects.QSkill);
+                PlayerInterface.SpecificSkillLevelUp(GameObjects.QSkill);
             }
             else if (Input.GetKeyDown(KeyCode.W))
             {
-                _playerInterface.SpecificSkillLevelUp(GameObjects.WSkill);
+                PlayerInterface.SpecificSkillLevelUp(GameObjects.WSkill);
             }
             else if (Input.GetKeyDown(KeyCode.E))
             {
-                _playerInterface.SpecificSkillLevelUp(GameObjects.ESkill);
+                PlayerInterface.SpecificSkillLevelUp(GameObjects.ESkill);
             }
             else if (Input.GetKeyDown(KeyCode.R))
             {
-                _playerInterface.SpecificSkillLevelUp(GameObjects.RSkill);
+                PlayerInterface.SpecificSkillLevelUp(GameObjects.RSkill);
             }
         }
         else
@@ -531,24 +532,27 @@ public class MyPlayerController : PlayerController
         _animator.CrossFadeInFixedTime(animName, ratio);
         SendAnimPacket(animName, ratio);
     }
-    #endregion  
+
+    #endregion
 
     #region Skill
     protected void ExecuteSkill()
     {
         _isUseSkill = false;
-
-        if (State != CreatureState.Skill && !_coolDownDict[_keyCode].isCoolDown)
+        if (_coolDownDict.ContainsKey(_keyCode))
         {
-            // 다른 조건 체크하기
+            if (State != CreatureState.Skill && !_coolDownDict[_keyCode].isCoolDown)
+            {
+                // 다른 조건 체크하기
 
-            // 패킷 보내기
-            SendSkillPacket(_keyCode);
+                // 패킷 보내기
+                SendSkillPacket(_keyCode);
 
-            // 스킬 실행 UI, TODO 스킬 사용할 수 있는 검증이 다 끝난 곳으로 옮겨야함
-            _playerInterface.UseSkill(KeyToUIEnum(_keyCode));
+                // 스킬 실행 UI, TODO 스킬 사용할 수 있는 검증이 다 끝난 곳으로 옮겨야함
+                PlayerInterface.UseSkill(KeyToUIEnum(_keyCode));
 
-            Debug.Log($"스킬 사용! : {_keyCode}");
+                Debug.Log($"스킬 사용! : {_keyCode}");
+            }
         }
     }
 
@@ -712,7 +716,7 @@ public class MyPlayerController : PlayerController
 
     private void SetMaxCoolDownUI(UI_PlayerInterface.GameObjects skillEnum, float value)
     {
-        _playerInterface.SetSkillMaxCool(skillEnum, value);
+        PlayerInterface.SetSkillMaxCool(skillEnum, value);
     }
 
     private void UpdateSkillMaxCool()
@@ -830,6 +834,15 @@ public class MyPlayerController : PlayerController
         };
         Managers.Network.Send(skillPacket);
         Debug.Log("스킬 패킷 보내기");
+    }
+
+    protected void SendFXPacket(KeyCode key)
+    {
+        C_Fx fxPacket = new C_Fx();
+
+        fxPacket.FxInfo = new EffectInfo() { KeyCode = (int)_keyCode };
+
+        Managers.Network.Send(fxPacket);
     }
 
     private void SendAnimPacket(string name, float ratio)

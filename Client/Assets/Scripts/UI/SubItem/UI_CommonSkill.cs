@@ -187,7 +187,68 @@ public class UI_CommonSkill : UI_SkillBase
     }
     public override void ActivateLevelUp(bool activate)
     {
-        GetObject((int)GameObjects.LevelUp).SetActive(activate);
+        if(activate == false)
+        {
+            GetObject((int)GameObjects.LevelUp).SetActive(activate);
+            return;
+        }
+
+        MyPlayerController mpc = Managers.Object.MyPlayer;
+
+        if (mpc == null)
+            return;
+
+        int playerLevel = mpc.ObjInfo.StatInfo.Level;
+
+        switch (_skillLevel)
+        {
+            case 0:
+                {
+                    if(playerLevel >= 1)
+                    {
+                        GetObject((int)GameObjects.LevelUp).SetActive(activate);
+                        return;
+                    }
+                }
+                break;
+            case 1:
+                {
+                    if (playerLevel >= 3)
+                    {
+                        GetObject((int)GameObjects.LevelUp).SetActive(activate);
+                        return;    
+                    }
+                }
+                break;
+            case 2:
+                {
+                    if (playerLevel >= 5)
+                    {
+                        GetObject((int)GameObjects.LevelUp).SetActive(activate);
+                        return;    
+                    }
+                }
+                break;
+            case 3:
+                {
+                    if (playerLevel >= 7)
+                    {
+                        GetObject((int)GameObjects.LevelUp).SetActive(activate);
+                        return;
+                    }
+                }
+                break;
+            case 4:
+                {
+                    if (playerLevel >= 9)
+                    {
+                        GetObject((int)GameObjects.LevelUp).SetActive(activate);
+                        return;    
+                    }
+                }
+                break;
+        }
+        GetObject((int)GameObjects.LevelUp).SetActive(false);
     }
 
     public void ActivateStamina(bool activate)

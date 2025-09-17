@@ -72,7 +72,7 @@ public class UI_UltimateSkill : UI_SkillBase
         SetStaminaCost(100);
 
         GetText((int)Texts.CooldownTimerText).text = "";
-        ActivateLevelUp(DoYouActivate:false);
+        ActivateLevelUp(false);
 
         SetSkillLevel(_skillLevel);
     }
@@ -82,14 +82,14 @@ public class UI_UltimateSkill : UI_SkillBase
         if (_skillLevel == 0)
             return;
         //temp
-        //��ٿ�Ÿ�̸Ӱ� Ȱ��ȭ �Ǿ� ������ �� ��ٿ��� ȣ���ؼ� ��Ÿ���� ���������� ����
+        // TODO 실제 코루틴에서 가져와서 구현?
         if (GetObject(_cooldownTimer).activeSelf && _remainCool > 0.0f)
         {
             _remainCool = Math.Max(0.0f, _remainCool - Time.deltaTime);
 
             if (_remainCool > 0.0f)
             {
-                // ��Ÿ���� ����������
+                // 쿨 도는중
                 GetImage((int)Images.CooldownFill).fillAmount = _remainCool / _maxCool;
                 SetCoolDown(_remainCool);
             }
@@ -101,9 +101,9 @@ public class UI_UltimateSkill : UI_SkillBase
 
         if(null != ui_PlayerInterface)
         {
-            if(IsEnoughStamina(ui_PlayerInterface.GetStamina())) //���׹̳ʰ� ����ϸ�
+            if(IsEnoughStamina(ui_PlayerInterface.GetStamina())) //스테미너가 충분
                 ActivateStamina(false);
-            else //���׹̳ʰ� �����ϸ�
+            else //스테미너가 부족
                 ActivateStamina(true);
         }
         
@@ -111,7 +111,7 @@ public class UI_UltimateSkill : UI_SkillBase
 
     void SetSkillLevel(int level)
     {
-        //TODO ���� üũ �̷��� �ؾߵǳ�
+        //TODO 이렇게 체크해야하나?
         if (level < 0 || level > _maxSkillLevel)
             return;
         if (level == 1)
@@ -162,10 +162,8 @@ public class UI_UltimateSkill : UI_SkillBase
 
     public override void UseSkill() 
     {
-        //��ų�� ����ϸ� Ÿ�̸Ӹ� Ȱ��ȭ
-        //Ȱ��ȭ �Ǹ� ��ų�� ��ο����� ��Ÿ���� ǥ�õ�.
         GetObject(_cooldownTimer).SetActive(true);
-        //temp
+        //Temp
         _remainCool = _maxCool;
     }
 
@@ -187,9 +185,53 @@ public class UI_UltimateSkill : UI_SkillBase
             textObject.text = text;
     }
 
-    public override void ActivateLevelUp(bool DoYouActivate)
+    //스킬의 레벨업 버튼을 활성화/비활성화 시키는 함수
+    public override void ActivateLevelUp(bool activate)
     {
-        GetObject((int)GameObjects.LevelUp).SetActive(DoYouActivate);
+        if (activate == false)
+        {
+            GetObject((int)GameObjects.LevelUp).SetActive(activate);
+            return;
+        }
+
+        MyPlayerController mpc = Managers.Object.MyPlayer;
+
+        if (mpc == null)
+            return;
+
+        int playerLevel = mpc.ObjInfo.StatInfo.Level;
+
+        switch (_skillLevel)
+        {
+            case 0:
+                {
+                    if (playerLevel >= 6)
+                    {
+                        GetObject((int)GameObjects.LevelUp).SetActive(activate);
+                        return;
+                    }
+                }
+                break;
+            case 1:
+                {
+                    if (playerLevel >= 11)
+                    {
+                        GetObject((int)GameObjects.LevelUp).SetActive(activate);
+                        return;
+                    }
+                }
+                break;
+            case 2:
+                {
+                    if (playerLevel >= 16)
+                    {
+                        GetObject((int)GameObjects.LevelUp).SetActive(activate);
+                        return;
+                    }
+                }
+                break;
+        }
+        GetObject((int)GameObjects.LevelUp).SetActive(false);
     }
     public void ActivateStamina(bool activate)
     {
