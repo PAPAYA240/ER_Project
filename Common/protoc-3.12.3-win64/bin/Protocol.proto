@@ -23,11 +23,12 @@ enum MsgId {
   C_SKILL_END = 15;
   S_CHARACTER = 16;
   S_ENTER_PICK = 17;
-  S_LEAVE_PICK = 18;
-  C_PING = 19;
-  S_VISIBLE_OBJECTS = 20;
-  S_LEVEL_UP = 21;
-  C_READY = 22;
+  S_SPAWN_PICK = 18;
+  S_LEAVE_PICK = 19;
+  C_PING = 20;
+  S_VISIBLE_OBJECTS = 21;
+  S_LEVEL_UP = 22;
+  C_READY = 23;
 }
 
 enum CreatureState{
@@ -50,6 +51,8 @@ enum SkillType{
 	SKILL_NONE = 0;
 	SKILL_AUTO = 1;
 	SKILL_PROJECTILE = 2;
+	SKILL_STATIC = 3;
+	SKILL_TRACK = 4;
 }
 
 enum MonsterSkill
@@ -122,13 +125,15 @@ enum Weapon {
 }
 
 enum SkillShape{
-	CIRCLE = 0;
-	RECTANGLE = 1;
-	SECTOR = 2;
+	SHAPE_NONE = 0;
+	CIRCLE = 1;
+	RAY = 2;
+	RECTANGLE = 3;
+	SECTOR = 4;
 }
 
 message C_EnterGame {
-	ObjectInfo player = 1;
+	bool enterGame = 1;
 }
 
 message S_EnterGame {
@@ -209,6 +214,17 @@ message S_Character{
 
 message S_EnterPick{
 	int32 pickIdx = 1;
+	string userName = 2;
+}
+
+message S_SpawnPick{
+	repeated PickScenePlayerInfo players = 1;
+}
+
+message PickScenePlayerInfo{
+	int32 pickIdx = 1;
+	string userName = 2;
+	CharacterType charType = 3;
 }
 
 message S_LeavePick{
@@ -284,6 +300,24 @@ message WeaponInfo{
 message SkillInfo{
 	int32 skillId = 1;
 	int32 keyCode = 2;
+}
+
+message SkillHitbox{
+	string shape = 1;
+	string type = 2;
+	bool charge = 3;
+	float lookOffset = 4;
+	float rightOffset = 5;
+	float dirX = 6;
+	float dirY = 7;
+	float radius = 8;
+	float angle = 9;
+	float width = 10;
+	float height = 11;
+	float duration = 12;
+	float speed = 13;
+	float minRange = 14;
+	float maxRange = 15;
 }
 
 message C_Ping{

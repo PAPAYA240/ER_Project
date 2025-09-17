@@ -18,9 +18,7 @@ public class GameScene : BaseScene
         Screen.SetResolution(960 , 540, false);
 
         // 서버로 패킷 보내기
-        BaseController baseController = new BaseController();
         C_EnterGame EnterGamePacket = new C_EnterGame();
-        EnterGamePacket.Player = baseController.ObjInfo;
         Managers.Network.Send(EnterGamePacket);
 
 

@@ -66,19 +66,23 @@ public class UI_ReadyButton : UI_Base
 
     void OnClicked(PointerEventData eventData)
     {
-        if(_state == State.Notyet)
-        {
-            _state = State.Ready;
-            _image.sprite = _pressedSprite;
-            SetText("준비 완료");
-        }
-        else if( _state == State.Ready)
-        {
-            _state = State.Notyet;
-            _image.sprite = _basicSprite;
-            SetText("준비 중");
-        }
+        //if(_state == State.Notyet)
+        //{
+        //    _state = State.Ready;
+        //    _image.sprite = _pressedSprite;
+        //    SetText("준비 완료");
+        //}
+        //else if( _state == State.Ready)
+        //{
+        //    _state = State.Notyet;
+        //    _image.sprite = _basicSprite;
+        //    SetText("준비 중");
+        //}
+
+        //TODO
+        Managers.Scene.LoadScene(Define.Scene.Game);
     }
+
     void OnPointerEnter(PointerEventData eventData)
     {
         if (_state == State.Notyet)
