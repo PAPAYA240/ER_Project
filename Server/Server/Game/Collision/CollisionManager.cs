@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
@@ -56,7 +57,7 @@ namespace Server.Game
 
         public void CheckCollision(
             Dictionary<int, Player> players,
-            Dictionary<int, Monster> monsters,
+            ConcurrentDictionary<int, Monster> monsters,
             Dictionary<int, Projectile> projectiles)
         {
             

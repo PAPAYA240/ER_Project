@@ -321,6 +321,7 @@ namespace Server.Game
                 }
             }
         }
+
         List<int> GetObjectsInRange<T>(Dictionary<int, T> dict, Player player, int range = 8) where T : GameObject
         {
             List<int> result = new List<int>();
@@ -338,13 +339,14 @@ namespace Server.Game
             return result;
         }
 
+
         void BroadcastVisibleObjs()
         {
             foreach (Player player in _players.Values)
             {
                 List<int> visibleObjs = new List<int>();
                 visibleObjs.AddRange(GetObjectsInRange(_players, player));
-                visibleObjs.AddRange(GetObjectsInRange(_monsters, player));
+                AddVisibleObjects(visibleObjs, _monsters, player);
                 visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
                 player.SendVisibleObjsPkt(visibleObjs);
             }
