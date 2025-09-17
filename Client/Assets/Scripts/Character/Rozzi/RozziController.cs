@@ -25,6 +25,7 @@ public class RozziController : MyPlayerController
     private Coroutine _coSkillW = null;
 
     private Coroutine _coSkillE = null;
+    private float _animRatio = 0.4f;
     private float _jumpRange = 4.0f;
 
     private float _warpRange = 4.0f;
@@ -158,9 +159,6 @@ public class RozziController : MyPlayerController
         {
             _targetPos = navHit.position;
             _agent.SetDestination(_targetPos);
-            State = CreatureState.Moving;
-
-            _moveKeyPressed = true;
         }
 
         _canDash = false;
@@ -243,22 +241,21 @@ public class RozziController : MyPlayerController
         endPos = GetReachablePosition(midPos, endPos, out NavMeshHit navHit);
         LookAtTarget(endPos, true);
 
-        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
-        float animLength = stateInfo.length;
+        float animLength = GetCurrentAnimClipLength();
 
         float elapsed = 0.0f;
         while (elapsed < animLength) 
         {
             float t = elapsed / animLength;
 
-            if(t < 0.5f)
+            if(t < _animRatio)
             {
-                float midT = t / 0.5f;
+                float midT = t / _animRatio;
                 transform.position = Vector3.Lerp(startPos, midPos, midT);
             }
             else
             {
-                float endT = (t - 0.5f) / 0.5f;
+                float endT = (t - (1 - _animRatio)) / _animRatio;
                 transform.position = Vector3.Lerp(midPos, endPos, endT);
             }
 

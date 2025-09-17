@@ -20,9 +20,9 @@ public class MyPlayerController : PlayerController
 
     protected bool _isUseSkill = false;
 
-    bool _isAttackLoop = false;
+    protected bool _isAttackLoop = false;
     int _attackIndex = 0;
-    Coroutine _attackRoutine;
+    protected Coroutine _attackRoutine;
 
     protected KeyCode _keyCode = KeyCode.None;
 
@@ -61,6 +61,7 @@ public class MyPlayerController : PlayerController
     // State : Moving
     protected bool _isTargetOn;
     protected GameObject _targetMonster;
+    protected float _minMoveDistance = 0.5f;
 
     // State : Rest
     protected bool _isResting = false;
@@ -416,7 +417,8 @@ public class MyPlayerController : PlayerController
         }
         else
         {
-            UpdateSkillKeyInput();
+            if(!_isResting)
+                UpdateSkillKeyInput();
         }
 
         // 처음 X를 눌렀고 Idle이나 Moving 상태였을 때 -> Rest 상태로 변경
@@ -476,12 +478,17 @@ public class MyPlayerController : PlayerController
             }
           
             // 최종 목적지 설정
+            // 플레이어와 너무 가까운 곳을 클릭하면 이동하지 않음
             if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
             {
-                _agent.SetDestination(navHit.position);
-                State = CreatureState.Moving;
+                float distance = Vector3.Distance(transform.position, navHit.position);
+                if(distance >= _minMoveDistance)
+                {
+                    _agent.SetDestination(navHit.position);
+                    State = CreatureState.Moving;
 
-                _moveKeyPressed = true;
+                    _moveKeyPressed = true;
+                }                
             }
         }
         else
@@ -538,6 +545,7 @@ public class MyPlayerController : PlayerController
     {
         _isUseSkill = false;
 
+        // 스킬을 사용하고 있는 상태가 아닐 때 && 쿨타임이 끝났을 때
         if (State != CreatureState.Skill && !_coolDownDict[_keyCode].isCoolDown)
         {
             // 다른 조건 체크하기
@@ -802,11 +810,16 @@ public class MyPlayerController : PlayerController
 
     protected float GetCurrentAnimClipLength()
     {
-        AnimatorClipInfo[] clipInfos = _animator.GetCurrentAnimatorClipInfo(0);
-        if (clipInfos.Length > 0)
-            return clipInfos[0].clip.length;
+        if (!_animator.IsInTransition(0))
+            return _animator.GetCurrentAnimatorStateInfo(0).length;
+        else
+            return _animator.GetNextAnimatorStateInfo(0).length;
 
-        return 0.0f;
+        //AnimatorClipInfo[] clipInfos = _animator.GetCurrentAnimatorClipInfo(0);
+        //if (clipInfos.Length > 0)
+        //    return clipInfos[0].clip.length;
+
+        //return 0.0f;
     }
     #endregion
 

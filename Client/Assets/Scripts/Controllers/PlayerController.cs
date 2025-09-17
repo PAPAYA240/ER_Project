@@ -81,6 +81,8 @@ public class PlayerController : CreatureController
         // 서버에서 스킬 사용을 허락받으면
         if (skillPacket.CanUse)
         {
+            State = CreatureState.Skill;
+
             KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
             ExecuteSkill(keyCode);
 
@@ -89,7 +91,6 @@ public class PlayerController : CreatureController
                 Managers.Object.MyPlayer.StartCoCoolTime(keyCode);
             }
 
-            State = CreatureState.Skill;
             //StartCoroutine(CoStartSkill());
             Debug.Log("스킬 코루틴 시작");
 
