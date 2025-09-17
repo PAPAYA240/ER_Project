@@ -273,6 +273,13 @@ class PacketHandler
             return;
 
         cc.ObjInfo.StatInfo.Level += levelUpPkt.LevelUpCnt;
+
         cc.ChangeStat(levelUpPkt.StatGrowth);
+
+        MyPlayerController mpc = Managers.Object.MyPlayer;
+        if (null == mpc)
+            return;
+
+        mpc.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
     }
 }

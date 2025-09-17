@@ -78,7 +78,7 @@ public class UI_PlayerInterface : UI_Base
 
         //temp
         //LevelUp(1);
-        OnLevelUp(10);
+        OnLevelUp(2);
         SpecificSkillLevelUp(GameObjects.TSkill);
         SpecificSkillLevelUp(GameObjects.FSkill);
 
@@ -382,9 +382,9 @@ public class UI_PlayerInterface : UI_Base
     }
 
 
-    void OnLevelUp(int newLevel)
+    public void OnLevelUp(int levelUpCnt)
     {
-        _remainSkillPoint += newLevel;
+        _remainSkillPoint += levelUpCnt;
 
         //TODO 레벨업 버튼 활성화 조건 : 일반 스킬 / 궁극기 / 패시브 나뉘어야함.
         ///CanSkillLevelUp

@@ -78,6 +78,8 @@ namespace Server.Game
                         pspi.CharType = player.Session.MyCharacter;
                         pspi.PickIdx = player.Session.PickIdx;
                         pspi.UserName = player.UserName;
+                        pspi.WeaponType = player.Session.WeaponType;
+                        pspi.TraitType = player.Session.TraitType;
 
                         spawnPacket.Players.Add(pspi);
                     }
