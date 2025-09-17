@@ -34,7 +34,7 @@ public abstract class UI_SkillBase : UI_Base
 
     public abstract void SkillLevelUp();
     public abstract void UseSkill();
-    public abstract void ActivateLevelUp(bool DoYouActivate);
+    public abstract void ActivateLevelUp(bool activate);
     public abstract void SetImage(string path);
     public virtual void SetStaminaCost(int value) { }
     public virtual void SetMaxCool(float value) { }

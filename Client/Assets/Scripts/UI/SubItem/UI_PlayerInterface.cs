@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -34,7 +34,7 @@ public class UI_PlayerInterface : UI_Base
         Credit
     }
 
-    //TODO µğÆÄÀÎÀ¸·Î °¢ ¿ä¼ÒµéÀ» °ü¸®?
+    //TODO ë””íŒŒì¸ìœ¼ë¡œ ê° ìš”ì†Œë“¤ì„ ê´€ë¦¬?
     public string CharacterName { get; set; } = "Hyunwoo";
     public int SkinNumber { get; set; } = 0;
     public string CharacterCode { get; set; } = "007";
@@ -43,7 +43,7 @@ public class UI_PlayerInterface : UI_Base
 
     public Action<SkillEnum> OnCharSkillLevelUpAction = null;
 
-    int _remainSkillPoint = 0; //ÀÌ°Ç QWERT¿¡¸¸ Àû¿ëµÇ¾ßÇÔ.
+    int _remainSkillPoint = 0; //ì´ê±´ QWERTì—ë§Œ ì ìš©ë˜ì•¼í•¨.
     
     bool _isDead = false;
     float _respawnCool = 0.0f;
@@ -101,7 +101,7 @@ public class UI_PlayerInterface : UI_Base
 
             if(_respawnCool <= Mathf.Epsilon)
             {
-                //TODO ºÎÈ°
+                //TODO ë¶€í™œ
                 GetObject((int)GameObjects.Death).SetActive(false);
             }
         }
@@ -202,6 +202,14 @@ public class UI_PlayerInterface : UI_Base
             ActivateSkillLevelUpButton(GameObjects.ESkill, false);
             ActivateSkillLevelUpButton(GameObjects.RSkill, false);
             ActivateSkillLevelUpButton(GameObjects.TSkill, false);
+        }
+        else
+        {
+            ActivateSkillLevelUpButton(GameObjects.QSkill, true);
+            ActivateSkillLevelUpButton(GameObjects.WSkill, true);
+            ActivateSkillLevelUpButton(GameObjects.ESkill, true);
+            ActivateSkillLevelUpButton(GameObjects.RSkill, true);
+            ActivateSkillLevelUpButton(GameObjects.TSkill, true);
         }
     }
 
@@ -327,7 +335,7 @@ public class UI_PlayerInterface : UI_Base
 
     public void ActivateCombatImg(bool activate)
     {
-        //ÀüÅõÁß ÀÌ¹ÌÁö Ç¥½Ã
+        //ì „íˆ¬ì¤‘ ì´ë¯¸ì§€ í‘œì‹œ
         GameObject go = GetObject((int)GameObjects.LevelAndExp);
         if (go == null)
             return;
@@ -352,21 +360,21 @@ public class UI_PlayerInterface : UI_Base
         }
 
         /*
-        ½ºÅ³ ·¹º§À» ¹İÈ¯ ¹Ş°í 
-        ÆÇ´ÜÇØ¼­ ¸®ÅÏ
+        ìŠ¤í‚¬ ë ˆë²¨ì„ ë°˜í™˜ ë°›ê³  
+        íŒë‹¨í•´ì„œ ë¦¬í„´
          
-        ÀÏ¹İ ½ºÅ³ÀÇ ·¹º§¿¡ µû¸¥ ½ºÅ³ ·¹º§Á¦ÇÑ 
+        ì¼ë°˜ ìŠ¤í‚¬ì˜ ë ˆë²¨ì— ë”°ë¥¸ ìŠ¤í‚¬ ë ˆë²¨ì œí•œ 
         1 1
         2 3
         3 5
         4 7
         5 9
-        ±Ã±Ø±â ½ºÅ³ÀÇ ·¹º§¿¡ µû¸¥ ½ºÅ³ ·¹º§Á¦ÇÑ
+        ê¶ê·¹ê¸° ìŠ¤í‚¬ì˜ ë ˆë²¨ì— ë”°ë¥¸ ìŠ¤í‚¬ ë ˆë²¨ì œí•œ
         1 6
         2 11
         3 16
-        ÆĞ½Ãºê ½ºÅ³ÀÇ ·¹º§¿¡ µû¸¥ ½ºÅ³ ·¹º§Á¦ÇÑ
-        1 ÀÌ¹Ì ÂïÇôÀÖÀ½.
+        íŒ¨ì‹œë¸Œ ìŠ¤í‚¬ì˜ ë ˆë²¨ì— ë”°ë¥¸ ìŠ¤í‚¬ ë ˆë²¨ì œí•œ
+        1 ì´ë¯¸ ì°í˜€ìˆìŒ.
         2 5
         3 9
         */
@@ -378,7 +386,7 @@ public class UI_PlayerInterface : UI_Base
     {
         _remainSkillPoint += newLevel;
 
-        //TODO ·¹º§¾÷ ¹öÆ° È°¼ºÈ­ Á¶°Ç : ÀÏ¹İ ½ºÅ³ / ±Ã±Ø±â / ÆĞ½Ãºê ³ª´µ¾î¾ßÇÔ.
+        //TODO ë ˆë²¨ì—… ë²„íŠ¼ í™œì„±í™” ì¡°ê±´ : ì¼ë°˜ ìŠ¤í‚¬ / ê¶ê·¹ê¸° / íŒ¨ì‹œë¸Œ ë‚˜ë‰˜ì–´ì•¼í•¨.
         ///CanSkillLevelUp
         ActivateSkillLevelUpButton(GameObjects.QSkill, true);
         ActivateSkillLevelUpButton(GameObjects.WSkill, true);

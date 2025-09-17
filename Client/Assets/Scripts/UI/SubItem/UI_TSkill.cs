@@ -36,7 +36,7 @@ public class UI_TSkill : UI_SkillBase
         Bind<Image>(typeof(Images));
         Bind<GameObject>(typeof(GameObjects));
 
-        ActivateLevelUp(DoYouActivate: false);
+        ActivateLevelUp(false);
 
         SetSkillLevel(_skillLevel);
     }
@@ -97,9 +97,44 @@ public class UI_TSkill : UI_SkillBase
         GetImage(level - 1).color = destColor;
     }
 
-    public override void ActivateLevelUp(bool DoYouActivate)
+    public override void ActivateLevelUp(bool activate)
     {
-        GetObject((int)GameObjects.LevelUp).SetActive(DoYouActivate);
+        if (activate == false)
+        {
+            GetObject((int)GameObjects.LevelUp).SetActive(activate);
+            return;
+        }
+
+        MyPlayerController mpc = Managers.Object.MyPlayer;
+
+        if (mpc == null)
+            return;
+
+        int playerLevel = mpc.ObjInfo.StatInfo.Level;
+
+        switch (_skillLevel)
+        {
+            case 1:
+                {
+                    if (playerLevel >= 5)
+                    {
+                        GetObject((int)GameObjects.LevelUp).SetActive(activate);
+                        return;
+                    }
+
+                }
+                break;
+            case 2:
+                {
+                    if (playerLevel >= 9)
+                    {
+                        GetObject((int)GameObjects.LevelUp).SetActive(activate);
+                        return;
+                    }
+                }
+                break;
+        }
+        GetObject((int)GameObjects.LevelUp).SetActive(false);
     }
 
     public override void SetImage(string path)

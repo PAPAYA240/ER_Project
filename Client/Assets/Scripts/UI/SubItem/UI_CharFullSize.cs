@@ -11,7 +11,7 @@ public class UI_CharFullSize : UI_Base
     {
         Bind<Image>(typeof(Images));
 
-        SetImage("Sprite/CharFull_Yuki_S005");
+        //SetImage("Sprite/CharFull_Yuki_S005");
     }
 
     private void Awake()

@@ -127,6 +127,37 @@ class PacketHandler
         // PickRoom 클래스 만들고 거기서 호출해야할듯
         //room.Push(pickPacket);
     }
+    public static void C_TraitHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_Trait c_traitPacket = packet as C_Trait;
+        clientSession.TraitType = c_traitPacket.TraitType;
+
+        PickRoom room = RoomManager.Instance.Find(1) as PickRoom;
+        if(room == null) 
+            return;
+
+        S_Trait s_traitPacket = new S_Trait();
+        s_traitPacket.TraitType = c_traitPacket.TraitType;
+        s_traitPacket.PickIdx = c_traitPacket.PickIdx;
+        room.Broadcast(s_traitPacket, c_traitPacket.PickIdx);
+    }
+
+    public static void C_WeaponHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_Weapon c_weaponPacket = packet as C_Weapon;
+        clientSession.WeaponType = c_weaponPacket.WeaponType;
+
+        PickRoom room = RoomManager.Instance.Find(1) as PickRoom;
+        if(room == null) 
+            return;
+
+        S_Weapon s_weaponPacket = new S_Weapon();
+        s_weaponPacket.WeaponType = c_weaponPacket.WeaponType;
+        s_weaponPacket.PickIdx = c_weaponPacket.PickIdx;
+        room.Broadcast(s_weaponPacket, c_weaponPacket.PickIdx);
+    }
 
     public static void C_PingHandler(PacketSession session, IMessage packet)
     {
