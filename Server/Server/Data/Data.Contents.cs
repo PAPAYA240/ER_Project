@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using System.Text;
 using System.Xml.XPath;
 using Google.Protobuf.Protocol;
+using Lucene.Net.Messages;
 using Lucene.Net.Support;
 using static Lucene.Net.Util.AttributeSource;
 using static Server.Data.DataUtils;
@@ -307,6 +309,29 @@ namespace Server.Data
             }
 
             return nestedDict;
+        }
+    }
+    #endregion
+    //public class EnvObjectData
+    //{
+    //    public int id = 1;
+    //    public string name;
+    //    public int healAmount;
+    //    public int cooldown;
+    //}
+    #region Environment
+    public class EnvObjectData : ILoader<EnvType, ObjectInfo>
+    {
+        public Dictionary<string, ObjectInfo> stats = new Dictionary<string, ObjectInfo>();
+        public Dictionary<EnvType, ObjectInfo> MakeDict()
+        {
+            Dictionary<EnvType, ObjectInfo> dict = new Dictionary<EnvType, ObjectInfo>();
+
+            foreach (ObjectInfo data in stats.Values)
+            {
+                dict.Add(data.EnvType, data);
+            }
+            return dict;
         }
     }
     #endregion

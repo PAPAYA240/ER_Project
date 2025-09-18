@@ -5,6 +5,7 @@ using System.IO;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
+using Server.Game.Object;
 using Server.Game.Object.Monster;
 using Server.Game.Object.Monster.AStar;
 using static Server.Data.DataUtils;
@@ -14,11 +15,13 @@ namespace Server.Game
     public class GameRoom : Room
     {
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
+        Dictionary<int, EnvironmentObj> _envs = new Dictionary<int, EnvironmentObj>();
         ConcurrentDictionary<int, Monster> _monsters = new ConcurrentDictionary<int, Monster>();
         Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
 
         MonsterManager _monsterManager = new MonsterManager();
         CollisionManager _collisionManager = new CollisionManager();
+        EnvManager _envManager = new EnvManager();
 
         bool _teamToggle = false;
 
@@ -29,11 +32,15 @@ namespace Server.Game
 
         public void Init(int mapId)
         {
+            // Spawn NavMesh
             Pathfinding.Initialize();
 
             // Spawn Monster
             _monsterManager.Init(this);
             _monsterManager.Add(1, MonsterType.Gamma);
+
+            // Spawn Env
+            _envManager.Init(this);
         }
 
         public override void Update()
@@ -48,6 +55,7 @@ namespace Server.Game
                 List<int> visibleObjs = new List<int>();
                 visibleObjs.AddRange(GetObjectsInRange(_players, player));
                 visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
+                visibleObjs.AddRange(GetObjectsInRange(_envs, player));
                 AddVisibleObjects(visibleObjs, _monsters, player);
                 player.SendVisibleObjsPkt(visibleObjs);
             }
@@ -108,6 +116,9 @@ namespace Server.Game
                     foreach (Projectile p in _projectiles.Values)
                         spawnPacket.Objects.Add(p.Info);
 
+                    foreach (EnvironmentObj env in _envs.Values)
+                        spawnPacket.Objects.Add(env.Info);
+
                     player.Session.Send(spawnPacket);
                 }
             }
@@ -125,6 +136,12 @@ namespace Server.Game
                 Projectile projectile = gameObject as Projectile;
                 _projectiles.Add(gameObject.Id, projectile);
                 projectile.Room = this;
+            }
+            else if (type == GameObjectType.Environment)
+            {
+                EnvironmentObj env = gameObject as EnvironmentObj;
+                _envs.Add(gameObject.Id, env);
+                env.Room = this;
             }
 
             // 타인한테 정보 전송

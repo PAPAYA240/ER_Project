@@ -3,16 +3,11 @@ using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
 using UnityEngine;
 using UnityEngine.AI;
 using static Define;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
 using static UI_PlayerInterface;
 using static UI_SkillBase;
-using static UnityEngine.GraphicsBuffer;
 
 public class MyPlayerController : PlayerController
 {
@@ -165,6 +160,11 @@ public class MyPlayerController : PlayerController
                 break;
             case CreatureState.Attack:
                 GetMouseInput();
+                break;
+            case CreatureState.Skill:
+                SkillBase currentSkill = FindSkill(_keyCode);
+                if (currentSkill != null && currentSkill.SkillData.canMoveDuringCast == true)
+                    GetMouseInput();
                 break;
         }
 
@@ -826,6 +826,7 @@ public class MyPlayerController : PlayerController
                 targetId = monster.ObjInfo.ObjectId;
             }
         }
+
         C_Skill skillPacket = new C_Skill()
         {
             ObjectInfo = ObjInfo,

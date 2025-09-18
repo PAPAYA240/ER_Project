@@ -180,6 +180,11 @@ class PacketHandler
 
         pickScene.ChangeTraitImage(traitPacket.TraitType, traitPacket.PickIdx);
     }
+    
+    public static void S_InteractHandler(PacketSession session, IMessage packet)
+    {
+        
+    }
 
     public static void S_WeaponHandler(PacketSession session, IMessage packet)
     {

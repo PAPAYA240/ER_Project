@@ -6,9 +6,9 @@ using UnityEngine.AI;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class FogOfWarVision : MonoBehaviour
 {
-    public int _rayCount = 200;          // ·¹ÀÌ °³¼ö (360µµ¸¦ ³ª´­ °³¼ö)
-    public float _viewDistance = 12f;     // ½Ã¾ß °Å¸®
-    public LayerMask _obstacleMask;      // º®/Àå¾Ö¹° ·¹ÀÌ¾î
+    public int _rayCount = 200;          // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (360ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+    public float _viewDistance = 12f;     // ï¿½Ã¾ï¿½ ï¿½Å¸ï¿½
+    public LayerMask _obstacleMask;      // ï¿½ï¿½/ï¿½ï¿½Ö¹ï¿½ ï¿½ï¿½ï¿½Ì¾ï¿½
 
     Mesh _mesh;
     Vector3 _origin;
@@ -39,26 +39,26 @@ public class FogOfWarVision : MonoBehaviour
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
 
-        vertices.Add(Vector3.zero); // Áß½ÉÁ¡(ÇÃ·¹ÀÌ¾î À§Ä¡)
+        vertices.Add(Vector3.zero); // ï¿½ß½ï¿½ï¿½ï¿½(ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½Ä¡)
 
         for (int i = 0; i <= _rayCount; i++)
         {
             Vector3 dir = DirFromAngle(angle);
             Vector3 vertex;
 
-            // Raycast·Î ½Ã¾ß Â÷´Ü Ã¼Å©
-            //nMA.Raycast(/*³»À§Ä¡, Å¸°ÙÀ§Ä¡,¾Æ¿ô È÷Æ®, ³×ºñ¸Þ½ÃÁ¡ ¿Ã ¿¡¸®¾î*/);
+            // Raycastï¿½ï¿½ ï¿½Ã¾ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©
+            //nMA.Raycast(/*ï¿½ï¿½ï¿½ï¿½Ä¡, Å¸ï¿½ï¿½ï¿½ï¿½Ä¡,ï¿½Æ¿ï¿½ ï¿½ï¿½Æ®, ï¿½×ºï¿½Þ½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/);
             if (NavMesh.Raycast(_origin, _origin + dir * _viewDistance, out NavMeshHit hit, NavMesh.AllAreas))
                 vertex = hit.position;
             else
                 vertex = _origin + dir * _viewDistance;
 
-            // ·ÎÄÃ ÁÂÇ¥ º¯È¯
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ ï¿½ï¿½È¯
             vertices.Add(transform.InverseTransformPoint(vertex));
 
             if (i > 0)
             {
-                // »ï°¢Çü(ÇÃ·¹ÀÌ¾î, ÀÌÀüÁ¡, ÇöÀçÁ¡)
+                // ï¿½ï°¢ï¿½ï¿½(ï¿½Ã·ï¿½ï¿½Ì¾ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
                 triangles.Add(0);
                 triangles.Add(i);
                 triangles.Add(i + 1);

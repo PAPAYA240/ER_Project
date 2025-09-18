@@ -92,6 +92,21 @@ public class ObjectManager
             //ac.Stat = info.StatInfo;
             //ac.SyncPos();
         }
+        else if (objectType == GameObjectType.Environment)
+        {
+            GameObject go = Managers.Resource.Instantiate($"Env/{info.EnvType}");
+            go.name = info.Name;
+            _objects.Add(info.ObjectId, go);
+
+            EnvironmentObjController ec = go.GetComponent<EnvironmentObjController>();
+            ec.ObjInfo = info;
+            ec.Id = info.ObjectId;
+            ec.PosInfo = info.PosInfo;
+            ec.Stat = info.StatInfo;
+            if (Enum.TryParse(info.Name, out EnvType envEnum))
+                ec._envType = envEnum;
+            ec.SyncPos();
+        }
     }
 
     public void SetObjectVisible()
