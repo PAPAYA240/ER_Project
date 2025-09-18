@@ -8,7 +8,6 @@ using System.Threading;
 using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game.Object.Monster;
-using static System.Net.Mime.MediaTypeNames;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
