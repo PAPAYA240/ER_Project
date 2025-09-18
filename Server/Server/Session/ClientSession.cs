@@ -21,6 +21,10 @@ namespace Server
 
 		public CharacterType MyCharacter { get; set; }
 
+		public TraitType TraitType { get; set; }
+
+		public Weapon WeaponType { get; set; }
+
 		public int CurRoom {  get; set; }
 		public int PickIdx { get; set; }
 

@@ -33,7 +33,7 @@ public class UI_PlayerHUD : UI_Scene
 
     void Update()
     {
-
+        UpdateScale();
     }
 
     public void CaptureTurbine(GameObjects go ,int team)

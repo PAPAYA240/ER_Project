@@ -33,12 +33,16 @@ class PacketManager
 		_handler.Add((ushort)MsgId.CAnim, PacketHandler.C_AnimHandler);		
 		_onRecv.Add((ushort)MsgId.CCharacter, MakePacket<C_Character>);
 		_handler.Add((ushort)MsgId.CCharacter, PacketHandler.C_CharacterHandler);		
-		_onRecv.Add((ushort)MsgId.CSkillEnd, MakePacket<C_SkillEnd>);
-		_handler.Add((ushort)MsgId.CSkillEnd, PacketHandler.C_SkillEndHandler);		
+		_onRecv.Add((ushort)MsgId.CFx, MakePacket<C_Fx>);
+		_handler.Add((ushort)MsgId.CFx, PacketHandler.C_FxHandler);		
 		_onRecv.Add((ushort)MsgId.CPing, MakePacket<C_Ping>);
 		_handler.Add((ushort)MsgId.CPing, PacketHandler.C_PingHandler);		
 		_onRecv.Add((ushort)MsgId.CReady, MakePacket<C_Ready>);
-		_handler.Add((ushort)MsgId.CReady, PacketHandler.C_ReadyHandler);
+		_handler.Add((ushort)MsgId.CReady, PacketHandler.C_ReadyHandler);		
+		_onRecv.Add((ushort)MsgId.CTrait, MakePacket<C_Trait>);
+		_handler.Add((ushort)MsgId.CTrait, PacketHandler.C_TraitHandler);		
+		_onRecv.Add((ushort)MsgId.CWeapon, MakePacket<C_Weapon>);
+		_handler.Add((ushort)MsgId.CWeapon, PacketHandler.C_WeaponHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

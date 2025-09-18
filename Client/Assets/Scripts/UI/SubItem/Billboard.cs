@@ -2,13 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UI_SelectedCharacters : UI_Base
+public class Billboard : MonoBehaviour
 {
-    public override void Init()
-    {
-
-    }
-
     void Start()
     {
         
@@ -16,6 +11,6 @@ public class UI_SelectedCharacters : UI_Base
 
     void Update()
     {
-        
+        gameObject.transform.rotation = Camera.main.transform.rotation;
     }
 }

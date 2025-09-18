@@ -31,7 +31,7 @@ public class UI_PickScrollView : UI_Base
         AddCharButton("Rozzi");
         //AddCharButton("Abigail");
         AddCharButton("Yuki");
-        //AddCharButton("Theodore");
+        AddCharButton("Theodore");
         //AddCharButton("Hyunwoo");
     }
 

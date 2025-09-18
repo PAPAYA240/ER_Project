@@ -24,6 +24,14 @@ public class AnimatorEvent : MonoBehaviour
         Debug.Log("(Animation Event)");
     }
 
+    public void OnAttackTiming()
+    {
+        if (_controller == null)
+            return;
+
+        _controller.OnAttackTiming();
+    }
+
     //public void OnAttackEnd()
     //{
     //    if (_controller == null)

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class UI_TraitGroup : UI_Base
 {
-    enum TraitType { Havoc, Chaos, Fortification, Support, None }
+    enum TraitGroupType { Havoc, Chaos, Fortification, Support, None }
 
     enum Images { Panel, Icon  }
 
@@ -16,7 +16,7 @@ public class UI_TraitGroup : UI_Base
     private static UI_TraitGroup _currentSelected;
 
     [SerializeField]
-    TraitType _traitType;
+    TraitGroupType _traitType;
 
     static Color _havocColor = new Color(1, 0.1875f, 0.1875f, 1);
     static Color _chaosColor = new Color(0.640625f, 0.1875f, 1, 1);
@@ -68,16 +68,16 @@ public class UI_TraitGroup : UI_Base
 
             switch (_traitType)
             {
-                case TraitType.Havoc:
+                case TraitGroupType.Havoc:
                     GetImage((int)Images.Icon).color = _havocColor;
                     break;
-                case TraitType.Chaos:
+                case TraitGroupType.Chaos:
                     GetImage((int)Images.Icon).color = _chaosColor;
                     break;
-                case TraitType.Fortification:
+                case TraitGroupType.Fortification:
                     GetImage((int)Images.Icon).color = _fortificationColor;
                     break;
-                case TraitType.Support:
+                case TraitGroupType.Support:
                     GetImage((int)Images.Icon).color = _supportColor;
                     break;
             }

@@ -45,6 +45,8 @@ public class ObjectManager
                 MyPlayer.Id = info.ObjectId;
                 MyPlayer.PosInfo = info.PosInfo;
                 MyPlayer.Stat = info.StatInfo;
+                MyPlayer.Stat.Hp = info.StatInfo.MaxHp;
+                MyPlayer.Stat.Stamina = info.StatInfo.MaxStamina;
                 MyPlayer.SyncPos();
                 MyPlayer.ObjInfo = info;
                 MyPlayer.ManualInit();
@@ -129,6 +131,11 @@ public class ObjectManager
                 isVisible = true; /*장애물없고 시야 범위 내에 있으면*/
 
             foreach (var r in go.GetComponentsInChildren<Renderer>())
+            {
+                r.enabled = isVisible;
+            }
+
+            foreach (var r in go.GetComponentsInChildren<Canvas>())
             {
                 r.enabled = isVisible;
             }
