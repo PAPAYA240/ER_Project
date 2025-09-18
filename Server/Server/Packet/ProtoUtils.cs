@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace Google.Protobuf.Protocol
@@ -29,5 +30,23 @@ namespace Google.Protobuf.Protocol
             StaminaRegen *= levelUpCnt;
             AttackSpeed *= levelUpCnt;
         }
+    }
+
+    public sealed partial class RotationInfo
+    {
+        public static Vector3 operator *(RotationInfo q, Vector3 v)
+        {
+            Vector3 u = new Vector3(q.Qx, q.Qy, q.Qz);
+            float s = q.Qw;
+
+            return 2.0f * Vector3.Dot(u, v) * u +
+                   (s * s - Vector3.Dot(u, u)) * v +
+                   2.0f * s * Vector3.Cross(u, v);
+        }
+
+        public Vector3 Forward() => this * new Vector3(0, 0, 1);
+        public Vector3 Right() => this * new Vector3(1, 0, 0);
+        public Vector3 Back() => -Forward();
+        public Vector3 Left() => -Right();
     }
 }
