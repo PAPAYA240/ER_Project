@@ -30,6 +30,7 @@ public class RozziController : MyPlayerController
     private Coroutine _coSkillE = null;
     private float _animRatio = 0.4f;
     private float _jumpRange = 4.0f;
+    private GameObject _skillTarget = null;
 
     // F
     private float _warpRange = 4.0f;
@@ -46,9 +47,14 @@ public class RozziController : MyPlayerController
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
         {
-            // TODO : 스킬 범위 내에 몬스터가 있는지 다시 검사해야함
-            if(TryGetAttackPosition() != Vector3.zero)
+            GameObject target = TryGetAttackableObject();
+            if (target == null)
+                return;
+
+            Vector3 pos = target.transform.position;
+            if (Vector3.Distance(pos, transform.position) <= _jumpRange)
             {
+                _skillTarget = target;
                 SetSkillInput(KeyCode.E);
             }
         }
@@ -227,7 +233,7 @@ public class RozziController : MyPlayerController
     #region Skill : E
     IEnumerator CoStartE()
     {
-        if (TargetMonster == null)
+        if (_skillTarget == null)
         {
             SetMovementState();
             yield break;
@@ -236,7 +242,7 @@ public class RozziController : MyPlayerController
         _agent.enabled = false;
 
         Vector3 startPos = transform.position;
-        Vector3 midPos = TargetMonster.transform.position;
+        Vector3 midPos = _skillTarget.transform.position;
         Vector3 dir = (midPos - startPos).normalized;
         Vector3 endPos = midPos + dir * _jumpRange;
         endPos = GetReachablePosition(midPos, endPos, out NavMeshHit navHit);
@@ -287,6 +293,44 @@ public class RozziController : MyPlayerController
         transform.position = targetPos;
         _agent.Warp(targetPos);
         UpdateTransform();
+    }
+    #endregion
+
+    #region Util
+    // 시작 지점과 타겟 지점 사이에 장애물이 있으면 충돌 위치 반환
+    // 없으면 유효 위치 반환
+    private Vector3 GetReachablePosition(Vector3 startPos, Vector3 targetPos, out NavMeshHit navHit)
+    {
+        if (NavMesh.Raycast(startPos, targetPos, out NavMeshHit rayHit, NavMesh.AllAreas))
+        {
+            targetPos = rayHit.position;
+        }
+
+        // 최종 목적지 설정
+        if (NavMesh.SamplePosition(targetPos, out navHit, 1.0f, NavMesh.AllAreas))
+        {
+            return navHit.position;
+        }
+
+        return Vector3.zero;
+    }
+
+    // 플레이어 위치로부터 마우스 방향으로 사거리 내 이동 가능한 위치 반환
+    // isMaxDistance가 true 이면 항상 최대 사거리 기준 반환, false 이면 사거리 내 위치 반환
+    private Vector3 GetTargetPos(float range, bool isMaxDistance = true)
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
+
+        Vector3 dir = (hit.point - transform.position).normalized;
+
+        if (!isMaxDistance && (hit.point - transform.position).magnitude < range)
+        {
+            return hit.point;
+        }
+
+        return transform.position + dir * range;
     }
     #endregion
 }
