@@ -24,28 +24,33 @@ namespace Server.Game
     {
         int _teamCnt = 2;
 
+        object _lock = new object();
+
         // Key: ObjectId
         Dictionary<int, HashSet<Hitbox>> _hitboxDict = new Dictionary<int, HashSet<Hitbox>>();
 
         public void AddHitbox(Player player, CharacterType charType, KeyCode keyCode)
         {
-            Hitbox hitbox = new Hitbox
+            lock (_lock)
             {
-                Player = player,
-                PosX = player.PosInfo.PosX,
-                PosY = player.PosInfo.PosY,
-                PosZ = player.PosInfo.PosZ,
-                Data = DataManager.SkillHitboxDict[charType][keyCode],
-                StartTick = Environment.TickCount
-            };
+                Hitbox hitbox = new Hitbox
+                {
+                    Player = player,
+                    PosX = player.PosInfo.PosX,
+                    PosY = player.PosInfo.PosY,
+                    PosZ = player.PosInfo.PosZ,
+                    Data = DataManager.SkillHitboxDict[charType][keyCode],
+                    StartTick = Environment.TickCount
+                };
 
-            if (!_hitboxDict.TryGetValue(player.Id, out var set))
-            {
-                set = new HashSet<Hitbox>();
-                _hitboxDict[player.Id] = set;
-            }
+                if (!_hitboxDict.TryGetValue(player.Id, out var set))
+                {
+                    set = new HashSet<Hitbox>();
+                    _hitboxDict[player.Id] = set;
+                }
 
-            set.Add(hitbox);
+                set.Add(hitbox);
+            }            
         }
 
         public void Update()
