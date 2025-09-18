@@ -8,6 +8,12 @@ using UnityEngine;
 
 public class YukiController : MyPlayerController
 {
+    protected override void Init()
+    {
+        base.Init();
+        _attackRange = 1.5f;
+    }
+
     protected override void UpdateSkillKeyInput()
     {
         if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))

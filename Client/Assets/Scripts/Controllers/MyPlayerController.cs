@@ -18,17 +18,48 @@ public class MyPlayerController : PlayerController
 {
     #region Variable
     protected bool _moveKeyPressed = false;
+    protected int _monsterMask;
+    protected int _playerMask; 
 
+    // State
+    public override CreatureState State
+    {
+        get { return PosInfo.State; }
+        set
+        {
+            if (PosInfo.State == value)
+                return;
+
+            // Moving -> 다른 상태 : 길찾기 초기화
+            if (_agent != null && _agent.isActiveAndEnabled &&
+                State == CreatureState.Moving)
+            {
+                _agent.isStopped = true;
+                _agent.ResetPath();
+            }
+
+            // Attack -> 다른 상태 : Attack 모션 종료
+            if (State == CreatureState.Attack)
+            {
+                _isAttackLoop = false;
+                if(_coLookAtTarget != null)
+                    StopCoroutine(_coLookAtTarget);
+
+                if(value != CreatureState.Moving)
+                    ResetTarget();
+            }
+
+            PosInfo.State = value;
+            UpdateAnimation();
+            _updated = true;
+        }
+    }
+    protected bool _isStop = false;
+
+    // State : Skill
     protected bool _isUseSkill = false;
-
-    bool _isAttackLoop = false;
-    int _attackIndex = 0;
-    Coroutine _attackRoutine;
-
     protected KeyCode _keyCode = KeyCode.None;
-
     protected Dictionary<string, SkillBase> _skills = new Dictionary<string, SkillBase>();
-
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
     class CoolTime
     {
@@ -36,8 +67,56 @@ public class MyPlayerController : PlayerController
         public float coolTime;
     }
 
+    // State : Moving
     protected int _mask = (1 << (int)Define.Layer.Map);
     protected Vector3 _dstPos = Vector3.zero;
+    protected float _minMoveDistance = 0.5f;
+    protected float _rotSpeed = 8.0f;
+    protected Coroutine _coLookAtTarget = null;
+
+    // State : Attack
+    protected bool _isAttackLoop = false;
+    int _attackIndex = 0;
+    protected Coroutine _attackRoutine;
+    protected float _attackRange = 3.0f; // Temp
+    protected GameObject _target;
+    protected GameObject Target
+    {
+        get { return _target; }
+        set
+        {
+            if (value == this.gameObject)
+                return;
+
+            if (State == CreatureState.Attack && _target != value &&
+                value != null && _attackRoutine != null)
+            {
+                StopCoroutine(_attackRoutine);
+                _attackRoutine = StartCoroutine(CoAttackLoop());              
+            }
+
+            _target = value;
+            if (_target != null)
+                LookAtTarget(_target.transform.position, false, _rotSpeed);
+        }
+    }
+    protected GameObjectType _targetType;
+    protected Vector3 _finalPos;
+
+    // State : Rest
+    protected bool _isResting = false;
+    protected Coroutine _coRest;
+
+    //UI
+    //UI_PlayerHUD _playerHUD = null;
+    public UI_PlayerInterface PlayerInterface { get; protected set; }
+
+    // Weapon
+    public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
+    public WeaponInfo MyWeapon { get; set; } = new WeaponInfo();
+
+    public float WeaponMasteryAS { get; set; }
+    public float ItemAttackSpeed { get; set; } = 0;
 
     public float AttackSpeed
     {
@@ -48,27 +127,6 @@ public class MyPlayerController : PlayerController
             return baseSpeed * multiplier;
         }
     }
-
-    //UI
-    //UI_PlayerHUD _playerHUD = null;
-    public UI_PlayerInterface PlayerInterface { get; protected set; }
-
-    public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
-    public WeaponInfo MyWeapon { get; set; } = new WeaponInfo();
-
-    public float WeaponMasteryAS { get; set; }
-    public float ItemAttackSpeed { get; set; } = 0;
-
-    // State : Moving
-    protected bool _isTargetOn;
-    protected GameObject _targetMonster;
-
-    // State : Rest
-    protected bool _isResting = false;
-    protected Coroutine _coRest;
-
-    // TEMP
-    protected float _attackRange;
     #endregion
 
     #region Init
@@ -92,14 +150,15 @@ public class MyPlayerController : PlayerController
         MakeSkillDict();
         MakeCoolDownDict();
 
+        _monsterMask = 1 << LayerMask.NameToLayer("Monster");
+        _playerMask = 1 << LayerMask.NameToLayer("Fog");
+
         // NavMesh Agent
         _agent = GetComponent<NavMeshAgent>();
         _agent.speed = Speed;
         _agent.acceleration = 999;
         _agent.angularSpeed = 720;
         _agent.stoppingDistance = 0.1f;
-
-        _attackRange = 3.0f;
 
         //UI
         GameObject go = Managers.Resource.Instantiate("UI/Scene/PlayerHUD");
@@ -127,6 +186,8 @@ public class MyPlayerController : PlayerController
         //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, FindSkill(KeyCode.R).SkillData.levels[0].cooldown);
         //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.DSkill, );
         //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.FSkill, );
+
+        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHPColor();
     }
     #endregion
 
@@ -134,7 +195,6 @@ public class MyPlayerController : PlayerController
     protected override void UpdateAnimation()
     {
         // 상태가 전환되면 한 번만 호출됨
-
         if (_animator == null)
             return;
 
@@ -198,13 +258,18 @@ public class MyPlayerController : PlayerController
             State = CreatureState.Moving;
             return;
         }
+
+        if(!_isStop)
+        {
+            Target = FindAttackablePlayer();
+            TryChangeToAttackState();
+        }       
     }
 
     protected override void UpdateMoving()
     {
         // 목적지까지 실제로 움직임
         // 목적지까지 도착했으면 Moving 상태 종료 -> Idle
-
         if (_agent == null)
             return;
 
@@ -213,25 +278,42 @@ public class MyPlayerController : PlayerController
             // 목적지 도착
             if (_agent.remainingDistance <= _agent.stoppingDistance)
             {
-                State = CreatureState.Idle;
-                _moveKeyPressed = false;
-
-                CellPos = transform.position;
-                RotInfo = transform.rotation;
-                CheckUpdatedFlag();
+                if (Target != null)
+                {
+                    transform.position = _finalPos;
+                    if (!TryChangeToAttackState())
+                    {
+                        UpdateTargetPos();
+                    }
+                }
+                else
+                {
+                    State = CreatureState.Idle;
+                    _moveKeyPressed = false;
+                }
             }
             // 이동 중
             else
             {
                 State = CreatureState.Moving;
-                CellPos = transform.position;
-                RotInfo = transform.rotation;
-                CheckUpdatedFlag();
             }
 
-            if (_isTargetOn)
-                LookAtTargetMonster();
+            CellPos = transform.position;
+            RotInfo = transform.rotation;
+            CheckUpdatedFlag();
         }
+    }
+
+    protected override void UpdateAttack()
+    {
+        if(Target == null)
+        {
+            State = CreatureState.Idle;
+            return;
+        }
+
+        LookAtTarget(Target.transform.position);
+        UpdateTargetPos();
     }
 
     protected override void UpdateRest()
@@ -254,53 +336,38 @@ public class MyPlayerController : PlayerController
 
         if (lookDir != Vector3.zero)
         {
-            if(!snapToTarget)
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * speed);
+            if (!snapToTarget)
+            {
+                if(_coLookAtTarget != null)
+                    StopCoroutine(_coLookAtTarget);
+                _coLookAtTarget = StartCoroutine(CoLookAtTarget(lookDir, speed));
+            }         
             else
+            {
                 transform.rotation = Quaternion.LookRotation(lookDir);
+                UpdateTransform();
+            }
         }
     }
 
-    protected void LookAtTargetMonster(bool snapToTarget = false, float speed = 10.0f)
+    protected IEnumerator CoLookAtTarget(Vector3 lookDir, float speed)
     {
-        // 타겟을 바라보도록 방향 조정
-        LookAtTarget(_targetMonster.transform.position, snapToTarget, speed);
-    }
+        Quaternion targetRot = Quaternion.LookRotation(lookDir);
 
-    protected Vector3 GetReachablePosition(Vector3 startPos, Vector3 targetPos, out NavMeshHit navHit)
-    {
-        if (NavMesh.Raycast(startPos, targetPos, out NavMeshHit rayHit, NavMesh.AllAreas))
+        while(true)
         {
-            targetPos = rayHit.position;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * speed);
+            UpdateTransform();
+            if (Quaternion.Angle(transform.rotation, targetRot) < 0.1f)
+                break;
+
+            yield return null;
         }
-
-        // 최종 목적지 설정
-        if (NavMesh.SamplePosition(targetPos, out navHit, 1.0f, NavMesh.AllAreas))
-        {
-            return navHit.position;
-        }
-
-        return Vector3.zero;
-    }
-    
-    protected Vector3 GetTargetPos(float range, bool isMaxDistance = true)
-    {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
-
-        Vector3 dir = (hit.point - transform.position).normalized;
-
-        if(!isMaxDistance && (hit.point - transform.position).magnitude < range)
-        {
-            return hit.point;
-        }
-
-        return transform.position + dir * range;
-    }
+    }   
     #endregion
 
     #region State : Attack
+
     // 평타 반복 코루틴
     IEnumerator CoAttackLoop()
     {
@@ -328,7 +395,8 @@ public class MyPlayerController : PlayerController
 
             if (!_isAttackLoop)
             {
-                State = CreatureState.Idle;
+                if(State != CreatureState.Skill)
+                    SetMovementState();
                 _attackRoutine = null;
                 Debug.Log($"평타 코루틴 끝");
 
@@ -355,6 +423,127 @@ public class MyPlayerController : PlayerController
 
         _attackIndex = 0;
         Debug.Log("콤보 리셋!");
+    }
+
+    // 타겟이 공격 가능한 사거리 내에 있는 지 검사
+    // 없다면 Moving 상태로 변경 -> 따라감
+    protected void UpdateTargetPos()
+    {
+        // TODO : Target이 공격 가능한 상태인지 체크
+        if (Target == null)
+        {
+            State = CreatureState.Idle;
+            _moveKeyPressed = false;
+            return;
+        }
+
+        Vector3 targetPos = TryGetAttackPosition(Target);
+        if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
+        {
+            if (Vector3.Distance(targetPos, transform.position) > 0.0f)
+            {
+                _agent.SetDestination(navHit.position);
+                State = CreatureState.Moving;
+
+                _moveKeyPressed = true;
+            }
+        }
+    }
+
+    protected GameObject TryGetAttackableObject()
+    {
+        GameObject gameObject = null;
+        _targetType = GameObjectType.None;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        float radius = 0.1f;
+        if (Physics.SphereCast(ray, radius, out RaycastHit sphereHit, 1000.0f, _monsterMask | _playerMask))
+        {
+            gameObject = sphereHit.collider.gameObject;
+            BaseController bc = gameObject.GetComponent<BaseController>();
+            if (bc.Id != Id)
+            {
+                Target = gameObject;
+                _targetType = ObjectManager.GetObjectTypeById(bc.ObjInfo.ObjectId);
+            }
+        }
+
+        return gameObject;
+    }
+
+    // 사거리를 고려해 타겟을 공격 가능한 위치 반환
+    protected Vector3 TryGetAttackPosition(GameObject go)
+    {
+        if (go == null)
+            return Vector3.zero;
+
+        Vector3 pos = go.transform.position;
+        Vector3 dir = (pos - transform.position).normalized;
+
+        float distance = Vector3.Distance(transform.position, pos);
+
+        // TODO : 실제 사거리 가져와야함!
+        // 이미 사거리 안이라면 제자리
+        if (distance <= _attackRange)
+            pos = transform.position;
+        else
+            pos = pos - dir * _attackRange * 0.9f;
+
+        _finalPos = pos;
+
+        return pos;
+    }
+
+    // 시야 범위 내 && 평타 사거리 내 가장 가까운 적 플레이어 반환
+    protected GameObject FindAttackablePlayer()
+    {
+        GameObject targetObject = null;
+        float minDistance = _attackRange + 0.1f;
+        foreach (int num in VisibleObjectIds)
+        {
+            GameObjectType type = ObjectManager.GetObjectTypeById(num);
+            if (type == GameObjectType.Player && num != Id)
+            {
+                GameObject go = Managers.Object.FindById(num);
+                if (go != null)
+                {
+                    PlayerController pc = go.GetComponent<PlayerController>();
+                    if (pc.ObjInfo.Team != ObjInfo.Team)
+                    {
+                        float distance = Vector3.Distance(go.transform.position, transform.position);
+                        if (distance <= minDistance)
+                        {
+                            targetObject = go;
+                            minDistance = distance;
+                        }
+                    }
+                }
+            }
+        }
+
+        Target = targetObject;
+
+        return targetObject;
+    }
+
+    // 타겟이 있고, 평타 사거리 내라면 true 반환
+    protected bool TryChangeToAttackState()
+    {
+        if (Target != null && Vector3.Distance(Target.transform.position, transform.position) <= _attackRange)
+        {
+            State = CreatureState.Attack;
+            _isAttackLoop = true;
+            return true;
+        }
+
+        return false;
+    }
+
+    protected void ResetTarget()
+    {
+        Target = null;
+        _targetType = GameObjectType.None;
+        _finalPos = Vector3.zero;
     }
     #endregion
 
@@ -396,6 +585,7 @@ public class MyPlayerController : PlayerController
     #region Input
     protected virtual void UpdateKeyInput()
     {
+        // LeftCtrl + Q/W/E/R : 스킬 레벨업
         if (Input.GetKey(KeyCode.LeftControl))
         {
             if (Input.GetKeyDown(KeyCode.Q))
@@ -415,14 +605,32 @@ public class MyPlayerController : PlayerController
                 PlayerInterface.SpecificSkillLevelUp(GameObjects.RSkill);
             }
         }
+        // Q, W, E, R, T, D, F
         else
         {
-            UpdateSkillKeyInput();
+            if(!_isResting)
+                UpdateSkillKeyInput();
         }
 
+        // S : 공격, 이동 중지
+        if(Input.GetKeyDown(KeyCode.S))
+        {
+            if (State == CreatureState.Attack || State == CreatureState.Moving)
+                State = CreatureState.Idle;
+
+            _isStop = true;
+        }
+        // H : 이동 중지
+        else if(Input.GetKeyDown(KeyCode.H))
+        {
+            if(State == CreatureState.Moving)
+                State = CreatureState.Idle;
+        }
+        // X : 휴식
+        // REST_START - REST_LOOP / REST_END
         // 처음 X를 눌렀고 Idle이나 Moving 상태였을 때 -> Rest 상태로 변경
         // 다시 X를 누르면 -> 휴식 종료
-        if (Input.GetKeyDown(KeyCode.X))
+        else if (Input.GetKeyDown(KeyCode.X))
         {
             if (!_isResting && (State == CreatureState.Idle || State == CreatureState.Moving))
             {
@@ -440,85 +648,59 @@ public class MyPlayerController : PlayerController
 
     protected virtual void GetMouseInput()
     {
-        // Shift + 우클릭 -> 평타 애니메이션
         // 마우스 우클릭이 눌렸을 경우 유효한 곳이 클릭 되었다면 해당 위치를 목적지로 설정 -> Moving 상태로 변경
         // 몬스터 클릭 시 평타 사거리만큼 떨어진 곳으로 설정
 
-        // Shift 누르고 우클릭 시 → 평타 애니메이션
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            if (Input.GetMouseButton(1))
-            {
-                if (_attackRoutine == null)
-                {
-                    _isAttackLoop = true;
-                    State = CreatureState.Attack;
-                }
-            }
-
-        }
         // 그냥 우클릭 시 → 이동 처리
-        else if (Input.GetMouseButton(1))
+        if (Input.GetMouseButton(1))
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Vector3 targetPos = FindMonster();
+            _isStop = false;
 
-            // 몬스터를 못 찾았을 때 -> 지형 클릭
-            if (targetPos == Vector3.zero)
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Target = TryGetAttackableObject();
+            Vector3 targetPos = TryGetAttackPosition(Target);
+
+            // 타겟을 못 찾았을 때 -> 지형 클릭
+            if (Target == null)
             {
                 int mapMask = 1 << LayerMask.NameToLayer("Map");
                 if (Physics.Raycast(ray, out RaycastHit rayHit, 1000.0f, mapMask))
                 {
-                    _isTargetOn = false;
-                    _targetMonster = null;
-
                     targetPos = rayHit.point;
                 }
             }
-          
+
             // 최종 목적지 설정
+            // 플레이어와 너무 가까운 곳을 클릭하면 이동하지 않음
             if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
             {
-                _agent.SetDestination(navHit.position);
-                State = CreatureState.Moving;
+                if(Target == null)
+                {
+                    float distance = Vector3.Distance(transform.position, navHit.position);
+                    if (distance >= _minMoveDistance)
+                    {
+                        _agent.SetDestination(navHit.position);
+                        State = CreatureState.Moving;
 
-                _moveKeyPressed = true;
+                        _moveKeyPressed = true;
+                    }
+                }
+                else
+                {
+                    if(Vector3.Distance(targetPos, transform.position) > 0.0f)
+                    {
+                        _agent.SetDestination(navHit.position);
+                        State = CreatureState.Moving;
+
+                        _moveKeyPressed = true;
+                    }
+                    else
+                    {
+                        TryChangeToAttackState();
+                    }
+                }
             }
         }
-        else
-        {
-            _isAttackLoop = false;
-        }
-    }
-
-    protected Vector3 FindMonster()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        Vector3 targetPos = Vector3.zero;
-        float radius = 0.02f;
-        int monsterMask = 1 << LayerMask.NameToLayer("Monster");
-        if (Physics.SphereCast(ray, radius, out RaycastHit sphereHit, 1000.0f, monsterMask))
-        {
-            _isTargetOn = true;
-            _targetMonster = sphereHit.collider.gameObject;
-
-            Vector3 monsterPos = _targetMonster.transform.position;
-            Vector3 dir = (monsterPos - transform.position).normalized;
-
-            float distance = Vector3.Distance(transform.position, monsterPos);
-
-            // TODO : 실제 사거리 가져와야함!
-            // 이미 사거리 안이라면 제자리
-            if (distance <= _attackRange)
-                targetPos = transform.position;
-            else
-                targetPos = monsterPos - dir * _attackRange;
-
-            return targetPos;
-        }
-
-        return Vector3.zero;
     }
     #endregion
 
@@ -539,6 +721,8 @@ public class MyPlayerController : PlayerController
     protected void ExecuteSkill()
     {
         _isUseSkill = false;
+
+        // 스킬을 사용하고 있는 상태가 아닐 때 && 쿨타임이 끝났을 때
         if (_coolDownDict.ContainsKey(_keyCode))
         {
             if (State != CreatureState.Skill && !_coolDownDict[_keyCode].isCoolDown)
@@ -580,6 +764,12 @@ public class MyPlayerController : PlayerController
         }
 
         return skillBase;
+    }
+
+    protected void SetSkillInput(KeyCode keyCode)
+    {
+        _isUseSkill = true;
+        _keyCode = keyCode;
     }
 
     protected float GetCoolTime(KeyCode key)
@@ -806,11 +996,16 @@ public class MyPlayerController : PlayerController
 
     protected float GetCurrentAnimClipLength()
     {
-        AnimatorClipInfo[] clipInfos = _animator.GetCurrentAnimatorClipInfo(0);
-        if (clipInfos.Length > 0)
-            return clipInfos[0].clip.length;
+        if (!_animator.IsInTransition(0))
+            return _animator.GetCurrentAnimatorStateInfo(0).length;
+        else
+            return _animator.GetNextAnimatorStateInfo(0).length;
 
-        return 0.0f;
+        //AnimatorClipInfo[] clipInfos = _animator.GetCurrentAnimatorClipInfo(0);
+        //if (clipInfos.Length > 0)
+        //    return clipInfos[0].clip.length;
+
+        //return 0.0f;
     }
     #endregion
 
@@ -818,9 +1013,9 @@ public class MyPlayerController : PlayerController
     private void SendSkillPacket(KeyCode key)
     {
         int targetId = -1;
-        if (_targetMonster)
-        {
-            MonsterController monster = _targetMonster.GetComponentInChildren<MonsterController>();
+        if (Target && _targetType == GameObjectType.Monster)
+        {         
+            MonsterController monster = Target.GetComponentInChildren<MonsterController>();
             if (monster)
             {
                 targetId = monster.ObjInfo.ObjectId;

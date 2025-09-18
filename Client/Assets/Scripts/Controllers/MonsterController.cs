@@ -29,6 +29,9 @@ public class MonsterController : CreatureController
     private Material originalMaterial;
     private Material skillMaterial;
 
+    // HpBar
+    protected GameObject _hpBar;
+
     protected override void Init()
 	{
         ObjectType = Define.Object.Monster; 
@@ -40,6 +43,8 @@ public class MonsterController : CreatureController
         }
 
         this.gameObject.layer = LayerMask.NameToLayer("Monster");
+
+        InitHpBar();
     }
 
     protected override void UpdateController()
@@ -152,6 +157,38 @@ public class MonsterController : CreatureController
 
         return true;
     }
+    #endregion
+
+    #region 체력바
+
+    private void InitHpBar()
+    {
+        switch (_monsterType)
+        {
+            case MonsterType.Alpha:
+            case MonsterType.Omega:
+            case MonsterType.Gamma:
+                _hpBar = Managers.Resource.Instantiate("UI/SubItem/MonsterHpBar_Boss", gameObject.transform);
+                break;
+            case MonsterType.Drone:
+                _hpBar = Managers.Resource.Instantiate("UI/SubItem/MonsterHpBar_Common", gameObject.transform);
+                break;
+
+        }
+
+        _hpBar.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+
+        UI_MonsterHpBar ui = _hpBar.GetComponentInChildren<UI_MonsterHpBar>();
+
+        if (null == ui)
+        {
+            Debug.Log("_hpBar is null");
+            return;
+        }
+
+        ui.SetTarget(gameObject);
+    }
+
     #endregion
 }
 

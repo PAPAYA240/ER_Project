@@ -19,6 +19,9 @@ public class PlayerController : CreatureController
     //Fog
     private FogOfWarVision _fogOfWarVision;
 
+    //NameTag
+    protected GameObject _nameTag; 
+
     // 레이어
     protected string layerName;
 
@@ -53,6 +56,8 @@ public class PlayerController : CreatureController
         //Fog
         _fogOfWarVision = gameObject.GetOrAddComponent<FogOfWarVision>();
         gameObject.layer = LayerMask.NameToLayer("Fog");
+
+        InitNameTag();
     }
 
     protected override void UpdateController()
@@ -82,6 +87,8 @@ public class PlayerController : CreatureController
         // 서버에서 스킬 사용을 허락받으면
         if (skillPacket.CanUse)
         {
+            State = CreatureState.Skill;
+
             KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
             ExecuteSkill(keyCode);
 
@@ -90,7 +97,6 @@ public class PlayerController : CreatureController
                 Managers.Object.MyPlayer.StartCoCoolTime(keyCode);
             }
 
-            State = CreatureState.Skill;
             //StartCoroutine(CoStartSkill());
             Debug.Log("스킬 코루틴 시작");
 
@@ -187,6 +193,23 @@ public class PlayerController : CreatureController
 
     #endregion
 
+    #region NameTag
+    protected void InitNameTag()
+    {
+        _nameTag = Managers.Resource.Instantiate("UI/SubItem/PlayerNameTagCanvas", gameObject.transform);
+        if (null == _nameTag)
+        {
+            Debug.Log("_nameTag is null");
+            return;
+        }
+
+        _nameTag.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+
+        UI_PlayerNameTag ui = _nameTag.GetComponentInChildren<UI_PlayerNameTag>();
+        ui.SetTarget(gameObject);
+        ui.SetHPColor();
+    }
+    #endregion
     protected List<EffectData> Find_EffectList(KeyCode key)
     {
         var skillDict = DataManager.PlayerFxDict[ObjInfo.CharType];

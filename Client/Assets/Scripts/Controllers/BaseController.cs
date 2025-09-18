@@ -78,6 +78,8 @@ public class BaseController : MonoBehaviour
             _rotationInfo.Qy = value.Qy;
             _rotationInfo.Qz = value.Qz;
             _rotationInfo.Qw = value.Qw;
+
+            _updated = true;
         }
     }
 
@@ -125,13 +127,6 @@ public class BaseController : MonoBehaviour
             if (PosInfo.State == value)
                 return;
 
-            if (_agent != null && _agent.isActiveAndEnabled &&
-                (State == CreatureState.Moving && value != CreatureState.Moving))
-            {
-                _agent.isStopped = true;
-                _agent.ResetPath();
-            }
-
             PosInfo.State = value;
             UpdateAnimation();
             _updated = true;
@@ -170,6 +165,9 @@ public class BaseController : MonoBehaviour
             case CreatureState.Moving:
                 UpdateMoving();
                 break;
+            case CreatureState.Attack:
+                UpdateAttack();
+                break;
             case CreatureState.Skill:
                 UpdateSkill();
                 break;
@@ -205,6 +203,11 @@ public class BaseController : MonoBehaviour
     }
 
     protected virtual void MoveToNextPos()
+    {
+
+    }
+
+    protected virtual void UpdateAttack()
     {
 
     }
