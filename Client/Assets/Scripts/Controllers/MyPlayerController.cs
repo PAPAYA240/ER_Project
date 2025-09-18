@@ -127,6 +127,8 @@ public class MyPlayerController : PlayerController
         //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, FindSkill(KeyCode.R).SkillData.levels[0].cooldown);
         //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.DSkill, );
         //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.FSkill, );
+
+        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHPColor();
     }
     #endregion
 

@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using TMPro;
@@ -70,23 +70,23 @@ public class UI_HpBar : UI_Base
         float hpRatio;
         float barrierRatio;
 
-        if (_hp + _barrier >= _maxHp) // Ç®ÇÇ ÀÌ»óÀÏ ¶§´Â HP+Barrier¸¦ 100%·Î
+        if (_hp + _barrier >= _maxHp) // í’€í”¼ ì´ìƒì¼ ë•ŒëŠ” HP+Barrierë¥¼ 100%ë¡œ
         {
             float total = _hp + _barrier;
             hpRatio = _hp / total;
             barrierRatio = _barrier / total;
         }
-        else // Ç®ÇÇ°¡ ¾Æ´Ò ¶§´Â MaxHP ±âÁØ
+        else // í’€í”¼ê°€ ì•„ë‹ ë•ŒëŠ” MaxHP ê¸°ì¤€
         {
             hpRatio = _hp / _maxHp;
             barrierRatio = _barrier / _maxHp;
         }
 
-        // Ã¼·Â Fill
+        // ì²´ë ¥ Fill
         GetImage((int)Images.Hp).fillAmount = hpRatio;
 
-        // ¹è¸®¾î À§Ä¡ = HP fillÀÌ ³¡³ª´Â ÁöÁ¡
-        // (RectTransform ±âÁØÀ¸·Î anchor ÀÌµ¿)
+        // ë°°ë¦¬ì–´ ìœ„ì¹˜ = HP fillì´ ëë‚˜ëŠ” ì§€ì 
+        // (RectTransform ê¸°ì¤€ìœ¼ë¡œ anchor ì´ë™)
         RectTransform rt = GetImage((int)Images.Barrier).rectTransform;
         rt.anchorMin = new Vector2(hpRatio, 0f);
         rt.anchorMax = new Vector2(Mathf.Min(hpRatio + barrierRatio, 1f), 1f);
@@ -109,7 +109,7 @@ public class UI_HpBar : UI_Base
     }
     public void MinusHp(float value)
     {
-        //Èí¼öÇÒ ¼öÄ¡ °è»ê
+        //í¡ìˆ˜í•  ìˆ˜ì¹˜ ê³„ì‚°
         float absorbed = Mathf.Min(_barrier, value);
 
         _barrier -= absorbed;
