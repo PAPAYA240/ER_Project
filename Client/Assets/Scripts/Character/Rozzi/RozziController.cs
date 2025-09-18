@@ -46,7 +46,8 @@ public class RozziController : MyPlayerController
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
         {
-            if(FindMonster() != Vector3.zero)
+            // TODO : 스킬 범위 내에 몬스터가 있는지 다시 검사해야함
+            if(TryGetAttackPosition() != Vector3.zero)
             {
                 SetSkillInput(KeyCode.E);
             }
@@ -67,16 +68,16 @@ public class RozziController : MyPlayerController
 
     protected override void GetMouseInput()
     {
-        if(!_canDash && !_isDashing)
+        if (!_canDash && !_isDashing)
             base.GetMouseInput();
 
-        if(Input.GetMouseButton(1) && _canDash)
+        if (Input.GetMouseButton(1) && _canDash)
             StartDash();
     }
 
     protected override void UpdateMoving()
     {
-        if(!_isDashing)
+        if (!_isDashing)
             base.UpdateMoving();
     }
 
@@ -226,7 +227,7 @@ public class RozziController : MyPlayerController
     #region Skill : E
     IEnumerator CoStartE()
     {
-        if (_targetMonster == null)
+        if (TargetMonster == null)
         {
             SetMovementState();
             yield break;
@@ -235,7 +236,7 @@ public class RozziController : MyPlayerController
         _agent.enabled = false;
 
         Vector3 startPos = transform.position;
-        Vector3 midPos = _targetMonster.transform.position;
+        Vector3 midPos = TargetMonster.transform.position;
         Vector3 dir = (midPos - startPos).normalized;
         Vector3 endPos = midPos + dir * _jumpRange;
         endPos = GetReachablePosition(midPos, endPos, out NavMeshHit navHit);

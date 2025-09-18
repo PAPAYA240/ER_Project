@@ -125,13 +125,6 @@ public class BaseController : MonoBehaviour
             if (PosInfo.State == value)
                 return;
 
-            if (_agent != null && _agent.isActiveAndEnabled &&
-                (State == CreatureState.Moving && value != CreatureState.Moving))
-            {
-                _agent.isStopped = true;
-                _agent.ResetPath();
-            }
-
             PosInfo.State = value;
             UpdateAnimation();
             _updated = true;
