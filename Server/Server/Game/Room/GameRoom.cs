@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using Google.Protobuf;
@@ -13,13 +14,14 @@ namespace Server.Game
     public class GameRoom : Room
     {
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
-        Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
+        ConcurrentDictionary<int, Monster> _monsters = new ConcurrentDictionary<int, Monster>();
         Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
 
         MonsterManager _monsterManager = new MonsterManager();
         CollisionManager _collisionManager = new CollisionManager();
 
         bool _teamToggle = false;
+
         public bool TryGetMonster(int objectId, out Monster monster)
         {
             return _monsters.TryGetValue(objectId, out monster);
@@ -41,10 +43,18 @@ namespace Server.Game
                 projectile.Update();
             }
 
-            foreach (Monster monster in _monsters.Values)
+            foreach (Player player in _players.Values)
             {
-                monster.Update();
+                List<int> visibleObjs = new List<int>();
+                visibleObjs.AddRange(GetObjectsInRange(_players, player));
+                visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
+                AddVisibleObjects(visibleObjs, _monsters, player);
+                player.SendVisibleObjsPkt(visibleObjs);
             }
+
+            List<Monster> monstersToUpdate = new List<Monster>(_monsters.Values);
+            foreach (Monster monster in monstersToUpdate)
+                monster.Update();
 
             Flush();
 
@@ -93,9 +103,9 @@ namespace Server.Game
                     }
 
                     foreach (Monster m in _monsters.Values)
-                        spawnPacket.Objects.Add(m.Info); 
+                        spawnPacket.Objects.Add(m.Info);
 
-                    foreach(Projectile p in _projectiles.Values)
+                    foreach (Projectile p in _projectiles.Values)
                         spawnPacket.Objects.Add(p.Info);
 
                     player.Session.Send(spawnPacket);
@@ -105,11 +115,10 @@ namespace Server.Game
             {
                 Monster monster = gameObject as Monster;
                 if (_monsters == null)
-                    _monsters = new Dictionary<int, Monster>();
+                    _monsters = new ConcurrentDictionary<int, Monster>();
 
                 monster.Room = this;
-                _monsters.Add(gameObject.Id, monster);
-
+                _monsters.TryAdd(gameObject.Id, monster);
             }
             else if (type == GameObjectType.Projectile)
             {
@@ -153,7 +162,7 @@ namespace Server.Game
                 Monster monster = null;
                 if (_monsters.Remove(objectId, out monster) == false)
                     return;
-                
+
                 monster.Room = null;
                 _monsterManager.Add(-1);
             }
@@ -180,7 +189,7 @@ namespace Server.Game
 
         public void HandleMove(Player player, C_Move movePacket)
         {
-            if(player == null) 
+            if (player == null)
                 return;
 
             // todo : 검증
@@ -201,6 +210,17 @@ namespace Server.Game
             resMovePacket.RotInfo = movePacket.RotInfo;
 
             Broadcast(resMovePacket);
+        }
+        public void HandleVF(Player player, C_Fx skillPacket)
+        {
+            if (player == null)
+                return;
+
+            S_Fx effect = new S_Fx() {
+                ObjectId = player.Info.ObjectId,
+                FxInfo = skillPacket.FxInfo,
+            };
+            Broadcast(effect);
         }
 
         public void HandleSkill(Player player, C_Skill skillPacket)
@@ -287,6 +307,20 @@ namespace Server.Game
             _teamToggle = !_teamToggle;
             return _teamToggle ? 1 : 2;
         }
+        private void AddVisibleObjects<T>(List<int> visibleObjs, ConcurrentDictionary<int, T> dict, Player player, int range = 8) where T : GameObject
+        {
+            foreach (var pair in dict)
+            {
+                GameObject go = pair.Value;
+                if (go.Id == player.Id)
+                    continue;
+
+                if (go.PosInfo.Distance(player.PosInfo) < range)
+                {
+                    visibleObjs.Add(go.Id);
+                }
+            }
+        }
 
         List<int> GetObjectsInRange<T>(Dictionary<int, T> dict, Player player, int range = 8) where T : GameObject
         {
@@ -305,13 +339,14 @@ namespace Server.Game
             return result;
         }
 
+
         void BroadcastVisibleObjs()
         {
             foreach (Player player in _players.Values)
             {
                 List<int> visibleObjs = new List<int>();
                 visibleObjs.AddRange(GetObjectsInRange(_players, player));
-                visibleObjs.AddRange(GetObjectsInRange(_monsters, player));
+                AddVisibleObjects(visibleObjs, _monsters, player);
                 visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
                 player.SendVisibleObjsPkt(visibleObjs);
             }

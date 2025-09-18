@@ -35,4 +35,24 @@ public class YukiController : MyPlayerController
 
         }
     }
+
+    protected override void Skill_Q()
+    {
+        PlayAnimation("SKILL_Q", 0.1f);
+    }
+
+    protected override void Skill_W()
+    {
+        PlayAnimation("SKILL_W", 0.1f);
+    }
+
+    protected override void Skill_E()
+    {
+        PlayAnimation("SKILL_E", 0.1f);
+    }
+
+    protected override void Skill_R()
+    {
+        PlayAnimation("SKILL_R", 0.1f);
+    }
 }

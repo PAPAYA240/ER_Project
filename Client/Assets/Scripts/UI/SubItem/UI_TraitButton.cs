@@ -1,3 +1,4 @@
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +12,9 @@ public class UI_TraitButton : UI_Base
     enum GameObjects { Text }
 
     private Material _material;
+
+    [SerializeField]
+    TraitType _traitType;
 
     public static UI_TraitButton CurrentSelected { get; private set; }
 
@@ -89,5 +93,17 @@ public class UI_TraitButton : UI_Base
     private void OnClickedEvent(PointerEventData data)
     {
         SetSelected(true);
+
+        PickScene ps =  Managers.Scene.CurrentScene as PickScene;
+
+        if(null != ps)
+        {
+            C_Trait traitPacket = new C_Trait();
+            traitPacket.TraitType = _traitType;
+            traitPacket.PickIdx = ps.PickIdx;
+            Managers.Network.Send(traitPacket);
+
+            ps.ChangeTraitImage(_traitType, ps.PickIdx);
+        }
     }
 }
