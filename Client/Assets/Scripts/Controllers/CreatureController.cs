@@ -14,52 +14,59 @@ public class CreatureController : BaseController
         set { _object = value; }
     }
 
-    HpBar _hpBar;
-
     public override StatInfo Stat
     {
         get { return base.Stat; }
-        set { base.Stat = value; UpdateHpBar(); }
+        set { base.Stat = value; UpdateMaxHp(); UpdateHp(); UpdateMaxStamina(); UpdateStamina();  }
     }
 
-    public override int Hp
+    public override float Hp
     {
         get { return Stat.Hp; }
-        set { base.Hp = value; UpdateHpBar(); }
+        set { base.Hp = value; UpdateHp(); }
     }
 
-    public override int Stamina
+    public override float MaxHp
+    {
+        get { return Stat.MaxHp; }
+        set { base.MaxHp = value; UpdateMaxHp(); }
+    }
+
+    public override float Stamina
     {
         get { return Stat.Stamina; }
-        set { base.Stamina = value; /* UpdateStatmina(); */ }
+        set { base.Stamina = value; UpdateStamina(); }
     }
 
-    protected void AddHpBar()
+    public override float MaxStamina
     {
-        GameObject go = Managers.Resource.Instantiate("UI/HpBar", transform);
-        go.transform.localPosition = new Vector3(0, 0.5f, 0);
-        go.name = "HpBar";
-        _hpBar = go.GetComponent<HpBar>();
-        UpdateHpBar();
+        get { return Stat.MaxStamina; }
+        set { base.MaxStamina = value; UpdateMaxStamina(); }
     }
 
-    void UpdateHpBar()
+    virtual protected void UpdateHp()
     {
-        if (_hpBar == null)
-            return;
 
-        float ratio = 0.0f;
-        if (Stat.MaxHp > 0)
-            ratio = ((float)Hp) / Stat.MaxHp;
+    }
 
-        _hpBar.SetHpBar(ratio);
+    virtual protected void UpdateMaxHp()
+    {
+
+    }
+
+    virtual protected void UpdateStamina()
+    {
+
+    }
+
+    virtual protected void UpdateMaxStamina()
+    {
+
     }
 
 	protected override void Init()
     {
 		base.Init();
-
-        //AddHpBar();
     }
 
     public virtual void OnDamaged()

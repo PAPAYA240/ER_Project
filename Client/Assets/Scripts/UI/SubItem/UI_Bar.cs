@@ -35,7 +35,7 @@ public class UI_Bar : UI_Base
 
     public void SetValue(float value)
     {
-        _value = value;
+        _value = Mathf.Min(value, _maxValue);
         UpdateFillAmountAndText();
     }
     public float GetValue()

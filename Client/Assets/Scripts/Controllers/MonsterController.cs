@@ -45,6 +45,9 @@ public class MonsterController : CreatureController
         this.gameObject.layer = LayerMask.NameToLayer("Monster");
 
         InitHpBar();
+
+        //업데이트 함수들 호출
+        Stat = Stat;
     }
 
     protected override void UpdateController()
@@ -187,6 +190,28 @@ public class MonsterController : CreatureController
         }
 
         ui.SetTarget(gameObject);
+    }
+
+    protected override void UpdateHp()
+    {
+        //base.UpdateHp();
+
+        if (_hpBar == null)
+            return;
+
+        _hpBar.GetComponentInChildren<UI_BarTick>().SetValue(Hp);
+
+        if(_monsterType != MonsterType.Drone)
+            _hpBar.GetComponentInChildren<UI_MonsterHpBar>().SetHpText(Hp.ToString("F0"));
+    }
+    protected override void UpdateMaxHp()
+    {
+        //base.UpdateHp();
+
+        if (_hpBar == null)
+            return;
+
+        _hpBar.GetComponentInChildren<UI_BarTick>().SetMaxValue(MaxHp);
     }
 
     #endregion

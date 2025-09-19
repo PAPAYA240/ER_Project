@@ -43,13 +43,13 @@ public class UI_BarTick : UI_Base
         _tickPrefab = Managers.Resource.Load<GameObject>("Prefabs/UI/SubItem/HpTick");
         _barRectTransform = GetImage((int)Images.FillImage).rectTransform;
 
-        UpdateFillAmountAndText();
+        UpdateFillAmount();
         GenerateTick();
     }
-    public void SetValue(float hp)
+    public void SetValue(float value)
     {
-        _value = hp;
-        UpdateFillAmountAndText();
+        _value = Mathf.Min(value, _maxValue);
+        UpdateFillAmount();
     }
 
     public float GetValue()
@@ -61,10 +61,10 @@ public class UI_BarTick : UI_Base
     {
         _maxValue = maxValue;
         GenerateTick();
-        UpdateFillAmountAndText();
+        UpdateFillAmount();
     }
 
-    void UpdateFillAmountAndText()
+    void UpdateFillAmount()
     {
         GetImage((int)Images.FillImage).fillAmount = _value / _maxValue;
     }

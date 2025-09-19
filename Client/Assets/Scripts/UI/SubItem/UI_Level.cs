@@ -1,4 +1,4 @@
-using Google.Protobuf.WellKnownTypes;
+ï»¿using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,17 +24,17 @@ public class UI_Level : UI_Base
         CombatImage
     }
 
-    public Action<int> OnLevelUp = null;  
+    //public Action<int> OnLevelUp = null;  
 
     int _currentLevel;
     int _maxExp = 1000;
     int _curExp = 0;
 
     public int CurrentLevel { get { return _currentLevel; } set { _currentLevel = value; SetLevelText(); } }
-    //public int CurrentExp { get { return _curExp; } set { _curExp = value; } }
-    public int MaxExp { get { return _maxExp; } set { _maxExp = value; } }
+    public int CurrentExp { get { return _curExp; } set { _curExp = value; ChangeExpBarFillAmount(); } }
+    public int MaxExp { get { return _maxExp; } set { _maxExp = value; ChangeExpBarFillAmount(); } }
 
-    //TODO ÃÖ´ë °æÇèÄ¡¸¦ ¹è¿­·Î °ü¸®ÇØ¾ß µÉ±î?
+    //ì„œë²„ì—ì„œ í˜„ìž¬ ê²½í—˜ì¹˜ëž‘ ìµœëŒ€ ê²½í—˜ì¹˜ë¥¼ ë°›ì•„ì™€ì„œ ê²½í—˜ì¹˜ ë°”ì— ë³´ì—¬ì£¼ê¸°.
 
     public override void Init()
     {
@@ -45,6 +45,16 @@ public class UI_Level : UI_Base
         CurrentLevel = 1;
         ChangeExpBarFillAmount();
         ActivateCombatImg(false);
+    }
+
+    private void Awake()
+    {
+        Init();
+    }
+
+    private void Start()
+    {
+        
     }
 
     void Update()
@@ -62,27 +72,27 @@ public class UI_Level : UI_Base
         GetImage((int)Images.ExpBar).fillAmount = (float)_curExp / _maxExp;
     }
 
-    public void EarnExp(int exp)
-    {
-        _curExp += exp;
+    //public void EarnExp(int exp)
+    //{
+    //    _curExp += exp;
 
-        if( _curExp >= _maxExp )
-        {
-            int Level = 0;
-            //·¹º§¾÷
-            while(_curExp >= _maxExp)
-            {
-                _curExp -= _maxExp;
-                CurrentLevel += 1;
-                Level += 1;
-            }
+    //    if( _curExp >= _maxExp )
+    //    {
+    //        int Level = 0;
+    //        //ë ˆë²¨ì—…
+    //        while(_curExp >= _maxExp)
+    //        {
+    //            _curExp -= _maxExp;
+    //            CurrentLevel += 1;
+    //            Level += 1;
+    //        }
 
-            OnLevelUp?.Invoke(Level);
-        }
+    //        OnLevelUp?.Invoke(Level);
+    //    }
 
-        //°æÇèÄ¡ ¹Ù °»½Å
-        ChangeExpBarFillAmount();
-    }
+    //    //ê²½í—˜ì¹˜ ë°” ê°±ì‹ 
+    //    ChangeExpBarFillAmount();
+    //}
 
     public void ActivateCombatImg(bool activate)
     {

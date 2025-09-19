@@ -46,13 +46,13 @@ public class UI_HpBarTick : UI_Base
         _tickPrefab = Managers.Resource.Load<GameObject>("Prefabs/UI/SubItem/HpTick");
         _hpBarRectTransform = GetImage((int)Images.Hp).rectTransform;
 
-        UpdateFillAmountAndText();
+        UpdateFillAmount();
         GenerateTick();
     }
     public void SetHp(float hp)
     {
-        _hp = hp;
-        UpdateFillAmountAndText();
+        _hp = Mathf.Min(hp, _maxHp);
+        UpdateFillAmount();
     }
     public float GetHp()
     {
@@ -62,17 +62,17 @@ public class UI_HpBarTick : UI_Base
     public void SetBarrier(float barrier)
     {
         _barrier = barrier;
-        UpdateFillAmountAndText();
+        UpdateFillAmount();
     }
 
     public void SetMaxHp(float maxHp)
     {
         _maxHp = maxHp;
         GenerateTick();
-        UpdateFillAmountAndText();
+        UpdateFillAmount();
     }
 
-    void UpdateFillAmountAndText()
+    void UpdateFillAmount()
     {
         float hpRatio;
         float barrierRatio;

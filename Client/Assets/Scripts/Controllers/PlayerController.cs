@@ -193,7 +193,7 @@ public class PlayerController : CreatureController
 
     #endregion
 
-    #region NameTag
+    #region NameTagAndHp
     protected void InitNameTag()
     {
         _nameTag = Managers.Resource.Instantiate("UI/SubItem/PlayerNameTagCanvas", gameObject.transform);
@@ -209,6 +209,38 @@ public class PlayerController : CreatureController
         ui.SetTarget(gameObject);
         ui.SetHPColor();
     }
+    protected override void UpdateHp()
+    {
+        if (_nameTag == null)
+            return;
+        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHp(Hp);
+    }
+    protected override void UpdateMaxHp()
+    {
+        if (_nameTag == null)
+            return;
+        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetMaxHp(MaxHp);
+    }
+    protected override void UpdateStamina()
+    {
+        if (_nameTag == null)
+            return;
+        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetStamina(Stamina);
+    }
+    protected override void UpdateMaxStamina()
+    {
+        if (_nameTag == null)
+            return;
+        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetMaxStamina(MaxStamina);
+    }
+
+    public void SetNameTagLevel()
+    {
+        if (_nameTag == null)
+            return;
+        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetLevelText(Stat.Level);
+    }
+
     #endregion
     protected List<EffectData> Find_EffectList(KeyCode key)
     {

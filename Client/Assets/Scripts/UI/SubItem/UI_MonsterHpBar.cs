@@ -31,6 +31,11 @@ public class UI_MonsterHpBar : UI_Base
         Bind<GameObject>(typeof(GameObjects));
     }
 
+    private void Awake()
+    {
+        Init();
+    }
+
     void Start()
     {
         
@@ -61,13 +66,22 @@ public class UI_MonsterHpBar : UI_Base
         GetText((int)Texts.LevelText).text = level.ToString();
     }
 
-    public void SetNameText(string name)
+    public void SetHpText(string str)
     {
-        GetText((int)Texts.LevelText).text = name;
+        GetText((int)Texts.HpText).text = str;
     }
 
     public void SetTarget(GameObject target)
     {
         _target = target;
+    }
+
+    public void SetHp(float newHp)
+    {
+        GetObject((int)GameObjects.HpBar).GetComponent<UI_BarTick>().SetValue(newHp);
+    }
+    public void SetStamina(float newStamina)
+    {
+        GetObject((int)GameObjects.Patience).GetComponent<UI_BarNonText>().SetValue(newStamina);
     }
 }

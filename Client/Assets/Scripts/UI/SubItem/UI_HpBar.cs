@@ -45,7 +45,7 @@ public class UI_HpBar : UI_Base
 
     public void SetHp(float hp)
     {
-        _hp = hp;
+        _hp = Mathf.Min(hp, _maxHp);
         UpdateFillAmountAndText();
     }
     public float GetHp()

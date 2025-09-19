@@ -132,6 +132,7 @@ public class MyPlayerController : PlayerController
     #region Init
     void Start()
     {
+
     }
 
     public void ManualInit()
@@ -169,23 +170,15 @@ public class MyPlayerController : PlayerController
         PlayerInterface.WeaponCode = CharTypeToWeaponCode(ObjInfo.CharType);
         PlayerInterface.Init();
         PlayerInterface.OnCharSkillLevelUpAction += OnCharSkillLevelUp;
-
         
         UI_Minimap minimap = GetComponentInChildren<UI_Minimap>();
         minimap.ActivatePlayerIcon(UI_MinimapCharIcon.IconType.MyPlayer, this);
 
-        //레벨업이벤트를 여기서 바인딩 해주고 싶어
-        //쉬운 방법 겟 오브젝트를 퍼블릭으로 연다.
-        // 바인드 해주는 함수를 하나 만든다. 근데 하나가 아닐지도 모름.
-        //PlayerInterface.Get
-
+        //쿨타임 설정
         SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, FindSkill(KeyCode.Q).MaxCooldown);
-        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, FindSkill(KeyCode.Q).SkillData.levels[0].cooldown);
-        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.WSkill, FindSkill(KeyCode.W).SkillData.levels[0].cooldown);
-        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, FindSkill(KeyCode.E).SkillData.levels[0].cooldown);
-        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, FindSkill(KeyCode.R).SkillData.levels[0].cooldown);
-        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.DSkill, );
-        //SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.FSkill, );
+
+        //업데이트 함수들 호출
+        Stat = Stat;
 
         _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHPColor();
     }
@@ -961,6 +954,54 @@ public class MyPlayerController : PlayerController
                 break;
         }
 
+    }
+
+    protected override void UpdateHp()
+    {
+        base.UpdateHp();
+
+        if (null == PlayerInterface)
+            return;
+
+        PlayerInterface.SetHp(Hp);
+    }
+    protected override void UpdateMaxHp()
+    {
+        base.UpdateMaxHp();
+
+        if (null == PlayerInterface)
+            return;
+
+        PlayerInterface.SetMaxHp(MaxHp);
+    }
+
+    protected override void UpdateStamina()
+    {
+        base.UpdateStamina();
+
+        if (null == PlayerInterface)
+            return;
+
+        PlayerInterface.SetStamina(Stamina);
+    }  
+
+    protected override void UpdateMaxStamina()
+    {
+        base.UpdateMaxStamina();
+
+        if (null == PlayerInterface)
+            return;
+
+        PlayerInterface.SetMaxStamina(MaxStamina);
+    }  
+
+    public void UpdateLevel()
+    {
+        if (null == PlayerInterface)
+            return;
+
+        PlayerInterface.SetLevel(Stat.Level);
+        SetNameTagLevel();
     }
 
     #endregion

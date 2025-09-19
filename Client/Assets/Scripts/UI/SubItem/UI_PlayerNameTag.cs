@@ -100,4 +100,21 @@ public class UI_PlayerNameTag : UI_Base
         else if(Managers.Object.MyPlayer.ObjInfo.Team != targetPc.ObjInfo.Team)
             GetImage((int)Images.Hp).color = _red;
     }
+
+    public void SetHp(float newHp)
+    {
+        GetObject((int)GameObjects.HpBar).GetComponent<UI_HpBarTick>().SetHp(newHp);
+    }
+    public void SetMaxHp(float newMaxHp)
+    {
+        GetObject((int)GameObjects.HpBar).GetComponent<UI_HpBarTick>().SetMaxHp(newMaxHp);
+    }
+    public void SetStamina(float newStamina)
+    {
+        GetObject((int)GameObjects.StaminaBar).GetComponent<UI_BarNonText>().SetValue(newStamina);
+    }
+    public void SetMaxStamina(float newMaxStamina)
+    {
+        GetObject((int)GameObjects.StaminaBar).GetComponent<UI_BarNonText>().SetMaxValue(newMaxStamina);
+    }
 }

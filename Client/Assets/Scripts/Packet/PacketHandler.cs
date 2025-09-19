@@ -159,14 +159,6 @@ class PacketHandler
         if (pickScene == null) return;
 
         pickScene.ChangePickImage(charPacket.CharType, charPacket.PickIdx);
-
-        //GameObject go = GameObject.Find("Test");
-        //if (go == null) return;
-
-        //UI_SelectEvent selectEvent = go.GetComponent<UI_SelectEvent>();
-        //if (selectEvent == null) return;
-
-        //selectEvent.ChangePickImage(charPacket.CharType, charPacket.PickIdx);
     }
     public static void S_TraitHandler(PacketSession session, IMessage packet)
     {
@@ -207,14 +199,6 @@ class PacketHandler
         pickScene.PickIdx = enterPickPacket.PickIdx;
         pickScene.NickName = enterPickPacket.UserName;
         pickScene.ChangeBar(enterPickPacket.PickIdx);
-
-        //GameObject go = GameObject.Find("Test");
-        //if (go == null) return;
-
-        //UI_SelectEvent selectEvent = go.GetComponent<UI_SelectEvent>();
-        //if (selectEvent == null) return;
-
-        //selectEvent.SetPickIdx(enterPickPacket.PickIdx);
     }
     public static void S_SpawnPickHandler(PacketSession session, IMessage packet)
     {
@@ -272,7 +256,7 @@ class PacketHandler
         if (cc == null)
             return;
 
-        cc.ObjInfo.StatInfo.Level += levelUpPkt.LevelUpCnt;
+        cc.Stat.Level += levelUpPkt.LevelUpCnt;
 
         cc.ChangeStat(levelUpPkt.StatGrowth);
 
@@ -281,6 +265,7 @@ class PacketHandler
             return;
 
         mpc.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
+        mpc.UpdateLevel();
     }
 
     public static void S_FxHandler(PacketSession session, IMessage packet)

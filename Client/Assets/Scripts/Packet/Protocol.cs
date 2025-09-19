@@ -76,14 +76,14 @@ namespace Google.Protobuf.Protocol {
             "FS5Qcm90b2NvbC5Nb25zdGVyVHlwZRIMCgR0ZWFtGAggASgFIicKCEFuaW1J",
             "bmZvEgwKBG5hbWUYASABKAkSDQoFcmF0aW8YAiABKAIiHQoKRWZmZWN0SW5m",
             "bxIPCgdrZXlDb2RlGAEgASgFIioKClNfQ2hhbmdlSHASEAoIb2JqZWN0SWQY",
-            "ASABKAUSCgoCaHAYAiABKAUiLQoFU19EaWUSEAoIb2JqZWN0SWQYASABKAUS",
+            "ASABKAUSCgoCaHAYAiABKAIiLQoFU19EaWUSEAoIb2JqZWN0SWQYASABKAUS",
             "EgoKYXR0YWNrZXJJZBgCIAEoBSJgCgxQb3NpdGlvbkluZm8SJgoFc3RhdGUY",
             "ASABKA4yFy5Qcm90b2NvbC5DcmVhdHVyZVN0YXRlEgwKBHBvc1gYAiABKAIS",
             "DAoEcG9zWRgDIAEoAhIMCgRwb3NaGAQgASgCIj4KDFJvdGF0aW9uSW5mbxIK",
             "CgJxeBgBIAEoAhIKCgJxeRgCIAEoAhIKCgJxehgDIAEoAhIKCgJxdxgEIAEo",
             "AiLWAQoIU3RhdEluZm8SDgoGYXR0YWNrGAEgASgCEg8KB2RlZmVuc2UYAiAB",
-            "KAISCgoCaHAYAyABKAUSDQoFbWF4SHAYBCABKAUSDwoHaHBSZWdlbhgFIAEo",
-            "AhIPCgdzdGFtaW5hGAYgASgFEhIKCm1heFN0YW1pbmEYByABKAUSFAoMc3Rh",
+            "KAISCgoCaHAYAyABKAISDQoFbWF4SHAYBCABKAISDwoHaHBSZWdlbhgFIAEo",
+            "AhIPCgdzdGFtaW5hGAYgASgCEhIKCm1heFN0YW1pbmEYByABKAISFAoMc3Rh",
             "bWluYVJlZ2VuGAggASgCEhMKC2F0dGFja1NwZWVkGAkgASgCEhEKCW1vdmVT",
             "cGVlZBgKIAEoAhILCgNleHAYCyABKAUSDQoFbGV2ZWwYDCABKAUiTwoRV2Vh",
             "cG9uTWFzdGVyeUluZm8SEwoLYXR0YWNrU3BlZWQYASABKAISEwoLYmFzaWNB",
@@ -5104,9 +5104,9 @@ namespace Google.Protobuf.Protocol {
 
     /// <summary>Field number for the "hp" field.</summary>
     public const int HpFieldNumber = 2;
-    private int hp_;
+    private float hp_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Hp {
+    public float Hp {
       get { return hp_; }
       set {
         hp_ = value;
@@ -5127,7 +5127,7 @@ namespace Google.Protobuf.Protocol {
         return true;
       }
       if (ObjectId != other.ObjectId) return false;
-      if (Hp != other.Hp) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Hp, other.Hp)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -5135,7 +5135,7 @@ namespace Google.Protobuf.Protocol {
     public override int GetHashCode() {
       int hash = 1;
       if (ObjectId != 0) hash ^= ObjectId.GetHashCode();
-      if (Hp != 0) hash ^= Hp.GetHashCode();
+      if (Hp != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Hp);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -5153,9 +5153,9 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(8);
         output.WriteInt32(ObjectId);
       }
-      if (Hp != 0) {
-        output.WriteRawTag(16);
-        output.WriteInt32(Hp);
+      if (Hp != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(Hp);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -5168,8 +5168,8 @@ namespace Google.Protobuf.Protocol {
       if (ObjectId != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(ObjectId);
       }
-      if (Hp != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Hp);
+      if (Hp != 0F) {
+        size += 1 + 4;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -5185,7 +5185,7 @@ namespace Google.Protobuf.Protocol {
       if (other.ObjectId != 0) {
         ObjectId = other.ObjectId;
       }
-      if (other.Hp != 0) {
+      if (other.Hp != 0F) {
         Hp = other.Hp;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -5203,8 +5203,8 @@ namespace Google.Protobuf.Protocol {
             ObjectId = input.ReadInt32();
             break;
           }
-          case 16: {
-            Hp = input.ReadInt32();
+          case 21: {
+            Hp = input.ReadFloat();
             break;
           }
         }
@@ -5865,9 +5865,9 @@ namespace Google.Protobuf.Protocol {
 
     /// <summary>Field number for the "hp" field.</summary>
     public const int HpFieldNumber = 3;
-    private int hp_;
+    private float hp_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Hp {
+    public float Hp {
       get { return hp_; }
       set {
         hp_ = value;
@@ -5876,9 +5876,9 @@ namespace Google.Protobuf.Protocol {
 
     /// <summary>Field number for the "maxHp" field.</summary>
     public const int MaxHpFieldNumber = 4;
-    private int maxHp_;
+    private float maxHp_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int MaxHp {
+    public float MaxHp {
       get { return maxHp_; }
       set {
         maxHp_ = value;
@@ -5898,9 +5898,9 @@ namespace Google.Protobuf.Protocol {
 
     /// <summary>Field number for the "stamina" field.</summary>
     public const int StaminaFieldNumber = 6;
-    private int stamina_;
+    private float stamina_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Stamina {
+    public float Stamina {
       get { return stamina_; }
       set {
         stamina_ = value;
@@ -5909,9 +5909,9 @@ namespace Google.Protobuf.Protocol {
 
     /// <summary>Field number for the "maxStamina" field.</summary>
     public const int MaxStaminaFieldNumber = 7;
-    private int maxStamina_;
+    private float maxStamina_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int MaxStamina {
+    public float MaxStamina {
       get { return maxStamina_; }
       set {
         maxStamina_ = value;
@@ -5988,11 +5988,11 @@ namespace Google.Protobuf.Protocol {
       }
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Attack, other.Attack)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Defense, other.Defense)) return false;
-      if (Hp != other.Hp) return false;
-      if (MaxHp != other.MaxHp) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Hp, other.Hp)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MaxHp, other.MaxHp)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(HpRegen, other.HpRegen)) return false;
-      if (Stamina != other.Stamina) return false;
-      if (MaxStamina != other.MaxStamina) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Stamina, other.Stamina)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MaxStamina, other.MaxStamina)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(StaminaRegen, other.StaminaRegen)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AttackSpeed, other.AttackSpeed)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MoveSpeed, other.MoveSpeed)) return false;
@@ -6006,11 +6006,11 @@ namespace Google.Protobuf.Protocol {
       int hash = 1;
       if (Attack != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Attack);
       if (Defense != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Defense);
-      if (Hp != 0) hash ^= Hp.GetHashCode();
-      if (MaxHp != 0) hash ^= MaxHp.GetHashCode();
+      if (Hp != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Hp);
+      if (MaxHp != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MaxHp);
       if (HpRegen != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(HpRegen);
-      if (Stamina != 0) hash ^= Stamina.GetHashCode();
-      if (MaxStamina != 0) hash ^= MaxStamina.GetHashCode();
+      if (Stamina != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Stamina);
+      if (MaxStamina != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MaxStamina);
       if (StaminaRegen != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(StaminaRegen);
       if (AttackSpeed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AttackSpeed);
       if (MoveSpeed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MoveSpeed);
@@ -6037,25 +6037,25 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(21);
         output.WriteFloat(Defense);
       }
-      if (Hp != 0) {
-        output.WriteRawTag(24);
-        output.WriteInt32(Hp);
+      if (Hp != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(Hp);
       }
-      if (MaxHp != 0) {
-        output.WriteRawTag(32);
-        output.WriteInt32(MaxHp);
+      if (MaxHp != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(MaxHp);
       }
       if (HpRegen != 0F) {
         output.WriteRawTag(45);
         output.WriteFloat(HpRegen);
       }
-      if (Stamina != 0) {
-        output.WriteRawTag(48);
-        output.WriteInt32(Stamina);
+      if (Stamina != 0F) {
+        output.WriteRawTag(53);
+        output.WriteFloat(Stamina);
       }
-      if (MaxStamina != 0) {
-        output.WriteRawTag(56);
-        output.WriteInt32(MaxStamina);
+      if (MaxStamina != 0F) {
+        output.WriteRawTag(61);
+        output.WriteFloat(MaxStamina);
       }
       if (StaminaRegen != 0F) {
         output.WriteRawTag(69);
@@ -6091,20 +6091,20 @@ namespace Google.Protobuf.Protocol {
       if (Defense != 0F) {
         size += 1 + 4;
       }
-      if (Hp != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Hp);
+      if (Hp != 0F) {
+        size += 1 + 4;
       }
-      if (MaxHp != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(MaxHp);
+      if (MaxHp != 0F) {
+        size += 1 + 4;
       }
       if (HpRegen != 0F) {
         size += 1 + 4;
       }
-      if (Stamina != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Stamina);
+      if (Stamina != 0F) {
+        size += 1 + 4;
       }
-      if (MaxStamina != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(MaxStamina);
+      if (MaxStamina != 0F) {
+        size += 1 + 4;
       }
       if (StaminaRegen != 0F) {
         size += 1 + 4;
@@ -6138,19 +6138,19 @@ namespace Google.Protobuf.Protocol {
       if (other.Defense != 0F) {
         Defense = other.Defense;
       }
-      if (other.Hp != 0) {
+      if (other.Hp != 0F) {
         Hp = other.Hp;
       }
-      if (other.MaxHp != 0) {
+      if (other.MaxHp != 0F) {
         MaxHp = other.MaxHp;
       }
       if (other.HpRegen != 0F) {
         HpRegen = other.HpRegen;
       }
-      if (other.Stamina != 0) {
+      if (other.Stamina != 0F) {
         Stamina = other.Stamina;
       }
-      if (other.MaxStamina != 0) {
+      if (other.MaxStamina != 0F) {
         MaxStamina = other.MaxStamina;
       }
       if (other.StaminaRegen != 0F) {
@@ -6187,24 +6187,24 @@ namespace Google.Protobuf.Protocol {
             Defense = input.ReadFloat();
             break;
           }
-          case 24: {
-            Hp = input.ReadInt32();
+          case 29: {
+            Hp = input.ReadFloat();
             break;
           }
-          case 32: {
-            MaxHp = input.ReadInt32();
+          case 37: {
+            MaxHp = input.ReadFloat();
             break;
           }
           case 45: {
             HpRegen = input.ReadFloat();
             break;
           }
-          case 48: {
-            Stamina = input.ReadInt32();
+          case 53: {
+            Stamina = input.ReadFloat();
             break;
           }
-          case 56: {
-            MaxStamina = input.ReadInt32();
+          case 61: {
+            MaxStamina = input.ReadFloat();
             break;
           }
           case 69: {
