@@ -117,6 +117,18 @@ namespace Server.Game.Object.Monster
 
             return distanceToTarget <= _skillRange;
         }
+
+        const float _activeRange = 10f;
+        // 다시 스폰 장소로 돌아가는가?
+        public bool IsReturnSpawn()
+        {
+            Vector3 monsterPos = new Vector3(this.PosInfo.PosX, this.PosInfo.PosY, this.PosInfo.PosZ);
+            float dist = Vector3.Distance(monsterPos, spawnPosition);
+            if (_activeRange <= dist)
+                return true; 
+            return false;
+        }
+
         public bool IsArrivalSpawn()
         {
             Vector3 monsterPos = new Vector3(this.PosInfo.PosX, this.PosInfo.PosY, this.PosInfo.PosZ);
@@ -139,7 +151,6 @@ namespace Server.Game.Object.Monster
                     return true;
                 else
                     return false;
-                //return monster.IsFindTargetRange(Vector3.Distance(monsterPos, playerPos));
             });
             return monster.PlayerTarget;
         }
@@ -239,16 +250,18 @@ namespace Server.Game.Object.Monster
             PosInfo.PosZ = newPos.Z;
 
             // =========== 회전 =========== 
-            if (PlayerTarget == null) return;
-
-            Vector3 PlayerPos = new Vector3(PlayerTarget.PosInfo.PosX, PlayerTarget.PosInfo.PosY, PlayerTarget.PosInfo.PosZ);
-            float distanceToTarget = Vector3.Distance(monsterPos, targetPos);
-            Vector3 dirQ;
-            if (distanceToTarget <= _findRange)
-                dirQ = PlayerPos - monsterPos;
+            Vector3 dirQ = new Vector3();
+            if (PlayerTarget != null)
+            {
+                Vector3 PlayerPos = new Vector3(PlayerTarget.PosInfo.PosX, PlayerTarget.PosInfo.PosY, PlayerTarget.PosInfo.PosZ);
+                float distanceToTarget = Vector3.Distance(monsterPos, targetPos);
+                if (distanceToTarget <= _findRange)
+                    dirQ = PlayerPos - monsterPos;
+            }
             else
+            {
                 dirQ = targetPos - monsterPos;
-
+            }
             LookAtTarget(dirQ, elapsedTime);
         }
 
