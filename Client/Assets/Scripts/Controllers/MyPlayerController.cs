@@ -635,6 +635,10 @@ public class MyPlayerController : PlayerController
                 ExitRest();
             }
         }
+        else if (State == CreatureState.Rest && Input.GetMouseButtonDown(1))
+        {
+            ExitRest();
+        }
     }
 
     protected virtual void UpdateSkillKeyInput() { }
@@ -667,7 +671,7 @@ public class MyPlayerController : PlayerController
             // 플레이어와 너무 가까운 곳을 클릭하면 이동하지 않음
             if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
             {
-                if(Target == null)
+                if (Target == null)
                 {
                     float distance = Vector3.Distance(transform.position, navHit.position);
                     if (distance >= _minMoveDistance)
@@ -680,7 +684,7 @@ public class MyPlayerController : PlayerController
                 }
                 else
                 {
-                    if(Vector3.Distance(targetPos, transform.position) > 0.0f)
+                    if (Vector3.Distance(targetPos, transform.position) > 0.0f)
                     {
                         _agent.SetDestination(navHit.position);
                         State = CreatureState.Moving;

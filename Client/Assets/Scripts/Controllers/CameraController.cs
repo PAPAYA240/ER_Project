@@ -18,7 +18,7 @@ public class CameraController : MonoBehaviour
     Vector3 _nearDelta = new Vector3(-4.0f, 6.0f, 5.0f);
     Vector3 _delta;
     float _lastZoom = 0f;
-    float[] _zoomSteps = { 10f, 8f, 6f, 4f };
+    float[] _zoomSteps = { 10f, 8f, 5f, 4f };
     int _currentStep = 0;
     float _currentZoom = 0f;
     float _targetZoom = 0f;
