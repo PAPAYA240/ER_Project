@@ -23,6 +23,8 @@ namespace Server.Game
         CollisionManager _collisionManager = new CollisionManager();
         EnvManager _envManager = new EnvManager();
 
+        Dictionary<int, Dictionary<int, Player>> _teams = new Dictionary<int, Dictionary<int, Player>>();
+
         bool _teamToggle = false;
 
         public bool TryGetMonster(int objectId, out Monster monster)
@@ -67,7 +69,7 @@ namespace Server.Game
             Flush();
 
             _collisionManager.Update();
-            _collisionManager.CheckCollision(_players, _monsters, _projectiles);
+            _collisionManager.CheckAllCollisions(_teams, _monsters, _projectiles);
 
             foreach (Player player in _players.Values)
             {
@@ -91,9 +93,19 @@ namespace Server.Game
             {
                 Player player = gameObject as Player;
                 _players.Add(gameObject.Id, player);
-                player.Room = this;
                 player.Info.Team = AssignTeam();
 
+                if (!_teams.TryGetValue(player.Info.Team, out var teamPlayers))
+                {
+                    teamPlayers = new Dictionary<int, Player>(); 
+                    _teams[player.Info.Team] = teamPlayers;
+                }
+                teamPlayers.Add(player.Id, player);
+
+                ObjectManager.Instance.RegisterTeam(gameObject.Id, player.Info.Team);
+
+                player.Room = this;
+                
                 // 본인한테 정보 전송
                 {
                     // Temp Cobalt Exp
@@ -165,6 +177,8 @@ namespace Server.Game
                 Player player = null;
                 if (_players.Remove(objectId, out player) == false)
                     return;
+                var myTeam = _teams[player.Info.Team];
+                myTeam.Remove(player.Id);
 
                 player.Room = null;
 

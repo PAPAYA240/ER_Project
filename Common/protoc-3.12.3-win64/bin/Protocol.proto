@@ -329,7 +329,7 @@ message EffectInfo{
 
 message S_ChangeHp{
 	int32 objectId = 1;
-	int32 hp = 2;
+	float hp = 2;
 }
 
 
@@ -355,11 +355,11 @@ message RotationInfo{
 message StatInfo{
 	float attack = 1;
 	float defense = 2;
-	int32 hp = 3;
-	int32 maxHp = 4;
+	float hp = 3;
+	float maxHp = 4;
 	float hpRegen = 5;
-	int32 stamina = 6;
-	int32 maxStamina = 7;
+	float stamina = 6;
+	float maxStamina = 7;
 	float staminaRegen = 8;
 	float attackSpeed = 9;
 	float moveSpeed = 10;

@@ -149,6 +149,11 @@ public class ObjectManager
             {
                 r.enabled = isVisible;
             }
+
+            foreach (var r in go.GetComponentsInChildren<Canvas>())
+            {
+                r.enabled = isVisible;
+            }
         }
     }
 

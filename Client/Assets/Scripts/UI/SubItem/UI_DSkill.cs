@@ -55,7 +55,6 @@ public class UI_DSkill : UI_SkillBase
     void Update()
     {
         //temp
-        //��ٿ�Ÿ�̸Ӱ� Ȱ��ȭ �Ǿ� ������ �� ��ٿ��� ȣ���ؼ� ��Ÿ���� ���������� ����
         if (_skillLevel == 0)
             return;
 
@@ -65,7 +64,7 @@ public class UI_DSkill : UI_SkillBase
 
             if (_remainCool > 0.0f)
             {
-                // ��Ÿ���� ����������
+
                 GetImage((int)Images.CooldownFill).fillAmount = _remainCool / _maxCool;
                 SetCoolDown(_remainCool);
             }
@@ -80,7 +79,7 @@ public class UI_DSkill : UI_SkillBase
 
     void SetSkillLevel(int level)
     {
-        //TODO ���� üũ �̷��� �ؾߵǳ�
+        //TODO 
         if (level < 0 || level > _maxSkillLevel)
             return;
         if (level == 1)
@@ -103,8 +102,6 @@ public class UI_DSkill : UI_SkillBase
 
     public override void UseSkill()
     {
-        //��ų�� ����ϸ� Ÿ�̸Ӹ� Ȱ��ȭ
-        //Ȱ��ȭ �Ǹ� ��ų�� ��ο����� ��Ÿ���� ǥ�õ�.
         GetObject(_cooldownTimer).SetActive(true);
         //temp
         _remainCool = _maxCool;

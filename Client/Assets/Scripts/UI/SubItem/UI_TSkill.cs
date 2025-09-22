@@ -1,3 +1,4 @@
+using Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -38,6 +39,7 @@ public class UI_TSkill : UI_SkillBase
 
         ActivateLevelUp(false);
 
+        _skillLevel = 1;
         SetSkillLevel(_skillLevel);
     }
 

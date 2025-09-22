@@ -28,6 +28,8 @@ namespace Server
 		public int CurRoom {  get; set; }
 		public int PickIdx { get; set; }
 
+		public int Team { get; set; }
+
 		public DateTime LastPing { get; set; } = DateTime.Now;
 
 		public void Send(IMessage packet)

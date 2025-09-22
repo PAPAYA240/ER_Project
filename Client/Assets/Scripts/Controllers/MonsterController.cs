@@ -29,6 +29,9 @@ public class MonsterController : CreatureController
     private Material originalMaterial;
     private Material skillMaterial;
 
+    // HpBar
+    protected GameObject _hpBar;
+
     protected override void Init()
 	{
         ObjectType = Define.Object.Monster; 
@@ -41,6 +44,13 @@ public class MonsterController : CreatureController
             Debug.LogError("MonsterController Add_Component : 컴포넌트 추가 실패");
             return;
         }
+
+        this.gameObject.layer = LayerMask.NameToLayer("Monster");
+
+        InitHpBar();
+
+        //업데이트 함수들 호출
+        Stat = Stat;
     }
     protected override void UpdateController()
     {
@@ -152,6 +162,60 @@ public class MonsterController : CreatureController
 
         return true;
     }
+    #endregion
+
+    #region 체력바
+
+    private void InitHpBar()
+    {
+        switch (_monsterType)
+        {
+            case MonsterType.Alpha:
+            case MonsterType.Omega:
+            case MonsterType.Gamma:
+                _hpBar = Managers.Resource.Instantiate("UI/SubItem/MonsterHpBar_Boss", gameObject.transform);
+                break;
+            case MonsterType.Drone:
+                _hpBar = Managers.Resource.Instantiate("UI/SubItem/MonsterHpBar_Common", gameObject.transform);
+                break;
+
+        }
+
+        _hpBar.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+
+        UI_MonsterHpBar ui = _hpBar.GetComponentInChildren<UI_MonsterHpBar>();
+
+        if (null == ui)
+        {
+            Debug.Log("_hpBar is null");
+            return;
+        }
+
+        ui.SetTarget(gameObject);
+    }
+
+    protected override void UpdateHp()
+    {
+        //base.UpdateHp();
+
+        if (_hpBar == null)
+            return;
+
+        _hpBar.GetComponentInChildren<UI_BarTick>().SetValue(Hp);
+
+        if(_monsterType != MonsterType.Drone)
+            _hpBar.GetComponentInChildren<UI_MonsterHpBar>().SetHpText(Hp.ToString("F0"));
+    }
+    protected override void UpdateMaxHp()
+    {
+        //base.UpdateHp();
+
+        if (_hpBar == null)
+            return;
+
+        _hpBar.GetComponentInChildren<UI_BarTick>().SetMaxValue(MaxHp);
+    }
+
     #endregion
 }
 

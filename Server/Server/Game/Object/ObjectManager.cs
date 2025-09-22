@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 using Google.Protobuf.Protocol;
 
@@ -11,6 +12,7 @@ namespace Server.Game
 
         object _lock = new object();
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
+        Dictionary<int, int> _teams = new Dictionary<int, int>(); // key: objectId, value: team
 
         // [UNUSED(1)][TYPE(7)][ID(24)]
         int _counter = 0;
@@ -53,7 +55,11 @@ namespace Server.Game
             lock (_lock)
             {
                 if(objectType == GameObjectType.Player)
-                    return _players.Remove(objectId);
+                {
+                    bool removed = _players.Remove(objectId);
+                    _teams.Remove(objectId);
+                    return removed;
+                }
             }
 
             return false;
@@ -74,6 +80,22 @@ namespace Server.Game
             }
 
             return null;
+        }
+
+        public void RegisterTeam(int ObjectId, int team)
+        {
+            _teams.Add(ObjectId, team);
+        }
+
+        public int GetTeam(int objectId)
+        {
+            foreach (var kvp in _teams)
+            {
+                if (kvp.Key == objectId)
+                    return kvp.Value;
+            }
+
+            return -1;
         }
     }
 }

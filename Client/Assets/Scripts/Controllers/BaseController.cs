@@ -12,16 +12,16 @@ public class BaseController : MonoBehaviour
 
     float _speedCoeff = 3.2f;
 
-    StatInfo _stat = new StatInfo();
+    //StatInfo _stat = new StatInfo();
     public virtual StatInfo Stat
     {
-        get { return _stat; }
+        get { return _ObjectInfo.StatInfo; }
         set
         {
-            if (_stat.Equals(value))
+            if (_ObjectInfo.StatInfo.Equals(value))
                 return;
 
-            _stat.MergeFrom(value);
+            _ObjectInfo.StatInfo.MergeFrom(value);
         }
     }
 
@@ -31,19 +31,28 @@ public class BaseController : MonoBehaviour
         set { Stat.MoveSpeed = value; }
     }
 
-    public virtual int Hp
+    public virtual float Hp
     {
         get { return Stat.Hp; }
-        set
-        {
-            Stat.Hp = value;
-        }
+        set { Stat.Hp = value; }
     }
 
-    public virtual int Stamina
+    public virtual float MaxHp
+    {
+        get { return Stat.MaxHp; }
+        set { Stat.MaxHp = value; }
+    }
+
+    public virtual float Stamina
     {
         get { return Stat.Stamina; }
         set { Stat.Stamina = value; }
+    }
+
+    public virtual float MaxStamina
+    {
+        get { return Stat.MaxStamina; }
+        set { Stat.MaxStamina = value; }
     }
 
     protected bool _updated = false;
@@ -78,10 +87,12 @@ public class BaseController : MonoBehaviour
             _rotationInfo.Qy = value.Qy;
             _rotationInfo.Qz = value.Qz;
             _rotationInfo.Qw = value.Qw;
+
+            _updated = true;
         }
     }
 
-    ObjectInfo _ObjectInfo;
+    ObjectInfo _ObjectInfo = new ObjectInfo() { StatInfo = new StatInfo() };
     public ObjectInfo ObjInfo
     {
         get { return _ObjectInfo; }
@@ -125,13 +136,6 @@ public class BaseController : MonoBehaviour
             if (PosInfo.State == value)
                 return;
 
-            if (_agent != null && _agent.isActiveAndEnabled &&
-                (State == CreatureState.Moving && value != CreatureState.Moving))
-            {
-                _agent.isStopped = true;
-                _agent.ResetPath();
-            }
-
             PosInfo.State = value;
             UpdateAnimation();
             _updated = true;
@@ -143,6 +147,8 @@ public class BaseController : MonoBehaviour
     void Start()
     {
         Init();
+        //업데이트 함수들 호출
+        //Stat = Stat;
     }
 
     void Update()
@@ -169,6 +175,9 @@ public class BaseController : MonoBehaviour
                 break;
             case CreatureState.Moving:
                 UpdateMoving();
+                break;
+            case CreatureState.Attack:
+                UpdateAttack();
                 break;
             case CreatureState.Skill:
                 UpdateSkill();
@@ -205,6 +214,11 @@ public class BaseController : MonoBehaviour
     }
 
     protected virtual void MoveToNextPos()
+    {
+
+    }
+
+    protected virtual void UpdateAttack()
     {
 
     }

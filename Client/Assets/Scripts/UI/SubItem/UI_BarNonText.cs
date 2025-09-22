@@ -4,13 +4,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_Bar : UI_Base
+public class UI_BarNonText : UI_Base
 {
     enum Images
     { FillImage }
-
-    enum Texts
-    { Text }
 
     float _value = 1000.0f;
     float _maxValue = 1000.0f;
@@ -22,14 +19,12 @@ public class UI_Bar : UI_Base
 
     private void Start()
     {
-        
+
     }
 
     public override void Init()
     {
         Bind<Image>(typeof(Images));
-        Bind<TextMeshProUGUI>(typeof(Texts));
-
         UpdateFillAmountAndText();
     }
 
@@ -52,7 +47,6 @@ public class UI_Bar : UI_Base
     void UpdateFillAmountAndText()
     {
         GetImage((int)Images.FillImage).fillAmount = _value / _maxValue;
-        GetText((int)Texts.Text).text = _value.ToString("F0") + " / " + _maxValue.ToString("F0");
     }
 
     public void PlusValue(float value)
@@ -63,5 +57,4 @@ public class UI_Bar : UI_Base
     {
         SetValue(Mathf.Max(_value - value, 0));
     }
-
 }
