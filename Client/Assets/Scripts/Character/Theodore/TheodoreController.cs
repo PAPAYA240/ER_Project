@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TheodoreController : MyPlayerController
@@ -10,6 +11,9 @@ public class TheodoreController : MyPlayerController
 
     // 장비
     private GameObject _sniperRifle = null;
+
+    // 이펙트
+    List<GameObject> _currentEffectList = new List<GameObject>();
 
     protected override void Init()
     {
@@ -50,9 +54,6 @@ public class TheodoreController : MyPlayerController
             _isUseSkill = true;
             _keyCode = KeyCode.R;
         }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-        }
         else if (Input.GetKeyDown(KeyCode.F))
         {
             _isUseSkill = true;
@@ -68,18 +69,75 @@ public class TheodoreController : MyPlayerController
         yield return new WaitForSeconds(4f);
         myRenderer.material = originMaterial;
     }
-    protected override void PassiveSkill()
+
+        // 마우스 바라보기
+    void LookAtMouse()
     {
-        //StartCoroutine(CoPassive());
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Vector3 direction = (hit.point - transform.position).normalized;
+            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+            transform.rotation = targetRotation;
+        }
+    }
+
+    #region Q Skill
+    protected override void Skill_Q()
+    {
+        ReadySkillQ();
+        StartCoroutine(ShootSkillQ());
+    }
+    private void ReadySkillQ()
+    {
+        _currentEffectList = Managers.FX.PlayEffect(Find_EffectList(KeyCode.Q), this.transform);
+        SendFXPacket(_keyCode);
+    }
+
+    IEnumerator ShootSkillQ()
+    {
+        while (Input.GetKey(KeyCode.Q))
+            yield return null;
+
+        foreach (GameObject effect in _currentEffectList)
+        {
+            if (effect != null)
+            {
+                Managers.FX.StopAndReturnEffect(effect);
+                effect.SetActive(false);
+            }
+        }
+        _currentEffectList.Clear();
+
+        PlayAnimation("SKILL_Q", 0.1f);
+
+        LookAtMouse();
+    }
+    #endregion
+
+    protected override void Skill_W()
+    {
+        // 바라보는 방향대로 스크린 호출
+        StartCoroutine(CoPassive());
+        SendFXPacket(_keyCode);
     }
 
     #region E Skill
 
     protected override void Skill_E()
     {
-        PlayAnimation("SKILL_E", 0.1f);
+        StartCoroutine(ShootSkillE());
     }
 
+    IEnumerator ShootSkillE()
+    {
+        while (Input.GetKey(KeyCode.E))
+            yield return null;
+
+        PlayAnimation("SKILL_E", 0.1f);
+      
+        LookAtMouse();
+    }
     public override void OnAttackTiming()
     {
         switch (_keyCode)
@@ -91,30 +149,27 @@ public class TheodoreController : MyPlayerController
     }
     #endregion
 
-    #region Skill
-    protected override void Skill_Q()
-    {
-        PlayAnimation("SKILL_Q", 0.1f);
-        Managers.FX.PlayEffect(Find_EffectList(KeyCode.Q), this.transform);
-        SendFXPacket(_keyCode);
-    }
-
-    protected override void Skill_W()
-    {
-        // 바라보는 방향대로 스크린 호출
-        StartCoroutine(CoPassive());
-        SendFXPacket(_keyCode);
-    }
-
+    #region R Skill
     protected override void Skill_R()
     {
+        StartCoroutine(ShootSkillR());
+    }
+    IEnumerator ShootSkillR()
+    {
+        while (Input.GetKey(KeyCode.R))
+            yield return null;
+
         PlayAnimation("SKILL_R", 0.1f);
+
+        LookAtMouse();
     }
     #endregion
+
     public override void PlayEffectFromServer(EffectInfo fxInfo)
     {
         StartCoroutine(CoPassive());
     }
+
     #region init
     private bool Equip_Weapon()
     {
