@@ -196,14 +196,11 @@ public class MyPlayerController : PlayerController
         else if (State == CreatureState.Moving)
             PlayAnimation("RUN", 0.1f);
         else if (State == CreatureState.Attack)
-        {
-            Debug.Log($"평타 코루틴 시작");
             _attackRoutine = StartCoroutine(CoAttackLoop());
-        }
         else if (State == CreatureState.Rest)
-        {
             PlayAnimation("REST_START", 0.1f);
-        }
+        else if(State == CreatureState.Dead)
+            PlayAnimation("DEAD", 0.1f);
     }
 
     protected override void UpdateController()
