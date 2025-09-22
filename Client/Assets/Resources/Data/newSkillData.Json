@@ -988,6 +988,7 @@
         "description": "테오도르가 지정한 위치에 7초 동안 유지되는 증폭 스크린을 생성합니다.",
         "type": "Normal",
         "maxLevel": 5,
+        "canMoveDuringCast": true,
         "mechanics": {
           "targetType": "TargetArea",
           "damageType": "Magic"

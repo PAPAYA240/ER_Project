@@ -15,6 +15,7 @@ using static UnityEngine.GraphicsBuffer;
 
 public class RozziController : MyPlayerController
 {
+    // Q
     private Coroutine _coSkillQ = null;
     private bool _canDash = false;
     private bool _isDashing = false;
@@ -22,37 +23,44 @@ public class RozziController : MyPlayerController
     private float _dashRange = 4.0f;
     private Vector3 _targetPos;
 
+    // W
     private Coroutine _coSkillW = null;
 
+    // E
     private Coroutine _coSkillE = null;
+    private float _animRatio = 0.4f;
     private float _jumpRange = 4.0f;
+    private GameObject _skillTarget = null;
 
+    // F
     private float _warpRange = 4.0f;
 
     protected override void UpdateSkillKeyInput()
     {
         if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))
         {
-            _isUseSkill = true;
-            _keyCode = KeyCode.Q;
+            SetSkillInput(KeyCode.Q);
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.W))
         {
-            _isUseSkill = true;
-            _keyCode = KeyCode.W;
+            SetSkillInput(KeyCode.W);
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
         {
-            if(FindMonster() != Vector3.zero)
+            GameObject target = TryGetAttackableObject();
+            if (target == null)
+                return;
+
+            Vector3 pos = target.transform.position;
+            if (Vector3.Distance(pos, transform.position) <= _jumpRange)
             {
-                _isUseSkill = true;
-                _keyCode = KeyCode.E;
+                _skillTarget = target;
+                SetSkillInput(KeyCode.E);
             }
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))
         {
-            _isUseSkill = true;
-            _keyCode = KeyCode.R;
+            SetSkillInput(KeyCode.R);
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
@@ -66,16 +74,16 @@ public class RozziController : MyPlayerController
 
     protected override void GetMouseInput()
     {
-        if(!_canDash && !_isDashing)
+        if (!_canDash && !_isDashing)
             base.GetMouseInput();
 
-        if(Input.GetMouseButton(1) && _canDash)
+        if (Input.GetMouseButton(1) && _canDash)
             StartDash();
     }
 
     protected override void UpdateMoving()
     {
-        if(!_isDashing)
+        if (!_isDashing)
             base.UpdateMoving();
     }
 
@@ -125,7 +133,7 @@ public class RozziController : MyPlayerController
 
     IEnumerator CoStartDash()
     {
-        PlayAnimation("SKILL_Q_DASH", 0.0f);
+        PlayAnimation("SKILL_Q_DASH", 0.1f);
 
         _isDashing = true;
         _agent.enabled = false;
@@ -158,9 +166,6 @@ public class RozziController : MyPlayerController
         {
             _targetPos = navHit.position;
             _agent.SetDestination(_targetPos);
-            State = CreatureState.Moving;
-
-            _moveKeyPressed = true;
         }
 
         _canDash = false;
@@ -228,7 +233,7 @@ public class RozziController : MyPlayerController
     #region Skill : E
     IEnumerator CoStartE()
     {
-        if (_targetMonster == null)
+        if (_skillTarget == null)
         {
             SetMovementState();
             yield break;
@@ -237,28 +242,27 @@ public class RozziController : MyPlayerController
         _agent.enabled = false;
 
         Vector3 startPos = transform.position;
-        Vector3 midPos = _targetMonster.transform.position;
+        Vector3 midPos = _skillTarget.transform.position;
         Vector3 dir = (midPos - startPos).normalized;
         Vector3 endPos = midPos + dir * _jumpRange;
         endPos = GetReachablePosition(midPos, endPos, out NavMeshHit navHit);
         LookAtTarget(endPos, true);
 
-        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
-        float animLength = stateInfo.length;
+        float animLength = GetCurrentAnimClipLength();
 
         float elapsed = 0.0f;
         while (elapsed < animLength) 
         {
             float t = elapsed / animLength;
 
-            if(t < 0.5f)
+            if(t < _animRatio)
             {
-                float midT = t / 0.5f;
+                float midT = t / _animRatio;
                 transform.position = Vector3.Lerp(startPos, midPos, midT);
             }
             else
             {
-                float endT = (t - 0.5f) / 0.5f;
+                float endT = (t - (1 - _animRatio)) / _animRatio;
                 transform.position = Vector3.Lerp(midPos, endPos, endT);
             }
 
@@ -289,6 +293,44 @@ public class RozziController : MyPlayerController
         transform.position = targetPos;
         _agent.Warp(targetPos);
         UpdateTransform();
+    }
+    #endregion
+
+    #region Util
+    // 시작 지점과 타겟 지점 사이에 장애물이 있으면 충돌 위치 반환
+    // 없으면 유효 위치 반환
+    private Vector3 GetReachablePosition(Vector3 startPos, Vector3 targetPos, out NavMeshHit navHit)
+    {
+        if (NavMesh.Raycast(startPos, targetPos, out NavMeshHit rayHit, NavMesh.AllAreas))
+        {
+            targetPos = rayHit.position;
+        }
+
+        // 최종 목적지 설정
+        if (NavMesh.SamplePosition(targetPos, out navHit, 1.0f, NavMesh.AllAreas))
+        {
+            return navHit.position;
+        }
+
+        return Vector3.zero;
+    }
+
+    // 플레이어 위치로부터 마우스 방향으로 사거리 내 이동 가능한 위치 반환
+    // isMaxDistance가 true 이면 항상 최대 사거리 기준 반환, false 이면 사거리 내 위치 반환
+    private Vector3 GetTargetPos(float range, bool isMaxDistance = true)
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
+
+        Vector3 dir = (hit.point - transform.position).normalized;
+
+        if (!isMaxDistance && (hit.point - transform.position).magnitude < range)
+        {
+            return hit.point;
+        }
+
+        return transform.position + dir * range;
     }
     #endregion
 }

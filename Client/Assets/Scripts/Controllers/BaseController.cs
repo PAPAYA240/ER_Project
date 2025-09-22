@@ -12,16 +12,15 @@ public class BaseController : MonoBehaviour
 
     float _speedCoeff = 3.2f;
 
-    StatInfo _stat = new StatInfo();
     public virtual StatInfo Stat
     {
-        get { return _stat; }
+        get { return ObjInfo.StatInfo; }
         set
         {
-            if (_stat.Equals(value))
+            if (ObjInfo.StatInfo.Equals(value))
                 return;
 
-            _stat.MergeFrom(value);
+            ObjInfo.StatInfo.MergeFrom(value);
         }
     }
 
@@ -31,31 +30,38 @@ public class BaseController : MonoBehaviour
         set { Stat.MoveSpeed = value; }
     }
 
-    public virtual int Hp
+    public virtual float Hp
     {
         get { return Stat.Hp; }
-        set
-        {
-            Stat.Hp = value;
-        }
+        set { Stat.Hp = value; }
     }
 
-    public virtual int Stamina
+    public virtual float MaxHp
+    {
+        get { return Stat.MaxHp; }
+        set { Stat.MaxHp = value; }
+    }
+
+    public virtual float Stamina
     {
         get { return Stat.Stamina; }
         set { Stat.Stamina = value; }
     }
 
+    public virtual float MaxStamina
+    {
+        get { return Stat.MaxStamina; }
+        set { Stat.MaxStamina = value; }
+    }
+
     protected bool _updated = false;
 
-    PositionInfo _positionInfo = new PositionInfo();
-    RotationInfo _rotationInfo = new RotationInfo() { Qw = 1.0f };
     public PositionInfo PosInfo
     {
-        get { return _positionInfo; }
+        get { return ObjInfo.PosInfo; }
         set
         {
-            if (_positionInfo.Equals(value))
+            if (ObjInfo.PosInfo.Equals(value))
                 return;
 
             CellPos = new Vector3(value.PosX, value.PosY, value.PosZ);
@@ -65,27 +71,35 @@ public class BaseController : MonoBehaviour
 
     public RotationInfo RotInfo
     {
-        get { return _rotationInfo; }
+        get { return ObjInfo.RotInfo; }
         set
         {
             if (value == null)
                 return;
 
-            if (_rotationInfo.Equals(value))
+            if (ObjInfo.RotInfo.Equals(value))
                 return;
 
-            _rotationInfo.Qx = value.Qx;
-            _rotationInfo.Qy = value.Qy;
-            _rotationInfo.Qz = value.Qz;
-            _rotationInfo.Qw = value.Qw;
+            ObjInfo.RotInfo.Qx = value.Qx;
+            ObjInfo.RotInfo.Qy = value.Qy;
+            ObjInfo.RotInfo.Qz = value.Qz;
+            ObjInfo.RotInfo.Qw = value.Qw;
+
+            _updated = true;
         }
     }
 
-    ObjectInfo _ObjectInfo;
+    ObjectInfo _ObjectInfo = new ObjectInfo()
+    {
+        StatInfo = new StatInfo(),
+        PosInfo = new PositionInfo(),
+        RotInfo = new RotationInfo() { Qw = 1f }        
+    }; 
+
     public ObjectInfo ObjInfo
     {
         get { return _ObjectInfo; }
-        set { _ObjectInfo = value; }
+        set { _ObjectInfo = value; PosInfo = value.PosInfo; RotInfo = value.RotInfo; Stat = value.StatInfo; }
     }
 
     public void SyncPos()
@@ -125,13 +139,6 @@ public class BaseController : MonoBehaviour
             if (PosInfo.State == value)
                 return;
 
-            if (_agent != null && _agent.isActiveAndEnabled &&
-                (State == CreatureState.Moving && value != CreatureState.Moving))
-            {
-                _agent.isStopped = true;
-                _agent.ResetPath();
-            }
-
             PosInfo.State = value;
             UpdateAnimation();
             _updated = true;
@@ -143,6 +150,8 @@ public class BaseController : MonoBehaviour
     void Start()
     {
         Init();
+        //업데이트 함수들 호출
+        //Stat = Stat;
     }
 
     void Update()
@@ -169,6 +178,9 @@ public class BaseController : MonoBehaviour
                 break;
             case CreatureState.Moving:
                 UpdateMoving();
+                break;
+            case CreatureState.Attack:
+                UpdateAttack();
                 break;
             case CreatureState.Skill:
                 UpdateSkill();
@@ -205,6 +217,11 @@ public class BaseController : MonoBehaviour
     }
 
     protected virtual void MoveToNextPos()
+    {
+
+    }
+
+    protected virtual void UpdateAttack()
     {
 
     }

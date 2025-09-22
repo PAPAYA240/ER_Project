@@ -42,13 +42,11 @@ public class ObjectManager
                 _objects.Add(info.ObjectId, go);
 
                 MyPlayer = go.GetComponent<MyPlayerController>();
+                MyPlayer.ObjInfo = info;
                 MyPlayer.Id = info.ObjectId;
-                MyPlayer.PosInfo = info.PosInfo;
-                MyPlayer.Stat = info.StatInfo;
+                MyPlayer.SyncPos();                
                 MyPlayer.Stat.Hp = info.StatInfo.MaxHp;
                 MyPlayer.Stat.Stamina = info.StatInfo.MaxStamina;
-                MyPlayer.SyncPos();
-                MyPlayer.ObjInfo = info;
                 MyPlayer.ManualInit();
             }
             else
@@ -58,11 +56,11 @@ public class ObjectManager
                 _objects.Add(info.ObjectId, go);
 
                 PlayerController pc = go.GetComponent<PlayerController>();
-                pc.Id = info.ObjectId;
-                pc.PosInfo = info.PosInfo;
-                pc.Stat = info.StatInfo;
-                pc.SyncPos();
                 pc.ObjInfo = info;
+                pc.Id = info.ObjectId;
+                pc.SyncPos();                
+                pc.Stat.Hp = info.StatInfo.MaxHp;
+                pc.Stat.Stamina = info.StatInfo.MaxStamina;
                 Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.TeamPlayer, pc);
             }
         }
@@ -77,6 +75,7 @@ public class ObjectManager
             mc.Id = info.ObjectId;
             mc.PosInfo = info.PosInfo;
             mc.Stat = info.StatInfo;
+            mc.Stat.Hp = info.StatInfo.MaxHp;
             mc._monsterType = info.MonsterType;
             mc.SyncPos();
         }
@@ -91,6 +90,21 @@ public class ObjectManager
             //ac.PosInfo = info.PosInfo;
             //ac.Stat = info.StatInfo;
             //ac.SyncPos();
+        }
+        else if (objectType == GameObjectType.Environment)
+        {
+            GameObject go = Managers.Resource.Instantiate($"Env/{info.EnvType}");
+            go.name = info.Name;
+            _objects.Add(info.ObjectId, go);
+
+            EnvironmentObjController ec = go.GetComponent<EnvironmentObjController>();
+            ec.ObjInfo = info;
+            ec.Id = info.ObjectId;
+            ec.PosInfo = info.PosInfo;
+            ec.Stat = info.StatInfo;
+            if (Enum.TryParse(info.Name, out EnvType envEnum))
+                ec._envType = envEnum;
+            ec.SyncPos();
         }
     }
 
@@ -131,6 +145,11 @@ public class ObjectManager
                 isVisible = true; /*장애물없고 시야 범위 내에 있으면*/
 
             foreach (var r in go.GetComponentsInChildren<Renderer>())
+            {
+                r.enabled = isVisible;
+            }
+
+            foreach (var r in go.GetComponentsInChildren<Canvas>())
             {
                 r.enabled = isVisible;
             }

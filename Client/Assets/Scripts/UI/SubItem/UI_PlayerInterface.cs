@@ -68,7 +68,7 @@ public class UI_PlayerInterface : UI_Base
         GetObject((int)GameObjects.FSkill).GetComponent<UI_SkillBase>().SkillKeyCode = UI_SkillBase.SkillEnum.F;
 
         GetObject((int)GameObjects.Death).SetActive(false);
-        GetObject((int)GameObjects.LevelAndExp).GetComponent<UI_Level>().OnLevelUp += OnLevelUp;
+        //GetObject((int)GameObjects.LevelAndExp).GetComponent<UI_Level>().OnLevelUp += OnLevelUp;
         GetObject((int)GameObjects.QSkill).GetComponent<UI_SkillBase>().OnLevelUp += OnCharSkillLevelUp;
         GetObject((int)GameObjects.WSkill).GetComponent<UI_SkillBase>().OnLevelUp += OnCharSkillLevelUp;
         GetObject((int)GameObjects.ESkill).GetComponent<UI_SkillBase>().OnLevelUp += OnCharSkillLevelUp;
@@ -77,9 +77,7 @@ public class UI_PlayerInterface : UI_Base
         GetObject((int)GameObjects.FSkill).GetComponent<UI_SkillBase>().OnLevelUp += OnTacticalSkillLevelUp;
 
         //temp
-        //LevelUp(1);
-        OnLevelUp(2);
-        SpecificSkillLevelUp(GameObjects.TSkill);
+        OnLevelUp(1);
         SpecificSkillLevelUp(GameObjects.FSkill);
 
         OnDeath();
@@ -322,16 +320,16 @@ public class UI_PlayerInterface : UI_Base
     #endregion
 
     #region Level
-    public void EarnExp(int exp)
-    {
-        GameObject go = GetObject((int)GameObjects.LevelAndExp);
-        if (go == null)
-            return;
+    //public void EarnExp(int exp)
+    //{
+    //    GameObject go = GetObject((int)GameObjects.LevelAndExp);
+    //    if (go == null)
+    //        return;
 
-        UI_Level ui_Level = go.GetComponent<UI_Level>();
-        if (ui_Level != null)
-            ui_Level.EarnExp(exp);
-    }
+    //    UI_Level ui_Level = go.GetComponent<UI_Level>();
+    //    if (ui_Level != null)
+    //        ui_Level.EarnExp(exp);
+    //}
 
     public void ActivateCombatImg(bool activate)
     {
@@ -345,43 +343,6 @@ public class UI_PlayerInterface : UI_Base
             ui_Level.ActivateCombatImg(activate);
     }
 
-    bool CanSkillLevelUp(GameObjects objEnum)
-    {
-        switch (objEnum)
-        {
-            case GameObjects.QSkill:
-            case GameObjects.WSkill:
-            case GameObjects.ESkill:
-                break;
-            case GameObjects.RSkill:
-                break;
-            case GameObjects.TSkill:
-                break;
-        }
-
-        /*
-        스킬 레벨을 반환 받고 
-        판단해서 리턴
-         
-        일반 스킬의 레벨에 따른 스킬 레벨제한 
-        1 1
-        2 3
-        3 5
-        4 7
-        5 9
-        궁극기 스킬의 레벨에 따른 스킬 레벨제한
-        1 6
-        2 11
-        3 16
-        패시브 스킬의 레벨에 따른 스킬 레벨제한
-        1 이미 찍혀있음.
-        2 5
-        3 9
-        */
-        return true;
-    }
-
-
     public void OnLevelUp(int levelUpCnt)
     {
         _remainSkillPoint += levelUpCnt;
@@ -393,6 +354,10 @@ public class UI_PlayerInterface : UI_Base
         ActivateSkillLevelUpButton(GameObjects.ESkill, true);
         ActivateSkillLevelUpButton(GameObjects.RSkill, true);
         ActivateSkillLevelUpButton(GameObjects.TSkill, true);
+    }
+    public void SetLevel(int level)
+    {
+        GetObject((int)GameObjects.LevelAndExp).GetComponent<UI_Level>().CurrentLevel = level;
     }
 
     #endregion

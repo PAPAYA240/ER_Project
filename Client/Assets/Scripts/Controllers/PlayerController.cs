@@ -19,8 +19,15 @@ public class PlayerController : CreatureController
     //Fog
     private FogOfWarVision _fogOfWarVision;
 
+    //NameTag
+    protected GameObject _nameTag; 
+
     // 레이어
     protected string layerName;
+
+    // 화살
+    protected GameObject _projectile = null;
+    protected Transform _equipTransform = null;
 
     public bool IsKeyInput
     {
@@ -49,10 +56,13 @@ public class PlayerController : CreatureController
         base.Init();
 
         ObjectType = Define.Object.OtherPlayer;
+        this.gameObject.layer = LayerMask.NameToLayer("Player");
 
         //Fog
         _fogOfWarVision = gameObject.GetOrAddComponent<FogOfWarVision>();
         gameObject.layer = LayerMask.NameToLayer("Fog");
+
+        InitNameTag();
     }
 
     protected override void UpdateController()
@@ -82,6 +92,8 @@ public class PlayerController : CreatureController
         // 서버에서 스킬 사용을 허락받으면
         if (skillPacket.CanUse)
         {
+            State = CreatureState.Skill;
+
             KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
             ExecuteSkill(keyCode);
 
@@ -90,7 +102,6 @@ public class PlayerController : CreatureController
                 Managers.Object.MyPlayer.StartCoCoolTime(keyCode);
             }
 
-            State = CreatureState.Skill;
             //StartCoroutine(CoStartSkill());
             Debug.Log("스킬 코루틴 시작");
 
@@ -129,6 +140,7 @@ public class PlayerController : CreatureController
 
     protected virtual void Skill_R() { }
     protected virtual void PassiveSkill() { }
+    public virtual void OnAttackTiming() { }
 
     IEnumerator CoStartSkill()
     {
@@ -149,6 +161,7 @@ public class PlayerController : CreatureController
         // TODO : TEMP
         CheckUpdatedFlag();
     }
+
     #endregion
 
     #region Animation
@@ -160,7 +173,6 @@ public class PlayerController : CreatureController
 
         _animator.CrossFadeInFixedTime(animName, ratio);
     }
-    public virtual void OnAttackTiming() { }
 
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
@@ -168,11 +180,6 @@ public class PlayerController : CreatureController
     }
 
     #endregion
-
-    public void PlayEffectFromServer(EffectInfo fxInfo)
-    {
-        Managers.FX.PlayEffect(Find_EffectList((KeyCode)fxInfo.KeyCode), this.transform);
-    }
 
     #region SkillMesh
 
@@ -187,11 +194,77 @@ public class PlayerController : CreatureController
 
     #endregion
 
+    #region NameTagAndHp
+    protected void InitNameTag()
+    {
+        _nameTag = Managers.Resource.Instantiate("UI/SubItem/PlayerNameTagCanvas", gameObject.transform);
+        if (null == _nameTag)
+        {
+            Debug.Log("_nameTag is null");
+            return;
+        }
+
+        _nameTag.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+
+        UI_PlayerNameTag ui = _nameTag.GetComponentInChildren<UI_PlayerNameTag>();
+        ui.SetTarget(gameObject);
+        ui.SetHPColor();
+    }
+    protected override void UpdateHp()
+    {
+        if (_nameTag == null)
+            return;
+        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHp(Hp);
+    }
+    protected override void UpdateMaxHp()
+    {
+        if (_nameTag == null)
+            return;
+        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetMaxHp(MaxHp);
+    }
+    protected override void UpdateStamina()
+    {
+        if (_nameTag == null)
+            return;
+        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetStamina(Stamina);
+    }
+    protected override void UpdateMaxStamina()
+    {
+        if (_nameTag == null)
+            return;
+        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetMaxStamina(MaxStamina);
+    }
+
+    public void SetNameTagLevel()
+    {
+        if (_nameTag == null)
+            return;
+        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetLevelText(Stat.Level);
+    }
+
+    #endregion
+    #region Effect
+    public virtual void PlayEffectFromServer(EffectInfo fxInfo)
+    {
+        Managers.FX.PlayEffect(Find_EffectList((KeyCode)fxInfo.KeyCode), this.transform);
+    }
+
     protected List<EffectData> Find_EffectList(KeyCode key)
     {
         var skillDict = DataManager.PlayerFxDict[ObjInfo.CharType];
         if (skillDict.ContainsKey(key))
             return skillDict[key];
         return null;
+    }
+    #endregion
+
+    public void SpawnProjectile()
+    {
+        _projectile.SetActive(true);
+
+        Projectile projectileScript = _projectile.GetComponent<Projectile>();
+
+        if (_equipTransform != null && projectileScript != null)
+            projectileScript.Run(_equipTransform.position, transform.forward);
     }
 }

@@ -132,16 +132,24 @@ public class SkillMesh : MonoBehaviour
     private void DrawSector(LineRenderer lr, float radius, float angleDegrees)
     {
         int segments = 20;
-        lr.positionCount = segments + 2;
-        lr.SetPosition(0, Vector3.zero); // 중심
+        lr.positionCount = segments + 3;
+
+        lr.SetPosition(0, Vector3.zero); // 중심 (로컬)
+
         float startAngle = -angleDegrees / 2f;
         float step = angleDegrees / segments;
 
         for (int i = 0; i <= segments; i++)
         {
             float angle = (startAngle + step * i) * Mathf.Deg2Rad;
-            lr.SetPosition(i + 1, new Vector3(Mathf.Cos(angle) * radius, 0, Mathf.Sin(angle) * radius));
+
+            // Z축(앞) 기준으로 반원 그리기
+            Vector3 localPos = new Vector3(Mathf.Sin(angle) * radius, 0, Mathf.Cos(angle) * radius);
+
+            lr.SetPosition(i + 1, localPos);
         }
+
+        lr.SetPosition(segments + 2, Vector3.zero);
     }
 
     private IEnumerator AutoDestroy(float duration)

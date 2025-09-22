@@ -30,7 +30,7 @@ public class DataManager
     public void Init()
     {
         //GameData = LoadJson<Data.GameData, string, Data.CharacterData>("newSkillData").MakeDict();
-         //SkillDict = LoadJson<Data.SkillDict, string, Data.SkillData>("SkillData").MakeDict();
+        //SkillDict = LoadJson<Data.SkillDict, string, Data.SkillData>("SkillData").MakeDict();
 
         // For PlayerData
         StatDict = LoadJson<Data.StatData, CharacterType, StatInfo>("StatData").MakeDict();

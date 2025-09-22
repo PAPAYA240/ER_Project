@@ -1,19 +1,19 @@
 ﻿using Google.Protobuf.Protocol;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TheodoreController : MyPlayerController
 {
-    // 정보
-
     // 머터리얼
     Material passiveMaterial, originMaterial;
     Renderer myRenderer;
 
     // 장비
     private GameObject _sniperRifle = null;
-    private GameObject _sparkBullet = null;
-    private Transform _equipLTransform = null;
+
+    // 이펙트
+    List<GameObject> _currentEffectList = new List<GameObject>();
 
     protected override void Init()
     {
@@ -54,10 +54,6 @@ public class TheodoreController : MyPlayerController
             _isUseSkill = true;
             _keyCode = KeyCode.R;
         }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-
-        }
         else if (Input.GetKeyDown(KeyCode.F))
         {
             _isUseSkill = true;
@@ -73,81 +69,113 @@ public class TheodoreController : MyPlayerController
         yield return new WaitForSeconds(4f);
         myRenderer.material = originMaterial;
     }
-    protected override void PassiveSkill()
+
+        // 마우스 바라보기
+    void LookAtMouse()
     {
-        //StartCoroutine(CoPassive());
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Vector3 direction = (hit.point - transform.position).normalized;
+            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+            transform.rotation = targetRotation;
+        }
     }
 
+    #region Q Skill
+    protected override void Skill_Q()
+    {
+        ReadySkillQ();
+        StartCoroutine(ShootSkillQ());
+    }
+    private void ReadySkillQ()
+    {
+        _currentEffectList = Managers.FX.PlayEffect(Find_EffectList(KeyCode.Q), this.transform);
+        SendFXPacket(_keyCode);
+    }
+
+    IEnumerator ShootSkillQ()
+    {
+        while (Input.GetKey(KeyCode.Q))
+            yield return null;
+
+        foreach (GameObject effect in _currentEffectList)
+        {
+            if (effect != null)
+            {
+                Managers.FX.StopAndReturnEffect(effect);
+                effect.SetActive(false);
+            }
+        }
+        _currentEffectList.Clear();
+
+        PlayAnimation("SKILL_Q", 0.1f);
+
+        LookAtMouse();
+    }
+    #endregion
+
+    protected override void Skill_W()
+    {
+        // 바라보는 방향대로 스크린 호출
+        StartCoroutine(CoPassive());
+        SendFXPacket(_keyCode);
+    }
 
     #region E Skill
-    private Vector3 _lastForward;
-   
+
     protected override void Skill_E()
     {
-        PlayAnimation("SKILL_E", 0.1f);
-
-        _sparkBullet.SetActive(true);
-        _lastForward = this.transform.forward;
+        StartCoroutine(ShootSkillE());
     }
 
-    IEnumerator CoSkillE()
+    IEnumerator ShootSkillE()
     {
-        float elapsedTime = 0f;
-        float duration = 3.0f;
-        float speed = 10f;
-
-        Vector3 startPosition = _sparkBullet.transform.position;
-        while (elapsedTime < duration)
-        {
-            _sparkBullet.transform.position += _lastForward * speed * Time.deltaTime;
-            elapsedTime += Time.deltaTime;
+        while (Input.GetKey(KeyCode.E))
             yield return null;
-        }
-        _sparkBullet.SetActive(false);
-    }
 
+        PlayAnimation("SKILL_E", 0.1f);
+      
+        LookAtMouse();
+    }
     public override void OnAttackTiming()
     {
         switch (_keyCode)
         {
             case KeyCode.E:
-                _sparkBullet.transform.position = _equipLTransform.position;
-                StartCoroutine(CoSkillE());
+                SpawnProjectile();
                 break;
         }
     }
-
     #endregion
 
-    #region Skill
-    protected override void Skill_Q()
-    {
-        PlayAnimation("SKILL_Q", 0.1f);
-        Managers.FX.PlayEffect(Find_EffectList(KeyCode.Q), this.transform);
-        SendFXPacket(_keyCode);
-    }
-
-    protected override void Skill_W()
-    {
-        // 바라보는 방향대로 스크린 호출
-        _isUseSkill = false;
-        PlayAnimation("WAIT", 0.1f);
-        StartCoroutine(CoPassive());
-        SendFXPacket(_keyCode);
-    }
-
+    #region R Skill
     protected override void Skill_R()
     {
+        StartCoroutine(ShootSkillR());
+    }
+    IEnumerator ShootSkillR()
+    {
+        while (Input.GetKey(KeyCode.R))
+            yield return null;
+
         PlayAnimation("SKILL_R", 0.1f);
+
+        LookAtMouse();
     }
     #endregion
+
+    public override void PlayEffectFromServer(EffectInfo fxInfo)
+    {
+        StartCoroutine(CoPassive());
+    }
 
     #region init
     private bool Equip_Weapon()
     {
        Transform RTransform = this.FindInDescendants(transform, "Equip_R");
-       _equipLTransform = this.FindInDescendants(transform, "Equip_L");
-        if (_equipLTransform == null || RTransform == null)
+       _equipTransform = this.FindInDescendants(transform, "Equip_L");
+        if (_equipTransform == null || RTransform == null)
             return false;
 
         // 스나이퍼
@@ -166,15 +194,14 @@ public class TheodoreController : MyPlayerController
             return false;
 
         // 스파크 탄
-        _sparkBullet = Managers.Resource.Instantiate($"Creature/Weapon/WP_Theodore_Skill03_LOD");
-        if (_sparkBullet != null)
+        _projectile = Managers.Resource.Instantiate($"Creature/Weapon/WP_Theodore_Skill03_LOD");
+        if (_projectile != null)
         {
-            if (_equipLTransform != null)
+            if (_equipTransform != null)
             {
-                _sparkBullet.transform.localPosition = _equipLTransform.localPosition;
-                _sparkBullet.transform.localRotation = Quaternion.identity;
-                _sparkBullet.transform.localScale = Vector3.one;
-                _sparkBullet.SetActive(false);
+                _projectile.transform.localPosition = _equipTransform.localPosition;
+                _projectile.transform.localRotation = Quaternion.identity;
+                _projectile.transform.localScale = Vector3.one;
             }
         }
         else

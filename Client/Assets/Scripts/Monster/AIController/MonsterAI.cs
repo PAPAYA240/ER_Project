@@ -36,7 +36,10 @@ public class MonsterAI : MonoBehaviour
 
         _timer = 0f;
         foreach (var rootNode in _rootNodes)
-            rootNode.Execute(this.gameObject);
+        {
+            if(gameObject != null)
+                rootNode.Execute(this.gameObject);
+        }
     }
 
     private List<Node> CreateBehaviorTree()
