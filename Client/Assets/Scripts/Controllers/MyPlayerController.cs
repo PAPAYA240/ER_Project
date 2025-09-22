@@ -775,19 +775,6 @@ public class MyPlayerController : PlayerController
 
     #endregion
 
-    #region Camera
-    [SerializeField]
-    public Vector3 _offset = new Vector3(0, 10, -10);
-    [SerializeField]
-    public float smoothSpeed = 5f;
-    void LateUpdate()
-    {
-        Vector3 targetPos = transform.position + _offset;
-        Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, targetPos, smoothSpeed * Time.deltaTime);
-        Camera.main.transform.LookAt(transform.position);
-    }
-    #endregion
-
     #region Util
     protected void UpdateTransform()
     {
