@@ -60,13 +60,17 @@ public class TheodoreController : MyPlayerController
             _keyCode = KeyCode.F;
         }
     }
- 
+  
     IEnumerator CoPassive()
     {
+        Renderer sniperRender = _sniperRifle.GetComponentInChildren<Renderer>();
         myRenderer.material = passiveMaterial;
+        sniperRender.material = passiveMaterial;
         Managers.FX.PlayEffect(Find_EffectList(KeyCode.W), this.transform);
 
         yield return new WaitForSeconds(4f);
+
+        sniperRender.material = originMaterial;
         myRenderer.material = originMaterial;
     }
 
