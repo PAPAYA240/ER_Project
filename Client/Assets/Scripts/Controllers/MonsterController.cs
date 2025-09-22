@@ -35,7 +35,10 @@ public class MonsterController : CreatureController
     protected override void Init()
 	{
         ObjectType = Define.Object.Monster; 
+        this.gameObject.layer = LayerMask.NameToLayer("Monster");
+
 		base.Init();
+
         if (!Add_Component())
         {
             Debug.LogError("MonsterController Add_Component : 컴포넌트 추가 실패");
@@ -49,7 +52,6 @@ public class MonsterController : CreatureController
         //업데이트 함수들 호출
         Stat = Stat;
     }
-
     protected override void UpdateController()
     {
        transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);

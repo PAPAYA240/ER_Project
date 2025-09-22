@@ -32,6 +32,7 @@ namespace Server.Data
 
         public static Dictionary<string, MonsterData> MonsterDict { get; private set; } = new Dictionary<string, MonsterData>();
         public static Dictionary<MonsterSkill, MonsterSkillData> MonsterSkillDict { get; private set; } = new Dictionary<MonsterSkill, MonsterSkillData>();
+        public static Dictionary<EnvType, ObjectInfo> EnvironmentObjDict { get; private set; } = new Dictionary<EnvType, ObjectInfo>();
 
         public static void LoadData()
         {
@@ -47,6 +48,9 @@ namespace Server.Data
             // For MonsterData
             MonsterDict = LoadJson<Data.MonsterDict, string, Data.MonsterData>("MonsterData/MonsterData", "monster").MakeDict();
             MonsterSkillDict = LoadJson<Data.MonsterSkillDict, MonsterSkill, Data.MonsterSkillData>("MonsterData/MonsterSkillData", "monster").MakeDict();
+
+            // For EnvironmentData
+            EnvironmentObjDict = LoadJson<Data.EnvObjectData, EnvType, ObjectInfo>("Env/EnvData", "monster").MakeDict();
         }
 
         static Loader LoadJson<Loader, Key, Value>(string path, string key) where Loader : ILoader<Key, Value>

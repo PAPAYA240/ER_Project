@@ -147,7 +147,9 @@ class PacketHandler
         s_traitPacket.PickIdx = c_traitPacket.PickIdx;
         room.Broadcast(s_traitPacket, c_traitPacket.PickIdx);
     }
-
+    public static void C_InteractHandler(PacketSession session, IMessage packet)
+    {
+    }
     public static void C_WeaponHandler(PacketSession session, IMessage packet)
     {
         ClientSession clientSession = session as ClientSession;
