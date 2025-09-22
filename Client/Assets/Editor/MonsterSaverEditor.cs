@@ -61,3 +61,60 @@ public class MonsterSaverEditor : MonoBehaviour
         Debug.Log("몬스터 데이터가 " + path + " 경로에 성공적으로 저장되었습니다.");
     }
 }
+
+
+
+
+[System.Serializable]
+public class EnvSaveData
+{
+    public EnvType envType;
+    public float xPos;
+    public float yPos;
+    public float zPos;
+
+    // 생성자
+    public EnvSaveData(EnvType type, Vector3 pos)
+    {
+        this.envType = type;
+        this.xPos = pos.x;
+        this.yPos = pos.y;
+        this.zPos = pos.z;
+    }
+}
+
+[System.Serializable]
+public class EnvList
+{
+    public List<EnvSaveData> EnvObjects;
+}
+
+public class EnvInfoComponent : MonoBehaviour
+{
+    public EnvType monsterType;
+}
+public class EnvSaverEditor : MonoBehaviour
+{
+    [MenuItem("Tools/Save EnvObject Data")]
+    public static void SaveMonsterSaveData()
+    {
+        EnvironmentObjController[] monstersInScene = FindObjectsOfType<EnvironmentObjController>();
+
+        EnvList envList = new EnvList();
+        envList.EnvObjects = new List<EnvSaveData>();
+
+        foreach (EnvironmentObjController envInfo in monstersInScene)
+        {
+            Vector3 pos = envInfo.transform.position;
+            EnvSaveData data = new EnvSaveData(envInfo._envType, pos);
+            envList.EnvObjects.Add(data);
+        }
+
+        string jsonData = JsonUtility.ToJson(envList, true); 
+
+        string path = Application.dataPath + "/EnvObjData.json";
+        File.WriteAllText(path, jsonData);
+        Debug.Log("몬스터 데이터가 " + path + " 경로에 성공적으로 저장되었습니다.");
+    }
+}
+

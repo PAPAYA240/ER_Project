@@ -34,6 +34,8 @@ enum MsgId {
   S_TRAIT = 26;
   C_WEAPON = 27;
   S_WEAPON = 28;
+  C_INTERACT = 29;
+  S_INTERACT = 30;
 }
 
 enum CreatureState{
@@ -45,12 +47,31 @@ enum CreatureState{
   REST = 5;
 }
 
+  message C_Interact {
+    int32 objectId = 1;
+  }
+
+
+  message S_Interact  {
+      int32 objectId = 1;
+      int64 nextUseTime = 2;
+  }
+
 enum GameObjectType{
 	NONE = 0;
 	PLAYER = 1;
 	MONSTER = 2;
 	PROJECTILE = 3;
+	ENVIRONMENT = 4;
 }
+
+enum EnvType
+{
+   ENV_NONE = 0;
+   HILL_OBJ = 1;
+}
+   
+
 
 enum SkillType{
 	SKILL_NONE = 0;
@@ -200,11 +221,7 @@ message S_Move{
   bool isWarp = 4;
 }
 
-message C_SkillEnd {
-	ObjectInfo objectInfo = 1;
-	MonsterSkill skillType = 2; 
-	
-}
+
 
 message C_Skill{
 	ObjectInfo objectInfo = 1;
@@ -255,6 +272,7 @@ message S_Trait{
 	int32 pickIdx = 2;
 }
 
+
 message C_Weapon{
 	Weapon weaponType = 1;
 	int32 pickIdx = 2;
@@ -286,6 +304,7 @@ message S_LeavePick{
 	int32 pickIdx = 1;
 }
 
+
 message ObjectInfo{
 	int32 objectId = 1;
 	string name = 2;
@@ -294,7 +313,8 @@ message ObjectInfo{
 	StatInfo statInfo = 5;
 	CharacterType charType = 6;
 	MonsterType monsterType = 7;
-	int32 team = 8;
+	EnvType envType = 8;
+	int32 team = 9;
 }
 
 message AnimInfo{
@@ -345,6 +365,7 @@ message StatInfo{
 	float moveSpeed = 10;
 	int32 exp = 11;
 	int32 level = 12;
+	int32 hill = 13;
 }
 
 
@@ -381,6 +402,8 @@ message SkillHitbox{
 	float minRange = 14;
 	float maxRange = 15;
 }
+
+
 
 message C_Ping{
 	bool ping = 1;

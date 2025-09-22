@@ -25,6 +25,10 @@ public class PlayerController : CreatureController
     // 레이어
     protected string layerName;
 
+    // 화살
+    protected GameObject _projectile = null;
+    protected Transform _equipTransform = null;
+
     public bool IsKeyInput
     {
         get { return _isKeyInput; }
@@ -52,6 +56,7 @@ public class PlayerController : CreatureController
         base.Init();
 
         ObjectType = Define.Object.OtherPlayer;
+        this.gameObject.layer = LayerMask.NameToLayer("Player");
 
         //Fog
         _fogOfWarVision = gameObject.GetOrAddComponent<FogOfWarVision>();
@@ -135,6 +140,7 @@ public class PlayerController : CreatureController
 
     protected virtual void Skill_R() { }
     protected virtual void PassiveSkill() { }
+    public virtual void OnAttackTiming() { }
 
     IEnumerator CoStartSkill()
     {
@@ -155,6 +161,7 @@ public class PlayerController : CreatureController
         // TODO : TEMP
         CheckUpdatedFlag();
     }
+
     #endregion
 
     #region Animation
@@ -166,7 +173,6 @@ public class PlayerController : CreatureController
 
         _animator.CrossFadeInFixedTime(animName, ratio);
     }
-    public virtual void OnAttackTiming() { }
 
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
@@ -174,11 +180,6 @@ public class PlayerController : CreatureController
     }
 
     #endregion
-
-    public void PlayEffectFromServer(EffectInfo fxInfo)
-    {
-        Managers.FX.PlayEffect(Find_EffectList((KeyCode)fxInfo.KeyCode), this.transform);
-    }
 
     #region SkillMesh
 
@@ -242,11 +243,28 @@ public class PlayerController : CreatureController
     }
 
     #endregion
+    #region Effect
+    public virtual void PlayEffectFromServer(EffectInfo fxInfo)
+    {
+        Managers.FX.PlayEffect(Find_EffectList((KeyCode)fxInfo.KeyCode), this.transform);
+    }
+
     protected List<EffectData> Find_EffectList(KeyCode key)
     {
         var skillDict = DataManager.PlayerFxDict[ObjInfo.CharType];
         if (skillDict.ContainsKey(key))
             return skillDict[key];
         return null;
+    }
+    #endregion
+
+    public void SpawnProjectile()
+    {
+        _projectile.SetActive(true);
+
+        Projectile projectileScript = _projectile.GetComponent<Projectile>();
+
+        if (_equipTransform != null && projectileScript != null)
+            projectileScript.Run(_equipTransform.position, transform.forward);
     }
 }

@@ -4,16 +4,12 @@ using UnityEngine;
 
 public class TheodoreController : MyPlayerController
 {
-    // 정보
-
     // 머터리얼
     Material passiveMaterial, originMaterial;
     Renderer myRenderer;
 
     // 장비
     private GameObject _sniperRifle = null;
-    private GameObject _sparkBullet = null;
-    private Transform _equipLTransform = null;
 
     protected override void Init()
     {
@@ -56,7 +52,6 @@ public class TheodoreController : MyPlayerController
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
-
         }
         else if (Input.GetKeyDown(KeyCode.F))
         {
@@ -78,32 +73,11 @@ public class TheodoreController : MyPlayerController
         //StartCoroutine(CoPassive());
     }
 
-
     #region E Skill
-    private Vector3 _lastForward;
-   
+
     protected override void Skill_E()
     {
         PlayAnimation("SKILL_E", 0.1f);
-
-        _sparkBullet.SetActive(true);
-        _lastForward = this.transform.forward;
-    }
-
-    IEnumerator CoSkillE()
-    {
-        float elapsedTime = 0f;
-        float duration = 3.0f;
-        float speed = 10f;
-
-        Vector3 startPosition = _sparkBullet.transform.position;
-        while (elapsedTime < duration)
-        {
-            _sparkBullet.transform.position += _lastForward * speed * Time.deltaTime;
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        _sparkBullet.SetActive(false);
     }
 
     public override void OnAttackTiming()
@@ -111,12 +85,10 @@ public class TheodoreController : MyPlayerController
         switch (_keyCode)
         {
             case KeyCode.E:
-                _sparkBullet.transform.position = _equipLTransform.position;
-                StartCoroutine(CoSkillE());
+                SpawnProjectile();
                 break;
         }
     }
-
     #endregion
 
     #region Skill
@@ -130,8 +102,6 @@ public class TheodoreController : MyPlayerController
     protected override void Skill_W()
     {
         // 바라보는 방향대로 스크린 호출
-        _isUseSkill = false;
-        PlayAnimation("WAIT", 0.1f);
         StartCoroutine(CoPassive());
         SendFXPacket(_keyCode);
     }
@@ -141,13 +111,16 @@ public class TheodoreController : MyPlayerController
         PlayAnimation("SKILL_R", 0.1f);
     }
     #endregion
-
+    public override void PlayEffectFromServer(EffectInfo fxInfo)
+    {
+        StartCoroutine(CoPassive());
+    }
     #region init
     private bool Equip_Weapon()
     {
        Transform RTransform = this.FindInDescendants(transform, "Equip_R");
-       _equipLTransform = this.FindInDescendants(transform, "Equip_L");
-        if (_equipLTransform == null || RTransform == null)
+       _equipTransform = this.FindInDescendants(transform, "Equip_L");
+        if (_equipTransform == null || RTransform == null)
             return false;
 
         // 스나이퍼
@@ -166,15 +139,14 @@ public class TheodoreController : MyPlayerController
             return false;
 
         // 스파크 탄
-        _sparkBullet = Managers.Resource.Instantiate($"Creature/Weapon/WP_Theodore_Skill03_LOD");
-        if (_sparkBullet != null)
+        _projectile = Managers.Resource.Instantiate($"Creature/Weapon/WP_Theodore_Skill03_LOD");
+        if (_projectile != null)
         {
-            if (_equipLTransform != null)
+            if (_equipTransform != null)
             {
-                _sparkBullet.transform.localPosition = _equipLTransform.localPosition;
-                _sparkBullet.transform.localRotation = Quaternion.identity;
-                _sparkBullet.transform.localScale = Vector3.one;
-                _sparkBullet.SetActive(false);
+                _projectile.transform.localPosition = _equipTransform.localPosition;
+                _projectile.transform.localRotation = Quaternion.identity;
+                _projectile.transform.localScale = Vector3.one;
             }
         }
         else
