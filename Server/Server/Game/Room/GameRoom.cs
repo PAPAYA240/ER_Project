@@ -15,7 +15,7 @@ namespace Server.Game
     public class GameRoom : Room
     {
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
-        Dictionary<int, EnvironmentObj> _envs = new Dictionary<int, EnvironmentObj>();
+        ConcurrentDictionary<int, EnvironmentObj> _envs = new ConcurrentDictionary<int, EnvironmentObj>();
         ConcurrentDictionary<int, Monster> _monsters = new ConcurrentDictionary<int, Monster>();
         Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
 
@@ -57,7 +57,7 @@ namespace Server.Game
                 List<int> visibleObjs = new List<int>();
                 visibleObjs.AddRange(GetObjectsInRange(_players, player));
                 visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
-                visibleObjs.AddRange(GetObjectsInRange(_envs, player));
+                AddVisibleObjects(visibleObjs, _envs, player);
                 AddVisibleObjects(visibleObjs, _monsters, player);
                 player.SendVisibleObjsPkt(visibleObjs);
             }
@@ -152,8 +152,11 @@ namespace Server.Game
             else if (type == GameObjectType.Environment)
             {
                 EnvironmentObj env = gameObject as EnvironmentObj;
-                _envs.Add(gameObject.Id, env);
+                if (env == null)
+                    _envs = new ConcurrentDictionary<int, EnvironmentObj>();
+
                 env.Room = this;
+                _envs.TryAdd(gameObject.Id, env);
             }
 
             // 타인한테 정보 전송
