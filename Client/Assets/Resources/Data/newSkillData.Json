@@ -1185,6 +1185,7 @@
         "description": "테오도르가 지정한 위치에 7초 동안 유지되는 증폭 스크린을 생성합니다.\n\n증폭 스크린을 통과한 테오도르의 <color=#FFFFFF>기본 공격</color> 탄환과 <color=#FFFFFF>스파크탄</color>은 적중한 적 주변으로 확산됩니다. 스크린을 통과한 기본 공격은 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 24%)</color>의 추가 스킬 피해를 입히고, 스파크탄은 투사체 속도와 사거리가 증가합니다.",
         "type": "Normal",
         "maxLevel": 5,
+        "canMoveDuringCast" :  true,
         "mechanics": {
           "targetType": "TargetArea",
           "damageType": "Magic"
