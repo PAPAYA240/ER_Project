@@ -78,7 +78,7 @@ public class PlayerController : CreatureController
         base.UpdateController();
     }
 
-    protected virtual void CheckUpdatedFlag(bool isWarp = false) { }
+    protected virtual void CheckUpdatedFlag() { }
 
     public override void OnDamaged()
     {
