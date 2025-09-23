@@ -335,4 +335,26 @@ namespace Server.Data
         }
     }
     #endregion
+
+    #region System
+    public class PhaseData : ILoader<int, int>
+    {
+        public Dictionary<int, int> phase = new Dictionary<int, int>();
+
+        public Dictionary<int, int> MakeDict()
+        {
+            return phase;
+        }
+    }
+
+    public class RespawnData : ILoader<int, int>
+    {
+        public Dictionary<int, int> respawn = new Dictionary<int, int>();
+
+        public Dictionary<int, int> MakeDict()
+        {
+            return respawn;
+        }
+    }
+    #endregion
 }
