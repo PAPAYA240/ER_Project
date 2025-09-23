@@ -99,7 +99,10 @@ namespace Data
     {
         public float adRatio;
         public float apRatio;
-        public float hpRatio;
+        public float srcCurHpRatio; // 내 현재체력 비례
+        public float srcMaxHpRatio; // 내 최대체력 비례
+        public float dstCurHpRatio; // 타겟 현재체력 비례
+        public float dstMaxHpRatio; // 타겟 최대체력 비례
     }
 
     [Serializable]
@@ -163,7 +166,7 @@ namespace Data
 
         public string type;    // Buff / Debuff / Burn 등
         public string stat;    // MoveSpeed / Defense / AttackSpeed 등
-        public float value;    // 수치 (%는 그냥 숫자로 저장)
+        public float value;    // 수치 (%는 그냥 숫자로 저장) 
         public float duration; // 지속시간
         public string condition; // 옵션 (예: "HP<50%")
 

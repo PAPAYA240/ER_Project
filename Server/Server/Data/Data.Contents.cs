@@ -127,7 +127,10 @@ namespace Server.Data
     {
         public float adRatio;
         public float apRatio;
-        public float hpRatio;
+        public float srcCurHpRatio; // 내 현재체력 비례
+        public float srcMaxHpRatio; // 내 최대체력 비례
+        public float dstCurHpRatio; // 타겟 현재체력 비례
+        public float dstMaxHpRatio; // 타겟 최대체력 비례
     }
 
     [Serializable]
@@ -332,6 +335,28 @@ namespace Server.Data
                 dict.Add(data.EnvType, data);
             }
             return dict;
+        }
+    }
+    #endregion
+
+    #region System
+    public class PhaseData : ILoader<int, int>
+    {
+        public Dictionary<int, int> phase = new Dictionary<int, int>();
+
+        public Dictionary<int, int> MakeDict()
+        {
+            return phase;
+        }
+    }
+
+    public class RespawnData : ILoader<int, int>
+    {
+        public Dictionary<int, int> respawn = new Dictionary<int, int>();
+
+        public Dictionary<int, int> MakeDict()
+        {
+            return respawn;
         }
     }
     #endregion

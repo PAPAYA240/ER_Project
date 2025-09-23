@@ -12,16 +12,15 @@ public class BaseController : MonoBehaviour
 
     float _speedCoeff = 3.2f;
 
-    //StatInfo _stat = new StatInfo();
     public virtual StatInfo Stat
     {
-        get { return _ObjectInfo.StatInfo; }
+        get { return ObjInfo.StatInfo; }
         set
         {
-            if (_ObjectInfo.StatInfo.Equals(value))
+            if (ObjInfo.StatInfo.Equals(value))
                 return;
 
-            _ObjectInfo.StatInfo.MergeFrom(value);
+            ObjInfo.StatInfo.MergeFrom(value);
         }
     }
 
@@ -57,14 +56,12 @@ public class BaseController : MonoBehaviour
 
     protected bool _updated = false;
 
-    PositionInfo _positionInfo = new PositionInfo();
-    RotationInfo _rotationInfo = new RotationInfo() { Qw = 1.0f };
     public PositionInfo PosInfo
     {
-        get { return _positionInfo; }
+        get { return ObjInfo.PosInfo; }
         set
         {
-            if (_positionInfo.Equals(value))
+            if (ObjInfo.PosInfo.Equals(value))
                 return;
 
             CellPos = new Vector3(value.PosX, value.PosY, value.PosZ);
@@ -74,35 +71,43 @@ public class BaseController : MonoBehaviour
 
     public RotationInfo RotInfo
     {
-        get { return _rotationInfo; }
+        get { return ObjInfo.RotInfo; }
         set
         {
             if (value == null)
                 return;
 
-            if (_rotationInfo.Equals(value))
+            if (ObjInfo.RotInfo.Equals(value))
                 return;
 
-            _rotationInfo.Qx = value.Qx;
-            _rotationInfo.Qy = value.Qy;
-            _rotationInfo.Qz = value.Qz;
-            _rotationInfo.Qw = value.Qw;
+            ObjInfo.RotInfo.Qx = value.Qx;
+            ObjInfo.RotInfo.Qy = value.Qy;
+            ObjInfo.RotInfo.Qz = value.Qz;
+            ObjInfo.RotInfo.Qw = value.Qw;
 
             _updated = true;
         }
     }
 
-    ObjectInfo _ObjectInfo = new ObjectInfo() { StatInfo = new StatInfo() };
+    ObjectInfo _ObjectInfo = new ObjectInfo()
+    {
+        StatInfo = new StatInfo(),
+        PosInfo = new PositionInfo(),
+        RotInfo = new RotationInfo() { Qw = 1f }        
+    }; 
+
     public ObjectInfo ObjInfo
     {
         get { return _ObjectInfo; }
-        set { _ObjectInfo = value; }
+        set { _ObjectInfo = value; PosInfo = value.PosInfo; RotInfo = value.RotInfo; Stat = value.StatInfo; }
     }
 
-    public void SyncPos()
+    public void SyncPos(bool isWarp = false)
     {
         transform.position = CellPos;
         transform.rotation = RotInfo;
+        if (true == isWarp)
+            _agent.Warp(CellPos);
     }
 
     public Vector3 CellPos

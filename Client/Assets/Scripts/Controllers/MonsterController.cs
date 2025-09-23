@@ -7,6 +7,8 @@ using UnityEngine.AI;
 
 public class MonsterController : CreatureController
 {
+    private System.Random _random = new System.Random();
+
     // 패킷
     private int _lastReceivedSequenceId = -1;
 
@@ -15,9 +17,9 @@ public class MonsterController : CreatureController
     public MonsterType _monsterType;
     public float _rotationSpeed = 10f;
 
-    private System.Random _random = new System.Random();
     Quaternion _nextRotation;
     public Vector3 _targetPos { get; private set; }
+
     // 애니메이션 끝났을 때 호출
     public Action<CreatureState> OnStateChanged; 
 
@@ -45,11 +47,7 @@ public class MonsterController : CreatureController
             return;
         }
 
-        this.gameObject.layer = LayerMask.NameToLayer("Monster");
-
         InitHpBar();
-
-        //업데이트 함수들 호출
         Stat = Stat;
     }
     protected override void UpdateController()

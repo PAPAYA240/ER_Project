@@ -4,23 +4,24 @@
       "Q": {
         "shape": "Circle",
         "type" : "SkillTrack",
-        "radius": 3.5,
+        "radius": 3,
         "duration": 0.6
       },
       "W": {
         "shape": "Sector",
         "type": "SkillStatic",
-        "radius": 6,
-        "angle": 70,
+        "radius": 5.75,
+        "angle": 60,
         "duration":  0.5
       },
       "E": {
-        "type": "SkillStatic"
+        "type": "SkillStatic",
+        "maxRange": 7.4
       },
       "R": {
         "shape": "Circle",
         "type": "SkillTrack",
-        "radius": 4.2,
+        "radius": 3.5,
         "duration": 0.81
       }
     },

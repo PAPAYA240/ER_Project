@@ -39,7 +39,7 @@ namespace Server.Game
 
             // Spawn Monster
             _monsterManager.Init(this);
-            _monsterManager.Add(1, MonsterType.Gamma);
+            //_monsterManager.Add(1, MonsterType.Gamma);
 
             // Spawn Env
             _envManager.Init(this);
@@ -242,7 +242,7 @@ namespace Server.Game
             resMovePacket.ObjectId = player.Info.ObjectId;
             resMovePacket.PosInfo = movePacket.PosInfo;
             resMovePacket.RotInfo = movePacket.RotInfo;
-
+            resMovePacket.IsWarp = movePacket.IsWarp;
             Broadcast(resMovePacket);
         }
         public void HandleVF(Player player, C_Fx skillPacket)
@@ -315,7 +315,6 @@ namespace Server.Game
                 if(condition.Invoke(player))
                     return player;
             }
-
             return null;
         }
 
@@ -381,6 +380,7 @@ namespace Server.Game
                 List<int> visibleObjs = new List<int>();
                 visibleObjs.AddRange(GetObjectsInRange(_players, player));
                 AddVisibleObjects(visibleObjs, _monsters, player);
+                AddVisibleObjects(visibleObjs, _envs, player);
                 visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
                 player.SendVisibleObjsPkt(visibleObjs);
             }

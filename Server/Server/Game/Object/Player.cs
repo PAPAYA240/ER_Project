@@ -58,9 +58,20 @@ namespace Server.Game
 
         public override void OnDead(GameObject attacker)
         {
-            //base.OnDead(attacker);
+            if (Room == null)
+                return;
+
+            PosInfo.State = CreatureState.Dead;
+
+            S_Die diePacket = new S_Die();
+            diePacket.ObjectId = Id;
+            diePacket.AttackerId = attacker.Id;
+            Room.Broadcast(diePacket);
+
+            _ = CoRespawnTime();
         }
 
+        #region Skill
         private bool CheckCoolTime(KeyCode key)
         {
             if (!_coolDownDict[key].isCoolDown)
@@ -68,7 +79,6 @@ namespace Server.Game
 
             return false;
         }
-
 
         private async Task CoInputCooltime(KeyCode key, float time)
         {
@@ -111,6 +121,46 @@ namespace Server.Game
                 _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
             }
         }
+        #endregion
+
+        #region Respawn
+        private async Task CoRespawnTime()
+        {
+            float respawnTime = DataManager.RespawnDict[Stat.Level];
+
+            var sw = Stopwatch.StartNew();
+
+            while (sw.Elapsed.TotalSeconds < respawnTime)
+            {
+                await Task.Delay(10); // 0.01초마다 남은 쿨타임 갱신
+            }
+
+            if (Room == null)
+                return;
+
+            S_Respawn respawnPacket = new S_Respawn();
+            respawnPacket.ObjectId = Id;
+            respawnPacket.PosInfo = Info.PosInfo = new PositionInfo
+            {
+                PosX = 0,
+                PosY = 0,
+                PosZ = 0
+            };
+            respawnPacket.RotInfo = Info.RotInfo = new RotationInfo
+            {
+                Qx = 0,
+                Qy = 0,
+                Qz = 0,
+                Qw = 1
+            };
+
+            respawnPacket.Hp = Stat.Hp = Stat.MaxHp;
+            respawnPacket.Stamina = Stat.Stamina = Stat.MaxStamina;
+            Session.Send(respawnPacket);
+
+            State = CreatureState.Idle;
+        }
+        #endregion
 
         public void SendVisibleObjsPkt(List<int> Ids)
         {

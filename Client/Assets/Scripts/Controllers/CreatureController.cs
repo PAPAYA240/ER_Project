@@ -78,10 +78,10 @@ public class CreatureController : BaseController
     {
         State = CreatureState.Dead;
 
-        GameObject effect = Managers.Resource.Instantiate("Effect/DieEffect");
-        effect.transform.position = transform.position;
-        effect.GetComponent<Animator>().Play("START");
-        GameObject.Destroy(effect, 0.5f);
+        //GameObject effect = Managers.Resource.Instantiate("Effect/DieEffect");
+        //effect.transform.position = transform.position;
+        //effect.GetComponent<Animator>().Play("START");
+        //GameObject.Destroy(effect, 0.5f);
     }
 
     public virtual void UseSkill(int skillId) {}
@@ -98,5 +98,26 @@ public class CreatureController : BaseController
         Stat.MaxStamina += growth.MaxStamina;
         Stat.StaminaRegen += growth.StaminaRegen;
         Hp = Stat.Hp + growth.MaxHp;
+    }
+
+    public bool IsAttackable()
+    {
+        // 죽었을 때 || 무적 상태일 때 || 시야 밖일 때(부시) 등등
+        if (State == CreatureState.Dead)
+            return false;
+
+        return true;
+    }
+
+    public bool IsAttackable(GameObject go)
+    {
+        if (go == null)
+            return false;
+
+        CreatureController cc = go.GetComponent<CreatureController>();
+        if (cc == null) 
+            return false;
+
+        return cc.IsAttackable();
     }
 }

@@ -2,9 +2,11 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Numerics;
 using System.Text;
 using System.Threading;
+using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game.Object.Monster;
@@ -83,7 +85,7 @@ namespace Server.Game
             Dictionary<int, int> damageDict = new Dictionary<int, int>();
             CheckPlayerHit(teams, damageDict);
 
-            SendChangeHpPkts(damageDict);
+            SendChangeHpPkts(teams, damageDict);
         }
 
         public void RemoveExpired()
@@ -254,7 +256,7 @@ namespace Server.Game
             return 30;
         } 
 
-        void SendChangeHpPkts(Dictionary<int, int> damageDict)
+        void SendChangeHpPkts(Dictionary<int, Dictionary<int, Player>> teams, Dictionary<int, int> damageDict)
         {
             foreach (var kvp in damageDict)
             {
@@ -265,10 +267,36 @@ namespace Server.Game
                 player.Info.StatInfo.Hp -= damageDict[kvp.Key];
                 player.Info.StatInfo.Hp = Math.Max(0, player.Info.StatInfo.Hp);
 
-                S_ChangeHp changeHpPkt = new S_ChangeHp();
-                changeHpPkt.ObjectId = kvp.Key;
-                changeHpPkt.Hp = player.Info.StatInfo.Hp;
-                player.Session.Send(changeHpPkt);
+                IMessage packet;
+                if(player.Info.StatInfo.Hp > 0)
+                {
+                    packet = new S_ChangeHp()
+                    {
+                        ObjectId = kvp.Key,
+                        Hp = player.Info.StatInfo.Hp,
+                    };
+                }
+                else
+                {
+                    packet = new S_Die()
+                    {
+                        ObjectId = kvp.Key,
+                        //AttackerId = kvp.Key,
+                    };
+                }
+
+                foreach (var nestedKvp in teams)
+                {
+                    foreach(var keyValuePair in nestedKvp.Value)
+                    {
+                        Player p = keyValuePair.Value;
+                        if (p == null) 
+                            continue;
+
+                        // 모든 플레이어들한테 체력 변경 알림
+                        p.Session.Send(packet);
+                    }
+                }
             }
         }
     }
