@@ -69,6 +69,10 @@ enum EnvType
 {
    ENV_NONE = 0;
    HILL_OBJ = 1;
+   DEVICE_SPAWNPOINT = 2;
+   TURRET = 3;
+   ACCBOUNDARY_SPAWNPOINT = 4;
+   BARRIER_SPAWNPOINT = 5;
 }
    
 

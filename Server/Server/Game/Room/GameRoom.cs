@@ -39,7 +39,7 @@ namespace Server.Game
 
             // Spawn Monster
             _monsterManager.Init(this);
-            _monsterManager.Add(1, MonsterType.Gamma);
+            //_monsterManager.Add(1, MonsterType.Gamma);
 
             // Spawn Env
             _envManager.Init(this);
