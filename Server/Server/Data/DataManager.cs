@@ -34,6 +34,9 @@ namespace Server.Data
         public static Dictionary<MonsterSkill, MonsterSkillData> MonsterSkillDict { get; private set; } = new Dictionary<MonsterSkill, MonsterSkillData>();
         public static Dictionary<EnvType, ObjectInfo> EnvironmentObjDict { get; private set; } = new Dictionary<EnvType, ObjectInfo>();
 
+        public static Dictionary<int, int> PhaseDict { get; private set; } = new Dictionary<int, int>();
+        public static Dictionary<int, int> RespawnDict { get; private set; } = new Dictionary<int, int>();
+
         public static void LoadData()
         {
             // For PlayerData
@@ -51,6 +54,10 @@ namespace Server.Data
 
             // For EnvironmentData
             EnvironmentObjDict = LoadJson<Data.EnvObjectData, EnvType, ObjectInfo>("Env/EnvData", "monster").MakeDict();
+
+            // For System
+            PhaseDict = LoadJson<Data.PhaseData, int, int>("PhaseData", "player").MakeDict();
+            RespawnDict = LoadJson<Data.RespawnData, int, int>("RespawnData", "player").MakeDict();
         }
 
         static Loader LoadJson<Loader, Key, Value>(string path, string key) where Loader : ILoader<Key, Value>

@@ -1,8 +1,9 @@
-using Data;
-using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Schema;
+using Data;
+using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
 using static Define;
@@ -14,7 +15,7 @@ public class MyPlayerController : PlayerController
     #region Variable
     protected bool _moveKeyPressed = false;
     protected int _monsterMask;
-    protected int _playerMask; 
+    protected int _playerMask;
 
     // State
     public override CreatureState State
@@ -31,6 +32,10 @@ public class MyPlayerController : PlayerController
             {
                 _agent.isStopped = true;
                 _agent.ResetPath();
+
+                // Moving -> Attack 이 아니라면 Target 초기화
+                if (value != CreatureState.Attack)
+                    ResetTarget();
             }
 
             // Attack -> 다른 상태 : Attack 모션 종료
@@ -44,6 +49,10 @@ public class MyPlayerController : PlayerController
                     ResetTarget();
             }
 
+            // Dead -> 다른 상태 : agent 활성화
+            if(State == CreatureState.Dead)
+                _agent.enabled = true;
+
             PosInfo.State = value;
             UpdateAnimation();
             _updated = true;
@@ -54,7 +63,7 @@ public class MyPlayerController : PlayerController
     // State : Skill
     protected bool _isUseSkill = false;
     protected KeyCode _keyCode = KeyCode.None;
-    protected Dictionary<string, SkillBase> _skills = new Dictionary<string, SkillBase>();
+    protected Dictionary<KeyCode, SkillBase> _skills = new Dictionary<KeyCode, SkillBase>();
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
     class CoolTime
     {
@@ -64,10 +73,10 @@ public class MyPlayerController : PlayerController
 
     // State : Moving
     protected int _mask = (1 << (int)Define.Layer.Map);
-    protected Vector3 _dstPos = Vector3.zero;
     protected float _minMoveDistance = 0.5f;
     protected float _rotSpeed = 8.0f;
     protected Coroutine _coLookAtTarget = null;
+    protected bool _isWarp = false;
 
     // State : Attack
     protected bool _isAttackLoop = false;
@@ -87,12 +96,10 @@ public class MyPlayerController : PlayerController
                 value != null && _attackRoutine != null)
             {
                 StopCoroutine(_attackRoutine);
-                _attackRoutine = StartCoroutine(CoAttackLoop());              
+                //_attackRoutine = StartCoroutine(CoAttackLoop());              
             }
 
             _target = value;
-            if (_target != null)
-                LookAtTarget(_target.transform.position, false, _rotSpeed);
         }
     }
     protected GameObjectType _targetType;
@@ -191,18 +198,18 @@ public class MyPlayerController : PlayerController
         else if (State == CreatureState.Moving)
             PlayAnimation("RUN", 0.1f);
         else if (State == CreatureState.Attack)
-        {
-            Debug.Log($"평타 코루틴 시작");
             _attackRoutine = StartCoroutine(CoAttackLoop());
-        }
         else if (State == CreatureState.Rest)
-        {
             PlayAnimation("REST_START", 0.1f);
-        }
+        else if(State == CreatureState.Dead)
+            PlayAnimation("DEAD", 0.1f);
     }
 
     protected override void UpdateController()
     {
+        if (State == CreatureState.Dead)
+            return;
+
         switch (State)
         {
             case CreatureState.Idle:
@@ -227,6 +234,8 @@ public class MyPlayerController : PlayerController
             ExecuteSkill();
 
         base.UpdateController();
+
+        CheckUpdatedFlag();
     }
 
     protected override void CheckUpdatedFlag()
@@ -236,8 +245,10 @@ public class MyPlayerController : PlayerController
             C_Move movePacket = new C_Move();
             movePacket.PosInfo = PosInfo;
             movePacket.RotInfo = RotInfo;
+            movePacket.IsWarp = _isWarp;
             Managers.Network.Send(movePacket);
             _updated = false;
+            _isWarp = false;
         }
     }
     #endregion
@@ -254,8 +265,8 @@ public class MyPlayerController : PlayerController
 
         if(!_isStop)
         {
-            Target = FindAttackablePlayer();
-            TryChangeToAttackState();
+            //Target = FindAttackablePlayer();
+            //TryChangeToAttackState();
         }       
     }
 
@@ -291,15 +302,13 @@ public class MyPlayerController : PlayerController
                 State = CreatureState.Moving;
             }
 
-            CellPos = transform.position;
-            RotInfo = transform.rotation;
-            CheckUpdatedFlag();
+            UpdateTransform();
         }
     }
 
     protected override void UpdateAttack()
     {
-        if(Target == null)
+        if(Target == null || !IsAttackable(Target))
         {
             State = CreatureState.Idle;
             return;
@@ -312,6 +321,7 @@ public class MyPlayerController : PlayerController
     protected override void UpdateRest()
     {
         // TODO : 쉬는 동안 자원 회복
+
     }
 
     protected override void UpdateDead()
@@ -443,21 +453,20 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    protected GameObject TryGetAttackableObject()
+    protected GameObject TryGetAttackableObject(float radius = 0.1f)
     {
         GameObject gameObject = null;
         _targetType = GameObjectType.None;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        float radius = 0.1f;
         if (Physics.SphereCast(ray, radius, out RaycastHit sphereHit, 1000.0f, _monsterMask | _playerMask))
         {
-            gameObject = sphereHit.collider.gameObject;
-            BaseController bc = gameObject.GetComponent<BaseController>();
-            if (bc.Id != Id)
+            GameObject hitObject = sphereHit.collider.gameObject;
+            CreatureController cc = hitObject.GetComponent<CreatureController>();
+            if (cc.Id != Id && cc.IsAttackable())
             {
-                Target = gameObject;
-                _targetType = ObjectManager.GetObjectTypeById(bc.ObjInfo.ObjectId);
+                Target = gameObject = hitObject;
+                _targetType = ObjectManager.GetObjectTypeById(cc.ObjInfo.ObjectId);
             }
         }
 
@@ -501,7 +510,7 @@ public class MyPlayerController : PlayerController
                 if (go != null)
                 {
                     PlayerController pc = go.GetComponent<PlayerController>();
-                    if (pc.ObjInfo.Team != ObjInfo.Team)
+                    if (pc.ObjInfo.Team != ObjInfo.Team && pc.IsAttackable())
                     {
                         float distance = Vector3.Distance(go.transform.position, transform.position);
                         if (distance <= minDistance)
@@ -575,11 +584,50 @@ public class MyPlayerController : PlayerController
     }
     #endregion
 
+    #region State : Dead
+    public override void OnDead()
+    {
+        base.OnDead();
+        ResetCharacterState();
+    }
+
+    public void OnRespawn(S_Respawn respawnPacket)
+    {
+        Vector3 pos = new Vector3
+        {
+            x = respawnPacket.PosInfo.PosX,
+            y = respawnPacket.PosInfo.PosY,
+            z = respawnPacket.PosInfo.PosZ
+        };
+
+        if (NavMesh.SamplePosition(pos, out NavMeshHit navHit, 1.0f, NavMesh.AllAreas))
+        {
+            pos = navHit.position;
+        }
+
+        _agent.Warp(pos);
+        transform.position = pos;
+        transform.rotation = new Quaternion
+        {
+            x = respawnPacket.RotInfo.Qx,
+            y = respawnPacket.RotInfo.Qy,
+            z = respawnPacket.RotInfo.Qz,
+            w = respawnPacket.RotInfo.Qw
+        };
+
+        UpdateTransform(true);
+
+        State = CreatureState.Idle;
+        Hp = respawnPacket.Hp;
+        Stamina = respawnPacket.Stamina;
+    }
+    #endregion
+
     #region Input
     protected virtual void UpdateKeyInput()
     {
         // LeftCtrl + Q/W/E/R : 스킬 레벨업
-        if (Input.GetKey(KeyCode.LeftControl))
+        if (Input.GetKey(KeyCode.LeftControl) && PlayerInterface.CanLevelUp() == true)
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
@@ -596,6 +644,10 @@ public class MyPlayerController : PlayerController
             else if (Input.GetKeyDown(KeyCode.R))
             {
                 PlayerInterface.SpecificSkillLevelUp(GameObjects.RSkill);
+            }
+            else if (Input.GetKeyDown(KeyCode.T))
+            {
+                PlayerInterface.SpecificSkillLevelUp(GameObjects.TSkill);
             }
         }
         // Q, W, E, R, T, D, F
@@ -655,7 +707,7 @@ public class MyPlayerController : PlayerController
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             Target = TryGetAttackableObject();
-            Vector3 targetPos = TryGetAttackPosition(Target);
+            Vector3 targetPos = Vector3.zero;
 
             // 타겟을 못 찾았을 때 -> 지형 클릭
             if (Target == null)
@@ -666,36 +718,53 @@ public class MyPlayerController : PlayerController
                     targetPos = rayHit.point;
                 }
             }
+            else
+            {
+                targetPos = TryGetAttackPosition(Target);
+            }
 
             // 최종 목적지 설정
             // 플레이어와 너무 가까운 곳을 클릭하면 이동하지 않음
             if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
             {
-                if (Target == null)
+                NavMeshPath path = new NavMeshPath();
+                if (NavMesh.CalculatePath(transform.position, navHit.position, NavMesh.AllAreas, path))
                 {
-                    float distance = Vector3.Distance(transform.position, navHit.position);
-                    if (distance >= _minMoveDistance)
+                    Vector3 destination = navHit.position;
+                    if (path.status == NavMeshPathStatus.PathPartial)
                     {
-                        _agent.SetDestination(navHit.position);
-                        State = CreatureState.Moving;
-
-                        _moveKeyPressed = true;
+                        // 도달 가능한 마지막 지점
+                        destination = path.corners[path.corners.Length - 1];
                     }
-                }
-                else
-                {
-                    if (Vector3.Distance(targetPos, transform.position) > 0.0f)
-                    {
-                        _agent.SetDestination(navHit.position);
-                        State = CreatureState.Moving;
 
-                        _moveKeyPressed = true;
+                    if (Target == null)
+                    {
+                        float distance = Vector3.Distance(transform.position, destination);
+                        if (distance >= _minMoveDistance)
+                        {
+                            _agent.SetDestination(destination);
+                            State = CreatureState.Moving;
+
+                            _moveKeyPressed = true;
+                        }
                     }
                     else
                     {
-                        TryChangeToAttackState();
+                        if (Vector3.Distance(targetPos, transform.position) > 0.0f)
+                        {
+                            _agent.SetDestination(destination);
+                            State = CreatureState.Moving;
+
+                            _moveKeyPressed = true;
+                        }
+                        else
+                        {
+                            TryChangeToAttackState();
+                        }
                     }
                 }
+
+                
             }
         }
     }
@@ -729,28 +798,12 @@ public class MyPlayerController : PlayerController
                 // 패킷 보내기
                 SendSkillPacket(_keyCode);
 
-                // 스킬 실행 UI, TODO 스킬 사용할 수 있는 검증이 다 끝난 곳으로 옮겨야함
-                PlayerInterface.UseSkill(KeyToUIEnum(_keyCode));
-
                 Debug.Log($"스킬 사용! : {_keyCode}");
             }
         }
     }
 
     protected SkillBase FindSkill(KeyCode keyCode)
-    {
-        SkillBase skillBase = null;
-
-        if (!_skills.TryGetValue(keyCode.ToString(), out skillBase))
-        {
-            Debug.Log($"Skill을 찾을 수 없음 : {keyCode}");
-            return null;
-        }
-
-        return skillBase;
-    }
-
-    protected SkillBase FindSkill(string keyCode)
     {
         SkillBase skillBase = null;
 
@@ -774,16 +827,26 @@ public class MyPlayerController : PlayerController
         return _coolDownDict[key].coolTime;
     }
 
-    public void StartCoCoolTime(KeyCode key)
+    public void OnSkillConfirmed(SkillInfo skillInfo)
     {
-        SkillBase skill = FindSkill(key);
+        KeyCode key = (KeyCode)skillInfo.KeyCode;
 
-        // 쿨타임 체크
-        StartCoroutine(CoInputCooltime(key, skill.CurLevelCooldown));
+        // 쿨타임 코루틴 시작
+        StartCoroutine(CoInputCooltime(key, skillInfo.CoolTime));
+
+        // 스킬 실행 UI 연동
+        PlayerInterface.UseSkill(KeyToUIEnum(key));
     }
 
     IEnumerator CoInputCooltime(KeyCode key, float time)
     {
+        if(time <= 0.0f)
+        {
+            _coolDownDict[key].isCoolDown = false;
+            _coolDownDict[key].coolTime = 0.0f;
+            yield break;
+        }
+
         _coolDownDict[key].isCoolDown = true;
 
         float elapsed = 0f;
@@ -803,17 +866,11 @@ public class MyPlayerController : PlayerController
     {
         Dictionary<KeyCode, Data.SkillData> skills = DataManager.SkillDict[ObjInfo.CharType];
 
-        // Q, W, E, R
-        foreach(Key key in Enum.GetValues(typeof(Key)))
+        foreach(var data in skills)
         {
             SkillBase skill = new SkillBase();
-
-            string keyCode = key.ToString();
-            if (!Enum.TryParse<KeyCode>(keyCode, out var result))
-                Debug.Log($"KeyCode를 찾을 수 없음 : {keyCode}");
-
-            skill.SkillData = skills[result];
-            _skills.Add(keyCode, skill);
+            skill.SkillData = data.Value;
+            _skills.Add(data.Key, skill);
         }
     }
 
@@ -821,8 +878,7 @@ public class MyPlayerController : PlayerController
     {
         foreach (var skill in _skills)
         {
-            KeyCode key = (KeyCode)Enum.Parse(typeof(KeyCode), skill.Key);
-            _coolDownDict[key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
+            _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
         }
     }
     #endregion
@@ -933,7 +989,8 @@ public class MyPlayerController : PlayerController
     protected void OnCharSkillLevelUp(SkillEnum skill)
     {
         //For QWERT
-        _skills[skill.ToString()].CurLevel += 1;
+        KeyCode key = (KeyCode)System.Enum.Parse(typeof(KeyCode), skill.ToString());
+        _skills[key].CurLevel += 1;
 
         float skillAcc = 0.0f;
         //float skillAcc = Stat.GetSkillAcc();
@@ -955,6 +1012,10 @@ public class MyPlayerController : PlayerController
             case SkillEnum.R:
                 SkillBase RSkill = FindSkill(KeyCode.R);
                 SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(RSkill.CurLevelCooldown, skillAcc));
+                break;
+            case SkillEnum.T:
+                SkillBase TSkill = FindSkill(KeyCode.T);
+                SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(TSkill.CurLevelCooldown, skillAcc));
                 break;
         }
 
@@ -1011,11 +1072,12 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region Util
-    protected void UpdateTransform()
+    protected void UpdateTransform(bool isWarp = false)
     {
         CellPos = transform.position;
         RotInfo = transform.rotation;
-        CheckUpdatedFlag();
+        _updated = true;
+        _isWarp = isWarp;
     }
 
     protected void SetMovementState()
@@ -1038,6 +1100,49 @@ public class MyPlayerController : PlayerController
         //    return clipInfos[0].clip.length;
 
         //return 0.0f;
+    }
+
+    protected virtual void ResetCharacterState()
+    {
+        // Input
+        _moveKeyPressed = false;
+        _isStop = false;
+
+        // State : Skill
+        _isUseSkill = false;
+        _keyCode = KeyCode.None;
+
+        foreach (var skill in _coolDownDict)
+        {
+            skill.Value.isCoolDown = false;
+            skill.Value.coolTime = 0;
+        }
+
+        // State : Moving
+        ResetCoroutine(_coLookAtTarget);
+
+        // State : Attack
+        _isAttackLoop = false;
+        _attackIndex = 0;
+        ResetTarget();
+        ResetCoroutine(_attackRoutine);
+
+        // State : Rest
+        _isResting = false;
+        ResetCoroutine(_coRest);
+
+        // TODO : 필요한가
+        // NavMeshAgent
+        _agent.enabled = false;
+    }
+
+    protected void ResetCoroutine(Coroutine coroutine)
+    {
+        if(coroutine != null)
+        {
+            StopCoroutine(coroutine);
+            coroutine = null;
+        }
     }
     #endregion
 
@@ -1077,6 +1182,44 @@ public class MyPlayerController : PlayerController
     {
         C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { Name = name, Ratio = ratio } };
         Managers.Network.Send(animPacket);
+    }
+    #endregion
+
+    #region Util
+    // 시작 지점과 타겟 지점 사이에 장애물이 있으면 충돌 위치 반환
+    // 없으면 유효 위치 반환
+    protected Vector3 GetReachablePosition(Vector3 startPos, Vector3 targetPos, out NavMeshHit navHit)
+    {
+        if (NavMesh.Raycast(startPos, targetPos, out NavMeshHit rayHit, NavMesh.AllAreas))
+        {
+            targetPos = rayHit.position;
+        }
+
+        // 최종 목적지 설정
+        if (NavMesh.SamplePosition(targetPos, out navHit, 1.0f, NavMesh.AllAreas))
+        {
+            return navHit.position;
+        }
+
+        return Vector3.zero;
+    }
+
+    // 플레이어 위치로부터 마우스 방향으로 사거리 내 이동 가능한 위치 반환
+    // isMaxDistance가 true 이면 항상 최대 사거리 기준 반환, false 이면 사거리 내 위치 반환
+    protected Vector3 GetTargetPos(float range, bool isMaxDistance = true)
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
+
+        Vector3 dir = (hit.point - transform.position).normalized;
+
+        if (!isMaxDistance && (hit.point - transform.position).magnitude < range)
+        {
+            return hit.point;
+        }
+
+        return transform.position + dir * range;
     }
     #endregion
 }

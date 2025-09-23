@@ -54,8 +54,6 @@ public class Define
         Map = 11,
     }
 
-    public enum Key { Q, W, E, R }
-
     //public enum Trait 
     //{
     //    FrailtyInfliction,  //취약

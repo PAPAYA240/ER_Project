@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Acceleration_Base
+  m_Shader: {fileID: 4800000, guid: 0d6c169b1a120774dad05f2be928caab, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _ALPHAPREMULTIPLY_ON
+  - _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties:
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+      _B_tex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+      _G_tex:
+        m_Texture: {fileID: 2800000, guid: 25ec505d2d13e044eb7ef74df707bce7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+      _R_tex:
+        m_Texture: {fileID: 2800000, guid: 5aa888191dfda6d4c8b11988c94aac0f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: {}
+    m_Floats:
+      _A_Speed: 0.4
+      _B_Speed: 0
+      _BlackNormal: 1
+      _BlackRoughness: 1
+      _BlueNormal: 1
+      _BlueRoughness: 1
+      _BumpScale: 1
+      _C_Speed: 0
+      _Cutoff: 0.5
+      _D_Speed: -0.5
+      _DetailNormalMapScale: 1
+      _DstBlend: 10
+      _GlossMapScale: 0.487
+      _Glossiness: 0.309
+      _GlossyReflections: 1
+      _GreenNormal: 1
+      _GreenRoughness: 1
+      _Metallic: 0
+      _Mode: 3
+      _OcclusionStrength: 1
+      _Parallax: 0.02
+      _RedNormal: 1
+      _RedRoughness: 1
+      _RotateSpeed: 0.1667272
+      _SmoothnessTextureChannel: 1
+      _SpecularHighlights: 1
+      _SrcBlend: 1
+      _UVSec: 0
+      _ZTestMode: 2
+      _ZWrite: 0
+      __dirty: 1
+      _stvalue: 0.4358974
+      _value: 0.3
+    m_Colors:
+      _BlackColor: {r: 1, g: 1, b: 1, a: 1}
+      _BlueColor: {r: 1, g: 1, b: 1, a: 1}
+      _Color: {r: 0.23921561, g: 0.62913257, b: 1, a: 0}
+      _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+      _GreenColor: {r: 1, g: 1, b: 1, a: 1}
+      _RedColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []

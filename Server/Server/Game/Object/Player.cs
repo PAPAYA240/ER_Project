@@ -33,10 +33,8 @@ namespace Server.Game
             MakeCoolDownDict();
         }
 
-        public bool CanUseSkill(C_Skill skillPacket)
-        {
-            KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
-
+        public bool CanUseSkill(KeyCode keyCode)
+        {           
             // 쿨타임 체크
             if (!CheckCoolTime(keyCode))
                 return false;
@@ -44,11 +42,16 @@ namespace Server.Game
             // 스테미나 체크
 
 
-            // 체크 끝나면 데이터 변경
-            // ex : 쿨타임 돌리기 시작 등
+            return true;
+        }
+
+        // 체크 끝나면 데이터 변경
+        public void CommitSkillUsage(KeyCode keyCode)
+        {
+            // 쿨타임 재기 시작
             _ = CoInputCooltime(keyCode, FindSkill(keyCode).CurLevelCooldown);
 
-            return true;
+            // 스테미나 감소
         }
 
         public override void OnDamaged(GameObject attacker, float damage)
@@ -58,7 +61,24 @@ namespace Server.Game
 
         public override void OnDead(GameObject attacker)
         {
-            //base.OnDead(attacker);
+            if (Room == null)
+                return;
+
+            PosInfo.State = CreatureState.Dead;
+
+            S_Die diePacket = new S_Die();
+            diePacket.ObjectId = Id;
+            diePacket.AttackerId = attacker.Id;
+            diePacket.RespawnTime = DataManager.RespawnDict[Stat.Level];
+            Room.Broadcast(diePacket);
+
+            _ = CoRespawnTime(diePacket.RespawnTime);
+        }
+
+        #region Skill
+        public float GetCoolTime(KeyCode key)
+        {
+            return _coolDownDict[key].coolTime;
         }
 
         private bool CheckCoolTime(KeyCode key)
@@ -68,7 +88,6 @@ namespace Server.Game
 
             return false;
         }
-
 
         private async Task CoInputCooltime(KeyCode key, float time)
         {
@@ -111,6 +130,44 @@ namespace Server.Game
                 _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
             }
         }
+        #endregion
+
+        #region Respawn
+        private async Task CoRespawnTime(float respawnTime)
+        {
+            var sw = Stopwatch.StartNew();
+
+            while (sw.Elapsed.TotalSeconds < respawnTime)
+            {
+                await Task.Delay(10); // 0.01초마다 남은 쿨타임 갱신
+            }
+
+            if (Room == null)
+                return;
+
+            S_Respawn respawnPacket = new S_Respawn();
+            respawnPacket.ObjectId = Id;
+            respawnPacket.PosInfo = Info.PosInfo = new PositionInfo
+            {
+                PosX = 0,
+                PosY = 0,
+                PosZ = 0
+            };
+            respawnPacket.RotInfo = Info.RotInfo = new RotationInfo
+            {
+                Qx = 0,
+                Qy = 0,
+                Qz = 0,
+                Qw = 1
+            };
+
+            respawnPacket.Hp = Stat.Hp = Stat.MaxHp;
+            respawnPacket.Stamina = Stat.Stamina = Stat.MaxStamina;
+            Session.Send(respawnPacket);
+
+            State = CreatureState.Idle;
+        }
+        #endregion
 
         public void SendVisibleObjsPkt(List<int> Ids)
         {

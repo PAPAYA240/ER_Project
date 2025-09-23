@@ -275,6 +275,8 @@ public class RozziController : MyPlayerController
         transform.position = endPos;
         UpdateTransform();
 
+        ResetTarget();
+        _skillTarget = null;
         _agent.enabled = true;
     }
     #endregion
@@ -292,45 +294,30 @@ public class RozziController : MyPlayerController
         LookAtTarget(targetPos, true);
         transform.position = targetPos;
         _agent.Warp(targetPos);
-        UpdateTransform();
+        UpdateTransform(true);
     }
     #endregion
 
     #region Util
-    // 시작 지점과 타겟 지점 사이에 장애물이 있으면 충돌 위치 반환
-    // 없으면 유효 위치 반환
-    private Vector3 GetReachablePosition(Vector3 startPos, Vector3 targetPos, out NavMeshHit navHit)
+
+    protected override void ResetCharacterState()
     {
-        if (NavMesh.Raycast(startPos, targetPos, out NavMeshHit rayHit, NavMesh.AllAreas))
-        {
-            targetPos = rayHit.position;
-        }
+        base.ResetCharacterState();
 
-        // 최종 목적지 설정
-        if (NavMesh.SamplePosition(targetPos, out navHit, 1.0f, NavMesh.AllAreas))
-        {
-            return navHit.position;
-        }
+        // Q
+        ResetCoroutine(_coSkillQ);
+        _canDash = false;
+        _isDashing = false;
+        _dashSpeed = 30.0f;
+        _dashRange = 4.0f;
+        _targetPos = Vector3.zero;
 
-        return Vector3.zero;
-    }
+        // W
+        ResetCoroutine(_coSkillW);
 
-    // 플레이어 위치로부터 마우스 방향으로 사거리 내 이동 가능한 위치 반환
-    // isMaxDistance가 true 이면 항상 최대 사거리 기준 반환, false 이면 사거리 내 위치 반환
-    private Vector3 GetTargetPos(float range, bool isMaxDistance = true)
-    {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
-
-        Vector3 dir = (hit.point - transform.position).normalized;
-
-        if (!isMaxDistance && (hit.point - transform.position).magnitude < range)
-        {
-            return hit.point;
-        }
-
-        return transform.position + dir * range;
+        // E
+        ResetCoroutine(_coSkillE);
+        _skillTarget = null;
     }
     #endregion
 }
