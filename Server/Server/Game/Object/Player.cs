@@ -69,9 +69,10 @@ namespace Server.Game
             S_Die diePacket = new S_Die();
             diePacket.ObjectId = Id;
             diePacket.AttackerId = attacker.Id;
+            diePacket.RespawnTime = DataManager.RespawnDict[Stat.Level];
             Room.Broadcast(diePacket);
 
-            _ = CoRespawnTime();
+            _ = CoRespawnTime(diePacket.RespawnTime);
         }
 
         #region Skill
@@ -132,10 +133,8 @@ namespace Server.Game
         #endregion
 
         #region Respawn
-        private async Task CoRespawnTime()
+        private async Task CoRespawnTime(float respawnTime)
         {
-            float respawnTime = DataManager.RespawnDict[Stat.Level];
-
             var sw = Stopwatch.StartNew();
 
             while (sw.Elapsed.TotalSeconds < respawnTime)
