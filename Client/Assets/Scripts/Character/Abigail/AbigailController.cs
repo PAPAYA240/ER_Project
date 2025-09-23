@@ -22,6 +22,7 @@ public class AbigailController : MyPlayerController
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePos.y = 0;
             if (Vector3.Distance(mousePos, CellPos) > _warpRange)
                 return;
 
@@ -29,8 +30,9 @@ public class AbigailController : MyPlayerController
             if (target == null)
                 return;
 
-            Vector3 pos = mousePos;
-            if (Vector3.Distance(pos, transform.position) <= _warpRange)
+            Vector3 pos = transform.position;
+            pos.y = 0;
+            if (Vector3.Distance(mousePos, pos) <= _warpRange)
             {
                 _skillTarget = target;
                 SetSkillInput(KeyCode.E);
