@@ -288,4 +288,19 @@ class PacketHandler
                 pc.PlayEffectFromServer(effectPacket.FxInfo);
         }
     }
+
+    public static void S_RespawnHandler(PacketSession session, IMessage packet)
+    {
+        S_Respawn respawnPacket = packet as S_Respawn;
+
+        GameObject go = Managers.Object.FindById(respawnPacket.ObjectId);
+        if (go == null)
+            return;
+
+        MyPlayerController mpc = go.GetComponent<MyPlayerController>();
+        if (mpc == null)
+            return;
+
+        mpc.OnRespawn(respawnPacket);
+    }
 }

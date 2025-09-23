@@ -36,6 +36,7 @@ enum MsgId {
   S_WEAPON = 28;
   C_INTERACT = 29;
   S_INTERACT = 30;
+  S_RESPAWN = 31;
 }
 
 enum CreatureState{
@@ -69,6 +70,10 @@ enum EnvType
 {
    ENV_NONE = 0;
    HILL_OBJ = 1;
+   DEVICE_SPAWNPOINT = 2;
+   TURRET = 3;
+   ACCBOUNDARY_SPAWNPOINT = 4;
+   BARRIER_SPAWNPOINT = 5;
 }
    
 
@@ -422,4 +427,12 @@ message S_LevelUp{
 
 message C_Ready{
 	bool ready = 1;
+}
+
+message S_Respawn{
+	int32 objectId = 1;
+	PositionInfo posInfo = 2;
+	RotationInfo rotInfo = 3;
+	float hp = 4;
+	float stamina = 5;
 }

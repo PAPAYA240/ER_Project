@@ -33,7 +33,6 @@ namespace Server.Game.Object.Monster.FSM
                 monster.ChangeState(nextState);
             }
 
-            // 2. 찾는 타겟이 없으면 Spawn으로 돌아가야 함
             if (monster.PlayerTarget == null)
             {
                  if (!monster.IsArrivalSpawn())

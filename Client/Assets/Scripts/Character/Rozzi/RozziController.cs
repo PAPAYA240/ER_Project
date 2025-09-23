@@ -275,6 +275,8 @@ public class RozziController : MyPlayerController
         transform.position = endPos;
         UpdateTransform();
 
+        ResetTarget();
+        _skillTarget = null;
         _agent.enabled = true;
     }
     #endregion
@@ -332,6 +334,26 @@ public class RozziController : MyPlayerController
         }
 
         return transform.position + dir * range;
+    }
+
+    protected override void ResetCharacterState()
+    {
+        base.ResetCharacterState();
+
+        // Q
+        ResetCoroutine(_coSkillQ);
+        _canDash = false;
+        _isDashing = false;
+        _dashSpeed = 30.0f;
+        _dashRange = 4.0f;
+        _targetPos = Vector3.zero;
+
+        // W
+        ResetCoroutine(_coSkillW);
+
+        // E
+        ResetCoroutine(_coSkillE);
+        _skillTarget = null;
     }
     #endregion
 }

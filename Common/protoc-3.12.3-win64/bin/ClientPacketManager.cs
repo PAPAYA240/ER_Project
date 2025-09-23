@@ -62,7 +62,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SWeapon, MakePacket<S_Weapon>);
 		_handler.Add((ushort)MsgId.SWeapon, PacketHandler.S_WeaponHandler);		
 		_onRecv.Add((ushort)MsgId.SInteract, MakePacket<S_Interact>);
-		_handler.Add((ushort)MsgId.SInteract, PacketHandler.S_InteractHandler);
+		_handler.Add((ushort)MsgId.SInteract, PacketHandler.S_InteractHandler);		
+		_onRecv.Add((ushort)MsgId.SRespawn, MakePacket<S_Respawn>);
+		_handler.Add((ushort)MsgId.SRespawn, PacketHandler.S_RespawnHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

@@ -3,7 +3,7 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class SortingLayer : MonoBehaviour
 {
-	//private Renderer renderer;
+	private Renderer renderer;
 
 	public string layer;
 

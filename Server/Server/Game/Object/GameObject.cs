@@ -58,7 +58,7 @@ namespace Server.Game
 
         public virtual void OnDamaged(GameObject attacker, float damage)
         {
-            if (Room == null)
+            if (Room == null || State == CreatureState.Dead)
                 return;
 
             Stat.Hp = Math.Max((int)(Stat.Hp - damage), 0);
@@ -88,7 +88,7 @@ namespace Server.Game
             room.LeaveGame(Id);
 
             Stat.Hp = Stat.MaxHp;
-            PosInfo.State = CreatureState.Idle;
+            State = CreatureState.Idle;
             PosInfo.PosX = 0;
             PosInfo.PosY = 0;
             PosInfo.PosZ = 0;
