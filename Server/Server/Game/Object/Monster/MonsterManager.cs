@@ -77,13 +77,13 @@ namespace Server.Game.Object.Monster
                 monster.Info.PosInfo.State = CreatureState.Idle;
                 monster.Info.PosInfo.PosX = 0;
                 monster.Info.PosInfo.PosY = 0;
-                monster.Info.MonsterType = type;
+                monster.Info.Monster.MonsterType = type;
 
                 MonsterData monsterStat = null;
                 DataManager.MonsterDict.TryGetValue(type.ToString(), out monsterStat);
                 monster.Stat.MergeFrom(monsterStat.stat);
 
-                monster.Init(monster.Info.MonsterType.ToString());
+                monster.Init(monster.Info.Monster.MonsterType.ToString());
                 _room.Push(_room.EnterGame, monster);
             }
         }
@@ -101,7 +101,8 @@ namespace Server.Game.Object.Monster
                 monster.Info.PosInfo.PosZ = monsterData.zPos;
 
                 MonsterType type =monsterData.monsterType;
-                monster.Info.MonsterType = type;
+                monster.Info.Monster = new MonsterInfo();
+                monster.Info.Monster.MonsterType = type;
                 monster.Info.Name = $"{monster.Id} Monster";
                 monster.Info.PosInfo.State = CreatureState.Idle;
 
@@ -109,7 +110,7 @@ namespace Server.Game.Object.Monster
                 DataManager.MonsterDict.TryGetValue(type.ToString(), out monsterStat);
                 monster.Stat.MergeFrom(monsterStat.stat);
 
-                monster.Init(monster.Info.MonsterType.ToString());
+                monster.Init(monster.Info.Monster.MonsterType.ToString());
                 _room.Push(_room.EnterGame, monster);
             }
         }

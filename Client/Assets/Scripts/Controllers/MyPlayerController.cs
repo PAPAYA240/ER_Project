@@ -166,9 +166,9 @@ public class MyPlayerController : PlayerController
         GameObject go = Managers.Resource.Instantiate("UI/Scene/PlayerHUD");
         go.transform.SetParent(gameObject.transform);
         PlayerInterface = go.GetComponentInChildren<UI_PlayerInterface>();
-        PlayerInterface.CharacterCode = CharTypeToCharCode(ObjInfo.CharType);
-        PlayerInterface.CharacterName = Enum.GetName(typeof(CharacterType), ObjInfo.CharType);
-        PlayerInterface.WeaponCode = CharTypeToWeaponCode(ObjInfo.CharType);
+        PlayerInterface.CharacterCode = CharTypeToCharCode(ObjInfo.Player.CharType);
+        PlayerInterface.CharacterName = Enum.GetName(typeof(CharacterType), ObjInfo.Player.CharType);
+        PlayerInterface.WeaponCode = CharTypeToWeaponCode(ObjInfo.Player.CharType);
         PlayerInterface.Init();
         PlayerInterface.OnCharSkillLevelUpAction += OnCharSkillLevelUp;
         
@@ -507,7 +507,7 @@ public class MyPlayerController : PlayerController
                 if (go != null)
                 {
                     PlayerController pc = go.GetComponent<PlayerController>();
-                    if (pc.ObjInfo.Team != ObjInfo.Team && pc.IsAttackable())
+                    if (pc.ObjInfo.Player.Team != ObjInfo.Player.Team && pc.IsAttackable())
                     {
                         float distance = Vector3.Distance(go.transform.position, transform.position);
                         if (distance <= minDistance)
@@ -862,7 +862,7 @@ public class MyPlayerController : PlayerController
 
     protected void MakeSkillDict()
     {
-        Dictionary<KeyCode, Data.SkillData> skills = DataManager.SkillDict[ObjInfo.CharType];
+        Dictionary<KeyCode, Data.SkillData> skills = DataManager.SkillDict[ObjInfo.Player.CharType];
 
         // Q, W, E, R, T
         foreach(Key key in Enum.GetValues(typeof(Key)))

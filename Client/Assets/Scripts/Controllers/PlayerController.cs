@@ -80,7 +80,7 @@ public class PlayerController : CreatureController
     #region Util
     protected string GetCharacterName()
     {
-        return Enum.GetName(typeof(CharacterType), ObjInfo.CharType);
+        return Enum.GetName(typeof(CharacterType), ObjInfo.Player.CharType);
     }
     #endregion
 
@@ -185,11 +185,11 @@ public class PlayerController : CreatureController
 
     void CreateSkillMesh(KeyCode keyCode)
     {
-        SkillHitbox skillHitbox = DataManager.SkillHitboxDict[ObjInfo.CharType][keyCode];
+        SkillHitbox skillHitbox = DataManager.SkillHitboxDict[ObjInfo.Player.CharType][keyCode];
         GameObject go = Managers.Resource.Instantiate("Debug/SkillMesh", gameObject.transform);
         SkillMesh sm = go.GetComponent<SkillMesh>();
         if (sm == null) return;
-        sm.Init(skillHitbox, gameObject.transform, ObjInfo.Team);
+        sm.Init(skillHitbox, gameObject.transform, ObjInfo.Player.Team);
     }
 
     #endregion
@@ -251,7 +251,7 @@ public class PlayerController : CreatureController
 
     protected List<EffectData> Find_EffectList(KeyCode key)
     {
-        var skillDict = DataManager.PlayerFxDict[ObjInfo.CharType];
+        var skillDict = DataManager.PlayerFxDict[ObjInfo.Player.CharType];
         if (skillDict.ContainsKey(key))
             return skillDict[key];
         return null;
