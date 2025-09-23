@@ -1,4 +1,4 @@
-using Data;
+ï»¿using Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,18 +9,24 @@ using UnityEngine.UI;
 public class UI_TSkill : UI_SkillBase
 {
 
+    enum Texts
+    {
+        CooldownTimerText
+    }
+
     enum Images
     {
-        // Ãß°¡ ÇÒ°Å¸é ¹ØÀ¸·Î¸¸ À§¿¡ ¹«¾ùÀ» Ãß°¡ÇÏÁö ¸» °Í. ÀÌ¹ÌÁö Àß ¸ø ¹Ù²ñ.
+        // ì¶”ê°€ í• ê±°ë©´ ë°‘ìœ¼ë¡œë§Œ ìœ„ì— ë¬´ì—‡ì„ ì¶”ê°€í•˜ì§€ ë§ ê²ƒ. ì´ë¯¸ì§€ ì˜ ëª» ë°”ë€œ.
         Level_1,
         Level_2,
         Level_3,
-        SkillImg
+        SkillImg,
+        CooldownFill
     }
 
     enum GameObjects
     {
-        Mask,
+        CooldownTimer,
         LevelUp
     }
 
@@ -30,13 +36,23 @@ public class UI_TSkill : UI_SkillBase
         Gray
     }
 
+
+    //Temp
+    float _remainCool = 0;
+    float _maxCool = 10.0f;
+
     public override void Init()
     {
         _maxSkillLevel = 3;
 
+        Bind<TextMeshProUGUI>(typeof(Texts));
         Bind<Image>(typeof(Images));
         Bind<GameObject>(typeof(GameObjects));
 
+        BindEvent(gameObject, OnMouseOverEvent, Define.UIEvent.PointerEnter);
+        BindEvent(gameObject, OnMouseExitEvent, Define.UIEvent.PointerExit);
+
+        GetText((int)Texts.CooldownTimerText).text = "";
         ActivateLevelUp(false);
 
         _skillLevel = 1;
@@ -45,17 +61,33 @@ public class UI_TSkill : UI_SkillBase
 
     void Update()
     {
-        
+
+        if (GetObject((int)GameObjects.CooldownTimer).activeSelf && _remainCool > 0.0f)
+        {
+            _remainCool = Math.Max(0.0f, _remainCool - Time.deltaTime);
+
+            if (_remainCool > 0.0f)
+            {
+
+                GetImage((int)Images.CooldownFill).fillAmount = _remainCool / _maxCool;
+                SetCoolDown(_remainCool);
+            }
+            else
+            {
+                GetObject((int)GameObjects.CooldownTimer).SetActive(false);
+            }
+        }
     }
+
 
     void SetSkillLevel(int level)
     {
-        //TODO ·¹º§ Ã¼Å© ÀÌ·¸°Ô ÇØ¾ßµÇ³ª
+        //TODO ë ˆë²¨ ì²´í¬ ì´ë ‡ê²Œ í•´ì•¼ë˜ë‚˜
         if (level < 0 || level > _maxSkillLevel)
             return;
 
         if (level == 1)
-            GetObject((int)GameObjects.Mask).gameObject.SetActive(false);
+            GetObject((int)GameObjects.CooldownTimer).gameObject.SetActive(false);
 
         _skillLevel = level;
 
@@ -71,7 +103,11 @@ public class UI_TSkill : UI_SkillBase
         if (_skillLevel == _maxSkillLevel)
             return;
 
-        SetSkillLevel(_skillLevel + 1);
+        int newLevel = _skillLevel + 1;
+
+        SetSkillLevel(newLevel);
+        _popupUi.CurSkillLevel = newLevel;
+
         OnLevelUp?.Invoke(SkillKeyCode);
     }
 
@@ -97,6 +133,31 @@ public class UI_TSkill : UI_SkillBase
         }
 
         GetImage(level - 1).color = destColor;
+    }
+
+    public override void UseSkill()
+    {
+        GetObject((int)GameObjects.CooldownTimer).SetActive(true);
+        //temp
+        _remainCool = _maxCool;
+    }
+
+    void SetCoolDown(float remainCooldown)
+    {
+        string text = "";
+
+        if (remainCooldown > 1.0f)
+        {
+            text = remainCooldown.ToString("F0");
+        }
+        else
+        {
+            text = remainCooldown.ToString("F1");
+        }
+
+        TextMeshProUGUI textObject = GetText((int)Texts.CooldownTimerText);
+        if (textObject != null)
+            textObject.text = text;
     }
 
     public override void ActivateLevelUp(bool activate)
@@ -150,7 +211,8 @@ public class UI_TSkill : UI_SkillBase
         GetImage((int)Images.SkillImg).sprite = sprite;
     }
 
-    public override void UseSkill()
+    public override void SetMaxCool(float value)
     {
+        _maxCool = value;
     }
 }

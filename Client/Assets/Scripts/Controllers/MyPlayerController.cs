@@ -952,6 +952,10 @@ public class MyPlayerController : PlayerController
                 SkillBase RSkill = FindSkill(KeyCode.R);
                 SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(RSkill.CurLevelCooldown, skillAcc));
                 break;
+            case SkillEnum.T:
+                SkillBase TSkill = FindSkill(KeyCode.T);
+                SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(TSkill.CurLevelCooldown, skillAcc));
+                break;
         }
 
     }

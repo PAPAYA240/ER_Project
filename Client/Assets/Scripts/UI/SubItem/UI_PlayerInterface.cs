@@ -67,6 +67,12 @@ public class UI_PlayerInterface : UI_Base
         GetObject((int)GameObjects.DSkill).GetComponent<UI_SkillBase>().SkillKeyCode = UI_SkillBase.SkillEnum.D;
         GetObject((int)GameObjects.FSkill).GetComponent<UI_SkillBase>().SkillKeyCode = UI_SkillBase.SkillEnum.F;
 
+        GetObject((int)GameObjects.QSkill).GetComponent<UI_SkillBase>().InitPopupUI();
+        GetObject((int)GameObjects.WSkill).GetComponent<UI_SkillBase>().InitPopupUI();
+        GetObject((int)GameObjects.ESkill).GetComponent<UI_SkillBase>().InitPopupUI();
+        GetObject((int)GameObjects.RSkill).GetComponent<UI_SkillBase>().InitPopupUI();
+        GetObject((int)GameObjects.TSkill).GetComponent<UI_SkillBase>().InitPopupUI();
+
         GetObject((int)GameObjects.Death).SetActive(false);
         //GetObject((int)GameObjects.LevelAndExp).GetComponent<UI_Level>().OnLevelUp += OnLevelUp;
         GetObject((int)GameObjects.QSkill).GetComponent<UI_SkillBase>().OnLevelUp += OnCharSkillLevelUp;
