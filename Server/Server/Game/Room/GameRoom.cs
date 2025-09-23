@@ -265,27 +265,33 @@ namespace Server.Game
             ObjectInfo info = player.Info;
             S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
 
-            // TODO : 스킬 사용 가능 여부 체크
-            if (!player.CanUseSkill(skillPacket))
+            KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
+            if (!player.CanUseSkill(keyCode))
             {
                 skill.CanUse = false;
                 Broadcast(skill);
                 return; 
+            }
+            else
+            {
+                player.CommitSkillUsage(keyCode);
             }
 
             // TODO : (임시) 몬스터 찾아주기, 공격 범위에 나간다면 target 은 null로 전달해야 함
             TryGetMonster(skillPacket.TargetId, out Monster target);
             player.Target = target;
 
-            // 스킬 매니저에 정보를 전달해서 체크
-            // 쿨타임, 스테미나 등 체크
-
 
             // 스킬 사용이 가능하다 판단되면 패킷 전송
             info.PosInfo.State = CreatureState.Skill;
             skill.CanUse = true;
             skill.ObjectId = info.ObjectId;
-            skill.SkillInfo = skillPacket.SkillInfo;
+            skill.SkillInfo = new SkillInfo
+            {
+                SkillId = skillPacket.SkillInfo.SkillId,
+                KeyCode = skillPacket.SkillInfo.KeyCode,
+                CoolTime = player.GetCoolTime(keyCode)
+            };
             Broadcast(skill);
 
             SkillData skillData = null;

@@ -835,12 +835,12 @@ public class MyPlayerController : PlayerController
         return _coolDownDict[key].coolTime;
     }
 
-    public void StartCoCoolTime(KeyCode key)
+    public void StartCoCoolTime(SkillInfo skillInfo)
     {
-        SkillBase skill = FindSkill(key);
+        KeyCode key = (KeyCode)skillInfo.KeyCode;
 
         // 쿨타임 체크
-        StartCoroutine(CoInputCooltime(key, skill.CurLevelCooldown));
+        StartCoroutine(CoInputCooltime(key, skillInfo.CoolTime));
     }
 
     IEnumerator CoInputCooltime(KeyCode key, float time)

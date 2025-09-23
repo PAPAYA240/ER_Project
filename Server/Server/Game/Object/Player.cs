@@ -33,10 +33,8 @@ namespace Server.Game
             MakeCoolDownDict();
         }
 
-        public bool CanUseSkill(C_Skill skillPacket)
-        {
-            KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
-
+        public bool CanUseSkill(KeyCode keyCode)
+        {           
             // 쿨타임 체크
             if (!CheckCoolTime(keyCode))
                 return false;
@@ -44,11 +42,16 @@ namespace Server.Game
             // 스테미나 체크
 
 
-            // 체크 끝나면 데이터 변경
-            // ex : 쿨타임 돌리기 시작 등
+            return true;
+        }
+
+        // 체크 끝나면 데이터 변경
+        public void CommitSkillUsage(KeyCode keyCode)
+        {
+            // 쿨타임 재기 시작
             _ = CoInputCooltime(keyCode, FindSkill(keyCode).CurLevelCooldown);
 
-            return true;
+            // 스테미나 감소
         }
 
         public override void OnDamaged(GameObject attacker, float damage)
@@ -72,6 +75,11 @@ namespace Server.Game
         }
 
         #region Skill
+        public float GetCoolTime(KeyCode key)
+        {
+            return _coolDownDict[key].coolTime;
+        }
+
         private bool CheckCoolTime(KeyCode key)
         {
             if (!_coolDownDict[key].isCoolDown)

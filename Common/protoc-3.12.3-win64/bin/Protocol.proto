@@ -384,6 +384,7 @@ message WeaponInfo{
 message SkillInfo{
 	int32 skillId = 1;
 	int32 keyCode = 2;
+	float coolTime = 3;
 }
 
 message SkillHitbox{

@@ -11,7 +11,7 @@ using UnityEngine;
 public class SkillBase
 {
     SkillData _skillData = new SkillData();
-    public virtual SkillData SkillData
+    public SkillData SkillData
     {
         get { return _skillData; }
         set
