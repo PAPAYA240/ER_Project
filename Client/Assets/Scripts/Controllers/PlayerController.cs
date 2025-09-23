@@ -107,7 +107,7 @@ public class PlayerController : CreatureController
 
             if (Define.Object.MyPlayer == ObjectType)
             {
-                Managers.Object.MyPlayer.StartCoCoolTime(keyCode);
+                Managers.Object.MyPlayer.OnSkillConfirmed(skillPacket.SkillInfo);
             }
 
             //StartCoroutine(CoStartSkill());

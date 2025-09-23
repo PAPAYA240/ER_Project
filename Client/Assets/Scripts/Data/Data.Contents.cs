@@ -65,6 +65,8 @@ namespace Data
         public Mechanics mechanics;
         public Scaling scaling;
         public Dictionary<int, SkillLevel> levels;
+        public Dictionary<string, List<string>> descriptionInfo;
+        public Dictionary<string, List<string>> popupInfo;
     }
 
     [Serializable]
