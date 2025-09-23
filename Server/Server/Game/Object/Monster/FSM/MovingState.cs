@@ -15,8 +15,12 @@ namespace Server.Game.Object.Monster.FSM
         public void Enter(Monster monster)
         {
             // 플레이어가 없으면 스포너로 이동
-            if (monster.PlayerTarget == null)
+            if (monster.PlayerTarget == null || monster.IsReturnSpawn())
             {
+                if(monster.PlayerTarget != null)
+                    monster.PlayerTarget.Target = null;
+                monster.PlayerTarget = null;
+
                 monster.Get_CalculatePath(monster.spawnPosition);
             }
             else // 플레이어를 찾아 이동
@@ -38,7 +42,7 @@ namespace Server.Game.Object.Monster.FSM
 
             if (monster.PlayerTarget == null)
             {
-                if(ReturnToSpawn(monster))
+                if (ReturnToSpawn(monster))
                     monster.ChangeState(FSMManager.Instance.GetIdleState());
                 return;
             }
@@ -91,8 +95,10 @@ namespace Server.Game.Object.Monster.FSM
             monster.ChangeState(FSMManager.Instance.GetIdleState());
         }
 
+
         private bool ReturnToSpawn(Monster monster)
         {
+            // 도착 성공
             if (monster.IsArrivalSpawn())
                 return true;
 

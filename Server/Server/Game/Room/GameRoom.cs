@@ -315,7 +315,6 @@ namespace Server.Game
                 if(condition.Invoke(player))
                     return player;
             }
-
             return null;
         }
 
@@ -381,6 +380,7 @@ namespace Server.Game
                 List<int> visibleObjs = new List<int>();
                 visibleObjs.AddRange(GetObjectsInRange(_players, player));
                 AddVisibleObjects(visibleObjs, _monsters, player);
+                AddVisibleObjects(visibleObjs, _envs, player);
                 visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
                 player.SendVisibleObjsPkt(visibleObjs);
             }

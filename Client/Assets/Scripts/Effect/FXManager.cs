@@ -46,17 +46,18 @@ public class FXManager : MonoBehaviour
         return null;
     }
 
-    public void PlayEffect(List<EffectData> effectData, Transform casterTransform, Vector3 targetPos = new Vector3(), Quaternion rot = new Quaternion())
+    public List<GameObject> PlayEffect(List<EffectData> effectData, Transform casterTransform, Vector3 targetPos = new Vector3(), Quaternion rot = new Quaternion())
     {
         if (effectData == null)
-            return;
+            return null;
 
+        List<GameObject> effectList = new List<GameObject>();
         foreach (EffectData data in effectData)
         {
             if (!fxPrefabs.ContainsKey(data.prefabName))
             {
                 Debug.LogError($"FxManager : {data.prefabName}을 찾을 수 없습니다.");
-                return;
+                return null;
             }
 
             GameObject fxPrefab = fxPrefabs[data.prefabName];
@@ -95,16 +96,27 @@ public class FXManager : MonoBehaviour
                 fxObject.transform.position = spawnPosition;
                 fxObject.transform.SetParent(parentTransform);
             }
-           
+
+            effectList.Add(fxObject);
             SettingLayer(fxObject, fxLayer);
             if (fxObject)
                 fxObject.SetActive(false);
 
             // 이펙트 시작
-            StartCoroutine(ReturnToPoolAfterDelay(fxObject, data.prefabName, data.delayTime, data.duration, casterTransform));
+            activeCoroutines[fxObject] = StartCoroutine(ReturnToPoolAfterDelay(fxObject, data.prefabName, data.delayTime, data.duration, casterTransform));
+        }
+        return effectList;
+    }
+    private Dictionary<GameObject, Coroutine> activeCoroutines = new Dictionary<GameObject, Coroutine>();
+    public void StopAndReturnEffect(GameObject effect)
+    {
+        if (activeCoroutines.ContainsKey(effect))
+        {
+            StopCoroutine(activeCoroutines[effect]); 
+            activeCoroutines.Remove(effect);
         }
     }
-   
+
     private IEnumerator ReturnToPoolAfterDelay(GameObject fxObject, string prefabName, float delayTime, float duration, Transform casterTransform)
     {
         yield return new WaitForSeconds(delayTime);

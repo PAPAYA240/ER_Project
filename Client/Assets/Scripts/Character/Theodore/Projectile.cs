@@ -25,13 +25,14 @@ public class Projectile : MonoBehaviour
         }
         gameObject.SetActive(false);
     }
-
-    void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Player"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Monster") 
+            || other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
             gameObject.SetActive(false);
+        }
     }
-
     public void Run(Vector3 startPos, Vector3 startforward)
     {
         gameObject.transform.position = startPos;
