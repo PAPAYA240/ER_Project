@@ -54,7 +54,7 @@ public class Define
         Map = 11,
     }
 
-    public enum Key { Q, W, E, R, T, F1 }
+    public enum Key { Q, W, E, R, T/*, F1*/ }
 
     //public enum Trait 
     //{
