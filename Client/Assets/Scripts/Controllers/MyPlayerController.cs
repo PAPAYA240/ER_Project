@@ -76,6 +76,7 @@ public class MyPlayerController : PlayerController
     protected float _minMoveDistance = 0.5f;
     protected float _rotSpeed = 8.0f;
     protected Coroutine _coLookAtTarget = null;
+    protected bool _isWarp = false;
 
     // State : Attack
     protected bool _isAttackLoop = false;
@@ -233,18 +234,21 @@ public class MyPlayerController : PlayerController
             ExecuteSkill();
 
         base.UpdateController();
+
+        CheckUpdatedFlag();
     }
 
-    protected override void CheckUpdatedFlag(bool isWarp = false)
+    protected override void CheckUpdatedFlag()
     {
         if (_updated)
         {
             C_Move movePacket = new C_Move();
             movePacket.PosInfo = PosInfo;
             movePacket.RotInfo = RotInfo;
-            movePacket.IsWarp = isWarp;
+            movePacket.IsWarp = _isWarp;
             Managers.Network.Send(movePacket);
             _updated = false;
+            _isWarp = false;
         }
     }
     #endregion
@@ -298,9 +302,7 @@ public class MyPlayerController : PlayerController
                 State = CreatureState.Moving;
             }
 
-            CellPos = transform.position;
-            RotInfo = transform.rotation;
-            CheckUpdatedFlag();
+            UpdateTransform();
         }
     }
 
@@ -612,7 +614,8 @@ public class MyPlayerController : PlayerController
             z = respawnPacket.RotInfo.Qz,
             w = respawnPacket.RotInfo.Qw
         };
-        UpdateTransform();
+
+        UpdateTransform(true);
 
         State = CreatureState.Idle;
         Hp = respawnPacket.Hp;
@@ -1069,11 +1072,12 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region Util
-    protected void UpdateTransform()
+    protected void UpdateTransform(bool isWarp = false)
     {
         CellPos = transform.position;
         RotInfo = transform.rotation;
         _updated = true;
+        _isWarp = isWarp;
     }
 
     protected void SetMovementState()
