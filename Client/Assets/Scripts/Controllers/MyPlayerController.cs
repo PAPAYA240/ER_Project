@@ -15,7 +15,7 @@ public class MyPlayerController : PlayerController
     #region Variable
     protected bool _moveKeyPressed = false;
     protected int _monsterMask;
-    protected int _playerMask; 
+    protected int _playerMask;
 
     // State
     public override CreatureState State
@@ -95,7 +95,7 @@ public class MyPlayerController : PlayerController
                 value != null && _attackRoutine != null)
             {
                 StopCoroutine(_attackRoutine);
-                _attackRoutine = StartCoroutine(CoAttackLoop());              
+                //_attackRoutine = StartCoroutine(CoAttackLoop());              
             }
 
             _target = value;
@@ -235,13 +235,14 @@ public class MyPlayerController : PlayerController
         base.UpdateController();
     }
 
-    protected override void CheckUpdatedFlag()
+    protected override void CheckUpdatedFlag(bool isWarp = false)
     {
         if (_updated)
         {
             C_Move movePacket = new C_Move();
             movePacket.PosInfo = PosInfo;
             movePacket.RotInfo = RotInfo;
+            movePacket.IsWarp = isWarp;
             Managers.Network.Send(movePacket);
             _updated = false;
         }
@@ -260,8 +261,8 @@ public class MyPlayerController : PlayerController
 
         if(!_isStop)
         {
-            Target = FindAttackablePlayer();
-            TryChangeToAttackState();
+            //Target = FindAttackablePlayer();
+            //TryChangeToAttackState();
         }       
     }
 
@@ -624,7 +625,7 @@ public class MyPlayerController : PlayerController
     protected virtual void UpdateKeyInput()
     {
         // LeftCtrl + Q/W/E/R : 스킬 레벨업
-        if (Input.GetKey(KeyCode.LeftControl))
+        if (Input.GetKey(KeyCode.LeftControl) && PlayerInterface.CanLevelUp() == true)
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
@@ -641,6 +642,10 @@ public class MyPlayerController : PlayerController
             else if (Input.GetKeyDown(KeyCode.R))
             {
                 PlayerInterface.SpecificSkillLevelUp(GameObjects.RSkill);
+            }
+            else if (Input.GetKeyDown(KeyCode.T))
+            {
+                PlayerInterface.SpecificSkillLevelUp(GameObjects.TSkill);
             }
         }
         // Q, W, E, R, T, D, F
@@ -1006,6 +1011,10 @@ public class MyPlayerController : PlayerController
                 SkillBase RSkill = FindSkill(KeyCode.R);
                 SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(RSkill.CurLevelCooldown, skillAcc));
                 break;
+            case SkillEnum.T:
+                SkillBase TSkill = FindSkill(KeyCode.T);
+                SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(TSkill.CurLevelCooldown, skillAcc));
+                break;
         }
 
     }
@@ -1065,7 +1074,7 @@ public class MyPlayerController : PlayerController
     {
         CellPos = transform.position;
         RotInfo = transform.rotation;
-        CheckUpdatedFlag();
+        _updated = true;
     }
 
     protected void SetMovementState()

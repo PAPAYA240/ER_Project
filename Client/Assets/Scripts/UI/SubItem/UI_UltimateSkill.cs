@@ -61,6 +61,9 @@ public class UI_UltimateSkill : UI_SkillBase
         Bind<Image>(typeof(Images));
         Bind<GameObject>(typeof(GameObjects));
 
+        BindEvent(gameObject, OnMouseOverEvent, Define.UIEvent.PointerEnter);
+        BindEvent(gameObject, OnMouseExitEvent, Define.UIEvent.PointerExit);
+
         ui_PlayerInterface = GetComponentInParent<UI_PlayerInterface>();
         if (ui_PlayerInterface == null)
             Debug.Log("null  == ui_PlayerInterface");
@@ -132,7 +135,11 @@ public class UI_UltimateSkill : UI_SkillBase
         if (_skillLevel == _maxSkillLevel)
             return;
 
-        SetSkillLevel(_skillLevel + 1);
+        int newLevel = _skillLevel + 1;
+
+        SetSkillLevel(newLevel);
+        _popupUi.CurSkillLevel = newLevel;
+
         OnLevelUp?.Invoke(SkillKeyCode);
     }
 

@@ -1,14 +1,15 @@
-﻿using Data;
-using Google.Protobuf.Protocol;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Data;
+using Google.Protobuf.Protocol;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Windows;
-using static Define;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
+using static Define;
 
 public class PlayerController : CreatureController
 {
@@ -63,6 +64,13 @@ public class PlayerController : CreatureController
         gameObject.layer = LayerMask.NameToLayer("Fog");
 
         InitNameTag();
+
+        // NavMesh Agent
+        _agent = GetComponent<NavMeshAgent>();
+        _agent.speed = Speed;
+        _agent.acceleration = 999;
+        _agent.angularSpeed = 720;
+        _agent.stoppingDistance = 0.1f;
     }
 
     protected override void UpdateController()
@@ -70,7 +78,7 @@ public class PlayerController : CreatureController
         base.UpdateController();
     }
 
-    protected virtual void CheckUpdatedFlag() { }
+    protected virtual void CheckUpdatedFlag(bool isWarp = false) { }
 
     public override void OnDamaged()
     {

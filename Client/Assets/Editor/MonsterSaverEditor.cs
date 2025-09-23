@@ -112,7 +112,7 @@ public class EnvSaverEditor : MonoBehaviour
 
         string jsonData = JsonUtility.ToJson(envList, true); 
 
-        string path = Application.dataPath + "/EnvObjData.json";
+        string path = Application.dataPath + "/Resources/Data/Env/SpawnEnvData.json";
         File.WriteAllText(path, jsonData);
         Debug.Log("몬스터 데이터가 " + path + " 경로에 성공적으로 저장되었습니다.");
     }

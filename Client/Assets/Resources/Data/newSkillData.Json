@@ -3,10 +3,9 @@
     "Rozzi": {
       "T": {
         "name": "더블샷",
-        "description": "로지는 스킬을 사용한 후 일정시간 이내에 기본 공격을 하면 빠르게 두 번 연속 발사하여 기본 공격 피해를 입힙니다.",
+        "description": "로지는 스킬을 사용한 후 4초 이내에 기본 공격을 하면 빠르게 두 번 연속 발사하여, <color=#DFC480>공격력의 60% * (기본 공격 증폭)</color>과 <color=#DFC480>공격력의 {damage} * (기본 공격 증폭)</color>의 기본 공격 피해를 입힙니다.",
         "type": "Passive",
         "maxLevel": 3,
-        "icon": "Icons/Hyunwoo_P",
         "mechanics": {
           "targetType": "TargetUnit",
           "damageType": "Physical"
@@ -21,11 +20,21 @@
           "3": {
             "damage": 65
           }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "50%",
+            "55%",
+            "60%"
+          ]
+        },
+        "popupInfo": {
+          "2타 공격력 계수": [ "50%", "55%", "60%" ]
         }
       },
       "Q": {
         "name": "이지샷",
-        "description": "로지가 지정한 방향으로 총을 발사하여 경로상의 적들에게 스킬 피해를 입힙니다. 총에 맞은 대상이 있으면 일정시간 이내의 다음 이동 명령에 빠르게 돌진하며, 이지샷의 쿨다운이 감소합니다.",
+        "description": "로지가 지정한 방향으로 총을 발사하여 경로상의 적들에게 {damage}의 스킬 피해를 입힙니다.\n총에 맞은 대상이 있으면 2초 이내의 다음 이동 명령에 빠르게 돌진하며, 이지샷의 쿨다운이 40% 감소합니다.",
         "type": "Normal",
         "maxLevel": 5,
         "mechanics": {
@@ -116,11 +125,24 @@
               }
             ]
           }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "<color=#FFFFFF>30</color><color=#DFC480>(+공격력의 100%)</color>",
+            "<color=#FFFFFF>55</color><color=#DFC480>(+공격력의 100%)</color>",
+            "<color=#FFFFFF>80</color><color=#DFC480>(+공격력의 100%)</color>",
+            "<color=#FFFFFF>105</color><color=#DFC480>(+공격력의 100%)</color>",
+            "<color=#FFFFFF>130</color><color=#DFC480>(+공격력의 100%)</color>"
+          ]
+        },
+        "popupInfo": {
+          "피해량": [ "30", "55", "80", "105", "130" ],
+          "소모량": [ "40", "45", "50", "55", "60" ]
         }
       },
       "W": {
         "name": "스핀샷",
-        "description": "로지가 총을 난사하여 주변의 적들에게 스킬 피해를 입히고, 방어력과 치유 효과를 감소 시킵니다. 로지는 난사하는 동안 이동 속도가 증가하며, 적중한 대상이 있다면 쿨다운이 감소합니다.",
+        "description": "로지가 총을 난사하여 주변의 적들에게 {damage}의 스킬 피해를 입히고, 3초 동안 방어력 {defense}와 치유 효과 45%를 감소 시킵니다.\n로지는 난사하는 동안 이동 속도가 120% 증가하며, 적중한 대상이 있다면 쿨다운이 40% 감소합니다.",
         "type": "Normal",
         "maxLevel": 5,
         "mechanics": {
@@ -286,11 +308,32 @@
               }
             ]
           }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "<color=#FFFFFF>30</color><color=#DFC480>(+공격력의 80%)</color>",
+            "<color=#FFFFFF>60</color><color=#DFC480>(+공격력의 80%)</color>",
+            "<color=#FFFFFF>90</color><color=#DFC480>(+공격력의 80%)</color>",
+            "<color=#FFFFFF>120</color><color=#DFC480>(+공격력의 80%)</color>",
+            "<color=#FFFFFF>150</color><color=#DFC480>(+공격력의 80%)</color>"
+          ],
+          "{defense}": [
+            "<color=#FFFFFF>11%</color>",
+            "<color=#FFFFFF>12%</color>",
+            "<color=#FFFFFF>13%</color>",
+            "<color=#FFFFFF>14%</color>",
+            "<color=#FFFFFF>15%</color>"
+          ]
+        },
+        "popupInfo": {
+          "피해량": [ "30", "60", "90", "120", "150" ],
+          "소모량": [ "30", "35", "40", "45", "50" ],
+          "방어력 감소량(%)": [ "11%", "12%", "13%", "14%", "15%" ]
         }
       },
       "E": {
         "name": "에어샷",
-        "description": "로지가 지정한 대상을 점프하여 넘어가며 대상이 있던 위치에 총을 발사하여 스킬 피해를 입히고 기절시킵니다. 로지는 점프하는 동안 대상 지정 불가 상태가 됩니다.",
+        "description": "로지가 지정한 대상을 점프하여 넘어가며 대상이 있던 위치에 총을 발사하여 {damage}의 스킬 피해를 입히고 0.3초 동안 기절시킵니다.\n로지는 점프하는 동안 대상 지정 불가 상태가 됩니다.",
         "type": "Normal",
         "maxLevel": 5,
         "mechanics": {
@@ -371,11 +414,25 @@
               }
             ]
           }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "<color=#FFFFFF>30</color><color=#DFC480>(+공격력의 50%)</color>",
+            "<color=#FFFFFF>50</color><color=#DFC480>(+공격력의 50%)</color>",
+            "<color=#FFFFFF>70</color><color=#DFC480>(+공격력의 50%)</color>",
+            "<color=#FFFFFF>90</color><color=#DFC480>(+공격력의 50%)</color>",
+            "<color=#FFFFFF>110</color><color=#DFC480>(+공격력의 50%)</color>"
+          ]
+        },
+        "popupInfo": {
+          "피해량": [ "30", "50", "70", "90", "110" ],
+          "쿨다운": [ "18", "17", "16", "15", "14" ],
+          "소모량": [ "60", "70", "80", "90", "100" ]
         }
       },
       "R": {
         "name": "셈텍스탄 MK-ll",
-        "description": "로지가 적이나 지면에 부착되고 잠시 후에 폭발하는 폭탄을 발사합니다. 폭탄을 적에게 붙였다면 이동속도가 감소하고, 폭발할 때 스킬 피해를 입힙니다. 폭탄이 부착된 대상은 로지에게 시야를 공유합니다. 부착된 폭탄이 터지기 전에 대상에게 기본 공격을 5회 적중하면 즉시 터지며 대상 최대 체력의 일정 비율만큼의 고정 피해를 입히고, 이동 속도를 감소시킵니다. 스킬을 적중하면 2회 공격으로 간주합니다. 폭탄을 즉시 터트리면 이 스킬의 쿨다운이 감소하고, 이동 속도가 증가합니다.",
+        "description": "로지가 적이나 지면에 부착되고 3초 후에 폭발하는 폭탄을 발사합니다.\n폭탄을 적에게 붙였다면 이동속도가 30% 감소하고, 폭발할 때 {damage}의 스킬 피해를 입힙니다.\n폭탄이 부착된 대상은 로지에게 시야를 공유합니다.\n\n부착된 폭탄이 터지기 전에 대상에게 기본 공격을 5회 적중하면 즉시 터지며 대상 최대 체력의 {MaxHpRatio}만큼의 고정 피해를 입히고 1초 동안 이동 속도를 30% 감소시킵니다. 스킬을 적중하면 2회 공격으로 간주합니다.\n\n폭탄을 즉시 터트리면 이 스킬의 쿨다운이 50% 감소하고, 1초 동안 이동 속도가 30% 증가합니다.",
         "type": "Ultimate",
         "maxLevel": 3,
         "mechanics": {
@@ -512,16 +569,31 @@
               }
             ]
           }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "<color=#FFFFFF>60</color><color=#DFC480>(+공격력의 50%)</color>",
+            "<color=#FFFFFF>120</color><color=#DFC480>(+공격력의 50%)</color>",
+            "<color=#FFFFFF>180</color><color=#DFC480>(+공격력의 50%)</color>"
+          ],
+          "{MaxHpRatio}": [
+            "<color=#FFFFFF>4%</color>",
+            "<color=#FFFFFF>7%</color>",
+            "<color=#FFFFFF>10%</color>"
+          ]
+        },
+        "popupInfo": {
+          "피해량": [ "60", "120", "180" ],
+          "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
         }
       }
     },
     "Yuki": {
       "T": {
         "name": "완벽한 옷매무새",
-        "description": "유키가 적에게 피해를 입힐 때 단추를 1개 소모하여 추가 스킬 피해를 입힙니다. 단추가 없을 때는 적용되지 않습니다. 단추는 비전투 상태가 되거나, 옷매무새 정리를 사용하면 최대치로 회복할 수 있습니다.",
+        "description": "유키가 적에게 피해를 입힐 때 단추를 1개 소모하여 <color=#FFFFFF>40</color><color=#DFC480>(+공격력의 {damage}%)</color>의 추가 스킬 피해를 입힙니다.\n단추가 없을 때는 적용되지 않습니다.\n\n단추는 비전투 상태가 되거나, 옷매무새 정리를 사용하면 최대치로 회복할 수 있습니다.",
         "type": "Passive",
         "maxLevel": 3,
-        "icon": "Icons/Hyunwoo_P",
         "mechanics": {
           "targetType": "NonTarget",
           "damageType": "Physical"
@@ -536,11 +608,21 @@
           "3": {
             "damage": 40
           }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "25",
+            "35",
+            "45"
+          ]
+        },
+        "popupInfo": {
+          "총 공격력 계수": [ "25%", "35%", "45%" ]
         }
       },
       "Q": {
         "name": "머리치기!",
-        "description": "유키의 다음 기본 공격에 추가 피해를 입히고 이동 속도를 감소시킵니다. 완벽한 옷매무새 단추가 있다면 기절시킵니다.",
+        "description": "유키의 다음 기본 공격이 <color=#FFFFFF>{damage}</color><color=#DFC480>(+공격력의 100%) * (기본 공격 증폭)</color>의 피해를 입히고 1초 동안 50%의 이동 속도를 감소시킵니다.\n\n완벽한 옷매무새 단추가 있다면 0.5초간 기절시킵니다.",
         "type": "Normal",
         "maxLevel": 5,
         "mechanics": {
@@ -621,11 +703,24 @@
               }
             ]
           }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "40",
+            "60",
+            "80",
+            "100",
+            "120"
+          ]
+        },
+        "popupInfo": {
+          "피해량": [ "40", "60", "80", "100", "120" ],
+          "소모량": [ "90", "80", "70", "60", "50" ]
         }
       },
       "W": {
         "name": "옷매무새 정리",
-        "description": "지속 효과: 피해를 입힐 때마다 쿨다운이 감소합니다. 유키가 옷매무새를 정리합니다. 옷매무새를 정리할 동안 받는 피해가 감소하고, 빗겨치고 일격의 쿨다운이 감소됩니다. 정리가 마무리 되면 완벽한 옷매무새 단추를 회복합니다.",
+        "description": "<color=#2EE635>지속 효과:</color> 피해를 입힐 때마다 쿨다운이 감소합니다.\n\n유키가 1초간 옷매무새를 정리합니다. 옷매무새를 정리할 동안 받는 피해가 <color=#FFFFFF>10</color><color=#DFC480>(+공격력의 15%)</color><color=#FFFFFF>%</color> 감소하고, 빗겨치고 일격의 쿨다운이 3초 감소됩니다. 정리가 마무리 되면 완벽한 옷매무새 단추를 4 회복합니다.",
         "type": "Normal",
         "maxLevel": 5,
         "mechanics": {
@@ -721,11 +816,14 @@
               }
             ]
           }
+        },
+        "popupInfo": {
+          "쿨다운": [ "15", "14", "13", "12", "11" ]
         }
       },
       "E": {
         "name": "빗겨치고 일격",
-        "description": "유키가 지정한 방향으로 돌진해서 가장 먼저 부딪힌 적에게 스킬 피해를 입힙니다. 일정 시간 동안 공격 속도가 감소되고 유키의 빗겨치고 일격의 쿨다운이 감소합니다.",
+        "description": "유키가 지정한 방향으로 돌진해서 가장 먼저 부딪힌 적에게 <color=#FFFFFF>{damage}</color><color=#DFC480>(+공격력의 90%)</color>의 스킬 피해를 입히며 2m 이동합니다. 공격당한 대상은 1초 동안 공격 속도가 40% 감소되며 피해를 입은 대상이 있다면 빗겨치고 일격의 쿨다운이 3초 감소합니다.",
         "type": "Normal",
         "maxLevel": 5,
         "mechanics": {
@@ -808,11 +906,24 @@
               }
             ]
           }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "40",
+            "75",
+            "110",
+            "145",
+            "180"
+          ]
+        },
+        "popupInfo": {
+          "피해량": [ "40", "75", "110", "145", "180" ],
+          "쿨다운": [ "15", "14", "13", "12", "11" ]
         }
       },
       "R": {
         "name": "화무십일홍(花無十日紅)",
-        "description": "유키가 검에 손을 가져가서 순식간에 공간을 베어 버립니다. 유키는 자신이 벤 적에게 피해를 입히고 표시를 남겨 이동 속도를 감소시킵니다. 유키가 검을 검집에 집어 넣는 순간 표시가 터지며 대상의 최대 체력의 일정 비율만큼 고정 피해를 입힙니다.",
+        "description": "유키가 검에 손을 가져가서 순식간에 공간을 베어 버립니다.\n유키는 자신이 벤 적에게 <color=#FFFFFF>{damage}</color><color=#DFC480>(+공격력의 200%)</color>의 스킬 피해를 입히고 표식을 남겨 1초 동안 99%의 이동 속도를 감소시킵니다. 유키가 검을 검집에 집어 넣는 순간 표식이 터지며 대상의 최대 체력의 <color=#FFFFFF>{MaxHpRatio}</color><color=#DFC480>(+공격력의 5%)</color><color=#FFFFFF>%</color>에 해당하는 고정 피해를 입힙니다.",
         "type": "Ultimate",
         "maxLevel": 3,
         "mechanics": {
@@ -862,16 +973,33 @@
               }
             ]
           }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "200",
+            "250",
+            "300"
+          ],
+          "{MaxHpRatio}": [
+            "6",
+            "10",
+            "14"
+          ]
+        },
+        "popupInfo": {
+          "피해량": [ "200", "250", "300" ],
+          "최대 체력 피해량(%)": [ "6%", "10%", "14%" ],
+          "쿨다운": [ "90", "75", "60" ],
+          "소모량": [ "100", "125", "150" ]
         }
       }
     },
     "Theodore": {
       "T": {
         "name": "에너지 프로토콜",
-        "description": "테오도르가 적에게 기본 공격을 하면 에너지 포의 쿨다운이 크게 감소하고, 다른 기본 스킬의 쿨다운이 감소합니다.",
+        "description": "테오도르가 부쉬에서 벗어날 때 2.5초 동안 은신 상태가 되며 그동안 이동속도가 {speed}% 증가합니다. 이때, 2.5초 동안 최대 체력의 {MaxHpRatio}%만큼의 피해를 흡수하는 보호막을 획득합니다. 이동을 제외한 행동을 하면 은신 상태가 해제됩니다.\n\n테오도르가 기본 공격을 적중시키면 <color=#FFFFFF>에너지 포</color>의 쿨다운이 {CDR1}% 감소하고, <color=#FFFFFF>다른 기본 스킬</color>의 쿨다운이 {CDR2}% 감소합니다.",
         "type": "Passive",
         "maxLevel": 3,
-        "icon": "Icons/Hyunwoo_P",
         "mechanics": {
           "targetType": "TargetUnit",
           "damageType": "Physical"
@@ -886,11 +1014,41 @@
           "3": {
             "damage": 65
           }
+        },
+        "descriptionInfo": {
+          "{speed}": [
+            "5",
+            "10",
+            "15"
+          ],
+          "{MaxHpRatio}": [
+            "10",
+            "15",
+            "20"
+          ],
+          "{CDR1}": [
+            "20",
+            "40",
+            "60"
+          ],
+          "{CDR2}": [
+            "2",
+            "6",
+            "10"
+          ]
+        },
+        "popupInfo": {
+          "이동 속도 증가량(%)": [ "5%", "10%", "15%" ],
+          "최대 체력 비례 보호막 획득량(%)": [ "10%", "15%", "20%" ],
+          "[에너지포] 쿨다운 감소량(%)": [ "20%", "40%", "60%" ],
+          "[증폭 스크린] 쿨다운 감소량(%)": [ "2%", "6%", "10%" ],
+          "[스파크탄] 쿨다운 감소량(%)": [ "2%", "6%", "10%" ],
+          "쿨다운": [ "10", "8", "6" ]
         }
       },
       "Q": {
         "name": "에너지 포",
-        "description": "테오도르가 1.5초에 걸쳐 자신의 레일건에 에너지를 충전하며 이동 속도가 20%까지 서서히 감소합니다.",
+        "description": "충전: 테오도르가 1.5초에 걸쳐 자신의 레일건에 에너지를 충전하며 이동 속도가 20%까지 서서히 감소합니다.\n\n발사: 다시 사용하면 지정한 방향으로 광선을 발사하여 적에게는 <color=#FFFFFF>{normalDamage}</color><color=#CDA1C8>(+스킬 증폭의 70%)</color>의 스킬 피해를 입히고 아군은 2.5초에 걸쳐 <color=#FFFFFF>{normalHeal}</color><color=#CDA1C8>(+스킬 증폭의 20%)</color>의 체력을 회복시킵니다. 충전 시간에 비례해 사거리가 증가합니다.\n\n<color=#FFFFFF>에너지 포</color>가 <color=#FFFFFF>증폭 스크린</color>에 적중하면 잠시 뒤 스크린 정면으로 광선을 발사해 적에게는 <color=#FFFFFF>{screenDamage}</color><color=#CDA1C8>(+스킬 증폭의 70%)</color>의 스킬 피해를 입히고 아군은 2.5초에 걸쳐 <color=#FFFFFF>{screenHeal}</color><color=#CDA1C8>(+스킬 증폭의 20%)</color>의 체력을 회복시킵니다.",
         "type": "Normal",
         "maxLevel": 5,
         "mechanics": {
@@ -981,13 +1139,52 @@
               }
             ]
           }
+        },
+        "descriptionInfo": {
+          "{normalDamage}": [
+            "50",
+            "90",
+            "130",
+            "170",
+            "210"
+          ],
+          "{normalHeal}": [
+            "40",
+            "65",
+            "90",
+            "115",
+            "140"
+          ],
+          "{screenDamage}": [
+            "70",
+            "110",
+            "150",
+            "190",
+            "230"
+          ],
+          "{screenHeal}": [
+            "40",
+            "65",
+            "90",
+            "115",
+            "140"
+          ]
+        },
+        "popupInfo": {
+          "피해량": [ "50", "90", "130", "170", "210" ],
+          "체력 회복량": [ "40", "65", "90", "115", "140" ],
+          "스크린 발사 피해량": [ "70", "110", "150", "190", "230" ],
+          "스크린 발사 회복량": [ "40", "65", "90", "115", "140" ],
+          "쿨다운": [ "13", "12", "11", "10", "9" ],
+          "소모량": [ "40", "45", "50", "55", "60" ]
         }
       },
       "W": {
         "name": "증폭 스크린",
-        "description": "테오도르가 지정한 위치에 7초 동안 유지되는 증폭 스크린을 생성합니다.",
+        "description": "테오도르가 지정한 위치에 7초 동안 유지되는 증폭 스크린을 생성합니다.\n\n증폭 스크린을 통과한 테오도르의 <color=#FFFFFF>기본 공격</color> 탄환과 <color=#FFFFFF>스파크탄</color>은 적중한 적 주변으로 확산됩니다. 스크린을 통과한 기본 공격은 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 24%)</color>의 추가 스킬 피해를 입히고, 스파크탄은 투사체 속도와 사거리가 증가합니다.",
         "type": "Normal",
         "maxLevel": 5,
+        "canMoveDuringCast" :  true,
         "mechanics": {
           "targetType": "TargetArea",
           "damageType": "Magic"
@@ -1151,11 +1348,25 @@
               }
             ]
           }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "30",
+            "40",
+            "50",
+            "60",
+            "70"
+          ]
+        },
+        "popupInfo": {
+          "피해량": [ "30", "40", "50", "60", "70" ],
+          "쿨다운": [ "12", "11.5", "11", "10.5", "10" ],
+          "소모량": [ "30", "35", "40", "45", "50" ]
         }
       },
       "E": {
         "name": "스파크탄",
-        "description": "에너지 포 또는 스파크탄 적중 시 다음 기본 공격 사거리가 1 증가합니다.",
+        "description": "<color=#2EE635>지속 효과:</color> <color=#FFFFFF>에너지 포</color> 또는 <color=#FFFFFF>스파크탄</color> 적중 시 다음 기본 공격 사거리가 1 증가합니다.\n\n테오도르가 스파크탄을 던져 적중한 적의 이동 속도를 2초동안 {speed}% 감소시키며 4초 동안 <color=#FFFFFF>목표물</color>로 지정합니다. 테오도르는 목표물이 된 대상으로부터 시야를 제공받으며, 기본 공격 또는 스킬로 공격하면 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 60%)</color>의 스킬 피해를 입히고 {CC}초 동안 속박합니다.",
         "type": "Normal",
         "maxLevel": 5,
         "mechanics": {
@@ -1236,11 +1447,41 @@
               }
             ]
           }
+        },
+        "descriptionInfo": {
+          "{speed}": [
+            "2",
+            "4",
+            "6",
+            "8",
+            "10"
+          ],
+          "{damage}": [
+            "30",
+            "60",
+            "90",
+            "120",
+            "150"
+          ],
+          "{CC}": [
+            "0.9",
+            "0.95",
+            "1",
+            "1.05",
+            "1.1"
+          ]
+        },
+        "popupInfo": {
+          "이동 속도 감소량(%)": [ "2%", "4%", "6%", "8%", "10%" ],
+          "피해량": [ "30", "60", "90", "120", "150" ],
+          "속박 지속 시간": [ "0.9", "0.95", "1", "1.05", "1.1" ],
+          "쿨다운": [ "14", "13", "12", "11", "10" ],
+          "소모량": [ "45", "50", "55", "60", "65" ]
         }
       },
       "R": {
         "name": "에너지 필드",
-        "description": "테오도르가 에너지를 최대로 끌어올려 지정한 방향으로 4초 동안 유지되는 에너지 필드를 생성해 같은 방향으로 이동하는 아군의 이동 속도를 증가시키고, 강력한 에너지 파동을 발사하여 적에게 스킬 피해를 입힙니다.",
+        "description": "테오도르가 에너지를 최대로 끌어올려 지정한 방향으로 4초 동안 유지되는 <color=#FFFFFF>에너지 필드</color>를 생성해 같은 방향으로 이동하는 아군의 이동 속도를 <color=#FFFFFF>{speed}%</color><color=#CDA1C8>(+스킬 증폭의 2%)</color> 증가시키고, 강력한 에너지 파동을 발사하여 적에게 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 90%)</color>의 스킬 피해를 입힙니다.\n\n발사 이후, 테오도르는 <color=#FFFFFF>과충전 상태</color>가 되어, 공격속도가 8초 동안 <color=#FFFFFF>{attackSpeed}%</color> 증가하며, <color=#FFFFFF>에너지 포</color> 최대 충전 시간이 0.5초로 감소합니다.",
         "type": "Ultimate",
         "maxLevel": 3,
         "mechanics": {
@@ -1374,6 +1615,563 @@
                 "value": 30,
                 "duration": 1,
                 "condition": "Boom"
+              }
+            ]
+          }
+        },
+        "descriptionInfo": {
+          "{speed}": [
+            "60",
+            "70",
+            "80"
+          ],
+          "{damage}": [
+            "100",
+            "230",
+            "360"
+          ],
+          "{attackSpeed}": [
+            "40",
+            "60",
+            "80"
+          ]
+        },
+        "popupInfo": {
+          "이동 속도 감소량(%)": [ "60%", "70%", "80%" ],
+          "피해량": [ "100", "230", "360" ],
+          "공격 속도 증가량(%)": [ "40%", "60%", "80%" ],
+          "쿨다운": [ "80", "70", "60" ],
+          "소모량": [ "100", "125", "150" ]
+        }
+      }
+    },
+    "Abigail": {
+      "T": {
+        "name": "티어링 블레이드",
+        "description": "아비게일의 다음 기본 공격이 추가 스킬 피해를 입히고, 대상의 방어력을 4초 동안 감소시킵니다. 스킬이 적중할 때마다 티어링 블레이드의 쿨다운이 2초 감소합니다. 이 기본 공격은 스킬 공격으로도 취급됩니다.",
+        "type": "Passive",
+        "maxLevel": 3,
+        "mechanics": {
+          "targetType": "TargetUnit",
+          "damageType": "Magic"
+        },
+        "scaling": {
+          "apRatio": 45
+        },
+        "levels": {
+          "1": {
+            "damage": 30,
+            "cooldown": 12,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "Defense",
+                "value": -5,
+                "condition": "Hit"
+              }
+            ]
+          },
+          "2": {
+            "damage": 65,
+            "cooldown": 9,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "Defense",
+                "value": -10,
+                "condition": "Hit"
+              }
+            ]
+          },
+          "3": {
+            "damage": 100,
+            "cooldown": 6,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "Defense",
+                "value": -15,
+                "condition": "Hit"
+              }
+            ]
+          }
+        }
+      },
+      "Q": {
+        "name": "바이너리 스핀",
+        "description": "아비게일이 낫을 휘두릅니다. 첫 번째 회전은 스킬 피해를 입히고, 두 번째 회전은 더 큰 스킬 피해를 입힙니다.\n바이너리 스핀 시전 시, 이동 속도가 0.5초 동안 15% 증가합니다.",
+        "type": "Normal",
+        "maxLevel": 5,
+        "mechanics": {
+          "targetType": "TargetArea",
+          "damageType": "Magic",
+          "castTime": 0.08
+        },
+        "scaling": {
+          "apRatio": 35
+        },
+        "levels": {
+          "1": {
+            "damage": 20,
+            "cooldown": 7,
+            "staminaCost": 30,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "MoveSpeed",
+                "value": 15,
+                "duration": 0.5
+              }
+            ]
+          },
+          "2": {
+            "damage": 40,
+            "cooldown": 6,
+            "staminaCost": 35,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "MoveSpeed",
+                "value": 15,
+                "duration": 0.5
+              }
+            ]
+          },
+          "3": {
+            "damage": 60,
+            "cooldown": 5,
+            "staminaCost": 40,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "MoveSpeed",
+                "value": 15,
+                "duration": 0.5
+              }
+            ]
+          },
+          "4": {
+            "damage": 80,
+            "cooldown": 4,
+            "staminaCost": 45,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "MoveSpeed",
+                "value": 15,
+                "duration": 0.5
+              }
+            ]
+          },
+          "5": {
+            "damage": 100,
+            "cooldown": 3,
+            "staminaCost": 50,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "MoveSpeed",
+                "value": 15,
+                "duration": 0.5
+              }
+            ]
+          }
+        }
+      },
+      "F1": {
+        "type": "Normal",
+        "maxLevel": 5,
+        "mechanics": {
+          "targetType": "TargetArea",
+          "damageType": "Magic"
+        },
+        "scaling": {
+          "apRatio": 35
+        },
+        "levels": {
+          "1": {
+            "damage": 50,
+            "cooldown": 7,
+            "staminaCost": 30,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "MoveSpeed",
+                "value": 15,
+                "duration": 0.5
+              }
+            ]
+          },
+          "2": {
+            "damage": 85,
+            "cooldown": 6,
+            "staminaCost": 35,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "MoveSpeed",
+                "value": 15,
+                "duration": 0.5
+              }
+            ]
+          },
+          "3": {
+            "damage": 120,
+            "cooldown": 5,
+            "staminaCost": 40,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "MoveSpeed",
+                "value": 15,
+                "duration": 0.5
+              }
+            ]
+          },
+          "4": {
+            "damage": 155,
+            "cooldown": 4,
+            "staminaCost": 45,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "MoveSpeed",
+                "value": 15,
+                "duration": 0.5
+              }
+            ]
+          },
+          "5": {
+            "damage": 190,
+            "cooldown": 3,
+            "staminaCost": 50,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "MoveSpeed",
+                "value": 15,
+                "duration": 0.5
+              }
+            ]
+          }
+        }
+      },
+      "W": {
+        "name": "호라이즌 클리브",
+        "description": "아비게일이 부채꼴 모양으로 공간을 베어내 스킬 피해를 입히고, 적중 시 2.5초 동안 피해를 흡수하는 보호막을 획득합니다. 여러 적에게 적중할 경우, 추가로 적중한 적 하나 당 보호막량이 20% 증가합니다. (최대 40%)\n스킬에 적중한 대상에게 좌표를 남깁니다. 좌표는 5초 동안 지속되며 대상자의 시야를 제공 받습니다.",
+        "type": "Normal",
+        "maxLevel": 5,
+        "mechanics": {
+          "targetType": "TargetArea",
+          "damageType": "Magic",
+          "castTime": 0.4
+        },
+        "scaling": {
+          "apRatio": 2,
+          "curHpRatio": 8
+        },
+        "levels": {
+          "1": {
+            "damage": 80,
+            "cooldown": 11,
+            "staminaCost": 50,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "shield",
+                "value": 50,
+                "duration": 2.5,
+                "condition": "Hit"
+              },
+              {
+                "type": "Coord",
+                "condition": "Hit"
+              },
+              {
+                "type": "VisionShare",
+                "condition": "Hit"
+              }
+            ]
+          },
+          "2": {
+            "damage": 110,
+            "cooldown": 10,
+            "staminaCost": 60,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "shield",
+                "value": 75,
+                "duration": 2.5,
+                "condition": "Hit"
+              },
+              {
+                "type": "Coord",
+                "condition": "Hit"
+              },
+              {
+                "type": "VisionShare",
+                "condition": "Hit"
+              }
+            ]
+          },
+          "3": {
+            "damage": 140,
+            "cooldown": 9,
+            "staminaCost": 70,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "shield",
+                "value": 100,
+                "duration": 2.5,
+                "condition": "Hit"
+              },
+              {
+                "type": "Coord",
+                "condition": "Hit"
+              },
+              {
+                "type": "VisionShare",
+                "condition": "Hit"
+              }
+            ]
+          },
+          "4": {
+            "damage": 170,
+            "cooldown": 8,
+            "staminaCost": 80,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "shield",
+                "value": 125,
+                "duration": 2.5,
+                "condition": "Hit"
+              },
+              {
+                "type": "Coord",
+                "condition": "Hit"
+              },
+              {
+                "type": "VisionShare",
+                "condition": "Hit"
+              }
+            ]
+          },
+          "5": {
+            "damage": 200,
+            "cooldown": 7,
+            "staminaCost": 90,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "shield",
+                "value": 150,
+                "duration": 2.5,
+                "condition": "Hit"
+              },
+              {
+                "type": "Coord",
+                "condition": "Hit"
+              },
+              {
+                "type": "VisionShare",
+                "condition": "Hit"
+              }
+            ]
+          }
+        }
+      },
+      "E": {
+        "name": "워프 슬래시",
+        "description": "아비게일이 차원의 틈새를 지나 적 주변 지정한 위치로 순간 이동을 해 스킬 피해를 입힙니다.\n좌표가 남은 대상에게 사용 시 워프 슬래시의 쿨다운이 초기화 됩니다.",
+        "type": "Normal",
+        "maxLevel": 5,
+        "mechanics": {
+          "targetType": "TargetArea",
+          "damageType": "Magic"
+        },
+        "scaling": {
+          "apRatio": 40
+        },
+        "levels": {
+          "1": {
+            "damage": 80,
+            "cooldown": 13,
+            "staminaCost": 20,
+            "effects": [
+              {
+                "type": "Warp",
+                "condition": "Hit"
+              },
+              {
+                "type": "CDR",
+                "value": 100,
+                "condition": "Coord"
+              }
+            ]
+          },
+          "2": {
+            "damage": 100,
+            "cooldown": 12.5,
+            "staminaCost": 25,
+            "effects": [
+              {
+                "type": "Warp",
+                "condition": "Hit"
+              },
+              {
+                "type": "CDR",
+                "value": 100,
+                "condition": "Coord"
+              }
+            ]
+          },
+          "3": {
+            "damage": 120,
+            "cooldown": 12,
+            "staminaCost": 30,
+            "effects": [
+              {
+                "type": "Warp",
+                "condition": "Hit"
+              },
+              {
+                "type": "CDR",
+                "value": 100,
+                "condition": "Coord"
+              }
+            ]
+          },
+          "4": {
+            "damage": 140,
+            "cooldown": 11.5,
+            "staminaCost": 35,
+            "effects": [
+              {
+                "type": "Warp",
+                "condition": "Hit"
+              },
+              {
+                "type": "CDR",
+                "value": 100,
+                "condition": "Coord"
+              }
+            ]
+          },
+          "5": {
+            "damage": 160,
+            "cooldown": 11,
+            "staminaCost": 40,
+            "effects": [
+              {
+                "type": "Warp",
+                "condition": "Hit"
+              },
+              {
+                "type": "CDR",
+                "value": 100,
+                "condition": "Coord"
+              }
+            ]
+          }
+        }
+      },
+      "R": {
+        "name": "디멘션 스트라이크",
+        "description": "아비게일이 차원 속으로 몸을 숨겨 0.7초 동안 대상 지정 불가 상태가 됩니다. 이후 착지하며 피해를 입히고, 이동 속도를 0.2초 동안 99% 감소시킵니다.\n스킬에 적중한 대상에게 좌표를 남깁니다. 좌표는 5초 동안 지속되며 대상자의 시야를 제공 받습니다.",
+        "type": "Ultimate",
+        "maxLevel": 3,
+        "mechanics": {
+          "targetType": "NonTarget",
+          "damageType": "Magic"
+        },
+        "scaling": {
+          "apRatio": 80
+        },
+        "levels": {
+          "1": {
+            "damage": 150,
+            "cooldown": 80,
+            "staminaCost": 0,
+            "effects": [
+              {
+                "type": "Untargetable",
+                "duration": 0.7
+              },
+              {
+                "type": "Debuff",
+                "stat": "moveSpeed",
+                "value": -99,
+                "duration": 0.2,
+                "condition": "Hit"
+              },
+              {
+                "type": "Coord",
+                "duration": 5,
+                "condition": "Hit"
+              },
+              {
+                "type": "VisionShare",
+                "duration": 5,
+                "condition": "Hit"
+              }
+            ]
+          },
+          "2": {
+            "damage": 275,
+            "cooldown": 70,
+            "staminaCost": 0,
+            "effects": [
+              {
+                "type": "Untargetable",
+                "duration": 0.7
+              },
+              {
+                "type": "Debuff",
+                "stat": "moveSpeed",
+                "value": -99,
+                "duration": 0.2,
+                "condition": "Hit"
+              },
+              {
+                "type": "Coord",
+                "duration": 5,
+                "condition": "Hit"
+              },
+              {
+                "type": "VisionShare",
+                "duration": 5,
+                "condition": "Hit"
+              }
+            ]
+          },
+          "3": {
+            "damage": 400,
+            "cooldown": 60,
+            "staminaCost": 0,
+            "effects": [
+              {
+                "type": "Untargetable",
+                "duration": 0.7
+              },
+              {
+                "type": "Debuff",
+                "stat": "moveSpeed",
+                "value": -99,
+                "duration": 0.2,
+                "condition": "Hit"
+              },
+              {
+                "type": "Coord",
+                "duration": 5,
+                "condition": "Hit"
+              },
+              {
+                "type": "VisionShare",
+                "duration": 5,
+                "condition": "Hit"
               }
             ]
           }

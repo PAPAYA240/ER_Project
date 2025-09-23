@@ -295,6 +295,7 @@ public class RozziController : MyPlayerController
         transform.position = targetPos;
         _agent.Warp(targetPos);
         UpdateTransform();
+        CheckUpdatedFlag(true);
     }
     #endregion
 
