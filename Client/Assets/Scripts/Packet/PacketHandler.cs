@@ -59,7 +59,7 @@ class PacketHandler
 
         if (cc.ObjectType == Define.Object.OtherPlayer)
         {
-            cc.SyncPos();
+            cc.SyncPos(movePacket.IsWarp);
         }      
     }
      public static void S_StateHandler(PacketSession session, IMessage packet)

@@ -14,6 +14,7 @@ namespace Server.Data
             E = 101,  // UnityEngine.KeyCode.E
             R = 114,  // UnityEngine.KeyCode.R
             T = 116,  // UnityEngine.KeyCode.T
+            F1 = 282
         }
     }
 }

@@ -102,10 +102,12 @@ public class BaseController : MonoBehaviour
         set { _ObjectInfo = value; PosInfo = value.PosInfo; RotInfo = value.RotInfo; Stat = value.StatInfo; }
     }
 
-    public void SyncPos()
+    public void SyncPos(bool isWarp = false)
     {
         transform.position = CellPos;
         transform.rotation = RotInfo;
+        if (true == isWarp)
+            _agent.Warp(CellPos);
     }
 
     public Vector3 CellPos

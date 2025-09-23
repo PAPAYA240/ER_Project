@@ -242,7 +242,7 @@ namespace Server.Game
             resMovePacket.ObjectId = player.Info.ObjectId;
             resMovePacket.PosInfo = movePacket.PosInfo;
             resMovePacket.RotInfo = movePacket.RotInfo;
-
+            resMovePacket.IsWarp = movePacket.IsWarp;
             Broadcast(resMovePacket);
         }
         public void HandleVF(Player player, C_Fx skillPacket)

@@ -14,7 +14,7 @@ public class MyPlayerController : PlayerController
     #region Variable
     protected bool _moveKeyPressed = false;
     protected int _monsterMask;
-    protected int _playerMask; 
+    protected int _playerMask;
 
     // State
     public override CreatureState State
@@ -87,7 +87,7 @@ public class MyPlayerController : PlayerController
                 value != null && _attackRoutine != null)
             {
                 StopCoroutine(_attackRoutine);
-                _attackRoutine = StartCoroutine(CoAttackLoop());              
+                //_attackRoutine = StartCoroutine(CoAttackLoop());              
             }
 
             _target = value;
@@ -193,7 +193,7 @@ public class MyPlayerController : PlayerController
         else if (State == CreatureState.Attack)
         {
             Debug.Log($"평타 코루틴 시작");
-            _attackRoutine = StartCoroutine(CoAttackLoop());
+            //_attackRoutine = StartCoroutine(CoAttackLoop());
         }
         else if (State == CreatureState.Rest)
         {
@@ -229,13 +229,14 @@ public class MyPlayerController : PlayerController
         base.UpdateController();
     }
 
-    protected override void CheckUpdatedFlag()
+    protected override void CheckUpdatedFlag(bool isWarp = false)
     {
         if (_updated)
         {
             C_Move movePacket = new C_Move();
             movePacket.PosInfo = PosInfo;
             movePacket.RotInfo = RotInfo;
+            movePacket.IsWarp = isWarp;
             Managers.Network.Send(movePacket);
             _updated = false;
         }
@@ -254,8 +255,8 @@ public class MyPlayerController : PlayerController
 
         if(!_isStop)
         {
-            Target = FindAttackablePlayer();
-            TryChangeToAttackState();
+            //Target = FindAttackablePlayer();
+            //TryChangeToAttackState();
         }       
     }
 
@@ -1024,7 +1025,7 @@ public class MyPlayerController : PlayerController
     {
         CellPos = transform.position;
         RotInfo = transform.rotation;
-        CheckUpdatedFlag();
+        _updated = true;
     }
 
     protected void SetMovementState()
