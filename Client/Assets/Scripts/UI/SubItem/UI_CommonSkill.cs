@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UI_CommonSkill : UI_SkillBase
@@ -61,6 +62,9 @@ public class UI_CommonSkill : UI_SkillBase
         Bind<Image>(typeof(Images));
         Bind<GameObject>(typeof(GameObjects));
 
+        BindEvent(gameObject, OnMouseOverEvent, Define.UIEvent.PointerEnter);
+        BindEvent(gameObject, OnMouseExitEvent, Define.UIEvent.PointerExit);
+
         ui_PlayerInterface = GetComponentInParent<UI_PlayerInterface>();
         if (ui_PlayerInterface == null)
             Debug.Log("null  == ui_PlayerInterface");
@@ -80,15 +84,14 @@ public class UI_CommonSkill : UI_SkillBase
         if (_skillLevel == 0)
             return;
         //temp
-        //��ٿ�Ÿ�̸Ӱ� Ȱ��ȭ �Ǿ� ������ �� ��ٿ��� ȣ���ؼ� ��Ÿ���� ���������� ����
-        //TODO ��Ÿ�� �̹��� ���ư��°� �ؾߵ�.
+
         if (GetObject(_cooldownTimer).activeSelf && _remainCool > 0.0f)
         {
             _remainCool = Math.Max(0.0f, _remainCool - Time.deltaTime);
 
             if( _remainCool > 0.0f )
             {
-                // ��Ÿ���� ����������
+
                 GetImage((int)Images.CooldownFill).fillAmount = _remainCool / _maxCool;
                 SetCoolDown(_remainCool);
             }
@@ -100,16 +103,16 @@ public class UI_CommonSkill : UI_SkillBase
 
         if (null != ui_PlayerInterface)
         {
-            if (IsEnoughStamina(ui_PlayerInterface.GetStamina())) //���׹̳ʰ� ����ϸ�
+            if (IsEnoughStamina(ui_PlayerInterface.GetStamina())) 
                 ActivateStamina(false);
-            else //���׹̳ʰ� �����ϸ�
+            else 
                 ActivateStamina(true);
         }
     }
 
     void SetSkillLevel(int level)
     {
-        //TODO ���� üũ �̷��� �ؾߵǳ�
+        //TODO 
         if (level < 0 || level > _maxSkillLevel)
             return;
         if (level == 1)
@@ -130,7 +133,11 @@ public class UI_CommonSkill : UI_SkillBase
         if (_skillLevel == _maxSkillLevel)
             return;
 
-        SetSkillLevel(_skillLevel + 1);
+        int newLevel = _skillLevel + 1;
+
+        SetSkillLevel(newLevel);
+        _popupUi.CurSkillLevel = newLevel;
+
         OnLevelUp?.Invoke(SkillKeyCode);
     }
 
@@ -160,12 +167,9 @@ public class UI_CommonSkill : UI_SkillBase
 
     public override void UseSkill()
     {
-        //��ų�� ����ϸ� Ÿ�̸Ӹ� Ȱ��ȭ
-        //Ȱ��ȭ �Ǹ� ��ų�� ��ο����� ��Ÿ���� ǥ�õ�.
         GetObject(_cooldownTimer).SetActive(true);
         //temp
         _remainCool = _maxCool;
-        //SetCoolDown(0.4f);
     }
 
     void SetCoolDown(float remainCooldown)
@@ -200,6 +204,7 @@ public class UI_CommonSkill : UI_SkillBase
 
         int playerLevel = mpc.ObjInfo.StatInfo.Level;
 
+        //플레이어 레벨 별 스킬 레벨 제한 
         switch (_skillLevel)
         {
             case 0:
@@ -273,6 +278,7 @@ public class UI_CommonSkill : UI_SkillBase
         _staminaCost = value;
         GetText((int)Texts.StaminaCost).text = _staminaCost.ToString();
     }
+
     public override void SetMaxCool(float value)
     {
         _maxCool = value;
@@ -282,4 +288,6 @@ public class UI_CommonSkill : UI_SkillBase
     {
         return curStamina > _staminaCost ? true : false;
     }
+
+
 }

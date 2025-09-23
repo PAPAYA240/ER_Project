@@ -359,6 +359,7 @@ message S_ChangeHp{
  message S_Die{
 	 int32 objectId = 1;
 	 int32 attackerId = 2;
+	 float respawnTime = 3;
  }
 
 message PositionInfo{
@@ -406,6 +407,7 @@ message WeaponInfo{
 message SkillInfo{
 	int32 skillId = 1;
 	int32 keyCode = 2;
+	float coolTime = 3;
 }
 
 message SkillHitbox{

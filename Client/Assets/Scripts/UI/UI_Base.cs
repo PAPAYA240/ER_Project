@@ -9,7 +9,12 @@ using UnityEngine.UI;
 public abstract class UI_Base : MonoBehaviour
 {
 	protected Dictionary<Type, UnityEngine.Object[]> _objects = new Dictionary<Type, UnityEngine.Object[]>();
-	public abstract void Init();
+
+    const int _originHeight = 617;
+    const int _originWidth = 1232;
+    protected CanvasScaler _scaler;
+
+    public abstract void Init();
 
 	private void Start()
 	{
@@ -80,4 +85,13 @@ public abstract class UI_Base : MonoBehaviour
 				break;
 		}
 	}
+    virtual protected void UpdateScale()
+    {
+        if (null != _scaler)
+        {
+            float widthRatio = (float)Screen.width / _originWidth;
+            float heightRatio = (float)Screen.height / _originHeight;
+            _scaler.scaleFactor = Mathf.Min(widthRatio, heightRatio);
+        }
+    }
 }

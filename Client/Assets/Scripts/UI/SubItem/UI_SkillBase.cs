@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public abstract class UI_SkillBase : UI_Base
 {
@@ -29,8 +30,12 @@ public abstract class UI_SkillBase : UI_Base
     protected int _skillLevel = 0;
     protected int _maxSkillLevel = 5;
 
+    protected const float _height = 170f; //스킬팝업 띄울 높이
     protected const string _yellow = "#B89249";
     protected const string _gray = "#505050";
+
+    protected GameObject _popupGameObject;
+    protected UI_CharSkillInfoPopup _popupUi;
 
     public abstract void SkillLevelUp();
     public abstract void UseSkill();
@@ -40,4 +45,63 @@ public abstract class UI_SkillBase : UI_Base
     public virtual void SetMaxCool(float value) { }
     public virtual bool IsEnoughStamina(float curStamina) { return false; }
 
+    public KeyCode SkillEnumToKeyCode(SkillEnum skill)
+    {
+        KeyCode result = KeyCode.None;
+
+        switch (skill)
+        {
+            case SkillEnum.Q:
+                result = KeyCode.Q;
+                break;
+            case SkillEnum.W:
+                result = KeyCode.W;
+                break;
+            case SkillEnum.E:
+                result = KeyCode.E;
+                break;
+            case SkillEnum.R:
+                result = KeyCode.R;
+                break;
+            case SkillEnum.T:
+                result = KeyCode.T;
+                break;
+            case SkillEnum.D:
+                result = KeyCode.D;
+                break;
+            case SkillEnum.F:
+                result = KeyCode.F;
+                break;
+        }
+
+        return result;
+    }
+
+    public void InitPopupUI()
+    {
+        _popupGameObject = Managers.Resource.Instantiate("UI/Popup/SkillInfoPopup");
+        _popupUi = _popupGameObject.GetComponent<UI_CharSkillInfoPopup>();
+        _popupUi.SetSkill(Managers.Object.MyPlayer.ObjInfo.CharType, SkillEnumToKeyCode(SkillKeyCode));
+        PopupActivate(false);
+    }
+
+    protected void PopupActivate(bool activate)
+    {
+        if (null != _popupGameObject)
+        {
+            _popupGameObject.SetActive(activate);
+            //위치 조정
+            _popupUi.SetY(_height);
+        }
+    }
+
+    protected void OnMouseOverEvent(PointerEventData data)
+    {
+        PopupActivate(true);
+    }
+
+    protected void OnMouseExitEvent(PointerEventData data)
+    {
+        PopupActivate(false);
+    }
 }

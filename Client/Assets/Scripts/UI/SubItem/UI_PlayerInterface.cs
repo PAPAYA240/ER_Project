@@ -67,6 +67,12 @@ public class UI_PlayerInterface : UI_Base
         GetObject((int)GameObjects.DSkill).GetComponent<UI_SkillBase>().SkillKeyCode = UI_SkillBase.SkillEnum.D;
         GetObject((int)GameObjects.FSkill).GetComponent<UI_SkillBase>().SkillKeyCode = UI_SkillBase.SkillEnum.F;
 
+        GetObject((int)GameObjects.QSkill).GetComponent<UI_SkillBase>().InitPopupUI();
+        GetObject((int)GameObjects.WSkill).GetComponent<UI_SkillBase>().InitPopupUI();
+        GetObject((int)GameObjects.ESkill).GetComponent<UI_SkillBase>().InitPopupUI();
+        GetObject((int)GameObjects.RSkill).GetComponent<UI_SkillBase>().InitPopupUI();
+        GetObject((int)GameObjects.TSkill).GetComponent<UI_SkillBase>().InitPopupUI();
+
         GetObject((int)GameObjects.Death).SetActive(false);
         //GetObject((int)GameObjects.LevelAndExp).GetComponent<UI_Level>().OnLevelUp += OnLevelUp;
         GetObject((int)GameObjects.QSkill).GetComponent<UI_SkillBase>().OnLevelUp += OnCharSkillLevelUp;
@@ -188,7 +194,8 @@ public class UI_PlayerInterface : UI_Base
         }
     }
 
-    void OnCharSkillLevelUp(SkillEnum skillEnum)
+    //QWERT 스킬 포인트를 사용해서 스킬 레벨올리는 함수
+    public void OnCharSkillLevelUp(SkillEnum skillEnum)
     {
         --_remainSkillPoint;
         OnCharSkillLevelUpAction?.Invoke(skillEnum);
@@ -211,11 +218,13 @@ public class UI_PlayerInterface : UI_Base
         }
     }
 
+    //전술 스킬 올리는 함수. 이건 전술 강화모듈 같은 특정 조건이 있으면 호출할 예정.
     void OnTacticalSkillLevelUp(SkillEnum skillEnum)
     {
         ActivateSkillLevelUpButton(GameObjects.FSkill, false);
     }
 
+    //스킬포인트를 사용하지 않고 스킬 레벨 올리는 함수. 무기 스킬 레벨 올릴 때 이걸로 올려야할듯
     public void SpecificSkillLevelUp(GameObjects objEnum)
     {
         switch (objEnum)
@@ -320,16 +329,10 @@ public class UI_PlayerInterface : UI_Base
     #endregion
 
     #region Level
-    //public void EarnExp(int exp)
-    //{
-    //    GameObject go = GetObject((int)GameObjects.LevelAndExp);
-    //    if (go == null)
-    //        return;
-
-    //    UI_Level ui_Level = go.GetComponent<UI_Level>();
-    //    if (ui_Level != null)
-    //        ui_Level.EarnExp(exp);
-    //}
+    public bool CanLevelUp()
+    {
+        return _remainSkillPoint > 0 ? true : false;
+    }
 
     public void ActivateCombatImg(bool activate)
     {

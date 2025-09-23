@@ -1,9 +1,9 @@
-using Data;
-using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Schema;
+using Data;
+using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
 using static Define;
@@ -15,7 +15,7 @@ public class MyPlayerController : PlayerController
     #region Variable
     protected bool _moveKeyPressed = false;
     protected int _monsterMask;
-    protected int _playerMask; 
+    protected int _playerMask;
 
     // State
     public override CreatureState State
@@ -63,7 +63,7 @@ public class MyPlayerController : PlayerController
     // State : Skill
     protected bool _isUseSkill = false;
     protected KeyCode _keyCode = KeyCode.None;
-    protected Dictionary<string, SkillBase> _skills = new Dictionary<string, SkillBase>();
+    protected Dictionary<KeyCode, SkillBase> _skills = new Dictionary<KeyCode, SkillBase>();
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
     class CoolTime
     {
@@ -76,6 +76,7 @@ public class MyPlayerController : PlayerController
     protected float _minMoveDistance = 0.5f;
     protected float _rotSpeed = 8.0f;
     protected Coroutine _coLookAtTarget = null;
+    protected bool _isWarp = false;
 
     // State : Attack
     protected bool _isAttackLoop = false;
@@ -95,7 +96,7 @@ public class MyPlayerController : PlayerController
                 value != null && _attackRoutine != null)
             {
                 StopCoroutine(_attackRoutine);
-                _attackRoutine = StartCoroutine(CoAttackLoop());              
+                //_attackRoutine = StartCoroutine(CoAttackLoop());              
             }
 
             _target = value;
@@ -233,6 +234,8 @@ public class MyPlayerController : PlayerController
             ExecuteSkill();
 
         base.UpdateController();
+
+        CheckUpdatedFlag();
     }
 
     protected override void CheckUpdatedFlag()
@@ -242,8 +245,10 @@ public class MyPlayerController : PlayerController
             C_Move movePacket = new C_Move();
             movePacket.PosInfo = PosInfo;
             movePacket.RotInfo = RotInfo;
+            movePacket.IsWarp = _isWarp;
             Managers.Network.Send(movePacket);
             _updated = false;
+            _isWarp = false;
         }
     }
     #endregion
@@ -260,8 +265,8 @@ public class MyPlayerController : PlayerController
 
         if(!_isStop)
         {
-            Target = FindAttackablePlayer();
-            TryChangeToAttackState();
+            //Target = FindAttackablePlayer();
+            //TryChangeToAttackState();
         }       
     }
 
@@ -297,9 +302,7 @@ public class MyPlayerController : PlayerController
                 State = CreatureState.Moving;
             }
 
-            CellPos = transform.position;
-            RotInfo = transform.rotation;
-            CheckUpdatedFlag();
+            UpdateTransform();
         }
     }
 
@@ -318,6 +321,7 @@ public class MyPlayerController : PlayerController
     protected override void UpdateRest()
     {
         // TODO : 쉬는 동안 자원 회복
+
     }
 
     protected override void UpdateDead()
@@ -449,13 +453,12 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    protected GameObject TryGetAttackableObject()
+    protected GameObject TryGetAttackableObject(float radius = 0.1f)
     {
         GameObject gameObject = null;
         _targetType = GameObjectType.None;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        float radius = 0.1f;
         if (Physics.SphereCast(ray, radius, out RaycastHit sphereHit, 1000.0f, _monsterMask | _playerMask))
         {
             GameObject hitObject = sphereHit.collider.gameObject;
@@ -611,7 +614,8 @@ public class MyPlayerController : PlayerController
             z = respawnPacket.RotInfo.Qz,
             w = respawnPacket.RotInfo.Qw
         };
-        UpdateTransform();
+
+        UpdateTransform(true);
 
         State = CreatureState.Idle;
         Hp = respawnPacket.Hp;
@@ -623,7 +627,7 @@ public class MyPlayerController : PlayerController
     protected virtual void UpdateKeyInput()
     {
         // LeftCtrl + Q/W/E/R : 스킬 레벨업
-        if (Input.GetKey(KeyCode.LeftControl))
+        if (Input.GetKey(KeyCode.LeftControl) && PlayerInterface.CanLevelUp() == true)
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
@@ -640,6 +644,10 @@ public class MyPlayerController : PlayerController
             else if (Input.GetKeyDown(KeyCode.R))
             {
                 PlayerInterface.SpecificSkillLevelUp(GameObjects.RSkill);
+            }
+            else if (Input.GetKeyDown(KeyCode.T))
+            {
+                PlayerInterface.SpecificSkillLevelUp(GameObjects.TSkill);
             }
         }
         // Q, W, E, R, T, D, F
@@ -790,28 +798,12 @@ public class MyPlayerController : PlayerController
                 // 패킷 보내기
                 SendSkillPacket(_keyCode);
 
-                // 스킬 실행 UI, TODO 스킬 사용할 수 있는 검증이 다 끝난 곳으로 옮겨야함
-                PlayerInterface.UseSkill(KeyToUIEnum(_keyCode));
-
                 Debug.Log($"스킬 사용! : {_keyCode}");
             }
         }
     }
 
     protected SkillBase FindSkill(KeyCode keyCode)
-    {
-        SkillBase skillBase = null;
-
-        if (!_skills.TryGetValue(keyCode.ToString(), out skillBase))
-        {
-            Debug.Log($"Skill을 찾을 수 없음 : {keyCode}");
-            return null;
-        }
-
-        return skillBase;
-    }
-
-    protected SkillBase FindSkill(string keyCode)
     {
         SkillBase skillBase = null;
 
@@ -835,16 +827,26 @@ public class MyPlayerController : PlayerController
         return _coolDownDict[key].coolTime;
     }
 
-    public void StartCoCoolTime(KeyCode key)
+    public void OnSkillConfirmed(SkillInfo skillInfo)
     {
-        SkillBase skill = FindSkill(key);
+        KeyCode key = (KeyCode)skillInfo.KeyCode;
 
-        // 쿨타임 체크
-        StartCoroutine(CoInputCooltime(key, skill.CurLevelCooldown));
+        // 쿨타임 코루틴 시작
+        StartCoroutine(CoInputCooltime(key, skillInfo.CoolTime));
+
+        // 스킬 실행 UI 연동
+        PlayerInterface.UseSkill(KeyToUIEnum(key));
     }
 
     IEnumerator CoInputCooltime(KeyCode key, float time)
     {
+        if(time <= 0.0f)
+        {
+            _coolDownDict[key].isCoolDown = false;
+            _coolDownDict[key].coolTime = 0.0f;
+            yield break;
+        }
+
         _coolDownDict[key].isCoolDown = true;
 
         float elapsed = 0f;
@@ -864,17 +866,11 @@ public class MyPlayerController : PlayerController
     {
         Dictionary<KeyCode, Data.SkillData> skills = DataManager.SkillDict[ObjInfo.Player.CharType];
 
-        // Q, W, E, R, T
-        foreach(Key key in Enum.GetValues(typeof(Key)))
+        foreach(var data in skills)
         {
             SkillBase skill = new SkillBase();
-
-            string keyCode = key.ToString();
-            if (!Enum.TryParse<KeyCode>(keyCode, out var result))
-                Debug.Log($"KeyCode를 찾을 수 없음 : {keyCode}");
-
-            skill.SkillData = skills[result];
-            _skills.Add(keyCode, skill);
+            skill.SkillData = data.Value;
+            _skills.Add(data.Key, skill);
         }
     }
 
@@ -882,8 +878,7 @@ public class MyPlayerController : PlayerController
     {
         foreach (var skill in _skills)
         {
-            KeyCode key = (KeyCode)Enum.Parse(typeof(KeyCode), skill.Key);
-            _coolDownDict[key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
+            _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
         }
     }
     #endregion
@@ -994,7 +989,8 @@ public class MyPlayerController : PlayerController
     protected void OnCharSkillLevelUp(SkillEnum skill)
     {
         //For QWERT
-        _skills[skill.ToString()].CurLevel += 1;
+        KeyCode key = (KeyCode)System.Enum.Parse(typeof(KeyCode), skill.ToString());
+        _skills[key].CurLevel += 1;
 
         float skillAcc = 0.0f;
         //float skillAcc = Stat.GetSkillAcc();
@@ -1016,6 +1012,10 @@ public class MyPlayerController : PlayerController
             case SkillEnum.R:
                 SkillBase RSkill = FindSkill(KeyCode.R);
                 SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(RSkill.CurLevelCooldown, skillAcc));
+                break;
+            case SkillEnum.T:
+                SkillBase TSkill = FindSkill(KeyCode.T);
+                SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(TSkill.CurLevelCooldown, skillAcc));
                 break;
         }
 
@@ -1072,11 +1072,12 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region Util
-    protected void UpdateTransform()
+    protected void UpdateTransform(bool isWarp = false)
     {
         CellPos = transform.position;
         RotInfo = transform.rotation;
-        CheckUpdatedFlag();
+        _updated = true;
+        _isWarp = isWarp;
     }
 
     protected void SetMovementState()
@@ -1181,6 +1182,44 @@ public class MyPlayerController : PlayerController
     {
         C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { Name = name, Ratio = ratio } };
         Managers.Network.Send(animPacket);
+    }
+    #endregion
+
+    #region Util
+    // 시작 지점과 타겟 지점 사이에 장애물이 있으면 충돌 위치 반환
+    // 없으면 유효 위치 반환
+    protected Vector3 GetReachablePosition(Vector3 startPos, Vector3 targetPos, out NavMeshHit navHit)
+    {
+        if (NavMesh.Raycast(startPos, targetPos, out NavMeshHit rayHit, NavMesh.AllAreas))
+        {
+            targetPos = rayHit.position;
+        }
+
+        // 최종 목적지 설정
+        if (NavMesh.SamplePosition(targetPos, out navHit, 1.0f, NavMesh.AllAreas))
+        {
+            return navHit.position;
+        }
+
+        return Vector3.zero;
+    }
+
+    // 플레이어 위치로부터 마우스 방향으로 사거리 내 이동 가능한 위치 반환
+    // isMaxDistance가 true 이면 항상 최대 사거리 기준 반환, false 이면 사거리 내 위치 반환
+    protected Vector3 GetTargetPos(float range, bool isMaxDistance = true)
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
+
+        Vector3 dir = (hit.point - transform.position).normalized;
+
+        if (!isMaxDistance && (hit.point - transform.position).magnitude < range)
+        {
+            return hit.point;
+        }
+
+        return transform.position + dir * range;
     }
     #endregion
 }
