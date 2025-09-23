@@ -123,6 +123,7 @@
         "description": "로지가 총을 난사하여 주변의 적들에게 스킬 피해를 입히고, 방어력과 치유 효과를 감소 시킵니다. 로지는 난사하는 동안 이동 속도가 증가하며, 적중한 대상이 있다면 쿨다운이 감소합니다.",
         "type": "Normal",
         "maxLevel": 5,
+        "canMoveDuringCast": true,
         "mechanics": {
           "targetType": "TargetArea",
           "damageType": "Magic"
@@ -988,6 +989,7 @@
         "description": "테오도르가 지정한 위치에 7초 동안 유지되는 증폭 스크린을 생성합니다.",
         "type": "Normal",
         "maxLevel": 5,
+        "canMoveDuringCast": true,
         "mechanics": {
           "targetType": "TargetArea",
           "damageType": "Magic"
@@ -1437,6 +1439,7 @@
         "description": "아비게일이 낫을 휘두릅니다. 첫 번째 회전은 스킬 피해를 입히고, 두 번째 회전은 더 큰 스킬 피해를 입힙니다.\n바이너리 스핀 시전 시, 이동 속도가 0.5초 동안 15% 증가합니다.",
         "type": "Normal",
         "maxLevel": 5,
+        "canMoveDuringCast": true,
         "mechanics": {
           "targetType": "TargetArea",
           "damageType": "Magic",
@@ -1516,6 +1519,7 @@
       "F1": {
         "type": "Normal",
         "maxLevel": 5,
+        "canMoveDuringCast": true,
         "mechanics": {
           "targetType": "TargetArea",
           "damageType": "Magic"

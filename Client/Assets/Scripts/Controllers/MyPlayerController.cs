@@ -1,9 +1,9 @@
-using Data;
-using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Schema;
+using Data;
+using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
 using static Define;
@@ -450,13 +450,12 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    protected GameObject TryGetAttackableObject()
+    protected GameObject TryGetAttackableObject(float radius = 0.1f)
     {
         GameObject gameObject = null;
         _targetType = GameObjectType.None;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        float radius = 0.1f;
         if (Physics.SphereCast(ray, radius, out RaycastHit sphereHit, 1000.0f, _monsterMask | _playerMask))
         {
             GameObject hitObject = sphereHit.collider.gameObject;
@@ -866,7 +865,7 @@ public class MyPlayerController : PlayerController
         Dictionary<KeyCode, Data.SkillData> skills = DataManager.SkillDict[ObjInfo.CharType];
 
         // Q, W, E, R, T
-        foreach(Key key in Enum.GetValues(typeof(Key)))
+        foreach(Define.Key key in Enum.GetValues(typeof(Define.Key)))
         {
             SkillBase skill = new SkillBase();
 
