@@ -188,4 +188,19 @@ class PacketHandler
         pp.Session = clientSession;
         room.Push(room.EnterPick, pp);
     }
+
+    public static void C_AttackSkillTargetHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_AttackSkillTarget atkSkillTargetPkt = packet as C_AttackSkillTarget;
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleAttackSkillTarget, player, atkSkillTargetPkt);
+    }
 }

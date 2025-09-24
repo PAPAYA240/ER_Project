@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Google.Protobuf.Protocol;
+using ServerCore;
 using UnityEngine;
 
 public class AbigailController : MyPlayerController
@@ -8,6 +10,7 @@ public class AbigailController : MyPlayerController
     float _warpRange = 6.2f;
     float _warpRadius = 1.2f;
     GameObject _skillTarget = null;
+    Vector3 _warpPos = Vector3.zero;
 
     protected override void UpdateSkillKeyInput()
     {
@@ -21,8 +24,7 @@ public class AbigailController : MyPlayerController
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
         {
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mousePos.y = 0;
+            Vector3 mousePos = GetCursorPos();
             if (Vector3.Distance(mousePos, CellPos) > _warpRange)
                 return;
 
@@ -36,6 +38,9 @@ public class AbigailController : MyPlayerController
             {
                 _skillTarget = target;
                 SetSkillInput(KeyCode.E);
+                _warpPos = mousePos;
+                CreatureController cc = _skillTarget.GetComponent<CreatureController>();
+                SkillTargetId = cc.Id;
             }
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))
@@ -52,27 +57,28 @@ public class AbigailController : MyPlayerController
         }
     }
 
-    //protected override void GetMouseInput()
-    //{
-    //    if (!_canDash && !_isDashing)
-    //        base.GetMouseInput();
-
-    //    if (Input.GetMouseButton(1) && _canDash)
-    //        StartDash();
-    //}
-
-    //protected override void UpdateMoving()
-    //{
-    //    if (!_isDashing)
-    //        base.UpdateMoving();
-    //}
-
     protected override void UpdateSkill()
     {
 
     }
 
     #region Skill
+
+    public override void OnSkillConfirmed(SkillInfo skillInfo)
+    {
+        base.OnSkillConfirmed(skillInfo);
+
+        if((KeyCode)skillInfo.KeyCode == KeyCode.E)
+        {
+            transform.position = _warpPos;
+            _agent.Warp(_warpPos);
+            UpdateTransform(true);
+
+            C_AttackSkillTarget atkSkillTargetPkt = new C_AttackSkillTarget();
+            Managers.Network.Send(atkSkillTargetPkt);
+        }
+    }
+
     protected override void Skill_Q()
     {
         PlayAnimation("SKILL_Q", 0.1f);

@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Sockets;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
@@ -269,7 +270,7 @@ namespace Server.Game
             if (!player.CanUseSkill(keyCode))
             {
                 skill.CanUse = false;
-                Broadcast(skill);
+                player.Session.Send(skill);
                 return; 
             }
             else
@@ -278,9 +279,17 @@ namespace Server.Game
             }
 
             // TODO : (임시) 몬스터 찾아주기, 공격 범위에 나간다면 target 은 null로 전달해야 함
-            TryGetMonster(skillPacket.TargetId, out Monster target);
-            player.Target = target;
-
+            if(TryGetMonster(skillPacket.TargetId, out Monster target))
+            {
+                player.Target = target;
+                player.SkillTarget = target;
+                player.UsedTargetingSkill = keyCode;
+            }
+            else if(_players.TryGetValue(skillPacket.TargetId, out Player skillTarget))
+            {
+                player.SkillTarget = skillTarget;
+                player.UsedTargetingSkill = keyCode;
+            }
 
             // 스킬 사용이 가능하다 판단되면 패킷 전송
             info.PosInfo.State = CreatureState.Skill;
@@ -292,7 +301,7 @@ namespace Server.Game
                 KeyCode = skillPacket.SkillInfo.KeyCode,
                 CoolTime = player.GetCoolTime(keyCode)
             };
-            Broadcast(skill);
+            player.Session.Send(skill);
 
             SkillData skillData = null;
             Dictionary<KeyCode, SkillData> skills = DataManager.SkillDict[info.CharType];
@@ -312,6 +321,24 @@ namespace Server.Game
             anim.ObjectId = player.Id;
             anim.AnimInfo = animPacket.AnimInfo;
             Broadcast(anim);           
+        }
+
+        public void HandleAttackSkillTarget(Player player, C_AttackSkillTarget attackSkillTarget)
+        {
+            if (player == null)
+                return;
+
+            float damage = player.GetSkillDamage(player.UsedTargetingSkill);
+            GameObject skillTarget = player.SkillTarget;
+            skillTarget.Info.StatInfo.Hp -= damage;
+            skillTarget.Info.StatInfo.Hp = Math.Max(0, skillTarget.Info.StatInfo.Hp);
+
+            S_ChangeHp changeHpPkt = new S_ChangeHp()
+            {
+                ObjectId = skillTarget.Id,
+                Hp = skillTarget.Info.StatInfo.Hp
+            };
+            Broadcast(changeHpPkt);
         }
 
         public Player FindPlayer(Func<GameObject, bool> condition)

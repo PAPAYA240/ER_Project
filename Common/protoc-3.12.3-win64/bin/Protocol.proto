@@ -37,6 +37,7 @@ enum MsgId {
   C_INTERACT = 29;
   S_INTERACT = 30;
   S_RESPAWN = 31;
+  C_ATTACK_SKILL_TARGET = 32;
 }
 
 enum CreatureState{
@@ -390,6 +391,7 @@ message SkillInfo{
 	int32 skillId = 1;
 	int32 keyCode = 2;
 	float coolTime = 3;
+	int32 targetId = 4;
 }
 
 message SkillHitbox{
@@ -437,4 +439,8 @@ message S_Respawn{
 	RotationInfo rotInfo = 3;
 	float hp = 4;
 	float stamina = 5;
+}
+
+message C_AttackSkillTarget{
+	bool attack = 1;
 }

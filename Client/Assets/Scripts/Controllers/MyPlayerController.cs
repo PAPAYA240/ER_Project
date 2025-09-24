@@ -105,6 +105,8 @@ public class MyPlayerController : PlayerController
     protected GameObjectType _targetType;
     protected Vector3 _finalPos;
 
+    protected int SkillTargetId { get; set; }
+
     // State : Rest
     protected bool _isResting = false;
     protected Coroutine _coRest;
@@ -210,6 +212,8 @@ public class MyPlayerController : PlayerController
         if (State == CreatureState.Dead)
             return;
 
+        SkillTargetId = -1;
+
         switch (State)
         {
             case CreatureState.Idle:
@@ -224,7 +228,7 @@ public class MyPlayerController : PlayerController
             case CreatureState.Skill:
                 SkillBase currentSkill = FindSkill(_keyCode);
                 if (currentSkill != null && currentSkill.SkillData.canMoveDuringCast == true)
-                    GetMouseInput();
+                    GetMouseInputDuringSkill();
                 break;
         }
 
@@ -768,6 +772,30 @@ public class MyPlayerController : PlayerController
             }
         }
     }
+
+    protected virtual void GetMouseInputDuringSkill()
+    {
+        if (_agent == null)
+            return;
+
+        if (Input.GetMouseButton(1))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
+
+            Vector3 targetPos;
+
+            targetPos = hit.point;
+
+            if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
+            {
+                _agent.SetDestination(navHit.position);
+
+                _moveKeyPressed = true;
+            }
+        }
+    }
     #endregion
 
     #region Animation
@@ -827,7 +855,7 @@ public class MyPlayerController : PlayerController
         return _coolDownDict[key].coolTime;
     }
 
-    public void OnSkillConfirmed(SkillInfo skillInfo)
+    public virtual void OnSkillConfirmed(SkillInfo skillInfo)
     {
         KeyCode key = (KeyCode)skillInfo.KeyCode;
 
@@ -1144,6 +1172,18 @@ public class MyPlayerController : PlayerController
             coroutine = null;
         }
     }
+
+    protected Vector3 GetCursorPos()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            return new Vector3(hit.point.x, 0, hit.point.z); // 충돌 지점이 곧 월드 좌표
+        }
+        return new Vector3(-1, -1, -1);
+    }
+
     #endregion
 
     #region Packet
@@ -1157,6 +1197,10 @@ public class MyPlayerController : PlayerController
             {
                 targetId = monster.ObjInfo.ObjectId;
             }
+        }
+        else
+        {
+            targetId = SkillTargetId;
         }
 
         C_Skill skillPacket = new C_Skill()

@@ -27,6 +27,9 @@ namespace Server.Game
             ObjectType = GameObjectType.Player;            
         }
 
+        public GameObject SkillTarget { get; set; }
+        public KeyCode UsedTargetingSkill { get; set; }
+
         public void MakeDict()
         {
             MakeSkillDict();
@@ -130,6 +133,12 @@ namespace Server.Game
                 _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
             }
         }
+
+        public float GetSkillDamage(KeyCode keyCode)
+        {
+            return _skills[keyCode].GetSkillDamage();
+        }
+
         #endregion
 
         #region Respawn

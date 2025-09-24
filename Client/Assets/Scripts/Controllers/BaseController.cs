@@ -10,7 +10,7 @@ public class BaseController : MonoBehaviour
 {
     public int Id { get; set; }
 
-    float _speedCoeff = 3.2f;
+    float _speedCoeff = 2.3f;
 
     public virtual StatInfo Stat
     {
