@@ -8093,7 +8093,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1407810332269360415}
-  m_Layer: 11
+  m_Layer: 15
   m_Name: Bg_Map_Cobalt_Center_Wall_02_Re
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13277,7 +13277,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6098252917439588189}
-  m_Layer: 11
+  m_Layer: 15
   m_Name: Bg_Map_Cobalt_Center_Wall_02_Re
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19549,7 +19549,7 @@ GameObject:
   - component: {fileID: 4294472335831551223}
   - component: {fileID: 3141205512494036261}
   - component: {fileID: 2441143491518845741}
-  m_Layer: 11
+  m_Layer: 15
   m_Name: Bg_Map_Cobalt_Center_Wall_02_Decal01_Re
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24696,7 +24696,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4344559251494462738}
-  m_Layer: 11
+  - component: {fileID: 8261525577378544090}
+  m_Layer: 15
   m_Name: Bg_Map_Cobalt_Center_Wall_02_Re
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24719,6 +24720,27 @@ Transform:
   - {fileID: 1407810332269360415}
   m_Father: {fileID: 8942304181954914354}
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
+--- !u!65 &8261525577378544090
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2251781690849493621}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 7, y: 4, z: 7}
+  m_Center: {x: -9.2, y: 2, z: -5}
 --- !u!1 &2252418283807488991
 GameObject:
   m_ObjectHideFlags: 0
@@ -30211,7 +30233,7 @@ GameObject:
   - component: {fileID: 930421265050344037}
   - component: {fileID: 3485343295933646910}
   - component: {fileID: 3632966121418412010}
-  m_Layer: 11
+  m_Layer: 15
   m_Name: Bg_Map_Cobalt_Wall_02_Glass_Re
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37409,7 +37431,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7549966831316602681}
-  m_Layer: 11
+  - component: {fileID: 8369820349224266048}
+  m_Layer: 15
   m_Name: Bg_Map_Cobalt_Center_Wall_02_Re (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37432,6 +37455,27 @@ Transform:
   - {fileID: 6098252917439588189}
   m_Father: {fileID: 8942304181954914354}
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
+--- !u!65 &8369820349224266048
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3412333583267978621}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 7, y: 4, z: 7}
+  m_Center: {x: -9.2, y: 2, z: -5}
 --- !u!1 &3420249404770023010
 GameObject:
   m_ObjectHideFlags: 0
@@ -47035,7 +47079,7 @@ GameObject:
   - component: {fileID: 737874910813545700}
   - component: {fileID: 84998401862096022}
   - component: {fileID: 8935482026665733935}
-  m_Layer: 11
+  m_Layer: 15
   m_Name: Bg_Map_Cobalt_Wall_02_Glass_Re
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69949,7 +69993,7 @@ GameObject:
   - component: {fileID: 443149436146572122}
   - component: {fileID: 4232749176834338799}
   - component: {fileID: 8181478720096158316}
-  m_Layer: 11
+  m_Layer: 15
   m_Name: Bg_Map_Cobalt_Center_Wall_02_Re
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89637,7 +89681,7 @@ GameObject:
   - component: {fileID: 7507693328218836377}
   - component: {fileID: 7810399337460146344}
   - component: {fileID: 208767341974901770}
-  m_Layer: 11
+  m_Layer: 15
   m_Name: Bg_Map_Cobalt_Center_Wall_02_Decal01_Re
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94162,7 +94206,7 @@ GameObject:
   - component: {fileID: 2848239047139418164}
   - component: {fileID: 5953527917368376143}
   - component: {fileID: 1394080776793760395}
-  m_Layer: 11
+  m_Layer: 15
   m_Name: Bg_Map_Cobalt_Center_Wall_02_Re
   m_TagString: Untagged
   m_Icon: {fileID: 0}

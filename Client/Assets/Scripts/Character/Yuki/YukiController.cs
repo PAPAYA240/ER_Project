@@ -10,10 +10,8 @@ using UnityEngine.AI;
 
 public class YukiController : MyPlayerController
 {
-    private Coroutine _coSkillE = null;
-
-    public float dashDistance = 5f;
-    public float dashDuration = 0.2f;
+    float dashDistance = 5f;
+    float dashDuration = 0.2f;
 
     private bool isDashing = false;
 
@@ -92,23 +90,58 @@ public class YukiController : MyPlayerController
         StartCoroutine(DashCoroutine(direction));
     }
 
-    IEnumerator DashCoroutine(Vector3 direction)
+    private IEnumerator DashCoroutine(Vector3 direction)
     {
         isDashing = true;
-        float elapsed = 0f;
-        Vector3 startPos = transform.position;
-        Vector3 endPos = startPos + direction * dashDistance;
+        _navMeshAgent.enabled = false;
 
+        Vector3 startPos = transform.position;
+        Vector3 rawEndPos = startPos + direction * dashDistance;
+        Vector3 endPos = rawEndPos;
+
+        // Collider 있는 벽 체크
+        if (CheckWall(startPos, rawEndPos, out Vector3 stopPos))
+        {
+            endPos = stopPos;
+        }
+        else
+        {
+            if (NavMesh.SamplePosition(rawEndPos, out NavMeshHit hit, 0.5f, NavMesh.AllAreas))
+                endPos = hit.position;
+            else
+                endPos = startPos;
+        }
+
+        // 실제 대시 이동
+        float elapsed = 0f;
         while (elapsed < dashDuration)
         {
             transform.position = Vector3.Lerp(startPos, endPos, elapsed / dashDuration);
             elapsed += Time.deltaTime;
-            UpdateTransform();
             yield return null;
         }
 
         transform.position = endPos;
+        _navMeshAgent.enabled = true;
         isDashing = false;
+    }
+
+    // Collider 있는 벽 체크
+    private bool CheckWall(Vector3 start, Vector3 end, out Vector3 stopPos)
+    {
+        Vector3 dir = (end - start).normalized;
+        float dist = Vector3.Distance(start, end);
+
+        int dashWallMask = LayerMask.GetMask("Wall");
+
+        if (Physics.Raycast(start, dir, out RaycastHit hit, dist, dashWallMask))
+        {
+            stopPos = hit.point;
+            return true;
+        }
+
+        stopPos = end;
+        return false;
     }
     #endregion
 }

@@ -218,6 +218,16 @@ class PacketHandler
         }
     }
 
+    public static void C_PlayerStateHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_PlayerState statePacket = packet as C_PlayerState;
+
+        // 검증 필요하면 추가하기..
+        Player player = clientSession.MyPlayer;
+        player.State = statePacket.State;
+    }
+
     public static void C_AttackSkillTargetHandler(PacketSession session, IMessage packet)
     {
         ClientSession clientSession = session as ClientSession;
