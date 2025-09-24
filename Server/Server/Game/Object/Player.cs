@@ -282,6 +282,8 @@ namespace Server.Game
             {
                 Stat.Exp -= DataManager.ExpDict[Stat.Level];
                 Stat.Level++;
+                StatInfo statInfo = DataManager.StatGrowthDict[Info.CharType];
+                Stat.AddStat(statInfo);
                 levelUp++;
             }
 

@@ -18,10 +18,50 @@ namespace Server.Game
 
         public GameRoom Room { get; set; }
 
-        public ObjectInfo Info { get; set; } = new ObjectInfo();
-        public PositionInfo PosInfo { get; private set; } = new PositionInfo();
+        ObjectInfo _objectInfo = new ObjectInfo()
+        {
+            StatInfo = new StatInfo(),
+            PosInfo = new PositionInfo(),
+            RotInfo = new RotationInfo() { Qw = 1f }
+        };
 
-        public RotationInfo RotInfo { get; private set; } = new RotationInfo();
+        public ObjectInfo Info
+        {
+            get { return _objectInfo; }
+            set { _objectInfo = value; PosInfo = value.PosInfo; RotInfo = value.RotInfo; Stat = value.StatInfo; }
+        }
+
+        public PositionInfo PosInfo
+        {
+            get { return Info.PosInfo; }
+            set
+            {
+                if (Info.PosInfo.Equals(value))
+                    return;
+
+                PosInfo = value;
+                State = value.State;
+            }
+        }
+
+        public RotationInfo RotInfo
+        {
+            get { return Info.RotInfo; }
+            set
+            {
+                if (value == null)
+                    return;
+
+                if (Info.RotInfo.Equals(value))
+                    return;
+
+                Info.RotInfo.Qx = value.Qx;
+                Info.RotInfo.Qy = value.Qy;
+                Info.RotInfo.Qz = value.Qz;
+                Info.RotInfo.Qw = value.Qw;
+            }
+        }
+
         public StatInfo Stat 
         {
             get
@@ -63,13 +103,6 @@ namespace Server.Game
         {
             get { return PosInfo.State; }
             set { PosInfo.State = value; }
-        }
-
-        public GameObject() 
-        {
-            Info.PosInfo = PosInfo;
-            Info.RotInfo = RotInfo;
-            Info.StatInfo = Stat;
         }
 
         public virtual void Update()

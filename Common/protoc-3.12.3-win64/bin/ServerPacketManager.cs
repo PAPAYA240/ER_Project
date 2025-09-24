@@ -45,6 +45,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.CWeapon, PacketHandler.C_WeaponHandler);		
 		_onRecv.Add((ushort)MsgId.CInteract, MakePacket<C_Interact>);
 		_handler.Add((ushort)MsgId.CInteract, PacketHandler.C_InteractHandler);		
+		_onRecv.Add((ushort)MsgId.CSkillLevelUp, MakePacket<C_SkillLevelUp>);
+		_handler.Add((ushort)MsgId.CSkillLevelUp, PacketHandler.C_SkillLevelUpHandler);		
 		_onRecv.Add((ushort)MsgId.CAttackSkillTarget, MakePacket<C_AttackSkillTarget>);
 		_handler.Add((ushort)MsgId.CAttackSkillTarget, PacketHandler.C_AttackSkillTargetHandler);
 	}
