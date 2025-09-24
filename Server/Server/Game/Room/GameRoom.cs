@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
@@ -43,6 +44,8 @@ namespace Server.Game
 
             // Spawn Env
             _envManager.Init(this);
+
+            _collisionManager.Init();
         }
 
         public override void Update()
