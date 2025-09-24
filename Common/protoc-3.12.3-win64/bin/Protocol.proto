@@ -182,6 +182,7 @@ message S_Interact  {
 
 message C_EnterGame {
 	bool enterGame = 1;
+	repeated CharacterType dummyPlayers = 2;
 }
 
 message S_EnterGame {
