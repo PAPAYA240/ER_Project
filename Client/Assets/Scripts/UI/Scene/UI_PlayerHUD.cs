@@ -39,7 +39,7 @@ public class UI_PlayerHUD : UI_Scene
     public void CaptureTurbine(GameObjects go ,int team)
     {
         bool isAlly = false;
-        if (Managers.Object.MyPlayer.ObjInfo.Team == team)
+        if (Managers.Object.MyPlayer.ObjInfo.Player.Team == team)
             isAlly = true;
 
         switch (go)

@@ -95,9 +95,9 @@ public class UI_PlayerNameTag : UI_Base
 
         if (Managers.Object.MyPlayer.gameObject.transform == _target.transform)
             GetImage((int)Images.Hp).color = _green;
-        else if(Managers.Object.MyPlayer.ObjInfo.Team == targetPc.ObjInfo.Team)
+        else if(Managers.Object.MyPlayer.ObjInfo.Player.Team == targetPc.ObjInfo.Player.Team)
             GetImage((int)Images.Hp).color = _blue;
-        else if(Managers.Object.MyPlayer.ObjInfo.Team != targetPc.ObjInfo.Team)
+        else if(Managers.Object.MyPlayer.ObjInfo.Player.Team != targetPc.ObjInfo.Player.Team)
             GetImage((int)Images.Hp).color = _red;
     }
 

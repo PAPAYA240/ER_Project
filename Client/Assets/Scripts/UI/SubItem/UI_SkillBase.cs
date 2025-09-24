@@ -81,7 +81,7 @@ public abstract class UI_SkillBase : UI_Base
     {
         _popupGameObject = Managers.Resource.Instantiate("UI/Popup/SkillInfoPopup");
         _popupUi = _popupGameObject.GetComponent<UI_CharSkillInfoPopup>();
-        _popupUi.SetSkill(Managers.Object.MyPlayer.ObjInfo.CharType, SkillEnumToKeyCode(SkillKeyCode));
+        _popupUi.SetSkill(Managers.Object.MyPlayer.ObjInfo.Player.CharType, SkillEnumToKeyCode(SkillKeyCode));
         PopupActivate(false);
     }
 

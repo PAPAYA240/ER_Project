@@ -6,7 +6,6 @@ using System.Net.Sockets;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
-using Server.Game.Object;
 using Server.Game.Object.Monster;
 using Server.Game.Object.Monster.AStar;
 using static Server.Data.DataUtils;
@@ -16,7 +15,7 @@ namespace Server.Game
     public class GameRoom : Room
     {
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
-        ConcurrentDictionary<int, EnvironmentObj> _envs = new ConcurrentDictionary<int, EnvironmentObj>();
+        ConcurrentDictionary<int, EnvironmentObject> _envs = new ConcurrentDictionary<int, EnvironmentObject>();
         ConcurrentDictionary<int, Monster> _monsters = new ConcurrentDictionary<int, Monster>();
         Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
 
@@ -76,7 +75,7 @@ namespace Server.Game
             {
                 int levelUpCnt = player.CheckLevelUp();
                 if(levelUpCnt > 0)
-                    BroadcastLevelUp(player.Id, levelUpCnt, player.Info.CharType);
+                    BroadcastLevelUp(player.Id, levelUpCnt, player.Info.Player.CharType);
             }
 
             BroadcastVisibleObjs();
@@ -89,21 +88,20 @@ namespace Server.Game
                 return;
 
             GameObjectType type = ObjectManager.GetObjectTypeById(gameObject.Id);
-
             if (type == GameObjectType.Player)
             {
                 Player player = gameObject as Player;
                 _players.Add(gameObject.Id, player);
-                player.Info.Team = AssignTeam();
+                player.Info.Player.Team = AssignTeam();
 
-                if (!_teams.TryGetValue(player.Info.Team, out var teamPlayers))
+                if (!_teams.TryGetValue(player.Info.Player.Team, out var teamPlayers))
                 {
                     teamPlayers = new Dictionary<int, Player>(); 
-                    _teams[player.Info.Team] = teamPlayers;
+                    _teams[player.Info.Player.Team] = teamPlayers;
                 }
                 teamPlayers.Add(player.Id, player);
 
-                ObjectManager.Instance.RegisterTeam(gameObject.Id, player.Info.Team);
+                ObjectManager.Instance.RegisterTeam(gameObject.Id, player.Info.Player.Team);
 
                 player.Room = this;
                 
@@ -129,7 +127,7 @@ namespace Server.Game
                     foreach (Projectile p in _projectiles.Values)
                         spawnPacket.Objects.Add(p.Info);
 
-                    foreach (EnvironmentObj env in _envs.Values)
+                    foreach (EnvironmentObject env in _envs.Values)
                         spawnPacket.Objects.Add(env.Info);
 
                     player.Session.Send(spawnPacket);
@@ -152,9 +150,9 @@ namespace Server.Game
             }
             else if (type == GameObjectType.Environment)
             {
-                EnvironmentObj env = gameObject as EnvironmentObj;
+                EnvironmentObject env = gameObject as EnvironmentObject;
                 if (env == null)
-                    _envs = new ConcurrentDictionary<int, EnvironmentObj>();
+                    _envs = new ConcurrentDictionary<int, EnvironmentObject>();
 
                 env.Room = this;
                 _envs.TryAdd(gameObject.Id, env);
@@ -181,7 +179,7 @@ namespace Server.Game
                 Player player = null;
                 if (_players.Remove(objectId, out player) == false)
                     return;
-                var myTeam = _teams[player.Info.Team];
+                var myTeam = _teams[player.Info.Player.Team];
                 myTeam.Remove(player.Id);
 
                 player.Room = null;
@@ -304,12 +302,12 @@ namespace Server.Game
             player.Session.Send(skill);
 
             SkillData skillData = null;
-            Dictionary<KeyCode, SkillData> skills = DataManager.SkillDict[info.CharType];
+            Dictionary<KeyCode, SkillData> skills = DataManager.SkillDict[info.Player.CharType];
 
             if (skills.TryGetValue((KeyCode)skillPacket.SkillInfo.KeyCode, out skillData) == false)
                 return;
 
-            _collisionManager.AddHitbox(player, info.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode);
+            _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode);
         }
 
         public void HandleAnim(Player player, C_Anim animPacket)
