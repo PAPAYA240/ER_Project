@@ -13,7 +13,6 @@ namespace Server.Game
 
         protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
         Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
-
         class CoolTime
         {
             public bool isCoolDown;     // 쿨타임이 돌고 있는지 (false : 사용 가능)
@@ -24,6 +23,9 @@ namespace Server.Game
         {
             ObjectType = GameObjectType.Player;            
         }
+
+        public GameObject SkillTarget { get; set; }
+        public KeyCode UsedTargetingSkill { get; set; }
 
         public void MakeDict()
         {
@@ -38,7 +40,8 @@ namespace Server.Game
                 return false;
 
             // 스테미나 체크
-
+            if (!CheckStamina(keyCode))
+                return false;
 
             return true;
         }
@@ -50,6 +53,7 @@ namespace Server.Game
             _ = CoInputCooltime(keyCode, FindSkill(keyCode).CurLevelCooldown);
 
             // 스테미나 감소
+            Stamina -= FindSkill(keyCode).CurLevelStamina;
         }
 
         public override void OnDamaged(GameObject attacker, float damage)
@@ -85,6 +89,14 @@ namespace Server.Game
                 return true;
 
             return false;
+        }
+
+        private bool CheckStamina(KeyCode key)
+        {
+            if(Stamina < FindSkill(key).CurLevelStamina)
+                return false;
+
+            return true;
         }
 
         private async Task CoInputCooltime(KeyCode key, float time)
@@ -128,6 +140,93 @@ namespace Server.Game
                 _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
             }
         }
+
+        //TODO D랑 F는 어떻게 하지?
+        public bool SkillLevelUp(KeyCode key)
+        {
+            bool result = false;
+
+            switch (key)
+            {
+                case KeyCode.Q:
+                case KeyCode.W:
+                case KeyCode.E:
+                    {
+                        if(_skills[key].CurLevel == 0 && Info.StatInfo.Level >= 1)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                        else if(_skills[key].CurLevel == 1 && Info.StatInfo.Level >= 3)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                        else if(_skills[key].CurLevel == 2 && Info.StatInfo.Level >= 5)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                        else if(_skills[key].CurLevel == 3 && Info.StatInfo.Level >= 7)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                        else if(_skills[key].CurLevel == 4 && Info.StatInfo.Level >= 9)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                    }
+                    break;
+                case KeyCode.R:
+                    {
+                        if (_skills[key].CurLevel == 0 && Info.StatInfo.Level >= 6)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                        else if (_skills[key].CurLevel == 1 && Info.StatInfo.Level >= 11)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                        else if (_skills[key].CurLevel == 2 && Info.StatInfo.Level >= 16)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                    }
+                    break;
+                case KeyCode.T:
+                    {
+                        if (_skills[key].CurLevel == 0 && Info.StatInfo.Level >= 1)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                        else if (_skills[key].CurLevel == 1 && Info.StatInfo.Level >= 5)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                        else if (_skills[key].CurLevel == 2 && Info.StatInfo.Level >= 9)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                    }
+                    break;
+            }
+
+            return result;
+        }
+
+        public float GetSkillDamage(KeyCode keyCode)
+        {
+            return _skills[keyCode].GetSkillDamage();
+        }
+
         #endregion
 
         #region Respawn
@@ -183,6 +282,8 @@ namespace Server.Game
             {
                 Stat.Exp -= DataManager.ExpDict[Stat.Level];
                 Stat.Level++;
+                StatInfo statInfo = DataManager.StatGrowthDict[Info.CharType];
+                Stat.AddStat(statInfo);
                 levelUp++;
             }
 

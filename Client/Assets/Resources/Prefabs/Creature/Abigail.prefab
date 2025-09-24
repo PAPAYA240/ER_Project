@@ -10157,6 +10157,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6622066339837652360}
   - component: {fileID: 229336825956480007}
+  - component: {fileID: 40469738893461185}
   m_Layer: 0
   m_Name: Abigail_S002
   m_TagString: Untagged
@@ -10191,7 +10192,7 @@ Animator:
   m_GameObject: {fileID: 7447734330010625503}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: a32e94d2d4b1033408e4ffe246bf0d4e, type: 2}
-  m_Controller: {fileID: 9100000, guid: b51b9d4a7f9c9ec4d837ad246eb6cc8b, type: 2}
+  m_Controller: {fileID: 9100000, guid: bbfdff976ebdbec468bc3bfac6f3543d, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -10202,6 +10203,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &40469738893461185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7447734330010625503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38bbf0c8ec18e0747b035ba9e225aad8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _controller: {fileID: -8679626558034318606}
 --- !u!1 &7539182574120620767
 GameObject:
   m_ObjectHideFlags: 0

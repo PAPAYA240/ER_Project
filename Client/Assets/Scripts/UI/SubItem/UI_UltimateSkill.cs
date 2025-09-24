@@ -143,6 +143,14 @@ public class UI_UltimateSkill : UI_SkillBase
         OnLevelUp?.Invoke(SkillKeyCode);
     }
 
+    public override void LevelUpButtonClicked()
+    {
+        if (ui_PlayerInterface != null)
+        {
+            ui_PlayerInterface.TrySkillLevelUp(SkillEnumToKeyCode(SkillKeyCode));
+        }
+    }
+
     void ChangeColor(int level, ColorEnum color)
     {
         Color destColor = Color.black;
