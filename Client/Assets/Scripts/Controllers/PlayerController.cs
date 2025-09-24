@@ -217,6 +217,13 @@ public class PlayerController : CreatureController
         UI_PlayerNameTag ui = _nameTag.GetComponentInChildren<UI_PlayerNameTag>();
         ui.SetTarget(gameObject);
         ui.SetHPColor();
+
+        //이거 왜 터지지?
+        //ui.SetLevelText(Stat.Level);
+        //UpdateHp();
+        //UpdateMaxHp();
+        //UpdateStamina();
+        //UpdateMaxStamina();
     }
     protected override void UpdateHp()
     {

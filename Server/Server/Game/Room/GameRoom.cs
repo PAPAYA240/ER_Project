@@ -404,5 +404,19 @@ namespace Server.Game
 
             Broadcast(levelUpPkt);
         }
+
+        public void SkillLevelUp(int id, int key)
+        {
+            S_SkillLevelUp skillLevelUpPacket = new S_SkillLevelUp();
+            skillLevelUpPacket.KeyCode = key;
+
+            Player player = FindPlayer(p =>
+            {
+                if (p.Id == id) return true;
+                return false;
+            });
+
+            player.Session.Send(skillLevelUpPacket);
+        }
     }
 }

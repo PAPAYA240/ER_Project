@@ -37,6 +37,8 @@ enum MsgId {
   C_INTERACT = 29;
   S_INTERACT = 30;
   S_RESPAWN = 31;
+  C_SKILL_LEVEL_UP = 32;
+  S_SKILL_LEVEL_UP = 33;
 }
 
 enum CreatureState{
@@ -238,6 +240,14 @@ message S_Skill{
 	bool canUse = 1;
 	int32 objectId = 2;
 	SkillInfo skillInfo = 3;
+}
+
+message C_SkillLevelUp{
+	int32 keyCode = 1;
+}
+
+message S_SkillLevelUp{
+	int32 keyCode = 1;
 }
 
 message C_Fx{

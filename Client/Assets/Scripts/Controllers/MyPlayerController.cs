@@ -624,28 +624,28 @@ public class MyPlayerController : PlayerController
     #region Input
     protected virtual void UpdateKeyInput()
     {
-        // LeftCtrl + Q/W/E/R : 스킬 레벨업
-        if (Input.GetKey(KeyCode.LeftControl) && PlayerInterface.CanLevelUp() == true)
+        // LeftCtrl + Q/W/E/R/T : 스킬 레벨업
+        if (Input.GetKey(KeyCode.LeftControl))
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                PlayerInterface.SpecificSkillLevelUp(GameObjects.QSkill);
+                PlayerInterface.TrySkillLevelUp(KeyCode.Q);
             }
             else if (Input.GetKeyDown(KeyCode.W))
             {
-                PlayerInterface.SpecificSkillLevelUp(GameObjects.WSkill);
+                PlayerInterface.TrySkillLevelUp(KeyCode.W);
             }
             else if (Input.GetKeyDown(KeyCode.E))
             {
-                PlayerInterface.SpecificSkillLevelUp(GameObjects.ESkill);
+                PlayerInterface.TrySkillLevelUp(KeyCode.E);
             }
             else if (Input.GetKeyDown(KeyCode.R))
             {
-                PlayerInterface.SpecificSkillLevelUp(GameObjects.RSkill);
+                PlayerInterface.TrySkillLevelUp(KeyCode.R);
             }
             else if (Input.GetKeyDown(KeyCode.T))
             {
-                PlayerInterface.SpecificSkillLevelUp(GameObjects.TSkill);
+                PlayerInterface.TrySkillLevelUp(KeyCode.T);
             }
         }
         // Q, W, E, R, T, D, F

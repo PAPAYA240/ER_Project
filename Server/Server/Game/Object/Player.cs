@@ -130,6 +130,87 @@ namespace Server.Game
                 _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
             }
         }
+
+        //TODO D랑 F는 어떻게 하지?
+        public bool SkillLevelUp(KeyCode key)
+        {
+            bool result = false;
+
+            switch (key)
+            {
+                case KeyCode.Q:
+                case KeyCode.W:
+                case KeyCode.E:
+                    {
+                        if(_skills[key].CurLevel == 0 && Info.StatInfo.Level >= 1)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                        else if(_skills[key].CurLevel == 1 && Info.StatInfo.Level >= 3)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                        else if(_skills[key].CurLevel == 2 && Info.StatInfo.Level >= 5)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                        else if(_skills[key].CurLevel == 3 && Info.StatInfo.Level >= 7)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                        else if(_skills[key].CurLevel == 4 && Info.StatInfo.Level >= 9)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                    }
+                    break;
+                case KeyCode.R:
+                    {
+                        if (_skills[key].CurLevel == 0 && Info.StatInfo.Level >= 6)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                        else if (_skills[key].CurLevel == 1 && Info.StatInfo.Level >= 11)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                        else if (_skills[key].CurLevel == 2 && Info.StatInfo.Level >= 16)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                    }
+                    break;
+                case KeyCode.T:
+                    {
+                        if (_skills[key].CurLevel == 0 && Info.StatInfo.Level >= 1)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                        else if (_skills[key].CurLevel == 1 && Info.StatInfo.Level >= 5)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                        else if (_skills[key].CurLevel == 2 && Info.StatInfo.Level >= 9)
+                        {
+                            _skills[key].CurLevel++;
+                            result = true;
+                        }
+                    }
+                    break;
+            }
+
+            return result;
+        }
         #endregion
 
         #region Respawn
