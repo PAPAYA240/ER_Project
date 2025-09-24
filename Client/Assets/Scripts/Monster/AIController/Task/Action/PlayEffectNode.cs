@@ -11,7 +11,7 @@ public class PlayEffectNode : ActionNode, IStateChangeListener
          if (monster == null)
              return NodeStatus.Failure;
 
-         if (monster.ObjInfo.MonsterType == MonsterType.Alpha)
+         if (monster.ObjInfo.Monster.MonsterType == MonsterType.Alpha)
          {
              monster = owner.GetComponentInChildren<MonsterController>();
              Transform handL = monster.FindInDescendants(monster.transform, "Fx_Hand_L");

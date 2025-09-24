@@ -145,6 +145,7 @@
         "description": "로지가 총을 난사하여 주변의 적들에게 {damage}의 스킬 피해를 입히고, 3초 동안 방어력 {defense}와 치유 효과 45%를 감소 시킵니다.\n로지는 난사하는 동안 이동 속도가 120% 증가하며, 적중한 대상이 있다면 쿨다운이 40% 감소합니다.",
         "type": "Normal",
         "maxLevel": 5,
+        "canMoveDuringCast": true,
         "mechanics": {
           "targetType": "TargetArea",
           "damageType": "Magic"
@@ -1719,6 +1720,7 @@
         "description": "아비게일이 낫을 휘두릅니다. 첫 번째 회전은 <color=#FFFFFF>{firstDamage}</color><color=#CDA1C8>(+스킬 증폭의 35%)</color>의 스킬 피해를 입히고, 두 번째 회전은 <color=#FFFFFF>{secondDamage}</color><color=#CDA1C8>(+스킬 증폭의 35%)</color>의 스킬 피해를 입힙니다.\n바이너리 스핀 시전 시, 이동 속도가 0.5초 동안 15% 증가합니다.",
         "type": "Normal",
         "maxLevel": 5,
+        "canMoveDuringCast": true,
         "mechanics": {
           "targetType": "TargetArea",
           "damageType": "Magic",
@@ -1820,6 +1822,7 @@
       "F1": {
         "type": "Normal",
         "maxLevel": 5,
+        "canMoveDuringCast": true,
         "mechanics": {
           "targetType": "TargetArea",
           "damageType": "Magic"

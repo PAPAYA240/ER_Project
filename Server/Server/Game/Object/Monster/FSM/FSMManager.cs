@@ -31,14 +31,14 @@ namespace Server.Game.Object.Monster.FSM
         // 타겟을 찾은 경우
         public IMonsterState EvaluateTargetForNextState(Monster monster)
         {
-            switch (monster.Info.MonsterType)
+            switch (monster.Info.Monster.MonsterType)
             {
                 // 근거리 몬스터
                 case MonsterType.Alpha:
                 case MonsterType.Omega:
                     if (monster.IsSkillRange())
                     {
-                        return GetSkillState(monster.Info.MonsterType);
+                        return GetSkillState(monster.Info.Monster.MonsterType);
                     }
                     else
                     {
@@ -48,7 +48,7 @@ namespace Server.Game.Object.Monster.FSM
                 // 원거리 몬스터
                 case MonsterType.Drone:
                 case MonsterType.Gamma:
-                    return GetSkillState(monster.Info.MonsterType);
+                    return GetSkillState(monster.Info.Monster.MonsterType);
 
                 default:
                     return GetIdleState();

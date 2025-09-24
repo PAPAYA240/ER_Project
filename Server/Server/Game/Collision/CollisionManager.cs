@@ -56,7 +56,7 @@ namespace Server.Game
                     DirZ = forward.Z,
                     CharType = charType,
                     KeyCode = keyCode,
-                    Team = player.Info.Team,
+                    Team = player.Info.Player.Team,
                     Data = DataManager.SkillHitboxDict[charType][keyCode],
                     StartTick = Environment.TickCount
                 };

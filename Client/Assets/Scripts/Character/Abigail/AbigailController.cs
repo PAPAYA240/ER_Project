@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class AbigailController : MyPlayerController
 {
-
     // E
-    float _warpRange = 5.5f;
+    float _warpRange = 6.2f;
+    float _warpRadius = 1.2f;
     GameObject _skillTarget = null;
 
     protected override void UpdateSkillKeyInput()
@@ -21,12 +21,18 @@ public class AbigailController : MyPlayerController
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
         {
-            GameObject target = TryGetAttackableObject();
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePos.y = 0;
+            if (Vector3.Distance(mousePos, CellPos) > _warpRange)
+                return;
+
+            GameObject target = TryGetAttackableObject(_warpRadius);
             if (target == null)
                 return;
 
-            Vector3 pos = target.transform.position;
-            if (Vector3.Distance(pos, transform.position) <= _warpRange)
+            Vector3 pos = transform.position;
+            pos.y = 0;
+            if (Vector3.Distance(mousePos, pos) <= _warpRange)
             {
                 _skillTarget = target;
                 SetSkillInput(KeyCode.E);
@@ -65,4 +71,26 @@ public class AbigailController : MyPlayerController
     {
 
     }
+
+    #region Skill
+    protected override void Skill_Q()
+    {
+        PlayAnimation("SKILL_Q", 0.1f);
+    }
+
+    protected override void Skill_W()
+    {
+        PlayAnimation("SKILL_W", 0.1f);
+    }
+
+    protected override void Skill_E()
+    {
+        PlayAnimation("SKILL_E", 0.1f);
+    }
+
+    protected override void Skill_R()
+    {
+        PlayAnimation("SKILL_R", 0.1f);
+    }
+    #endregion
 }

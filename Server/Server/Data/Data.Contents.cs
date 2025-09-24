@@ -323,14 +323,14 @@ namespace Server.Data
     //    public int cooldown;
     //}
     #region Environment
-    public class EnvObjectData : ILoader<EnvType, ObjectInfo>
+    public class EnvObjectData : ILoader<EnvType, EnvInfo>
     {
-        public Dictionary<string, ObjectInfo> stats = new Dictionary<string, ObjectInfo>();
-        public Dictionary<EnvType, ObjectInfo> MakeDict()
+        public Dictionary<string, EnvInfo> stats = new Dictionary<string, EnvInfo>();
+        public Dictionary<EnvType, EnvInfo> MakeDict()
         {
-            Dictionary<EnvType, ObjectInfo> dict = new Dictionary<EnvType, ObjectInfo>();
+            Dictionary<EnvType, EnvInfo> dict = new Dictionary<EnvType, EnvInfo>();
 
-            foreach (ObjectInfo data in stats.Values)
+            foreach (EnvInfo data in stats.Values)
             {
                 dict.Add(data.EnvType, data);
             }

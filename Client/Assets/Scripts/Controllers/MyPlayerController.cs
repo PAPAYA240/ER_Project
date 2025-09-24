@@ -1,9 +1,9 @@
-using Data;
-using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Schema;
+using Data;
+using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
 using static Define;
@@ -76,6 +76,7 @@ public class MyPlayerController : PlayerController
     protected float _minMoveDistance = 0.5f;
     protected float _rotSpeed = 8.0f;
     protected Coroutine _coLookAtTarget = null;
+    protected bool _isWarp = false;
 
     // State : Attack
     protected bool _isAttackLoop = false;
@@ -166,9 +167,9 @@ public class MyPlayerController : PlayerController
         GameObject go = Managers.Resource.Instantiate("UI/Scene/PlayerHUD");
         go.transform.SetParent(gameObject.transform);
         PlayerInterface = go.GetComponentInChildren<UI_PlayerInterface>();
-        PlayerInterface.CharacterCode = CharTypeToCharCode(ObjInfo.CharType);
-        PlayerInterface.CharacterName = Enum.GetName(typeof(CharacterType), ObjInfo.CharType);
-        PlayerInterface.WeaponCode = CharTypeToWeaponCode(ObjInfo.CharType);
+        PlayerInterface.CharacterCode = CharTypeToCharCode(ObjInfo.Player.CharType);
+        PlayerInterface.CharacterName = Enum.GetName(typeof(CharacterType), ObjInfo.Player.CharType);
+        PlayerInterface.WeaponCode = CharTypeToWeaponCode(ObjInfo.Player.CharType);
         PlayerInterface.Init();
         PlayerInterface.OnCharSkillLevelUpAction += OnCharSkillLevelUp;
         
@@ -233,18 +234,21 @@ public class MyPlayerController : PlayerController
             ExecuteSkill();
 
         base.UpdateController();
+
+        CheckUpdatedFlag();
     }
 
-    protected override void CheckUpdatedFlag(bool isWarp = false)
+    protected override void CheckUpdatedFlag()
     {
         if (_updated)
         {
             C_Move movePacket = new C_Move();
             movePacket.PosInfo = PosInfo;
             movePacket.RotInfo = RotInfo;
-            movePacket.IsWarp = isWarp;
+            movePacket.IsWarp = _isWarp;
             Managers.Network.Send(movePacket);
             _updated = false;
+            _isWarp = false;
         }
     }
     #endregion
@@ -298,9 +302,7 @@ public class MyPlayerController : PlayerController
                 State = CreatureState.Moving;
             }
 
-            CellPos = transform.position;
-            RotInfo = transform.rotation;
-            CheckUpdatedFlag();
+            UpdateTransform();
         }
     }
 
@@ -451,13 +453,12 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    protected GameObject TryGetAttackableObject()
+    protected GameObject TryGetAttackableObject(float radius = 0.1f)
     {
         GameObject gameObject = null;
         _targetType = GameObjectType.None;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        float radius = 0.1f;
         if (Physics.SphereCast(ray, radius, out RaycastHit sphereHit, 1000.0f, _monsterMask | _playerMask))
         {
             GameObject hitObject = sphereHit.collider.gameObject;
@@ -509,7 +510,7 @@ public class MyPlayerController : PlayerController
                 if (go != null)
                 {
                     PlayerController pc = go.GetComponent<PlayerController>();
-                    if (pc.ObjInfo.Team != ObjInfo.Team && pc.IsAttackable())
+                    if (pc.ObjInfo.Player.Team != ObjInfo.Player.Team && pc.IsAttackable())
                     {
                         float distance = Vector3.Distance(go.transform.position, transform.position);
                         if (distance <= minDistance)
@@ -613,7 +614,8 @@ public class MyPlayerController : PlayerController
             z = respawnPacket.RotInfo.Qz,
             w = respawnPacket.RotInfo.Qw
         };
-        UpdateTransform();
+
+        UpdateTransform(true);
 
         State = CreatureState.Idle;
         Hp = respawnPacket.Hp;
@@ -862,7 +864,7 @@ public class MyPlayerController : PlayerController
 
     protected void MakeSkillDict()
     {
-        Dictionary<KeyCode, Data.SkillData> skills = DataManager.SkillDict[ObjInfo.CharType];
+        Dictionary<KeyCode, Data.SkillData> skills = DataManager.SkillDict[ObjInfo.Player.CharType];
 
         foreach(var data in skills)
         {
@@ -1070,11 +1072,12 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region Util
-    protected void UpdateTransform()
+    protected void UpdateTransform(bool isWarp = false)
     {
         CellPos = transform.position;
         RotInfo = transform.rotation;
         _updated = true;
+        _isWarp = isWarp;
     }
 
     protected void SetMovementState()
@@ -1179,6 +1182,44 @@ public class MyPlayerController : PlayerController
     {
         C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { Name = name, Ratio = ratio } };
         Managers.Network.Send(animPacket);
+    }
+    #endregion
+
+    #region Util
+    // 시작 지점과 타겟 지점 사이에 장애물이 있으면 충돌 위치 반환
+    // 없으면 유효 위치 반환
+    protected Vector3 GetReachablePosition(Vector3 startPos, Vector3 targetPos, out NavMeshHit navHit)
+    {
+        if (NavMesh.Raycast(startPos, targetPos, out NavMeshHit rayHit, NavMesh.AllAreas))
+        {
+            targetPos = rayHit.position;
+        }
+
+        // 최종 목적지 설정
+        if (NavMesh.SamplePosition(targetPos, out navHit, 1.0f, NavMesh.AllAreas))
+        {
+            return navHit.position;
+        }
+
+        return Vector3.zero;
+    }
+
+    // 플레이어 위치로부터 마우스 방향으로 사거리 내 이동 가능한 위치 반환
+    // isMaxDistance가 true 이면 항상 최대 사거리 기준 반환, false 이면 사거리 내 위치 반환
+    protected Vector3 GetTargetPos(float range, bool isMaxDistance = true)
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
+
+        Vector3 dir = (hit.point - transform.position).normalized;
+
+        if (!isMaxDistance && (hit.point - transform.position).magnitude < range)
+        {
+            return hit.point;
+        }
+
+        return transform.position + dir * range;
     }
     #endregion
 }

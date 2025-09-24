@@ -41,8 +41,8 @@ namespace Server.Game.Object.Monster.FSM
             }
             else
             {
-                if (monster.Info.MonsterType == MonsterType.Gamma ||
-                   monster.Info.MonsterType == MonsterType.Drone)
+                if (monster.Info.Monster.MonsterType == MonsterType.Gamma ||
+                   monster.Info.Monster.MonsterType == MonsterType.Drone)
                     LookAtTarget(monster);
             }
         }

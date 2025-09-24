@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using static Server.Data.DataUtils;
-using System.Linq;
-using System.Numerics;
 
 namespace Server.Game
 {
@@ -113,7 +111,7 @@ namespace Server.Game
         private void MakeSkillDict()
         {
             // 본인 캐릭터의 스킬 정보만 추출
-            Dictionary<KeyCode, SkillData> skills = DataManager.SkillDict[Info.CharType];
+            Dictionary<KeyCode, SkillData> skills = DataManager.SkillDict[Info.Player.CharType];
             foreach (var skillData in skills)
             {
                 Skill skill = new Skill();

@@ -319,6 +319,21 @@ message S_LeavePick{
 	int32 pickIdx = 1;
 }
 
+message PlayerInfo {
+    CharacterType charType = 1;
+    int32 skillPoints = 2;
+    int32 team = 3;
+}
+
+message MonsterInfo {
+    MonsterType monsterType = 1;
+}
+
+
+message EnvInfo{
+	EnvType envType = 1;
+	string interactionStrategy = 2;	
+}
 
 message ObjectInfo{
 	int32 objectId = 1;
@@ -326,10 +341,13 @@ message ObjectInfo{
 	PositionInfo posInfo = 3;
 	RotationInfo rotInfo = 4;
 	StatInfo statInfo = 5;
-	CharacterType charType = 6;
-	MonsterType monsterType = 7;
-	EnvType envType = 8;
-	int32 team = 9;
+
+	oneof objectSpecificData 
+	{
+        PlayerInfo player = 10;
+        MonsterInfo monster = 11;
+        EnvInfo env = 12;
+    	}
 }
 
 message AnimInfo{

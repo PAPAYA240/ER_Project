@@ -37,7 +37,7 @@ public class UI_ReadyButton : UI_Base
         _image = GetComponent<Image>();
         _image.sprite = _basicSprite;
 
-        SetText("ÁØºñ Áß");
+        SetText("ï¿½Øºï¿½ ï¿½ï¿½");
 
         BindEvent(gameObject, OnClicked, Define.UIEvent.Click);
         BindEvent(gameObject, OnPointerEnter, Define.UIEvent.PointerEnter);
@@ -70,13 +70,13 @@ public class UI_ReadyButton : UI_Base
         //{
         //    _state = State.Ready;
         //    _image.sprite = _pressedSprite;
-        //    SetText("ÁØºñ ¿Ï·á");
+        //    SetText("ï¿½Øºï¿½ ï¿½Ï·ï¿½");
         //}
         //else if( _state == State.Ready)
         //{
         //    _state = State.Notyet;
         //    _image.sprite = _basicSprite;
-        //    SetText("ÁØºñ Áß");
+        //    SetText("ï¿½Øºï¿½ ï¿½ï¿½");
         //}
 
         //TODO
@@ -88,12 +88,12 @@ public class UI_ReadyButton : UI_Base
         if (_state == State.Notyet)
         {
             _image.sprite = _rolloverSprite;
-            SetText("ÁØºñ ¿Ï·á");
+            SetText("ï¿½Øºï¿½ ï¿½Ï·ï¿½");
         }
         else if (_state == State.Ready)
         {
             _image.sprite = _disabledSprite;
-            SetText("ÁØºñ Ãë¼Ò");
+            SetText("ï¿½Øºï¿½ ï¿½ï¿½ï¿½");
         }
     }
     void OnPointerExit(PointerEventData eventData)
@@ -101,12 +101,12 @@ public class UI_ReadyButton : UI_Base
         if (_state == State.Notyet)
         {
             _image.sprite = _basicSprite;
-            SetText("ÁØºñ Áß");
+            SetText("ï¿½Øºï¿½ ï¿½ï¿½");
         }
         else if (_state == State.Ready)
         {
             _image.sprite = _pressedSprite;
-            SetText("ÁØºñ ¿Ï·á");
+            SetText("ï¿½Øºï¿½ ï¿½Ï·ï¿½");
         }
     }
 }
