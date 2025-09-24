@@ -56,6 +56,7 @@ public class MyPlayerController : PlayerController
             PosInfo.State = value;
             UpdateAnimation();
             _updated = true;
+            SendStatePacket();
         }
     }
     protected bool _isStop = false;
@@ -1189,6 +1190,13 @@ public class MyPlayerController : PlayerController
     {
         C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { Name = name, Ratio = ratio } };
         Managers.Network.Send(animPacket);
+    }
+
+    private void SendStatePacket()
+    {
+        C_PlayerState statePacket = new C_PlayerState();
+        statePacket.State = State;
+        Managers.Network.Send(statePacket);
     }
     #endregion
 

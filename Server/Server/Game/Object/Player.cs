@@ -1,7 +1,9 @@
 ﻿using Google.Protobuf.Protocol;
 using Server.Data;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Numerics;
 using System.Threading.Tasks;
 using static Server.Data.DataUtils;
 
@@ -19,19 +21,117 @@ namespace Server.Game
             public float coolTime;      // 남은 쿨타임
         }
 
+        // StatRegenerator
+        public bool _isUpdatedStat = false;
+        private StatRegenerator _statRegenerator;
+
         public Player()
         {
-            ObjectType = GameObjectType.Player;            
+            ObjectType = GameObjectType.Player;
+            _statRegenerator = new StatRegenerator(this);
         }
 
+        #region Init
         public void MakeDict()
         {
             MakeSkillDict();
             MakeCoolDownDict();
         }
+        #endregion
 
+        #region Update
+        public override void Update()
+        {
+            UpdateController();
+            CheckUpdateStat();
+        }
+
+        protected virtual void UpdateController()
+        {
+            switch (State)
+            {
+                case CreatureState.Idle:
+                    break;
+                case CreatureState.Moving:
+                    break;
+                case CreatureState.Attack:
+                    break;
+                case CreatureState.Skill:
+                    break;
+                case CreatureState.Dead:
+                    break;
+                case CreatureState.Rest:
+                    UpdateRest();
+                    break;
+            }
+        }
+        #endregion
+
+        #region State : Dead
+        public override void OnDead(GameObject attacker)
+        {
+            if (Room == null)
+                return;
+
+            PosInfo.State = CreatureState.Dead;
+
+            S_Die diePacket = new S_Die();
+            diePacket.ObjectId = Id;
+            diePacket.AttackerId = attacker.Id;
+            diePacket.RespawnTime = DataManager.RespawnDict[Stat.Level];
+            Room.Broadcast(diePacket);
+
+            _ = CoRespawnTime(diePacket.RespawnTime);
+        }
+        #endregion
+
+        #region State : Rest
+        protected void UpdateRest()
+        {
+
+        }
+        #endregion
+
+        #region Stat
+        public void StartRegen()
+        {
+            _statRegenerator.Start();
+        }
+
+        public void StopRegen()
+        {
+            _statRegenerator.Stop();
+        }
+
+        public bool CanRegenerate()
+        {
+            if(State == CreatureState.Dead)
+                return false;
+
+            if(Hp == Stat.MaxHp && Stamina == Stat.MaxStamina)
+                return false;
+
+            return true;
+        }
+
+        private void CheckUpdateStat()
+        {
+            if (_isUpdatedStat)
+            {
+                S_ChangeStat statPacket = new S_ChangeStat();
+                statPacket.ObjectId = Id;
+                statPacket.Hp = Hp;
+                statPacket.Stamina = Stamina;
+                Session.Send(statPacket);
+
+                _isUpdatedStat = false;
+            }
+        }
+        #endregion
+
+        #region Skill
         public bool CanUseSkill(KeyCode keyCode)
-        {           
+        {
             // 쿨타임 체크
             if (!CheckCoolTime(keyCode))
                 return false;
@@ -53,28 +153,6 @@ namespace Server.Game
             Stamina -= FindSkill(keyCode).CurLevelStamina;
         }
 
-        public override void OnDamaged(GameObject attacker, float damage)
-        {
-            base.OnDamaged(attacker, damage);
-        }
-
-        public override void OnDead(GameObject attacker)
-        {
-            if (Room == null)
-                return;
-
-            PosInfo.State = CreatureState.Dead;
-
-            S_Die diePacket = new S_Die();
-            diePacket.ObjectId = Id;
-            diePacket.AttackerId = attacker.Id;
-            diePacket.RespawnTime = DataManager.RespawnDict[Stat.Level];
-            Room.Broadcast(diePacket);
-
-            _ = CoRespawnTime(diePacket.RespawnTime);
-        }
-
-        #region Skill
         public float GetCoolTime(KeyCode key)
         {
             return _coolDownDict[key].coolTime;
@@ -257,6 +335,7 @@ namespace Server.Game
         }
         #endregion
 
+        #region Packet
         public void SendVisibleObjsPkt(List<int> Ids)
         {
             S_VisibleObjects visibleObjsPkt = new S_VisibleObjects();
@@ -264,7 +343,9 @@ namespace Server.Game
             visibleObjsPkt.VisibleObjectIds.AddRange(Ids);
             Session.Send(visibleObjsPkt);
         }
+        #endregion
 
+        #region Stat
         public int CheckLevelUp()
         {
             int levelUp = 0;
@@ -278,5 +359,6 @@ namespace Server.Game
 
             return levelUp;
         }
+        #endregion
     }
 }

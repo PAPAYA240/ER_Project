@@ -39,6 +39,8 @@ enum MsgId {
   S_RESPAWN = 31;
   C_SKILL_LEVEL_UP = 32;
   S_SKILL_LEVEL_UP = 33;
+  C_PLAYER_STATE = 34;
+  S_CHANGE_STAT = 35;
 }
 
 enum CreatureState{
@@ -340,6 +342,17 @@ message S_Respawn{
 	RotationInfo rotInfo = 3;
 	float hp = 4;
 	float stamina = 5;
+}
+
+message C_PlayerState{
+	int32 objectId = 1;
+	CreatureState state = 2;
+}
+
+message S_ChangeStat{
+	int32 objectId = 1;
+	float hp = 2;
+	float stamina = 3;
 }
 
 message PositionInfo{

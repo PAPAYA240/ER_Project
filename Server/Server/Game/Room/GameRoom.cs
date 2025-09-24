@@ -53,6 +53,11 @@ namespace Server.Game
 
             foreach (Player player in _players.Values)
             {
+                player.Update();
+            }
+
+            foreach (Player player in _players.Values)
+            {
                 List<int> visibleObjs = new List<int>();
                 visibleObjs.AddRange(GetObjectsInRange(_players, player));
                 visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
@@ -92,6 +97,7 @@ namespace Server.Game
                 Player player = gameObject as Player;
                 _players.Add(gameObject.Id, player);
                 player.Info.Player.Team = AssignTeam();
+                player.StartRegen();
 
                 if (!_teams.TryGetValue(player.Info.Player.Team, out var teamPlayers))
                 {
@@ -182,6 +188,7 @@ namespace Server.Game
                 myTeam.Remove(player.Id);
 
                 player.Room = null;
+                player.StopRegen();
 
                 // 본인한테 정보 전송
                 {
