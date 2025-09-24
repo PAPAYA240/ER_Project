@@ -859,7 +859,7 @@ public class MyPlayerController : PlayerController
         return _coolDownDict[key].coolTime;
     }
 
-    public virtual void OnSkillConfirmed(SkillInfo skillInfo)
+    public virtual void OnSkillConfirmed(S_Skill skillPacket)
     {
         KeyCode key = (KeyCode)skillPacket.SkillInfo.KeyCode;
 

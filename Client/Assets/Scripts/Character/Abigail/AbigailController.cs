@@ -64,11 +64,11 @@ public class AbigailController : MyPlayerController
 
     #region Skill
 
-    public override void OnSkillConfirmed(SkillInfo skillInfo)
+    public override void OnSkillConfirmed(S_Skill skillPacket)
     {
-        base.OnSkillConfirmed(skillInfo);
+        base.OnSkillConfirmed(skillPacket);
 
-        if((KeyCode)skillInfo.KeyCode == KeyCode.E)
+        if((KeyCode)skillPacket.SkillInfo.KeyCode == KeyCode.E)
         {
             transform.position = _warpPos;
             _agent.Warp(_warpPos);
