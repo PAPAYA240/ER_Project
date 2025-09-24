@@ -25,7 +25,7 @@ public class SkillBase
 
     public int CurLevel { get; set; } 
     public int MaxLevel { get { return SkillData.maxLevel; } }
-    public float Cooldown { get; set; }
+
     public float MaxCooldown { get; set; }
     public float CurLevelCooldown 
     { 
@@ -35,6 +35,16 @@ public class SkillBase
                 return SkillData.levels[CurLevel].cooldown;
             return SkillData.levels[1].cooldown;
         } 
+    }
+
+    public float CurLevelStamina
+    {
+        get
+        {
+            if (CurLevel > 0 && CurLevel <= MaxLevel)
+                return SkillData.levels[CurLevel].staminaCost;
+            return SkillData.levels[1].staminaCost;
+        }
     }
 }
 

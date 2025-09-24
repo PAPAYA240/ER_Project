@@ -107,13 +107,13 @@ public class PlayerController : CreatureController
 
             if (Define.Object.MyPlayer == ObjectType)
             {
-                Managers.Object.MyPlayer.OnSkillConfirmed(skillPacket.SkillInfo);
+                Managers.Object.MyPlayer.OnSkillConfirmed(skillPacket);
             }
 
             //StartCoroutine(CoStartSkill());
             Debug.Log("스킬 코루틴 시작");
 
-            CreateSkillMesh((KeyCode)skillPacket.SkillInfo.KeyCode);
+            CreateSkillMesh(keyCode);
         }
     }
 
@@ -217,6 +217,13 @@ public class PlayerController : CreatureController
         UI_PlayerNameTag ui = _nameTag.GetComponentInChildren<UI_PlayerNameTag>();
         ui.SetTarget(gameObject);
         ui.SetHPColor();
+
+        //이거 왜 터지지?
+        //ui.SetLevelText(Stat.Level);
+        //UpdateHp();
+        //UpdateMaxHp();
+        //UpdateStamina();
+        //UpdateMaxStamina();
     }
     protected override void UpdateHp()
     {

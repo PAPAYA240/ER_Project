@@ -23,7 +23,7 @@ public class CreatureController : BaseController
     public override float Hp
     {
         get { return Stat.Hp; }
-        set { base.Hp = value; UpdateHp(); }
+        set { base.Hp = Mathf.Clamp(value, 0, Stat.MaxHp); UpdateHp(); }
     }
 
     public override float MaxHp
@@ -35,7 +35,7 @@ public class CreatureController : BaseController
     public override float Stamina
     {
         get { return Stat.Stamina; }
-        set { base.Stamina = value; UpdateStamina(); }
+        set { base.Stamina = Mathf.Clamp(value, 0, Stat.MaxStamina); UpdateStamina(); }
     }
 
     public override float MaxStamina
@@ -100,24 +100,27 @@ public class CreatureController : BaseController
         Hp = Stat.Hp + growth.MaxHp;
     }
 
-    public bool IsAttackable()
+    public bool IsAttackable(GameObject targetObject)
     {
-        // 죽었을 때 || 무적 상태일 때 || 시야 밖일 때(부시) 등등
-        if (State == CreatureState.Dead)
+        if (targetObject == null)
             return false;
 
-        return true;
-    }
-
-    public bool IsAttackable(GameObject go)
-    {
-        if (go == null)
-            return false;
-
-        CreatureController cc = go.GetComponent<CreatureController>();
+        CreatureController cc = targetObject.GetComponent<CreatureController>();
         if (cc == null) 
             return false;
 
-        return cc.IsAttackable();
+        // 나 자신일 때
+        if(cc.Id == Id) 
+            return false;
+
+        // 같은 팀일 때
+        if (cc.ObjectType == Define.Object.OtherPlayer && cc.ObjInfo.Team == ObjInfo.Team)
+            return false;
+
+        // 대상이 죽었을 때 || 무적 상태일 때 || 시야 밖일 때(부시) 등등
+        if (cc.State == CreatureState.Dead)
+            return false;
+
+        return true;
     }
 }

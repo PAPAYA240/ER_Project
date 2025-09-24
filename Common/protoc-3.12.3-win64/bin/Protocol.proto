@@ -37,7 +37,9 @@ enum MsgId {
   C_INTERACT = 29;
   S_INTERACT = 30;
   S_RESPAWN = 31;
-  C_ATTACK_SKILL_TARGET = 32;
+  C_SKILL_LEVEL_UP = 32;
+  S_SKILL_LEVEL_UP = 33;
+  C_ATTACK_SKILL_TARGET = 34;
 }
 
 enum CreatureState{
@@ -49,16 +51,6 @@ enum CreatureState{
   REST = 5;
 }
 
-  message C_Interact {
-    int32 objectId = 1;
-  }
-
-
-  message S_Interact  {
-      int32 objectId = 1;
-      int64 nextUseTime = 2;
-  }
-
 enum GameObjectType{
 	NONE = 0;
 	PLAYER = 1;
@@ -67,8 +59,7 @@ enum GameObjectType{
 	ENVIRONMENT = 4;
 }
 
-enum EnvType
-{
+enum EnvType{
    ENV_NONE = 0;
    HILL_OBJ = 1;
    DEVICE_SPAWNPOINT = 2;
@@ -77,8 +68,6 @@ enum EnvType
    BARRIER_SPAWNPOINT = 5;
 }
    
-
-
 enum SkillType{
 	SKILL_NONE = 0;
 	SKILL_AUTO = 1;
@@ -87,8 +76,7 @@ enum SkillType{
 	SKILL_TRACK = 4;
 }
 
-enum MonsterSkill
-{
+enum MonsterSkill{
     MS_NONE = 0;
     MS_ATTACK1 = 1;
     MS_ATTACK2 = 2;
@@ -183,6 +171,15 @@ enum TraitType{
     SENTINEL = 15;	
 }
 
+message C_Interact {
+    int32 objectId = 1;
+}
+
+message S_Interact  {
+    int32 objectId = 1;
+    int64 nextUseTime = 2;
+}
+
 message C_EnterGame {
 	bool enterGame = 1;
 }
@@ -195,8 +192,7 @@ message S_LeaveGame {
 
 }
 
-message S_State
-{
+message S_State {
 	int32 ObjectId = 1;
 	CreatureState MyState = 2;
 	PositionInfo PosInfo = 3;
@@ -227,8 +223,6 @@ message S_Move{
   bool isWarp = 4;
 }
 
-
-
 message C_Skill{
 	ObjectInfo objectInfo = 1;
 	SkillInfo skillInfo = 2;
@@ -239,11 +233,21 @@ message S_Skill{
 	bool canUse = 1;
 	int32 objectId = 2;
 	SkillInfo skillInfo = 3;
+	CostInfo costInfo = 4;
+}
+
+message C_SkillLevelUp{
+	int32 keyCode = 1;
+}
+
+message S_SkillLevelUp{
+	int32 keyCode = 1;
 }
 
 message C_Fx{
 	EffectInfo fxInfo = 1;
 }
+
 message S_Fx{
 	int32 objectId = 1;
 	EffectInfo fxInfo = 2;
@@ -278,7 +282,6 @@ message S_Trait{
 	int32 pickIdx = 2;
 }
 
-
 message C_Weapon{
 	Weapon weaponType = 1;
 	int32 pickIdx = 2;
@@ -298,57 +301,8 @@ message S_SpawnPick{
 	repeated PickScenePlayerInfo players = 1;
 }
 
-message PickScenePlayerInfo{
-	int32 pickIdx = 1;
-	string userName = 2;
-	CharacterType charType = 3;
-	TraitType traitType = 4;
-	Weapon weaponType = 5;
-}
-
 message S_LeavePick{
 	int32 pickIdx = 1;
-}
-
-message PlayerInfo {
-    CharacterType charType = 1;
-    int32 skillPoints = 2;
-    int32 team = 3;
-}
-
-message MonsterInfo {
-    MonsterType monsterType = 1;
-}
-
-
-message EnvInfo{
-	EnvType envType = 1;
-	string interactionStrategy = 2;	
-}
-
-message ObjectInfo{
-	int32 objectId = 1;
-	string name = 2;
-	PositionInfo posInfo = 3;
-	RotationInfo rotInfo = 4;
-	StatInfo statInfo = 5;
-
-	oneof objectSpecificData 
-	{
-        PlayerInfo player = 10;
-        MonsterInfo monster = 11;
-        EnvInfo env = 12;
-    	}
-}
-
-message AnimInfo{
-	string name = 1;
-	float ratio = 2;
-}
-
-message EffectInfo{
-	int32 keyCode = 1;
-
 }
 
 message S_ChangeHp{
@@ -356,12 +310,38 @@ message S_ChangeHp{
 	float hp = 2;
 }
 
-
  message S_Die{
 	 int32 objectId = 1;
 	 int32 attackerId = 2;
 	 float respawnTime = 3;
  }
+
+ message C_Ping{
+	bool ping = 1;
+}
+
+message S_VisibleObjects{
+	int32 objectId = 1;
+	repeated int32 visibleObjectIds = 2;
+}
+
+message S_LevelUp{
+	int32 objectId = 1;
+	int32 levelUpCnt = 2;
+	StatInfo statGrowth = 3;
+}
+
+message C_Ready{
+	bool ready = 1;
+}
+
+message S_Respawn{
+	int32 objectId = 1;
+	PositionInfo posInfo = 2;
+	RotationInfo rotInfo = 3;
+	float hp = 4;
+	float stamina = 5;
+}
 
 message PositionInfo{
 	CreatureState state = 1;
@@ -393,6 +373,55 @@ message StatInfo{
 	int32 hill = 13;
 }
 
+message PlayerInfo {
+    CharacterType charType = 1;
+    int32 skillPoints = 2;
+    int32 team = 3;
+}
+
+message MonsterInfo {
+    MonsterType monsterType = 1;
+}
+
+message EnvInfo{
+	EnvType envType = 1;
+	string interactionStrategy = 2;	
+}
+
+message ObjectInfo{
+	int32 objectId = 1;
+	string name = 2;
+	PositionInfo posInfo = 3;
+	RotationInfo rotInfo = 4;
+	StatInfo statInfo = 5;
+	CharacterType charType = 6;
+	MonsterType monsterType = 7;
+	EnvType envType = 8;
+	int32 team = 9;
+	oneof objectSpecificData 
+	{
+        PlayerInfo player = 10;
+        MonsterInfo monster = 11;
+        EnvInfo env = 12;
+    	}
+}
+
+message PickScenePlayerInfo{
+	int32 pickIdx = 1;
+	string userName = 2;
+	CharacterType charType = 3;
+	TraitType traitType = 4;
+	Weapon weaponType = 5;
+}
+
+message AnimInfo{
+	string name = 1;
+	float ratio = 2;
+}
+
+message EffectInfo{
+	int32 keyCode = 1;
+}
 
 message WeaponMasteryInfo{
 	float attackSpeed = 1;
@@ -430,33 +459,9 @@ message SkillHitbox{
 	float maxRange = 15;
 }
 
-
-
-message C_Ping{
-	bool ping = 1;
-}
-
-message S_VisibleObjects{
-	int32 objectId = 1;
-	repeated int32 visibleObjectIds = 2;
-}
-
-message S_LevelUp{
-	int32 objectId = 1;
-	int32 levelUpCnt = 2;
-	StatInfo statGrowth = 3;
-}
-
-message C_Ready{
-	bool ready = 1;
-}
-
-message S_Respawn{
-	int32 objectId = 1;
-	PositionInfo posInfo = 2;
-	RotationInfo rotInfo = 3;
-	float hp = 4;
-	float stamina = 5;
+message CostInfo{
+	float coolTime = 1;
+	float stamina = 2;
 }
 
 message C_AttackSkillTarget{

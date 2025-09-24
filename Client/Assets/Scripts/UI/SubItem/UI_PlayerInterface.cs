@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -86,7 +87,7 @@ public class UI_PlayerInterface : UI_Base
         OnLevelUp(1);
         SpecificSkillLevelUp(GameObjects.FSkill);
 
-        OnDeath();
+        //OnDeath();
     }
     private void Start()
     {
@@ -241,6 +242,53 @@ public class UI_PlayerInterface : UI_Base
         }
     }
 
+    public void SpecificSkillLevelUp(KeyCode key)
+    {
+        GameObjects objEnum = GameObjects.Credit;//음 초기화가 어렵네
+
+        switch (key)
+        {
+            case KeyCode.Q:
+                objEnum = GameObjects.QSkill;
+                break;
+            case KeyCode.W:
+                objEnum = GameObjects.WSkill;
+                break;
+            case KeyCode.E:
+                objEnum = GameObjects.ESkill;
+                break;
+            case KeyCode.R:
+                objEnum = GameObjects.RSkill;
+                break;
+            case KeyCode.T:
+                objEnum = GameObjects.TSkill;
+                break;
+            case KeyCode.D:
+                objEnum = GameObjects.DSkill;
+                break;
+            case KeyCode.F:
+                objEnum = GameObjects.FSkill;
+                break;
+        }
+
+        //잘 못 들어온 정보
+        if (objEnum == GameObjects.Credit)
+            return;
+
+        switch (objEnum)
+        {
+            case GameObjects.QSkill:
+            case GameObjects.WSkill:
+            case GameObjects.ESkill:
+            case GameObjects.RSkill:
+            case GameObjects.TSkill:
+            case GameObjects.DSkill:
+            case GameObjects.FSkill:
+                GetObject((int)objEnum).GetComponent<UI_SkillBase>().SkillLevelUp();
+                break;
+        }
+    }
+
     void ActivateSkillLevelUpButton(GameObjects objEnum, bool activate)
     {
         GetObject((int)objEnum).GetComponent<UI_SkillBase>().ActivateLevelUp(activate);
@@ -253,6 +301,18 @@ public class UI_PlayerInterface : UI_Base
     public void SetSkillMaxCool(GameObjects objEnum, float value)
     {
         GetObject((int)objEnum).GetComponent<UI_SkillBase>().SetMaxCool(value);
+    }
+
+    //버튼을 누르거나 컨트롤 스킬 누르면 호출되는 함수?
+    public void TrySkillLevelUp(KeyCode key)
+    {
+        if (CanLevelUp() == false)
+            return;
+
+        C_SkillLevelUp packet = new C_SkillLevelUp();
+        packet.KeyCode = (int)key;
+
+        Managers.Network.Send(packet);
     }
 
     #endregion
@@ -319,10 +379,10 @@ public class UI_PlayerInterface : UI_Base
 
     #region Death
 
-    public void OnDeath()
+    public void OnDead(float respawnTime)
     {
         _isDead = true;
-        _respawnCool = 20;
+        _respawnCool = respawnTime;
         GetObject((int)GameObjects.Death).SetActive(true);
     }
 
@@ -331,7 +391,8 @@ public class UI_PlayerInterface : UI_Base
     #region Level
     public bool CanLevelUp()
     {
-        return _remainSkillPoint > 0 ? true : false;
+        //return _remainSkillPoint > 0 ? true : false;
+        return _remainSkillPoint > 0;
     }
 
     public void ActivateCombatImg(bool activate)

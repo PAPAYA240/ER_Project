@@ -325,7 +325,6 @@ public class MyPlayerController : PlayerController
     protected override void UpdateRest()
     {
         // TODO : 쉬는 동안 자원 회복
-
     }
 
     protected override void UpdateDead()
@@ -467,7 +466,7 @@ public class MyPlayerController : PlayerController
         {
             GameObject hitObject = sphereHit.collider.gameObject;
             CreatureController cc = hitObject.GetComponent<CreatureController>();
-            if (cc.Id != Id && cc.IsAttackable())
+            if (IsAttackable(hitObject))
             {
                 Target = gameObject = hitObject;
                 _targetType = ObjectManager.GetObjectTypeById(cc.ObjInfo.ObjectId);
@@ -513,8 +512,7 @@ public class MyPlayerController : PlayerController
                 GameObject go = Managers.Object.FindById(num);
                 if (go != null)
                 {
-                    PlayerController pc = go.GetComponent<PlayerController>();
-                    if (pc.ObjInfo.Player.Team != ObjInfo.Player.Team && pc.IsAttackable())
+                    if (IsAttackable(go))
                     {
                         float distance = Vector3.Distance(go.transform.position, transform.position);
                         if (distance <= minDistance)
@@ -630,28 +628,28 @@ public class MyPlayerController : PlayerController
     #region Input
     protected virtual void UpdateKeyInput()
     {
-        // LeftCtrl + Q/W/E/R : 스킬 레벨업
-        if (Input.GetKey(KeyCode.LeftControl) && PlayerInterface.CanLevelUp() == true)
+        // LeftCtrl + Q/W/E/R/T : 스킬 레벨업
+        if (Input.GetKey(KeyCode.LeftControl))
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                PlayerInterface.SpecificSkillLevelUp(GameObjects.QSkill);
+                PlayerInterface.TrySkillLevelUp(KeyCode.Q);
             }
             else if (Input.GetKeyDown(KeyCode.W))
             {
-                PlayerInterface.SpecificSkillLevelUp(GameObjects.WSkill);
+                PlayerInterface.TrySkillLevelUp(KeyCode.W);
             }
             else if (Input.GetKeyDown(KeyCode.E))
             {
-                PlayerInterface.SpecificSkillLevelUp(GameObjects.ESkill);
+                PlayerInterface.TrySkillLevelUp(KeyCode.E);
             }
             else if (Input.GetKeyDown(KeyCode.R))
             {
-                PlayerInterface.SpecificSkillLevelUp(GameObjects.RSkill);
+                PlayerInterface.TrySkillLevelUp(KeyCode.R);
             }
             else if (Input.GetKeyDown(KeyCode.T))
             {
-                PlayerInterface.SpecificSkillLevelUp(GameObjects.TSkill);
+                PlayerInterface.TrySkillLevelUp(KeyCode.T);
             }
         }
         // Q, W, E, R, T, D, F
@@ -816,18 +814,24 @@ public class MyPlayerController : PlayerController
     {
         _isUseSkill = false;
 
-        // 스킬을 사용하고 있는 상태가 아닐 때 && 쿨타임이 끝났을 때
         if (_coolDownDict.ContainsKey(_keyCode))
         {
-            if (State != CreatureState.Skill && !_coolDownDict[_keyCode].isCoolDown)
-            {
-                // 다른 조건 체크하기
+            // 스킬을 사용하고 있는 상태가 아닐 때
+            if (State == CreatureState.Skill)
+                return;
 
-                // 패킷 보내기
-                SendSkillPacket(_keyCode);
+            // 쿨타임이 끝났을 때
+            if (_coolDownDict[_keyCode].isCoolDown)
+                return;
 
-                Debug.Log($"스킬 사용! : {_keyCode}");
-            }
+            // 스태미나가 충분할 때
+            if(Stamina < FindSkill(_keyCode).CurLevelStamina)
+                return;
+
+            // 패킷 보내기
+            SendSkillPacket(_keyCode);
+
+            Debug.Log($"스킬 사용! : {_keyCode}");         
         }
     }
 
@@ -857,10 +861,13 @@ public class MyPlayerController : PlayerController
 
     public virtual void OnSkillConfirmed(SkillInfo skillInfo)
     {
-        KeyCode key = (KeyCode)skillInfo.KeyCode;
+        KeyCode key = (KeyCode)skillPacket.SkillInfo.KeyCode;
 
         // 쿨타임 코루틴 시작
-        StartCoroutine(CoInputCooltime(key, skillInfo.CoolTime));
+        StartCoroutine(CoInputCooltime(key, skillPacket.CostInfo.CoolTime));
+
+        // 스태미너 연동
+        Stamina = skillPacket.CostInfo.Stamina;
 
         // 스킬 실행 UI 연동
         PlayerInterface.UseSkill(KeyToUIEnum(key));

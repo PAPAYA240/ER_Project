@@ -7,6 +7,8 @@ using Google.Protobuf.Protocol;
 using ServerCore;
 using UnityEngine;
 using static MonsterController;
+using static UI_PlayerInterface;
+using static UI_SkillBase;
 
 class PacketHandler
 {
@@ -145,6 +147,11 @@ class PacketHandler
         {
             cc.Hp = 0;
             cc.OnDead();
+        }
+
+        if(Managers.Object.MyPlayer != null && Managers.Object.MyPlayer.Id == diePacket.ObjectId)
+        {
+            go.GetComponentInChildren<MyPlayerController>().PlayerInterface.OnDead(diePacket.RespawnTime);
         }
     }
 
@@ -302,5 +309,34 @@ class PacketHandler
             return;
 
         mpc.OnRespawn(respawnPacket);
+    }
+
+    public static void S_SkillLevelUpHandler(PacketSession session, IMessage packet)
+    {
+        S_SkillLevelUp skillLevelUpPacket = packet as S_SkillLevelUp;
+
+        KeyCode key = (KeyCode)skillLevelUpPacket.KeyCode;
+
+        //GameObjects skill = GameObjects.QSkill;
+        //switch (key)
+        //{
+        //    case KeyCode.Q:
+        //        skill = GameObjects.QSkill;
+        //        break;
+        //    case KeyCode.W:
+        //        skill = GameObjects.WSkill;
+        //        break;
+        //    case KeyCode.E:
+        //        skill = GameObjects.ESkill;
+        //        break;
+        //    case KeyCode.R:
+        //        skill = GameObjects.RSkill;
+        //        break;
+        //    case KeyCode.T:
+        //        skill = GameObjects.TSkill;
+        //        break;
+        //}
+
+        Managers.Object.MyPlayer.PlayerInterface.SpecificSkillLevelUp(key);
     }
 }

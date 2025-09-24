@@ -37,6 +37,8 @@ public class UI_TSkill : UI_SkillBase
     }
 
 
+    UI_PlayerInterface ui_PlayerInterface = null;
+
     //Temp
     float _remainCool = 0;
     float _maxCool = 10.0f;
@@ -51,6 +53,10 @@ public class UI_TSkill : UI_SkillBase
 
         BindEvent(gameObject, OnMouseOverEvent, Define.UIEvent.PointerEnter);
         BindEvent(gameObject, OnMouseExitEvent, Define.UIEvent.PointerExit);
+
+        ui_PlayerInterface = GetComponentInParent<UI_PlayerInterface>();
+        if (ui_PlayerInterface == null)
+            Debug.Log("null  == ui_PlayerInterface");
 
         GetText((int)Texts.CooldownTimerText).text = "";
         ActivateLevelUp(false);
@@ -109,6 +115,14 @@ public class UI_TSkill : UI_SkillBase
         _popupUi.CurSkillLevel = newLevel;
 
         OnLevelUp?.Invoke(SkillKeyCode);
+    }
+
+    public override void LevelUpButtonClicked()
+    {
+        if (ui_PlayerInterface != null)
+        {
+            ui_PlayerInterface.TrySkillLevelUp(SkillEnumToKeyCode(SkillKeyCode));
+        }
     }
 
     void ChangeColor(int level, ColorEnum color)

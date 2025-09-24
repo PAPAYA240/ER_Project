@@ -22,7 +22,23 @@ namespace Server.Game
         public PositionInfo PosInfo { get; private set; } = new PositionInfo();
 
         public RotationInfo RotInfo { get; private set; } = new RotationInfo();
-        public StatInfo Stat { get; private set; } = new StatInfo();
+        public StatInfo Stat 
+        {
+            get
+            {
+                if (Info.StatInfo == null)
+                    Info.StatInfo = new StatInfo();
+                return Info.StatInfo;
+            }
+            set
+            {
+                if (Info.StatInfo == null)
+                    Info.StatInfo = new StatInfo();
+
+                if (!Info.StatInfo.Equals(value))
+                    Info.StatInfo.MergeFrom(value);
+            }
+        }
         public Monster Target { get; internal set; }
 
         public float Speed
@@ -37,12 +53,17 @@ namespace Server.Game
             set { Stat.Hp = Math.Clamp(value, 0, Stat.MaxHp); }
         }
 
+        public float Stamina
+        {
+            get { return Stat.Stamina; }
+            set { Stat.Stamina = Math.Clamp(value, 0, Stat.MaxStamina); }
+        }
+
         public CreatureState State
         {
             get { return PosInfo.State; }
             set { PosInfo.State = value; }
         }
-
 
         public GameObject() 
         {
@@ -88,6 +109,7 @@ namespace Server.Game
             room.LeaveGame(Id);
 
             Stat.Hp = Stat.MaxHp;
+            Stat.Stamina = Stat.MaxStamina;
             State = CreatureState.Idle;
             PosInfo.PosX = 0;
             PosInfo.PosY = 0;

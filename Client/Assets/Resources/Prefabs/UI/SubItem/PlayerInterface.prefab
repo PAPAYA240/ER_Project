@@ -1843,6 +1843,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2694098395434363049, guid: 22574d2e1e77b1445901afb348ca7c5f,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LevelUpButtonClicked
+      objectReference: {fileID: 0}
+    - target: {fileID: 2694098395434363049, guid: 22574d2e1e77b1445901afb348ca7c5f,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UI_SkillBase, Assembly-CSharp
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1981,12 +1991,12 @@ PrefabInstance:
     - target: {fileID: 6792997535753926531, guid: a2c8b97f56fe6a0488a53c2f9b765abc,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SkillLevelUp
+      value: LevelUpButtonClicked
       objectReference: {fileID: 0}
     - target: {fileID: 6792997535753926531, guid: a2c8b97f56fe6a0488a53c2f9b765abc,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UI_UltimateSkill, Assembly-CSharp
+      value: UI_SkillBase, Assembly-CSharp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2023,6 +2033,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TSkill
+      objectReference: {fileID: 0}
+    - target: {fileID: 3998822979458439277, guid: 226a17c746a648f4bba2ce36f36712c0,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LevelUpButtonClicked
+      objectReference: {fileID: 0}
+    - target: {fileID: 3998822979458439277, guid: 226a17c746a648f4bba2ce36f36712c0,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UI_SkillBase, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4130409329410076417, guid: 226a17c746a648f4bba2ce36f36712c0,
         type: 3}
@@ -2264,6 +2284,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: QSkill
       objectReference: {fileID: 0}
+    - target: {fileID: 6792997535753926531, guid: b059e6adeb6d7804c880a70c0b518f54,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 6747983083017015507}
+    - target: {fileID: 6792997535753926531, guid: b059e6adeb6d7804c880a70c0b518f54,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LevelUpButtonClicked
+      objectReference: {fileID: 0}
+    - target: {fileID: 6792997535753926531, guid: b059e6adeb6d7804c880a70c0b518f54,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UI_SkillBase, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 8508711024107095708, guid: b059e6adeb6d7804c880a70c0b518f54,
         type: 3}
       propertyPath: m_IsActive
@@ -2274,6 +2309,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b059e6adeb6d7804c880a70c0b518f54, type: 3}
+--- !u!114 &6747983083017015507 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8247207484520392925, guid: b059e6adeb6d7804c880a70c0b518f54,
+    type: 3}
+  m_PrefabInstance: {fileID: 3447032030617204750}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 021ccbb987ca6a44a8ae4c144affe84e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &7548805836183242770 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5121982248879255580, guid: b059e6adeb6d7804c880a70c0b518f54,
@@ -2593,6 +2640,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: WSkill
       objectReference: {fileID: 0}
+    - target: {fileID: 6792997535753926531, guid: b059e6adeb6d7804c880a70c0b518f54,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LevelUpButtonClicked
+      objectReference: {fileID: 0}
+    - target: {fileID: 6792997535753926531, guid: b059e6adeb6d7804c880a70c0b518f54,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UI_SkillBase, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 8508711024107095708, guid: b059e6adeb6d7804c880a70c0b518f54,
         type: 3}
       propertyPath: m_IsActive
@@ -2738,6 +2795,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: ESkill
       objectReference: {fileID: 0}
+    - target: {fileID: 6792997535753926531, guid: b059e6adeb6d7804c880a70c0b518f54,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LevelUpButtonClicked
+      objectReference: {fileID: 0}
+    - target: {fileID: 6792997535753926531, guid: b059e6adeb6d7804c880a70c0b518f54,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UI_SkillBase, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 8508711024107095708, guid: b059e6adeb6d7804c880a70c0b518f54,
         type: 3}
       propertyPath: m_IsActive
@@ -2871,6 +2938,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_text
       value: F
+      objectReference: {fileID: 0}
+    - target: {fileID: 2694098395434363049, guid: 22574d2e1e77b1445901afb348ca7c5f,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: LevelUpButtonClicked
+      objectReference: {fileID: 0}
+    - target: {fileID: 2694098395434363049, guid: 22574d2e1e77b1445901afb348ca7c5f,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UI_SkillBase, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3811875149360239993, guid: 22574d2e1e77b1445901afb348ca7c5f,
         type: 3}

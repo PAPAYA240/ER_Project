@@ -44,6 +44,7 @@ public abstract class UI_SkillBase : UI_Base
     public virtual void SetStaminaCost(int value) { }
     public virtual void SetMaxCool(float value) { }
     public virtual bool IsEnoughStamina(float curStamina) { return false; }
+    public virtual void LevelUpButtonClicked() { }
 
     public KeyCode SkillEnumToKeyCode(SkillEnum skill)
     {
