@@ -15,7 +15,6 @@ namespace Server.Game
 
         protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
         Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
-
         class CoolTime
         {
             public bool isCoolDown;     // 쿨타임이 돌고 있는지 (false : 사용 가능)
@@ -40,7 +39,8 @@ namespace Server.Game
                 return false;
 
             // 스테미나 체크
-
+            if (!CheckStamina(keyCode))
+                return false;
 
             return true;
         }
@@ -52,6 +52,7 @@ namespace Server.Game
             _ = CoInputCooltime(keyCode, FindSkill(keyCode).CurLevelCooldown);
 
             // 스테미나 감소
+            Stamina -= FindSkill(keyCode).CurLevelStamina;
         }
 
         public override void OnDamaged(GameObject attacker, float damage)
@@ -87,6 +88,14 @@ namespace Server.Game
                 return true;
 
             return false;
+        }
+
+        private bool CheckStamina(KeyCode key)
+        {
+            if(Stamina < FindSkill(key).CurLevelStamina)
+                return false;
+
+            return true;
         }
 
         private async Task CoInputCooltime(KeyCode key, float time)

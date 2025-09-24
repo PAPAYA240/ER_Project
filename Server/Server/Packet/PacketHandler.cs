@@ -29,7 +29,8 @@ class PacketHandler
             StatInfo stat = null;
             DataManager.StatDict.TryGetValue(clientSession.MyCharacter, out stat);
             clientSession.MyPlayer.Stat.MergeFrom(stat);
-
+            clientSession.MyPlayer.Hp = clientSession.MyPlayer.Stat.MaxHp;
+            clientSession.MyPlayer.Stamina = clientSession.MyPlayer.Stat.MaxStamina;
             clientSession.MyPlayer.Session = clientSession;
         }
 

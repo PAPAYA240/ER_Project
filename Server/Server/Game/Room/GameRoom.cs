@@ -266,12 +266,15 @@ namespace Server.Game
             S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
 
             KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
+
+            // 스킬 사용이 불가능하면 바로 실패 패킷 전송
             if (!player.CanUseSkill(keyCode))
             {
                 skill.CanUse = false;
                 Broadcast(skill);
                 return; 
             }
+            // 스킬 사용이 가능하면 자원 소모
             else
             {
                 player.CommitSkillUsage(keyCode);
@@ -289,8 +292,12 @@ namespace Server.Game
             skill.SkillInfo = new SkillInfo
             {
                 SkillId = skillPacket.SkillInfo.SkillId,
-                KeyCode = skillPacket.SkillInfo.KeyCode,
-                CoolTime = player.GetCoolTime(keyCode)
+                KeyCode = skillPacket.SkillInfo.KeyCode,              
+            };
+            skill.CostInfo = new CostInfo
+            {
+                CoolTime = player.GetCoolTime(keyCode),
+                Stamina = player.Stat.Stamina,
             };
             Broadcast(skill);
 
