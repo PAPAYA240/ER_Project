@@ -107,40 +107,6 @@ public class TheodoreController : MyPlayerController
         LookAtMouse();
     }
     #endregion
-
-    public void TakeDamage(CreatureController target)
-    {
-        if (Target == target)
-        {
-            target.OnDamaged();
-        }
-        else
-            Debug.Log("타겟이 맞지 않음");
-    }
-
-    protected override void Skill_W()
-    {
-        // 바라보는 방향대로 스크린 호출
-        StartCoroutine(CoPassive());
-        SendFXPacket(_keyCode);
-    }
-
-    #region E Skill
-
-    protected override void Skill_E()
-    {
-        StartCoroutine(ShootSkillE());
-    }
-
-    IEnumerator ShootSkillE()
-    {
-        while (Input.GetKey(KeyCode.E))
-            yield return null;
-
-        PlayAnimation("SKILL_E", 0.1f);
-      
-        LookAtMouse();
-    }
     public override void OnAttackTiming()
     {
         // 평타
@@ -161,6 +127,33 @@ public class TheodoreController : MyPlayerController
         }
     }
 
+    #region W Skill
+    protected override void Skill_W()
+    {
+        // 바라보는 방향대로 스크린 호출
+        StartCoroutine(CoPassive());
+        SendFXPacket(_keyCode);
+        State = CreatureState.Idle;
+    }
+    #endregion
+
+    #region E Skill
+
+    protected override void Skill_E()
+    {
+        StartCoroutine(ShootSkillE());
+    }
+
+    IEnumerator ShootSkillE()
+    {
+        while (Input.GetKey(KeyCode.E))
+            yield return null;
+
+        PlayAnimation("SKILL_E", 0.1f);
+      
+        LookAtMouse();
+    }
+  
     #endregion
 
     #region R Skill

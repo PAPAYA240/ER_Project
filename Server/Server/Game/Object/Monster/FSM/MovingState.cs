@@ -76,7 +76,8 @@ namespace Server.Game.Object.Monster.FSM
             if (monster._path != null && monster._path.Count > 0)
             {
                 monster.Get_MoveAlongPath();
-                monster.BroadcastState(CreatureState.Moving, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
+
+                monster.PushState(CreatureState.Moving, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
             }
         }
 
@@ -99,8 +100,8 @@ namespace Server.Game.Object.Monster.FSM
                 return true;
 
             // 스폰 장소로 돌아가기
-            monster.Get_MoveAlongPath();
-            monster.BroadcastState(CreatureState.Moving, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
+            monster.Get_MoveAlongPath(); 
+            monster.PushState(CreatureState.Moving, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
             return false;
         }
 

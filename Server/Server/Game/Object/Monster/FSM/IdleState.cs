@@ -14,7 +14,7 @@ namespace Server.Game.Object.Monster.FSM
             // 스킬 delay를 위한 것
              _delayTimer = Environment.TickCount64 + (long)(monster._delaySkillAnimationTimer * 1000f);
 
-            monster.BroadcastState(CreatureState.Idle, null, null);
+            monster.PushState(CreatureState.Idle, null, null);
         }
 
         public void Execute(Monster monster)
@@ -63,7 +63,7 @@ namespace Server.Game.Object.Monster.FSM
                 Vector3 dirQ = targetPos - monsterPos;
                 monster.LookAtTarget(dirQ, elapsedTime, false);
 
-                monster.BroadcastState(CreatureState.Idle, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
+                monster.PushState(CreatureState.Idle, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
             }
         }
 

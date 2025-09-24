@@ -30,7 +30,7 @@ namespace Server.Game.Object.Monster.FSM
 
             LookAtTarget(monster);
 
-            monster.BroadcastState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
+            monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
         }
 
         //private float _delayTimer = 0;

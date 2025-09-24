@@ -228,7 +228,9 @@ public class MyPlayerController : PlayerController
             case CreatureState.Skill:
                 SkillBase currentSkill = FindSkill(_keyCode);
                 if (currentSkill != null && currentSkill.SkillData.canMoveDuringCast == true)
+                {
                     GetMouseInputDuringSkill();
+                }
                 break;
         }
 
@@ -777,8 +779,6 @@ public class MyPlayerController : PlayerController
                         }
                     }
                 }
-
-                
             }
         }
     }

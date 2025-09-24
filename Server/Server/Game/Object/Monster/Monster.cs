@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading;
 using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game.Object.Monster.AStar;
@@ -196,7 +197,8 @@ namespace Server.Game.Object.Monster
 
             // 실제 이동
             FollowToTarget(nextWaypoint);
-            BroadcastState(CreatureState.Moving, PosInfo, RotInfo);
+            PushState(CreatureState.Moving, PosInfo, RotInfo);
+
         }
 
         const float MOVE_STEP_INTERPOL = 3.0f;
@@ -302,7 +304,12 @@ namespace Server.Game.Object.Monster
         #endregion
 
         #region 브로드캐스트
-        public void BroadcastState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null)
+        public void PushState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null)
+        {
+            if(Room != null)
+                Room.Push(() => BroadcastState(newState, posInfo, rotInfo, skillData));
+        }
+        private void BroadcastState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null)
         {
             _sequenceId++;
             State = newState;
