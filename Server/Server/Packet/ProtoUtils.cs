@@ -30,7 +30,21 @@ namespace Google.Protobuf.Protocol
             StaminaRegen *= levelUpCnt;
             AttackSpeed *= levelUpCnt;
         }
+
+        public void AddStat(StatInfo other)
+        {
+            Attack += other.Attack;
+            Defense += other.Defense;
+            Hp += other.MaxHp;
+            MaxHp += other.MaxHp;
+            HpRegen += other.HpRegen;
+            Stamina *= other.MaxStamina;
+            MaxStamina += other.MaxStamina;
+            StaminaRegen += other.StaminaRegen;
+            AttackSpeed += other.AttackSpeed;
+        }
     }
+
 
     public sealed partial class RotationInfo
     {

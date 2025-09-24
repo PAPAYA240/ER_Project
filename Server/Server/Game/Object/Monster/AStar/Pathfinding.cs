@@ -55,12 +55,12 @@ namespace Server.Game.Object.Monster.AStar
             _navMeshData = NavMeshExportData.LoadFromJson(navMeshFilePath);
             if (_navMeshData == null)
             {
-                Console.WriteLine("Failed to load NavMesh data. Pathfinding will not work.");
+                Console.WriteLine("실패");
                 return;
             }
 
             BuildTriangleGraph();
-            Console.WriteLine($"NavMesh graph built with {_triangleNodes.Count} triangles.");
+            Console.WriteLine($"NavMesh : {_triangleNodes.Count}");
         }
 
         private static void BuildTriangleGraph()
@@ -255,7 +255,7 @@ namespace Server.Game.Object.Monster.AStar
             var openSet = new List<Node>(); // 탐색할 노드 목록 (우선순위 큐 역할)
             var cameFrom = new Dictionary<Node, Node>(); // 경로를 추적하기 위한 딕셔너리
             var gScore = new Dictionary<Node, float>(); // 시작점에서 현재 노드까지의 실제 비용
-            var fScore = new Dictionary<Node, float>(); // 총 예상 비용 시 부럴ㅇㅈ닞ㄹㅇㄹ묃러;미ㅏㄴ어리;ㅏ젇리ㅏㅓ미;ㅏ얼;ㅣㅏㅁ젇ㄹ
+            var fScore = new Dictionary<Node, float>(); // 총 예상 비용 시
 
             Node startNode = FindNearestNode(start);
             Node targetNode = FindNearestNode(end);

@@ -31,6 +31,9 @@ namespace Server.Game
             _statRegenerator = new StatRegenerator(this);
         }
 
+        public GameObject SkillTarget { get; set; }
+        public KeyCode UsedTargetingSkill { get; set; }
+
         #region Init
         public void MakeDict()
         {
@@ -296,6 +299,12 @@ namespace Server.Game
 
             return result;
         }
+
+        public float GetSkillDamage(KeyCode keyCode)
+        {
+            return _skills[keyCode].GetSkillDamage();
+        }
+
         #endregion
 
         #region Respawn
@@ -354,6 +363,8 @@ namespace Server.Game
             {
                 Stat.Exp -= DataManager.ExpDict[Stat.Level];
                 Stat.Level++;
+                StatInfo statInfo = DataManager.StatGrowthDict[Info.CharType];
+                Stat.AddStat(statInfo);
                 levelUp++;
             }
 

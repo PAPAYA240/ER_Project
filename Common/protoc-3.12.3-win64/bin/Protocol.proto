@@ -41,6 +41,7 @@ enum MsgId {
   S_SKILL_LEVEL_UP = 33;
   C_PLAYER_STATE = 34;
   S_CHANGE_STAT = 35;
+  C_ATTACK_SKILL_TARGET = 36;
 }
 
 enum CreatureState{
@@ -449,6 +450,8 @@ message WeaponInfo{
 message SkillInfo{
 	int32 skillId = 1;
 	int32 keyCode = 2;
+	float coolTime = 3;
+	int32 targetId = 4;
 }
 
 message SkillHitbox{
@@ -472,4 +475,8 @@ message SkillHitbox{
 message CostInfo{
 	float coolTime = 1;
 	float stamina = 2;
+}
+
+message C_AttackSkillTarget{
+	bool attack = 1;
 }

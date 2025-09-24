@@ -72,10 +72,10 @@ public class RozziController : MyPlayerController
         }
     }
 
-    protected override void GetMouseInput()
+    protected override void GetMouseInput(int mouseButton)
     {
         if (!_canDash && !_isDashing)
-            base.GetMouseInput();
+            base.GetMouseInput(mouseButton);
 
         if (Input.GetMouseButton(1) && _canDash)
             StartDash();
@@ -185,38 +185,6 @@ public class RozziController : MyPlayerController
         while (true)
         {
             // 마우스 우클릭 시 -> 목적지 설정
-            if (Input.GetMouseButton(1))
-            {
-                RaycastHit hit;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
-
-                Vector3 targetPos;
-
-                targetPos = hit.point;
-
-                if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
-                {
-                    _agent.SetDestination(navHit.position);
-
-                    _moveKeyPressed = true;
-                }
-            }
-
-            if (_agent == null)
-                break;
-
-            // 이동
-            if (!_agent.pathPending)
-            {
-                // 목적지 도착
-                if (_agent.remainingDistance <= _agent.stoppingDistance)
-                {
-                    _moveKeyPressed = false;
-                }
-
-                UpdateTransform();
-            }
 
             if (Time.time - startTimte >= animLength)
             {

@@ -26,6 +26,7 @@ class PacketHandler
             clientSession.MyPlayer.Info.PosInfo.PosY = 0;
             clientSession.MyPlayer.Info.Player = new PlayerInfo();
             clientSession.MyPlayer.Info.Player.CharType = clientSession.MyCharacter;
+            clientSession.MyPlayer.Info.CharType = clientSession.MyCharacter;
             clientSession.MyPlayer.MakeDict();
 
             StatInfo stat = null;
@@ -221,5 +222,20 @@ class PacketHandler
         // 검증 필요하면 추가하기..
         Player player = clientSession.MyPlayer;
         player.State = statePacket.State;
+    }
+
+    public static void C_AttackSkillTargetHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_AttackSkillTarget atkSkillTargetPkt = packet as C_AttackSkillTarget;
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleAttackSkillTarget, player, atkSkillTargetPkt);
     }
 }

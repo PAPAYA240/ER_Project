@@ -18,7 +18,6 @@ namespace Server.Data
 
         public static Dictionary<int, int> ExpDict { get; private set; } = new Dictionary<int, int>();
         public static Dictionary<CharacterType, StatInfo> StatGrowthDict { get; private set; } = new Dictionary<CharacterType, StatInfo>();
-
         public static Dictionary<CharacterType, Dictionary<KeyCode, SkillData>> SkillDict { get; private set; } 
             = new Dictionary<CharacterType, Dictionary<KeyCode, SkillData>>();
 

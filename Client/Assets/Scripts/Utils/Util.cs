@@ -4,6 +4,20 @@ using UnityEngine;
 
 public class Util
 {
+    public static Transform FindChildByName(Transform parent, string childName)
+    {
+        foreach (Transform child in parent)
+        {
+            if (child.name == childName)
+                return child;
+
+            Transform found = FindChildByName(child, childName);
+            if (found != null)
+                return found;
+        }
+        return null;
+    }
+
     public static T GetOrAddComponent<T>(GameObject go) where T : UnityEngine.Component
     {
         T component = go.GetComponent<T>();
