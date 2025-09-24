@@ -78,7 +78,7 @@ public class UI_Minimap : UI_Base
 
         UI_MinimapCharIcon ui_MinimapCharIcon = go.GetComponent<UI_MinimapCharIcon>();
         ui_MinimapCharIcon.Type = iconType;
-        ui_MinimapCharIcon.SetCharIcon(pc.ObjInfo.CharType);
+        ui_MinimapCharIcon.SetCharIcon(pc.ObjInfo.Player.CharType);
         ui_MinimapCharIcon.Target = pc;
     }
 

@@ -23,22 +23,23 @@ namespace Server.Game.Object.Monster.FSM
             if (skillData == null)
                 return;
 
-           if(monster.Info.MonsterType == MonsterType.Gamma)
+           if(monster.Info.Monster.MonsterType == MonsterType.Gamma)
                DataManager.MonsterSkillDict.TryGetValue(MonsterSkill.MsGammaSkill2, out skillData);
 
             _skillEndTime = Environment.TickCount64 + (long)(skillData.skillDuration * 1000f);
             monster._delaySkillAnimationTimer = skillData.skillCoolTime;
-            monster.BroadcastState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
+
+            monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
         }
 
         public void Execute(Monster monster)
         {
             bool timeout = Environment.TickCount64 >= _skillEndTime;
 
-            if (monster.Info.MonsterType == MonsterType.Drone)
+            if (monster.Info.Monster.MonsterType == MonsterType.Drone)
                 LookAtTarget(monster);
 
-            monster.BroadcastState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
+            monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
 
             if (timeout)
                 monster.ChangeState(FSMManager.Instance.GetIdleState());

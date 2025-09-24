@@ -127,7 +127,7 @@ public class UI_CommonSkill : UI_SkillBase
             ChangeColor(i, ColorEnum.Gray);
     }
 
-
+    //버튼 눌리면 호출되는 함수를 새로 만들어야 될듯?
     public override void SkillLevelUp()
     {
         if (_skillLevel == _maxSkillLevel)
@@ -139,6 +139,14 @@ public class UI_CommonSkill : UI_SkillBase
         _popupUi.CurSkillLevel = newLevel;
 
         OnLevelUp?.Invoke(SkillKeyCode);
+    }
+
+    public override void LevelUpButtonClicked()
+    {
+        if(ui_PlayerInterface != null)
+        {
+            ui_PlayerInterface.TrySkillLevelUp(SkillEnumToKeyCode(SkillKeyCode));
+        }
     }
 
     void ChangeColor(int level, ColorEnum color)

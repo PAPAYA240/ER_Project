@@ -18,11 +18,67 @@ namespace Server.Game
 
         public GameRoom Room { get; set; }
 
-        public ObjectInfo Info { get; set; } = new ObjectInfo();
-        public PositionInfo PosInfo { get; private set; } = new PositionInfo();
+        ObjectInfo _objectInfo = new ObjectInfo()
+        {
+            StatInfo = new StatInfo(),
+            PosInfo = new PositionInfo(),
+            RotInfo = new RotationInfo() { Qw = 1f }
+        };
 
-        public RotationInfo RotInfo { get; private set; } = new RotationInfo();
-        public StatInfo Stat { get; private set; } = new StatInfo();
+        public ObjectInfo Info
+        {
+            get { return _objectInfo; }
+            set { _objectInfo = value; PosInfo = value.PosInfo; RotInfo = value.RotInfo; Stat = value.StatInfo; }
+        }
+
+        public PositionInfo PosInfo
+        {
+            get { return Info.PosInfo; }
+            set
+            {
+                if (Info.PosInfo.Equals(value))
+                    return;
+
+                PosInfo = value;
+                State = value.State;
+            }
+        }
+
+        public RotationInfo RotInfo
+        {
+            get { return Info.RotInfo; }
+            set
+            {
+                if (value == null)
+                    return;
+
+                if (Info.RotInfo.Equals(value))
+                    return;
+
+                Info.RotInfo.Qx = value.Qx;
+                Info.RotInfo.Qy = value.Qy;
+                Info.RotInfo.Qz = value.Qz;
+                Info.RotInfo.Qw = value.Qw;
+            }
+        }
+
+        public StatInfo Stat 
+        {
+            get
+            {
+                if (Info.StatInfo == null)
+                    Info.StatInfo = new StatInfo();
+                return Info.StatInfo;
+            }
+            set
+            {
+                if (Info.StatInfo == null)
+                    Info.StatInfo = new StatInfo();
+
+                if (!Info.StatInfo.Equals(value))
+                    Info.StatInfo.MergeFrom(value);
+            }
+        }
         public Monster Target { get; internal set; }
 
         public float Speed
@@ -37,18 +93,16 @@ namespace Server.Game
             set { Stat.Hp = Math.Clamp(value, 0, Stat.MaxHp); }
         }
 
+        public float Stamina
+        {
+            get { return Stat.Stamina; }
+            set { Stat.Stamina = Math.Clamp(value, 0, Stat.MaxStamina); }
+        }
+
         public CreatureState State
         {
             get { return PosInfo.State; }
             set { PosInfo.State = value; }
-        }
-
-
-        public GameObject() 
-        {
-            Info.PosInfo = PosInfo;
-            Info.RotInfo = RotInfo;
-            Info.StatInfo = Stat;
         }
 
         public virtual void Update()
@@ -88,6 +142,7 @@ namespace Server.Game
             room.LeaveGame(Id);
 
             Stat.Hp = Stat.MaxHp;
+            Stat.Stamina = Stat.MaxStamina;
             State = CreatureState.Idle;
             PosInfo.PosX = 0;
             PosInfo.PosY = 0;

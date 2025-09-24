@@ -44,6 +44,7 @@ public abstract class UI_SkillBase : UI_Base
     public virtual void SetStaminaCost(int value) { }
     public virtual void SetMaxCool(float value) { }
     public virtual bool IsEnoughStamina(float curStamina) { return false; }
+    public virtual void LevelUpButtonClicked() { }
 
     public KeyCode SkillEnumToKeyCode(SkillEnum skill)
     {
@@ -81,7 +82,7 @@ public abstract class UI_SkillBase : UI_Base
     {
         _popupGameObject = Managers.Resource.Instantiate("UI/Popup/SkillInfoPopup");
         _popupUi = _popupGameObject.GetComponent<UI_CharSkillInfoPopup>();
-        _popupUi.SetSkill(Managers.Object.MyPlayer.ObjInfo.CharType, SkillEnumToKeyCode(SkillKeyCode));
+        _popupUi.SetSkill(Managers.Object.MyPlayer.ObjInfo.Player.CharType, SkillEnumToKeyCode(SkillKeyCode));
         PopupActivate(false);
     }
 

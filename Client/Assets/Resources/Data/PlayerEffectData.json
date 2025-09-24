@@ -1,6 +1,19 @@
 {
   "effects": {
     "Theodore": {
+      "Z": [
+        {
+          "prefabName": "FX_Attack",
+          "target": "Shoot",
+          "duration": 0.5,
+          "delayTime": 0,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      ],
       "Q": [
         {
           "prefabName": "FX_Skill1_OutCircle",

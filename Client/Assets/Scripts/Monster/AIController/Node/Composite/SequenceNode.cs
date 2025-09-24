@@ -10,7 +10,7 @@ public class SequenceNode : CompositeNode
         MonsterController monsterController = obj.GetComponentInChildren<MonsterController>();
         if (monsterController)
         {
-            if (monsterController.ObjInfo.MonsterType == MonsterType.Alpha)
+            if (monsterController.ObjInfo.Monster.MonsterType == MonsterType.Alpha)
             {
                 if (_currentIdx >= children.Count)
                     _currentIdx = 0;

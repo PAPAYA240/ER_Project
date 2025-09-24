@@ -6,7 +6,7 @@ using System.Text;
 public class Skill
 {
     SkillData _skillData = new SkillData();
-    public virtual SkillData SkillData
+    public SkillData SkillData
     {
         get { return _skillData; }
         set
@@ -20,7 +20,7 @@ public class Skill
 
     public int CurLevel { get; set; }
     public int MaxLevel { get { return SkillData.maxLevel; } }
-    public float Cooldown { get; set; }
+
     public float MaxCooldown { get; set; }
     public float CurLevelCooldown
     {
@@ -30,6 +30,21 @@ public class Skill
                 return SkillData.levels[CurLevel].cooldown;
             return SkillData.levels[1].cooldown;
         }
+    }
+
+    public float CurLevelStamina
+    {
+        get
+        {
+            if (CurLevel > 0 && CurLevel <= MaxLevel)
+                return SkillData.levels[CurLevel].staminaCost;
+            return SkillData.levels[1].staminaCost;
+        }
+    }
+
+    public float GetSkillDamage()
+    {
+        return _skillData.levels[CurLevel].damage;
     }
 }
 

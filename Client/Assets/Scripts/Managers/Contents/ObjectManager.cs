@@ -13,10 +13,11 @@ using UnityEditor.PackageManager.UI;
 public class ObjectManager
 {
 	public MyPlayerController MyPlayer { get; set; }
-	Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
+	private Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
 
     public Define.Character Character { get; set; } = Define.Character.Rozzi;
 
+    #region Type ID
     public static GameObjectType GetObjectTypeById(int id)
 	{
 		int type = (id >> 24) & 0x7F;
@@ -28,86 +29,105 @@ public class ObjectManager
         BaseController bs = go.GetComponent<BaseController>();
         return GetObjectTypeById(bs.Id);
     }
+    #endregion
 
-	public void Add(ObjectInfo info, bool myPlayer = false)
+    #region Add
+    public void Add(ObjectInfo info, bool myPlayer = false)
 	{
 		GameObjectType objectType = GetObjectTypeById(info.ObjectId);
-
-        if (objectType == GameObjectType.Player)
+        switch (objectType)
         {
-            if (myPlayer)
-            {
-                GameObject go = Managers.Resource.Instantiate($"Creature/My{info.CharType}");
-                go.name = info.Name;
-                _objects.Add(info.ObjectId, go);
-
-                MyPlayer = go.GetComponent<MyPlayerController>();
-                MyPlayer.ObjInfo = info;
-                MyPlayer.Id = info.ObjectId;
-                MyPlayer.SyncPos();                
-                MyPlayer.Stat.Hp = info.StatInfo.MaxHp;
-                MyPlayer.Stat.Stamina = info.StatInfo.MaxStamina;
-                MyPlayer.ManualInit();
-            }
-            else
-            {
-                GameObject go = Managers.Resource.Instantiate($"Creature/{info.CharType}");
-                go.name = info.Name;
-                _objects.Add(info.ObjectId, go);
-
-                PlayerController pc = go.GetComponent<PlayerController>();
-                pc.ObjInfo = info;
-                pc.Id = info.ObjectId;
-                pc.SyncPos();                
-                pc.Stat.Hp = info.StatInfo.MaxHp;
-                pc.Stat.Stamina = info.StatInfo.MaxStamina;
-                Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.TeamPlayer, pc);
-            }
-        }
-        else if (objectType == GameObjectType.Monster)
-        {
-            GameObject go = Managers.Resource.Instantiate($"Creature/Monster/{info.MonsterType}");
-            go.name = info.Name;
-            _objects.Add(info.ObjectId, go);
-
-            MonsterController mc = go.GetComponentInChildren<MonsterController>();
-            mc.ObjInfo = info;
-            mc.Id = info.ObjectId;
-            mc.PosInfo = info.PosInfo;
-            mc.Stat = info.StatInfo;
-            mc.Stat.Hp = info.StatInfo.MaxHp;
-            mc._monsterType = info.MonsterType;
-            mc.SyncPos();
-        }
-
-        else if (objectType == GameObjectType.Projectile)
-        {
-            //GameObject go = Managers.Resource.Instantiate("Creature/Arrow");
-            //go.name = "Arrow";
-            //_objects.Add(info.ObjectId, go);
-
-            //ArrowController ac = go.GetComponent<ArrowController>();
-            //ac.PosInfo = info.PosInfo;
-            //ac.Stat = info.StatInfo;
-            //ac.SyncPos();
-        }
-        else if (objectType == GameObjectType.Environment)
-        {
-            GameObject go = Managers.Resource.Instantiate($"Env/{info.EnvType}");
-            go.name = info.Name;
-            _objects.Add(info.ObjectId, go);
-
-            EnvironmentObjController ec = go.GetComponent<EnvironmentObjController>();
-            ec.ObjInfo = info;
-            ec.Id = info.ObjectId;
-            ec.PosInfo = info.PosInfo;
-            ec.Stat = info.StatInfo;
-            if (Enum.TryParse(info.Name, out EnvType envEnum))
-                ec._envType = envEnum;
-            ec.SyncPos();
+            case GameObjectType.Player:
+                AddPlayer(info, myPlayer);
+                break;
+            case GameObjectType.Monster:
+                AddMonster(info);
+                break;
+            case GameObjectType.Projectile:
+                AddProjectile(info);
+                break;
+            case GameObjectType.Environment:
+                AddEnvironment(info);
+                break;
         }
     }
 
+    private void AddPlayer(ObjectInfo info, bool myPlayer)
+    {
+        if (myPlayer)
+        {
+            GameObject go = Managers.Resource.Instantiate($"Creature/My{info.Player.CharType}");
+            go.name = info.Name;
+            _objects.Add(info.ObjectId, go);
+
+            MyPlayer = go.GetComponent<MyPlayerController>();
+            MyPlayer.ObjInfo = info;
+            MyPlayer.Id = info.ObjectId;
+            MyPlayer.SyncPos();
+            MyPlayer.Stat.Hp = info.StatInfo.MaxHp;
+            MyPlayer.Stat.Stamina = info.StatInfo.MaxStamina;
+            MyPlayer.ManualInit();
+        }
+        else
+        {
+            GameObject go = Managers.Resource.Instantiate($"Creature/{info.Player.CharType}");
+            go.name = info.Name;
+            _objects.Add(info.ObjectId, go);
+
+            PlayerController pc = go.GetComponent<PlayerController>();
+            pc.ObjInfo = info;
+            pc.Id = info.ObjectId;
+            pc.SyncPos();
+            pc.Stat.Hp = info.StatInfo.MaxHp;
+            pc.Stat.Stamina = info.StatInfo.MaxStamina;
+
+            Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.TeamPlayer, pc);
+        }
+    }
+    private void AddMonster(ObjectInfo info)
+    {
+        GameObject go = Managers.Resource.Instantiate($"Creature/Monster/{info.Monster.MonsterType}");
+        go.name = info.Name;
+        _objects.Add(info.ObjectId, go);
+
+        MonsterController mc = go.GetComponentInChildren<MonsterController>();
+        mc.ObjInfo = info;
+        mc.Id = info.ObjectId;
+        mc.PosInfo = info.PosInfo;
+        mc.Stat = info.StatInfo;
+        mc.Stat.Hp = info.StatInfo.MaxHp;
+        mc._monsterType = info.Monster.MonsterType;
+        mc.SyncPos();
+    }
+    private void AddProjectile(ObjectInfo info)
+    {
+        //GameObject go = Managers.Resource.Instantiate("Creature/Arrow");
+        //go.name = "Arrow";
+        //_objects.Add(info.ObjectId, go);
+
+        //ArrowController ac = go.GetComponent<ArrowController>();
+        //ac.PosInfo = info.PosInfo;
+        //ac.Stat = info.StatInfo;
+        //ac.SyncPos();
+    }
+    private void AddEnvironment(ObjectInfo info)
+    {
+        GameObject go = Managers.Resource.Instantiate($"Env/{info.Env.EnvType}");
+        go.name = info.Name;
+        _objects.Add(info.ObjectId, go);
+
+        EnvController ec = go.GetComponent<EnvController>();
+        ec.ObjInfo = info;
+        ec.Id = info.ObjectId;
+        ec.PosInfo = info.PosInfo;
+        ec.Stat = info.StatInfo;
+        if (Enum.TryParse(info.Name, out EnvType envEnum))
+            ec._envType = envEnum;
+        ec.SyncPos();
+    }
+    #endregion
+
+    #region Utils
     public void SetObjectVisible()
     {
         if (MyPlayer == null)
@@ -180,7 +200,6 @@ public class ObjectManager
 			if (condition.Invoke(obj))
 				return obj;
 		}
-
 		return null;
 	}
 
@@ -191,4 +210,5 @@ public class ObjectManager
         _objects.Clear();
 		MyPlayer = null;
 	}
+    #endregion
 }

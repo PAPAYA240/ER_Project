@@ -29,11 +29,16 @@ namespace Server.Game.Object.Monster.FSM
             monster._delaySkillAnimationTimer = skillData.skillCoolTime;
 
             LookAtTarget(monster);
-            monster.BroadcastState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
+
+            monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
         }
 
+        //private float _delayTimer = 0;
         public void Execute(Monster monster)
         {
+           // if (Environment.TickCount64 < _delayTimer)
+           //    return;
+
             bool clientEnded = _isClientEndReceived;
 
             if (Environment.TickCount64 >= _skillEndTime)
@@ -86,6 +91,9 @@ namespace Server.Game.Object.Monster.FSM
             _skillEndTime = 0; 
             _lastUpdateTime = 0;
             _isClientEndReceived = false;
-    }
+
+            //_delayTimer = Environment.TickCount64 + (long)(monster._delaySkillAnimationTimer * 1000f);
+
+        }
     }
 }

@@ -18,7 +18,6 @@ namespace Server.Data
 
         public static Dictionary<int, int> ExpDict { get; private set; } = new Dictionary<int, int>();
         public static Dictionary<CharacterType, StatInfo> StatGrowthDict { get; private set; } = new Dictionary<CharacterType, StatInfo>();
-
         public static Dictionary<CharacterType, Dictionary<KeyCode, SkillData>> SkillDict { get; private set; } 
             = new Dictionary<CharacterType, Dictionary<KeyCode, SkillData>>();
 
@@ -32,7 +31,7 @@ namespace Server.Data
 
         public static Dictionary<string, MonsterData> MonsterDict { get; private set; } = new Dictionary<string, MonsterData>();
         public static Dictionary<MonsterSkill, MonsterSkillData> MonsterSkillDict { get; private set; } = new Dictionary<MonsterSkill, MonsterSkillData>();
-        public static Dictionary<EnvType, ObjectInfo> EnvironmentObjDict { get; private set; } = new Dictionary<EnvType, ObjectInfo>();
+        public static Dictionary<EnvType, EnvInfo> EnvironmentObjDict { get; private set; } = new Dictionary<EnvType, EnvInfo>();
 
         public static Dictionary<int, int> PhaseDict { get; private set; } = new Dictionary<int, int>();
         public static Dictionary<int, int> RespawnDict { get; private set; } = new Dictionary<int, int>();
@@ -53,7 +52,7 @@ namespace Server.Data
             MonsterSkillDict = LoadJson<Data.MonsterSkillDict, MonsterSkill, Data.MonsterSkillData>("MonsterData/MonsterSkillData", "monster").MakeDict();
 
             // For EnvironmentData
-            EnvironmentObjDict = LoadJson<Data.EnvObjectData, EnvType, ObjectInfo>("Env/EnvData", "monster").MakeDict();
+            EnvironmentObjDict = LoadJson<Data.EnvObjectData, EnvType, EnvInfo>("Env/EnvData", "monster").MakeDict();
 
             // For System
             PhaseDict = LoadJson<Data.PhaseData, int, int>("PhaseData", "player").MakeDict();

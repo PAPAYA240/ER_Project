@@ -105,6 +105,8 @@ public class MyPlayerController : PlayerController
     protected GameObjectType _targetType;
     protected Vector3 _finalPos;
 
+    protected int SkillTargetId { get; set; }
+
     // State : Rest
     protected bool _isResting = false;
     protected Coroutine _coRest;
@@ -177,9 +179,9 @@ public class MyPlayerController : PlayerController
         GameObject go = Managers.Resource.Instantiate("UI/Scene/PlayerHUD");
         go.transform.SetParent(gameObject.transform);
         PlayerInterface = go.GetComponentInChildren<UI_PlayerInterface>();
-        PlayerInterface.CharacterCode = CharTypeToCharCode(ObjInfo.CharType);
-        PlayerInterface.CharacterName = Enum.GetName(typeof(CharacterType), ObjInfo.CharType);
-        PlayerInterface.WeaponCode = CharTypeToWeaponCode(ObjInfo.CharType);
+        PlayerInterface.CharacterCode = CharTypeToCharCode(ObjInfo.Player.CharType);
+        PlayerInterface.CharacterName = Enum.GetName(typeof(CharacterType), ObjInfo.Player.CharType);
+        PlayerInterface.WeaponCode = CharTypeToWeaponCode(ObjInfo.Player.CharType);
         PlayerInterface.Init();
         PlayerInterface.OnCharSkillLevelUpAction += OnCharSkillLevelUp;
         
@@ -220,6 +222,8 @@ public class MyPlayerController : PlayerController
         if (State == CreatureState.Dead)
             return;
 
+        SkillTargetId = -1;
+
         switch (State)
         {
             case CreatureState.Idle:
@@ -234,7 +238,9 @@ public class MyPlayerController : PlayerController
             case CreatureState.Skill:
                 SkillBase currentSkill = FindSkill(_keyCode);
                 if (currentSkill != null && currentSkill.SkillData.canMoveDuringCast == true)
-                    GetMouseInput(1);
+                {
+                    GetMouseInputDuringSkill();
+                }
                 break;
         }
 
@@ -316,6 +322,18 @@ public class MyPlayerController : PlayerController
         }
     }
 
+    // 마우스 바라보기
+    protected void LookAtMouse()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Vector3 direction = (hit.point - transform.position).normalized;
+            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+            transform.rotation = targetRotation;
+        }
+    }
+
     protected override void UpdateAttack()
     {
         if(Target == null || !IsAttackable(Target))
@@ -331,7 +349,6 @@ public class MyPlayerController : PlayerController
     protected override void UpdateRest()
     {
         // TODO : 쉬는 동안 자원 회복
-
     }
 
     protected override void UpdateDead()
@@ -340,7 +357,7 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region State : Moving
-    protected void LookAtTarget(Vector3 targetPos, bool snapToTarget = false, float speed = 10.0f)
+    protected void LookAtTarget(Vector3 targetPos, bool snapToTarget = false, float speed = 100.0f)
     {
         // 타겟을 바라보도록 방향 조정
         // snapToTarget : Target을 바로 바라볼지
@@ -473,7 +490,7 @@ public class MyPlayerController : PlayerController
         {
             GameObject hitObject = sphereHit.collider.gameObject;
             CreatureController cc = hitObject.GetComponent<CreatureController>();
-            if (cc.Id != Id && cc.IsAttackable())
+            if (IsAttackable(hitObject))
             {
                 Target = gameObject = hitObject;
                 _targetType = ObjectManager.GetObjectTypeById(cc.ObjInfo.ObjectId);
@@ -519,8 +536,7 @@ public class MyPlayerController : PlayerController
                 GameObject go = Managers.Object.FindById(num);
                 if (go != null)
                 {
-                    PlayerController pc = go.GetComponent<PlayerController>();
-                    if (pc.ObjInfo.Team != ObjInfo.Team && pc.IsAttackable())
+                    if (IsAttackable(go))
                     {
                         float distance = Vector3.Distance(go.transform.position, transform.position);
                         if (distance <= minDistance)
@@ -636,28 +652,28 @@ public class MyPlayerController : PlayerController
     #region Input
     protected virtual void UpdateKeyInput()
     {
-        // LeftCtrl + Q/W/E/R : 스킬 레벨업
-        if (Input.GetKey(KeyCode.LeftControl) && PlayerInterface.CanLevelUp() == true)
+        // LeftCtrl + Q/W/E/R/T : 스킬 레벨업
+        if (Input.GetKey(KeyCode.LeftControl))
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                PlayerInterface.SpecificSkillLevelUp(GameObjects.QSkill);
+                PlayerInterface.TrySkillLevelUp(KeyCode.Q);
             }
             else if (Input.GetKeyDown(KeyCode.W))
             {
-                PlayerInterface.SpecificSkillLevelUp(GameObjects.WSkill);
+                PlayerInterface.TrySkillLevelUp(KeyCode.W);
             }
             else if (Input.GetKeyDown(KeyCode.E))
             {
-                PlayerInterface.SpecificSkillLevelUp(GameObjects.ESkill);
+                PlayerInterface.TrySkillLevelUp(KeyCode.E);
             }
             else if (Input.GetKeyDown(KeyCode.R))
             {
-                PlayerInterface.SpecificSkillLevelUp(GameObjects.RSkill);
+                PlayerInterface.TrySkillLevelUp(KeyCode.R);
             }
             else if (Input.GetKeyDown(KeyCode.T))
             {
-                PlayerInterface.SpecificSkillLevelUp(GameObjects.TSkill);
+                PlayerInterface.TrySkillLevelUp(KeyCode.T);
             }
         }
         // Q, W, E, R, T, D, F
@@ -790,8 +806,30 @@ public class MyPlayerController : PlayerController
                         }
                     }
                 }
+            }
+        }
+    }
 
-                
+    protected virtual void GetMouseInputDuringSkill()
+    {
+        if (_agent == null)
+            return;
+
+        if (Input.GetMouseButton(1))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
+
+            Vector3 targetPos;
+
+            targetPos = hit.point;
+
+            if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
+            {
+                _agent.SetDestination(navHit.position);
+
+                _moveKeyPressed = true;
             }
         }
     }
@@ -815,18 +853,24 @@ public class MyPlayerController : PlayerController
     {
         _isUseSkill = false;
 
-        // 스킬을 사용하고 있는 상태가 아닐 때 && 쿨타임이 끝났을 때
         if (_coolDownDict.ContainsKey(_keyCode))
         {
-            if (State != CreatureState.Skill && !_coolDownDict[_keyCode].isCoolDown)
-            {
-                // 다른 조건 체크하기
+            // 스킬을 사용하고 있는 상태가 아닐 때
+            if (State == CreatureState.Skill)
+                return;
 
-                // 패킷 보내기
-                SendSkillPacket(_keyCode);
+            // 쿨타임이 끝났을 때
+            if (_coolDownDict[_keyCode].isCoolDown)
+                return;
 
-                Debug.Log($"스킬 사용! : {_keyCode}");
-            }
+            // 스태미나가 충분할 때
+            if(Stamina < FindSkill(_keyCode).CurLevelStamina)
+                return;
+
+            // 패킷 보내기
+            SendSkillPacket(_keyCode);
+
+            Debug.Log($"스킬 사용! : {_keyCode}");         
         }
     }
 
@@ -854,12 +898,15 @@ public class MyPlayerController : PlayerController
         return _coolDownDict[key].coolTime;
     }
 
-    public void OnSkillConfirmed(SkillInfo skillInfo)
+    public virtual void OnSkillConfirmed(S_Skill skillPacket)
     {
-        KeyCode key = (KeyCode)skillInfo.KeyCode;
+        KeyCode key = (KeyCode)skillPacket.SkillInfo.KeyCode;
 
         // 쿨타임 코루틴 시작
-        StartCoroutine(CoInputCooltime(key, skillInfo.CoolTime));
+        StartCoroutine(CoInputCooltime(key, skillPacket.CostInfo.CoolTime));
+
+        // 스태미너 연동
+        Stamina = skillPacket.CostInfo.Stamina;
 
         // 스킬 실행 UI 연동
         PlayerInterface.UseSkill(KeyToUIEnum(key));
@@ -891,7 +938,7 @@ public class MyPlayerController : PlayerController
 
     protected void MakeSkillDict()
     {
-        Dictionary<KeyCode, Data.SkillData> skills = DataManager.SkillDict[ObjInfo.CharType];
+        Dictionary<KeyCode, Data.SkillData> skills = DataManager.SkillDict[ObjInfo.Player.CharType];
 
         foreach(var data in skills)
         {
@@ -1171,6 +1218,18 @@ public class MyPlayerController : PlayerController
             coroutine = null;
         }
     }
+
+    protected Vector3 GetCursorPos()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            return new Vector3(hit.point.x, 0, hit.point.z); // 충돌 지점이 곧 월드 좌표
+        }
+        return new Vector3(-1, -1, -1);
+    }
+
     #endregion
 
     #region Packet
@@ -1184,6 +1243,10 @@ public class MyPlayerController : PlayerController
             {
                 targetId = monster.ObjInfo.ObjectId;
             }
+        }
+        else
+        {
+            targetId = SkillTargetId;
         }
 
         C_Skill skillPacket = new C_Skill()

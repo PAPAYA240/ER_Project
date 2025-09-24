@@ -62,24 +62,18 @@ public class MonsterSaverEditor : MonoBehaviour
     }
 }
 
-
-
-
 [System.Serializable]
 public class EnvSaveData
 {
     public EnvType envType;
-    public float xPos;
-    public float yPos;
-    public float zPos;
+    public Vector3 posInfo;
+    public Quaternion rotInfo;
 
-    // 생성자
-    public EnvSaveData(EnvType type, Vector3 pos)
+    public EnvSaveData(EnvType type, Vector3 pos, Quaternion rot)
     {
         this.envType = type;
-        this.xPos = pos.x;
-        this.yPos = pos.y;
-        this.zPos = pos.z;
+        this.posInfo = pos;
+        this.rotInfo = rot;
     }
 }
 
@@ -98,15 +92,17 @@ public class EnvSaverEditor : MonoBehaviour
     [MenuItem("Tools/Save EnvObject Data")]
     public static void SaveMonsterSaveData()
     {
-        EnvironmentObjController[] monstersInScene = FindObjectsOfType<EnvironmentObjController>();
+        EnvController[] monstersInScene = FindObjectsOfType<EnvController>();
 
         EnvList envList = new EnvList();
         envList.EnvObjects = new List<EnvSaveData>();
 
-        foreach (EnvironmentObjController envInfo in monstersInScene)
+        foreach (EnvController envInfo in monstersInScene)
         {
             Vector3 pos = envInfo.transform.position;
-            EnvSaveData data = new EnvSaveData(envInfo._envType, pos);
+            Quaternion rot = envInfo.transform.rotation;
+
+            EnvSaveData data = new EnvSaveData(envInfo._envType, pos, rot);
             envList.EnvObjects.Add(data);
         }
 
@@ -114,7 +110,7 @@ public class EnvSaverEditor : MonoBehaviour
 
         string path = Application.dataPath + "/Resources/Data/Env/SpawnEnvData.json";
         File.WriteAllText(path, jsonData);
-        Debug.Log("몬스터 데이터가 " + path + " 경로에 성공적으로 저장되었습니다.");
+        Debug.Log("환경 데이터가 " + path + " 경로에 성공적으로 저장되었습니다.");
     }
 }
 
