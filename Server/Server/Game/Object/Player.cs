@@ -47,20 +47,6 @@ namespace Server.Game
         {
             UpdateController();
             CheckUpdateStat();
-        public bool CanUseSkill(KeyCode keyCode)
-        {
-            if (_skills[keyCode].CurLevel == 0)
-                return false;
-
-            // 쿨타임 체크
-            if (!CheckCoolTime(keyCode))
-                return false;
-
-            // 스테미나 체크
-            if (!CheckStamina(keyCode))
-                return false;
-
-            return true;
         }
 
         protected virtual void UpdateController()
@@ -149,6 +135,9 @@ namespace Server.Game
         #region Skill
         public bool CanUseSkill(KeyCode keyCode)
         {
+            if (_skills[keyCode].CurLevel == 0)
+                return false;
+
             // 쿨타임 체크
             if (!CheckCoolTime(keyCode))
                 return false;
