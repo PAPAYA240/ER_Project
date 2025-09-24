@@ -118,7 +118,7 @@ namespace Server.Game.Object.Monster
             return distanceToTarget <= _skillRange;
         }
 
-        const float _activeRange = 10f;
+        const float _activeRange = 30f;
         // 다시 스폰 장소로 돌아가는가?
         public bool IsReturnSpawn()
         {
@@ -159,9 +159,6 @@ namespace Server.Game.Object.Monster
         public void Get_CalculatePath(Vector3 targetPos) =>CalculatePath(targetPos);
         private void CalculatePath(Vector3 targetPos)
         {
-            //if (PlayerTarget == null || PlayerTarget.Room != Room)
-            //    return;
-
             Vector3 startPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
             _path = Pathfinding.FindPath(startPos, targetPos);
             _pathIdx = 0;
@@ -176,6 +173,7 @@ namespace Server.Game.Object.Monster
                 }
             }
         }
+
         // 몬스터의 이동 로직을 담당하는 함수
         public void Get_MoveAlongPath() => MoveAlongPath();
         private void MoveAlongPath()
@@ -213,7 +211,7 @@ namespace Server.Game.Object.Monster
 
         private long _lastUpdateTime = 0;
         private const float FIXED_MOVE_STEP = 0.8f;
-        private void FollowToTarget(Vector3 targetPos)
+        public void FollowToTarget(Vector3 targetPos)
         {
             Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
             Vector3 dir = targetPos - monsterPos;

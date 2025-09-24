@@ -30,6 +30,7 @@ public class TheodoreController : MyPlayerController
         }
 
         base.Init();
+        _attackRange = 10;
     }
 
     protected override void UpdateSkillKeyInput()
@@ -74,18 +75,6 @@ public class TheodoreController : MyPlayerController
         myRenderer.material = originMaterial;
     }
 
-        // 마우스 바라보기
-    void LookAtMouse()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            Vector3 direction = (hit.point - transform.position).normalized;
-            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
-            transform.rotation = targetRotation;
-        }
-    }
-
     #region Q Skill
     protected override void Skill_Q()
     {
@@ -119,6 +108,16 @@ public class TheodoreController : MyPlayerController
     }
     #endregion
 
+    public void TakeDamage(CreatureController target)
+    {
+        if (Target == target)
+        {
+            target.OnDamaged();
+        }
+        else
+            Debug.Log("타겟이 맞지 않음");
+    }
+
     protected override void Skill_W()
     {
         // 바라보는 방향대로 스크린 호출
@@ -144,13 +143,24 @@ public class TheodoreController : MyPlayerController
     }
     public override void OnAttackTiming()
     {
-        switch (_keyCode)
+        // 평타
+        if (State == CreatureState.Attack)
         {
-            case KeyCode.E:
-                SpawnProjectile();
-                break;
+            Transform childTransform = Util.FindChildByName(_sniperRifle.transform, "ShotPoint");
+            List<GameObject> EffectList = Managers.FX.PlayEffect(Find_EffectList(KeyCode.Z), childTransform);
+        }
+        // 스킬
+        else if (State == CreatureState.Skill)
+        {
+            switch (_keyCode)
+            {
+                case KeyCode.E:
+                    SpawnProjectile();
+                    return;
+            }
         }
     }
+
     #endregion
 
     #region R Skill

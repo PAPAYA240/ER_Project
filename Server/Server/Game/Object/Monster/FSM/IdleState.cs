@@ -26,13 +26,14 @@ namespace Server.Game.Object.Monster.FSM
             // 1. 몬스터 타겟  찾기
             if (monster.FindTarget(monster) != null)
             {
-                if (Environment.TickCount64 < _delayTimer)
-                    return;
-
+               if (Environment.TickCount64 < _delayTimer)
+                  return;
+               
                 IMonsterState nextState = FSMManager.Instance.EvaluateTargetForNextState(monster);
                 monster.ChangeState(nextState);
             }
 
+            // 2. 타게팅이 없으면 스폰 자리에 있어야 함
             if (monster.PlayerTarget == null)
             {
                  if (!monster.IsArrivalSpawn())
@@ -69,7 +70,7 @@ namespace Server.Game.Object.Monster.FSM
         public void Exit(Monster monster) 
         {
             _nextSearchTick = 0;
-            _delayTimer = 0;
+            //_delayTimer = 0;
             _lastUpdateTime = 0;
         }
     }

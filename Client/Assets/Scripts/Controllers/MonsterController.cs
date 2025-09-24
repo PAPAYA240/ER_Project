@@ -1,5 +1,4 @@
 using Assets.Scripts.Highlight;
-using Data;
 using Google.Protobuf.Protocol;
 using System;
 using UnityEngine;
@@ -36,10 +35,12 @@ public class MonsterController : CreatureController
 
     protected override void Init()
 	{
-        ObjectType = Define.Object.Monster; 
-        this.gameObject.layer = LayerMask.NameToLayer("Monster");
+        ObjectType = Define.Object.Monster;
 
-		base.Init();
+        int monsterLayer = LayerMask.NameToLayer("Monster");
+        SetLayerRecursively(this.gameObject, monsterLayer);
+
+        base.Init();
 
         if (!Add_Component())
         {
@@ -50,6 +51,7 @@ public class MonsterController : CreatureController
         InitHpBar();
         Stat = Stat;
     }
+
     protected override void UpdateController()
     {
        transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
@@ -62,10 +64,9 @@ public class MonsterController : CreatureController
     }
 
     public override void OnDamaged()
-	{
-		Managers.Object.Remove(Id);
-		Managers.Resource.Destroy(gameObject);
-	}
+    {
+    }
+
 
     #region 패킷
     public void OnIdlePacket(S_State packet)
@@ -136,6 +137,13 @@ public class MonsterController : CreatureController
     #endregion
 
     #region 컴포넌트 추가
+    public void SetLayerRecursively(GameObject obj, int newLayer)
+    {
+        obj.layer = newLayer;
+        foreach (Transform child in obj.transform)
+            SetLayerRecursively(child.gameObject, newLayer);
+    }
+
     private bool Add_Component()
     {
         _navMeshAgent = GetComponentInParent<NavMeshAgent>();
@@ -203,6 +211,7 @@ public class MonsterController : CreatureController
         if(_monsterType != MonsterType.Drone)
             _hpBar.GetComponentInChildren<UI_MonsterHpBar>().SetHpText(Hp.ToString("F0"));
     }
+
     protected override void UpdateMaxHp()
     {
         //base.UpdateHp();

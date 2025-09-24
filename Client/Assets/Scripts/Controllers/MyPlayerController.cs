@@ -306,6 +306,18 @@ public class MyPlayerController : PlayerController
         }
     }
 
+    // 마우스 바라보기
+    protected void LookAtMouse()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Vector3 direction = (hit.point - transform.position).normalized;
+            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+            transform.rotation = targetRotation;
+        }
+    }
+
     protected override void UpdateAttack()
     {
         if(Target == null || !IsAttackable(Target))
@@ -330,7 +342,7 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region State : Moving
-    protected void LookAtTarget(Vector3 targetPos, bool snapToTarget = false, float speed = 10.0f)
+    protected void LookAtTarget(Vector3 targetPos, bool snapToTarget = false, float speed = 100.0f)
     {
         // 타겟을 바라보도록 방향 조정
         // snapToTarget : Target을 바로 바라볼지
