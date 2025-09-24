@@ -1,20 +1,17 @@
 ﻿using Google.Protobuf.Protocol;
 using Newtonsoft.Json;
 using Server.Data;
-using Server.Game.Object.Monster;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Numerics;
 
-namespace Server.Game.Object
+namespace Server.Game
 {
     public class LoadEnvData
     {
         public EnvType envType;
-        public float xPos;
-        public float yPos;
-        public float zPos;
+        public Vector3 posInfo;
+        public Quaternion rotInfo;
     }
 
     public class RawEnvList
@@ -46,9 +43,7 @@ namespace Server.Game.Object
                 cleanedList.EnvObjects.Add(new LoadEnvData
                 {
                     envType = monsterTypeName,
-                    xPos = (float)rawData.xPos,
-                    yPos = (float)rawData.yPos,
-                    zPos = (float)rawData.zPos
+
                 });
             }
             return cleanedList;
@@ -58,33 +53,13 @@ namespace Server.Game.Object
     public class EnvManager
     {
         GameRoom _room;
-
         public void Init(GameRoom room)
         {
             _room = room;
-
             EnvDataProcessor processor = new EnvDataProcessor();
             SpawnObjectFromJson(processor.ProcessAndGetJson());
         }
 
-        public void Add(int cnt, EnvType type = EnvType.EnvNone)
-        {
-            if (type == EnvType.EnvNone)
-                return;
-
-            for (int i = 0; i < cnt; i++)
-            {
-                // 몬스터를 즉시 생성하는 Spawn 로직을 이곳에 복사합니다.
-                EnvironmentObj env = ObjectManager.Instance.Add<EnvironmentObj>();
-                env.Info.Name = $"{env.Id} Environment";
-                env.Info.PosInfo.PosX = 0;
-                env.Info.PosInfo.PosY = 0;
-                env._envType = type;
-
-                DataManager.EnvironmentObjDict.TryGetValue(type, out ObjectInfo envStat);
-                _room.Push(_room.EnterGame, env);
-            }
-        }
         public void SpawnObjectFromJson(RawEnvList envList)
         {
             if (_room == null || envList == null)
@@ -92,16 +67,20 @@ namespace Server.Game.Object
 
             foreach (var eData in envList.EnvObjects)
             {
-                EnvironmentObj env = ObjectManager.Instance.Add<EnvironmentObj>();
+                EnvironmentObject env = ObjectManager.Instance.Add<EnvironmentObject>();
 
-                env.Info.PosInfo.PosX = eData.xPos;
-                env.Info.PosInfo.PosY = eData.yPos;
-                env.Info.PosInfo.PosZ = eData.zPos;
+                env.Info.PosInfo.PosX = eData.posInfo.X;
+                env.Info.PosInfo.PosY = eData.posInfo.Y;
+                env.Info.PosInfo.PosZ = eData.posInfo.Z;
 
-                EnvType type = eData.envType;
+                env.Info.RotInfo.Qx = eData.rotInfo.X;
+                env.Info.RotInfo.Qy = eData.rotInfo.Y;
+                env.Info.RotInfo.Qz = eData.rotInfo.Z;
+                env.Info.RotInfo.Qw = eData.rotInfo.W;
+
+                env.Info.Env = new EnvInfo();
+                env.Info.Env.EnvType = eData.envType;
                 env.Info.Name = $"{env.Id} Environment";
-                env.Info.EnvType = type;
-                env.Init();
                 _room.Push(_room.EnterGame, env);
             }
         }

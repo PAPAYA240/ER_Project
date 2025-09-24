@@ -8,7 +8,7 @@ using UnityEngine.AI;
 public class MonsterController : CreatureController
 {
     private System.Random _random = new System.Random();
-
+    
     // 패킷
     private int _lastReceivedSequenceId = -1;
 
@@ -134,7 +134,6 @@ public class MonsterController : CreatureController
         }
     }
     #endregion
-  
 
     #region 컴포넌트 추가
     private bool Add_Component()

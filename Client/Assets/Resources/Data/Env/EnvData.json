@@ -1,14 +1,68 @@
 {
-  "Env": [
+  "objects": [
     {
       "id": 1,
-      "envType": "HILL_OBJ",
       "stat": {
         "level": 1,
         "maxHp": 100,
         "attack": 10,
         "speed": 5.0,
         "hill": 10.0
+      },
+      "env": {
+        "envType": "HillObj"
+      }
+    },
+    {
+      "id": 2,
+      "stat": {
+        "level": 1,
+        "maxHp": 100,
+        "attack": 10,
+        "speed": 5.0,
+        "hill": 10.0
+      },
+      "env": {
+        "envType": "DeviceSpawnpoint"
+      }
+    },
+    {
+      "id": 3,
+      "stat": {
+        "level": 1,
+        "maxHp": 100,
+        "attack": 10,
+        "speed": 5.0,
+        "hill": 10.0
+      },
+      "env": {
+        "envType": "Turret"
+      }
+    },
+    {
+      "id": 4,
+      "stat": {
+        "level": 1,
+        "maxHp": 100,
+        "attack": 10,
+        "speed": 5.0,
+        "hill": 10.0
+      },
+      "env": {
+        "envType": "AccboundarySpawnpoint"
+      }
+    },
+    {
+      "id": 5,
+      "stat": {
+        "level": 1,
+        "maxHp": 100,
+        "attack": 10,
+        "speed": 5.0,
+        "hill": 10.0
+      },
+      "env": {
+        "envType": "BarrierSpawnpoint"
       }
     }
   ]

@@ -37,6 +37,8 @@ enum MsgId {
   C_INTERACT = 29;
   S_INTERACT = 30;
   S_RESPAWN = 31;
+  C_SKILL_LEVEL_UP = 32;
+  S_SKILL_LEVEL_UP = 33;
 }
 
 enum CreatureState{
@@ -233,6 +235,14 @@ message S_Skill{
 	CostInfo costInfo = 4;
 }
 
+message C_SkillLevelUp{
+	int32 keyCode = 1;
+}
+
+message S_SkillLevelUp{
+	int32 keyCode = 1;
+}
+
 message C_Fx{
 	EffectInfo fxInfo = 1;
 }
@@ -299,6 +309,36 @@ message S_ChangeHp{
 	float hp = 2;
 }
 
+message PlayerInfo {
+    CharacterType charType = 1;
+    int32 skillPoints = 2;
+    int32 team = 3;
+}
+
+message MonsterInfo {
+    MonsterType monsterType = 1;
+}
+
+
+message EnvInfo{
+	EnvType envType = 1;
+	string interactionStrategy = 2;	
+}
+
+message ObjectInfo{
+	int32 objectId = 1;
+	string name = 2;
+	PositionInfo posInfo = 3;
+	RotationInfo rotInfo = 4;
+	StatInfo statInfo = 5;
+
+	oneof objectSpecificData 
+	{
+        PlayerInfo player = 10;
+        MonsterInfo monster = 11;
+        EnvInfo env = 12;
+    	}
+}
  message S_Die{
 	 int32 objectId = 1;
 	 int32 attackerId = 2;

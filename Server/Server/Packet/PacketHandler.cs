@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Numerics;
-using System.Text;
-using Google.Protobuf;
+﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server;
 using Server.Data;
 using Server.Game;
 using Server.Game.Object.Monster;
 using ServerCore;
+using System;
+using System.Collections.Generic;
+using System.Net.Sockets;
+using System.Numerics;
+using System.Text;
+using static Server.Data.DataUtils;
 
 class PacketHandler
 {
@@ -23,7 +24,8 @@ class PacketHandler
             clientSession.MyPlayer.Info.PosInfo.State = CreatureState.Idle;
             clientSession.MyPlayer.Info.PosInfo.PosX = 0;
             clientSession.MyPlayer.Info.PosInfo.PosY = 0;
-            clientSession.MyPlayer.Info.CharType = clientSession.MyCharacter;
+            clientSession.MyPlayer.Info.Player = new PlayerInfo();
+            clientSession.MyPlayer.Info.Player.CharType = clientSession.MyCharacter;
             clientSession.MyPlayer.MakeDict();
 
             StatInfo stat = null;
@@ -188,5 +190,26 @@ class PacketHandler
         PickPlayer pp = new PickPlayer();
         pp.Session = clientSession;
         room.Push(room.EnterPick, pp);
+    }
+
+    public static void C_SkillLevelUpHandler(PacketSession session, IMessage packet)
+    {
+        C_SkillLevelUp skillInfoChangePacket = packet as C_SkillLevelUp;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        //스킬 레벨업이 성공하면 
+        if (player.SkillLevelUp((KeyCode)skillInfoChangePacket.KeyCode))
+        {
+            //패킷을 보낸다.? 푸쉬한다?
+            room.Push(room.SkillLevelUp, player.Id, skillInfoChangePacket.KeyCode);
+        }
     }
 }
