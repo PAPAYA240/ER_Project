@@ -120,6 +120,12 @@ public class MyPlayerController : PlayerController
     public float WeaponMasteryAS { get; set; }
     public float ItemAttackSpeed { get; set; } = 0;
 
+    // Cursor
+    Texture2D _cursorAttack;
+    Texture2D _cursorDefault;
+
+    bool _isAttackGround = false;
+
     public float AttackSpeed
     {
         get
@@ -146,8 +152,12 @@ public class MyPlayerController : PlayerController
     {
         base.Init();
 
-        layerName = _animator.GetLayerName(0);
         Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
+
+        _cursorDefault = Managers.Resource.Load<Texture2D>("Cursor/Cursor_01");
+        _cursorAttack = Managers.Resource.Load<Texture2D>("Cursor/Pointer_01");
+
+        layerName = _animator.GetLayerName(0);
 
         ObjectType = Define.Object.MyPlayer;
         MakeSkillDict();
@@ -213,18 +223,18 @@ public class MyPlayerController : PlayerController
         switch (State)
         {
             case CreatureState.Idle:
-                GetMouseInput();
+                GetMouseInput(1);
                 break;
             case CreatureState.Moving:
-                GetMouseInput();
+                GetMouseInput(1);
                 break;
             case CreatureState.Attack:
-                GetMouseInput();
+                GetMouseInput(1);
                 break;
             case CreatureState.Skill:
                 SkillBase currentSkill = FindSkill(_keyCode);
                 if (currentSkill != null && currentSkill.SkillData.canMoveDuringCast == true)
-                    GetMouseInput();
+                    GetMouseInput(1);
                 break;
         }
 
@@ -687,22 +697,39 @@ public class MyPlayerController : PlayerController
                 ExitRest();
             }
         }
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+            Cursor.SetCursor(_cursorAttack, Vector2.zero, CursorMode.Auto);
+
+            _isAttackGround = true;
+        }
         else if (State == CreatureState.Rest && Input.GetMouseButtonDown(1))
         {
             ExitRest();
+        }
+
+        if (_isAttackGround == true)
+        {
+            GetMouseInput(0);
         }
     }
 
     protected virtual void UpdateSkillKeyInput() { }
 
-    protected virtual void GetMouseInput()
+    protected virtual void GetMouseInput(int mouseButton)
     {
         // 마우스 우클릭이 눌렸을 경우 유효한 곳이 클릭 되었다면 해당 위치를 목적지로 설정 -> Moving 상태로 변경
         // 몬스터 클릭 시 평타 사거리만큼 떨어진 곳으로 설정
 
         // 그냥 우클릭 시 → 이동 처리
-        if (Input.GetMouseButton(1))
+        if (Input.GetMouseButton(mouseButton))
         {
+            if (_isAttackGround == true)
+            {
+                _isAttackGround = false;
+                Cursor.SetCursor(_cursorDefault, Vector2.zero, CursorMode.Auto);
+            }
+
             _isStop = false;
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

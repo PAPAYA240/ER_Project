@@ -72,10 +72,10 @@ public class RozziController : MyPlayerController
         }
     }
 
-    protected override void GetMouseInput()
+    protected override void GetMouseInput(int mouseButton)
     {
         if (!_canDash && !_isDashing)
-            base.GetMouseInput();
+            base.GetMouseInput(mouseButton);
 
         if (Input.GetMouseButton(1) && _canDash)
             StartDash();
