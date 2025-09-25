@@ -28,6 +28,8 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     GameObject _player = null;
 
+    public Action LateUpdateAction = null;
+
     public void SetPlayer(GameObject player) { _player = player; }
 
     void Start()
@@ -90,6 +92,9 @@ public class CameraController : MonoBehaviour
 
             transform.position = _player.transform.position + zoomedOffset;
             transform.LookAt(_player.transform.position + Vector3.up);
+
+            //네임 태그 자꾸 덜덜거림
+            LateUpdateAction?.Invoke();
         }
     }
 

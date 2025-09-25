@@ -1,17 +1,17 @@
-﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.Protocol;
 using Server.Data;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 
-namespace Server.Game.Object.Monster
+namespace Server.Game
 {
     public class LoadMonsterData
     {
         public MonsterType monsterType;
-        public float xPos;
-        public float yPos;
-        public float zPos;
+        public Vector3 posInfo;
+        public Quaternion rotInfo;
     }
 
     public class RawMonsterList
@@ -42,9 +42,8 @@ namespace Server.Game.Object.Monster
                 cleanedList.monsters.Add(new LoadMonsterData
                 {
                     monsterType = monsterTypeName,
-                    xPos = (float)rawData.xPos,
-                    yPos = (float)rawData.yPos,
-                    zPos = (float)rawData.zPos
+                    posInfo = rawData.posInfo,
+                    rotInfo = rawData.rotInfo,
                 });
             }
             return cleanedList;
@@ -87,6 +86,7 @@ namespace Server.Game.Object.Monster
                 _room.Push(_room.EnterGame, monster);
             }
         }
+
         public void SpawnMonstersFromJson(RawMonsterList monsterList)
         {
             if (_room == null || monsterList == null)
@@ -96,20 +96,31 @@ namespace Server.Game.Object.Monster
             {
                 Monster monster = ObjectManager.Instance.Add<Monster>();
 
-                monster.Info.PosInfo.PosX = monsterData.xPos;
-                monster.Info.PosInfo.PosY = monsterData.yPos;
-                monster.Info.PosInfo.PosZ = monsterData.zPos;
-
-                MonsterType type =monsterData.monsterType;
                 monster.Info.Monster = new MonsterInfo();
+                monster.Info.PosInfo = new PositionInfo();
+                monster.Info.RotInfo = new RotationInfo();
+
+                monster.Info.PosInfo.PosX = monsterData.posInfo.X;
+                monster.Info.PosInfo.PosY = monsterData.posInfo.Y;
+                monster.Info.PosInfo.PosZ = monsterData.posInfo.Z;
+
+                monster.Info.RotInfo.Qx = monsterData.rotInfo.X;
+                monster.Info.RotInfo.Qy = monsterData.rotInfo.Y;
+                monster.Info.RotInfo.Qz = monsterData.rotInfo.Z;
+                monster.Info.RotInfo.Qw = monsterData.rotInfo.W;
+
+                MonsterType type = monsterData.monsterType;
                 monster.Info.Monster.MonsterType = type;
-                monster.Info.Name = $"{monster.Id} Monster";
+
+                monster.Info.Name = $"{monster.Id} {type}";
                 monster.Info.PosInfo.State = CreatureState.Idle;
 
                 MonsterData monsterStat = null;
                 DataManager.MonsterDict.TryGetValue(type.ToString(), out monsterStat);
-                monster.Stat.MergeFrom(monsterStat.stat);
+                if (monsterStat != null)
+                    monster.Stat.MergeFrom(monsterStat.stat);
 
+                
                 monster.Init(monster.Info.Monster.MonsterType.ToString());
                 _room.Push(_room.EnterGame, monster);
             }

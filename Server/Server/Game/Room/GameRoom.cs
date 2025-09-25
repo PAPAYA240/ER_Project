@@ -5,12 +5,9 @@ using System.IO;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Numerics;
-using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
-using Server.Game.Object.Monster;
-using Server.Game.Object.Monster.AStar;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -324,7 +321,8 @@ namespace Server.Game
             if (skills.TryGetValue((KeyCode)skillPacket.SkillInfo.KeyCode, out skillData) == false)
                 return;
 
-            _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode);
+            _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode, 
+                new Vector2(skillPacket.MousePosX, skillPacket.MousePosZ));
         }
 
         public void HandleAnim(Player player, C_Anim animPacket)

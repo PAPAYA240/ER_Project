@@ -7,10 +7,11 @@ public class SequenceNode : CompositeNode
     {
         if (_currentIdx >= children.Count)
             _currentIdx = 0;
+
         MonsterController monsterController = obj.GetComponentInChildren<MonsterController>();
         if (monsterController)
         {
-            if (monsterController.ObjInfo.Monster.MonsterType == MonsterType.Alpha)
+            //if (monsterController.ObjInfo.Monster.MonsterType == MonsterType.Alpha)
             {
                 if (_currentIdx >= children.Count)
                     _currentIdx = 0;

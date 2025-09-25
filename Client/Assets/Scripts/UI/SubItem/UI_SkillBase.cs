@@ -38,10 +38,10 @@ public abstract class UI_SkillBase : UI_Base
     protected UI_CharSkillInfoPopup _popupUi;
 
     public abstract void SkillLevelUp();
-    public abstract void UseSkill();
     public abstract void ActivateLevelUp(bool activate);
     public abstract void SetImage(string path);
     public virtual void SetStaminaCost(int value) { }
+    public virtual void SetCool(float value) { }
     public virtual void SetMaxCool(float value) { }
     public virtual bool IsEnoughStamina(float curStamina) { return false; }
     public virtual void LevelUpButtonClicked() { }

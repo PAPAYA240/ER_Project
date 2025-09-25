@@ -65,9 +65,8 @@ enum EnvType{
    ENV_NONE = 0;
    HILL_OBJ = 1;
    DEVICE_SPAWNPOINT = 2;
-   TURRET = 3;
-   ACCBOUNDARY_SPAWNPOINT = 4;
-   BARRIER_SPAWNPOINT = 5;
+   ACCBOUNDARY_SPAWNPOINT = 3;
+   BARRIER_SPAWNPOINT = 4;
 }
    
 enum SkillType{
@@ -93,6 +92,8 @@ enum MonsterSkill{
     MS_GAMMA_SKILL1 = 9;
     MS_GAMMA_SKILL2 = 10;
     MS_GAMMA_SKILL3 = 11;
+
+    MS_TURRET_ATTACK = 12;
 }
 
 enum AnimType{
@@ -117,6 +118,7 @@ enum MonsterType {
    	OMEGA = 2;
 	DRONE = 3;
         GAMMA = 4;
+	TURRET = 5;
 }
 
 enum Weapon {
@@ -171,6 +173,25 @@ enum TraitType{
     AMPLIFICATION_DRONE = 13;	
     HEALING_DRONE = 14;	
     SENTINEL = 15;	
+}
+
+enum ItemType{
+	WEAPON = 0;
+	BODY = 1;
+	HEAD = 2;
+	ARM = 3;
+	LEG = 4;
+	ITEM_TYPE_END = 5;
+}
+
+enum ItemGrade{
+	COMMON = 0;
+	UNCOMMON = 1;
+	RARE = 2;
+	EPIC = 3;
+	LEGENDARY = 4;
+	MYTHIC = 5;
+	ITEM_GRADE_END = 6;
 }
 
 message C_Interact {
@@ -230,6 +251,8 @@ message C_Skill{
 	ObjectInfo objectInfo = 1;
 	SkillInfo skillInfo = 2;
 	int32 targetId = 3;
+	float mousePosX = 4;
+	float mousePosZ = 5;
 }
 
 message S_Skill{
@@ -377,14 +400,15 @@ message StatInfo{
 	float hp = 3;
 	float maxHp = 4;
 	float hpRegen = 5;
-	float stamina = 6;
-	float maxStamina = 7;
-	float staminaRegen = 8;
-	float attackSpeed = 9;
-	float moveSpeed = 10;
-	int32 exp = 11;
-	int32 level = 12;
-	int32 hill = 13;
+	float barrier = 6;
+	float stamina = 7;
+	float maxStamina = 8;
+	float staminaRegen = 9;
+	float attackSpeed = 10;
+	float moveSpeed = 11;
+	int32 exp = 12;
+	int32 level = 13;
+	int32 hill = 14;
 }
 
 message PlayerInfo {
@@ -408,16 +432,12 @@ message ObjectInfo{
 	PositionInfo posInfo = 3;
 	RotationInfo rotInfo = 4;
 	StatInfo statInfo = 5;
-	CharacterType charType = 6;
-	MonsterType monsterType = 7;
-	EnvType envType = 8;
-	int32 team = 9;
 	oneof objectSpecificData 
 	{
-        PlayerInfo player = 10;
-        MonsterInfo monster = 11;
-        EnvInfo env = 12;
-    	}
+        PlayerInfo player = 6;
+        MonsterInfo monster = 7;
+        EnvInfo env = 8;
+    }
 }
 
 message PickScenePlayerInfo{

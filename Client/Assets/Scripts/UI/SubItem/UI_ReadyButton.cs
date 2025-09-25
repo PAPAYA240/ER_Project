@@ -37,7 +37,7 @@ public class UI_ReadyButton : UI_Base
         _image = GetComponent<Image>();
         _image.sprite = _basicSprite;
 
-        SetText("�غ� ��");
+        SetText("준비 중");
 
         BindEvent(gameObject, OnClicked, Define.UIEvent.Click);
         BindEvent(gameObject, OnPointerEnter, Define.UIEvent.PointerEnter);
@@ -88,12 +88,12 @@ public class UI_ReadyButton : UI_Base
         if (_state == State.Notyet)
         {
             _image.sprite = _rolloverSprite;
-            SetText("�غ� �Ϸ�");
+            SetText("준비 완료");
         }
         else if (_state == State.Ready)
         {
             _image.sprite = _disabledSprite;
-            SetText("�غ� ���");
+            SetText("준비 취소");
         }
     }
     void OnPointerExit(PointerEventData eventData)
@@ -101,12 +101,12 @@ public class UI_ReadyButton : UI_Base
         if (_state == State.Notyet)
         {
             _image.sprite = _basicSprite;
-            SetText("�غ� ��");
+            SetText("준비 중");
         }
         else if (_state == State.Ready)
         {
             _image.sprite = _pressedSprite;
-            SetText("�غ� �Ϸ�");
+            SetText("준비 완료");
         }
     }
 }
