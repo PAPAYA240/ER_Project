@@ -315,11 +315,11 @@ class PacketHandler
         if (go == null)
             return;
 
-        MyPlayerController mpc = go.GetComponent<MyPlayerController>();
-        if (mpc == null)
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
             return;
 
-        mpc.OnRespawn(respawnPacket);
+        pc.OnRespawn(respawnPacket);
     }
 
     public static void S_SkillLevelUpHandler(PacketSession session, IMessage packet)

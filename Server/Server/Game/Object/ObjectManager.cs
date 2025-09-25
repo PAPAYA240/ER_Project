@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using Google.Protobuf.Protocol;
+using Server.Game.Object.Monster;
 
 namespace Server.Game
 {
@@ -13,6 +14,7 @@ namespace Server.Game
         object _lock = new object();
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
         Dictionary<int, int> _teams = new Dictionary<int, int>(); // key: objectId, value: team
+        Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
 
         // [UNUSED(1)][TYPE(7)][ID(24)]
         int _counter = 0;
@@ -65,17 +67,23 @@ namespace Server.Game
             return false;
         }
 
-        public Player Find(int objectId)
+        public GameObject Find(int objectId)
         {
             GameObjectType objectType = GetObjectTypeById(objectId);
 
             lock (_lock)
             {
-                if(objectType == GameObjectType.Player)
+                if (objectType == GameObjectType.Player)
                 {
                     Player player = null;
                     if (_players.TryGetValue(objectId, out player))
                         return player;
+                }
+                else if (objectType == GameObjectType.Monster)
+                {
+                    Monster monster = null;
+                    if(_monsters.TryGetValue(objectId, out monster))
+                        return monster;
                 }
             }
 

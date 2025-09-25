@@ -81,7 +81,10 @@ namespace Server.Game
             S_Die diePacket = new S_Die();
             diePacket.ObjectId = Id;
             diePacket.AttackerId = attacker.Id;
-            diePacket.RespawnTime = DataManager.RespawnDict[Stat.Level];
+            if(Stat.Level == 1)
+                diePacket.RespawnTime = 0;
+            else
+                diePacket.RespawnTime = DataManager.RespawnDict[Stat.Level];
             Room.Broadcast(diePacket);
 
             _ = CoRespawnTime(diePacket.RespawnTime);
@@ -366,7 +369,7 @@ namespace Server.Game
             {
                 Stat.Exp -= DataManager.ExpDict[Stat.Level];
                 Stat.Level++;
-                StatInfo statInfo = DataManager.StatGrowthDict[Info.CharType];
+                StatInfo statInfo = DataManager.StatGrowthDict[Info.Player.CharType];
                 Stat.AddStat(statInfo);
                 levelUp++;
             }

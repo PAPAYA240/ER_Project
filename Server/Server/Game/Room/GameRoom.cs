@@ -323,7 +323,8 @@ namespace Server.Game
             if (skills.TryGetValue((KeyCode)skillPacket.SkillInfo.KeyCode, out skillData) == false)
                 return;
 
-            _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode);
+            _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode, 
+                new Vector2(skillPacket.MousePosX, skillPacket.MousePosZ));
         }
 
         public void HandleAnim(Player player, C_Anim animPacket)
@@ -478,7 +479,6 @@ namespace Server.Game
                     dummyPlayer.Info.PosInfo.PosZ = rand.Next(-4, 4);
                     dummyPlayer.Info.Player = new PlayerInfo();
                     dummyPlayer.Info.Player.CharType = charType;
-                    dummyPlayer.Info.CharType = charType;
                     dummyPlayer.MakeDict();
 
                     StatInfo stat = null;

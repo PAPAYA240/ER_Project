@@ -25,7 +25,7 @@ public class AbigailController : MyPlayerController
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
         {
             Vector3 mousePos = GetCursorPos();
-            if (Vector3.Distance(mousePos, CellPos) > _warpRange)
+            if (Vector2.Distance(new Vector2(mousePos.x, mousePos.z), new Vector2(CellPos.x, CellPos.z)) > _warpRange)
                 return;
 
             GameObject target = TryGetAttackableObject(_warpRadius);

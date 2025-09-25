@@ -27,7 +27,6 @@ class PacketHandler
             clientSession.MyPlayer.Info.PosInfo.PosY = 0;
             clientSession.MyPlayer.Info.Player = new PlayerInfo();
             clientSession.MyPlayer.Info.Player.CharType = clientSession.MyCharacter;
-            clientSession.MyPlayer.Info.CharType = clientSession.MyCharacter;
             clientSession.MyPlayer.MakeDict();
 
             StatInfo stat = null;

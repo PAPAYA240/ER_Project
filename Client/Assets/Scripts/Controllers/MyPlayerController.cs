@@ -16,7 +16,7 @@ public class MyPlayerController : PlayerController
     protected bool _moveKeyPressed = false;
     protected int _monsterMask;
     protected int _playerMask;
-
+    protected int _myPlayerMask;
     // State
     public override CreatureState State
     {
@@ -160,6 +160,8 @@ public class MyPlayerController : PlayerController
 
         _monsterMask = 1 << LayerMask.NameToLayer("Monster");
         _playerMask = 1 << LayerMask.NameToLayer("Fog");
+        _myPlayerMask = 1 << LayerMask.NameToLayer("MyPlayer");
+        gameObject.layer = LayerMask.NameToLayer("MyPlayer");
 
         // NavMesh Agent
         _agent = GetComponent<NavMeshAgent>();
@@ -231,6 +233,7 @@ public class MyPlayerController : PlayerController
                 if (currentSkill != null && currentSkill.SkillData.canMoveDuringCast == true)
                 {
                     GetMouseInputDuringSkill();
+                    UpdateTransform();
                 }
                 break;
         }
@@ -596,7 +599,7 @@ public class MyPlayerController : PlayerController
         ResetCharacterState();
     }
 
-    public void OnRespawn(S_Respawn respawnPacket)
+    public override void OnRespawn(S_Respawn respawnPacket)
     {
         Vector3 pos = new Vector3
         {
@@ -626,6 +629,7 @@ public class MyPlayerController : PlayerController
         Hp = respawnPacket.Hp;
         Stamina = respawnPacket.Stamina;
     }
+
     #endregion
 
     #region Input
@@ -1229,12 +1233,13 @@ public class MyPlayerController : PlayerController
             SkillTargetId = -1;
         }
 
+        Vector3 mousePos = GetTargetPos(1000);
         C_Skill skillPacket = new C_Skill()
         {
             ObjectInfo = ObjInfo,
             SkillInfo = new SkillInfo() { KeyCode = (int)key },
             TargetId = targetId,
-            MousePos = new PositionInfo(GetTargetPos(1000))
+            MousePosX = mousePos.x, MousePosZ = mousePos.z
         };
         Managers.Network.Send(skillPacket);
         Debug.Log("스킬 패킷 보내기");

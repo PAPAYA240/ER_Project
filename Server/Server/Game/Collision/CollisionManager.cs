@@ -21,10 +21,7 @@ namespace Server.Game
         public float PosX { get; set; } = 0;
         public float PosZ {  get; set; } = 0;
 
-        public float DirX {  get; set; } = 0;
-        public float DirZ { get; set; } = 0;
-
-        public Vector3 MousePos { get; set; } = new Vector3();
+        public Vector2 MousePos { get; set; } = new Vector2();
         public float ChargeRatio { get; set; } = 1;
         public CharacterType CharType { get; set; }
         public KeyCode KeyCode { get; set; }
@@ -59,7 +56,7 @@ namespace Server.Game
             AddHitboxChain(CharacterType.Abigail, KeyCode.Q, new HitboxChain { KeyCode = KeyCode.F1, MilliSecs = 333 });
         }
 
-        public void AddHitbox(Player player, CharacterType charType, KeyCode keyCode)
+        public void AddHitbox(Player player, CharacterType charType, KeyCode keyCode, Vector2 mousePos = new Vector2())
         {
             lock (_lock)
             {
@@ -70,13 +67,12 @@ namespace Server.Game
                     Player = player,
                     PosX = player.PosInfo.PosX,
                     PosZ = player.PosInfo.PosZ,
-                    DirX = forward.X,
-                    DirZ = forward.Z,
                     CharType = charType,
                     KeyCode = keyCode,
                     Team = player.Info.Player.Team,
                     Data = DataManager.SkillHitboxDict[charType][keyCode],
-                    StartTick = Environment.TickCount
+                    StartTick = Environment.TickCount,
+                    MousePos = mousePos
                 };
 
                 if (!_hitboxDict.TryGetValue(player.Id, out var set))
@@ -111,7 +107,7 @@ namespace Server.Game
         {
             Dictionary<int, int> damageDict = new Dictionary<int, int>();
             CheckPlayerHit(teams, damageDict);
-
+            CheckHit(monsters, damageDict);
             SendChangeHpPkts(teams, damageDict);
         }
 
@@ -212,6 +208,38 @@ namespace Server.Game
             }
         }
 
+        void CheckHit<T>(IDictionary<int, T> targets, Dictionary<int, int> damageDict) where T : GameObject, new() 
+        {
+            foreach(var nestedKvp in _hitboxDict)
+            {
+                int ownerId = nestedKvp.Key;
+                HashSet<Hitbox> hitboxes = nestedKvp.Value;
+                if (hitboxes.Count == 0)
+                    continue;
+
+                foreach (var targetKvp in targets)
+                {
+                    T target = targetKvp.Value;
+                    // Collision Check
+                    foreach (var hitbox in hitboxes)
+                    {
+                        if (hitbox.HitObjs.ContainsKey(targetKvp.Key))
+                            continue;
+
+                        if (CheckCollision(hitbox, target))
+                        {
+                            int dmg = CalcDamage(hitbox.Player.Stat, target.Stat, DataManager.SkillDict[hitbox.CharType][hitbox.KeyCode]);
+                            if (damageDict.ContainsKey(target.Id))
+                                damageDict[target.Id] += dmg;
+                            else
+                                damageDict[target.Id] = dmg;
+                            hitbox.HitObjs.TryAdd(target.Id, 0);
+                        }
+                    }
+                }
+            }
+        }
+
         bool CheckCollision(Hitbox hitbox, GameObject go)
         {
             if (!Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
@@ -228,46 +256,50 @@ namespace Server.Game
                     }
                 case SkillShape.Rectangle:
                     {
-                        Vector3 toTarget = new Vector3(go.PosInfo.PosX - hitbox.PosX, 0, go.PosInfo.PosZ - hitbox.PosZ);
-                        Vector3 forward = new Vector3(hitbox.DirX, 0, hitbox.DirZ);
-                        Vector3 right = new Vector3(-forward.Z, 0, forward.X);
+                        Vector2 center = hitbox.MousePos;
+                        Vector2 forward = Vector2.Normalize(new Vector2(center.X - hitbox.Player.PosInfo.PosX, center.Y - hitbox.Player.PosInfo.PosZ));
+                        Vector2 right = new Vector2(-forward.Y, forward.X);
+                        Vector2 toTarget = new Vector2(go.PosInfo.PosX - center.X, go.PosInfo.PosZ - center.Y);
+                        float projForward = Vector2.Dot(toTarget, forward);
+                        float projRight = Vector2.Dot(toTarget, right);
 
-                        float projForward = Vector3.Dot(toTarget, forward);
-                        float projRight = Vector3.Dot(toTarget, right);
+                        float halfHeight = hitbox.Data.Height * 0.5f; 
+                        float halfWidth = hitbox.Data.Width * 0.5f;  
 
-                        return MathF.Abs(projForward) <= hitbox.Data.Height * 0.5f &&
-                               MathF.Abs(projRight) <= hitbox.Data.Width * 0.5f;
+                        return MathF.Abs(projForward) <= halfHeight &&
+                               MathF.Abs(projRight) <= halfWidth;
                     }
                 case SkillShape.Ray:
                     {
-                        Vector3 toTarget = new Vector3(go.PosInfo.PosX - hitbox.PosX, 0, go.PosInfo.PosZ - hitbox.PosZ);
-                        Vector3 forward = new Vector3(hitbox.DirX, 0, hitbox.DirZ);
-                        Vector3 right = new Vector3(-forward.Z, 0, forward.X);
-                        float projForward = Vector3.Dot(toTarget, forward);
-                        float projRight = Vector3.Dot(toTarget, right);
+                        Vector2 origin = new Vector2(hitbox.PosX, hitbox.PosZ);
+                        Vector2 forward = Vector2.Normalize(hitbox.MousePos - origin);
+                        Vector2 right = new Vector2(-forward.Y, forward.X);
+                        Vector2 toTarget = new Vector2(go.PosInfo.PosX - origin.X, go.PosInfo.PosZ - origin.Y);
 
-                        if (false == Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
+                        float projForward = Vector2.Dot(toTarget, forward);
+                        float projRight = Vector2.Dot(toTarget, right);
+
+                        if (!Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
                             return false;
+
                         float range = hitbox.Data.MaxRange;
-                        if(type == SkillType.SkillTrack)
+                        if (type == SkillType.SkillTrack)
                             range = hitbox.Data.MinRange + (hitbox.Data.MaxRange - hitbox.Data.MinRange) * hitbox.ChargeRatio;
 
-                        return projForward >= 0 && projForward <= range &&
-                               MathF.Abs(projRight) <= hitbox.Data.Width * 0.5f;
+                        return projForward >= 0 && projForward <= range && MathF.Abs(projRight) <= hitbox.Data.Width * 0.5f;
                     }
                 case SkillShape.Sector:
                     {
-                        Vector3 toTarget = new Vector3( go.PosInfo.PosX - hitbox.PosX,
-                        0, go.PosInfo.PosZ - hitbox.PosZ);
+                        Vector2 center = new Vector2(hitbox.PosX, hitbox.PosZ);
+                        Vector2 toTarget = new Vector2(go.PosInfo.PosX - center.X, go.PosInfo.PosZ - center.Y);
 
-                        float distanceSq = toTarget.X * toTarget.X + toTarget.Z * toTarget.Z;
-                        if (distanceSq > hitbox.Data.Radius * hitbox.Data.Radius)
+                        if (toTarget.LengthSquared() > hitbox.Data.Radius * hitbox.Data.Radius)
                             return false;
 
-                        Vector3 hitboxDir = Vector3.Normalize(new Vector3(hitbox.DirX, 0, hitbox.DirZ));
-                        Vector3 targetDir = Vector3.Normalize(toTarget);
+                        Vector2 mouseDir = Vector2.Normalize(new Vector2(hitbox.MousePos.X - center.X, hitbox.MousePos.Y - center.Y));
+                        Vector2 targetDir = Vector2.Normalize(toTarget);
 
-                        float dot = hitboxDir.X * targetDir.X + hitboxDir.Z * targetDir.Z;
+                        float dot = Math.Clamp(Vector2.Dot(mouseDir, targetDir), -1f, 1f);
                         float angleDeg = MathF.Acos(dot) * (180f / MathF.PI);
 
                         return angleDeg <= hitbox.Data.Angle * 0.5f;
@@ -280,31 +312,32 @@ namespace Server.Game
         int CalcDamage(StatInfo attackter, StatInfo target, SkillData skill)
         {
             // temp dmg
-            return 30;
+            return 200;
         } 
 
         void SendChangeHpPkts(Dictionary<int, Dictionary<int, Player>> teams, Dictionary<int, int> damageDict)
         {
             foreach (var kvp in damageDict)
             {
-                Player player = ObjectManager.Instance.Find(kvp.Key);
-                if (player == null)
+                GameObject hitTarget = ObjectManager.Instance.Find(kvp.Key);
+                if (hitTarget == null)
                     continue;
 
-                player.Info.StatInfo.Hp -= damageDict[kvp.Key];
-                player.Info.StatInfo.Hp = Math.Max(0, player.Info.StatInfo.Hp);
+                hitTarget.Info.StatInfo.Hp -= damageDict[kvp.Key];
+                hitTarget.Info.StatInfo.Hp = Math.Max(0, hitTarget.Info.StatInfo.Hp);
 
                 IMessage packet;
-                if(player.Info.StatInfo.Hp > 0)
+                if(hitTarget.Info.StatInfo.Hp > 0)
                 {
                     packet = new S_ChangeHp()
                     {
                         ObjectId = kvp.Key,
-                        Hp = player.Info.StatInfo.Hp,
+                        Hp = hitTarget.Info.StatInfo.Hp,
                     };
                 }
                 else
                 {
+                    hitTarget.OnDead(hitTarget);
                     packet = new S_Die()
                     {
                         ObjectId = kvp.Key,
