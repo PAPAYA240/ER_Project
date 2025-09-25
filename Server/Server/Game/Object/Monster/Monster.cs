@@ -4,10 +4,8 @@ using System.Numerics;
 using System.Threading;
 using Google.Protobuf.Protocol;
 using Server.Data;
-using Server.Game.Object.Monster.AStar;
-using Server.Game.Object.Monster.FSM;
 
-namespace Server.Game.Object.Monster
+namespace Server.Game
 {
     public interface IMonsterState
     {
@@ -120,22 +118,29 @@ namespace Server.Game.Object.Monster
         }
 
         const float _activeRange = 30f;
-        // 다시 스폰 장소로 돌아가는가?
+        // 다시 스폰 장소로 돌아가는가? 
         public bool IsReturnSpawn()
         {
             Vector3 monsterPos = new Vector3(this.PosInfo.PosX, this.PosInfo.PosY, this.PosInfo.PosZ);
             float dist = Vector3.Distance(monsterPos, spawnPosition);
             if (_activeRange <= dist)
-                return true; 
+            {
+                Console.WriteLine("ReturnSpawn");
+                return true;
+            }
             return false;
         }
 
+        // 활동 범위를 가지 않았는가?
         public bool IsArrivalSpawn()
         {
             Vector3 monsterPos = new Vector3(this.PosInfo.PosX, this.PosInfo.PosY, this.PosInfo.PosZ);
             float distanceToWaypoint = Vector3.Distance(monsterPos, spawnPosition);
             if (distanceToWaypoint < 0.1f)
+            {
                 return true;
+            }
+                Console.WriteLine("활동 범위를 넘어갔는가?");
             return false;
         }
 
@@ -309,6 +314,7 @@ namespace Server.Game.Object.Monster
             if(Room != null)
                 Room.Push(() => BroadcastState(newState, posInfo, rotInfo, skillData));
         }
+
         private void BroadcastState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null)
         {
             _sequenceId++;

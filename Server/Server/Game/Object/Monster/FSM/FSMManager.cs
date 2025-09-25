@@ -1,10 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 
-namespace Server.Game.Object.Monster.FSM
+namespace Server.Game
 {
     public class FSMManager
     {
@@ -20,7 +16,7 @@ namespace Server.Game.Object.Monster.FSM
         {
             if (type == MonsterType.Alpha || type == MonsterType.Omega)
                 return new SkillState();
-            if (type == MonsterType.Drone || type == MonsterType.Gamma)
+            if (type == MonsterType.Drone || type == MonsterType.Gamma || type == MonsterType.Turret)
                 return new AimState();
             return null;
         }
@@ -48,6 +44,7 @@ namespace Server.Game.Object.Monster.FSM
                 // 원거리 몬스터
                 case MonsterType.Drone:
                 case MonsterType.Gamma:
+                case MonsterType.Turret:
                     return GetSkillState(monster.Info.Monster.MonsterType);
 
                 default:

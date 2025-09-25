@@ -2,10 +2,9 @@
 using Google.Protobuf.Protocol;
 using Server.Data;
 using System;
-using System.Diagnostics;
 using System.Numerics;
 
-namespace Server.Game.Object.Monster.FSM
+namespace Server.Game
 {
     internal class AimState : IMonsterState
     {
@@ -17,19 +16,19 @@ namespace Server.Game.Object.Monster.FSM
 
         private long _lastUpdateTime = 0;
 
+        // 타겟과 비교해서 다른 타겟을 쏘게 되면 Idle로 돌이키기 위한 정보.
+        Player _player = null;
+
         public void Enter(Monster monster)
         {
-            skillData =monster.Get_DecideAndUseSkill();
-            if (skillData == null)
-                return;
-
-           if(monster.Info.Monster.MonsterType == MonsterType.Gamma)
-               DataManager.MonsterSkillDict.TryGetValue(MonsterSkill.MsGammaSkill2, out skillData);
+            skillData = monster.Get_DecideAndUseSkill();
+            if (skillData == null) return;
 
             _skillEndTime = Environment.TickCount64 + (long)(skillData.skillDuration * 1000f);
             monster._delaySkillAnimationTimer = skillData.skillCoolTime;
-
             monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
+
+            _player = monster.PlayerTarget;
         }
 
         public void Execute(Monster monster)
@@ -42,7 +41,7 @@ namespace Server.Game.Object.Monster.FSM
             monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
 
             if (timeout)
-                monster.ChangeState(FSMManager.Instance.GetIdleState());
+                 monster.ChangeState(FSMManager.Instance.GetIdleState());
         }
 
         private void LookAtTarget(Monster monster)
@@ -64,8 +63,8 @@ namespace Server.Game.Object.Monster.FSM
         public void Exit(Monster monster)
         {
             _skillEndTime = 0;
-            _isClientEndReceived = false;
             _lastUpdateTime = 0;
+            _isClientEndReceived = false;
         }
     }
 }

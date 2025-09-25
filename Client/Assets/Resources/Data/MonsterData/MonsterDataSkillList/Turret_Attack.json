@@ -1,0 +1,28 @@
+{
+  "Name": "Root",
+  "Type": "SequenceNode",
+  "Children": [
+    {
+      "Name": "CheckWKey",
+      "Type": "IsKeyPressedNode",
+      "Properties": {
+        "skillId": "MsTurretAttack"
+      }
+    },
+    {
+      "Name": "ParallelNodeRoot",
+      "Type": "ParallelNode",
+      "Children": [
+        {
+          "Name": "TurretAttack",
+          "Type": "PlayAnimatorTriggerNode",
+          "Properties": {
+            "triggerName": "tAttack01",
+            "animationStateName": "Turret_atk01"
+          }
+        }
+      ]
+    }
+  ]
+}
+

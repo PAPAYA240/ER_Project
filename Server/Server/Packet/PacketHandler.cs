@@ -3,14 +3,9 @@ using Google.Protobuf.Protocol;
 using Server;
 using Server.Data;
 using Server.Game;
-using Server.Game.Object.Monster;
 using ServerCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
-using System.Numerics;
-using System.Text;
 using static Server.Data.DataUtils;
 
 class PacketHandler
@@ -27,7 +22,6 @@ class PacketHandler
             clientSession.MyPlayer.Info.PosInfo.PosY = 0;
             clientSession.MyPlayer.Info.Player = new PlayerInfo();
             clientSession.MyPlayer.Info.Player.CharType = clientSession.MyCharacter;
-            clientSession.MyPlayer.Info.CharType = clientSession.MyCharacter;
             clientSession.MyPlayer.MakeDict();
 
             StatInfo stat = null;

@@ -1,9 +1,8 @@
 ﻿using Google.Protobuf.Protocol;
 using System;
 using System.Numerics;
-using System.Threading;
 
-namespace Server.Game.Object.Monster.FSM
+namespace Server.Game
 {
     public class MovingState : IMonsterState
     {
@@ -19,10 +18,10 @@ namespace Server.Game.Object.Monster.FSM
             // 플레이어가 없으면 스포너로 이동
             if (monster.PlayerTarget == null || monster.IsReturnSpawn())
             {
-                if(monster.PlayerTarget != null)
+                if (monster.PlayerTarget != null)
                     monster.PlayerTarget.Target = null;
                 monster.PlayerTarget = null;
-
+                Console.WriteLine("스포너 이동");
                 monster.Get_CalculatePath(monster.spawnPosition);
             }
             else // 플레이어를 찾아 이동
@@ -70,7 +69,7 @@ namespace Server.Game.Object.Monster.FSM
                 _nextCalcPathTick = Environment.TickCount64 + THOUSANDS_MS;
             }
 
-            if (_nextMoveTick > Environment.TickCount64)  return;
+            if (_nextMoveTick > Environment.TickCount64) return;
             _nextMoveTick = Environment.TickCount64 + HUNDREDS_MS;
 
             if (monster._path != null && monster._path.Count > 0)
@@ -100,12 +99,12 @@ namespace Server.Game.Object.Monster.FSM
                 return true;
 
             // 스폰 장소로 돌아가기
-            monster.Get_MoveAlongPath(); 
+            monster.Get_MoveAlongPath();
             monster.PushState(CreatureState.Moving, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
             return false;
         }
 
-        public void Exit(Monster monster) 
+        public void Exit(Monster monster)
         {
             _nextMoveTick = 0;
             _nextCalcPathTick = Environment.TickCount64 + THOUSANDS_MS;

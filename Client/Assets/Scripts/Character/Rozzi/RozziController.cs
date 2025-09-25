@@ -93,6 +93,16 @@ public class RozziController : MyPlayerController
     }
 
     #region Skill
+    public override void OnSkillConfirmed(S_Skill skillPacket)
+    {
+        base.OnSkillConfirmed(skillPacket);
+
+        if ((KeyCode)skillPacket.SkillInfo.KeyCode == KeyCode.Q)
+        {
+            LookAtMouse();
+        }
+    }
+
     protected override void Skill_Q()
     {
         PlayAnimation("SKILL_Q", 0.1f);

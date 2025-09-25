@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Server.Game.Object.Monster.AStar
+namespace Server.Game
 {
     [System.Serializable]
     public class SerializableVector3
