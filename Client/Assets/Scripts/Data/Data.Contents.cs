@@ -162,6 +162,7 @@ namespace Data
             Self, // 스킬을 시전하는 오브젝트에 생성
             Target, // 공격 대상 오브젝트에게 생성
             Ground, // 특정 위치에 생성
+            Shoot,
         }
 
         public string type;    // Buff / Debuff / Burn 등

@@ -10,7 +10,7 @@ public class BaseController : MonoBehaviour
 {
     public int Id { get; set; }
 
-    float _speedCoeff = 3.2f;
+    float _speedCoeff = 2.3f;
 
     public virtual StatInfo Stat
     {
@@ -89,7 +89,7 @@ public class BaseController : MonoBehaviour
         }
     }
 
-    ObjectInfo _ObjectInfo = new ObjectInfo()
+    ObjectInfo _objectInfo = new ObjectInfo()
     {
         StatInfo = new StatInfo(),
         PosInfo = new PositionInfo(),
@@ -98,8 +98,8 @@ public class BaseController : MonoBehaviour
 
     public ObjectInfo ObjInfo
     {
-        get { return _ObjectInfo; }
-        set { _ObjectInfo = value; PosInfo = value.PosInfo; RotInfo = value.RotInfo; Stat = value.StatInfo; }
+        get { return _objectInfo; }
+        set { _objectInfo = value; PosInfo = value.PosInfo; RotInfo = value.RotInfo; Stat = value.StatInfo; }
     }
 
     public void SyncPos(bool isWarp = false)

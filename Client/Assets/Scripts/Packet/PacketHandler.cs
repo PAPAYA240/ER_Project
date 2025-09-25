@@ -330,4 +330,20 @@ class PacketHandler
 
         Managers.Object.MyPlayer.PlayerInterface.SpecificSkillLevelUp(key);
     }
+
+    public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeStat statPacket = packet as S_ChangeStat;
+
+        GameObject go = Managers.Object.FindById(statPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.Hp = statPacket.Hp;
+        pc.Stamina = statPacket.Stamina;
+    }
 }

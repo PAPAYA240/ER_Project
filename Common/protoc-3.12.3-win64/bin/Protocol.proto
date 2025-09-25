@@ -39,6 +39,9 @@ enum MsgId {
   S_RESPAWN = 31;
   C_SKILL_LEVEL_UP = 32;
   S_SKILL_LEVEL_UP = 33;
+  C_PLAYER_STATE = 34;
+  S_CHANGE_STAT = 35;
+  C_ATTACK_SKILL_TARGET = 36;
 }
 
 enum CreatureState{
@@ -181,6 +184,7 @@ message S_Interact  {
 
 message C_EnterGame {
 	bool enterGame = 1;
+	repeated CharacterType dummyPlayers = 2;
 }
 
 message S_EnterGame {
@@ -342,6 +346,17 @@ message S_Respawn{
 	float stamina = 5;
 }
 
+message C_PlayerState{
+	int32 objectId = 1;
+	CreatureState state = 2;
+}
+
+message S_ChangeStat{
+	int32 objectId = 1;
+	float hp = 2;
+	float stamina = 3;
+}
+
 message PositionInfo{
 	CreatureState state = 1;
 	float posX = 2;
@@ -436,6 +451,8 @@ message WeaponInfo{
 message SkillInfo{
 	int32 skillId = 1;
 	int32 keyCode = 2;
+	float coolTime = 3;
+	int32 targetId = 4;
 }
 
 message SkillHitbox{
@@ -459,4 +476,8 @@ message SkillHitbox{
 message CostInfo{
 	float coolTime = 1;
 	float stamina = 2;
+}
+
+message C_AttackSkillTarget{
+	bool attack = 1;
 }

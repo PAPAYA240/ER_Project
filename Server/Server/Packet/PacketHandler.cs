@@ -7,6 +7,7 @@ using Server.Game.Object.Monster;
 using ServerCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Text;
@@ -26,6 +27,7 @@ class PacketHandler
             clientSession.MyPlayer.Info.PosInfo.PosY = 0;
             clientSession.MyPlayer.Info.Player = new PlayerInfo();
             clientSession.MyPlayer.Info.Player.CharType = clientSession.MyCharacter;
+            clientSession.MyPlayer.Info.CharType = clientSession.MyCharacter;
             clientSession.MyPlayer.MakeDict();
 
             StatInfo stat = null;
@@ -46,6 +48,9 @@ class PacketHandler
             
         clientSession.CurRoom = room.RoomId;
         room.Push(room.EnterGame, player);
+
+        C_EnterGame enterGamePkt = packet as C_EnterGame;
+        room.Push(room.AddDummyPlayers, clientSession, enterGamePkt.DummyPlayers.ToList());
     }
 
     public static void C_MoveHandler(PacketSession session, IMessage packet)
@@ -211,5 +216,30 @@ class PacketHandler
             //패킷을 보낸다.? 푸쉬한다?
             room.Push(room.SkillLevelUp, player.Id, skillInfoChangePacket.KeyCode);
         }
+    }
+
+    public static void C_PlayerStateHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_PlayerState statePacket = packet as C_PlayerState;
+
+        // 검증 필요하면 추가하기..
+        Player player = clientSession.MyPlayer;
+        player.State = statePacket.State;
+    }
+
+    public static void C_AttackSkillTargetHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_AttackSkillTarget atkSkillTargetPkt = packet as C_AttackSkillTarget;
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleAttackSkillTarget, player, atkSkillTargetPkt);
     }
 }

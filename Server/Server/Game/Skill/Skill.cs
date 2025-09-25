@@ -41,5 +41,10 @@ public class Skill
             return SkillData.levels[1].staminaCost;
         }
     }
+
+    public float GetSkillDamage()
+    {
+        return _skillData.levels[CurLevel].damage;
+    }
 }
 

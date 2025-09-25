@@ -2,6 +2,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Sockets;
+using System.Numerics;
+using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
@@ -25,6 +28,7 @@ namespace Server.Game
         Dictionary<int, Dictionary<int, Player>> _teams = new Dictionary<int, Dictionary<int, Player>>();
 
         bool _teamToggle = false;
+        bool _dummyAdded = false;
 
         public bool TryGetMonster(int objectId, out Monster monster)
         {
@@ -42,6 +46,8 @@ namespace Server.Game
 
             // Spawn Env
             _envManager.Init(this);
+
+            _collisionManager.Init();
         }
 
         public override void Update()
@@ -49,6 +55,11 @@ namespace Server.Game
             foreach (Projectile projectile in _projectiles.Values)
             {
                 projectile.Update();
+            }
+
+            foreach (Player player in _players.Values)
+            {
+                player.Update();
             }
 
             foreach (Player player in _players.Values)
@@ -70,13 +81,6 @@ namespace Server.Game
             _collisionManager.Update();
             _collisionManager.CheckAllCollisions(_teams, _monsters, _projectiles);
 
-            foreach (Player player in _players.Values)
-            {
-                int levelUpCnt = player.CheckLevelUp();
-                if(levelUpCnt > 0)
-                    BroadcastLevelUp(player.Id, levelUpCnt, player.Info.Player.CharType);
-            }
-
             BroadcastVisibleObjs();
             CheckLastPing();
         }
@@ -92,6 +96,7 @@ namespace Server.Game
                 Player player = gameObject as Player;
                 _players.Add(gameObject.Id, player);
                 player.Info.Player.Team = AssignTeam();
+                player.StartRegen();
 
                 if (!_teams.TryGetValue(player.Info.Player.Team, out var teamPlayers))
                 {
@@ -130,6 +135,10 @@ namespace Server.Game
                         spawnPacket.Objects.Add(env.Info);
 
                     player.Session.Send(spawnPacket);
+
+                    int levelUpCnt = player.CheckLevelUp();
+                    if (levelUpCnt > 0)
+                        BroadcastLevelUp(player.Id, levelUpCnt, player.Info.Player.CharType);
                 }
             }
             else if (type == GameObjectType.Monster)
@@ -182,6 +191,7 @@ namespace Server.Game
                 myTeam.Remove(player.Id);
 
                 player.Room = null;
+                player.StopRegen();
 
                 // 본인한테 정보 전송
                 {
@@ -269,7 +279,7 @@ namespace Server.Game
             if (!player.CanUseSkill(keyCode))
             {
                 skill.CanUse = false;
-                Broadcast(skill);
+                player.Session.Send(skill);
                 return; 
             }
             // 스킬 사용이 가능하면 자원 소모
@@ -279,9 +289,17 @@ namespace Server.Game
             }
 
             // TODO : (임시) 몬스터 찾아주기, 공격 범위에 나간다면 target 은 null로 전달해야 함
-            TryGetMonster(skillPacket.TargetId, out Monster target);
-            player.Target = target;
-
+            if(TryGetMonster(skillPacket.TargetId, out Monster target))
+            {
+                player.Target = target;
+                player.SkillTarget = target;
+                player.UsedTargetingSkill = keyCode;
+            }
+            else if(_players.TryGetValue(skillPacket.TargetId, out Player skillTarget))
+            {
+                player.SkillTarget = skillTarget;
+                player.UsedTargetingSkill = keyCode;
+            }
 
             // 스킬 사용이 가능하다 판단되면 패킷 전송
             info.PosInfo.State = CreatureState.Skill;
@@ -297,7 +315,7 @@ namespace Server.Game
                 CoolTime = player.GetCoolTime(keyCode),
                 Stamina = player.Stat.Stamina,
             };
-            Broadcast(skill);
+            player.Session.Send(skill);
 
             SkillData skillData = null;
             Dictionary<KeyCode, SkillData> skills = DataManager.SkillDict[info.Player.CharType];
@@ -317,6 +335,24 @@ namespace Server.Game
             anim.ObjectId = player.Id;
             anim.AnimInfo = animPacket.AnimInfo;
             Broadcast(anim);           
+        }
+
+        public void HandleAttackSkillTarget(Player player, C_AttackSkillTarget attackSkillTarget)
+        {
+            if (player == null)
+                return;
+
+            float damage = player.GetSkillDamage(player.UsedTargetingSkill);
+            GameObject skillTarget = player.SkillTarget;
+            skillTarget.Info.StatInfo.Hp -= damage;
+            skillTarget.Info.StatInfo.Hp = Math.Max(0, skillTarget.Info.StatInfo.Hp);
+
+            S_ChangeHp changeHpPkt = new S_ChangeHp()
+            {
+                ObjectId = skillTarget.Id,
+                Hp = skillTarget.Info.StatInfo.Hp
+            };
+            Broadcast(changeHpPkt);
         }
 
         public Player FindPlayer(Func<GameObject, bool> condition)
@@ -403,7 +439,7 @@ namespace Server.Game
             levelUpPkt.ObjectId = objectId;
             levelUpPkt.LevelUpCnt = levelUpCnt;
 
-            StatInfo statInfo = DataManager.StatGrowthDict[charType];
+            StatInfo statInfo = new StatInfo(DataManager.StatGrowthDict[charType]);
             statInfo.MultiplyForGrowth(levelUpCnt);
             levelUpPkt.StatGrowth = statInfo;
 
@@ -422,6 +458,54 @@ namespace Server.Game
             });
 
             player.Session.Send(skillLevelUpPacket);
+        }
+
+        public void AddDummyPlayers(ClientSession clientSession,  List<CharacterType> dummyPlayers)
+        {
+            if (_dummyAdded)
+                return;
+
+            S_Spawn spawnPacket = new S_Spawn();
+            Random rand = new Random();
+            foreach (CharacterType charType in dummyPlayers)
+            {
+                Player dummyPlayer = ObjectManager.Instance.Add<Player>();
+                {
+                    dummyPlayer.Info.Name = $"DummyPlayer_{dummyPlayer.Id}";
+                    dummyPlayer.Info.PosInfo.State = CreatureState.Idle;
+                    dummyPlayer.Info.PosInfo.PosX = rand.Next(-4,4);
+                    dummyPlayer.Info.PosInfo.PosY = 0;
+                    dummyPlayer.Info.PosInfo.PosZ = rand.Next(-4, 4);
+                    dummyPlayer.Info.Player = new PlayerInfo();
+                    dummyPlayer.Info.Player.CharType = charType;
+                    dummyPlayer.Info.CharType = charType;
+                    dummyPlayer.MakeDict();
+
+                    StatInfo stat = null;
+                    DataManager.StatDict.TryGetValue(charType, out stat);
+                    dummyPlayer.Stat.MergeFrom(stat);
+                    dummyPlayer.Hp = dummyPlayer.Stat.MaxHp;
+                    dummyPlayer.Stamina = dummyPlayer.Stat.MaxStamina;
+                    dummyPlayer.Session = clientSession;
+                    _players.Add(dummyPlayer.Id, dummyPlayer);
+                    dummyPlayer.Info.Player.Team = AssignTeam();
+
+                    if (!_teams.TryGetValue(dummyPlayer.Info.Player.Team, out var teamPlayers))
+                    {
+                        teamPlayers = new Dictionary<int, Player>();
+                        _teams[dummyPlayer.Info.Player.Team] = teamPlayers;
+                    }
+                    teamPlayers.Add(dummyPlayer.Id, dummyPlayer);
+
+                    ObjectManager.Instance.RegisterTeam(dummyPlayer.Id, dummyPlayer.Info.Player.Team);
+
+                    dummyPlayer.Room = this;
+                }
+                spawnPacket.Objects.Add(dummyPlayer.Info);
+            }
+            clientSession.Send(spawnPacket);
+
+            _dummyAdded = true;
         }
     }
 }

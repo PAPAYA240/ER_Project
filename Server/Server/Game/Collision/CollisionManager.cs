@@ -6,6 +6,7 @@ using System.Net.NetworkInformation;
 using System.Numerics;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
@@ -34,12 +35,26 @@ namespace Server.Game
         public ConcurrentDictionary<int, byte> HitObjs = new ConcurrentDictionary<int, byte>();
     }
 
+    class HitboxChain
+    {
+        public KeyCode KeyCode { get; set; }
+        public int MilliSecs { get; set; }
+    }
+
     class CollisionManager
     {
         object _lock = new object();
 
         // Key: ObjectId
         Dictionary<int, HashSet<Hitbox>> _hitboxDict = new Dictionary<int, HashSet<Hitbox>>();
+
+        Dictionary<CharacterType, Dictionary<KeyCode, HitboxChain>> _hitboxChainDict = new Dictionary<CharacterType, Dictionary<KeyCode, HitboxChain>>();
+
+        public void Init()
+        {
+            // 히트박스 특정 시간 후 자동 생성
+            AddHitboxChain(CharacterType.Abigail, KeyCode.Q, new HitboxChain { KeyCode = KeyCode.F1, MilliSecs = 333 });
+        }
 
         public void AddHitbox(Player player, CharacterType charType, KeyCode keyCode)
         {
@@ -68,6 +83,15 @@ namespace Server.Game
                 }
 
                 set.Add(hitbox);
+
+                if (_hitboxChainDict.TryGetValue(charType, out Dictionary<KeyCode, HitboxChain> dict))
+                {
+                    if(dict.TryGetValue(keyCode, out HitboxChain hitboxChain))
+                    {
+                        // 딜레이 이후 자동으로 2타 히트박스 추가
+                        _ = AddHitboxAfterDelay(player, charType, hitboxChain.KeyCode, hitboxChain.MilliSecs);
+                    }
+                }
             }            
         }
 
@@ -298,6 +322,21 @@ namespace Server.Game
                     }
                 }
             }
+        }
+
+        public void AddHitboxChain(CharacterType character, KeyCode key, HitboxChain chain)
+        {
+            if (!_hitboxChainDict.ContainsKey(character))
+                _hitboxChainDict[character] = new Dictionary<KeyCode, HitboxChain>();
+
+            _hitboxChainDict[character][key] = chain;
+        }
+
+        async Task AddHitboxAfterDelay(Player player, CharacterType charType, KeyCode keyCode, int millisecondsDelay)
+        {
+            await Task.Delay(millisecondsDelay);
+
+            AddHitbox(player, charType, keyCode);
         }
     }
 }
