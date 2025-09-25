@@ -137,10 +137,10 @@ public class MyPlayerController : PlayerController
 
     }
 
-    public void ManualInit()
-    {
-        Init();
-    }
+    //public void ManualInit()
+    //{
+    //    Init();
+    //}
 
     protected override void Init()
     {
