@@ -35,6 +35,17 @@ namespace Server.Game
         public KeyCode UsedTargetingSkill { get; set; }
 
         #region Init
+        public void Init()
+        {
+            MakeDict();
+            StartRegen();
+        }
+
+        public void OnDestroy()
+        {
+            StopRegen();
+        }
+
         public void MakeDict()
         {
             MakeSkillDict();

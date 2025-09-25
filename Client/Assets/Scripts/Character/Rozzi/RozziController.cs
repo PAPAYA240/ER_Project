@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Playables;
+using UnityEngine.UIElements;
 using static UI_PlayerInterface;
 using static UI_SkillBase;
 using static UnityEngine.GraphicsBuffer;
@@ -98,6 +99,8 @@ public class RozziController : MyPlayerController
         PlayAnimation("SKILL_Q", 0.1f);
 
         // 스킬이 오브젝트를 맞춰야 Dash 가능
+        if (_coSkillQ != null)
+            StopCoroutine(_coSkillQ);
         _coSkillQ = StartCoroutine("CoCheckDash");
     }
 
@@ -131,11 +134,27 @@ public class RozziController : MyPlayerController
         _canDash = false;
     }
 
+    private void StartDash()
+    {
+        Vector3 targetPos = GetTargetPos(_dashRange);
+
+        if (GetReachablePosition(transform.position, targetPos, out NavMeshHit navHit) != Vector3.zero)
+        {
+            _targetPos = navHit.position;
+        }
+
+        _canDash = false;
+        if (_coSkillQ != null)
+            StopCoroutine(_coSkillQ);
+        _coSkillQ = StartCoroutine("CoStartDash");
+    }
+
     IEnumerator CoStartDash()
     {
         PlayAnimation("SKILL_Q_DASH", 0.1f);
 
         _isDashing = true;
+        _agent.ResetPath();
         _agent.enabled = false;
         State = CreatureState.Skill;
 
@@ -145,6 +164,7 @@ public class RozziController : MyPlayerController
         {
             transform.position = Vector3.MoveTowards(transform.position, _targetPos, _dashSpeed * Time.deltaTime);
             UpdateTransform();
+
             yield return null;
         }
 
@@ -153,24 +173,9 @@ public class RozziController : MyPlayerController
 
         _agent.Warp(_targetPos);
         transform.position = _targetPos;
-        UpdateTransform();
+        UpdateTransform(true);
 
         SetMovementState();
-    }
-
-    private void StartDash()
-    {
-        Vector3 targetPos = GetTargetPos(_dashRange);
-
-        if (GetReachablePosition(transform.position, targetPos, out NavMeshHit navHit) != Vector3.zero)
-        {
-            _targetPos = navHit.position;
-            _agent.SetDestination(_targetPos);
-        }
-
-        _canDash = false;
-        StopCoroutine(_coSkillQ);
-        StartCoroutine("CoStartDash");
     }
     #endregion
 

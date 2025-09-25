@@ -108,7 +108,7 @@ public class CreatureController : BaseController
             return false;
 
         // 같은 팀일 때
-        if (cc.ObjectType == Define.Object.OtherPlayer && cc.ObjInfo.Team == ObjInfo.Team)
+        if (cc.ObjectType == Define.Object.OtherPlayer && cc.ObjInfo.Player.Team == ObjInfo.Player.Team)
             return false;
 
         // 대상이 죽었을 때 || 무적 상태일 때 || 시야 밖일 때(부시) 등등

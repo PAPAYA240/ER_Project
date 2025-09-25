@@ -59,7 +59,7 @@ public class MyPlayerController : PlayerController
             SendStatePacket();
         }
     }
-    protected bool _isStop = false;
+    protected bool _isStop = true;
 
     // State : Skill
     protected bool _isUseSkill = false;
@@ -92,13 +92,6 @@ public class MyPlayerController : PlayerController
         {
             if (value == this.gameObject)
                 return;
-
-            if (State == CreatureState.Attack && _target != value &&
-                value != null && _attackRoutine != null)
-            {
-                StopCoroutine(_attackRoutine);
-                //_attackRoutine = StartCoroutine(CoAttackLoop());              
-            }
 
             _target = value;
         }
@@ -828,10 +821,15 @@ public class MyPlayerController : PlayerController
 
             if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
             {
-                _agent.SetDestination(navHit.position);
+                if(_agent.isActiveAndEnabled)
+                {
+                    _agent.SetDestination(navHit.position);
 
-                _moveKeyPressed = true;
+                    _moveKeyPressed = true;
+                }                 
             }
+
+            UpdateTransform();
         }
     }
     #endregion
@@ -890,6 +888,9 @@ public class MyPlayerController : PlayerController
 
     protected void SetSkillInput(KeyCode keyCode)
     {
+        if (State == CreatureState.Skill)
+            return;
+
         _isUseSkill = true;
         _keyCode = keyCode;
     }
