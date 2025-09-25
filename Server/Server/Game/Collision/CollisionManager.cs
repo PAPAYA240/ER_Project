@@ -106,7 +106,7 @@ namespace Server.Game
             ConcurrentDictionary<int, Monster> monsters,
             Dictionary<int, Projectile> projectiles)
         {
-            Dictionary<int, int> damageDict = new Dictionary<int, int>();
+            Dictionary<int, float> damageDict = new Dictionary<int, float>();
             CheckPlayerHit(teams, damageDict);
 
             SendChangeHpPkts(teams, damageDict);
@@ -166,7 +166,7 @@ namespace Server.Game
             }
         }
 
-        void CheckPlayerHit(Dictionary<int, Dictionary<int, Player>> teams, Dictionary<int, int> damageDict)
+        void CheckPlayerHit(Dictionary<int, Dictionary<int, Player>> teams, Dictionary<int, float> damageDict)
         {
             foreach(var nestedKvp in _hitboxDict)
             {
@@ -196,7 +196,7 @@ namespace Server.Game
 
                             if (CheckCollision(hitbox, target))
                             {
-                                int dmg = CalcDamage(hitbox.Player.Stat, target.Stat, DataManager.SkillDict[hitbox.CharType][hitbox.KeyCode]);
+                                float dmg = CalcDamage(hitbox.Player, target.Stat, hitbox.KeyCode );
                                 if (damageDict.ContainsKey(target.Id))
                                     damageDict[target.Id] += dmg;
                                 else
@@ -274,13 +274,35 @@ namespace Server.Game
             return false;
         }
 
-        int CalcDamage(StatInfo attackter, StatInfo target, SkillData skill)
+        float CalcDamage(Player attacker, StatInfo target, KeyCode key)
         {
             // temp dmg
+            // 여기서 어떤 정보를 받아와야하는가?
+            // 1 어태커의 스킬 정보(스킬 기본 데미지랑 스킬 데미지계수가 포함된 매커니즘?)
+            // 2 어태커의 스탯 정보(기본 스탯이랑 아이템 스탯 더해진....값?)
+            // 3 타겟의 스탯 정보 (기본 스탯이랑 아이템 스탯 더해진....값?)
+
+            //스킬 타입을 가져옴
+            //attacker.GetSkilltype();
+
+            //해당 스킬의 레벨별 기본 데미지를 가져옴.
+            float damage = attacker.GetSkillDamage(key);
+
+            float defense = target.Defense;
+
+            //스킬의 계수 적용?
+
+            //대상의 방어력을 가져와서 방어력 관통을 적용 시킨다.
+            //이렇게 
+            //방어력 적용?
+
+            //프로퍼티를 어떻게 만들까.
+            // 플레이어 한테 프로퍼티
+
             return 30;
         } 
 
-        void SendChangeHpPkts(Dictionary<int, Dictionary<int, Player>> teams, Dictionary<int, int> damageDict)
+        void SendChangeHpPkts(Dictionary<int, Dictionary<int, Player>> teams, Dictionary<int, float> damageDict)
         {
             foreach (var kvp in damageDict)
             {

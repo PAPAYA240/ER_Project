@@ -173,6 +173,25 @@ enum TraitType{
     SENTINEL = 15;	
 }
 
+enum ItemType{
+	WEAPON = 0;
+	BODY = 1;
+	HEAD = 2;
+	ARM = 3;
+	LEG = 4;
+	ITEM_TYPE_END = 5;
+}
+
+enum ItemGrade{
+	COMMON = 0;
+	UNCOMMON = 1;
+	RARE = 2;
+	EPIC = 3;
+	LEGENDARY = 4;
+	MYTHIC = 5;
+	ITEM_GRADE_END = 6;
+}
+
 message C_Interact {
     int32 objectId = 1;
 }
@@ -377,14 +396,15 @@ message StatInfo{
 	float hp = 3;
 	float maxHp = 4;
 	float hpRegen = 5;
-	float stamina = 6;
-	float maxStamina = 7;
-	float staminaRegen = 8;
-	float attackSpeed = 9;
-	float moveSpeed = 10;
-	int32 exp = 11;
-	int32 level = 12;
-	int32 hill = 13;
+	float barrier = 6;
+	float stamina = 7;
+	float maxStamina = 8;
+	float staminaRegen = 9;
+	float attackSpeed = 10;
+	float moveSpeed = 11;
+	int32 exp = 12;
+	int32 level = 13;
+	int32 hill = 14;
 }
 
 message PlayerInfo {

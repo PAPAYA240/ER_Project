@@ -34,7 +34,6 @@ public class UI_DSkill : UI_SkillBase
     const int _cooldownTimer = (int)GameObjects.CooldownTimer;
 
     //Temp
-    float _remainCool = 0;
     float _maxCool = 10.0f;
 
     public override void Init()
@@ -54,26 +53,6 @@ public class UI_DSkill : UI_SkillBase
 
     void Update()
     {
-        //temp
-        if (_skillLevel == 0)
-            return;
-
-        if (GetObject(_cooldownTimer).activeSelf && _remainCool > 0.0f)
-        {
-            _remainCool = Math.Max(0.0f, _remainCool - Time.deltaTime);
-
-            if (_remainCool > 0.0f)
-            {
-
-                GetImage((int)Images.CooldownFill).fillAmount = _remainCool / _maxCool;
-                SetCoolDown(_remainCool);
-            }
-            else
-            {
-                GetObject(_cooldownTimer).SetActive(false);
-            }
-        }
-
 
     }
 
@@ -100,11 +79,21 @@ public class UI_DSkill : UI_SkillBase
         OnLevelUp?.Invoke(SkillKeyCode);
     }
 
-    public override void UseSkill()
+    public override void SetCool(float value)
     {
-        GetObject(_cooldownTimer).SetActive(true);
-        //temp
-        _remainCool = _maxCool;
+        if (_skillLevel == 0)
+            return;
+
+        if (value > 0)
+        {
+            GetObject(_cooldownTimer).SetActive(true);
+            GetImage((int)Images.CooldownFill).fillAmount = value / _maxCool;
+            SetCoolDown(value);
+        }
+        else
+        {
+            GetObject(_cooldownTimer).SetActive(false);
+        }
     }
 
     void SetCoolDown(float remainCooldown)

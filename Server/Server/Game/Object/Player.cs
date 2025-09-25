@@ -15,6 +15,8 @@ namespace Server.Game
 
         protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
         Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
+        Dictionary<ItemType, EquipItemInfo> _equipItemSlot = new Dictionary<ItemType, EquipItemInfo>();
+
         class CoolTime
         {
             public bool isCoolDown;     // 쿨타임이 돌고 있는지 (false : 사용 가능)
@@ -39,6 +41,7 @@ namespace Server.Game
         {
             MakeSkillDict();
             MakeCoolDownDict();
+            MakeItemSlot();
         }
         #endregion
 
@@ -212,6 +215,8 @@ namespace Server.Game
 
                 _skills.Add(skillData.Key, skill);
             }
+
+            _skills[KeyCode.T].CurLevel = 1;
         }
 
         private void MakeCoolDownDict()
@@ -219,6 +224,14 @@ namespace Server.Game
             foreach (var skill in _skills)
             {
                 _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
+            }
+        }
+
+        private void MakeItemSlot()
+        {
+            for(int i = 0; i < (int)ItemType.End; ++i)
+            {
+                _equipItemSlot.Add((ItemType)i, new EquipItemInfo());
             }
         }
 

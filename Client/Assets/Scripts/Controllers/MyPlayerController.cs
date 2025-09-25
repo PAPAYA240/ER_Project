@@ -212,6 +212,8 @@ public class MyPlayerController : PlayerController
 
     protected override void UpdateController()
     {
+        UpdateCool();
+
         if (State == CreatureState.Dead)
             return;
 
@@ -904,7 +906,7 @@ public class MyPlayerController : PlayerController
         Stamina = skillPacket.CostInfo.Stamina;
 
         // 스킬 실행 UI 연동
-        PlayerInterface.UseSkill(KeyToUIEnum(key));
+        //PlayerInterface.UseSkill(KeyToUIEnum(key));
     }
 
     IEnumerator CoInputCooltime(KeyCode key, float time)
@@ -1136,6 +1138,20 @@ public class MyPlayerController : PlayerController
 
         PlayerInterface.SetLevel(Stat.Level);
         SetNameTagLevel();
+    }
+
+    public void UpdateCool()
+    {
+        if (null == PlayerInterface) 
+            return;
+
+        PlayerInterface.SetSkillCool(GameObjects.QSkill, _coolDownDict[KeyCode.Q].coolTime);
+        PlayerInterface.SetSkillCool(GameObjects.WSkill, _coolDownDict[KeyCode.W].coolTime);
+        PlayerInterface.SetSkillCool(GameObjects.ESkill, _coolDownDict[KeyCode.E].coolTime);
+        PlayerInterface.SetSkillCool(GameObjects.RSkill, _coolDownDict[KeyCode.R].coolTime);
+        PlayerInterface.SetSkillCool(GameObjects.TSkill, _coolDownDict[KeyCode.T].coolTime);
+        //PlayerInterface.SetSkillCool(GameObjects.DSkill, );
+        //PlayerInterface.SetSkillCool(GameObjects.FSkill, );
     }
 
     #endregion
