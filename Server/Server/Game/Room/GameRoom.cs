@@ -477,7 +477,6 @@ namespace Server.Game
                     dummyPlayer.Info.PosInfo.PosZ = rand.Next(-4, 4);
                     dummyPlayer.Info.Player = new PlayerInfo();
                     dummyPlayer.Info.Player.CharType = charType;
-                    dummyPlayer.Info.CharType = charType;
                     dummyPlayer.Init();
 
                     StatInfo stat = null;
