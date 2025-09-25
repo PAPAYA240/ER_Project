@@ -60,6 +60,19 @@
         "MsGammaSkill2",
         "MsGammaSkill3"
       ]
+    },
+    {
+      "id": 4,
+      "name": "Turret",
+      "stat": {
+        "level": 1,
+        "maxHp": 100,
+        "attack": 10,
+        "speed": 5.0
+      },
+      "skills": [
+        "MsTurretAttack"
+      ]
     }
   ]
 }

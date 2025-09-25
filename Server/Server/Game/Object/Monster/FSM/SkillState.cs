@@ -3,7 +3,7 @@ using Server.Data;
 using System;
 using System.Numerics;
 
-namespace Server.Game.Object.Monster.FSM
+namespace Server.Game
 {
     // 서버 타임아웃 + 클라이언트 패킷
     public class SkillState : IMonsterState

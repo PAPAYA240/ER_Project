@@ -6,9 +6,6 @@ using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
 using UnityEngine;
-using static MonsterController;
-using static UI_PlayerInterface;
-using static UI_SkillBase;
 
 class PacketHandler
 {

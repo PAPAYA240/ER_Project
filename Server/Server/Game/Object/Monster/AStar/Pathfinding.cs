@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 
-namespace Server.Game.Object.Monster.AStar
+namespace Server.Game
 {
     // 폴리곤 노드임
     public class Node : IComparable<Node>

@@ -1,8 +1,4 @@
 ﻿using Google.Protobuf.Protocol;
-using Server.Game.Object.Monster.FSM;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Server.Game
 {
@@ -26,9 +22,6 @@ namespace Server.Game
             switch (envType)
             {
                 case EnvType.HillObj:
-                    _interactionStrategy = new InteractableObject();
-                    break;
-                case EnvType.Turret:
                     _interactionStrategy = new InteractableObject();
                     break;
             }

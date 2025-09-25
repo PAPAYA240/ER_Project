@@ -11,54 +11,69 @@ using UnityEditor;
 public class MonsterSaveData
 {
     public MonsterType monsterType;
-    public float xPos;
-    public float yPos;
-    public float zPos;
+    public Vector3 posInfo;
+    public Quaternion rotInfo;
 
-    // 생성자
-    public MonsterSaveData(MonsterType type, Vector3 pos)
+    public MonsterSaveData(MonsterType type, Vector3 pos, Quaternion rot)
     {
         this.monsterType = type;
-        this.xPos = pos.x;
-        this.yPos = pos.y;
-        this.zPos = pos.z;
+        this.posInfo = pos;
+        this.rotInfo = rot;
     }
 }
 
-// MonsterList.cs
 [System.Serializable]
 public class MonsterList
 {
     public List<MonsterSaveData> monsters;
 }
 
-public class MonsterInfoComponent : MonoBehaviour
-{
-    // 원하는 몬스터 타입을 에디터에서 선택할 수 있도록 설정
-    public MonsterType monsterType;
-}
 public class MonsterSaverEditor : MonoBehaviour
 {
-    [MenuItem("Tools/Save Monster Data")]
-    public static void SaveMonsterSaveData()
+    const string _path = "Assets/Resources/Prefabs/Creature/Monster/MonsterSpawnPoints.prefab";
+
+    [MenuItem("Tools/> Save Monster Spawn Data")]
+     public static void SaveMonsterSaveData()
+     {
+         string _savePath = Application.dataPath + "/Resources/Data/MonsterData/SpawnMonsterData.json";
+
+         GameObject SpawnPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(_path);
+         SpawnPrefab.transform.position = Vector3.zero;
+         SpawnPrefab.transform.rotation = Quaternion.identity;
+         if (SpawnPrefab == null)
+         {
+             Debug.LogError("Error: 프리팹을 찾을 수 없습니다. 경로를 확인하세요: " + _path);
+             return;
+         }
+
+         MonsterList monsterDataWrapper = new MonsterList();
+         monsterDataWrapper.monsters = new List<MonsterSaveData>();
+
+         foreach (Transform child in SpawnPrefab.transform)
+         {
+             MonsterType type = GetMonsterTypeFromName(child.name);
+             if (type != MonsterType.MonsterNone)
+             {
+                 MonsterSaveData data = new MonsterSaveData(type, child.position, child.rotation);
+                 monsterDataWrapper.monsters.Add(data);
+             }
+         }
+
+         string jsonData = JsonUtility.ToJson(monsterDataWrapper, true);
+         string directoryPath = Path.GetDirectoryName(_savePath);
+         if (!Directory.Exists(directoryPath))
+             Directory.CreateDirectory(directoryPath);
+
+         File.WriteAllText(_savePath, jsonData);
+         Debug.Log("몬스터 데이터가 " + _savePath + " 경로에 성공적으로 저장되었습니다.");
+     }
+
+    private static MonsterType GetMonsterTypeFromName(string name)
     {
-        MonsterController[] monstersInScene = FindObjectsOfType<MonsterController>();
+        if (System.Enum.TryParse(name, true, out MonsterType type))
+            return type;
 
-        MonsterList monsterList = new MonsterList();
-        monsterList.monsters = new List<MonsterSaveData>();
-
-        foreach (MonsterController monsterInfo in monstersInScene)
-        {
-            Vector3 pos = monsterInfo.transform.position;
-            MonsterSaveData data = new MonsterSaveData(monsterInfo._monsterType, pos);
-            monsterList.monsters.Add(data);
-        }
-
-        string jsonData = JsonUtility.ToJson(monsterList, true); // true는 가독성을 위한 들여쓰기 옵션입니다.
-
-        string path = Application.dataPath + "/MonsterData.json";
-        File.WriteAllText(path, jsonData);
-        Debug.Log("몬스터 데이터가 " + path + " 경로에 성공적으로 저장되었습니다.");
+        return MonsterType.MonsterNone;
     }
 }
 

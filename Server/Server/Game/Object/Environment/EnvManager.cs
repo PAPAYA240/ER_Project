@@ -43,7 +43,6 @@ namespace Server.Game
                 cleanedList.EnvObjects.Add(new LoadEnvData
                 {
                     envType = monsterTypeName,
-
                 });
             }
             return cleanedList;

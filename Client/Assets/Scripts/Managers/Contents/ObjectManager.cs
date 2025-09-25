@@ -97,7 +97,6 @@ public class ObjectManager
         mc.Stat = info.StatInfo;
         mc.Stat.Hp = info.StatInfo.MaxHp;
         mc._monsterType = info.Monster.MonsterType;
-        mc.SyncPos();
     }
     private void AddProjectile(ObjectInfo info)
     {
@@ -113,6 +112,8 @@ public class ObjectManager
     private void AddEnvironment(ObjectInfo info)
     {
         GameObject go = Managers.Resource.Instantiate($"Env/{info.Env.EnvType}");
+        if (go == null) return;
+
         go.name = info.Name;
         _objects.Add(info.ObjectId, go);
 
@@ -130,6 +131,7 @@ public class ObjectManager
     #region Utils
     public void SetObjectVisible()
     {
+        return;
         if (MyPlayer == null)
             return;
 
