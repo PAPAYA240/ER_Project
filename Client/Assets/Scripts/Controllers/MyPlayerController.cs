@@ -56,7 +56,6 @@ public class MyPlayerController : PlayerController
             PosInfo.State = value;
             UpdateAnimation();
             _updated = true;
-            SendStatePacket();
         }
     }
     protected bool _isStop = false;
@@ -106,8 +105,6 @@ public class MyPlayerController : PlayerController
     protected GameObjectType _targetType;
     protected Vector3 _finalPos;
 
-    protected int SkillTargetId { get; set; }
-
     // State : Rest
     protected bool _isResting = false;
     protected Coroutine _coRest;
@@ -123,12 +120,6 @@ public class MyPlayerController : PlayerController
     public float WeaponMasteryAS { get; set; }
     public float ItemAttackSpeed { get; set; } = 0;
 
-    // Cursor
-    Texture2D _cursorAttack;
-    Texture2D _cursorDefault;
-
-    bool _isAttackGround = false;
-
     public float AttackSpeed
     {
         get
@@ -141,26 +132,13 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region Init
-    void Start()
-    {
-
-    }
-
-    //public void ManualInit()
-    //{
-    //    Init();
-    //}
 
     protected override void Init()
     {
         base.Init();
 
-        Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
-
-        _cursorDefault = Managers.Resource.Load<Texture2D>("Cursor/Cursor_01");
-        _cursorAttack = Managers.Resource.Load<Texture2D>("Cursor/Pointer_01");
-
         layerName = _animator.GetLayerName(0);
+        Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
 
         ObjectType = Define.Object.MyPlayer;
         MakeSkillDict();
@@ -223,25 +201,21 @@ public class MyPlayerController : PlayerController
         if (State == CreatureState.Dead)
             return;
 
-        SkillTargetId = -1;
-
         switch (State)
         {
             case CreatureState.Idle:
-                GetMouseInput(1);
+                GetMouseInput();
                 break;
             case CreatureState.Moving:
-                GetMouseInput(1);
+                GetMouseInput();
                 break;
             case CreatureState.Attack:
-                GetMouseInput(1);
+                GetMouseInput();
                 break;
             case CreatureState.Skill:
                 SkillBase currentSkill = FindSkill(_keyCode);
                 if (currentSkill != null && currentSkill.SkillData.canMoveDuringCast == true)
-                {
-                    GetMouseInputDuringSkill();
-                }
+                    GetMouseInput();
                 break;
         }
 
@@ -323,18 +297,6 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    // 마우스 바라보기
-    protected void LookAtMouse()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            Vector3 direction = (hit.point - transform.position).normalized;
-            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
-            transform.rotation = targetRotation;
-        }
-    }
-
     protected override void UpdateAttack()
     {
         if(Target == null || !IsAttackable(Target))
@@ -358,7 +320,7 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region State : Moving
-    protected void LookAtTarget(Vector3 targetPos, bool snapToTarget = false, float speed = 100.0f)
+    protected void LookAtTarget(Vector3 targetPos, bool snapToTarget = false, float speed = 10.0f)
     {
         // 타겟을 바라보도록 방향 조정
         // snapToTarget : Target을 바로 바라볼지
@@ -714,20 +676,9 @@ public class MyPlayerController : PlayerController
                 ExitRest();
             }
         }
-        else if (Input.GetKeyDown(KeyCode.A))
-        {
-            Cursor.SetCursor(_cursorAttack, Vector2.zero, CursorMode.Auto);
-
-            _isAttackGround = true;
-        }
         else if (State == CreatureState.Rest && Input.GetMouseButtonDown(1))
         {
             ExitRest();
-        }
-
-        if (_isAttackGround == true)
-        {
-            GetMouseInput(0);
         }
     }
 
@@ -739,14 +690,8 @@ public class MyPlayerController : PlayerController
         // 몬스터 클릭 시 평타 사거리만큼 떨어진 곳으로 설정
 
         // 그냥 우클릭 시 → 이동 처리
-        if (Input.GetMouseButton(mouseButton))
+        if (Input.GetMouseButton(1))
         {
-            if (_isAttackGround == true)
-            {
-                _isAttackGround = false;
-                Cursor.SetCursor(_cursorDefault, Vector2.zero, CursorMode.Auto);
-            }
-
             _isStop = false;
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -807,30 +752,8 @@ public class MyPlayerController : PlayerController
                         }
                     }
                 }
-            }
-        }
-    }
 
-    protected virtual void GetMouseInputDuringSkill()
-    {
-        if (_agent == null)
-            return;
-
-        if (Input.GetMouseButton(1))
-        {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
-
-            Vector3 targetPos;
-
-            targetPos = hit.point;
-
-            if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
-            {
-                _agent.SetDestination(navHit.position);
-
-                _moveKeyPressed = true;
+                
             }
         }
     }
@@ -1219,18 +1142,6 @@ public class MyPlayerController : PlayerController
             coroutine = null;
         }
     }
-
-    protected Vector3 GetCursorPos()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            return new Vector3(hit.point.x, 0, hit.point.z); // 충돌 지점이 곧 월드 좌표
-        }
-        return new Vector3(-1, -1, -1);
-    }
-
     #endregion
 
     #region Packet
@@ -1244,10 +1155,6 @@ public class MyPlayerController : PlayerController
             {
                 targetId = monster.ObjInfo.ObjectId;
             }
-        }
-        else
-        {
-            targetId = SkillTargetId;
         }
 
         C_Skill skillPacket = new C_Skill()
@@ -1273,13 +1180,6 @@ public class MyPlayerController : PlayerController
     {
         C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { Name = name, Ratio = ratio } };
         Managers.Network.Send(animPacket);
-    }
-
-    private void SendStatePacket()
-    {
-        C_PlayerState statePacket = new C_PlayerState();
-        statePacket.State = State;
-        Managers.Network.Send(statePacket);
     }
     #endregion
 

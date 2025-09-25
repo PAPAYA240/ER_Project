@@ -235,11 +235,11 @@ public class PlayerController : CreatureController
         _nameTag.SetHPColor();
 
         //이거 왜 터지지?
-        //ui.SetLevelText(Stat.Level);
-        //UpdateHp();
-        //UpdateMaxHp();
-        //UpdateStamina();
-        //UpdateMaxStamina();
+        _nameTag.SetLevelText(Stat.Level);
+        UpdateHp();
+        UpdateMaxHp();
+        UpdateStamina();
+        UpdateMaxStamina();
     }
     protected override void UpdateHp()
     {
