@@ -17,9 +17,10 @@ namespace Assets.Scripts.Highlight
 
         void Start()
         {
-            myRenderers = GetComponentsInChildren<Renderer>();
             _cursorDefault = Managers.Resource.Load<Texture2D>("Cursor/Cursor_01");
             _cursorEnemy = Managers.Resource.Load<Texture2D>("Cursor/Cursor_05");
+
+            myRenderers = GetComponentsInChildren<Renderer>();
             outlineMaterial = Resources.Load<Material>("materials/Outline/Outline");
 
             if (outlineMaterial == null || myRenderers == null || myRenderers.Length == 0)
@@ -38,12 +39,11 @@ namespace Assets.Scripts.Highlight
         {
             if (myRenderers == null) return;
 
-            for (int i = 0; i < myRenderers.Length; i++)
+            foreach (var renderer in myRenderers)
             {
-                if (myRenderers[i] != null)
-                {
-                    myRenderers[i].materials = originalMaterials[i];
-                }
+                if (renderer == null) continue;
+                Material[] newMaterials = renderer.materials;
+                renderer.materials = newMaterials.Append(outlineMaterial).ToArray();
             }
             Cursor.SetCursor(_cursorEnemy, Vector2.zero, CursorMode.Auto);
         }
@@ -55,8 +55,7 @@ namespace Assets.Scripts.Highlight
             foreach (var renderer in myRenderers)
             {
                 if (renderer == null) continue;
-
-                renderer.materials = renderer.materials.Where(m => m != outlineMaterial).ToArray();
+                Material[] materialsToKeep = renderer.materials.Where(m => m != outlineMaterial).ToArray();
                 for (int i = 0; i < myRenderers.Length; i++)
                 {
                     if (myRenderers[i] != null)
