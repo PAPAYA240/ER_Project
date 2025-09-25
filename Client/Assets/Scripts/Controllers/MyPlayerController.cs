@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
+using static UI_PlayerInterface;
 using static UI_SkillBase;
 
 public class MyPlayerController : PlayerController
@@ -148,7 +149,7 @@ public class MyPlayerController : PlayerController
         _cursorAttack = Managers.Resource.Load<Texture2D>("Cursor/Pointer_01");
 
         layerName = _animator.GetLayerName(0);
-        Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
+        //Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
 
         ObjectType = Define.Object.MyPlayer;
         MakeSkillDict();

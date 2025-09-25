@@ -203,7 +203,7 @@ namespace Server.Game
             }
         }
 
-        void CheckHit<T>(IDictionary<int, T> targets, Dictionary<int, int> damageDict) where T : GameObject, new() 
+        void CheckHit<T>(IDictionary<int, T> targets, Dictionary<int, float> damageDict) where T : GameObject, new() 
         {
             foreach(var nestedKvp in _hitboxDict)
             {
@@ -223,7 +223,7 @@ namespace Server.Game
 
                         if (CheckCollision(hitbox, target))
                         {
-                            int dmg = CalcDamage(hitbox.Player.Stat, target.Stat, DataManager.SkillDict[hitbox.CharType][hitbox.KeyCode]);
+                            float dmg = CalcDamage(hitbox.Player, target.Stat, hitbox.KeyCode);
                             if (damageDict.ContainsKey(target.Id))
                                 damageDict[target.Id] += dmg;
                             else
