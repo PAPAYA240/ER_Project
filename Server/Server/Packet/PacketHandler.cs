@@ -7,6 +7,7 @@ using Server.Game.Object.Monster;
 using ServerCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Text;
@@ -47,6 +48,9 @@ class PacketHandler
             
         clientSession.CurRoom = room.RoomId;
         room.Push(room.EnterGame, player);
+
+        C_EnterGame enterGamePkt = packet as C_EnterGame;
+        room.Push(room.AddDummyPlayers, clientSession, enterGamePkt.DummyPlayers.ToList());
     }
 
     public static void C_MoveHandler(PacketSession session, IMessage packet)

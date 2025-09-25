@@ -135,6 +135,9 @@ namespace Server.Game
         #region Skill
         public bool CanUseSkill(KeyCode keyCode)
         {
+            if (_skills[keyCode].CurLevel == 0)
+                return false;
+
             // 쿨타임 체크
             if (!CheckCoolTime(keyCode))
                 return false;
