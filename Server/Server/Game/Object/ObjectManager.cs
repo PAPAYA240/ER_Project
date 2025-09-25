@@ -13,8 +13,8 @@ namespace Server.Game
 
         object _lock = new object();
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
-        Dictionary<int, int> _teams = new Dictionary<int, int>(); // key: objectId, value: team
         Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
+        Dictionary<int, int> _teams = new Dictionary<int, int>(); // key: objectId, value: team
 
         // [UNUSED(1)][TYPE(7)][ID(24)]
         int _counter = 0;
@@ -27,9 +27,13 @@ namespace Server.Game
             {
                 gameObject.Id = GenerateId(gameObject.ObjectType);
 
-                if(gameObject.ObjectType == GameObjectType.Player)
+                if (gameObject.ObjectType == GameObjectType.Player)
                 {
                     _players.Add(gameObject.Id, gameObject as Player);
+                }
+                else if (gameObject.ObjectType == GameObjectType.Monster)
+                {
+                    _monsters.Add(gameObject.Id, gameObject as Monster);
                 }
             }
 
@@ -62,6 +66,12 @@ namespace Server.Game
                     _teams.Remove(objectId);
                     return removed;
                 }
+                else if (objectType == GameObjectType.Monster)
+                {
+                    bool removed = _monsters.Remove(objectId);
+                    _teams.Remove(objectId);
+                    return removed;
+                }
             }
 
             return false;
@@ -82,11 +92,10 @@ namespace Server.Game
                 else if (objectType == GameObjectType.Monster)
                 {
                     Monster monster = null;
-                    if(_monsters.TryGetValue(objectId, out monster))
+                    if (_monsters.TryGetValue(objectId, out monster))
                         return monster;
                 }
             }
-
             return null;
         }
 

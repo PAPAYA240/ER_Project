@@ -65,9 +65,8 @@ enum EnvType{
    ENV_NONE = 0;
    HILL_OBJ = 1;
    DEVICE_SPAWNPOINT = 2;
-   TURRET = 3;
-   ACCBOUNDARY_SPAWNPOINT = 4;
-   BARRIER_SPAWNPOINT = 5;
+   ACCBOUNDARY_SPAWNPOINT = 3;
+   BARRIER_SPAWNPOINT = 4;
 }
    
 enum SkillType{
@@ -93,6 +92,8 @@ enum MonsterSkill{
     MS_GAMMA_SKILL1 = 9;
     MS_GAMMA_SKILL2 = 10;
     MS_GAMMA_SKILL3 = 11;
+
+    MS_TURRET_ATTACK = 12;
 }
 
 enum AnimType{
@@ -117,6 +118,7 @@ enum MonsterType {
    	OMEGA = 2;
 	DRONE = 3;
         GAMMA = 4;
+	TURRET = 5;
 }
 
 enum Weapon {

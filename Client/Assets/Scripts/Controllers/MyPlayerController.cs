@@ -1,13 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Xml.Schema;
-using Data;
 using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
-using static Define;
-using static UI_PlayerInterface;
 using static UI_SkillBase;
 
 public class MyPlayerController : PlayerController

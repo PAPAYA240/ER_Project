@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Server.Game.Object.Monster;
-using Server.Game.Object.Monster.AStar;
-
+﻿
 namespace Server.Game
 {
     public abstract class Room : JobSerializer

@@ -149,12 +149,16 @@ public class FXManager : MonoBehaviour
         {
             foreach (var fx in fxPool[prefabName])
             {
+                if (fx == null)
+                    continue;
+
                 if (!fx.activeSelf)
                     return fx;
             }
         }
         return null;
     }
+
     private void SettingLayer(GameObject obj, int newLayer)
     {
         obj.layer = newLayer;

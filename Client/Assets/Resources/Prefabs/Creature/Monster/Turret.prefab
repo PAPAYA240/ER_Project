@@ -375,7 +375,8 @@ GameObject:
   - component: {fileID: 95479897172249930}
   - component: {fileID: 136450502353434422}
   - component: {fileID: 114313473842501568}
-  - component: {fileID: 3323686053516165276}
+  - component: {fileID: -2790352456280432054}
+  - component: {fileID: 2235846103788714481}
   m_Layer: 0
   m_Name: Turret
   m_TagString: Untagged
@@ -442,9 +443,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.75
-  m_Height: 1.8
+  m_Height: 1.7227222
   m_Direction: 1
-  m_Center: {x: 0, y: 0.5, z: 0}
+  m_Center: {x: -0, y: 0.8041474, z: -0}
 --- !u!114 &114313473842501568
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -463,7 +464,7 @@ MonoBehaviour:
   allyEmissionIntensity: 1.1
   enemyEmissionColor: {r: 0.7490196, g: 0, b: 0.015686275, a: 1}
   enemyEmissionIntensity: 1.42
---- !u!114 &3323686053516165276
+--- !u!114 &-2790352456280432054
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -472,10 +473,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 1512202642959888}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e31972557294f5f4bae2562d7a884929, type: 3}
+  m_Script: {fileID: 11500000, guid: 8aaf8e885585ec34ca0cd6eb6ac2e534, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _envType: 3
+  _monsterType: 3
+  _rotationSpeed: 10
+  isSpawned: 0
+--- !u!114 &2235846103788714481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1512202642959888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6415413e3af48b24fa745e2bd62f04a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1566347111773573
 GameObject:
   m_ObjectHideFlags: 0

@@ -130,7 +130,6 @@ public class BaseController : MonoBehaviour
     }
 
     protected Animator _animator;
-    protected NavMeshAgent _navMeshAgent;
     protected NavMeshAgent _agent;  // Player
 
     public virtual CreatureState State
@@ -164,7 +163,6 @@ public class BaseController : MonoBehaviour
     protected virtual void Init()
     {
         _animator = GetComponentInChildren<Animator>();
-        _navMeshAgent = GetComponent<NavMeshAgent>();
 
         SyncPos();
 

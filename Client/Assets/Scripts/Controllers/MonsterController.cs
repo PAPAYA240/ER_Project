@@ -3,6 +3,7 @@ using Google.Protobuf.Protocol;
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 public class MonsterController : CreatureController
 {
@@ -35,18 +36,15 @@ public class MonsterController : CreatureController
 
     protected override void Init()
 	{
-        ObjectType = Define.Object.Monster;
+        base.Init();
 
+        ObjectType = Define.Object.Monster;
         int monsterLayer = LayerMask.NameToLayer("Monster");
         SetLayerRecursively(this.gameObject, monsterLayer);
 
-        base.Init();
-
+        // init
         if (!Add_Component())
-        {
-            Debug.LogError("MonsterController Add_Component : 컴포넌트 추가 실패");
             return;
-        }
 
         InitHpBar();
         Stat = Stat;
@@ -57,28 +55,27 @@ public class MonsterController : CreatureController
        transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
        transform.rotation = transform.rotation;
 
-        if(Skill == MonsterSkill.MsSkill2 && State == CreatureState.Skill)
-            monsterRenderer.material = skillMaterial;
-        else
-            monsterRenderer.material = originalMaterial;
+        if (MonsterType.Omega == _monsterType || MonsterType.Alpha == _monsterType)
+        {
+            if (Skill == MonsterSkill.MsSkill2 && State == CreatureState.Skill)
+                monsterRenderer.material = skillMaterial;
+            else
+                monsterRenderer.material = originalMaterial;
+        }
     }
 
     public override void OnDamaged()
     {
     }
 
-
     #region 패킷
     public void OnIdlePacket(S_State packet)
     {
-        if (_navMeshAgent == null)
+        if (_agent == null)
             return;
 
-        if(packet.PosInfo != null)
-            _navMeshAgent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
-        if(packet.RotInfo != null)
-            _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
-
+        _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+       _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
         Skill = MonsterSkill.MsNone;
 
         OnStateChanged?.Invoke(State);
@@ -86,36 +83,33 @@ public class MonsterController : CreatureController
 
     public void OnMovePacket(S_State packet)
     {
-        if (_navMeshAgent == null)
+        if (_agent == null)
             return;
 
-        _navMeshAgent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+        _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
         _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
 
     public void OnSkillPacket(S_State packet)
     {
-        _navMeshAgent.ResetPath();
+        _agent.ResetPath();
         Skill = packet.Skilltype;
 
-        _navMeshAgent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+        _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
         _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
 
     public void OnRecvStatePacket(S_State packet)
     {
-        if (packet.SequenceId <= _lastReceivedSequenceId)
-        {
-            Debug.Log($"오래된 패킷{packet.SequenceId} 무시");
-            return;
-        }
-        _lastReceivedSequenceId = packet.SequenceId;
+       //if (packet.SequenceId <= _lastReceivedSequenceId)
+       //    return;
+       //_lastReceivedSequenceId = packet.SequenceId;
 
         State = packet.MyState;
         if(packet.TargetPosition != null)
             _targetPos = new Vector3(packet.TargetPosition.PosX, packet.TargetPosition.PosY, packet.TargetPosition.PosZ);
 
-        if (_navMeshAgent == null)
+        if (_agent == null)
             return;
 
         switch (State)
@@ -146,10 +140,14 @@ public class MonsterController : CreatureController
 
     private bool Add_Component()
     {
-        _navMeshAgent = GetComponentInParent<NavMeshAgent>();
-        if (_navMeshAgent == null)
-            return false;
-        _navMeshAgent.updateRotation = false;
+        if(_monsterType == MonsterType.Turret)
+            _agent = GetComponentInParent<NavMeshAgent>();
+        _agent = GetComponentInParent<NavMeshAgent>();
+        if (_agent != null)
+        {
+            _agent.updateRotation = false;
+            SyncPos(true);
+        }
 
         monsterRenderer = this.GetComponentInChildren<Renderer>();
         if (monsterRenderer == null)
@@ -157,8 +155,6 @@ public class MonsterController : CreatureController
         
         originalMaterial = monsterRenderer.material;
         skillMaterial = Resources.Load<Material>("materials/effect/auraMaterial");
-        if (skillMaterial == null)
-            return false;
         this.gameObject.AddComponent<HighlightEffect>();
 
         if (_animator == null)
@@ -185,6 +181,8 @@ public class MonsterController : CreatureController
                 break;
 
         }
+
+        if (_hpBar == null) return;
 
         _hpBar.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
 
