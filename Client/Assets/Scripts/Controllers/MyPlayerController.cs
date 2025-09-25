@@ -223,8 +223,6 @@ public class MyPlayerController : PlayerController
         if (State == CreatureState.Dead)
             return;
 
-        SkillTargetId = -1;
-
         switch (State)
         {
             case CreatureState.Idle:
@@ -320,18 +318,6 @@ public class MyPlayerController : PlayerController
             }
 
             UpdateTransform();
-        }
-    }
-
-    // 마우스 바라보기
-    protected void LookAtMouse()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            Vector3 direction = (hit.point - transform.position).normalized;
-            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
-            transform.rotation = targetRotation;
         }
     }
 
@@ -1248,13 +1234,15 @@ public class MyPlayerController : PlayerController
         else
         {
             targetId = SkillTargetId;
+            SkillTargetId = -1;
         }
 
         C_Skill skillPacket = new C_Skill()
         {
             ObjectInfo = ObjInfo,
             SkillInfo = new SkillInfo() { KeyCode = (int)key },
-            TargetId = targetId
+            TargetId = targetId,
+            MousePos = new PositionInfo(GetTargetPos(1000))
         };
         Managers.Network.Send(skillPacket);
         Debug.Log("스킬 패킷 보내기");
@@ -1319,5 +1307,19 @@ public class MyPlayerController : PlayerController
 
         return transform.position + dir * range;
     }
+
+    // 마우스 바라보기
+    protected void LookAtMouse()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Vector3 direction = (hit.point - transform.position).normalized;
+            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+            transform.rotation = targetRotation;
+            UpdateTransform();
+        }
+    }
+
     #endregion
 }

@@ -68,7 +68,11 @@ public class AbigailController : MyPlayerController
     {
         base.OnSkillConfirmed(skillPacket);
 
-        if((KeyCode)skillPacket.SkillInfo.KeyCode == KeyCode.E)
+        if((KeyCode)skillPacket.SkillInfo.KeyCode == KeyCode.W)
+        {
+            LookAtMouse();
+        }
+        else if((KeyCode)skillPacket.SkillInfo.KeyCode == KeyCode.E)
         {
             transform.position = _warpPos;
             _agent.Warp(_warpPos);

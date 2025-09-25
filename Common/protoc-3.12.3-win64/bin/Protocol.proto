@@ -230,6 +230,7 @@ message C_Skill{
 	ObjectInfo objectInfo = 1;
 	SkillInfo skillInfo = 2;
 	int32 targetId = 3;
+	PositionInfo mousePos = 4;
 }
 
 message S_Skill{

@@ -20,8 +20,11 @@ namespace Server.Game
         public Player Player { get; set; }
         public float PosX { get; set; } = 0;
         public float PosZ {  get; set; } = 0;
-        public float DirX { get; set; } = 0;
+
+        public float DirX {  get; set; } = 0;
         public float DirZ { get; set; } = 0;
+
+        public Vector3 MousePos { get; set; } = new Vector3();
         public float ChargeRatio { get; set; } = 1;
         public CharacterType CharType { get; set; }
         public KeyCode KeyCode { get; set; }
