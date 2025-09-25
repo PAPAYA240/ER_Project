@@ -21,7 +21,7 @@ public class PlayerController : CreatureController
     private FogOfWarVision _fogOfWarVision;
 
     //NameTag
-    protected GameObject _nameTag; 
+    protected UI_PlayerNameTag _nameTag; 
 
     // 레이어
     protected string layerName;
@@ -71,6 +71,16 @@ public class PlayerController : CreatureController
         _agent.acceleration = 999;
         _agent.angularSpeed = 720;
         _agent.stoppingDistance = 0.1f;
+    }
+
+    public void ManualInit()
+    {
+        Init();
+    }
+
+    void Start()
+    {
+
     }
 
     protected override void UpdateController()
@@ -205,56 +215,62 @@ public class PlayerController : CreatureController
     #region NameTagAndHp
     protected void InitNameTag()
     {
-        _nameTag = Managers.Resource.Instantiate("UI/SubItem/PlayerNameTagCanvas", gameObject.transform);
-        if (null == _nameTag)
+        GameObject go = Managers.Resource.Instantiate("UI/SubItem/PlayerNameTagCanvas", gameObject.transform);
+        if (null == go)
         {
-            Debug.Log("_nameTag is null");
+            Debug.Log("go is null : InitNameTag()");
             return;
         }
 
-        _nameTag.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+        _nameTag = go.GetComponentInChildren<UI_PlayerNameTag>();
+        if (null == _nameTag)
+        {
+            Debug.Log("_nameTag is null : InitNameTag()");
+            return;
+        }
 
-        UI_PlayerNameTag ui = _nameTag.GetComponentInChildren<UI_PlayerNameTag>();
-        ui.SetTarget(gameObject);
-        ui.SetHPColor();
+        go.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+
+        _nameTag.SetTarget(gameObject);
+        _nameTag.SetHPColor();
 
         //이거 왜 터지지?
-        //ui.SetLevelText(Stat.Level);
-        //UpdateHp();
-        //UpdateMaxHp();
-        //UpdateStamina();
-        //UpdateMaxStamina();
+        _nameTag.SetLevelText(Stat.Level);
+        UpdateHp();
+        UpdateMaxHp();
+        UpdateStamina();
+        UpdateMaxStamina();
     }
     protected override void UpdateHp()
     {
         if (_nameTag == null)
             return;
-        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHp(Hp);
+        _nameTag.SetHp(Hp);
     }
     protected override void UpdateMaxHp()
     {
         if (_nameTag == null)
             return;
-        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetMaxHp(MaxHp);
+        _nameTag.SetMaxHp(MaxHp);
     }
     protected override void UpdateStamina()
     {
         if (_nameTag == null)
             return;
-        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetStamina(Stamina);
+        _nameTag.SetStamina(Stamina);
     }
     protected override void UpdateMaxStamina()
     {
         if (_nameTag == null)
             return;
-        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetMaxStamina(MaxStamina);
+        _nameTag.SetMaxStamina(MaxStamina);
     }
 
     public void SetNameTagLevel()
     {
         if (_nameTag == null)
             return;
-        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetLevelText(Stat.Level);
+        _nameTag.SetLevelText(Stat.Level);
     }
 
     #endregion

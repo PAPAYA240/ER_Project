@@ -11,9 +11,15 @@ namespace Assets.Scripts.Highlight
         private Material outlineMaterial;
         private Material[][] originalMaterials;
 
+        // 커서
+        private Texture2D _cursorDefault;
+        private Texture2D _cursorEnemy;
+
         void Start()
         {
             myRenderers = GetComponentsInChildren<Renderer>();
+            _cursorDefault = Managers.Resource.Load<Texture2D>("Cursor/Cursor_01");
+            _cursorEnemy = Managers.Resource.Load<Texture2D>("Cursor/Cursor_05");
             outlineMaterial = Resources.Load<Material>("materials/Outline/Outline");
 
             if (outlineMaterial == null || myRenderers == null || myRenderers.Length == 0)
@@ -38,6 +44,12 @@ namespace Assets.Scripts.Highlight
                 Material[] newMaterials = renderer.materials;
                 renderer.materials = newMaterials.Append(outlineMaterial).ToArray();
             }
+            List<Material> newMaterials = new List<Material>(originalMaterials);
+
+            newMaterials.Add(outlineMaterial);
+            Cursor.SetCursor(_cursorEnemy, Vector2.zero, CursorMode.Auto);
+
+            myRenderer.materials = newMaterials.ToArray();
         }
 
         void OnMouseExit()
@@ -54,6 +66,8 @@ namespace Assets.Scripts.Highlight
                         myRenderers[i].materials = originalMaterials[i];
                 }
             }
+            myRenderer.materials = originalMaterials;
+            Cursor.SetCursor(_cursorDefault, Vector2.zero, CursorMode.Auto);
         }
         void OnDestroy()
         {

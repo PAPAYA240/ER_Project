@@ -66,7 +66,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SRespawn, MakePacket<S_Respawn>);
 		_handler.Add((ushort)MsgId.SRespawn, PacketHandler.S_RespawnHandler);		
 		_onRecv.Add((ushort)MsgId.SSkillLevelUp, MakePacket<S_SkillLevelUp>);
-		_handler.Add((ushort)MsgId.SSkillLevelUp, PacketHandler.S_SkillLevelUpHandler);
+		_handler.Add((ushort)MsgId.SSkillLevelUp, PacketHandler.S_SkillLevelUpHandler);		
+		_onRecv.Add((ushort)MsgId.SChangeStat, MakePacket<S_ChangeStat>);
+		_handler.Add((ushort)MsgId.SChangeStat, PacketHandler.S_ChangeStatHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

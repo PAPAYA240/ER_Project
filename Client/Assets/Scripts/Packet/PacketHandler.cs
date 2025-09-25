@@ -267,14 +267,25 @@ class PacketHandler
 
         cc.Stat.Level += levelUpPkt.LevelUpCnt;
 
+        //사실 이때 적용되야되는데?
         cc.ChangeStat(levelUpPkt.StatGrowth);
 
-        MyPlayerController mpc = Managers.Object.MyPlayer;
-        if (null == mpc)
+        //아래는 레벨이 제대로 표시되게 하는 코드
+        //마이 플레이어면 업데이트 하고 리턴
+        MyPlayerController mpc = go.GetComponent<MyPlayerController>();
+        if (null != mpc)
+        {
+            mpc.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
+            mpc.UpdateLevel();
             return;
+        }
 
-        mpc.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
-        mpc.UpdateLevel();
+        //다른 플레이어면 위에서 안걸리고 내려와서 여기 걸림. 몬스터도 레벨업 하나?
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if(null !=  pc)
+        {
+            pc.SetNameTagLevel();
+        }
     }
 
     public static void S_FxHandler(PacketSession session, IMessage packet)
@@ -314,26 +325,22 @@ class PacketHandler
 
         KeyCode key = (KeyCode)skillLevelUpPacket.KeyCode;
 
-        //GameObjects skill = GameObjects.QSkill;
-        //switch (key)
-        //{
-        //    case KeyCode.Q:
-        //        skill = GameObjects.QSkill;
-        //        break;
-        //    case KeyCode.W:
-        //        skill = GameObjects.WSkill;
-        //        break;
-        //    case KeyCode.E:
-        //        skill = GameObjects.ESkill;
-        //        break;
-        //    case KeyCode.R:
-        //        skill = GameObjects.RSkill;
-        //        break;
-        //    case KeyCode.T:
-        //        skill = GameObjects.TSkill;
-        //        break;
-        //}
-
         Managers.Object.MyPlayer.PlayerInterface.SpecificSkillLevelUp(key);
+    }
+
+    public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeStat statPacket = packet as S_ChangeStat;
+
+        GameObject go = Managers.Object.FindById(statPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.Hp = statPacket.Hp;
+        pc.Stamina = statPacket.Stamina;
     }
 }

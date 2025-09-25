@@ -42,8 +42,8 @@ public class CameraController : MonoBehaviour
         _currentZoom = _zoomSteps[_currentStep];
         _targetZoom = _currentZoom;
         _lastZoom = _zoomSteps[_zoomSteps.Length - 1];
-        _zoomSpeed = 6f;
-        _lerpSpeed = 15f;
+        _zoomSpeed = 8f;
+        _lerpSpeed = 16f;
     }
 
     void Update()

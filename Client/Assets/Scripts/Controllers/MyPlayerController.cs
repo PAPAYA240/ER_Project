@@ -52,6 +52,7 @@ public class MyPlayerController : PlayerController
             PosInfo.State = value;
             UpdateAnimation();
             _updated = true;
+            SendStatePacket();
         }
     }
     protected bool _isStop = false;
@@ -118,6 +119,12 @@ public class MyPlayerController : PlayerController
     public float WeaponMasteryAS { get; set; }
     public float ItemAttackSpeed { get; set; } = 0;
 
+    // Cursor
+    Texture2D _cursorAttack;
+    Texture2D _cursorDefault;
+
+    bool _isAttackGround = false;
+
     public float AttackSpeed
     {
         get
@@ -130,19 +137,15 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region Init
-    void Start()
-    {
-
-    }
-
-    public void ManualInit()
-    {
-        Init();
-    }
 
     protected override void Init()
     {
         base.Init();
+
+        Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
+
+        _cursorDefault = Managers.Resource.Load<Texture2D>("Cursor/Cursor_01");
+        _cursorAttack = Managers.Resource.Load<Texture2D>("Cursor/Pointer_01");
 
         layerName = _animator.GetLayerName(0);
         Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
@@ -213,13 +216,13 @@ public class MyPlayerController : PlayerController
         switch (State)
         {
             case CreatureState.Idle:
-                GetMouseInput();
+                GetMouseInput(1);
                 break;
             case CreatureState.Moving:
-                GetMouseInput();
+                GetMouseInput(1);
                 break;
             case CreatureState.Attack:
-                GetMouseInput();
+                GetMouseInput(1);
                 break;
             case CreatureState.Skill:
                 SkillBase currentSkill = FindSkill(_keyCode);
@@ -319,6 +322,7 @@ public class MyPlayerController : PlayerController
             transform.rotation = targetRotation;
         }
     }
+
 
     protected override void UpdateAttack()
     {
@@ -665,12 +669,12 @@ public class MyPlayerController : PlayerController
         // Q, W, E, R, T, D, F
         else
         {
-            if(!_isResting)
+            if (!_isResting)
                 UpdateSkillKeyInput();
         }
 
         // S : 공격, 이동 중지
-        if(Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.S))
         {
             if (State == CreatureState.Attack || State == CreatureState.Moving)
                 State = CreatureState.Idle;
@@ -678,9 +682,9 @@ public class MyPlayerController : PlayerController
             _isStop = true;
         }
         // H : 이동 중지
-        else if(Input.GetKeyDown(KeyCode.H))
+        else if (Input.GetKeyDown(KeyCode.H))
         {
-            if(State == CreatureState.Moving)
+            if (State == CreatureState.Moving)
                 State = CreatureState.Idle;
         }
         // X : 휴식
@@ -699,22 +703,39 @@ public class MyPlayerController : PlayerController
                 ExitRest();
             }
         }
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+            Cursor.SetCursor(_cursorAttack, Vector2.zero, CursorMode.Auto);
+
+            _isAttackGround = true;
+        }
         else if (State == CreatureState.Rest && Input.GetMouseButtonDown(1))
         {
             ExitRest();
+        }
+
+        if (_isAttackGround == true)
+        {
+            GetMouseInput(0);
         }
     }
 
     protected virtual void UpdateSkillKeyInput() { }
 
-    protected virtual void GetMouseInput()
+    protected virtual void GetMouseInput(int mouseButton)
     {
         // 마우스 우클릭이 눌렸을 경우 유효한 곳이 클릭 되었다면 해당 위치를 목적지로 설정 -> Moving 상태로 변경
         // 몬스터 클릭 시 평타 사거리만큼 떨어진 곳으로 설정
 
         // 그냥 우클릭 시 → 이동 처리
-        if (Input.GetMouseButton(1))
+        if (Input.GetMouseButton(mouseButton))
         {
+            if (_isAttackGround == true)
+            {
+                _isAttackGround = false;
+                Cursor.SetCursor(_cursorDefault, Vector2.zero, CursorMode.Auto);
+            }
+
             _isStop = false;
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -775,6 +796,7 @@ public class MyPlayerController : PlayerController
                         }
                     }
                 }
+
             }
         }
     }
@@ -1198,7 +1220,6 @@ public class MyPlayerController : PlayerController
         }
         return new Vector3(-1, -1, -1);
     }
-
     #endregion
 
     #region Packet
@@ -1241,6 +1262,13 @@ public class MyPlayerController : PlayerController
     {
         C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { Name = name, Ratio = ratio } };
         Managers.Network.Send(animPacket);
+    }
+
+    private void SendStatePacket()
+    {
+        C_PlayerState statePacket = new C_PlayerState();
+        statePacket.State = State;
+        Managers.Network.Send(statePacket);
     }
     #endregion
 

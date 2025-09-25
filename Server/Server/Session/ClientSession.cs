@@ -79,7 +79,7 @@ namespace Server
 			//Console.WriteLine($"Transferred bytes: {numOfBytes}");
 		}
 
-		public bool CheckTimeout(int secs = 3)
+		public bool CheckTimeout(int secs = 5)
 		{
 			return (DateTime.Now - LastPing).TotalSeconds > secs;
 		}
