@@ -152,6 +152,7 @@ public class RozziController : MyPlayerController
     IEnumerator CoStartDash()
     {
         PlayAnimation("SKILL_Q_DASH", 0.1f);
+        //Debug.Log("Rozzi Dash!!");
 
         _isDashing = true;
         _agent.ResetPath();
@@ -216,20 +217,24 @@ public class RozziController : MyPlayerController
 
         Vector3 startPos = transform.position;
         Vector3 midPos = _skillTarget.transform.position;
-        Vector3 dir = (midPos - startPos).normalized;
-        Vector3 endPos = midPos + dir * _jumpRange;
-        endPos = GetReachablePosition(midPos, endPos, out NavMeshHit navHit);
-        LookAtTarget(endPos, true);
+        Vector3 endPos = Vector3.zero;
 
         float animLength = GetCurrentAnimClipLength();
 
         float elapsed = 0.0f;
         while (elapsed < animLength) 
-        {
+        {           
+            Vector3 dir = (midPos - startPos).normalized;
+            endPos = midPos + dir * _jumpRange;
+            endPos = GetReachablePosition(midPos, endPos, out NavMeshHit navHit);
+            LookAtTarget(endPos, true);
+
             float t = elapsed / animLength;
 
             if(t < _animRatio)
             {
+                midPos = _skillTarget.transform.position;
+
                 float midT = t / _animRatio;
                 transform.position = Vector3.Lerp(startPos, midPos, midT);
             }

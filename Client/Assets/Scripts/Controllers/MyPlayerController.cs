@@ -85,6 +85,7 @@ public class MyPlayerController : PlayerController
     protected Coroutine _attackRoutine;
     protected float _attackRange = 3.0f; // Temp
     protected GameObject _target;
+    protected GameObject _nextTarget = null;
     protected GameObject Target
     {
         get { return _target; }
@@ -93,7 +94,16 @@ public class MyPlayerController : PlayerController
             if (value == this.gameObject)
                 return;
 
-            _target = value;
+            // Attack 중 다른 대상을 타겟팅 했을 때 : 현재 재생 중인 모션 종료 후 타겟 변경
+            if(State == CreatureState.Attack && value != null &&
+                _target != null && _target != value)
+            {
+                _nextTarget = value;
+            }
+            else
+            {
+                _target = value;
+            }
         }
     }
     protected GameObjectType _targetType;
@@ -351,7 +361,7 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region State : Moving
-    protected void LookAtTarget(Vector3 targetPos, bool snapToTarget = false, float speed = 100.0f)
+    protected void LookAtTarget(Vector3 targetPos, bool snapToTarget = false, float speed = 20.0f)
     {
         // 타겟을 바라보도록 방향 조정
         // snapToTarget : Target을 바로 바라볼지
@@ -416,6 +426,12 @@ public class MyPlayerController : PlayerController
 
                 return false;
             });
+
+            if(_nextTarget != null)
+            {
+                _target = _nextTarget;
+                _nextTarget = null;
+            }
 
             if (!_isAttackLoop)
             {
@@ -564,8 +580,14 @@ public class MyPlayerController : PlayerController
     protected void ResetTarget()
     {
         Target = null;
+        _nextTarget = null;
         _targetType = GameObjectType.None;
         _finalPos = Vector3.zero;
+    }
+
+    protected void ChangeTarget(GameObject nextTarget)
+    {
+
     }
     #endregion
 
