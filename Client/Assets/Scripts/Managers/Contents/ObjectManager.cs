@@ -78,9 +78,8 @@ public class ObjectManager
             pc.ObjInfo = info;
             pc.Id = info.ObjectId;
             pc.SyncPos();
-            pc.Stat.Hp = info.StatInfo.MaxHp;
-            pc.Stat.Stamina = info.StatInfo.MaxStamina;
-
+            pc.ManualInit();
+           
             Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.TeamPlayer, pc);
         }
     }

@@ -141,15 +141,6 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region Init
-    void Start()
-    {
-
-    }
-
-    public void ManualInit()
-    {
-        Init();
-    }
 
     protected override void Init()
     {
@@ -161,6 +152,7 @@ public class MyPlayerController : PlayerController
         _cursorAttack = Managers.Resource.Load<Texture2D>("Cursor/Pointer_01");
 
         layerName = _animator.GetLayerName(0);
+        Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
 
         ObjectType = Define.Object.MyPlayer;
         MakeSkillDict();
@@ -666,12 +658,12 @@ public class MyPlayerController : PlayerController
         // Q, W, E, R, T, D, F
         else
         {
-            if(!_isResting)
+            if (!_isResting)
                 UpdateSkillKeyInput();
         }
 
         // S : 공격, 이동 중지
-        if(Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.S))
         {
             if (State == CreatureState.Attack || State == CreatureState.Moving)
                 State = CreatureState.Idle;
@@ -679,9 +671,9 @@ public class MyPlayerController : PlayerController
             _isStop = true;
         }
         // H : 이동 중지
-        else if(Input.GetKeyDown(KeyCode.H))
+        else if (Input.GetKeyDown(KeyCode.H))
         {
-            if(State == CreatureState.Moving)
+            if (State == CreatureState.Moving)
                 State = CreatureState.Idle;
         }
         // X : 휴식
@@ -793,6 +785,7 @@ public class MyPlayerController : PlayerController
                         }
                     }
                 }
+
             }
         }
     }
@@ -1216,7 +1209,6 @@ public class MyPlayerController : PlayerController
         }
         return new Vector3(-1, -1, -1);
     }
-
     #endregion
 
     #region Packet
