@@ -314,7 +314,7 @@ namespace Server.Game
         #endregion
 
         #region Respawn
-        private async Task CoRespawnTime(float respawnTime)
+        private async Task CoRespawnTime(float respawnTime, bool respawnAtZero = true)
         {
             var sw = Stopwatch.StartNew();
 

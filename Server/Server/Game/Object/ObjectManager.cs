@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using Google.Protobuf.Protocol;
-using Server.Game.Object.Monster;
 
 namespace Server.Game
 {
