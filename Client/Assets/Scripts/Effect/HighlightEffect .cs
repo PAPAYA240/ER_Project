@@ -38,18 +38,14 @@ namespace Assets.Scripts.Highlight
         {
             if (myRenderers == null) return;
 
-            foreach (var renderer in myRenderers)
+            for (int i = 0; i < myRenderers.Length; i++)
             {
-                if (renderer == null) continue;
-                Material[] newMaterials = renderer.materials;
-                renderer.materials = newMaterials.Append(outlineMaterial).ToArray();
+                if (myRenderers[i] != null)
+                {
+                    myRenderers[i].materials = originalMaterials[i];
+                }
             }
-            List<Material> newMaterials = new List<Material>(originalMaterials);
-
-            newMaterials.Add(outlineMaterial);
             Cursor.SetCursor(_cursorEnemy, Vector2.zero, CursorMode.Auto);
-
-            myRenderer.materials = newMaterials.ToArray();
         }
 
         void OnMouseExit()
@@ -59,14 +55,14 @@ namespace Assets.Scripts.Highlight
             foreach (var renderer in myRenderers)
             {
                 if (renderer == null) continue;
-                Material[] materialsToKeep = renderer.materials.Where(m => m != outlineMaterial).ToArray();
+
+                renderer.materials = renderer.materials.Where(m => m != outlineMaterial).ToArray();
                 for (int i = 0; i < myRenderers.Length; i++)
                 {
                     if (myRenderers[i] != null)
                         myRenderers[i].materials = originalMaterials[i];
                 }
             }
-            myRenderer.materials = originalMaterials;
             Cursor.SetCursor(_cursorDefault, Vector2.zero, CursorMode.Auto);
         }
         void OnDestroy()

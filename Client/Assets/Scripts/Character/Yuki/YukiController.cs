@@ -93,7 +93,7 @@ public class YukiController : MyPlayerController
     private IEnumerator DashCoroutine(Vector3 direction)
     {
         isDashing = true;
-        _navMeshAgent.enabled = false;
+        _agent.enabled = false;
 
         Vector3 startPos = transform.position;
         Vector3 rawEndPos = startPos + direction * dashDistance;
@@ -122,7 +122,7 @@ public class YukiController : MyPlayerController
         }
 
         transform.position = endPos;
-        _navMeshAgent.enabled = true;
+        _agent.enabled = true;
         isDashing = false;
     }
 

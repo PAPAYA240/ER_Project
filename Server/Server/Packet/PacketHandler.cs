@@ -5,6 +5,7 @@ using Server.Data;
 using Server.Game;
 using ServerCore;
 using System;
+using System.Linq;
 using static Server.Data.DataUtils;
 
 class PacketHandler
