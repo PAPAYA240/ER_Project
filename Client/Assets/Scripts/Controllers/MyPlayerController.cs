@@ -23,6 +23,9 @@ public class MyPlayerController : PlayerController
             if (PosInfo.State == value)
                 return;
 
+            // TEMP
+            Debug.Log($"Change State - Cur : {PosInfo.State}, Next : {value}");
+
             // Moving -> 다른 상태 : 길찾기 초기화
             if (_agent != null && _agent.isActiveAndEnabled &&
                 State == CreatureState.Moving)
@@ -482,7 +485,8 @@ public class MyPlayerController : PlayerController
             CreatureController cc = hitObject.GetComponent<CreatureController>();
             if (IsAttackable(hitObject))
             {
-                Target = gameObject = hitObject;
+                //Target = gameObject = hitObject;
+                gameObject = hitObject;
                 _targetType = ObjectManager.GetObjectTypeById(cc.ObjInfo.ObjectId);
             }
         }
@@ -940,7 +944,6 @@ public class MyPlayerController : PlayerController
 
         _coolDownDict[key].isCoolDown = false;
         _coolDownDict[key].coolTime = 0.0f;
-        Debug.Log("쿨타임 끝");
     }
 
     protected void MakeSkillDict()

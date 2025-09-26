@@ -53,6 +53,10 @@ public class RozziController : MyPlayerController
                 return;
 
             Vector3 pos = target.transform.position;
+
+            // TEMP
+            // Debug.Log($"Rozzi E : TARGET ON - {pos}");
+
             if (Vector3.Distance(pos, transform.position) <= _jumpRange)
             {
                 _skillTarget = target;
@@ -183,6 +187,10 @@ public class RozziController : MyPlayerController
         _agent.enabled = true;
 
         _agent.Warp(_targetPos);
+        // TEMP
+        //if (_targetPos == Vector3.zero)
+        //    Debug.Log($"Dash TargetPos : Zero : {_targetPos}");
+
         transform.position = _targetPos;
         UpdateTransform(true);
 
@@ -190,7 +198,7 @@ public class RozziController : MyPlayerController
     }
     #endregion
 
-    #region Skill : W
+            #region Skill : W
     IEnumerator CoStartW()
     {
         float startTimte = Time.time;
