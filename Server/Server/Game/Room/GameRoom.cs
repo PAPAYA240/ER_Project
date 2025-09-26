@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Numerics;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
@@ -90,8 +93,8 @@ namespace Server.Game
             {
                 Player player = gameObject as Player;
                 _players.Add(gameObject.Id, player);
+                player.Init();
                 player.Info.Player.Team = AssignTeam();
-                player.StartRegen();
 
                 if (!_teams.TryGetValue(player.Info.Player.Team, out var teamPlayers))
                 {
@@ -186,7 +189,7 @@ namespace Server.Game
                 myTeam.Remove(player.Id);
 
                 player.Room = null;
-                player.StopRegen();
+                player.OnDestroy();
 
                 // 본인한테 정보 전송
                 {
@@ -471,8 +474,7 @@ namespace Server.Game
                     dummyPlayer.Info.PosInfo.PosZ = rand.Next(-4, 4);
                     dummyPlayer.Info.Player = new PlayerInfo();
                     dummyPlayer.Info.Player.CharType = charType;
-                    dummyPlayer.MakeDict();
-                    dummyPlayer.InitAboutItem();
+                    dummyPlayer.Init();
 
                     StatInfo stat = null;
                     DataManager.StatDict.TryGetValue(charType, out stat);

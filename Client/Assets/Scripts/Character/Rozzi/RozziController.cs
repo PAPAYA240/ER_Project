@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Playables;
+using UnityEngine.UIElements;
 using static UI_PlayerInterface;
 using static UI_SkillBase;
 using static UnityEngine.GraphicsBuffer;
@@ -108,6 +109,8 @@ public class RozziController : MyPlayerController
         PlayAnimation("SKILL_Q", 0.1f);
 
         // 스킬이 오브젝트를 맞춰야 Dash 가능
+        if (_coSkillQ != null)
+            StopCoroutine(_coSkillQ);
         _coSkillQ = StartCoroutine("CoCheckDash");
     }
 
@@ -141,11 +144,28 @@ public class RozziController : MyPlayerController
         _canDash = false;
     }
 
+    private void StartDash()
+    {
+        Vector3 targetPos = GetTargetPos(_dashRange);
+
+        if (GetReachablePosition(transform.position, targetPos, out NavMeshHit navHit) != Vector3.zero)
+        {
+            _targetPos = navHit.position;
+        }
+
+        _canDash = false;
+        if (_coSkillQ != null)
+            StopCoroutine(_coSkillQ);
+        _coSkillQ = StartCoroutine("CoStartDash");
+    }
+
     IEnumerator CoStartDash()
     {
         PlayAnimation("SKILL_Q_DASH", 0.1f);
+        //Debug.Log("Rozzi Dash!!");
 
         _isDashing = true;
+        _agent.ResetPath();
         _agent.enabled = false;
         State = CreatureState.Skill;
 
@@ -155,6 +175,7 @@ public class RozziController : MyPlayerController
         {
             transform.position = Vector3.MoveTowards(transform.position, _targetPos, _dashSpeed * Time.deltaTime);
             UpdateTransform();
+
             yield return null;
         }
 
@@ -163,24 +184,9 @@ public class RozziController : MyPlayerController
 
         _agent.Warp(_targetPos);
         transform.position = _targetPos;
-        UpdateTransform();
+        UpdateTransform(true);
 
         SetMovementState();
-    }
-
-    private void StartDash()
-    {
-        Vector3 targetPos = GetTargetPos(_dashRange);
-
-        if (GetReachablePosition(transform.position, targetPos, out NavMeshHit navHit) != Vector3.zero)
-        {
-            _targetPos = navHit.position;
-            _agent.SetDestination(_targetPos);
-        }
-
-        _canDash = false;
-        StopCoroutine(_coSkillQ);
-        StartCoroutine("CoStartDash");
     }
     #endregion
 
@@ -221,20 +227,24 @@ public class RozziController : MyPlayerController
 
         Vector3 startPos = transform.position;
         Vector3 midPos = _skillTarget.transform.position;
-        Vector3 dir = (midPos - startPos).normalized;
-        Vector3 endPos = midPos + dir * _jumpRange;
-        endPos = GetReachablePosition(midPos, endPos, out NavMeshHit navHit);
-        LookAtTarget(endPos, true);
+        Vector3 endPos = Vector3.zero;
 
         float animLength = GetCurrentAnimClipLength();
 
         float elapsed = 0.0f;
         while (elapsed < animLength) 
-        {
+        {           
+            Vector3 dir = (midPos - startPos).normalized;
+            endPos = midPos + dir * _jumpRange;
+            endPos = GetReachablePosition(midPos, endPos, out NavMeshHit navHit);
+            LookAtTarget(endPos, true);
+
             float t = elapsed / animLength;
 
             if(t < _animRatio)
             {
+                midPos = _skillTarget.transform.position;
+
                 float midT = t / _animRatio;
                 transform.position = Vector3.Lerp(startPos, midPos, midT);
             }
