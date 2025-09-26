@@ -332,6 +332,11 @@ namespace Server.Game
                     break;
             }
 
+            if (Info.Player.CharType == CharacterType.Abigail && key == KeyCode.Q && result)
+            {
+                _skills[KeyCode.F1].CurLevel++;
+            }
+
             return result;
         }
 
