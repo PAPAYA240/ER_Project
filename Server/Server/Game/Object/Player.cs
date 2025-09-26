@@ -95,6 +95,7 @@ namespace Server.Game
         {
             MakeDict();
             StartRegen();
+            InitAboutItem();
         }
 
         public void OnDestroy()
