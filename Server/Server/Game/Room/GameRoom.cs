@@ -308,7 +308,7 @@ namespace Server.Game
             skill.CostInfo = new CostInfo
             {
                 CoolTime = player.GetCoolTime(keyCode),
-                Stamina = player.Stat.Stamina,
+                Stamina = player.Stamina,
             };
             player.Session.Send(skill);
 
@@ -335,20 +335,17 @@ namespace Server.Game
 
         public void HandleAttackSkillTarget(Player player, C_AttackSkillTarget attackSkillTarget)
         {
-            if (player == null)
+            if (player == null || player.SkillTarget == null)
                 return;
 
-            float damage = player.GetSkillDamage(player.UsedTargetingSkill);
-            GameObject skillTarget = player.SkillTarget;
-            skillTarget.Info.StatInfo.Hp -= damage;
-            skillTarget.Info.StatInfo.Hp = Math.Max(0, skillTarget.Info.StatInfo.Hp);
+            float damage = 0f;
 
-            S_ChangeHp changeHpPkt = new S_ChangeHp()
-            {
-                ObjectId = skillTarget.Id,
-                Hp = skillTarget.Info.StatInfo.Hp
-            };
-            Broadcast(changeHpPkt);
+            if(player.SkillTarget.ObjectType == GameObjectType.Player)
+                damage = _collisionManager.CalcDamage(player, player.SkillTarget as Player, player.UsedTargetingSkill);
+            else
+                damage = _collisionManager.CalcDamage(player, player.SkillTarget.Stat, player.UsedTargetingSkill);   
+
+            player.SkillTarget.OnDamaged(player, damage);
         }
 
         public Player FindPlayer(Func<GameObject, bool> condition)
@@ -475,12 +472,13 @@ namespace Server.Game
                     dummyPlayer.Info.Player = new PlayerInfo();
                     dummyPlayer.Info.Player.CharType = charType;
                     dummyPlayer.MakeDict();
+                    dummyPlayer.InitAboutItem();
 
                     StatInfo stat = null;
                     DataManager.StatDict.TryGetValue(charType, out stat);
                     dummyPlayer.Stat.MergeFrom(stat);
-                    dummyPlayer.Hp = dummyPlayer.Stat.MaxHp;
-                    dummyPlayer.Stamina = dummyPlayer.Stat.MaxStamina;
+                    dummyPlayer.Hp = dummyPlayer.MaxHp;
+                    dummyPlayer.Stamina = dummyPlayer.MaxStamina;
                     dummyPlayer.Session = clientSession;
                     _players.Add(dummyPlayer.Id, dummyPlayer);
                     dummyPlayer.Info.Player.Team = AssignTeam();

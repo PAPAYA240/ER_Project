@@ -1,7 +1,8 @@
+using Data;
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
 using static UI_PlayerInterface;
@@ -14,6 +15,7 @@ public class MyPlayerController : PlayerController
     protected int _monsterMask;
     protected int _playerMask;
     protected int _myPlayerMask;
+    const int _maxInventorySlot = 10;
     // State
     public override CreatureState State
     {
@@ -113,6 +115,9 @@ public class MyPlayerController : PlayerController
     //UI_PlayerHUD _playerHUD = null;
     public UI_PlayerInterface PlayerInterface { get; protected set; }
 
+    // Inventory
+    List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
+
     // Weapon
     public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
     public WeaponInfo MyWeapon { get; set; } = new WeaponInfo();
@@ -154,6 +159,7 @@ public class MyPlayerController : PlayerController
         ObjectType = Define.Object.MyPlayer;
         MakeSkillDict();
         MakeCoolDownDict();
+        MakeInventory();
 
         _monsterMask = 1 << LayerMask.NameToLayer("Monster");
         _playerMask = 1 << LayerMask.NameToLayer("Fog");
@@ -1138,6 +1144,14 @@ public class MyPlayerController : PlayerController
         PlayerInterface.SetSkillCool(GameObjects.TSkill, _coolDownDict[KeyCode.T].coolTime);
         //PlayerInterface.SetSkillCool(GameObjects.DSkill, );
         //PlayerInterface.SetSkillCool(GameObjects.FSkill, );
+    }
+
+    private void MakeInventory()
+    {
+        for (int i = 0; i < _maxInventorySlot; ++i)
+        {
+            _inventory.Add(null); //비어 있는 인벤토리를 생성
+        }
     }
 
     #endregion

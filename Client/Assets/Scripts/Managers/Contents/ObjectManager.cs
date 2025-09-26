@@ -64,8 +64,8 @@ public class ObjectManager
             MyPlayer.ObjInfo = info;
             MyPlayer.Id = info.ObjectId;
             MyPlayer.SyncPos();
-            MyPlayer.Stat.Hp = info.StatInfo.MaxHp;
-            MyPlayer.Stat.Stamina = info.StatInfo.MaxStamina;
+            MyPlayer.Hp = info.StatInfo.MaxHp;
+            MyPlayer.Stamina = info.StatInfo.MaxStamina;
             MyPlayer.ManualInit();
         }
         else
@@ -94,7 +94,7 @@ public class ObjectManager
         mc.Id = info.ObjectId;
         mc.PosInfo = info.PosInfo;
         mc.Stat = info.StatInfo;
-        mc.Stat.Hp = info.StatInfo.MaxHp;
+        mc.Hp = info.StatInfo.MaxHp;
         mc._monsterType = info.Monster.MonsterType;
     }
     private void AddProjectile(ObjectInfo info)

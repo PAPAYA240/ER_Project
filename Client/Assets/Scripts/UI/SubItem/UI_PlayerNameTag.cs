@@ -114,6 +114,10 @@ public class UI_PlayerNameTag : UI_Base
     {
         GetObject((int)GameObjects.HpBar).GetComponent<UI_HpBarTick>().SetMaxHp(newMaxHp);
     }
+    public void SetBarrier(float newBarrier)
+    {
+        GetObject((int)GameObjects.HpBar).GetComponent<UI_HpBarTick>().SetBarrier(newBarrier);
+    }
     public void SetStamina(float newStamina)
     {
         GetObject((int)GameObjects.StaminaBar).GetComponent<UI_BarNonText>().SetValue(newStamina);

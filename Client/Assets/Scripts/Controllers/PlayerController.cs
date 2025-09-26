@@ -17,11 +17,15 @@ public class PlayerController : CreatureController
     int _atkCount = 1;
     int _maxAtkCount = 2;
 
-    //Fog
+    // Fog
     private FogOfWarVision _fogOfWarVision;
 
-    //NameTag
-    protected UI_PlayerNameTag _nameTag; 
+    // NameTag
+    protected UI_PlayerNameTag _nameTag;
+
+    // 장착 아이템
+    Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
+    public ItemStat ItemStat { get; private set; }
 
     // 레이어
     protected string layerName;
@@ -59,11 +63,15 @@ public class PlayerController : CreatureController
         ObjectType = Define.Object.OtherPlayer;
         this.gameObject.layer = LayerMask.NameToLayer("Player");
 
-        //Fog
+        // Fog
         _fogOfWarVision = gameObject.GetOrAddComponent<FogOfWarVision>();
         gameObject.layer = LayerMask.NameToLayer("Fog");
 
+        // 체력바
         InitNameTag();
+
+        // 장비 슬롯
+        InitEquipItem();
 
         // NavMesh Agent
         _agent = GetComponent<NavMeshAgent>();
@@ -71,6 +79,14 @@ public class PlayerController : CreatureController
         _agent.acceleration = 999;
         _agent.angularSpeed = 720;
         _agent.stoppingDistance = 0.1f;
+    }
+
+    private void InitEquipItem()
+    {
+        for (int i = 0; i < (int)EquipItemType.End; ++i)
+        {
+            _equipItemSlot.Add((EquipItemType)i, new EquipItemInfo());
+        }
     }
 
     public void ManualInit()
@@ -253,6 +269,13 @@ public class PlayerController : CreatureController
             return;
         _nameTag.SetMaxHp(MaxHp);
     }
+
+    protected override void UpdateBarrier()
+    {
+        if (_nameTag == null)
+            return;
+        _nameTag.SetBarrier(Barrier);
+    }
     protected override void UpdateStamina()
     {
         if (_nameTag == null)
@@ -274,6 +297,7 @@ public class PlayerController : CreatureController
     }
 
     #endregion
+
     #region Effect
     public virtual void PlayEffectFromServer(EffectInfo fxInfo)
     {
