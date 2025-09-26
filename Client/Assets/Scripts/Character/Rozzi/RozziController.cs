@@ -235,6 +235,7 @@ public class RozziController : MyPlayerController
         while (elapsed < animLength) 
         {           
             Vector3 dir = (midPos - startPos).normalized;
+            dir.y = 0f;
             endPos = midPos + dir * _jumpRange;
             endPos = GetReachablePosition(midPos, endPos, out NavMeshHit navHit);
             LookAtTarget(endPos, true);

@@ -30,7 +30,10 @@ namespace Server.Game
         public Player()
         {
             ObjectType = GameObjectType.Player;
+
             _statRegenerator = new StatRegenerator(this);
+            _statRegenerator.AddEffect(new BaseRegenEffect());
+            _statRegenerator.AddEffect(new RestRegenEffect());
         }
 
         public GameObject SkillTarget { get; set; }
@@ -59,29 +62,10 @@ namespace Server.Game
         #region Update
         public override void Update()
         {
-            UpdateController();
+            //base.Update();
             CheckUpdateStat();
         }
 
-        protected virtual void UpdateController()
-        {
-            switch (State)
-            {
-                case CreatureState.Idle:
-                    break;
-                case CreatureState.Moving:
-                    break;
-                case CreatureState.Attack:
-                    break;
-                case CreatureState.Skill:
-                    break;
-                case CreatureState.Dead:
-                    break;
-                case CreatureState.Rest:
-                    UpdateRest();
-                    break;
-            }
-        }
         #endregion
 
         #region State : Dead
@@ -105,23 +89,9 @@ namespace Server.Game
         }
         #endregion
 
-        #region State : Rest
-        protected void UpdateRest()
-        {
-
-        }
-        #endregion
-
         #region Stat
-        public void StartRegen()
-        {
-            _statRegenerator.Start();
-        }
-
-        public void StopRegen()
-        {
-            _statRegenerator.Stop();
-        }
+        public void StartRegen() => _statRegenerator.Start();
+        public void StopRegen() => _statRegenerator.Stop();
 
         public bool CanRegenerate()
         {
@@ -132,6 +102,11 @@ namespace Server.Game
                 return false;
 
             return true;
+        }
+
+        public void UseHealPack(float amount, float durationSeconds)
+        {
+            _statRegenerator.AddEffect(new HealPackEffect(amount, durationSeconds));
         }
 
         private void CheckUpdateStat()
@@ -384,7 +359,7 @@ namespace Server.Game
         }
         #endregion
 
-        #region Stat
+        #region Level
         public int CheckLevelUp()
         {
             int levelUp = 0;

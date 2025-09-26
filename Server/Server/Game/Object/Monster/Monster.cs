@@ -80,7 +80,8 @@ namespace Server.Game
                 return null;
             }
 
-            PlayerTarget.OnDamaged(this, skillData.damage + Stat.Attack);
+            //PlayerTarget.OnDamaged(this, skillData.damage + Stat.Attack);
+            PlayerTarget.OnDamaged(this, 100);
 
             return skillData;
         }

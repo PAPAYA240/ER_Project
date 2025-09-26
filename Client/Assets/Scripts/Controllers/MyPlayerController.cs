@@ -498,6 +498,7 @@ public class MyPlayerController : PlayerController
 
         Vector3 pos = go.transform.position;
         Vector3 dir = (pos - transform.position).normalized;
+        dir.y = 0f;
 
         float distance = Vector3.Distance(transform.position, pos);
 
@@ -1332,6 +1333,7 @@ public class MyPlayerController : PlayerController
         bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
 
         Vector3 dir = (hit.point - transform.position).normalized;
+        dir.y = 0;
 
         if (!isMaxDistance && (hit.point - transform.position).magnitude < range)
         {

@@ -103,7 +103,26 @@ namespace Server.Game
 
         public virtual void Update()
         {
+            UpdateController();
+        }
 
+        protected virtual void UpdateController()
+        {
+            //switch (State)
+            //{
+            //    case CreatureState.Idle:
+            //        break;
+            //    case CreatureState.Moving:
+            //        break;
+            //    case CreatureState.Attack:
+            //        break;
+            //    case CreatureState.Skill:
+            //        break;
+            //    case CreatureState.Dead:
+            //        break;
+            //    case CreatureState.Rest:
+            //        break;
+            //}
         }
 
         public virtual void OnDamaged(GameObject attacker, float damage)
