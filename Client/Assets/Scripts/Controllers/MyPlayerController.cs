@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
+using static UI_PlayerInterface;
 using static UI_SkillBase;
 
 public class MyPlayerController : PlayerController
@@ -55,7 +56,7 @@ public class MyPlayerController : PlayerController
             SendStatePacket();
         }
     }
-    protected bool _isStop = false;
+    protected bool _isStop = true;
 
     // State : Skill
     protected bool _isUseSkill = false;
@@ -81,6 +82,7 @@ public class MyPlayerController : PlayerController
     protected Coroutine _attackRoutine;
     protected float _attackRange = 3.0f; // Temp
     protected GameObject _target;
+    protected GameObject _nextTarget = null;
     protected GameObject Target
     {
         get { return _target; }
@@ -89,14 +91,16 @@ public class MyPlayerController : PlayerController
             if (value == this.gameObject)
                 return;
 
-            if (State == CreatureState.Attack && _target != value &&
-                value != null && _attackRoutine != null)
+            // Attack 중 다른 대상을 타겟팅 했을 때 : 현재 재생 중인 모션 종료 후 타겟 변경
+            if(State == CreatureState.Attack && value != null &&
+                _target != null && _target != value)
             {
-                StopCoroutine(_attackRoutine);
-                //_attackRoutine = StartCoroutine(CoAttackLoop());              
+                _nextTarget = value;
             }
-
-            _target = value;
+            else
+            {
+                _target = value;
+            }
         }
     }
     protected GameObjectType _targetType;
@@ -148,7 +152,7 @@ public class MyPlayerController : PlayerController
         _cursorAttack = Managers.Resource.Load<Texture2D>("Cursor/Pointer_01");
 
         layerName = _animator.GetLayerName(0);
-        Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
+        //Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
 
         ObjectType = Define.Object.MyPlayer;
         MakeSkillDict();
@@ -210,6 +214,8 @@ public class MyPlayerController : PlayerController
 
     protected override void UpdateController()
     {
+        UpdateCool();
+
         if (State == CreatureState.Dead)
             return;
 
@@ -335,7 +341,7 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region State : Moving
-    protected void LookAtTarget(Vector3 targetPos, bool snapToTarget = false, float speed = 100.0f)
+    protected void LookAtTarget(Vector3 targetPos, bool snapToTarget = false, float speed = 20.0f)
     {
         // 타겟을 바라보도록 방향 조정
         // snapToTarget : Target을 바로 바라볼지
@@ -400,6 +406,12 @@ public class MyPlayerController : PlayerController
 
                 return false;
             });
+
+            if(_nextTarget != null)
+            {
+                _target = _nextTarget;
+                _nextTarget = null;
+            }
 
             if (!_isAttackLoop)
             {
@@ -548,8 +560,14 @@ public class MyPlayerController : PlayerController
     protected void ResetTarget()
     {
         Target = null;
+        _nextTarget = null;
         _targetType = GameObjectType.None;
         _finalPos = Vector3.zero;
+    }
+
+    protected void ChangeTarget(GameObject nextTarget)
+    {
+
     }
     #endregion
 
@@ -807,10 +825,15 @@ public class MyPlayerController : PlayerController
 
             if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
             {
-                _agent.SetDestination(navHit.position);
+                if(_agent.isActiveAndEnabled)
+                {
+                    _agent.SetDestination(navHit.position);
 
-                _moveKeyPressed = true;
+                    _moveKeyPressed = true;
+                }                 
             }
+
+            UpdateTransform();
         }
     }
     #endregion
@@ -869,6 +892,9 @@ public class MyPlayerController : PlayerController
 
     protected void SetSkillInput(KeyCode keyCode)
     {
+        if (State == CreatureState.Skill)
+            return;
+
         _isUseSkill = true;
         _keyCode = keyCode;
     }
@@ -889,7 +915,7 @@ public class MyPlayerController : PlayerController
         Stamina = skillPacket.CostInfo.Stamina;
 
         // 스킬 실행 UI 연동
-        PlayerInterface.UseSkill(KeyToUIEnum(key));
+        //PlayerInterface.UseSkill(KeyToUIEnum(key));
     }
 
     IEnumerator CoInputCooltime(KeyCode key, float time)
@@ -1121,6 +1147,20 @@ public class MyPlayerController : PlayerController
 
         PlayerInterface.SetLevel(Stat.Level);
         SetNameTagLevel();
+    }
+
+    public void UpdateCool()
+    {
+        if (null == PlayerInterface) 
+            return;
+
+        PlayerInterface.SetSkillCool(GameObjects.QSkill, _coolDownDict[KeyCode.Q].coolTime);
+        PlayerInterface.SetSkillCool(GameObjects.WSkill, _coolDownDict[KeyCode.W].coolTime);
+        PlayerInterface.SetSkillCool(GameObjects.ESkill, _coolDownDict[KeyCode.E].coolTime);
+        PlayerInterface.SetSkillCool(GameObjects.RSkill, _coolDownDict[KeyCode.R].coolTime);
+        PlayerInterface.SetSkillCool(GameObjects.TSkill, _coolDownDict[KeyCode.T].coolTime);
+        //PlayerInterface.SetSkillCool(GameObjects.DSkill, );
+        //PlayerInterface.SetSkillCool(GameObjects.FSkill, );
     }
 
     #endregion

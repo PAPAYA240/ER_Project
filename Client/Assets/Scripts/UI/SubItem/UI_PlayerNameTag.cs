@@ -38,6 +38,8 @@ public class UI_PlayerNameTag : UI_Base
         ColorUtility.TryParseHtmlString("#D5163A", out _red);
         ColorUtility.TryParseHtmlString("#76CC22", out _green);
         ColorUtility.TryParseHtmlString("#028FEE", out _blue);
+
+        Camera.main.gameObject.GetOrAddComponent<CameraController>().LateUpdateAction += UpdatePosition;
     }
 
     private void Awake()
@@ -54,16 +56,19 @@ public class UI_PlayerNameTag : UI_Base
     {
 
     }
-    private void LateUpdate()
-    {
-        if (_target != null)
-        {
-            UpdatePosition();
-        }
-    }
+    //private void LateUpdate()
+    //{
+    //    if (_target != null)
+    //    {
+    //        UpdatePosition();
+    //    }
+    //}
 
     private void UpdatePosition()
     {
+        if (_target == null)
+            return;
+
         Vector3 worldPos = _target.transform.position + new Vector3(0, _nameTagHeight, 0);
         Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPos);
         gameObject.transform.position = screenPos;

@@ -49,7 +49,6 @@ public class UI_UltimateSkill : UI_SkillBase
     UI_PlayerInterface ui_PlayerInterface = null;
 
     //Temp
-    float _remainCool = 0;
     float _maxCool = 10.0f;
 
     public override void Init()
@@ -84,23 +83,6 @@ public class UI_UltimateSkill : UI_SkillBase
     {
         if (_skillLevel == 0)
             return;
-        //temp
-        // TODO 실제 코루틴에서 가져와서 구현?
-        if (GetObject(_cooldownTimer).activeSelf && _remainCool > 0.0f)
-        {
-            _remainCool = Math.Max(0.0f, _remainCool - Time.deltaTime);
-
-            if (_remainCool > 0.0f)
-            {
-                // 쿨 도는중
-                GetImage((int)Images.CooldownFill).fillAmount = _remainCool / _maxCool;
-                SetCoolDown(_remainCool);
-            }
-            else
-            {
-                GetObject(_cooldownTimer).SetActive(false);
-            }
-        }
 
         if(null != ui_PlayerInterface)
         {
@@ -109,7 +91,6 @@ public class UI_UltimateSkill : UI_SkillBase
             else //스테미너가 부족
                 ActivateStamina(true);
         }
-        
     }
 
     void SetSkillLevel(int level)
@@ -175,11 +156,21 @@ public class UI_UltimateSkill : UI_SkillBase
         GetImage(level - 1).color = destColor;
     }
 
-    public override void UseSkill() 
+    public override void SetCool(float value)
     {
-        GetObject(_cooldownTimer).SetActive(true);
-        //Temp
-        _remainCool = _maxCool;
+        if (_skillLevel == 0)
+            return;
+
+        if (value > 0)
+        {
+            GetObject(_cooldownTimer).SetActive(true);
+            GetImage((int)Images.CooldownFill).fillAmount = value / _maxCool;
+            SetCoolDown(value);
+        }
+        else
+        {
+            GetObject(_cooldownTimer).SetActive(false);
+        }
     }
 
     void SetCoolDown(float remainCooldown)

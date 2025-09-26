@@ -172,28 +172,6 @@ public class UI_PlayerInterface : UI_Base
     #endregion
 
     #region Skill
-    public void UseSkill(GameObjects skill)
-    {
-        switch (skill)
-        {
-            case GameObjects.QSkill:
-            case GameObjects.WSkill:
-            case GameObjects.ESkill:
-            case GameObjects.RSkill:
-            case GameObjects.DSkill:
-            case GameObjects.FSkill:
-                {
-                    GameObject go = GetObject((int)skill);
-                    if (go == null)
-                        return;
-
-                    UI_SkillBase ui_Skill = go.GetComponent<UI_SkillBase>();
-                    if (ui_Skill != null)
-                        ui_Skill.UseSkill();
-                }
-                break;
-        }
-    }
 
     //QWERT 스킬 포인트를 사용해서 스킬 레벨올리는 함수
     public void OnCharSkillLevelUp(SkillEnum skillEnum)
@@ -301,6 +279,11 @@ public class UI_PlayerInterface : UI_Base
     public void SetSkillMaxCool(GameObjects objEnum, float value)
     {
         GetObject((int)objEnum).GetComponent<UI_SkillBase>().SetMaxCool(value);
+    }
+
+    public void SetSkillCool(GameObjects objEnum, float value)
+    {
+        GetObject((int)objEnum).GetComponent<UI_SkillBase>().SetCool(value);
     }
 
     //버튼을 누르거나 컨트롤 스킬 누르면 호출되는 함수?
