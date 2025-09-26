@@ -160,6 +160,8 @@ public class PlayerController : CreatureController
     protected virtual void PassiveSkill() { }
     public virtual void OnAttackTiming() { }
 
+    public virtual void OnSkillMeshTiming(KeyCode key) { }
+
     IEnumerator CoStartSkill()
     {
         // 대기 시간
@@ -201,7 +203,7 @@ public class PlayerController : CreatureController
 
     #region SkillMesh
 
-    void CreateSkillMesh(KeyCode keyCode)
+    public void CreateSkillMesh(KeyCode keyCode)
     {
         SkillHitbox skillHitbox = DataManager.SkillHitboxDict[ObjInfo.Player.CharType][keyCode];
         GameObject go = Managers.Resource.Instantiate("Debug/SkillMesh", gameObject.transform);

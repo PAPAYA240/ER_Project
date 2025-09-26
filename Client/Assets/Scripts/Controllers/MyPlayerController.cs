@@ -1305,9 +1305,12 @@ public class MyPlayerController : PlayerController
     protected void LookAtMouse()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        int layerMask = (1 << LayerMask.NameToLayer("Map")) | (1 << LayerMask.NameToLayer("Wall"));
+        if (Physics.Raycast(ray, out RaycastHit hit, 1000, layerMask))
         {
             Vector3 direction = (hit.point - transform.position).normalized;
+            direction.y = 0;
+            direction.Normalize();
             Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
             transform.rotation = targetRotation;
             UpdateTransform();

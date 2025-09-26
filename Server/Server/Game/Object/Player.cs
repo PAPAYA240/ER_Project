@@ -82,12 +82,17 @@ namespace Server.Game
             diePacket.ObjectId = Id;
             diePacket.AttackerId = attacker.Id;
             if(Stat.Level == 1)
+            {
+                _ = CoRespawnTime(diePacket.RespawnTime, false);
                 diePacket.RespawnTime = 0;
+            }
             else
+            {
+                _ = CoRespawnTime(diePacket.RespawnTime);
                 diePacket.RespawnTime = DataManager.RespawnDict[Stat.Level];
-            Room.Broadcast(diePacket);
+            }
 
-            _ = CoRespawnTime(diePacket.RespawnTime);
+            Room.Broadcast(diePacket);
         }
         #endregion
 
@@ -328,19 +333,27 @@ namespace Server.Game
 
             S_Respawn respawnPacket = new S_Respawn();
             respawnPacket.ObjectId = Id;
-            respawnPacket.PosInfo = Info.PosInfo = new PositionInfo
+            if(true == respawnAtZero)
             {
-                PosX = 0,
-                PosY = 0,
-                PosZ = 0
-            };
-            respawnPacket.RotInfo = Info.RotInfo = new RotationInfo
+                respawnPacket.PosInfo = Info.PosInfo = new PositionInfo
+                {
+                    PosX = 0,
+                    PosY = 0,
+                    PosZ = 0
+                };
+                respawnPacket.RotInfo = Info.RotInfo = new RotationInfo
+                {
+                    Qx = 0,
+                    Qy = 0,
+                    Qz = 0,
+                    Qw = 1
+                };
+            }
+            else
             {
-                Qx = 0,
-                Qy = 0,
-                Qz = 0,
-                Qw = 1
-            };
+                respawnPacket.PosInfo = Info.PosInfo;
+                respawnPacket.RotInfo = Info.RotInfo;
+            }
 
             respawnPacket.Hp = Stat.Hp = Stat.MaxHp;
             respawnPacket.Stamina = Stat.Stamina = Stat.MaxStamina;
