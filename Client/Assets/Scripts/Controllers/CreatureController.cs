@@ -28,6 +28,12 @@ public class CreatureController : BaseController
         set { base.MaxHp = value; UpdateMaxHp(); }
     }
 
+    public override float Barrier
+    {
+        get { return Stat.Barrier; }
+        set { base.Barrier = value; UpdateBarrier(); }
+    }
+
     public override float Stamina
     {
         get { return Stat.Stamina; }
@@ -46,6 +52,11 @@ public class CreatureController : BaseController
     }
 
     virtual protected void UpdateMaxHp()
+    {
+
+    }
+
+    virtual protected void UpdateBarrier()
     {
 
     }

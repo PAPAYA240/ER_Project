@@ -26,8 +26,8 @@ class PacketHandler
             StatInfo stat = null;
             DataManager.StatDict.TryGetValue(clientSession.MyCharacter, out stat);
             clientSession.MyPlayer.Stat.MergeFrom(stat);
-            clientSession.MyPlayer.Hp = clientSession.MyPlayer.Stat.MaxHp;
-            clientSession.MyPlayer.Stamina = clientSession.MyPlayer.Stat.MaxStamina;
+            clientSession.MyPlayer.Hp = clientSession.MyPlayer.MaxHp;
+            clientSession.MyPlayer.Stamina = clientSession.MyPlayer.MaxStamina;
             clientSession.MyPlayer.Session = clientSession;
         }
 
@@ -123,15 +123,7 @@ class PacketHandler
         S_Character s_charPacket = new S_Character();
         s_charPacket.CharType = c_charPacket.CharType;
         s_charPacket.PickIdx = c_charPacket.PickIdx;
-        room.Broadcast(s_charPacket, c_charPacket.PickIdx);
-
-        //GameRoom room = RoomManager.Instance.Find(2) as GameRoom;
-        //if (room == null)
-        //    return;
-
-
-        // PickRoom 클래스 만들고 거기서 호출해야할듯
-        //room.Push(pickPacket);
+        room.Push(room.Broadcast, s_charPacket, c_charPacket.PickIdx);
     }
     public static void C_TraitHandler(PacketSession session, IMessage packet)
     {
@@ -146,7 +138,7 @@ class PacketHandler
         S_Trait s_traitPacket = new S_Trait();
         s_traitPacket.TraitType = c_traitPacket.TraitType;
         s_traitPacket.PickIdx = c_traitPacket.PickIdx;
-        room.Broadcast(s_traitPacket, c_traitPacket.PickIdx);
+        room.Push(room.Broadcast, s_traitPacket, c_traitPacket.PickIdx);
     }
     public static void C_InteractHandler(PacketSession session, IMessage packet)
     {
@@ -164,7 +156,7 @@ class PacketHandler
         S_Weapon s_weaponPacket = new S_Weapon();
         s_weaponPacket.WeaponType = c_weaponPacket.WeaponType;
         s_weaponPacket.PickIdx = c_weaponPacket.PickIdx;
-        room.Broadcast(s_weaponPacket, c_weaponPacket.PickIdx);
+        room.Push(room.Broadcast, s_weaponPacket, c_weaponPacket.PickIdx);
     }
 
     public static void C_PingHandler(PacketSession session, IMessage packet)
@@ -206,7 +198,6 @@ class PacketHandler
         //스킬 레벨업이 성공하면 
         if (player.SkillLevelUp((KeyCode)skillInfoChangePacket.KeyCode))
         {
-            //패킷을 보낸다.? 푸쉬한다?
             room.Push(room.SkillLevelUp, player.Id, skillInfoChangePacket.KeyCode);
         }
     }

@@ -1,4 +1,4 @@
-syntax = "proto3";
+﻿syntax = "proto3";
 
 package Protocol;
 
@@ -175,13 +175,13 @@ enum TraitType{
     SENTINEL = 15;	
 }
 
-enum ItemType{
+enum EquipItemType{
 	WEAPON = 0;
 	BODY = 1;
 	HEAD = 2;
 	ARM = 3;
 	LEG = 4;
-	ITEM_TYPE_END = 5;
+	EQUIP_ITEM_TYPE_END = 5;
 }
 
 enum ItemGrade{
@@ -334,6 +334,7 @@ message S_LeavePick{
 message S_ChangeHp{
 	int32 objectId = 1;
 	float hp = 2;
+	float barrier = 3;
 }
 
  message S_Die{
@@ -378,6 +379,7 @@ message S_ChangeStat{
 	int32 objectId = 1;
 	float hp = 2;
 	float stamina = 3;
+	float barrier = 4;
 }
 
 message PositionInfo{
@@ -496,6 +498,36 @@ message SkillHitbox{
 message CostInfo{
 	float coolTime = 1;
 	float stamina = 2;
+}
+
+message ItemStat{
+    float AttackDamage = 1;                  //공격력
+    float AttackSpeed = 2;                   //공격속도
+    float CriticalRatio = 3;                 //치명타 확률
+    float CriticalDamage = 4;                //치명타 피해량
+    float AttackRange = 5;                   //기본 공격 사거리
+    float FixedSkillAmplification = 6;       //고정 스킬 증폭
+    float PercentageSkillAmplification = 7;  //퍼센트 스킬 증폭
+    float SkillAcceleration = 8;             //스킬 가속
+    float FixedDefensePenetration = 9;       //고정 방어 관통
+    float PercentageDefensePenetration = 10;  //퍼센트 방어 관통 ex) 20퍼센트면 20
+    float FixedSpeed = 11;                    //고정 이동 속도
+    float PercentageSpeed = 12;               //퍼센트 이동 속도
+    float MaxHp = 13;                         //최대 체력
+    float HpRegen = 14;                       //체력 재생
+    float MaxStamina = 15;                    //최대 스테미나
+    float StaminaRegen = 16;                  //스테미나 재생
+    float Defense = 17;                       //방어력
+    float LifeSteal = 18;                     //생명력 흡수
+    float Omnivamp = 19;                      //모든 피해 흡혈
+    float HealingPower = 20;                  //주는 회복 증가
+    float SlowResistance = 21;                //둔화 효과 저항
+    float CCResistance = 22;                  //방해 효과 저항(속박, 기절)
+    float AdaptiveStat = 23;                  //적응형 능력치 공격력 : 스킬증폭 = 1 : 2
+    float Vision = 24;                        //시야
+    float AttackDamagePerLevel = 25;          //레벨 당 공격력
+    float SkillAmplificationPerLevel = 26;    //레벨 당 스킬 증폭
+    float MaxHpPerLevel = 27;                 //레벨 당 최대 체력
 }
 
 message C_AttackSkillTarget{

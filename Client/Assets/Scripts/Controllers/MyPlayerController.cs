@@ -1,7 +1,8 @@
+using Data;
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
 using static UI_PlayerInterface;
@@ -14,6 +15,7 @@ public class MyPlayerController : PlayerController
     protected int _monsterMask;
     protected int _playerMask;
     protected int _myPlayerMask;
+    const int _maxInventorySlot = 10;
     // State
     public override CreatureState State
     {
@@ -119,6 +121,9 @@ public class MyPlayerController : PlayerController
     //UI_PlayerHUD _playerHUD = null;
     public UI_PlayerInterface PlayerInterface { get; protected set; }
 
+    // Inventory
+    List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
+
     // Weapon
     public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
     public WeaponInfo MyWeapon { get; set; } = new WeaponInfo();
@@ -160,6 +165,7 @@ public class MyPlayerController : PlayerController
         ObjectType = Define.Object.MyPlayer;
         MakeSkillDict();
         MakeCoolDownDict();
+        MakeInventory();
 
         _monsterMask = 1 << LayerMask.NameToLayer("Monster");
         _playerMask = 1 << LayerMask.NameToLayer("Fog");
@@ -1167,6 +1173,14 @@ public class MyPlayerController : PlayerController
         //PlayerInterface.SetSkillCool(GameObjects.FSkill, );
     }
 
+    private void MakeInventory()
+    {
+        for (int i = 0; i < _maxInventorySlot; ++i)
+        {
+            _inventory.Add(null); //비어 있는 인벤토리를 생성
+        }
+    }
+
     #endregion
 
     #region Util
@@ -1350,9 +1364,12 @@ public class MyPlayerController : PlayerController
     protected void LookAtMouse()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        int layerMask = (1 << LayerMask.NameToLayer("Map")) | (1 << LayerMask.NameToLayer("Wall"));
+        if (Physics.Raycast(ray, out RaycastHit hit, 1000, layerMask))
         {
             Vector3 direction = (hit.point - transform.position).normalized;
+            direction.y = 0;
+            direction.Normalize();
             Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
             transform.rotation = targetRotation;
             UpdateTransform();

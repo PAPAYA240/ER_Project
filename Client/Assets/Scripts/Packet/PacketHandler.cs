@@ -128,6 +128,7 @@ class PacketHandler
         if (cc != null)
         {
             cc.Hp = changePacket.Hp;
+            cc.Barrier = changePacket.Barrier;
         }
     }
 
@@ -341,6 +342,7 @@ class PacketHandler
             return;
 
         pc.Hp = statPacket.Hp;
+        pc.Barrier = statPacket.Barrier;
         pc.Stamina = statPacket.Stamina;
     }
 }
