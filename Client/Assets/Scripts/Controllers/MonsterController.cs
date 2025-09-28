@@ -71,11 +71,11 @@ public class MonsterController : CreatureController
     #region 패킷
     public void OnIdlePacket(S_State packet)
     {
-        if (_agent == null)
-            return;
+        if (_agent != null)
+            _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
 
-        _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
-       _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
+        _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
+
         Skill = MonsterSkill.MsNone;
 
         OnStateChanged?.Invoke(State);
@@ -83,19 +83,21 @@ public class MonsterController : CreatureController
 
     public void OnMovePacket(S_State packet)
     {
-        if (_agent == null)
-            return;
+        if (_agent != null)
+            _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
 
-        _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
         _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
 
     public void OnSkillPacket(S_State packet)
     {
-        _agent.ResetPath();
         Skill = packet.Skilltype;
 
-        _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+        if (_agent != null)
+        {
+            _agent.ResetPath();
+            _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+        }
         _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
 
@@ -109,9 +111,6 @@ public class MonsterController : CreatureController
         if(packet.TargetPosition != null)
             _targetPos = new Vector3(packet.TargetPosition.PosX, packet.TargetPosition.PosY, packet.TargetPosition.PosZ);
 
-        if (_agent == null)
-            return;
-
         switch (State)
         {
             case CreatureState.Idle:
@@ -121,7 +120,6 @@ public class MonsterController : CreatureController
                 OnMovePacket(packet);
                 break;
             case CreatureState.Skill:
-               
                 OnSkillPacket(packet);
                 break;
             case CreatureState.Dead:

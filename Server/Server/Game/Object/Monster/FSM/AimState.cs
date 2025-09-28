@@ -37,6 +37,8 @@ namespace Server.Game
 
             if (monster.Info.Monster.MonsterType == MonsterType.Drone)
                 LookAtTarget(monster);
+            if (monster.Info.Monster.MonsterType == MonsterType.Turret)
+                LookAtTarget(monster);
 
             monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
 

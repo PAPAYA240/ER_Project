@@ -71,14 +71,14 @@ namespace Server.Game
             List<int> triangles = _navMeshData.triangles;
             for (int i = 0; i < triangles.Count / 3; i++)
             {
-                SerializableVector3 v0Data = _navMeshData.vertices[triangles[i * 3]];
-                Vector3 v0 = new Vector3(v0Data.x, v0Data.y, v0Data.z);
+                Vector3 v0Data = _navMeshData.vertices[triangles[i * 3]];
+                Vector3 v0 = new Vector3(v0Data.X, v0Data.Y, v0Data.Z);
 
-                SerializableVector3 v1Data = _navMeshData.vertices[triangles[i * 3 + 1]];
-                Vector3 v1 = new Vector3(v1Data.x, v1Data.y, v1Data.z);
+                Vector3 v1Data = _navMeshData.vertices[triangles[i * 3 + 1]];
+                Vector3 v1 = new Vector3(v1Data.X, v1Data.Y, v1Data.Z);
 
-                SerializableVector3 v2Data = _navMeshData.vertices[triangles[i * 3 + 2]];
-                Vector3 v2 = new Vector3(v2Data.x, v2Data.y, v2Data.z);
+                Vector3 v2Data = _navMeshData.vertices[triangles[i * 3 + 2]];
+                Vector3 v2 = new Vector3(v2Data.X, v2Data.Y, v2Data.Z);
 
                 Vector3 center = (v0 + v1 + v2) / 3.0f;
                 _triangleNodes.Add(new Node(i, center));
@@ -103,12 +103,11 @@ namespace Server.Game
                 Node currentNode = _triangleNodes[i];
                 int[] triIndices = new int[] { _navMeshData.triangles[i * 3], _navMeshData.triangles[i * 3 + 1], _navMeshData.triangles[i * 3 + 2] };
 
-                // 정점 위치를 미리 가져옵니다.
                 Vector3[] triVertices = new Vector3[3];
                 for (int k = 0; k < 3; k++)
                 {
-                    SerializableVector3 sv = _navMeshData.vertices[triIndices[k]];
-                    triVertices[k] = new Vector3(sv.x, sv.y, sv.z);
+                    Vector3 sv = _navMeshData.vertices[triIndices[k]];
+                    triVertices[k] = new Vector3(sv.X, sv.Y, sv.Z);
                 }
 
                 for (int j = 0; j < 3; j++)
@@ -116,7 +115,6 @@ namespace Server.Game
                     Vector3 v1 = triVertices[j];
                     Vector3 v2 = triVertices[(j + 1) % 3];
 
-                    // TODO : 정밀도 너무 높아서 잘라냄 - 이거 없애는 방법 생각해보기
                     Vector3 roundedV1 = new Vector3((float)Math.Round(v1.X, 4), (float)Math.Round(v1.Y, 4), (float)Math.Round(v1.Z, 4));
                     Vector3 roundedV2 = new Vector3((float)Math.Round(v2.X, 4), (float)Math.Round(v2.Y, 4), (float)Math.Round(v2.Z, 4));
 
@@ -159,96 +157,8 @@ namespace Server.Game
                     nearestNode = node;
                 }
             }
-
             return nearestNode;
         }
-
-
-        // 두 삼각형이 공통된 변을 공유하는지 확인
-        private static bool ShareEdge(int[] triA_indices, int[] triB_indices)
-        {
-            int commonVertices = 0;
-            float tolerance = 0.0001f;
-
-            // 1. 두 삼각형의 정점 가져오기
-            List<SerializableVector3> triA_vertices = new List<SerializableVector3>();
-            foreach (int idx in triA_indices)
-            {
-                triA_vertices.Add(_navMeshData.vertices[idx]);
-            }
-
-            List<SerializableVector3> triB_vertices = new List<SerializableVector3>();
-            foreach (int idx in triB_indices)
-            {
-                triB_vertices.Add(_navMeshData.vertices[idx]);
-            }
-
-            // 2. 두 정점 집합 비교
-            foreach (var vA in triA_vertices)
-            {
-                foreach (var vB in triB_vertices)
-                {
-                    float distSquared = (vA.x - vB.x) * (vA.x - vB.x) + (vA.y - vB.y) * (vA.y - vB.y) +(vA.z - vB.z) * (vA.z - vB.z);
-
-                    if (distSquared < tolerance * tolerance)
-                    {
-                        commonVertices++;
-                        break; // 이미 찾았으니 다음 vA로 이동
-                    }
-                }
-            }
-            return commonVertices >= 2;
-        }
-
-        // 주어진 점이 어떤 삼각형 내부에 있는지 찾기
-        private static Node FindTriangleContainingPoint(Vector3 point)
-        {
-            // TODO : 이거 최적화 필요,  (아마도 : 공간 분할 구조 사용)
-            List<int> triangles = _navMeshData.triangles; 
-            //ㅁㄴㅇ림;ㅣㄴ아러;미나얼
-            for (int i = 0; i < _triangleNodes.Count; i++)
-            {
-                int[] tri_indices = new int[] { triangles[i * 3], triangles[i * 3 + 1], triangles[i * 3 + 2] };
-                SerializableVector3 v0Data = _navMeshData.vertices[tri_indices[0]];
-                Vector3 v0 = new Vector3(v0Data.x, v0Data.y, v0Data.z);
-
-                SerializableVector3 v1Data = _navMeshData.vertices[tri_indices[1]];
-                Vector3 v1 = new Vector3(v1Data.x, v1Data.y, v1Data.z);
-
-                SerializableVector3 v2Data = _navMeshData.vertices[tri_indices[2]];
-                Vector3 v2 = new Vector3(v2Data.x, v2Data.y, v2Data.z);
-
-                if (IsPointInTriangle(point, v0, v1, v2))
-                    return _triangleNodes[i];
-            }
-            return null; 
-        }
-
-        // 3D 공간에서 점이 삼각형 내부에 있는지 확인 
-        private static bool IsPointInTriangle(Vector3 p, Vector3 a, Vector3 b, Vector3 c)
-        {
-            // XZ 평면으로 투영
-            Vector2 p2 = new Vector2(p.X, p.Z);
-            Vector2 a2 = new Vector2(a.X, a.Z);
-            Vector2 b2 = new Vector2(b.X, b.Z);
-            Vector2 c2 = new Vector2(c.X, c.Z);
-
-            float s = a2.Y * c2.X - a2.X * c2.Y + (c2.Y - a2.Y) * p2.X + (a2.X - c2.X) * p2.Y;
-            float t = a2.X * b2.Y - a2.Y * b2.X + (a2.Y - b2.Y) * p2.X + (b2.X - a2.X) * p2.Y;
-
-            if ((s < 0) != (t < 0) && s != 0 && t != 0)
-                return false;
-
-            float A = -b2.Y * c2.X + a2.Y * (c2.X - b2.X) + a2.X * (b2.Y - c2.Y) + b2.X * c2.Y;
-            if (A < 0) // 삼각형의 방향에 따라 A가 음수일 수 있음
-            {
-                s = -s;
-                t = -t;
-                A = -A;
-            }
-            return s >= 0 && t >= 0 && (s + t) <= A;
-        }
-
 
         public static List<Vector3> FindPath(Vector3 start, Vector3 end)
         {
@@ -353,11 +263,11 @@ namespace Server.Game
             if (commonVertexIndices.Count == 2)
             {
                 // 공유된 두 정점을 찾고 반환
-                SerializableVector3 v1Data = _navMeshData.vertices[commonVertexIndices[0]];
-                Vector3 v1 = new Vector3(v1Data.x, v1Data.y, v1Data.z);
+                Vector3 v1Data = _navMeshData.vertices[commonVertexIndices[0]];
+                Vector3 v1 = new Vector3(v1Data.X, v1Data.Y, v1Data.Z);
 
-                SerializableVector3 v2Data = _navMeshData.vertices[commonVertexIndices[1]];
-                Vector3 v2 = new Vector3(v2Data.x, v2Data.y, v2Data.z);
+                Vector3 v2Data = _navMeshData.vertices[commonVertexIndices[1]];
+                Vector3 v2 = new Vector3(v2Data.X, v2Data.Y, v2Data.Z);
 
                 return Tuple.Create(v1, v2);
             }

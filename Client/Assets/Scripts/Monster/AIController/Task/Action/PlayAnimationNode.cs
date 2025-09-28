@@ -22,13 +22,14 @@ public abstract class AnimationControlNode : ActionNode, IStateChangeListener
         if (monsterController == null)
             monsterController = owner.GetComponentInChildren<MonsterController>();
 
+
         if (_animator == null)
             _animator = owner.GetComponentInChildren<Animator>();
 
         if (_navMeshAgent == null)
             _navMeshAgent = owner.GetComponentInChildren<NavMeshAgent>();
 
-        return (monsterController != null && _animator != null && _navMeshAgent != null);
+        return (monsterController != null && _animator != null);
     }
     public abstract void HandleStateChange(CreatureState newState);
 
@@ -120,8 +121,8 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
        
         if (_isSentEndPacket == false)
         {
-            _animator.SetTrigger(triggerName);
             _isSentEndPacket = true;
+            _animator.SetTrigger(triggerName);
 
             if (bLoop)
                 _animator.SetBool(boolName, true);
@@ -139,7 +140,7 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
     {
         if (_animator == null)
             return;
-
+        Debug.Log("================애니메이션 종료 ================");
         if (newState == CreatureState.Idle)
         {
             _animator.ResetTrigger(triggerName);
