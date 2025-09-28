@@ -137,10 +137,7 @@ namespace Server.Game
             Vector3 monsterPos = new Vector3(this.PosInfo.PosX, this.PosInfo.PosY, this.PosInfo.PosZ);
             float distanceToWaypoint = Vector3.Distance(monsterPos, spawnPosition);
             if (distanceToWaypoint < 0.1f)
-            {
                 return true;
-            }
-                Console.WriteLine("활동 범위를 넘어갔는가?");
             return false;
         }
 
@@ -175,7 +172,6 @@ namespace Server.Game
                 if (Vector3.Distance(_path[0], startPos) > 0.1f)
                 {
                     _path.Insert(0, startPos);
-                    _pathIdx = 0;
                 }
             }
         }

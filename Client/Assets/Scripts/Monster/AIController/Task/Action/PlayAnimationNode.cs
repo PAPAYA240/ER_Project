@@ -140,7 +140,6 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
     {
         if (_animator == null)
             return;
-        Debug.Log("================애니메이션 종료 ================");
         if (newState == CreatureState.Idle)
         {
             _animator.ResetTrigger(triggerName);

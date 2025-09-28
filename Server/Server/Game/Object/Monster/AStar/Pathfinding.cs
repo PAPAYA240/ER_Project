@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
+using ServerCore;
+using System.Diagnostics;
 
 namespace Server.Game
 {
@@ -46,6 +48,7 @@ namespace Server.Game
         private static NavMeshExportData _navMeshData;
         private static List<Node> _triangleNodes;
 
+        #region Load Navi
         public static void Initialize()
         {
             string basePath = ConfigManager.Config.dataPaths["monster"];
@@ -142,6 +145,7 @@ namespace Server.Game
                 }
             }
         }
+        #endregion
 
         public static Node FindNearestNode(Vector3 position)
         {
@@ -162,66 +166,51 @@ namespace Server.Game
 
         public static List<Vector3> FindPath(Vector3 start, Vector3 end)
         {
-            var openSet = new List<Node>(); // 탐색할 노드 목록 (우선순위 큐 역할)
-            var cameFrom = new Dictionary<Node, Node>(); // 경로를 추적하기 위한 딕셔너리
-            var gScore = new Dictionary<Node, float>(); // 시작점에서 현재 노드까지의 실제 비용
-            var fScore = new Dictionary<Node, float>(); // 총 예상 비용 시
-
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
             Node startNode = FindNearestNode(start);
             Node targetNode = FindNearestNode(end);
+            if (startNode == null || targetNode == null)
+                return null;
 
-            // 시작 노드를 openSet에 추가하고 초기 비용b 설정
-            openSet.Add(startNode);
+            var openSet = new PriorityQueue<Node, float>();
+            var gScore = new Dictionary<Node, float>();
+
             gScore[startNode] = 0;
-
-            // 휴리스틱 비용 계산 (목적지까지의 유클리드 거리)
-            fScore[startNode] = Vector3.Distance(startNode.Center, targetNode.Center);
+            float startFScore = Vector3.Distance(startNode.Center, targetNode.Center);
+            openSet.Push(startNode, startFScore);
 
             while (openSet.Count > 0)
             {
-                // openSet에서 fScore가 가장 낮은 노드를 찾습니다.
-                // 이것이 A* 알고리즘의 핵심입니다.
-                Node currentNode = openSet[0];
-                for (int i = 1; i < openSet.Count; i++)
+                Node currentNode = openSet.Pop();
+                float currentGScore = gScore.ContainsKey(currentNode) ? gScore[currentNode] : float.MaxValue;
+
+                if (currentNode.Equals(targetNode))
                 {
-                    if (fScore[openSet[i]] < fScore[currentNode])
-                    {
-                        currentNode = openSet[i];
-                    }
+                    stopwatch.Stop();
+                    TimeSpan ts = stopwatch.Elapsed;
+                    Console.WriteLine($"경로 탐색 시간: {ts.TotalMilliseconds:F3} ms");
+                    return SmoothPath(RetracePath(startNode, currentNode), start, end); 
                 }
 
-                // 목적지에 도달했으면 경로 재구성 후 반환
-                if (currentNode.Equals(targetNode))
-                    return SmoothPath(RetracePath(startNode, currentNode), start, end);
-
-                openSet.Remove(currentNode);
-
-                // 현재 노드의 이웃 노드들을 탐색
                 foreach (var neighbor in currentNode.Neighbors)
                 {
-                    float tentativeGScore = gScore.ContainsKey(currentNode) ? gScore[currentNode] + Vector3.Distance(currentNode.Center, neighbor.Center) : float.MaxValue;
+                    float tentativeGScore = currentGScore + Vector3.Distance(currentNode.Center, neighbor.Center);
 
-                    // 이웃 노드를 이미 방문했거나, 더 나은 경로가 아니거나
-                    if (gScore.ContainsKey(neighbor) && tentativeGScore >= gScore[neighbor])
-                    {
+                    if (gScore.TryGetValue(neighbor, out float neighborGScore) && tentativeGScore >= neighborGScore)
                         continue;
-                    }
 
-                    // 더 나은 경로를 찾았으므로 업데이트
-                    cameFrom[neighbor] = currentNode;
                     gScore[neighbor] = tentativeGScore;
 
-                    // 목적지까지의 휴리스틱 비용 계산
                     float hScore = Vector3.Distance(neighbor.Center, targetNode.Center);
-                    fScore[neighbor] = tentativeGScore + hScore;
-
-                    // openSet에 이웃 노드가 없으면 추가
-                    if (!openSet.Contains(neighbor))
-                        openSet.Add(neighbor);
+                    float newFScore = tentativeGScore + hScore;
+                    openSet.Push(neighbor, newFScore);
                 }
             }
 
-            // 경로를 찾지 못함
+            stopwatch.Stop();
+            TimeSpan ts_fail = stopwatch.Elapsed;
+            Console.WriteLine($"경로 탐색 실패 시간: {ts_fail.TotalMilliseconds:F3} ms");
             return null;
         }
 
