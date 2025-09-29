@@ -12,11 +12,15 @@ public class PlayerViewController : MonoBehaviour
 {
     private NavMeshAgent _agent;
     private Animator _animator;
+    private MyPlayerController _player;
 
     private void Awake()
     {
         _agent = GetComponentInChildren<NavMeshAgent>();
         _animator = GetComponentInChildren<Animator>();
+        _player = GetComponentInChildren<MyPlayerController>();
+
+        //_agent.enabled = false;
     }
 
     //public void OnIdle(S_Idle packet)
@@ -36,6 +40,18 @@ public class PlayerViewController : MonoBehaviour
         if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
         {
             _agent.SetDestination(navHit.position);
+            //_player.transform.position = navHit.position;
+            _player.UpdateTransform();
+        }
+
+        float stopRange = 0.1f;
+        if (Vector3.Distance(targetPos, _player.transform.position) < stopRange)
+        {
+            C_MoveSync syncPacket = new C_MoveSync()
+            {
+                PosInfo = _player.PosInfo,
+            };
+            _player.SendPacket(syncPacket);
         }
     }
 

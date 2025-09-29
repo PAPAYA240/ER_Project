@@ -232,11 +232,25 @@ namespace Server.Game
             if (player == null)
                 return;
 
-            // todo : 검증
+            // 이미 이동 중이면 상태 유지 + 목표지만 갱신
+            if (player.CurState is IReceivesMoveCommand moving)
+            {
+                moving.OnMoveCommand(player, movePacket);
+                return;
+            }
 
-            // 상태 변경
+            // 이동 중이 아니면 그때만 상태 전환
             player.ChangeState(new Player_MovingState(movePacket));
         }
+
+        public void HandleMoveSync(Player player, C_MoveSync movePacket)
+        {
+            if (player == null)
+                return;
+
+            player.ClientPos = movePacket.PosInfo;
+        }
+
         public void HandleVF(Player player, C_Fx skillPacket)
         {
             if (player == null)

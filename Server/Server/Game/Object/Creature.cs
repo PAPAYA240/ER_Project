@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -51,7 +52,8 @@ namespace Server.Game
 
                     // 도착 시 Idle 상태로 전환 
                     // Monster의 경우는 FSM 상태를 Idle로 전환합니다
-                    IdleState();
+                    if(GameObjectType.Monster == ObjectType)
+                        IdleState();
                 }
             }
 

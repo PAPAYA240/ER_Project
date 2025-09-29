@@ -1,4 +1,5 @@
 using Data;
+using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
@@ -80,6 +81,11 @@ public class MyPlayerController : PlayerController
         //    Managers.Network.Send(movePacket);
         //    _updated = false;
         //}
+    }
+
+    public void SendPacket(IMessage packet)
+    {
+        Managers.Network.Send(packet);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

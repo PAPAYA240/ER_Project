@@ -42,6 +42,7 @@ enum MsgId {
   S_PLAYER_STATE = 34;
   S_CHANGE_STAT = 35;
   C_ATTACK_SKILL_TARGET = 36;
+  C_MOVE_SYNC = 37;
 }
 
 enum CreatureState{
@@ -380,6 +381,11 @@ message S_ChangeStat{
 	float hp = 2;
 	float stamina = 3;
 	float barrier = 4;
+}
+
+message C_MoveSync{
+	int32 objectIde = 1;
+	PositionInfo posInfo = 2;
 }
 
 message PositionInfo{

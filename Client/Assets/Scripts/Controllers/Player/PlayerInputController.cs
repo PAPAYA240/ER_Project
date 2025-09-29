@@ -32,7 +32,6 @@ public class PlayerInputController : MonoBehaviour
 
             if (NavMesh.SamplePosition(dest, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
             {
-                _agent.SetDestination(navHit.position);
                 return new C_Move
                 {
                     IsTargetOn = false,

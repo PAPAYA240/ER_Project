@@ -29,6 +29,18 @@ namespace Server.Game
 
         // StateMachine
         private PlayerStateMachine _stateMachine;
+        private IPlayerState _curState;
+        public IPlayerState CurState
+        {
+            get { return _curState; }
+            set { _curState = value; }
+        }
+        private PositionInfo _clientPosInfo = new PositionInfo();
+        public PositionInfo ClientPos
+        {
+            get { return _clientPosInfo; }
+            set { _clientPosInfo = value; }
+        }
 
         // StatRegenerator
         public bool _isUpdatedStat = false;
@@ -234,6 +246,21 @@ namespace Server.Game
             }
 
             return levelUp;
+        }
+        #endregion
+
+        #region Util
+        public bool CanAttack()
+        {
+            if (State == CreatureState.Dead)
+                return false;
+
+            return true;
+        }
+
+        public GameObject FindTarget(int targetId)
+        {
+            return ObjectManager.Instance.Find(targetId);
         }
         #endregion
 

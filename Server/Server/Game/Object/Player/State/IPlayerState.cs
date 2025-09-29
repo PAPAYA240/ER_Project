@@ -1,4 +1,5 @@
-﻿using Server.Game;
+﻿using Google.Protobuf.Protocol;
+using Server.Game;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,3 +11,7 @@ public interface IPlayerState
     void Exit(Player player);  
 }
 
+public interface IReceivesMoveCommand
+{
+    void OnMoveCommand(Player player, C_Move cmd);
+}
