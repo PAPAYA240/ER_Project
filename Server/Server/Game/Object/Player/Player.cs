@@ -125,30 +125,6 @@ namespace Server.Game
             //base.Update();
             CheckUpdateStat();
         }
-
-        //protected virtual void UpdateController()
-        //{
-        //    switch (State)
-        //    {
-        //        case CreatureState.Idle:
-        //            // 사용 예시
-        //            if(Target != null)
-        //                Get_CalculatePath(new Vector3(Target.PosInfo.PosX, Target.PosInfo.PosY, Target.PosInfo.PosZ));
-        //            break;
-        //        case CreatureState.Moving:
-        //            Get_MoveAlongPath();
-        //            break;
-        //        case CreatureState.Attack:
-        //            break;
-        //        case CreatureState.Skill:
-        //            break;
-        //        case CreatureState.Dead:
-        //            break;
-        //        case CreatureState.Rest:
-        //            UpdateRest();
-        //            break;
-        //    }
-        //}
         #endregion
         #region State : Dead
         public override void OnDead(GameObject attacker)
