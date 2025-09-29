@@ -72,14 +72,14 @@ public class MyPlayerController : PlayerController
 
     protected override void CheckUpdatedFlag()
     {
-        if (_updated)
-        {
-            C_Move movePacket = new C_Move();
-            movePacket.PosInfo = PosInfo;
-            movePacket.RotInfo = RotInfo;
-            Managers.Network.Send(movePacket);
-            _updated = false;
-        }
+        //if (_updated)
+        //{
+        //    C_Move movePacket = new C_Move();
+        //    movePacket.PosInfo = PosInfo;
+        //    movePacket.RotInfo = RotInfo;
+        //    Managers.Network.Send(movePacket);
+        //    _updated = false;
+        //}
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

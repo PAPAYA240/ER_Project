@@ -236,10 +236,8 @@ message S_Despawn{
 
 message C_Move{
   bool isTargetOn = 1;
-  PositionInfo targetPosition = 2;
-  PositionInfo posInfo = 3;
-  RotationInfo rotInfo = 4;
-  bool isWarp = 5;
+  int32 targetId = 2;
+  PositionInfo targetPosition = 3;
 }
 
 message S_Move{

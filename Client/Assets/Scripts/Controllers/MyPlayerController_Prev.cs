@@ -263,13 +263,13 @@ public class MyPlayerController_Prev : PlayerController
     {
         if (_updated)
         {
-            C_Move movePacket = new C_Move();
-            movePacket.PosInfo = PosInfo;
-            movePacket.RotInfo = RotInfo;
-            movePacket.IsWarp = _isWarp;
-            Managers.Network.Send(movePacket);
-            _updated = false;
-            _isWarp = false;
+            //C_Move movePacket = new C_Move();
+            //movePacket.PosInfo = PosInfo;
+            //movePacket.RotInfo = RotInfo;
+            //movePacket.IsWarp = _isWarp;
+            //Managers.Network.Send(movePacket);
+            //_updated = false;
+            //_isWarp = false;
         }
     }
     #endregion

@@ -26,7 +26,17 @@ public class PlayerViewController : MonoBehaviour
 
     public void OnMove(S_Move packet)
     {
+        Vector3 targetPos = new Vector3()
+        {
+            x = packet.PosInfo.PosX,
+            y = packet.PosInfo.PosY,
+            z = packet.PosInfo.PosZ
+        };
 
+        if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
+        {
+            _agent.SetDestination(navHit.position);
+        }
     }
 
     public void OnSkill(S_Skill packet)

@@ -234,25 +234,8 @@ namespace Server.Game
 
             // todo : 검증
 
-            // 일단 서버에서 좌표 이동
-            player.Info.PosInfo.PosX = movePacket.PosInfo.PosX;
-            player.Info.PosInfo.PosY = movePacket.PosInfo.PosY;
-            player.Info.PosInfo.PosZ = movePacket.PosInfo.PosZ;
-            player.Info.RotInfo.Qx = movePacket.RotInfo.Qx;
-            player.Info.RotInfo.Qy = movePacket.RotInfo.Qy;
-            player.Info.RotInfo.Qz = movePacket.RotInfo.Qz;
-            player.Info.RotInfo.Qw = movePacket.RotInfo.Qw;
-
             // 상태 변경
             player.ChangeState(new Player_MovingState(movePacket));
-
-            // 다른 플레이어한테도 알려준다
-            S_Move resMovePacket = new S_Move();
-            resMovePacket.ObjectId = player.Info.ObjectId;
-            resMovePacket.PosInfo = movePacket.PosInfo;
-            resMovePacket.RotInfo = movePacket.RotInfo;
-            resMovePacket.IsWarp = movePacket.IsWarp;
-            Broadcast(resMovePacket);
         }
         public void HandleVF(Player player, C_Fx skillPacket)
         {

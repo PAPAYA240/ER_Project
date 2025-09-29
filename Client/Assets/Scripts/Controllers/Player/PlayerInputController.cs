@@ -37,8 +37,6 @@ public class PlayerInputController : MonoBehaviour
                 {
                     IsTargetOn = false,
                     TargetPosition = navHit.position,
-                    PosInfo = _player.PosInfo,
-                    RotInfo = _player.RotInfo,
                 };
             }                           
         }
