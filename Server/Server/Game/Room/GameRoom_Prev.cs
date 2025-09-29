@@ -12,7 +12,7 @@ using static Server.Data.DataUtils;
 
 namespace Server.Game
 {
-    public class GameRoom : Room
+    public class GameRoom_Prev : Room
     {
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
         ConcurrentDictionary<int, EnvironmentObject> _envs = new ConcurrentDictionary<int, EnvironmentObject>();
@@ -39,11 +39,11 @@ namespace Server.Game
             Pathfinding.Initialize();
 
             // Spawn Monster
-            _monsterManager.Init(this);
+            //_monsterManager.Init(this);
             //_monsterManager.Add(1, MonsterType.Gamma);
 
             // Spawn Env
-            _envManager.Init(this);
+            //_envManager.Init(this);
 
             _collisionManager.Init();
         }
@@ -67,7 +67,7 @@ namespace Server.Game
                 visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
                 AddVisibleObjects(visibleObjs, _envs, player);
                 AddVisibleObjects(visibleObjs, _monsters, player);
-                player.SendVisibleObjsPkt(visibleObjs);
+                //player.SendVisibleObjsPkt(visibleObjs);
             }
 
             List<Monster> monstersToUpdate = new List<Monster>(_monsters.Values);
@@ -93,6 +93,7 @@ namespace Server.Game
             {
                 Player player = gameObject as Player;
                 _players.Add(gameObject.Id, player);
+                //player.Init();
                 player.Info.Player.Team = AssignTeam();
 
                 if (!_teams.TryGetValue(player.Info.Player.Team, out var teamPlayers))
@@ -104,9 +105,8 @@ namespace Server.Game
 
                 ObjectManager.Instance.RegisterTeam(gameObject.Id, player.Info.Player.Team);
 
-                player.Room = this;
-                player.Init();
-
+                //player.Room = this;
+                
                 // 본인한테 정보 전송
                 {
                     // Temp Cobalt Exp
@@ -134,9 +134,9 @@ namespace Server.Game
 
                     player.Session.Send(spawnPacket);
 
-                    int levelUpCnt = player.CheckLevelUp();
-                    if (levelUpCnt > 0)
-                        BroadcastLevelUp(player.Id, levelUpCnt, player.Info.Player.CharType);
+                    //int levelUpCnt = player.CheckLevelUp();
+                    //if (levelUpCnt > 0)
+                    //    BroadcastLevelUp(player.Id, levelUpCnt, player.Info.Player.CharType);
                 }
             }
             else if (type == GameObjectType.Monster)
@@ -145,14 +145,14 @@ namespace Server.Game
                 if (_monsters == null)
                     _monsters = new ConcurrentDictionary<int, Monster>();
 
-                monster.Room = this;
+                //monster.Room = this;
                 _monsters.TryAdd(gameObject.Id, monster);
             }
             else if (type == GameObjectType.Projectile)
             {
                 Projectile projectile = gameObject as Projectile;
                 _projectiles.Add(gameObject.Id, projectile);
-                projectile.Room = this;
+                //projectile.Room = this;
             }
             else if (type == GameObjectType.Environment)
             {
@@ -160,7 +160,7 @@ namespace Server.Game
                 if (env == null)
                     _envs = new ConcurrentDictionary<int, EnvironmentObject>();
 
-                env.Room = this;
+                //env.Room = this;
                 _envs.TryAdd(gameObject.Id, env);
             }
 
@@ -189,7 +189,7 @@ namespace Server.Game
                 myTeam.Remove(player.Id);
 
                 player.Room = null;
-                player.OnDestroy();
+                //player.OnDestroy();
 
                 // 본인한테 정보 전송
                 {
@@ -243,9 +243,6 @@ namespace Server.Game
             player.Info.RotInfo.Qz = movePacket.RotInfo.Qz;
             player.Info.RotInfo.Qw = movePacket.RotInfo.Qw;
 
-            // 상태 변경
-            player.ChangeState(new Player_MovingState(movePacket));
-
             // 다른 플레이어한테도 알려준다
             S_Move resMovePacket = new S_Move();
             resMovePacket.ObjectId = player.Info.ObjectId;
@@ -268,8 +265,8 @@ namespace Server.Game
 
         public void HandleSkill(Player player, C_Skill skillPacket)
         {
-            if(player == null) 
-                return;
+            //if(player == null) 
+            //    return;
 
             //ObjectInfo info = player.Info;
             //S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
@@ -421,15 +418,15 @@ namespace Server.Game
 
         void BroadcastVisibleObjs()
         {
-            foreach (Player player in _players.Values)
-            {
-                List<int> visibleObjs = new List<int>();
-                visibleObjs.AddRange(GetObjectsInRange(_players, player));
-                AddVisibleObjects(visibleObjs, _monsters, player);
-                AddVisibleObjects(visibleObjs, _envs, player);
-                visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
-                player.SendVisibleObjsPkt(visibleObjs);
-            }
+            //foreach (Player player in _players.Values)
+            //{
+            //    List<int> visibleObjs = new List<int>();
+            //    visibleObjs.AddRange(GetObjectsInRange(_players, player));
+            //    AddVisibleObjects(visibleObjs, _monsters, player);
+            //    AddVisibleObjects(visibleObjs, _envs, player);
+            //    visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
+            //    player.SendVisibleObjsPkt(visibleObjs);
+            //}
         }
 
         void BroadcastLevelUp(int objectId, int levelUpCnt, CharacterType charType)
@@ -461,49 +458,49 @@ namespace Server.Game
 
         public void AddDummyPlayers(ClientSession clientSession,  List<CharacterType> dummyPlayers)
         {
-            if (_dummyAdded)
-                return;
+            //if (_dummyAdded)
+            //    return;
 
-            S_Spawn spawnPacket = new S_Spawn();
-            Random rand = new Random();
-            foreach (CharacterType charType in dummyPlayers)
-            {
-                Player dummyPlayer = ObjectManager.Instance.Add<Player>();
-                {
-                    dummyPlayer.Info.Name = $"DummyPlayer_{dummyPlayer.Id}";
-                    dummyPlayer.Info.PosInfo.State = CreatureState.Idle;
-                    dummyPlayer.Info.PosInfo.PosX = rand.Next(-4,4);
-                    dummyPlayer.Info.PosInfo.PosY = 0;
-                    dummyPlayer.Info.PosInfo.PosZ = rand.Next(-4, 4);
-                    dummyPlayer.Info.Player = new PlayerInfo();
-                    dummyPlayer.Info.Player.CharType = charType;
-                    dummyPlayer.Init();
+            //S_Spawn spawnPacket = new S_Spawn();
+            //Random rand = new Random();
+            //foreach (CharacterType charType in dummyPlayers)
+            //{
+            //    Player dummyPlayer = ObjectManager.Instance.Add<Player>();
+            //    {
+            //        dummyPlayer.Info.Name = $"DummyPlayer_{dummyPlayer.Id}";
+            //        dummyPlayer.Info.PosInfo.State = CreatureState.Idle;
+            //        dummyPlayer.Info.PosInfo.PosX = rand.Next(-4,4);
+            //        dummyPlayer.Info.PosInfo.PosY = 0;
+            //        dummyPlayer.Info.PosInfo.PosZ = rand.Next(-4, 4);
+            //        dummyPlayer.Info.Player = new PlayerInfo();
+            //        dummyPlayer.Info.Player.CharType = charType;
+            //        dummyPlayer.Init();
 
-                    StatInfo stat = null;
-                    DataManager.StatDict.TryGetValue(charType, out stat);
-                    dummyPlayer.Stat.MergeFrom(stat);
-                    dummyPlayer.Hp = dummyPlayer.MaxHp;
-                    dummyPlayer.Stamina = dummyPlayer.MaxStamina;
-                    dummyPlayer.Session = clientSession;
-                    _players.Add(dummyPlayer.Id, dummyPlayer);
-                    dummyPlayer.Info.Player.Team = AssignTeam();
+            //        StatInfo stat = null;
+            //        DataManager.StatDict.TryGetValue(charType, out stat);
+            //        dummyPlayer.Stat.MergeFrom(stat);
+            //        dummyPlayer.Hp = dummyPlayer.MaxHp;
+            //        dummyPlayer.Stamina = dummyPlayer.MaxStamina;
+            //        dummyPlayer.Session = clientSession;
+            //        _players.Add(dummyPlayer.Id, dummyPlayer);
+            //        dummyPlayer.Info.Player.Team = AssignTeam();
 
-                    if (!_teams.TryGetValue(dummyPlayer.Info.Player.Team, out var teamPlayers))
-                    {
-                        teamPlayers = new Dictionary<int, Player>();
-                        _teams[dummyPlayer.Info.Player.Team] = teamPlayers;
-                    }
-                    teamPlayers.Add(dummyPlayer.Id, dummyPlayer);
+            //        if (!_teams.TryGetValue(dummyPlayer.Info.Player.Team, out var teamPlayers))
+            //        {
+            //            teamPlayers = new Dictionary<int, Player>();
+            //            _teams[dummyPlayer.Info.Player.Team] = teamPlayers;
+            //        }
+            //        teamPlayers.Add(dummyPlayer.Id, dummyPlayer);
 
-                    ObjectManager.Instance.RegisterTeam(dummyPlayer.Id, dummyPlayer.Info.Player.Team);
+            //        ObjectManager.Instance.RegisterTeam(dummyPlayer.Id, dummyPlayer.Info.Player.Team);
 
-                    dummyPlayer.Room = this;
-                }
-                spawnPacket.Objects.Add(dummyPlayer.Info);
-            }
-            clientSession.Send(spawnPacket);
+            //        dummyPlayer.Room = this;
+            //    }
+            //    spawnPacket.Objects.Add(dummyPlayer.Info);
+            //}
+            //clientSession.Send(spawnPacket);
 
-            _dummyAdded = true;
+            //_dummyAdded = true;
         }
     }
 }

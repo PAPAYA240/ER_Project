@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using Google.Protobuf.Protocol;
 
 namespace Server.Game
@@ -135,34 +136,21 @@ namespace Server.Game
             set { Stat.Defense = Math.Max(value, 0); }
         }
 
-        public CreatureState State
+        public virtual CreatureState State
         {
             get { return PosInfo.State; }
             set { PosInfo.State = value; }
         }
 
-        public virtual void Update()
+        public Vector3 Position
         {
-            UpdateController();
+            get { return new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ); }
+            set { PosInfo.PosX = value.X; PosInfo.PosY = value.Y; PosInfo.PosZ = value.Z; }
         }
 
-        protected virtual void UpdateController()
+        public virtual void Update()
         {
-            //switch (State)
-            //{
-            //    case CreatureState.Idle:
-            //        break;
-            //    case CreatureState.Moving:
-            //        break;
-            //    case CreatureState.Attack:
-            //        break;
-            //    case CreatureState.Skill:
-            //        break;
-            //    case CreatureState.Dead:
-            //        break;
-            //    case CreatureState.Rest:
-            //        break;
-            //}
+
         }
 
         public virtual void OnDamaged(GameObject attacker, float damage)

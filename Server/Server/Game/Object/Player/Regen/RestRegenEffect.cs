@@ -1,4 +1,5 @@
-﻿using Server.Game;
+﻿using Google.Protobuf.Protocol;
+using Server.Game;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,7 +12,7 @@ public class RestRegenEffect : IRegenEffect
 
     public void OnTick(Player owner)
     {
-        if (owner.State != Google.Protobuf.Protocol.CreatureState.Rest)
+        if (owner.State != CreatureState.Rest)
             return;
 
         float hpRegen = owner.Stat.HpRegen * bonusRegen;

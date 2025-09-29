@@ -10,9 +10,38 @@ using static Server.Data.DataUtils;
 
 namespace Server.Game
 {
-    public class Player : GameObject
+    public class Player_Prev : GameObject
     {
         public ClientSession Session { get; set; }
+
+        private PlayerStateMachine _stateMachine;
+
+        //public Player_Prev()
+        //{
+        //    ObjectType = GameObjectType.Player;
+
+        //    _statRegenerator = new StatRegenerator(this);
+        //    _statRegenerator.AddEffect(new BaseRegenEffect());
+        //    _statRegenerator.AddEffect(new RestRegenEffect());
+
+        //    _stateMachine = new PlayerStateMachine();
+        //    _stateMachine.ChangeState(new Player_IdleState(), this);
+        //}
+
+        //public override void Update()
+        //{
+        //    //base.Update();
+        //    _stateMachine.Update(this);
+        //    CheckUpdateStat();
+        //}
+
+        //public void ChangeState(IPlayerState newState)
+        //{
+        //    _stateMachine.ChangeState(newState, this);
+        //}
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
         Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
@@ -81,14 +110,7 @@ namespace Server.Game
         //Inventory
         static int MaxInventorySlot = 10;
 
-        public Player()
-        {
-            ObjectType = GameObjectType.Player;
-
-            _statRegenerator = new StatRegenerator(this);
-            _statRegenerator.AddEffect(new BaseRegenEffect());
-            _statRegenerator.AddEffect(new RestRegenEffect());
-        }
+        
 
         public GameObject SkillTarget { get; set; }
         public KeyCode UsedTargetingSkill { get; set; }
@@ -117,15 +139,6 @@ namespace Server.Game
             MakeItemSlot();
             MakeInventory();
         }
-        #endregion
-
-        #region Update
-        public override void Update()
-        {
-            //base.Update();
-            CheckUpdateStat();
-        }
-
         #endregion
 
         #region State : Dead

@@ -6,6 +6,7 @@ using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
 using UnityEngine;
+using static UI_PlayerInterface;
 
 class PacketHandler
 {
@@ -47,19 +48,23 @@ class PacketHandler
             return;
 
         if (Managers.Object.MyPlayer.Id == movePacket.ObjectId)
-            return;
-
-        CreatureController cc = go.GetComponentInChildren<CreatureController>();
-        if (cc == null)
-            return;
-
-        cc.PosInfo = movePacket.PosInfo;
-        cc.RotInfo = movePacket.RotInfo;
-
-        if (cc.ObjectType == Define.Object.OtherPlayer)
         {
-            cc.SyncPos(movePacket.IsWarp);
-        }      
+            Managers.Object.MyPlayer.OnServerUpdate(movePacket);
+        }
+        else
+        {
+            CreatureController cc = go.GetComponentInChildren<CreatureController>();
+            if (cc == null)
+                return;
+
+            cc.PosInfo = movePacket.PosInfo;
+            cc.RotInfo = movePacket.RotInfo;
+
+            if (cc.ObjectType == Define.Object.OtherPlayer)
+            {
+                cc.SyncPos(movePacket.IsWarp);
+            }
+        }          
     }
      public static void S_StateHandler(PacketSession session, IMessage packet)
     {
@@ -276,9 +281,9 @@ class PacketHandler
         MyPlayerController mpc = go.GetComponent<MyPlayerController>();
         if (null != mpc)
         {
-            mpc.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
-            mpc.UpdateLevel();
-            return;
+            //mpc.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
+            //mpc.UpdateLevel();
+            //return;
         }
 
         //다른 플레이어면 위에서 안걸리고 내려와서 여기 걸림. 몬스터도 레벨업 하나?
@@ -344,5 +349,20 @@ class PacketHandler
         pc.Hp = statPacket.Hp;
         pc.Barrier = statPacket.Barrier;
         pc.Stamina = statPacket.Stamina;
+    }
+
+    public static void S_PlayerStateHandler(PacketSession session, IMessage packet)
+    {
+        S_PlayerState statePacket = packet as S_PlayerState;
+
+        GameObject go = Managers.Object.FindById(statePacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.PlayAnimFromServer(statePacket);
     }
 }

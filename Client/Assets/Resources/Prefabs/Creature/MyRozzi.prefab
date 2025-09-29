@@ -2681,6 +2681,8 @@ GameObject:
   - component: {fileID: 7715207981999100302}
   - component: {fileID: 8649169367258116997}
   - component: {fileID: 4210513269081658644}
+  - component: {fileID: -3627917903102980039}
+  - component: {fileID: -5177017171371246027}
   m_Layer: 0
   m_Name: MyRozzi
   m_TagString: Untagged
@@ -2759,6 +2761,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f48f6f0bbe9516241aaefba62ddcbda2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-3627917903102980039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4507760152863837473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b45822c208a4ffe40909f65084d07e82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-5177017171371246027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4507760152863837473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59c136465ba5ff64a92847f1c690590d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &4552065746279300795
