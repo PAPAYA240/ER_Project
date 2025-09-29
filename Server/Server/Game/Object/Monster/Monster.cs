@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Threading;
 using Google.Protobuf.Protocol;
 using Server.Data;
 
@@ -14,7 +13,7 @@ namespace Server.Game
         void Exit(Monster monster);
     }
 
-    public class Monster : GameObject
+    public class Monster : Creature
     {
         // 패킷
         private int _sequenceId = 0;
@@ -27,16 +26,9 @@ namespace Server.Game
 
         // 탐지 정보
         private const float _skillRange = 3.0f;
-        private const float _findRange = 30.0f;
 
         // TODO : 감마 총알 예시
         public float _delaySkillAnimationTimer = 0;
-
-
-        // Targeting
-        public Player PlayerTarget { get; set; }
-
-        public List<Vector3> _path = new List<Vector3>();
 
         public Monster() => ObjectType = GameObjectType.Monster;
 
@@ -63,6 +55,10 @@ namespace Server.Game
             if(_currentState != null)
                 _currentState?.Execute(this);
         }
+        protected override void IdleState()
+        {
+             ChangeState(new IdleState());
+        }
 
         // 스킬 선택
         public MonsterSkillData Get_DecideAndUseSkill()
@@ -80,7 +76,7 @@ namespace Server.Game
                 return null;
             }
 
-            PlayerTarget.OnDamaged(this, skillData.damage + Stat.Attack);
+            Target.OnDamaged(this, skillData.damage + Stat.Attack);
 
             return skillData;
         }
@@ -95,11 +91,11 @@ namespace Server.Game
 
         public bool IsFindTargetRange()
         {
-            if (PlayerTarget == null)
+            if (Target == null)
                 return false;
 
             Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-            Vector3 targetPos = new Vector3(PlayerTarget.PosInfo.PosX, PlayerTarget.PosInfo.PosY, PlayerTarget.PosInfo.PosZ);
+            Vector3 targetPos = new Vector3(Target.PosInfo.PosX, Target.PosInfo.PosY, Target.PosInfo.PosZ);
             float distanceToTarget = Vector3.Distance(monsterPos, targetPos);
 
             return distanceToTarget <= _findRange;
@@ -107,11 +103,11 @@ namespace Server.Game
         public bool IsSkillRange() => IsPlayerInSkillRange();
         private bool IsPlayerInSkillRange()
         {
-            if (PlayerTarget == null)
+            if (Target == null)
                 return false;
 
             Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-            Vector3 targetPos = new Vector3(PlayerTarget.PosInfo.PosX, PlayerTarget.PosInfo.PosY, PlayerTarget.PosInfo.PosZ);
+            Vector3 targetPos = new Vector3(Target.PosInfo.PosX, Target.PosInfo.PosY, Target.PosInfo.PosZ);
             float distanceToTarget = Vector3.Distance(monsterPos, targetPos);
 
             return distanceToTarget <= _skillRange;
@@ -141,163 +137,24 @@ namespace Server.Game
             return false;
         }
 
-        public Player FindTarget(Monster monster)
+        public Creature FindTarget(Monster monster)
         {
             // 플레이어 판단
-            monster.PlayerTarget = monster.Room.FindPlayer(p =>
+            monster.Target = monster.Room.FindPlayer(p =>
             {
                 Vector3 playerPos = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
                 Vector3 monsterPos = new Vector3(monster.PosInfo.PosX, monster.PosInfo.PosY, monster.PosInfo.PosZ);
 
-                Monster targetMonster = p.Target as Monster;
+                Creature target = p as Creature;
+                Creature targetMonster = target.Target;
                 if (targetMonster == this)
                     return true;
                 else
                     return false;
             });
-            return monster.PlayerTarget;
+            return monster.Target;
         }
 
-        public int _pathIdx = 0;
-        public void Get_CalculatePath(Vector3 targetPos) =>CalculatePath(targetPos);
-        private void CalculatePath(Vector3 targetPos)
-        {
-            Vector3 startPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-            _path = Pathfinding.FindPath(startPos, targetPos);
-            _pathIdx = 0;
-
-            if (_path != null && _path.Count > 0)
-            {
-                // 첫 웨이포인트가 현재 위치와 멀면 현재 위치도 경로에 넣어 자연스럽게 이동
-                if (Vector3.Distance(_path[0], startPos) > 0.1f)
-                {
-                    _path.Insert(0, startPos);
-                }
-            }
-        }
-
-        // 몬스터의 이동 로직을 담당하는 함수
-        public void Get_MoveAlongPath() => MoveAlongPath();
-        private void MoveAlongPath()
-        {
-            if (_path == null || _path.Count == 0)
-                return;
-
-            Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-            Vector3 nextWaypoint = _path[_pathIdx];
-
-            if (CheckArrival(nextWaypoint))
-            {
-                _pathIdx++;
-                if (_pathIdx >= _path.Count)
-                {
-                    _path.Clear();
-                    ChangeState(new IdleState());
-                }
-            }
-
-            // 실제 이동
-            FollowToTarget(nextWaypoint);
-            PushState(CreatureState.Moving, PosInfo, RotInfo);
-
-        }
-
-        const float MOVE_STEP_INTERPOL = 3.0f;
-        private bool CheckArrival(Vector3 targetPos)
-        {
-            Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-            float distanceToWaypoint = Vector3.Distance(monsterPos, targetPos);
-
-            return distanceToWaypoint < MOVE_STEP_INTERPOL;
-
-        }
-
-        private long _lastUpdateTime = 0;
-        private const float FIXED_MOVE_STEP = 0.8f;
-        public void FollowToTarget(Vector3 targetPos)
-        {
-            Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-            Vector3 dir = targetPos - monsterPos;
-            float distanceSq = dir.LengthSquared();
-
-            if (distanceSq < 0.0001f)
-            {
-                PosInfo.PosX = targetPos.X;
-                PosInfo.PosY = targetPos.Y;
-                PosInfo.PosZ = targetPos.Z;
-                return;
-            }
-
-            // 첫 프레임에는 이동하지 않고 시간만 초기화
-            long tick = Environment.TickCount64;
-            if (_lastUpdateTime == 0)
-            {
-                _lastUpdateTime = tick;
-                return;
-            }
-
-            // =========== 경과 시간 계산 =========== 
-            double elapsedTime = (tick - _lastUpdateTime) / 1000.0;
-            _lastUpdateTime = tick;
-
-            float distance = (float)Math.Sqrt(distanceSq);
-            float moveStep = Math.Min(FIXED_MOVE_STEP, distance);
-
-            Vector3 dirNorm = dir / distance;
-            Vector3 newPos = monsterPos + dirNorm * moveStep;
-
-            PosInfo.PosX = newPos.X;
-            PosInfo.PosY = newPos.Y;
-            PosInfo.PosZ = newPos.Z;
-
-            // =========== 회전 =========== 
-            Vector3 dirQ = new Vector3();
-            if (PlayerTarget != null)
-            {
-                Vector3 PlayerPos = new Vector3(PlayerTarget.PosInfo.PosX, PlayerTarget.PosInfo.PosY, PlayerTarget.PosInfo.PosZ);
-                float distanceToTarget = Vector3.Distance(monsterPos, targetPos);
-                if (distanceToTarget <= _findRange)
-                    dirQ = PlayerPos - monsterPos;
-            }
-            else
-            {
-                dirQ = targetPos - monsterPos;
-            }
-            LookAtTarget(dirQ, elapsedTime);
-        }
-
-        // 거리, 시간, 보간 여부, 회전 속도
-        public void LookAtTarget(Vector3 dirQ, double elapsedTime, bool isSlerp = true, float rotationSpeed = 2.0f)
-        {
-            // 방향 벡터가 너무 작으면 회전하지 않음
-            if (dirQ.LengthSquared() < 0.0001f)
-                return; 
-
-            dirQ= Vector3.Normalize(dirQ);
-            Vector3 flatDir = new Vector3(dirQ.X, 0, dirQ.Z);
-            flatDir = Vector3.Normalize(flatDir);
-
-            // [3] 회전 각도 및 쿼터니언 계산
-            float angleRad = (float)Math.Atan2(flatDir.X, flatDir.Z);
-            Quaternion targetRotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angleRad);
-            
-            Quaternion newRotation;
-            if (isSlerp)
-            {
-                // [4] 부드러운 회전 보간 (Slerp)
-                float t = (float)Math.Clamp(rotationSpeed * elapsedTime, 0f, 1f);
-                Quaternion currentRotation = new Quaternion(RotInfo.Qx, RotInfo.Qy, RotInfo.Qz, RotInfo.Qw);
-                newRotation = Quaternion.Slerp(currentRotation, targetRotation, t);
-            }
-            else
-                newRotation = targetRotation;
-
-            // [5] 몬스터의 회전 정보 업데이트
-            RotInfo.Qx = newRotation.X;
-            RotInfo.Qy = newRotation.Y;
-            RotInfo.Qz = newRotation.Z;
-            RotInfo.Qw = newRotation.W;
-        }
         private long GetCurrentTimeMs()
         {
             return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -322,8 +179,8 @@ namespace Server.Game
 
             statePacket.MyState = newState;
 
-            if (PlayerTarget != null)
-                statePacket.TargetPosition = PlayerTarget.PosInfo;
+            if (Target != null)
+                statePacket.TargetPosition = Target.PosInfo;
             if (skillData != null)
             {
                 statePacket.Skilltype = skillData.skillType;

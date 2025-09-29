@@ -57,7 +57,7 @@ namespace Server.Game
             else
             {
                 if (Environment.TickCount64 - lastSwapTime >= 500)
-                    targetPos = new Vector3(monster.PlayerTarget.PosInfo.PosX, monster.PlayerTarget.PosInfo.PosY, monster.PlayerTarget.PosInfo.PosZ);
+                    targetPos = new Vector3(monster.Target.PosInfo.PosX, monster.Target.PosInfo.PosY, monster.Target.PosInfo.PosZ);
 
                 return;
             }
@@ -70,7 +70,7 @@ namespace Server.Game
         private long _lastUpdateTime = 0;
         private void LookAtTarget(Monster monster)
         {
-            Player target = monster.PlayerTarget;
+            Creature target = monster.Target;
             if (target != null)
             {
                 long tick = Environment.TickCount64;

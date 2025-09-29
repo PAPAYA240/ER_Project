@@ -1,6 +1,7 @@
 using Assets.Scripts.Highlight;
 using Google.Protobuf.Protocol;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
@@ -49,11 +50,15 @@ public class MonsterController : CreatureController
         InitHpBar();
         Stat = Stat;
     }
-
+    //private List<Vector3> trailPoints = new List<Vector3>();
     protected override void UpdateController()
     {
        transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
        transform.rotation = transform.rotation;
+
+        //trailPoints.Add(transform.position);
+        //for (int i = 0; i < trailPoints.Count - 1; i++)
+        //    Debug.DrawLine(trailPoints[i], trailPoints[i + 1], Color.yellow, 100f);
 
         if (MonsterType.Omega == _monsterType || MonsterType.Alpha == _monsterType)
         {

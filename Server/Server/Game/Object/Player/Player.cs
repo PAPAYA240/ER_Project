@@ -9,7 +9,7 @@ using static Server.Data.DataUtils;
 
 namespace Server.Game
 {
-    public class Player : GameObject
+    public class Player : Creature
     {
         public ClientSession Session { get; set; }
 
@@ -54,8 +54,12 @@ namespace Server.Game
             switch (State)
             {
                 case CreatureState.Idle:
+                    // 예시로 
+                    if(Target != null)
+                        Get_CalculatePath(new Vector3(Target.PosInfo.PosX, Target.PosInfo.PosY, Target.PosInfo.PosZ));
                     break;
                 case CreatureState.Moving:
+                    Get_MoveAlongPath();
                     break;
                 case CreatureState.Attack:
                     break;
@@ -69,7 +73,6 @@ namespace Server.Game
             }
         }
         #endregion
-
         #region State : Dead
         public override void OnDead(GameObject attacker)
         {

@@ -14,9 +14,14 @@ using UnityEditor;
 public class NavMeshExporter : EditorWindow
 {
     [System.Serializable]
+    public class SerializableVector3
+    {
+        public float x, y, z;
+    }
+    [System.Serializable]
     public class NavMeshExportData
     {
-        public List<Vector3> vertices;
+        public List<SerializableVector3> vertices;
         public List<int> triangles;
     }
 
@@ -47,13 +52,13 @@ public class NavMeshExporter : EditorWindow
 
         NavMeshExportData exportData = new NavMeshExportData();
 
-        exportData.vertices = new List<Vector3>();
+        exportData.vertices = new List<SerializableVector3>();
         foreach (Vector3 v in navMeshTriangulation.vertices)
-            exportData.vertices.Add(new Vector3 { x = v.x, y = v.y, z = v.z });
+            exportData.vertices.Add(new SerializableVector3 { x = v.x, y = v.y, z = v.z });
 
         exportData.triangles = new List<int>(navMeshTriangulation.indices);
         string json = Newtonsoft.Json.JsonConvert.SerializeObject(exportData, Newtonsoft.Json.Formatting.Indented);
-        string path = Path.Combine(Application.dataPath, "Resources", exportFileName);
+        string path = Path.Combine(Application.dataPath, "Resources/Data/MonsterData", exportFileName);
         File.WriteAllText(path, json);
 
         Debug.Log($"NavMesh 데이터 저장 성공! : {path}");

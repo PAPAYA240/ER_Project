@@ -23,7 +23,7 @@ namespace Server.Game
                 return; 
             _nextSearchTick = Environment.TickCount64 + SEARCH_INTERVAL_MS;
 
-            if (monster.PlayerTarget != null)
+            if (monster.Target != null)
             {
                 if (monster.Info.Monster.MonsterType == MonsterType.Gamma ||
                monster.Info.Monster.MonsterType == MonsterType.Drone)
@@ -41,7 +41,7 @@ namespace Server.Game
             }
 
             // 2. 타게팅이 없으면 스폰 자리에 있어야 함
-            if (monster.PlayerTarget == null)
+            if (monster.Target == null)
             {
                 if (!monster.IsArrivalSpawn())
                     monster.ChangeState(FSMManager.Instance.GetMovingState());
@@ -52,7 +52,7 @@ namespace Server.Game
         private long _lastUpdateTime = 0;
         private void LookAtTarget(Monster monster)
         {
-            Player target = monster.PlayerTarget;
+            Creature target = monster.Target;
             if (target != null)
             {
                 long tick = Environment.TickCount64;
