@@ -8,7 +8,8 @@ public class Player_IdleState : IPlayerState
 {
     public void Enter(Player player)
     {
-        player.State = CreatureState.Idle;    
+        player.State = CreatureState.Idle;
+        player.SendAnimPacket("WAIT", 0.1f);
     }
 
     public void Execute(Player player)

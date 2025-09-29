@@ -24,6 +24,7 @@ public class Player_MovingState : IPlayerState
     public void Enter(Player player)
     {
         player.State = CreatureState.Moving;
+        player.SendAnimPacket("RUN", 0.1f);
     }
 
     public void Execute(Player player)

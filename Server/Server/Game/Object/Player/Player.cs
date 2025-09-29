@@ -1,4 +1,5 @@
-﻿using Google.Protobuf.Protocol;
+﻿using Google.Protobuf;
+using Google.Protobuf.Protocol;
 using Server.Data;
 using ServerCore;
 using System;
@@ -243,13 +244,22 @@ namespace Server.Game
             Session.Send(visibleObjsPkt);
         }
 
-        public void SendStatePacket(S_PlayerState packet)
+        public void SendStatePacket(IMessage packet)
         {
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendAnimPacket(S_Anim packet)
+        public void SendAnimPacket(string animName, float ratio)
         {
+            S_Anim packet = new S_Anim()
+            {
+                ObjectId = Id,
+                AnimInfo = new AnimInfo()
+                {
+                    Name = animName,
+                    Ratio = ratio
+                }
+            };
             Room.Push(Room.Broadcast, packet);
         }
         #endregion
