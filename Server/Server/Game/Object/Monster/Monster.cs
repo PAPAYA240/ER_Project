@@ -77,8 +77,6 @@ namespace Server.Game
             }
 
             Target.Room.Push(OnDamaged, this, skillData.damage + Attack);
-            //PlayerTarget.OnDamaged(this, skillData.damage + Stat.Attack);
-
             return skillData;
         }
 

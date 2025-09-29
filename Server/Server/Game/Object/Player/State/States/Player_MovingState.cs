@@ -50,15 +50,21 @@ public class Player_MovingState : IPlayerState
         //    _nextCalcPathTick = Environment.TickCount64 + THOUSANDS_MS;
         //}
 
-        if (_nextMoveTick > Environment.TickCount64)
-            return;
-        _nextMoveTick = Environment.TickCount64 + HUNDREDS_MS;
+        //if (_nextMoveTick > Environment.TickCount64)
+        //    return;
+        //_nextMoveTick = Environment.TickCount64 + HUNDREDS_MS;
 
-        if (player._path != null && player._path.Count > 0)
+        //if (player._path != null && player._path.Count > 0)
+        //{
+        //    player.Get_MoveAlongPath();
+
+        //    player.SendMovePacket(new PositionInfo(player.PosInfo), new RotationInfo(player.RotInfo));
+        //}
+
+        if (_nextCalcPathTick < Environment.TickCount64)
         {
-            player.Get_MoveAlongPath();
-
-            player.SendMovePacket(new PositionInfo(player.PosInfo), new RotationInfo(player.RotInfo));
+            player.Get_CalculatePath(_targetPos);
+            _nextCalcPathTick = Environment.TickCount64 + THOUSANDS_MS;
         }
 
         if (_isTargetOn)
@@ -68,8 +74,11 @@ public class Player_MovingState : IPlayerState
             if (Vector3.Distance(player.Position, _targetPos) <= attackRange)
                 player.ChangeState(new Player_AttackState());
         }
-        else
+        //else
         {
+            player.Get_MoveAlongPath();
+            player.SendMovePacket(new PositionInfo(player.PosInfo), new RotationInfo(player.RotInfo));
+
             float stopRange = 0.2f;
             if (Vector3.Distance(player.Position, _targetPos) <= stopRange)
                 player.ChangeState(new Player_IdleState());

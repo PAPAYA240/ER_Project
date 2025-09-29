@@ -59,7 +59,7 @@ namespace Server.Game
         }
 
         // 나와 Target의 위치가 얼마만큼 가까워졌느냐 
-        float MOVE_STEP_INTERPOL = 3.0f;
+        float MOVE_STEP_INTERPOL = 0.1f;
         private bool CheckArrival(Vector3 targetPos)
         {
             Vector3 myPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
