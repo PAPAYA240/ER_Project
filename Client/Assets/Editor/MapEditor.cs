@@ -18,11 +18,10 @@ public class NavMeshExporter : EditorWindow
     {
         public float x, y, z;
     }
-
     [System.Serializable]
     public class NavMeshExportData
     {
-        public List<SerializableVector3> vertices; // 이 유형을 변경합니다.
+        public List<SerializableVector3> vertices;
         public List<int> triangles;
     }
 
@@ -47,33 +46,27 @@ public class NavMeshExporter : EditorWindow
 
     void ExportNavMesh()
     {
-        // 현재 NavMesh 삼각 측량 데이터 가져오기
         NavMeshTriangulation navMeshTriangulation = NavMesh.CalculateTriangulation();
-
         if (navMeshTriangulation.vertices == null || navMeshTriangulation.vertices.Length == 0)
-        {
-            Debug.LogError("NavMesh 데이터없다. 먼저 NavMesh를 베이킹하샘!");
             return;
-        }
 
-        // 내보내기를 위한 직렬화 가능한 데이터 구조 생성
         NavMeshExportData exportData = new NavMeshExportData();
 
         exportData.vertices = new List<SerializableVector3>();
         foreach (Vector3 v in navMeshTriangulation.vertices)
-        {
             exportData.vertices.Add(new SerializableVector3 { x = v.x, y = v.y, z = v.z });
-        }
 
         exportData.triangles = new List<int>(navMeshTriangulation.indices);
         string json = Newtonsoft.Json.JsonConvert.SerializeObject(exportData, Newtonsoft.Json.Formatting.Indented);
-        string path = Path.Combine(Application.dataPath, "Resources", exportFileName);
+        string path = Path.Combine(Application.dataPath, "Resources/Data/MonsterData", exportFileName);
         File.WriteAllText(path, json);
 
-        Debug.Log($"NavMesh 데이터가 다음으로 내보내졌습니다: {path}");
+        Debug.Log($"NavMesh 데이터 저장 성공! : {path}");
         AssetDatabase.Refresh(); 
     }
 }
+
+// 네비 메시 디버거
 public class NavMeshDebug : EditorWindow
 {
     private string navMeshFilePath = "Assets/Resources/navmesh_data.json"; // NavMesh JSON 파일 경로
@@ -162,48 +155,4 @@ public class NavMeshDebug : EditorWindow
         }
     }
 }
-#if UNITY_EDITOR
-
-// % (Ctrl), # (Shift), & (Alt)
-
-//[MenuItem("Tools/GenerateMap %#g")]
-//private static void GenerateMap()
-//{
-//	GenerateByPath("Assets/Resources/Map");
-//       GenerateByPath("../Common/MapData");
-//}
-
-//private static void GenerateByPath(string pathPrefix)
-//{
-//       GameObject[] gameObjects = Resources.LoadAll<GameObject>("Prefabs/Map");
-
-//       foreach (GameObject go in gameObjects)
-//       {
-//           Tilemap tmBase = Util.FindChild<Tilemap>(go, "Tilemap_Base", true);
-//           Tilemap tm = Util.FindChild<Tilemap>(go, "Tilemap_Collision", true);
-
-//           using (var writer = File.CreateText($"{pathPrefix}/{go.name}.txt"))
-//           {
-//               writer.WriteLine(tmBase.cellBounds.xMin);
-//               writer.WriteLine(tmBase.cellBounds.xMax);
-//               writer.WriteLine(tmBase.cellBounds.yMin);
-//               writer.WriteLine(tmBase.cellBounds.yMax);
-
-//               for (int y = tmBase.cellBounds.yMax; y >= tmBase.cellBounds.yMin; y--)
-//               {
-//                   for (int x = tmBase.cellBounds.xMin; x <= tmBase.cellBounds.xMax; x++)
-//                   {
-//                       TileBase tile = tm.GetTile(new Vector3Int(x, y, 0));
-//                       if (tile != null)
-//                           writer.Write("1");
-//                       else
-//                           writer.Write("0");
-//                   }
-//                   writer.WriteLine();
-//               }
-//           }
-//       }
-//   }
-
-#endif
 

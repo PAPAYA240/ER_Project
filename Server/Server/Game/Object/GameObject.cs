@@ -76,7 +76,6 @@ namespace Server.Game
                     Info.StatInfo.MergeFrom(value);
             }
         }
-        public Monster Target { get; internal set; }
 
         public virtual float Speed
         {

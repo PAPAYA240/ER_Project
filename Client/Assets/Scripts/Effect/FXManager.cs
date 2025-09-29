@@ -61,6 +61,10 @@ public class FXManager : MonoBehaviour
             case EEffectTarget.Self:
                 parentTransform = casterTransform;
                 return casterTransform.position + data.position;
+            case EEffectTarget.Relative:
+                parentTransform = casterTransform;
+                Quaternion yawRotationOnly = Quaternion.Euler(0, casterTransform.eulerAngles.y, 0);
+                return casterTransform.position + yawRotationOnly * data.position;
             case EEffectTarget.Target:
                 parentTransform = null;
                 return targetPos;

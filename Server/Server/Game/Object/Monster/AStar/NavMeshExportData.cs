@@ -3,6 +3,7 @@ using Server.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 
 namespace Server.Game
 {
@@ -16,7 +17,7 @@ namespace Server.Game
     [Serializable]
     public class NavMeshExportData
     {
-        public List<SerializableVector3> vertices { get; set; }
+        public List<Vector3> vertices { get; set; }
         public List<int> triangles { get; set; }
         public static NavMeshExportData LoadFromJson(string filePath)
         {

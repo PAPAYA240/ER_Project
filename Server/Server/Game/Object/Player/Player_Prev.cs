@@ -141,6 +141,14 @@ namespace Server.Game
         }
         #endregion
 
+        #region Update
+        public override void Update()
+        {
+            //base.Update();
+            CheckUpdateStat();
+        }
+        #endregion
+
         #region State : Dead
         public override void OnDead(GameObject attacker)
         {
