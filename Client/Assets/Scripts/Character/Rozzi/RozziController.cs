@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Playables;
+using UnityEngine.UIElements;
 using static UI_PlayerInterface;
 using static UI_SkillBase;
 using static UnityEngine.GraphicsBuffer;
@@ -52,6 +53,10 @@ public class RozziController : MyPlayerController
                 return;
 
             Vector3 pos = target.transform.position;
+
+            // TEMP
+            // Debug.Log($"Rozzi E : TARGET ON - {pos}");
+
             if (Vector3.Distance(pos, transform.position) <= _jumpRange)
             {
                 _skillTarget = target;
@@ -93,11 +98,23 @@ public class RozziController : MyPlayerController
     }
 
     #region Skill
+    public override void OnSkillConfirmed(S_Skill skillPacket)
+    {
+        base.OnSkillConfirmed(skillPacket);
+
+        if ((KeyCode)skillPacket.SkillInfo.KeyCode == KeyCode.Q)
+        {
+            LookAtMouse();
+        }
+    }
+
     protected override void Skill_Q()
     {
         PlayAnimation("SKILL_Q", 0.1f);
 
         // 스킬이 오브젝트를 맞춰야 Dash 가능
+        if (_coSkillQ != null)
+            StopCoroutine(_coSkillQ);
         _coSkillQ = StartCoroutine("CoCheckDash");
     }
 
@@ -131,11 +148,28 @@ public class RozziController : MyPlayerController
         _canDash = false;
     }
 
+    private void StartDash()
+    {
+        Vector3 targetPos = GetTargetPos(_dashRange);
+
+        if (GetReachablePosition(transform.position, targetPos, out NavMeshHit navHit) != Vector3.zero)
+        {
+            _targetPos = navHit.position;
+        }
+
+        _canDash = false;
+        if (_coSkillQ != null)
+            StopCoroutine(_coSkillQ);
+        _coSkillQ = StartCoroutine("CoStartDash");
+    }
+
     IEnumerator CoStartDash()
     {
         PlayAnimation("SKILL_Q_DASH", 0.1f);
+        //Debug.Log("Rozzi Dash!!");
 
         _isDashing = true;
+        _agent.ResetPath();
         _agent.enabled = false;
         State = CreatureState.Skill;
 
@@ -145,6 +179,7 @@ public class RozziController : MyPlayerController
         {
             transform.position = Vector3.MoveTowards(transform.position, _targetPos, _dashSpeed * Time.deltaTime);
             UpdateTransform();
+
             yield return null;
         }
 
@@ -152,29 +187,18 @@ public class RozziController : MyPlayerController
         _agent.enabled = true;
 
         _agent.Warp(_targetPos);
+        // TEMP
+        //if (_targetPos == Vector3.zero)
+        //    Debug.Log($"Dash TargetPos : Zero : {_targetPos}");
+
         transform.position = _targetPos;
-        UpdateTransform();
+        UpdateTransform(true);
 
         SetMovementState();
     }
-
-    private void StartDash()
-    {
-        Vector3 targetPos = GetTargetPos(_dashRange);
-
-        if (GetReachablePosition(transform.position, targetPos, out NavMeshHit navHit) != Vector3.zero)
-        {
-            _targetPos = navHit.position;
-            _agent.SetDestination(_targetPos);
-        }
-
-        _canDash = false;
-        StopCoroutine(_coSkillQ);
-        StartCoroutine("CoStartDash");
-    }
     #endregion
 
-    #region Skill : W
+            #region Skill : W
     IEnumerator CoStartW()
     {
         float startTimte = Time.time;
@@ -211,20 +235,25 @@ public class RozziController : MyPlayerController
 
         Vector3 startPos = transform.position;
         Vector3 midPos = _skillTarget.transform.position;
-        Vector3 dir = (midPos - startPos).normalized;
-        Vector3 endPos = midPos + dir * _jumpRange;
-        endPos = GetReachablePosition(midPos, endPos, out NavMeshHit navHit);
-        LookAtTarget(endPos, true);
+        Vector3 endPos = Vector3.zero;
 
         float animLength = GetCurrentAnimClipLength();
 
         float elapsed = 0.0f;
         while (elapsed < animLength) 
-        {
+        {           
+            Vector3 dir = (midPos - startPos).normalized;
+            dir.y = 0f;
+            endPos = midPos + dir * _jumpRange;
+            endPos = GetReachablePosition(midPos, endPos, out NavMeshHit navHit);
+            LookAtTarget(endPos, true);
+
             float t = elapsed / animLength;
 
             if(t < _animRatio)
             {
+                midPos = _skillTarget.transform.position;
+
                 float midT = t / _animRatio;
                 transform.position = Vector3.Lerp(startPos, midPos, midT);
             }

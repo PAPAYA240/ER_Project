@@ -76,7 +76,8 @@ namespace Server.Game
                 return null;
             }
 
-            Target.OnDamaged(this, skillData.damage + Stat.Attack);
+            Target.Room.Push(OnDamaged, this, skillData.damage + Attack);
+            //PlayerTarget.OnDamaged(this, skillData.damage + Stat.Attack);
 
             return skillData;
         }
@@ -201,7 +202,7 @@ namespace Server.Game
             if (DataManager.MonsterDict.TryGetValue(name, out MonsterData monsterData))
             {
                 Stat.MergeFrom(monsterData.stat);
-                Stat.Hp = Stat.MaxHp;
+                Hp = MaxHp;
                 State = CreatureState.Idle;
                 spawnPosition = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
 

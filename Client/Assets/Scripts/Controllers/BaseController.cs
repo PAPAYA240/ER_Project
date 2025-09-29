@@ -42,6 +42,12 @@ public class BaseController : MonoBehaviour
         set { Stat.MaxHp = value; }
     }
 
+    public virtual float Barrier
+    {
+        get { return Stat.Barrier; }
+        set { Stat.Barrier = value; }
+    }
+
     public virtual float Stamina
     {
         get { return Stat.Stamina; }

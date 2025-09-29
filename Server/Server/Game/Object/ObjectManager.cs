@@ -82,7 +82,7 @@ namespace Server.Game
 
             lock (_lock)
             {
-                if(objectType == GameObjectType.Player)
+                if (objectType == GameObjectType.Player)
                 {
                     Player player = null;
                     if (_players.TryGetValue(objectId, out player))

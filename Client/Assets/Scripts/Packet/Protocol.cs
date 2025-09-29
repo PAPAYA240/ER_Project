@@ -42,139 +42,157 @@ namespace Google.Protobuf.Protocol {
             "MhYuUHJvdG9jb2wuUm90YXRpb25JbmZvEg4KBmlzV2FycBgDIAEoCCJ8CgZT",
             "X01vdmUSEAoIb2JqZWN0SWQYASABKAUSJwoHcG9zSW5mbxgCIAEoCzIWLlBy",
             "b3RvY29sLlBvc2l0aW9uSW5mbxInCgdyb3RJbmZvGAMgASgLMhYuUHJvdG9j",
-            "b2wuUm90YXRpb25JbmZvEg4KBmlzV2FycBgEIAEoCCJtCgdDX1NraWxsEigK",
-            "Cm9iamVjdEluZm8YASABKAsyFC5Qcm90b2NvbC5PYmplY3RJbmZvEiYKCXNr",
-            "aWxsSW5mbxgCIAEoCzITLlByb3RvY29sLlNraWxsSW5mbxIQCgh0YXJnZXRJ",
-            "ZBgDIAEoBSJ5CgdTX1NraWxsEg4KBmNhblVzZRgBIAEoCBIQCghvYmplY3RJ",
-            "ZBgCIAEoBRImCglza2lsbEluZm8YAyABKAsyEy5Qcm90b2NvbC5Ta2lsbElu",
-            "Zm8SJAoIY29zdEluZm8YBCABKAsyEi5Qcm90b2NvbC5Db3N0SW5mbyIhCg5D",
-            "X1NraWxsTGV2ZWxVcBIPCgdrZXlDb2RlGAEgASgFIiEKDlNfU2tpbGxMZXZl",
-            "bFVwEg8KB2tleUNvZGUYASABKAUiLAoEQ19GeBIkCgZmeEluZm8YASABKAsy",
-            "FC5Qcm90b2NvbC5FZmZlY3RJbmZvIj4KBFNfRngSEAoIb2JqZWN0SWQYASAB",
-            "KAUSJAoGZnhJbmZvGAIgASgLMhQuUHJvdG9jb2wuRWZmZWN0SW5mbyIuCgZD",
-            "X0FuaW0SJAoIYW5pbUluZm8YASABKAsyEi5Qcm90b2NvbC5BbmltSW5mbyJA",
-            "CgZTX0FuaW0SEAoIb2JqZWN0SWQYASABKAUSJAoIYW5pbUluZm8YAiABKAsy",
-            "Ei5Qcm90b2NvbC5BbmltSW5mbyJJCgtDX0NoYXJhY3RlchIpCghjaGFyVHlw",
-            "ZRgBIAEoDjIXLlByb3RvY29sLkNoYXJhY3RlclR5cGUSDwoHcGlja0lkeBgC",
-            "IAEoBSJJCgtTX0NoYXJhY3RlchIpCghjaGFyVHlwZRgBIAEoDjIXLlByb3Rv",
-            "Y29sLkNoYXJhY3RlclR5cGUSDwoHcGlja0lkeBgCIAEoBSJCCgdDX1RyYWl0",
-            "EiYKCXRyYWl0VHlwZRgBIAEoDjITLlByb3RvY29sLlRyYWl0VHlwZRIPCgdw",
-            "aWNrSWR4GAIgASgFIkIKB1NfVHJhaXQSJgoJdHJhaXRUeXBlGAEgASgOMhMu",
-            "UHJvdG9jb2wuVHJhaXRUeXBlEg8KB3BpY2tJZHgYAiABKAUiQQoIQ19XZWFw",
-            "b24SJAoKd2VhcG9uVHlwZRgBIAEoDjIQLlByb3RvY29sLldlYXBvbhIPCgdw",
-            "aWNrSWR4GAIgASgFIkEKCFNfV2VhcG9uEiQKCndlYXBvblR5cGUYASABKA4y",
-            "EC5Qcm90b2NvbC5XZWFwb24SDwoHcGlja0lkeBgCIAEoBSIwCgtTX0VudGVy",
-            "UGljaxIPCgdwaWNrSWR4GAEgASgFEhAKCHVzZXJOYW1lGAIgASgJIj0KC1Nf",
-            "U3Bhd25QaWNrEi4KB3BsYXllcnMYASADKAsyHS5Qcm90b2NvbC5QaWNrU2Nl",
-            "bmVQbGF5ZXJJbmZvIh4KC1NfTGVhdmVQaWNrEg8KB3BpY2tJZHgYASABKAUi",
-            "KgoKU19DaGFuZ2VIcBIQCghvYmplY3RJZBgBIAEoBRIKCgJocBgCIAEoAiJC",
-            "CgVTX0RpZRIQCghvYmplY3RJZBgBIAEoBRISCgphdHRhY2tlcklkGAIgASgF",
-            "EhMKC3Jlc3Bhd25UaW1lGAMgASgCIhYKBkNfUGluZxIMCgRwaW5nGAEgASgI",
-            "Ij4KEFNfVmlzaWJsZU9iamVjdHMSEAoIb2JqZWN0SWQYASABKAUSGAoQdmlz",
-            "aWJsZU9iamVjdElkcxgCIAMoBSJZCglTX0xldmVsVXASEAoIb2JqZWN0SWQY",
-            "ASABKAUSEgoKbGV2ZWxVcENudBgCIAEoBRImCgpzdGF0R3Jvd3RoGAMgASgL",
-            "MhIuUHJvdG9jb2wuU3RhdEluZm8iGAoHQ19SZWFkeRINCgVyZWFkeRgBIAEo",
-            "CCKMAQoJU19SZXNwYXduEhAKCG9iamVjdElkGAEgASgFEicKB3Bvc0luZm8Y",
-            "AiABKAsyFi5Qcm90b2NvbC5Qb3NpdGlvbkluZm8SJwoHcm90SW5mbxgDIAEo",
-            "CzIWLlByb3RvY29sLlJvdGF0aW9uSW5mbxIKCgJocBgEIAEoAhIPCgdzdGFt",
-            "aW5hGAUgASgCIkkKDUNfUGxheWVyU3RhdGUSEAoIb2JqZWN0SWQYASABKAUS",
-            "JgoFc3RhdGUYAiABKA4yFy5Qcm90b2NvbC5DcmVhdHVyZVN0YXRlIj0KDFNf",
-            "Q2hhbmdlU3RhdBIQCghvYmplY3RJZBgBIAEoBRIKCgJocBgCIAEoAhIPCgdz",
-            "dGFtaW5hGAMgASgCImAKDFBvc2l0aW9uSW5mbxImCgVzdGF0ZRgBIAEoDjIX",
-            "LlByb3RvY29sLkNyZWF0dXJlU3RhdGUSDAoEcG9zWBgCIAEoAhIMCgRwb3NZ",
-            "GAMgASgCEgwKBHBvc1oYBCABKAIiPgoMUm90YXRpb25JbmZvEgoKAnF4GAEg",
-            "ASgCEgoKAnF5GAIgASgCEgoKAnF6GAMgASgCEgoKAnF3GAQgASgCIuQBCghT",
-            "dGF0SW5mbxIOCgZhdHRhY2sYASABKAISDwoHZGVmZW5zZRgCIAEoAhIKCgJo",
-            "cBgDIAEoAhINCgVtYXhIcBgEIAEoAhIPCgdocFJlZ2VuGAUgASgCEg8KB3N0",
-            "YW1pbmEYBiABKAISEgoKbWF4U3RhbWluYRgHIAEoAhIUCgxzdGFtaW5hUmVn",
-            "ZW4YCCABKAISEwoLYXR0YWNrU3BlZWQYCSABKAISEQoJbW92ZVNwZWVkGAog",
-            "ASgCEgsKA2V4cBgLIAEoBRINCgVsZXZlbBgMIAEoBRIMCgRoaWxsGA0gASgF",
+            "b2wuUm90YXRpb25JbmZvEg4KBmlzV2FycBgEIAEoCCKTAQoHQ19Ta2lsbBIo",
+            "CgpvYmplY3RJbmZvGAEgASgLMhQuUHJvdG9jb2wuT2JqZWN0SW5mbxImCglz",
+            "a2lsbEluZm8YAiABKAsyEy5Qcm90b2NvbC5Ta2lsbEluZm8SEAoIdGFyZ2V0",
+            "SWQYAyABKAUSEQoJbW91c2VQb3NYGAQgASgCEhEKCW1vdXNlUG9zWhgFIAEo",
+            "AiJ5CgdTX1NraWxsEg4KBmNhblVzZRgBIAEoCBIQCghvYmplY3RJZBgCIAEo",
+            "BRImCglza2lsbEluZm8YAyABKAsyEy5Qcm90b2NvbC5Ta2lsbEluZm8SJAoI",
+            "Y29zdEluZm8YBCABKAsyEi5Qcm90b2NvbC5Db3N0SW5mbyIhCg5DX1NraWxs",
+            "TGV2ZWxVcBIPCgdrZXlDb2RlGAEgASgFIiEKDlNfU2tpbGxMZXZlbFVwEg8K",
+            "B2tleUNvZGUYASABKAUiLAoEQ19GeBIkCgZmeEluZm8YASABKAsyFC5Qcm90",
+            "b2NvbC5FZmZlY3RJbmZvIj4KBFNfRngSEAoIb2JqZWN0SWQYASABKAUSJAoG",
+            "ZnhJbmZvGAIgASgLMhQuUHJvdG9jb2wuRWZmZWN0SW5mbyIuCgZDX0FuaW0S",
+            "JAoIYW5pbUluZm8YASABKAsyEi5Qcm90b2NvbC5BbmltSW5mbyJACgZTX0Fu",
+            "aW0SEAoIb2JqZWN0SWQYASABKAUSJAoIYW5pbUluZm8YAiABKAsyEi5Qcm90",
+            "b2NvbC5BbmltSW5mbyJJCgtDX0NoYXJhY3RlchIpCghjaGFyVHlwZRgBIAEo",
+            "DjIXLlByb3RvY29sLkNoYXJhY3RlclR5cGUSDwoHcGlja0lkeBgCIAEoBSJJ",
+            "CgtTX0NoYXJhY3RlchIpCghjaGFyVHlwZRgBIAEoDjIXLlByb3RvY29sLkNo",
+            "YXJhY3RlclR5cGUSDwoHcGlja0lkeBgCIAEoBSJCCgdDX1RyYWl0EiYKCXRy",
+            "YWl0VHlwZRgBIAEoDjITLlByb3RvY29sLlRyYWl0VHlwZRIPCgdwaWNrSWR4",
+            "GAIgASgFIkIKB1NfVHJhaXQSJgoJdHJhaXRUeXBlGAEgASgOMhMuUHJvdG9j",
+            "b2wuVHJhaXRUeXBlEg8KB3BpY2tJZHgYAiABKAUiQQoIQ19XZWFwb24SJAoK",
+            "d2VhcG9uVHlwZRgBIAEoDjIQLlByb3RvY29sLldlYXBvbhIPCgdwaWNrSWR4",
+            "GAIgASgFIkEKCFNfV2VhcG9uEiQKCndlYXBvblR5cGUYASABKA4yEC5Qcm90",
+            "b2NvbC5XZWFwb24SDwoHcGlja0lkeBgCIAEoBSIwCgtTX0VudGVyUGljaxIP",
+            "CgdwaWNrSWR4GAEgASgFEhAKCHVzZXJOYW1lGAIgASgJIj0KC1NfU3Bhd25Q",
+            "aWNrEi4KB3BsYXllcnMYASADKAsyHS5Qcm90b2NvbC5QaWNrU2NlbmVQbGF5",
+            "ZXJJbmZvIh4KC1NfTGVhdmVQaWNrEg8KB3BpY2tJZHgYASABKAUiOwoKU19D",
+            "aGFuZ2VIcBIQCghvYmplY3RJZBgBIAEoBRIKCgJocBgCIAEoAhIPCgdiYXJy",
+            "aWVyGAMgASgCIkIKBVNfRGllEhAKCG9iamVjdElkGAEgASgFEhIKCmF0dGFj",
+            "a2VySWQYAiABKAUSEwoLcmVzcGF3blRpbWUYAyABKAIiFgoGQ19QaW5nEgwK",
+            "BHBpbmcYASABKAgiPgoQU19WaXNpYmxlT2JqZWN0cxIQCghvYmplY3RJZBgB",
+            "IAEoBRIYChB2aXNpYmxlT2JqZWN0SWRzGAIgAygFIlkKCVNfTGV2ZWxVcBIQ",
+            "CghvYmplY3RJZBgBIAEoBRISCgpsZXZlbFVwQ250GAIgASgFEiYKCnN0YXRH",
+            "cm93dGgYAyABKAsyEi5Qcm90b2NvbC5TdGF0SW5mbyIYCgdDX1JlYWR5Eg0K",
+            "BXJlYWR5GAEgASgIIowBCglTX1Jlc3Bhd24SEAoIb2JqZWN0SWQYASABKAUS",
+            "JwoHcG9zSW5mbxgCIAEoCzIWLlByb3RvY29sLlBvc2l0aW9uSW5mbxInCgdy",
+            "b3RJbmZvGAMgASgLMhYuUHJvdG9jb2wuUm90YXRpb25JbmZvEgoKAmhwGAQg",
+            "ASgCEg8KB3N0YW1pbmEYBSABKAIiSQoNQ19QbGF5ZXJTdGF0ZRIQCghvYmpl",
+            "Y3RJZBgBIAEoBRImCgVzdGF0ZRgCIAEoDjIXLlByb3RvY29sLkNyZWF0dXJl",
+            "U3RhdGUiTgoMU19DaGFuZ2VTdGF0EhAKCG9iamVjdElkGAEgASgFEgoKAmhw",
+            "GAIgASgCEg8KB3N0YW1pbmEYAyABKAISDwoHYmFycmllchgEIAEoAiJgCgxQ",
+            "b3NpdGlvbkluZm8SJgoFc3RhdGUYASABKA4yFy5Qcm90b2NvbC5DcmVhdHVy",
+            "ZVN0YXRlEgwKBHBvc1gYAiABKAISDAoEcG9zWRgDIAEoAhIMCgRwb3NaGAQg",
+            "ASgCIj4KDFJvdGF0aW9uSW5mbxIKCgJxeBgBIAEoAhIKCgJxeRgCIAEoAhIK",
+            "CgJxehgDIAEoAhIKCgJxdxgEIAEoAiL1AQoIU3RhdEluZm8SDgoGYXR0YWNr",
+            "GAEgASgCEg8KB2RlZmVuc2UYAiABKAISCgoCaHAYAyABKAISDQoFbWF4SHAY",
+            "BCABKAISDwoHaHBSZWdlbhgFIAEoAhIPCgdiYXJyaWVyGAYgASgCEg8KB3N0",
+            "YW1pbmEYByABKAISEgoKbWF4U3RhbWluYRgIIAEoAhIUCgxzdGFtaW5hUmVn",
+            "ZW4YCSABKAISEwoLYXR0YWNrU3BlZWQYCiABKAISEQoJbW92ZVNwZWVkGAsg",
+            "ASgCEgsKA2V4cBgMIAEoBRINCgVsZXZlbBgNIAEoBRIMCgRoaWxsGA4gASgF",
             "IloKClBsYXllckluZm8SKQoIY2hhclR5cGUYASABKA4yFy5Qcm90b2NvbC5D",
             "aGFyYWN0ZXJUeXBlEhMKC3NraWxsUG9pbnRzGAIgASgFEgwKBHRlYW0YAyAB",
             "KAUiOQoLTW9uc3RlckluZm8SKgoLbW9uc3RlclR5cGUYASABKA4yFS5Qcm90",
             "b2NvbC5Nb25zdGVyVHlwZSJKCgdFbnZJbmZvEiIKB2VudlR5cGUYASABKA4y",
             "ES5Qcm90b2NvbC5FbnZUeXBlEhsKE2ludGVyYWN0aW9uU3RyYXRlZ3kYAiAB",
-            "KAkitwMKCk9iamVjdEluZm8SEAoIb2JqZWN0SWQYASABKAUSDAoEbmFtZRgC",
+            "KAkirgIKCk9iamVjdEluZm8SEAoIb2JqZWN0SWQYASABKAUSDAoEbmFtZRgC",
             "IAEoCRInCgdwb3NJbmZvGAMgASgLMhYuUHJvdG9jb2wuUG9zaXRpb25JbmZv",
             "EicKB3JvdEluZm8YBCABKAsyFi5Qcm90b2NvbC5Sb3RhdGlvbkluZm8SJAoI",
-            "c3RhdEluZm8YBSABKAsyEi5Qcm90b2NvbC5TdGF0SW5mbxIpCghjaGFyVHlw",
-            "ZRgGIAEoDjIXLlByb3RvY29sLkNoYXJhY3RlclR5cGUSKgoLbW9uc3RlclR5",
-            "cGUYByABKA4yFS5Qcm90b2NvbC5Nb25zdGVyVHlwZRIiCgdlbnZUeXBlGAgg",
-            "ASgOMhEuUHJvdG9jb2wuRW52VHlwZRIMCgR0ZWFtGAkgASgFEiYKBnBsYXll",
-            "chgKIAEoCzIULlByb3RvY29sLlBsYXllckluZm9IABIoCgdtb25zdGVyGAsg",
-            "ASgLMhUuUHJvdG9jb2wuTW9uc3RlckluZm9IABIgCgNlbnYYDCABKAsyES5Q",
-            "cm90b2NvbC5FbnZJbmZvSABCFAoSb2JqZWN0U3BlY2lmaWNEYXRhIrEBChNQ",
-            "aWNrU2NlbmVQbGF5ZXJJbmZvEg8KB3BpY2tJZHgYASABKAUSEAoIdXNlck5h",
-            "bWUYAiABKAkSKQoIY2hhclR5cGUYAyABKA4yFy5Qcm90b2NvbC5DaGFyYWN0",
-            "ZXJUeXBlEiYKCXRyYWl0VHlwZRgEIAEoDjITLlByb3RvY29sLlRyYWl0VHlw",
-            "ZRIkCgp3ZWFwb25UeXBlGAUgASgOMhAuUHJvdG9jb2wuV2VhcG9uIicKCEFu",
-            "aW1JbmZvEgwKBG5hbWUYASABKAkSDQoFcmF0aW8YAiABKAIiHQoKRWZmZWN0",
-            "SW5mbxIPCgdrZXlDb2RlGAEgASgFIk8KEVdlYXBvbk1hc3RlcnlJbmZvEhMK",
-            "C2F0dGFja1NwZWVkGAEgASgCEhMKC2Jhc2ljQXRrQW1wGAIgASgCEhAKCHNr",
-            "aWxsQW1wGAMgASgCIjAKCldlYXBvbkluZm8SDQoFcmFuZ2UYASABKAISEwoL",
-            "YXR0YWNrU3BlZWQYAiABKAIiUQoJU2tpbGxJbmZvEg8KB3NraWxsSWQYASAB",
-            "KAUSDwoHa2V5Q29kZRgCIAEoBRIQCghjb29sVGltZRgDIAEoAhIQCgh0YXJn",
-            "ZXRJZBgEIAEoBSKCAgoLU2tpbGxIaXRib3gSDQoFc2hhcGUYASABKAkSDAoE",
-            "dHlwZRgCIAEoCRIOCgZjaGFyZ2UYAyABKAgSEgoKbG9va09mZnNldBgEIAEo",
-            "AhITCgtyaWdodE9mZnNldBgFIAEoAhIMCgRkaXJYGAYgASgCEgwKBGRpclkY",
-            "ByABKAISDgoGcmFkaXVzGAggASgCEg0KBWFuZ2xlGAkgASgCEg0KBXdpZHRo",
-            "GAogASgCEg4KBmhlaWdodBgLIAEoAhIQCghkdXJhdGlvbhgMIAEoAhINCgVz",
-            "cGVlZBgNIAEoAhIQCghtaW5SYW5nZRgOIAEoAhIQCghtYXhSYW5nZRgPIAEo",
-            "AiItCghDb3N0SW5mbxIQCghjb29sVGltZRgBIAEoAhIPCgdzdGFtaW5hGAIg",
-            "ASgCIiUKE0NfQXR0YWNrU2tpbGxUYXJnZXQSDgoGYXR0YWNrGAEgASgIKssE",
-            "CgVNc2dJZBIQCgxDX0VOVEVSX0dBTUUQABIQCgxTX0VOVEVSX0dBTUUQARIQ",
-            "CgxTX0xFQVZFX0dBTUUQAhILCgdTX1NQQVdOEAMSDQoJU19ERVNQQVdOEAQS",
-            "CgoGQ19NT1ZFEAUSCgoGU19NT1ZFEAYSCwoHQ19TS0lMTBAHEgsKB1NfU0tJ",
-            "TEwQCBIPCgtTX0NIQU5HRV9IUBAJEgkKBVNfRElFEAoSCgoGQ19BTklNEAsS",
-            "CgoGU19BTklNEAwSDwoLQ19DSEFSQUNURVIQDRILCgdTX1NUQVRFEA4SCAoE",
-            "Q19GWBAPEg8KC1NfQ0hBUkFDVEVSEBASEAoMU19FTlRFUl9QSUNLEBESEAoM",
-            "U19TUEFXTl9QSUNLEBISEAoMU19MRUFWRV9QSUNLEBMSCgoGQ19QSU5HEBQS",
-            "FQoRU19WSVNJQkxFX09CSkVDVFMQFRIOCgpTX0xFVkVMX1VQEBYSCwoHQ19S",
-            "RUFEWRAXEggKBFNfRlgQGBILCgdDX1RSQUlUEBkSCwoHU19UUkFJVBAaEgwK",
-            "CENfV0VBUE9OEBsSDAoIU19XRUFQT04QHBIOCgpDX0lOVEVSQUNUEB0SDgoK",
-            "U19JTlRFUkFDVBAeEg0KCVNfUkVTUEFXThAfEhQKEENfU0tJTExfTEVWRUxf",
-            "VVAQIBIUChBTX1NLSUxMX0xFVkVMX1VQECESEgoOQ19QTEFZRVJfU1RBVEUQ",
-            "IhIRCg1TX0NIQU5HRV9TVEFUECMSGQoVQ19BVFRBQ0tfU0tJTExfVEFSR0VU",
-            "ECQqUAoNQ3JlYXR1cmVTdGF0ZRIICgRJRExFEAASCgoGTU9WSU5HEAESCgoG",
-            "QVRUQUNLEAISCQoFU0tJTEwQAxIICgRERUFEEAQSCAoEUkVTVBAFKlQKDkdh",
-            "bWVPYmplY3RUeXBlEggKBE5PTkUQABIKCgZQTEFZRVIQARILCgdNT05TVEVS",
-            "EAISDgoKUFJPSkVDVElMRRADEg8KC0VOVklST05NRU5UEAQqcAoHRW52VHlw",
-            "ZRIMCghFTlZfTk9ORRAAEgwKCEhJTExfT0JKEAESFQoRREVWSUNFX1NQQVdO",
-            "UE9JTlQQAhIaChZBQ0NCT1VOREFSWV9TUEFXTlBPSU5UEAMSFgoSQkFSUklF",
-            "Ul9TUEFXTlBPSU5UEAQqZAoJU2tpbGxUeXBlEg4KClNLSUxMX05PTkUQABIO",
-            "CgpTS0lMTF9BVVRPEAESFAoQU0tJTExfUFJPSkVDVElMRRACEhAKDFNLSUxM",
-            "X1NUQVRJQxADEg8KC1NLSUxMX1RSQUNLEAQq/wEKDE1vbnN0ZXJTa2lsbBIL",
-            "CgdNU19OT05FEAASDgoKTVNfQVRUQUNLMRABEg4KCk1TX0FUVEFDSzIQAhIN",
-            "CglNU19TS0lMTDEQAxINCglNU19TS0lMTDIQBBINCglNU19TS0lMTDMQBRIU",
-            "ChBNU19EUk9ORV9BVFRBQ0sxEAYSFAoQTVNfRFJPTkVfQVRUQUNLMhAHEhQK",
-            "EE1TX0dBTU1BX0FUVEFDSzEQCBITCg9NU19HQU1NQV9TS0lMTDEQCRITCg9N",
-            "U19HQU1NQV9TS0lMTDIQChITCg9NU19HQU1NQV9TS0lMTDMQCxIUChBNU19U",
-            "VVJSRVRfQVRUQUNLEAwqNgoIQW5pbVR5cGUSCAoEUExBWRAAEgsKB1RSSUdH",
-            "RVIQARIICgRCT09MEAISCQoFRkxPQVQQAypgCg1DaGFyYWN0ZXJUeXBlEhIK",
-            "DkNIQVJBQ1RFUl9OT05FEAASCQoFUk9aWkkQARIICgRZVUtJEAISCwoHSFlV",
-            "TldPTxADEgsKB0FCSUdBSUwQBBIMCghUSEVPRE9SRRAFKlcKC01vbnN0ZXJU",
-            "eXBlEhAKDE1PTlNURVJfTk9ORRAAEgkKBUFMUEhBEAESCQoFT01FR0EQAhIJ",
-            "CgVEUk9ORRADEgkKBUdBTU1BEAQSCgoGVFVSUkVUEAUqxgIKBldlYXBvbhIP",
-            "CgtXRUFQT05fTk9ORRAAEgoKBkRBR0dFUhABEhIKDlRXT19IQU5EX1NXT1JE",
-            "EAISBwoDQVhFEAMSDwoLRFVBTF9TV09SRFMQBBIKCgZQSVNUT0wQBRIRCg1B",
-            "U1NBVUxUX1JJRkxFEAYSEAoMU05JUEVSX1JJRkxFEAcSCgoGUkFQSUVSEAgS",
-            "CQoFU1BFQVIQCRIKCgZIQU1NRVIQChIHCgNCQVQQCxIJCgVUSFJPVxAMEgwK",
-            "CFNIVVJJS0VOEA0SBwoDQk9XEA4SDAoIQ1JPU1NCT1cQDxIJCgVHTE9WRRAQ",
-            "EgkKBVRPTkZBEBESCgoGR1VJVEFSEBISDAoITlVOQ0hBS1UQExIICgRXSElQ",
-            "EBQSCgoGQ0FNRVJBEBUSCgoGQVJDQU5BEBYSEgoOVl9GX1BST1NUSEVUSUMQ",
-            "FypMCgpTa2lsbFNoYXBlEg4KClNIQVBFX05PTkUQABIKCgZDSVJDTEUQARIH",
-            "CgNSQVkQAhINCglSRUNUQU5HTEUQAxIKCgZTRUNUT1IQBCrCAgoJVHJhaXRU",
-            "eXBlEhYKEkZSQUlMVFlfSU5GTElDVElPThAAEhYKElZBTVBJUklDX0JMT09E",
-            "TElORRABEg4KCkFEUkVOQUxJTkUQAhIPCgtBQ0NFTEVSQVRFUhADEhIKDlNU",
-            "RUxMQVJfQ0hBUkdFEAQSDwoLR0hPU1RfTElHSFQQBRIOCgpSRURfU1BSSVRF",
-            "EAYSFAoQU0lQSE9OX01BRUxTVE9STRAHEhEKDURJQU1PTkRfU0hBUkQQCBIM",
-            "CghJUk9OQ0xBRBAJEhIKDkhFQVZZX0tORUVQQURTEAoSFgoSQklUVEVSX1JF",
-            "VFJJQlVUSU9OEAsSEgoOSEVBTElOR19GQUNUT1IQDBIXChNBTVBMSUZJQ0FU",
-            "SU9OX0RST05FEA0SEQoNSEVBTElOR19EUk9ORRAOEgwKCFNFTlRJTkVMEA9C",
-            "G6oCGEdvb2dsZS5Qcm90b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
+            "c3RhdEluZm8YBSABKAsyEi5Qcm90b2NvbC5TdGF0SW5mbxImCgZwbGF5ZXIY",
+            "BiABKAsyFC5Qcm90b2NvbC5QbGF5ZXJJbmZvSAASKAoHbW9uc3RlchgHIAEo",
+            "CzIVLlByb3RvY29sLk1vbnN0ZXJJbmZvSAASIAoDZW52GAggASgLMhEuUHJv",
+            "dG9jb2wuRW52SW5mb0gAQhQKEm9iamVjdFNwZWNpZmljRGF0YSKxAQoTUGlj",
+            "a1NjZW5lUGxheWVySW5mbxIPCgdwaWNrSWR4GAEgASgFEhAKCHVzZXJOYW1l",
+            "GAIgASgJEikKCGNoYXJUeXBlGAMgASgOMhcuUHJvdG9jb2wuQ2hhcmFjdGVy",
+            "VHlwZRImCgl0cmFpdFR5cGUYBCABKA4yEy5Qcm90b2NvbC5UcmFpdFR5cGUS",
+            "JAoKd2VhcG9uVHlwZRgFIAEoDjIQLlByb3RvY29sLldlYXBvbiInCghBbmlt",
+            "SW5mbxIMCgRuYW1lGAEgASgJEg0KBXJhdGlvGAIgASgCIh0KCkVmZmVjdElu",
+            "Zm8SDwoHa2V5Q29kZRgBIAEoBSJPChFXZWFwb25NYXN0ZXJ5SW5mbxITCgth",
+            "dHRhY2tTcGVlZBgBIAEoAhITCgtiYXNpY0F0a0FtcBgCIAEoAhIQCghza2ls",
+            "bEFtcBgDIAEoAiIwCgpXZWFwb25JbmZvEg0KBXJhbmdlGAEgASgCEhMKC2F0",
+            "dGFja1NwZWVkGAIgASgCIlEKCVNraWxsSW5mbxIPCgdza2lsbElkGAEgASgF",
+            "Eg8KB2tleUNvZGUYAiABKAUSEAoIY29vbFRpbWUYAyABKAISEAoIdGFyZ2V0",
+            "SWQYBCABKAUiggIKC1NraWxsSGl0Ym94Eg0KBXNoYXBlGAEgASgJEgwKBHR5",
+            "cGUYAiABKAkSDgoGY2hhcmdlGAMgASgIEhIKCmxvb2tPZmZzZXQYBCABKAIS",
+            "EwoLcmlnaHRPZmZzZXQYBSABKAISDAoEZGlyWBgGIAEoAhIMCgRkaXJZGAcg",
+            "ASgCEg4KBnJhZGl1cxgIIAEoAhINCgVhbmdsZRgJIAEoAhINCgV3aWR0aBgK",
+            "IAEoAhIOCgZoZWlnaHQYCyABKAISEAoIZHVyYXRpb24YDCABKAISDQoFc3Bl",
+            "ZWQYDSABKAISEAoIbWluUmFuZ2UYDiABKAISEAoIbWF4UmFuZ2UYDyABKAIi",
+            "LQoIQ29zdEluZm8SEAoIY29vbFRpbWUYASABKAISDwoHc3RhbWluYRgCIAEo",
+            "AiKSBQoISXRlbVN0YXQSFAoMQXR0YWNrRGFtYWdlGAEgASgCEhMKC0F0dGFj",
+            "a1NwZWVkGAIgASgCEhUKDUNyaXRpY2FsUmF0aW8YAyABKAISFgoOQ3JpdGlj",
+            "YWxEYW1hZ2UYBCABKAISEwoLQXR0YWNrUmFuZ2UYBSABKAISHwoXRml4ZWRT",
+            "a2lsbEFtcGxpZmljYXRpb24YBiABKAISJAocUGVyY2VudGFnZVNraWxsQW1w",
+            "bGlmaWNhdGlvbhgHIAEoAhIZChFTa2lsbEFjY2VsZXJhdGlvbhgIIAEoAhIf",
+            "ChdGaXhlZERlZmVuc2VQZW5ldHJhdGlvbhgJIAEoAhIkChxQZXJjZW50YWdl",
+            "RGVmZW5zZVBlbmV0cmF0aW9uGAogASgCEhIKCkZpeGVkU3BlZWQYCyABKAIS",
+            "FwoPUGVyY2VudGFnZVNwZWVkGAwgASgCEg0KBU1heEhwGA0gASgCEg8KB0hw",
+            "UmVnZW4YDiABKAISEgoKTWF4U3RhbWluYRgPIAEoAhIUCgxTdGFtaW5hUmVn",
+            "ZW4YECABKAISDwoHRGVmZW5zZRgRIAEoAhIRCglMaWZlU3RlYWwYEiABKAIS",
+            "EAoIT21uaXZhbXAYEyABKAISFAoMSGVhbGluZ1Bvd2VyGBQgASgCEhYKDlNs",
+            "b3dSZXNpc3RhbmNlGBUgASgCEhQKDENDUmVzaXN0YW5jZRgWIAEoAhIUCgxB",
+            "ZGFwdGl2ZVN0YXQYFyABKAISDgoGVmlzaW9uGBggASgCEhwKFEF0dGFja0Rh",
+            "bWFnZVBlckxldmVsGBkgASgCEiIKGlNraWxsQW1wbGlmaWNhdGlvblBlckxl",
+            "dmVsGBogASgCEhUKDU1heEhwUGVyTGV2ZWwYGyABKAIiJQoTQ19BdHRhY2tT",
+            "a2lsbFRhcmdldBIOCgZhdHRhY2sYASABKAgqywQKBU1zZ0lkEhAKDENfRU5U",
+            "RVJfR0FNRRAAEhAKDFNfRU5URVJfR0FNRRABEhAKDFNfTEVBVkVfR0FNRRAC",
+            "EgsKB1NfU1BBV04QAxINCglTX0RFU1BBV04QBBIKCgZDX01PVkUQBRIKCgZT",
+            "X01PVkUQBhILCgdDX1NLSUxMEAcSCwoHU19TS0lMTBAIEg8KC1NfQ0hBTkdF",
+            "X0hQEAkSCQoFU19ESUUQChIKCgZDX0FOSU0QCxIKCgZTX0FOSU0QDBIPCgtD",
+            "X0NIQVJBQ1RFUhANEgsKB1NfU1RBVEUQDhIICgRDX0ZYEA8SDwoLU19DSEFS",
+            "QUNURVIQEBIQCgxTX0VOVEVSX1BJQ0sQERIQCgxTX1NQQVdOX1BJQ0sQEhIQ",
+            "CgxTX0xFQVZFX1BJQ0sQExIKCgZDX1BJTkcQFBIVChFTX1ZJU0lCTEVfT0JK",
+            "RUNUUxAVEg4KClNfTEVWRUxfVVAQFhILCgdDX1JFQURZEBcSCAoEU19GWBAY",
+            "EgsKB0NfVFJBSVQQGRILCgdTX1RSQUlUEBoSDAoIQ19XRUFQT04QGxIMCghT",
+            "X1dFQVBPThAcEg4KCkNfSU5URVJBQ1QQHRIOCgpTX0lOVEVSQUNUEB4SDQoJ",
+            "U19SRVNQQVdOEB8SFAoQQ19TS0lMTF9MRVZFTF9VUBAgEhQKEFNfU0tJTExf",
+            "TEVWRUxfVVAQIRISCg5DX1BMQVlFUl9TVEFURRAiEhEKDVNfQ0hBTkdFX1NU",
+            "QVQQIxIZChVDX0FUVEFDS19TS0lMTF9UQVJHRVQQJCpQCg1DcmVhdHVyZVN0",
+            "YXRlEggKBElETEUQABIKCgZNT1ZJTkcQARIKCgZBVFRBQ0sQAhIJCgVTS0lM",
+            "TBADEggKBERFQUQQBBIICgRSRVNUEAUqVAoOR2FtZU9iamVjdFR5cGUSCAoE",
+            "Tk9ORRAAEgoKBlBMQVlFUhABEgsKB01PTlNURVIQAhIOCgpQUk9KRUNUSUxF",
+            "EAMSDwoLRU5WSVJPTk1FTlQQBCpwCgdFbnZUeXBlEgwKCEVOVl9OT05FEAAS",
+            "DAoISElMTF9PQkoQARIVChFERVZJQ0VfU1BBV05QT0lOVBACEhoKFkFDQ0JP",
+            "VU5EQVJZX1NQQVdOUE9JTlQQAxIWChJCQVJSSUVSX1NQQVdOUE9JTlQQBCpk",
+            "CglTa2lsbFR5cGUSDgoKU0tJTExfTk9ORRAAEg4KClNLSUxMX0FVVE8QARIU",
+            "ChBTS0lMTF9QUk9KRUNUSUxFEAISEAoMU0tJTExfU1RBVElDEAMSDwoLU0tJ",
+            "TExfVFJBQ0sQBCr/AQoMTW9uc3RlclNraWxsEgsKB01TX05PTkUQABIOCgpN",
+            "U19BVFRBQ0sxEAESDgoKTVNfQVRUQUNLMhACEg0KCU1TX1NLSUxMMRADEg0K",
+            "CU1TX1NLSUxMMhAEEg0KCU1TX1NLSUxMMxAFEhQKEE1TX0RST05FX0FUVEFD",
+            "SzEQBhIUChBNU19EUk9ORV9BVFRBQ0syEAcSFAoQTVNfR0FNTUFfQVRUQUNL",
+            "MRAIEhMKD01TX0dBTU1BX1NLSUxMMRAJEhMKD01TX0dBTU1BX1NLSUxMMhAK",
+            "EhMKD01TX0dBTU1BX1NLSUxMMxALEhQKEE1TX1RVUlJFVF9BVFRBQ0sQDCo2",
+            "CghBbmltVHlwZRIICgRQTEFZEAASCwoHVFJJR0dFUhABEggKBEJPT0wQAhIJ",
+            "CgVGTE9BVBADKmAKDUNoYXJhY3RlclR5cGUSEgoOQ0hBUkFDVEVSX05PTkUQ",
+            "ABIJCgVST1paSRABEggKBFlVS0kQAhILCgdIWVVOV09PEAMSCwoHQUJJR0FJ",
+            "TBAEEgwKCFRIRU9ET1JFEAUqVwoLTW9uc3RlclR5cGUSEAoMTU9OU1RFUl9O",
+            "T05FEAASCQoFQUxQSEEQARIJCgVPTUVHQRACEgkKBURST05FEAMSCQoFR0FN",
+            "TUEQBBIKCgZUVVJSRVQQBSrGAgoGV2VhcG9uEg8KC1dFQVBPTl9OT05FEAAS",
+            "CgoGREFHR0VSEAESEgoOVFdPX0hBTkRfU1dPUkQQAhIHCgNBWEUQAxIPCgtE",
+            "VUFMX1NXT1JEUxAEEgoKBlBJU1RPTBAFEhEKDUFTU0FVTFRfUklGTEUQBhIQ",
+            "CgxTTklQRVJfUklGTEUQBxIKCgZSQVBJRVIQCBIJCgVTUEVBUhAJEgoKBkhB",
+            "TU1FUhAKEgcKA0JBVBALEgkKBVRIUk9XEAwSDAoIU0hVUklLRU4QDRIHCgNC",
+            "T1cQDhIMCghDUk9TU0JPVxAPEgkKBUdMT1ZFEBASCQoFVE9ORkEQERIKCgZH",
+            "VUlUQVIQEhIMCghOVU5DSEFLVRATEggKBFdISVAQFBIKCgZDQU1FUkEQFRIK",
+            "CgZBUkNBTkEQFhISCg5WX0ZfUFJPU1RIRVRJQxAXKkwKClNraWxsU2hhcGUS",
+            "DgoKU0hBUEVfTk9ORRAAEgoKBkNJUkNMRRABEgcKA1JBWRACEg0KCVJFQ1RB",
+            "TkdMRRADEgoKBlNFQ1RPUhAEKsICCglUcmFpdFR5cGUSFgoSRlJBSUxUWV9J",
+            "TkZMSUNUSU9OEAASFgoSVkFNUElSSUNfQkxPT0RMSU5FEAESDgoKQURSRU5B",
+            "TElORRACEg8KC0FDQ0VMRVJBVEVSEAMSEgoOU1RFTExBUl9DSEFSR0UQBBIP",
+            "CgtHSE9TVF9MSUdIVBAFEg4KClJFRF9TUFJJVEUQBhIUChBTSVBIT05fTUFF",
+            "TFNUT1JNEAcSEQoNRElBTU9ORF9TSEFSRBAIEgwKCElST05DTEFEEAkSEgoO",
+            "SEVBVllfS05FRVBBRFMQChIWChJCSVRURVJfUkVUUklCVVRJT04QCxISCg5I",
+            "RUFMSU5HX0ZBQ1RPUhAMEhcKE0FNUExJRklDQVRJT05fRFJPTkUQDRIRCg1I",
+            "RUFMSU5HX0RST05FEA4SDAoIU0VOVElORUwQDypaCg1FcXVpcEl0ZW1UeXBl",
+            "EgoKBldFQVBPThAAEggKBEJPRFkQARIICgRIRUFEEAISBwoDQVJNEAMSBwoD",
+            "TEVHEAQSFwoTRVFVSVBfSVRFTV9UWVBFX0VORBAFKmgKCUl0ZW1HcmFkZRIK",
+            "CgZDT01NT04QABIMCghVTkNPTU1PThABEggKBFJBUkUQAhIICgRFUElDEAMS",
+            "DQoJTEVHRU5EQVJZEAQSCgoGTVlUSElDEAUSEgoOSVRFTV9HUkFERV9FTkQQ",
+            "BkIbqgIYR29vZ2xlLlByb3RvYnVmLlByb3RvY29sYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.EnvType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.MonsterSkill), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.Weapon), typeof(global::Google.Protobuf.Protocol.SkillShape), typeof(global::Google.Protobuf.Protocol.TraitType), }, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.EnvType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.MonsterSkill), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.Weapon), typeof(global::Google.Protobuf.Protocol.SkillShape), typeof(global::Google.Protobuf.Protocol.TraitType), typeof(global::Google.Protobuf.Protocol.EquipItemType), typeof(global::Google.Protobuf.Protocol.ItemGrade), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_Interact), global::Google.Protobuf.Protocol.C_Interact.Parser, new[]{ "ObjectId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Interact), global::Google.Protobuf.Protocol.S_Interact.Parser, new[]{ "ObjectId", "NextUseTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_EnterGame), global::Google.Protobuf.Protocol.C_EnterGame.Parser, new[]{ "EnterGame", "DummyPlayers" }, null, null, null, null),
@@ -185,7 +203,7 @@ namespace Google.Protobuf.Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Despawn), global::Google.Protobuf.Protocol.S_Despawn.Parser, new[]{ "ObjectIds" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_Move), global::Google.Protobuf.Protocol.C_Move.Parser, new[]{ "PosInfo", "RotInfo", "IsWarp" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Move), global::Google.Protobuf.Protocol.S_Move.Parser, new[]{ "ObjectId", "PosInfo", "RotInfo", "IsWarp" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_Skill), global::Google.Protobuf.Protocol.C_Skill.Parser, new[]{ "ObjectInfo", "SkillInfo", "TargetId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_Skill), global::Google.Protobuf.Protocol.C_Skill.Parser, new[]{ "ObjectInfo", "SkillInfo", "TargetId", "MousePosX", "MousePosZ" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Skill), global::Google.Protobuf.Protocol.S_Skill.Parser, new[]{ "CanUse", "ObjectId", "SkillInfo", "CostInfo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_SkillLevelUp), global::Google.Protobuf.Protocol.C_SkillLevelUp.Parser, new[]{ "KeyCode" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_SkillLevelUp), global::Google.Protobuf.Protocol.S_SkillLevelUp.Parser, new[]{ "KeyCode" }, null, null, null, null),
@@ -202,7 +220,7 @@ namespace Google.Protobuf.Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_EnterPick), global::Google.Protobuf.Protocol.S_EnterPick.Parser, new[]{ "PickIdx", "UserName" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_SpawnPick), global::Google.Protobuf.Protocol.S_SpawnPick.Parser, new[]{ "Players" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_LeavePick), global::Google.Protobuf.Protocol.S_LeavePick.Parser, new[]{ "PickIdx" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_ChangeHp), global::Google.Protobuf.Protocol.S_ChangeHp.Parser, new[]{ "ObjectId", "Hp" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_ChangeHp), global::Google.Protobuf.Protocol.S_ChangeHp.Parser, new[]{ "ObjectId", "Hp", "Barrier" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Die), global::Google.Protobuf.Protocol.S_Die.Parser, new[]{ "ObjectId", "AttackerId", "RespawnTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_Ping), global::Google.Protobuf.Protocol.C_Ping.Parser, new[]{ "Ping" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_VisibleObjects), global::Google.Protobuf.Protocol.S_VisibleObjects.Parser, new[]{ "ObjectId", "VisibleObjectIds" }, null, null, null, null),
@@ -210,14 +228,14 @@ namespace Google.Protobuf.Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_Ready), global::Google.Protobuf.Protocol.C_Ready.Parser, new[]{ "Ready" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Respawn), global::Google.Protobuf.Protocol.S_Respawn.Parser, new[]{ "ObjectId", "PosInfo", "RotInfo", "Hp", "Stamina" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_PlayerState), global::Google.Protobuf.Protocol.C_PlayerState.Parser, new[]{ "ObjectId", "State" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_ChangeStat), global::Google.Protobuf.Protocol.S_ChangeStat.Parser, new[]{ "ObjectId", "Hp", "Stamina" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_ChangeStat), global::Google.Protobuf.Protocol.S_ChangeStat.Parser, new[]{ "ObjectId", "Hp", "Stamina", "Barrier" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.PositionInfo), global::Google.Protobuf.Protocol.PositionInfo.Parser, new[]{ "State", "PosX", "PosY", "PosZ" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.RotationInfo), global::Google.Protobuf.Protocol.RotationInfo.Parser, new[]{ "Qx", "Qy", "Qz", "Qw" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.StatInfo), global::Google.Protobuf.Protocol.StatInfo.Parser, new[]{ "Attack", "Defense", "Hp", "MaxHp", "HpRegen", "Stamina", "MaxStamina", "StaminaRegen", "AttackSpeed", "MoveSpeed", "Exp", "Level", "Hill" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.StatInfo), global::Google.Protobuf.Protocol.StatInfo.Parser, new[]{ "Attack", "Defense", "Hp", "MaxHp", "HpRegen", "Barrier", "Stamina", "MaxStamina", "StaminaRegen", "AttackSpeed", "MoveSpeed", "Exp", "Level", "Hill" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.PlayerInfo), global::Google.Protobuf.Protocol.PlayerInfo.Parser, new[]{ "CharType", "SkillPoints", "Team" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.MonsterInfo), global::Google.Protobuf.Protocol.MonsterInfo.Parser, new[]{ "MonsterType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.EnvInfo), global::Google.Protobuf.Protocol.EnvInfo.Parser, new[]{ "EnvType", "InteractionStrategy" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.ObjectInfo), global::Google.Protobuf.Protocol.ObjectInfo.Parser, new[]{ "ObjectId", "Name", "PosInfo", "RotInfo", "StatInfo", "CharType", "MonsterType", "EnvType", "Team", "Player", "Monster", "Env" }, new[]{ "ObjectSpecificData" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.ObjectInfo), global::Google.Protobuf.Protocol.ObjectInfo.Parser, new[]{ "ObjectId", "Name", "PosInfo", "RotInfo", "StatInfo", "Player", "Monster", "Env" }, new[]{ "ObjectSpecificData" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.PickScenePlayerInfo), global::Google.Protobuf.Protocol.PickScenePlayerInfo.Parser, new[]{ "PickIdx", "UserName", "CharType", "TraitType", "WeaponType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.AnimInfo), global::Google.Protobuf.Protocol.AnimInfo.Parser, new[]{ "Name", "Ratio" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.EffectInfo), global::Google.Protobuf.Protocol.EffectInfo.Parser, new[]{ "KeyCode" }, null, null, null, null),
@@ -226,6 +244,7 @@ namespace Google.Protobuf.Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.SkillInfo), global::Google.Protobuf.Protocol.SkillInfo.Parser, new[]{ "SkillId", "KeyCode", "CoolTime", "TargetId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.SkillHitbox), global::Google.Protobuf.Protocol.SkillHitbox.Parser, new[]{ "Shape", "Type", "Charge", "LookOffset", "RightOffset", "DirX", "DirY", "Radius", "Angle", "Width", "Height", "Duration", "Speed", "MinRange", "MaxRange" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.CostInfo), global::Google.Protobuf.Protocol.CostInfo.Parser, new[]{ "CoolTime", "Stamina" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.ItemStat), global::Google.Protobuf.Protocol.ItemStat.Parser, new[]{ "AttackDamage", "AttackSpeed", "CriticalRatio", "CriticalDamage", "AttackRange", "FixedSkillAmplification", "PercentageSkillAmplification", "SkillAcceleration", "FixedDefensePenetration", "PercentageDefensePenetration", "FixedSpeed", "PercentageSpeed", "MaxHp", "HpRegen", "MaxStamina", "StaminaRegen", "Defense", "LifeSteal", "Omnivamp", "HealingPower", "SlowResistance", "CCResistance", "AdaptiveStat", "Vision", "AttackDamagePerLevel", "SkillAmplificationPerLevel", "MaxHpPerLevel" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_AttackSkillTarget), global::Google.Protobuf.Protocol.C_AttackSkillTarget.Parser, new[]{ "Attack" }, null, null, null, null)
           }));
     }
@@ -399,6 +418,25 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("AMPLIFICATION_DRONE")] AmplificationDrone = 13,
     [pbr::OriginalName("HEALING_DRONE")] HealingDrone = 14,
     [pbr::OriginalName("SENTINEL")] Sentinel = 15,
+  }
+
+  public enum EquipItemType {
+    [pbr::OriginalName("WEAPON")] Weapon = 0,
+    [pbr::OriginalName("BODY")] Body = 1,
+    [pbr::OriginalName("HEAD")] Head = 2,
+    [pbr::OriginalName("ARM")] Arm = 3,
+    [pbr::OriginalName("LEG")] Leg = 4,
+    [pbr::OriginalName("EQUIP_ITEM_TYPE_END")] End = 5,
+  }
+
+  public enum ItemGrade {
+    [pbr::OriginalName("COMMON")] Common = 0,
+    [pbr::OriginalName("UNCOMMON")] Uncommon = 1,
+    [pbr::OriginalName("RARE")] Rare = 2,
+    [pbr::OriginalName("EPIC")] Epic = 3,
+    [pbr::OriginalName("LEGENDARY")] Legendary = 4,
+    [pbr::OriginalName("MYTHIC")] Mythic = 5,
+    [pbr::OriginalName("ITEM_GRADE_END")] End = 6,
   }
 
   #endregion
@@ -2084,6 +2122,8 @@ namespace Google.Protobuf.Protocol {
       objectInfo_ = other.objectInfo_ != null ? other.objectInfo_.Clone() : null;
       skillInfo_ = other.skillInfo_ != null ? other.skillInfo_.Clone() : null;
       targetId_ = other.targetId_;
+      mousePosX_ = other.mousePosX_;
+      mousePosZ_ = other.mousePosZ_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -2125,6 +2165,28 @@ namespace Google.Protobuf.Protocol {
       }
     }
 
+    /// <summary>Field number for the "mousePosX" field.</summary>
+    public const int MousePosXFieldNumber = 4;
+    private float mousePosX_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float MousePosX {
+      get { return mousePosX_; }
+      set {
+        mousePosX_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "mousePosZ" field.</summary>
+    public const int MousePosZFieldNumber = 5;
+    private float mousePosZ_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float MousePosZ {
+      get { return mousePosZ_; }
+      set {
+        mousePosZ_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as C_Skill);
@@ -2141,6 +2203,8 @@ namespace Google.Protobuf.Protocol {
       if (!object.Equals(ObjectInfo, other.ObjectInfo)) return false;
       if (!object.Equals(SkillInfo, other.SkillInfo)) return false;
       if (TargetId != other.TargetId) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MousePosX, other.MousePosX)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MousePosZ, other.MousePosZ)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -2150,6 +2214,8 @@ namespace Google.Protobuf.Protocol {
       if (objectInfo_ != null) hash ^= ObjectInfo.GetHashCode();
       if (skillInfo_ != null) hash ^= SkillInfo.GetHashCode();
       if (TargetId != 0) hash ^= TargetId.GetHashCode();
+      if (MousePosX != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MousePosX);
+      if (MousePosZ != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MousePosZ);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -2175,6 +2241,14 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(24);
         output.WriteInt32(TargetId);
       }
+      if (MousePosX != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(MousePosX);
+      }
+      if (MousePosZ != 0F) {
+        output.WriteRawTag(45);
+        output.WriteFloat(MousePosZ);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2191,6 +2265,12 @@ namespace Google.Protobuf.Protocol {
       }
       if (TargetId != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(TargetId);
+      }
+      if (MousePosX != 0F) {
+        size += 1 + 4;
+      }
+      if (MousePosZ != 0F) {
+        size += 1 + 4;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2217,6 +2297,12 @@ namespace Google.Protobuf.Protocol {
       }
       if (other.TargetId != 0) {
         TargetId = other.TargetId;
+      }
+      if (other.MousePosX != 0F) {
+        MousePosX = other.MousePosX;
+      }
+      if (other.MousePosZ != 0F) {
+        MousePosZ = other.MousePosZ;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -2245,6 +2331,14 @@ namespace Google.Protobuf.Protocol {
           }
           case 24: {
             TargetId = input.ReadInt32();
+            break;
+          }
+          case 37: {
+            MousePosX = input.ReadFloat();
+            break;
+          }
+          case 45: {
+            MousePosZ = input.ReadFloat();
             break;
           }
         }
@@ -4708,6 +4802,7 @@ namespace Google.Protobuf.Protocol {
     public S_ChangeHp(S_ChangeHp other) : this() {
       objectId_ = other.objectId_;
       hp_ = other.hp_;
+      barrier_ = other.barrier_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -4738,6 +4833,17 @@ namespace Google.Protobuf.Protocol {
       }
     }
 
+    /// <summary>Field number for the "barrier" field.</summary>
+    public const int BarrierFieldNumber = 3;
+    private float barrier_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Barrier {
+      get { return barrier_; }
+      set {
+        barrier_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as S_ChangeHp);
@@ -4753,6 +4859,7 @@ namespace Google.Protobuf.Protocol {
       }
       if (ObjectId != other.ObjectId) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Hp, other.Hp)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Barrier, other.Barrier)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -4761,6 +4868,7 @@ namespace Google.Protobuf.Protocol {
       int hash = 1;
       if (ObjectId != 0) hash ^= ObjectId.GetHashCode();
       if (Hp != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Hp);
+      if (Barrier != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Barrier);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -4782,6 +4890,10 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(21);
         output.WriteFloat(Hp);
       }
+      if (Barrier != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(Barrier);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -4794,6 +4906,9 @@ namespace Google.Protobuf.Protocol {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(ObjectId);
       }
       if (Hp != 0F) {
+        size += 1 + 4;
+      }
+      if (Barrier != 0F) {
         size += 1 + 4;
       }
       if (_unknownFields != null) {
@@ -4813,6 +4928,9 @@ namespace Google.Protobuf.Protocol {
       if (other.Hp != 0F) {
         Hp = other.Hp;
       }
+      if (other.Barrier != 0F) {
+        Barrier = other.Barrier;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -4830,6 +4948,10 @@ namespace Google.Protobuf.Protocol {
           }
           case 21: {
             Hp = input.ReadFloat();
+            break;
+          }
+          case 29: {
+            Barrier = input.ReadFloat();
             break;
           }
         }
@@ -6060,6 +6182,7 @@ namespace Google.Protobuf.Protocol {
       objectId_ = other.objectId_;
       hp_ = other.hp_;
       stamina_ = other.stamina_;
+      barrier_ = other.barrier_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -6101,6 +6224,17 @@ namespace Google.Protobuf.Protocol {
       }
     }
 
+    /// <summary>Field number for the "barrier" field.</summary>
+    public const int BarrierFieldNumber = 4;
+    private float barrier_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Barrier {
+      get { return barrier_; }
+      set {
+        barrier_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as S_ChangeStat);
@@ -6117,6 +6251,7 @@ namespace Google.Protobuf.Protocol {
       if (ObjectId != other.ObjectId) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Hp, other.Hp)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Stamina, other.Stamina)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Barrier, other.Barrier)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -6126,6 +6261,7 @@ namespace Google.Protobuf.Protocol {
       if (ObjectId != 0) hash ^= ObjectId.GetHashCode();
       if (Hp != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Hp);
       if (Stamina != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Stamina);
+      if (Barrier != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Barrier);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -6151,6 +6287,10 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(29);
         output.WriteFloat(Stamina);
       }
+      if (Barrier != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(Barrier);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -6166,6 +6306,9 @@ namespace Google.Protobuf.Protocol {
         size += 1 + 4;
       }
       if (Stamina != 0F) {
+        size += 1 + 4;
+      }
+      if (Barrier != 0F) {
         size += 1 + 4;
       }
       if (_unknownFields != null) {
@@ -6188,6 +6331,9 @@ namespace Google.Protobuf.Protocol {
       if (other.Stamina != 0F) {
         Stamina = other.Stamina;
       }
+      if (other.Barrier != 0F) {
+        Barrier = other.Barrier;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -6209,6 +6355,10 @@ namespace Google.Protobuf.Protocol {
           }
           case 29: {
             Stamina = input.ReadFloat();
+            break;
+          }
+          case 37: {
+            Barrier = input.ReadFloat();
             break;
           }
         }
@@ -6673,6 +6823,7 @@ namespace Google.Protobuf.Protocol {
       hp_ = other.hp_;
       maxHp_ = other.maxHp_;
       hpRegen_ = other.hpRegen_;
+      barrier_ = other.barrier_;
       stamina_ = other.stamina_;
       maxStamina_ = other.maxStamina_;
       staminaRegen_ = other.staminaRegen_;
@@ -6744,8 +6895,19 @@ namespace Google.Protobuf.Protocol {
       }
     }
 
+    /// <summary>Field number for the "barrier" field.</summary>
+    public const int BarrierFieldNumber = 6;
+    private float barrier_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Barrier {
+      get { return barrier_; }
+      set {
+        barrier_ = value;
+      }
+    }
+
     /// <summary>Field number for the "stamina" field.</summary>
-    public const int StaminaFieldNumber = 6;
+    public const int StaminaFieldNumber = 7;
     private float stamina_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float Stamina {
@@ -6756,7 +6918,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "maxStamina" field.</summary>
-    public const int MaxStaminaFieldNumber = 7;
+    public const int MaxStaminaFieldNumber = 8;
     private float maxStamina_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float MaxStamina {
@@ -6767,7 +6929,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "staminaRegen" field.</summary>
-    public const int StaminaRegenFieldNumber = 8;
+    public const int StaminaRegenFieldNumber = 9;
     private float staminaRegen_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float StaminaRegen {
@@ -6778,7 +6940,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "attackSpeed" field.</summary>
-    public const int AttackSpeedFieldNumber = 9;
+    public const int AttackSpeedFieldNumber = 10;
     private float attackSpeed_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float AttackSpeed {
@@ -6789,7 +6951,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "moveSpeed" field.</summary>
-    public const int MoveSpeedFieldNumber = 10;
+    public const int MoveSpeedFieldNumber = 11;
     private float moveSpeed_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float MoveSpeed {
@@ -6800,7 +6962,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "exp" field.</summary>
-    public const int ExpFieldNumber = 11;
+    public const int ExpFieldNumber = 12;
     private int exp_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Exp {
@@ -6811,7 +6973,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "level" field.</summary>
-    public const int LevelFieldNumber = 12;
+    public const int LevelFieldNumber = 13;
     private int level_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Level {
@@ -6822,7 +6984,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "hill" field.</summary>
-    public const int HillFieldNumber = 13;
+    public const int HillFieldNumber = 14;
     private int hill_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int Hill {
@@ -6850,6 +7012,7 @@ namespace Google.Protobuf.Protocol {
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Hp, other.Hp)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MaxHp, other.MaxHp)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(HpRegen, other.HpRegen)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Barrier, other.Barrier)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Stamina, other.Stamina)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MaxStamina, other.MaxStamina)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(StaminaRegen, other.StaminaRegen)) return false;
@@ -6869,6 +7032,7 @@ namespace Google.Protobuf.Protocol {
       if (Hp != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Hp);
       if (MaxHp != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MaxHp);
       if (HpRegen != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(HpRegen);
+      if (Barrier != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Barrier);
       if (Stamina != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Stamina);
       if (MaxStamina != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MaxStamina);
       if (StaminaRegen != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(StaminaRegen);
@@ -6910,36 +7074,40 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(45);
         output.WriteFloat(HpRegen);
       }
-      if (Stamina != 0F) {
+      if (Barrier != 0F) {
         output.WriteRawTag(53);
+        output.WriteFloat(Barrier);
+      }
+      if (Stamina != 0F) {
+        output.WriteRawTag(61);
         output.WriteFloat(Stamina);
       }
       if (MaxStamina != 0F) {
-        output.WriteRawTag(61);
+        output.WriteRawTag(69);
         output.WriteFloat(MaxStamina);
       }
       if (StaminaRegen != 0F) {
-        output.WriteRawTag(69);
+        output.WriteRawTag(77);
         output.WriteFloat(StaminaRegen);
       }
       if (AttackSpeed != 0F) {
-        output.WriteRawTag(77);
+        output.WriteRawTag(85);
         output.WriteFloat(AttackSpeed);
       }
       if (MoveSpeed != 0F) {
-        output.WriteRawTag(85);
+        output.WriteRawTag(93);
         output.WriteFloat(MoveSpeed);
       }
       if (Exp != 0) {
-        output.WriteRawTag(88);
+        output.WriteRawTag(96);
         output.WriteInt32(Exp);
       }
       if (Level != 0) {
-        output.WriteRawTag(96);
+        output.WriteRawTag(104);
         output.WriteInt32(Level);
       }
       if (Hill != 0) {
-        output.WriteRawTag(104);
+        output.WriteRawTag(112);
         output.WriteInt32(Hill);
       }
       if (_unknownFields != null) {
@@ -6963,6 +7131,9 @@ namespace Google.Protobuf.Protocol {
         size += 1 + 4;
       }
       if (HpRegen != 0F) {
+        size += 1 + 4;
+      }
+      if (Barrier != 0F) {
         size += 1 + 4;
       }
       if (Stamina != 0F) {
@@ -7014,6 +7185,9 @@ namespace Google.Protobuf.Protocol {
       }
       if (other.HpRegen != 0F) {
         HpRegen = other.HpRegen;
+      }
+      if (other.Barrier != 0F) {
+        Barrier = other.Barrier;
       }
       if (other.Stamina != 0F) {
         Stamina = other.Stamina;
@@ -7071,34 +7245,38 @@ namespace Google.Protobuf.Protocol {
             break;
           }
           case 53: {
-            Stamina = input.ReadFloat();
+            Barrier = input.ReadFloat();
             break;
           }
           case 61: {
-            MaxStamina = input.ReadFloat();
+            Stamina = input.ReadFloat();
             break;
           }
           case 69: {
-            StaminaRegen = input.ReadFloat();
+            MaxStamina = input.ReadFloat();
             break;
           }
           case 77: {
-            AttackSpeed = input.ReadFloat();
+            StaminaRegen = input.ReadFloat();
             break;
           }
           case 85: {
+            AttackSpeed = input.ReadFloat();
+            break;
+          }
+          case 93: {
             MoveSpeed = input.ReadFloat();
             break;
           }
-          case 88: {
+          case 96: {
             Exp = input.ReadInt32();
             break;
           }
-          case 96: {
+          case 104: {
             Level = input.ReadInt32();
             break;
           }
-          case 104: {
+          case 112: {
             Hill = input.ReadInt32();
             break;
           }
@@ -7609,10 +7787,6 @@ namespace Google.Protobuf.Protocol {
       posInfo_ = other.posInfo_ != null ? other.posInfo_.Clone() : null;
       rotInfo_ = other.rotInfo_ != null ? other.rotInfo_.Clone() : null;
       statInfo_ = other.statInfo_ != null ? other.statInfo_.Clone() : null;
-      charType_ = other.charType_;
-      monsterType_ = other.monsterType_;
-      envType_ = other.envType_;
-      team_ = other.team_;
       switch (other.ObjectSpecificDataCase) {
         case ObjectSpecificDataOneofCase.Player:
           Player = other.Player.Clone();
@@ -7688,52 +7862,8 @@ namespace Google.Protobuf.Protocol {
       }
     }
 
-    /// <summary>Field number for the "charType" field.</summary>
-    public const int CharTypeFieldNumber = 6;
-    private global::Google.Protobuf.Protocol.CharacterType charType_ = global::Google.Protobuf.Protocol.CharacterType.CharacterNone;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Google.Protobuf.Protocol.CharacterType CharType {
-      get { return charType_; }
-      set {
-        charType_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "monsterType" field.</summary>
-    public const int MonsterTypeFieldNumber = 7;
-    private global::Google.Protobuf.Protocol.MonsterType monsterType_ = global::Google.Protobuf.Protocol.MonsterType.MonsterNone;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Google.Protobuf.Protocol.MonsterType MonsterType {
-      get { return monsterType_; }
-      set {
-        monsterType_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "envType" field.</summary>
-    public const int EnvTypeFieldNumber = 8;
-    private global::Google.Protobuf.Protocol.EnvType envType_ = global::Google.Protobuf.Protocol.EnvType.EnvNone;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Google.Protobuf.Protocol.EnvType EnvType {
-      get { return envType_; }
-      set {
-        envType_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "team" field.</summary>
-    public const int TeamFieldNumber = 9;
-    private int team_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Team {
-      get { return team_; }
-      set {
-        team_ = value;
-      }
-    }
-
     /// <summary>Field number for the "player" field.</summary>
-    public const int PlayerFieldNumber = 10;
+    public const int PlayerFieldNumber = 6;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Google.Protobuf.Protocol.PlayerInfo Player {
       get { return objectSpecificDataCase_ == ObjectSpecificDataOneofCase.Player ? (global::Google.Protobuf.Protocol.PlayerInfo) objectSpecificData_ : null; }
@@ -7744,7 +7874,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "monster" field.</summary>
-    public const int MonsterFieldNumber = 11;
+    public const int MonsterFieldNumber = 7;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Google.Protobuf.Protocol.MonsterInfo Monster {
       get { return objectSpecificDataCase_ == ObjectSpecificDataOneofCase.Monster ? (global::Google.Protobuf.Protocol.MonsterInfo) objectSpecificData_ : null; }
@@ -7755,7 +7885,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "env" field.</summary>
-    public const int EnvFieldNumber = 12;
+    public const int EnvFieldNumber = 8;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Google.Protobuf.Protocol.EnvInfo Env {
       get { return objectSpecificDataCase_ == ObjectSpecificDataOneofCase.Env ? (global::Google.Protobuf.Protocol.EnvInfo) objectSpecificData_ : null; }
@@ -7769,9 +7899,9 @@ namespace Google.Protobuf.Protocol {
     /// <summary>Enum of possible cases for the "objectSpecificData" oneof.</summary>
     public enum ObjectSpecificDataOneofCase {
       None = 0,
-      Player = 10,
-      Monster = 11,
-      Env = 12,
+      Player = 6,
+      Monster = 7,
+      Env = 8,
     }
     private ObjectSpecificDataOneofCase objectSpecificDataCase_ = ObjectSpecificDataOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7803,10 +7933,6 @@ namespace Google.Protobuf.Protocol {
       if (!object.Equals(PosInfo, other.PosInfo)) return false;
       if (!object.Equals(RotInfo, other.RotInfo)) return false;
       if (!object.Equals(StatInfo, other.StatInfo)) return false;
-      if (CharType != other.CharType) return false;
-      if (MonsterType != other.MonsterType) return false;
-      if (EnvType != other.EnvType) return false;
-      if (Team != other.Team) return false;
       if (!object.Equals(Player, other.Player)) return false;
       if (!object.Equals(Monster, other.Monster)) return false;
       if (!object.Equals(Env, other.Env)) return false;
@@ -7822,10 +7948,6 @@ namespace Google.Protobuf.Protocol {
       if (posInfo_ != null) hash ^= PosInfo.GetHashCode();
       if (rotInfo_ != null) hash ^= RotInfo.GetHashCode();
       if (statInfo_ != null) hash ^= StatInfo.GetHashCode();
-      if (CharType != global::Google.Protobuf.Protocol.CharacterType.CharacterNone) hash ^= CharType.GetHashCode();
-      if (MonsterType != global::Google.Protobuf.Protocol.MonsterType.MonsterNone) hash ^= MonsterType.GetHashCode();
-      if (EnvType != global::Google.Protobuf.Protocol.EnvType.EnvNone) hash ^= EnvType.GetHashCode();
-      if (Team != 0) hash ^= Team.GetHashCode();
       if (objectSpecificDataCase_ == ObjectSpecificDataOneofCase.Player) hash ^= Player.GetHashCode();
       if (objectSpecificDataCase_ == ObjectSpecificDataOneofCase.Monster) hash ^= Monster.GetHashCode();
       if (objectSpecificDataCase_ == ObjectSpecificDataOneofCase.Env) hash ^= Env.GetHashCode();
@@ -7863,32 +7985,16 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(42);
         output.WriteMessage(StatInfo);
       }
-      if (CharType != global::Google.Protobuf.Protocol.CharacterType.CharacterNone) {
-        output.WriteRawTag(48);
-        output.WriteEnum((int) CharType);
-      }
-      if (MonsterType != global::Google.Protobuf.Protocol.MonsterType.MonsterNone) {
-        output.WriteRawTag(56);
-        output.WriteEnum((int) MonsterType);
-      }
-      if (EnvType != global::Google.Protobuf.Protocol.EnvType.EnvNone) {
-        output.WriteRawTag(64);
-        output.WriteEnum((int) EnvType);
-      }
-      if (Team != 0) {
-        output.WriteRawTag(72);
-        output.WriteInt32(Team);
-      }
       if (objectSpecificDataCase_ == ObjectSpecificDataOneofCase.Player) {
-        output.WriteRawTag(82);
+        output.WriteRawTag(50);
         output.WriteMessage(Player);
       }
       if (objectSpecificDataCase_ == ObjectSpecificDataOneofCase.Monster) {
-        output.WriteRawTag(90);
+        output.WriteRawTag(58);
         output.WriteMessage(Monster);
       }
       if (objectSpecificDataCase_ == ObjectSpecificDataOneofCase.Env) {
-        output.WriteRawTag(98);
+        output.WriteRawTag(66);
         output.WriteMessage(Env);
       }
       if (_unknownFields != null) {
@@ -7913,18 +8019,6 @@ namespace Google.Protobuf.Protocol {
       }
       if (statInfo_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(StatInfo);
-      }
-      if (CharType != global::Google.Protobuf.Protocol.CharacterType.CharacterNone) {
-        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) CharType);
-      }
-      if (MonsterType != global::Google.Protobuf.Protocol.MonsterType.MonsterNone) {
-        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) MonsterType);
-      }
-      if (EnvType != global::Google.Protobuf.Protocol.EnvType.EnvNone) {
-        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) EnvType);
-      }
-      if (Team != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Team);
       }
       if (objectSpecificDataCase_ == ObjectSpecificDataOneofCase.Player) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Player);
@@ -7969,18 +8063,6 @@ namespace Google.Protobuf.Protocol {
           StatInfo = new global::Google.Protobuf.Protocol.StatInfo();
         }
         StatInfo.MergeFrom(other.StatInfo);
-      }
-      if (other.CharType != global::Google.Protobuf.Protocol.CharacterType.CharacterNone) {
-        CharType = other.CharType;
-      }
-      if (other.MonsterType != global::Google.Protobuf.Protocol.MonsterType.MonsterNone) {
-        MonsterType = other.MonsterType;
-      }
-      if (other.EnvType != global::Google.Protobuf.Protocol.EnvType.EnvNone) {
-        EnvType = other.EnvType;
-      }
-      if (other.Team != 0) {
-        Team = other.Team;
       }
       switch (other.ObjectSpecificDataCase) {
         case ObjectSpecificDataOneofCase.Player:
@@ -8043,23 +8125,7 @@ namespace Google.Protobuf.Protocol {
             input.ReadMessage(StatInfo);
             break;
           }
-          case 48: {
-            CharType = (global::Google.Protobuf.Protocol.CharacterType) input.ReadEnum();
-            break;
-          }
-          case 56: {
-            MonsterType = (global::Google.Protobuf.Protocol.MonsterType) input.ReadEnum();
-            break;
-          }
-          case 64: {
-            EnvType = (global::Google.Protobuf.Protocol.EnvType) input.ReadEnum();
-            break;
-          }
-          case 72: {
-            Team = input.ReadInt32();
-            break;
-          }
-          case 82: {
+          case 50: {
             global::Google.Protobuf.Protocol.PlayerInfo subBuilder = new global::Google.Protobuf.Protocol.PlayerInfo();
             if (objectSpecificDataCase_ == ObjectSpecificDataOneofCase.Player) {
               subBuilder.MergeFrom(Player);
@@ -8068,7 +8134,7 @@ namespace Google.Protobuf.Protocol {
             Player = subBuilder;
             break;
           }
-          case 90: {
+          case 58: {
             global::Google.Protobuf.Protocol.MonsterInfo subBuilder = new global::Google.Protobuf.Protocol.MonsterInfo();
             if (objectSpecificDataCase_ == ObjectSpecificDataOneofCase.Monster) {
               subBuilder.MergeFrom(Monster);
@@ -8077,7 +8143,7 @@ namespace Google.Protobuf.Protocol {
             Monster = subBuilder;
             break;
           }
-          case 98: {
+          case 66: {
             global::Google.Protobuf.Protocol.EnvInfo subBuilder = new global::Google.Protobuf.Protocol.EnvInfo();
             if (objectSpecificDataCase_ == ObjectSpecificDataOneofCase.Env) {
               subBuilder.MergeFrom(Env);
@@ -9852,6 +9918,944 @@ namespace Google.Protobuf.Protocol {
 
   }
 
+  public sealed partial class ItemStat : pb::IMessage<ItemStat> {
+    private static readonly pb::MessageParser<ItemStat> _parser = new pb::MessageParser<ItemStat>(() => new ItemStat());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<ItemStat> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[51]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ItemStat() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ItemStat(ItemStat other) : this() {
+      attackDamage_ = other.attackDamage_;
+      attackSpeed_ = other.attackSpeed_;
+      criticalRatio_ = other.criticalRatio_;
+      criticalDamage_ = other.criticalDamage_;
+      attackRange_ = other.attackRange_;
+      fixedSkillAmplification_ = other.fixedSkillAmplification_;
+      percentageSkillAmplification_ = other.percentageSkillAmplification_;
+      skillAcceleration_ = other.skillAcceleration_;
+      fixedDefensePenetration_ = other.fixedDefensePenetration_;
+      percentageDefensePenetration_ = other.percentageDefensePenetration_;
+      fixedSpeed_ = other.fixedSpeed_;
+      percentageSpeed_ = other.percentageSpeed_;
+      maxHp_ = other.maxHp_;
+      hpRegen_ = other.hpRegen_;
+      maxStamina_ = other.maxStamina_;
+      staminaRegen_ = other.staminaRegen_;
+      defense_ = other.defense_;
+      lifeSteal_ = other.lifeSteal_;
+      omnivamp_ = other.omnivamp_;
+      healingPower_ = other.healingPower_;
+      slowResistance_ = other.slowResistance_;
+      cCResistance_ = other.cCResistance_;
+      adaptiveStat_ = other.adaptiveStat_;
+      vision_ = other.vision_;
+      attackDamagePerLevel_ = other.attackDamagePerLevel_;
+      skillAmplificationPerLevel_ = other.skillAmplificationPerLevel_;
+      maxHpPerLevel_ = other.maxHpPerLevel_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ItemStat Clone() {
+      return new ItemStat(this);
+    }
+
+    /// <summary>Field number for the "AttackDamage" field.</summary>
+    public const int AttackDamageFieldNumber = 1;
+    private float attackDamage_;
+    /// <summary>
+    ///공격력
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float AttackDamage {
+      get { return attackDamage_; }
+      set {
+        attackDamage_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "AttackSpeed" field.</summary>
+    public const int AttackSpeedFieldNumber = 2;
+    private float attackSpeed_;
+    /// <summary>
+    ///공격속도
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float AttackSpeed {
+      get { return attackSpeed_; }
+      set {
+        attackSpeed_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "CriticalRatio" field.</summary>
+    public const int CriticalRatioFieldNumber = 3;
+    private float criticalRatio_;
+    /// <summary>
+    ///치명타 확률
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float CriticalRatio {
+      get { return criticalRatio_; }
+      set {
+        criticalRatio_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "CriticalDamage" field.</summary>
+    public const int CriticalDamageFieldNumber = 4;
+    private float criticalDamage_;
+    /// <summary>
+    ///치명타 피해량
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float CriticalDamage {
+      get { return criticalDamage_; }
+      set {
+        criticalDamage_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "AttackRange" field.</summary>
+    public const int AttackRangeFieldNumber = 5;
+    private float attackRange_;
+    /// <summary>
+    ///기본 공격 사거리
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float AttackRange {
+      get { return attackRange_; }
+      set {
+        attackRange_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "FixedSkillAmplification" field.</summary>
+    public const int FixedSkillAmplificationFieldNumber = 6;
+    private float fixedSkillAmplification_;
+    /// <summary>
+    ///고정 스킬 증폭
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float FixedSkillAmplification {
+      get { return fixedSkillAmplification_; }
+      set {
+        fixedSkillAmplification_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "PercentageSkillAmplification" field.</summary>
+    public const int PercentageSkillAmplificationFieldNumber = 7;
+    private float percentageSkillAmplification_;
+    /// <summary>
+    ///퍼센트 스킬 증폭
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float PercentageSkillAmplification {
+      get { return percentageSkillAmplification_; }
+      set {
+        percentageSkillAmplification_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "SkillAcceleration" field.</summary>
+    public const int SkillAccelerationFieldNumber = 8;
+    private float skillAcceleration_;
+    /// <summary>
+    ///스킬 가속
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float SkillAcceleration {
+      get { return skillAcceleration_; }
+      set {
+        skillAcceleration_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "FixedDefensePenetration" field.</summary>
+    public const int FixedDefensePenetrationFieldNumber = 9;
+    private float fixedDefensePenetration_;
+    /// <summary>
+    ///고정 방어 관통
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float FixedDefensePenetration {
+      get { return fixedDefensePenetration_; }
+      set {
+        fixedDefensePenetration_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "PercentageDefensePenetration" field.</summary>
+    public const int PercentageDefensePenetrationFieldNumber = 10;
+    private float percentageDefensePenetration_;
+    /// <summary>
+    ///퍼센트 방어 관통 ex) 20퍼센트면 20
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float PercentageDefensePenetration {
+      get { return percentageDefensePenetration_; }
+      set {
+        percentageDefensePenetration_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "FixedSpeed" field.</summary>
+    public const int FixedSpeedFieldNumber = 11;
+    private float fixedSpeed_;
+    /// <summary>
+    ///고정 이동 속도
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float FixedSpeed {
+      get { return fixedSpeed_; }
+      set {
+        fixedSpeed_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "PercentageSpeed" field.</summary>
+    public const int PercentageSpeedFieldNumber = 12;
+    private float percentageSpeed_;
+    /// <summary>
+    ///퍼센트 이동 속도
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float PercentageSpeed {
+      get { return percentageSpeed_; }
+      set {
+        percentageSpeed_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "MaxHp" field.</summary>
+    public const int MaxHpFieldNumber = 13;
+    private float maxHp_;
+    /// <summary>
+    ///최대 체력
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float MaxHp {
+      get { return maxHp_; }
+      set {
+        maxHp_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "HpRegen" field.</summary>
+    public const int HpRegenFieldNumber = 14;
+    private float hpRegen_;
+    /// <summary>
+    ///체력 재생
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float HpRegen {
+      get { return hpRegen_; }
+      set {
+        hpRegen_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "MaxStamina" field.</summary>
+    public const int MaxStaminaFieldNumber = 15;
+    private float maxStamina_;
+    /// <summary>
+    ///최대 스테미나
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float MaxStamina {
+      get { return maxStamina_; }
+      set {
+        maxStamina_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "StaminaRegen" field.</summary>
+    public const int StaminaRegenFieldNumber = 16;
+    private float staminaRegen_;
+    /// <summary>
+    ///스테미나 재생
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float StaminaRegen {
+      get { return staminaRegen_; }
+      set {
+        staminaRegen_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "Defense" field.</summary>
+    public const int DefenseFieldNumber = 17;
+    private float defense_;
+    /// <summary>
+    ///방어력
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Defense {
+      get { return defense_; }
+      set {
+        defense_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "LifeSteal" field.</summary>
+    public const int LifeStealFieldNumber = 18;
+    private float lifeSteal_;
+    /// <summary>
+    ///생명력 흡수
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float LifeSteal {
+      get { return lifeSteal_; }
+      set {
+        lifeSteal_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "Omnivamp" field.</summary>
+    public const int OmnivampFieldNumber = 19;
+    private float omnivamp_;
+    /// <summary>
+    ///모든 피해 흡혈
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Omnivamp {
+      get { return omnivamp_; }
+      set {
+        omnivamp_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "HealingPower" field.</summary>
+    public const int HealingPowerFieldNumber = 20;
+    private float healingPower_;
+    /// <summary>
+    ///주는 회복 증가
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float HealingPower {
+      get { return healingPower_; }
+      set {
+        healingPower_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "SlowResistance" field.</summary>
+    public const int SlowResistanceFieldNumber = 21;
+    private float slowResistance_;
+    /// <summary>
+    ///둔화 효과 저항
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float SlowResistance {
+      get { return slowResistance_; }
+      set {
+        slowResistance_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "CCResistance" field.</summary>
+    public const int CCResistanceFieldNumber = 22;
+    private float cCResistance_;
+    /// <summary>
+    ///방해 효과 저항(속박, 기절)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float CCResistance {
+      get { return cCResistance_; }
+      set {
+        cCResistance_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "AdaptiveStat" field.</summary>
+    public const int AdaptiveStatFieldNumber = 23;
+    private float adaptiveStat_;
+    /// <summary>
+    ///적응형 능력치 공격력 : 스킬증폭 = 1 : 2
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float AdaptiveStat {
+      get { return adaptiveStat_; }
+      set {
+        adaptiveStat_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "Vision" field.</summary>
+    public const int VisionFieldNumber = 24;
+    private float vision_;
+    /// <summary>
+    ///시야
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Vision {
+      get { return vision_; }
+      set {
+        vision_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "AttackDamagePerLevel" field.</summary>
+    public const int AttackDamagePerLevelFieldNumber = 25;
+    private float attackDamagePerLevel_;
+    /// <summary>
+    ///레벨 당 공격력
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float AttackDamagePerLevel {
+      get { return attackDamagePerLevel_; }
+      set {
+        attackDamagePerLevel_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "SkillAmplificationPerLevel" field.</summary>
+    public const int SkillAmplificationPerLevelFieldNumber = 26;
+    private float skillAmplificationPerLevel_;
+    /// <summary>
+    ///레벨 당 스킬 증폭
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float SkillAmplificationPerLevel {
+      get { return skillAmplificationPerLevel_; }
+      set {
+        skillAmplificationPerLevel_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "MaxHpPerLevel" field.</summary>
+    public const int MaxHpPerLevelFieldNumber = 27;
+    private float maxHpPerLevel_;
+    /// <summary>
+    ///레벨 당 최대 체력
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float MaxHpPerLevel {
+      get { return maxHpPerLevel_; }
+      set {
+        maxHpPerLevel_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as ItemStat);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(ItemStat other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AttackDamage, other.AttackDamage)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AttackSpeed, other.AttackSpeed)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(CriticalRatio, other.CriticalRatio)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(CriticalDamage, other.CriticalDamage)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AttackRange, other.AttackRange)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(FixedSkillAmplification, other.FixedSkillAmplification)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PercentageSkillAmplification, other.PercentageSkillAmplification)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(SkillAcceleration, other.SkillAcceleration)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(FixedDefensePenetration, other.FixedDefensePenetration)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PercentageDefensePenetration, other.PercentageDefensePenetration)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(FixedSpeed, other.FixedSpeed)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PercentageSpeed, other.PercentageSpeed)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MaxHp, other.MaxHp)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(HpRegen, other.HpRegen)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MaxStamina, other.MaxStamina)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(StaminaRegen, other.StaminaRegen)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Defense, other.Defense)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(LifeSteal, other.LifeSteal)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Omnivamp, other.Omnivamp)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(HealingPower, other.HealingPower)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(SlowResistance, other.SlowResistance)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(CCResistance, other.CCResistance)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AdaptiveStat, other.AdaptiveStat)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Vision, other.Vision)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AttackDamagePerLevel, other.AttackDamagePerLevel)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(SkillAmplificationPerLevel, other.SkillAmplificationPerLevel)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MaxHpPerLevel, other.MaxHpPerLevel)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (AttackDamage != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AttackDamage);
+      if (AttackSpeed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AttackSpeed);
+      if (CriticalRatio != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(CriticalRatio);
+      if (CriticalDamage != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(CriticalDamage);
+      if (AttackRange != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AttackRange);
+      if (FixedSkillAmplification != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(FixedSkillAmplification);
+      if (PercentageSkillAmplification != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PercentageSkillAmplification);
+      if (SkillAcceleration != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(SkillAcceleration);
+      if (FixedDefensePenetration != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(FixedDefensePenetration);
+      if (PercentageDefensePenetration != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PercentageDefensePenetration);
+      if (FixedSpeed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(FixedSpeed);
+      if (PercentageSpeed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PercentageSpeed);
+      if (MaxHp != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MaxHp);
+      if (HpRegen != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(HpRegen);
+      if (MaxStamina != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MaxStamina);
+      if (StaminaRegen != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(StaminaRegen);
+      if (Defense != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Defense);
+      if (LifeSteal != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(LifeSteal);
+      if (Omnivamp != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Omnivamp);
+      if (HealingPower != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(HealingPower);
+      if (SlowResistance != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(SlowResistance);
+      if (CCResistance != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(CCResistance);
+      if (AdaptiveStat != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AdaptiveStat);
+      if (Vision != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Vision);
+      if (AttackDamagePerLevel != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AttackDamagePerLevel);
+      if (SkillAmplificationPerLevel != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(SkillAmplificationPerLevel);
+      if (MaxHpPerLevel != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MaxHpPerLevel);
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (AttackDamage != 0F) {
+        output.WriteRawTag(13);
+        output.WriteFloat(AttackDamage);
+      }
+      if (AttackSpeed != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(AttackSpeed);
+      }
+      if (CriticalRatio != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(CriticalRatio);
+      }
+      if (CriticalDamage != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(CriticalDamage);
+      }
+      if (AttackRange != 0F) {
+        output.WriteRawTag(45);
+        output.WriteFloat(AttackRange);
+      }
+      if (FixedSkillAmplification != 0F) {
+        output.WriteRawTag(53);
+        output.WriteFloat(FixedSkillAmplification);
+      }
+      if (PercentageSkillAmplification != 0F) {
+        output.WriteRawTag(61);
+        output.WriteFloat(PercentageSkillAmplification);
+      }
+      if (SkillAcceleration != 0F) {
+        output.WriteRawTag(69);
+        output.WriteFloat(SkillAcceleration);
+      }
+      if (FixedDefensePenetration != 0F) {
+        output.WriteRawTag(77);
+        output.WriteFloat(FixedDefensePenetration);
+      }
+      if (PercentageDefensePenetration != 0F) {
+        output.WriteRawTag(85);
+        output.WriteFloat(PercentageDefensePenetration);
+      }
+      if (FixedSpeed != 0F) {
+        output.WriteRawTag(93);
+        output.WriteFloat(FixedSpeed);
+      }
+      if (PercentageSpeed != 0F) {
+        output.WriteRawTag(101);
+        output.WriteFloat(PercentageSpeed);
+      }
+      if (MaxHp != 0F) {
+        output.WriteRawTag(109);
+        output.WriteFloat(MaxHp);
+      }
+      if (HpRegen != 0F) {
+        output.WriteRawTag(117);
+        output.WriteFloat(HpRegen);
+      }
+      if (MaxStamina != 0F) {
+        output.WriteRawTag(125);
+        output.WriteFloat(MaxStamina);
+      }
+      if (StaminaRegen != 0F) {
+        output.WriteRawTag(133, 1);
+        output.WriteFloat(StaminaRegen);
+      }
+      if (Defense != 0F) {
+        output.WriteRawTag(141, 1);
+        output.WriteFloat(Defense);
+      }
+      if (LifeSteal != 0F) {
+        output.WriteRawTag(149, 1);
+        output.WriteFloat(LifeSteal);
+      }
+      if (Omnivamp != 0F) {
+        output.WriteRawTag(157, 1);
+        output.WriteFloat(Omnivamp);
+      }
+      if (HealingPower != 0F) {
+        output.WriteRawTag(165, 1);
+        output.WriteFloat(HealingPower);
+      }
+      if (SlowResistance != 0F) {
+        output.WriteRawTag(173, 1);
+        output.WriteFloat(SlowResistance);
+      }
+      if (CCResistance != 0F) {
+        output.WriteRawTag(181, 1);
+        output.WriteFloat(CCResistance);
+      }
+      if (AdaptiveStat != 0F) {
+        output.WriteRawTag(189, 1);
+        output.WriteFloat(AdaptiveStat);
+      }
+      if (Vision != 0F) {
+        output.WriteRawTag(197, 1);
+        output.WriteFloat(Vision);
+      }
+      if (AttackDamagePerLevel != 0F) {
+        output.WriteRawTag(205, 1);
+        output.WriteFloat(AttackDamagePerLevel);
+      }
+      if (SkillAmplificationPerLevel != 0F) {
+        output.WriteRawTag(213, 1);
+        output.WriteFloat(SkillAmplificationPerLevel);
+      }
+      if (MaxHpPerLevel != 0F) {
+        output.WriteRawTag(221, 1);
+        output.WriteFloat(MaxHpPerLevel);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (AttackDamage != 0F) {
+        size += 1 + 4;
+      }
+      if (AttackSpeed != 0F) {
+        size += 1 + 4;
+      }
+      if (CriticalRatio != 0F) {
+        size += 1 + 4;
+      }
+      if (CriticalDamage != 0F) {
+        size += 1 + 4;
+      }
+      if (AttackRange != 0F) {
+        size += 1 + 4;
+      }
+      if (FixedSkillAmplification != 0F) {
+        size += 1 + 4;
+      }
+      if (PercentageSkillAmplification != 0F) {
+        size += 1 + 4;
+      }
+      if (SkillAcceleration != 0F) {
+        size += 1 + 4;
+      }
+      if (FixedDefensePenetration != 0F) {
+        size += 1 + 4;
+      }
+      if (PercentageDefensePenetration != 0F) {
+        size += 1 + 4;
+      }
+      if (FixedSpeed != 0F) {
+        size += 1 + 4;
+      }
+      if (PercentageSpeed != 0F) {
+        size += 1 + 4;
+      }
+      if (MaxHp != 0F) {
+        size += 1 + 4;
+      }
+      if (HpRegen != 0F) {
+        size += 1 + 4;
+      }
+      if (MaxStamina != 0F) {
+        size += 1 + 4;
+      }
+      if (StaminaRegen != 0F) {
+        size += 2 + 4;
+      }
+      if (Defense != 0F) {
+        size += 2 + 4;
+      }
+      if (LifeSteal != 0F) {
+        size += 2 + 4;
+      }
+      if (Omnivamp != 0F) {
+        size += 2 + 4;
+      }
+      if (HealingPower != 0F) {
+        size += 2 + 4;
+      }
+      if (SlowResistance != 0F) {
+        size += 2 + 4;
+      }
+      if (CCResistance != 0F) {
+        size += 2 + 4;
+      }
+      if (AdaptiveStat != 0F) {
+        size += 2 + 4;
+      }
+      if (Vision != 0F) {
+        size += 2 + 4;
+      }
+      if (AttackDamagePerLevel != 0F) {
+        size += 2 + 4;
+      }
+      if (SkillAmplificationPerLevel != 0F) {
+        size += 2 + 4;
+      }
+      if (MaxHpPerLevel != 0F) {
+        size += 2 + 4;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(ItemStat other) {
+      if (other == null) {
+        return;
+      }
+      if (other.AttackDamage != 0F) {
+        AttackDamage = other.AttackDamage;
+      }
+      if (other.AttackSpeed != 0F) {
+        AttackSpeed = other.AttackSpeed;
+      }
+      if (other.CriticalRatio != 0F) {
+        CriticalRatio = other.CriticalRatio;
+      }
+      if (other.CriticalDamage != 0F) {
+        CriticalDamage = other.CriticalDamage;
+      }
+      if (other.AttackRange != 0F) {
+        AttackRange = other.AttackRange;
+      }
+      if (other.FixedSkillAmplification != 0F) {
+        FixedSkillAmplification = other.FixedSkillAmplification;
+      }
+      if (other.PercentageSkillAmplification != 0F) {
+        PercentageSkillAmplification = other.PercentageSkillAmplification;
+      }
+      if (other.SkillAcceleration != 0F) {
+        SkillAcceleration = other.SkillAcceleration;
+      }
+      if (other.FixedDefensePenetration != 0F) {
+        FixedDefensePenetration = other.FixedDefensePenetration;
+      }
+      if (other.PercentageDefensePenetration != 0F) {
+        PercentageDefensePenetration = other.PercentageDefensePenetration;
+      }
+      if (other.FixedSpeed != 0F) {
+        FixedSpeed = other.FixedSpeed;
+      }
+      if (other.PercentageSpeed != 0F) {
+        PercentageSpeed = other.PercentageSpeed;
+      }
+      if (other.MaxHp != 0F) {
+        MaxHp = other.MaxHp;
+      }
+      if (other.HpRegen != 0F) {
+        HpRegen = other.HpRegen;
+      }
+      if (other.MaxStamina != 0F) {
+        MaxStamina = other.MaxStamina;
+      }
+      if (other.StaminaRegen != 0F) {
+        StaminaRegen = other.StaminaRegen;
+      }
+      if (other.Defense != 0F) {
+        Defense = other.Defense;
+      }
+      if (other.LifeSteal != 0F) {
+        LifeSteal = other.LifeSteal;
+      }
+      if (other.Omnivamp != 0F) {
+        Omnivamp = other.Omnivamp;
+      }
+      if (other.HealingPower != 0F) {
+        HealingPower = other.HealingPower;
+      }
+      if (other.SlowResistance != 0F) {
+        SlowResistance = other.SlowResistance;
+      }
+      if (other.CCResistance != 0F) {
+        CCResistance = other.CCResistance;
+      }
+      if (other.AdaptiveStat != 0F) {
+        AdaptiveStat = other.AdaptiveStat;
+      }
+      if (other.Vision != 0F) {
+        Vision = other.Vision;
+      }
+      if (other.AttackDamagePerLevel != 0F) {
+        AttackDamagePerLevel = other.AttackDamagePerLevel;
+      }
+      if (other.SkillAmplificationPerLevel != 0F) {
+        SkillAmplificationPerLevel = other.SkillAmplificationPerLevel;
+      }
+      if (other.MaxHpPerLevel != 0F) {
+        MaxHpPerLevel = other.MaxHpPerLevel;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 13: {
+            AttackDamage = input.ReadFloat();
+            break;
+          }
+          case 21: {
+            AttackSpeed = input.ReadFloat();
+            break;
+          }
+          case 29: {
+            CriticalRatio = input.ReadFloat();
+            break;
+          }
+          case 37: {
+            CriticalDamage = input.ReadFloat();
+            break;
+          }
+          case 45: {
+            AttackRange = input.ReadFloat();
+            break;
+          }
+          case 53: {
+            FixedSkillAmplification = input.ReadFloat();
+            break;
+          }
+          case 61: {
+            PercentageSkillAmplification = input.ReadFloat();
+            break;
+          }
+          case 69: {
+            SkillAcceleration = input.ReadFloat();
+            break;
+          }
+          case 77: {
+            FixedDefensePenetration = input.ReadFloat();
+            break;
+          }
+          case 85: {
+            PercentageDefensePenetration = input.ReadFloat();
+            break;
+          }
+          case 93: {
+            FixedSpeed = input.ReadFloat();
+            break;
+          }
+          case 101: {
+            PercentageSpeed = input.ReadFloat();
+            break;
+          }
+          case 109: {
+            MaxHp = input.ReadFloat();
+            break;
+          }
+          case 117: {
+            HpRegen = input.ReadFloat();
+            break;
+          }
+          case 125: {
+            MaxStamina = input.ReadFloat();
+            break;
+          }
+          case 133: {
+            StaminaRegen = input.ReadFloat();
+            break;
+          }
+          case 141: {
+            Defense = input.ReadFloat();
+            break;
+          }
+          case 149: {
+            LifeSteal = input.ReadFloat();
+            break;
+          }
+          case 157: {
+            Omnivamp = input.ReadFloat();
+            break;
+          }
+          case 165: {
+            HealingPower = input.ReadFloat();
+            break;
+          }
+          case 173: {
+            SlowResistance = input.ReadFloat();
+            break;
+          }
+          case 181: {
+            CCResistance = input.ReadFloat();
+            break;
+          }
+          case 189: {
+            AdaptiveStat = input.ReadFloat();
+            break;
+          }
+          case 197: {
+            Vision = input.ReadFloat();
+            break;
+          }
+          case 205: {
+            AttackDamagePerLevel = input.ReadFloat();
+            break;
+          }
+          case 213: {
+            SkillAmplificationPerLevel = input.ReadFloat();
+            break;
+          }
+          case 221: {
+            MaxHpPerLevel = input.ReadFloat();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
   public sealed partial class C_AttackSkillTarget : pb::IMessage<C_AttackSkillTarget> {
     private static readonly pb::MessageParser<C_AttackSkillTarget> _parser = new pb::MessageParser<C_AttackSkillTarget>(() => new C_AttackSkillTarget());
     private pb::UnknownFieldSet _unknownFields;
@@ -9860,7 +10864,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[51]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[52]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

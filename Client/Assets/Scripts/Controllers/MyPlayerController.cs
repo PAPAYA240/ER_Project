@@ -1,9 +1,11 @@
+using Data;
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
+using static UI_PlayerInterface;
 using static UI_SkillBase;
 
 public class MyPlayerController : PlayerController
@@ -12,7 +14,8 @@ public class MyPlayerController : PlayerController
     protected bool _moveKeyPressed = false;
     protected int _monsterMask;
     protected int _playerMask;
-
+    protected int _myPlayerMask;
+    const int _maxInventorySlot = 10;
     // State
     public override CreatureState State
     {
@@ -21,6 +24,9 @@ public class MyPlayerController : PlayerController
         {
             if (PosInfo.State == value)
                 return;
+
+            // TEMP
+            Debug.Log($"Change State - Cur : {PosInfo.State}, Next : {value}");
 
             // Moving -> 다른 상태 : 길찾기 초기화
             if (_agent != null && _agent.isActiveAndEnabled &&
@@ -55,7 +61,7 @@ public class MyPlayerController : PlayerController
             SendStatePacket();
         }
     }
-    protected bool _isStop = false;
+    protected bool _isStop = true;
 
     // State : Skill
     protected bool _isUseSkill = false;
@@ -81,6 +87,7 @@ public class MyPlayerController : PlayerController
     protected Coroutine _attackRoutine;
     protected float _attackRange = 3.0f; // Temp
     protected GameObject _target;
+    protected GameObject _nextTarget = null;
     protected GameObject Target
     {
         get { return _target; }
@@ -89,14 +96,16 @@ public class MyPlayerController : PlayerController
             if (value == this.gameObject)
                 return;
 
-            if (State == CreatureState.Attack && _target != value &&
-                value != null && _attackRoutine != null)
+            // Attack 중 다른 대상을 타겟팅 했을 때 : 현재 재생 중인 모션 종료 후 타겟 변경
+            if(State == CreatureState.Attack && value != null &&
+                _target != null && _target != value)
             {
-                StopCoroutine(_attackRoutine);
-                //_attackRoutine = StartCoroutine(CoAttackLoop());              
+                _nextTarget = value;
             }
-
-            _target = value;
+            else
+            {
+                _target = value;
+            }
         }
     }
     protected GameObjectType _targetType;
@@ -111,6 +120,9 @@ public class MyPlayerController : PlayerController
     //UI
     //UI_PlayerHUD _playerHUD = null;
     public UI_PlayerInterface PlayerInterface { get; protected set; }
+
+    // Inventory
+    List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
 
     // Weapon
     public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
@@ -148,14 +160,17 @@ public class MyPlayerController : PlayerController
         _cursorAttack = Managers.Resource.Load<Texture2D>("Cursor/Pointer_01");
 
         layerName = _animator.GetLayerName(0);
-        Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
+        //Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
 
         ObjectType = Define.Object.MyPlayer;
         MakeSkillDict();
         MakeCoolDownDict();
+        MakeInventory();
 
         _monsterMask = 1 << LayerMask.NameToLayer("Monster");
         _playerMask = 1 << LayerMask.NameToLayer("Fog");
+        _myPlayerMask = 1 << LayerMask.NameToLayer("MyPlayer");
+        gameObject.layer = LayerMask.NameToLayer("MyPlayer");
 
         // NavMesh Agent
         _agent = GetComponent<NavMeshAgent>();
@@ -208,10 +223,10 @@ public class MyPlayerController : PlayerController
 
     protected override void UpdateController()
     {
+        UpdateCool();
+
         if (State == CreatureState.Dead)
             return;
-
-        SkillTargetId = -1;
 
         switch (State)
         {
@@ -229,6 +244,7 @@ public class MyPlayerController : PlayerController
                 if (currentSkill != null && currentSkill.SkillData.canMoveDuringCast == true)
                 {
                     GetMouseInputDuringSkill();
+                    UpdateTransform();
                 }
                 break;
         }
@@ -311,19 +327,6 @@ public class MyPlayerController : PlayerController
         }
     }
 
-    // 마우스 바라보기
-    protected void LookAtMouse()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            Vector3 direction = (hit.point - transform.position).normalized;
-            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
-            transform.rotation = targetRotation;
-        }
-    }
-
-
     protected override void UpdateAttack()
     {
         if(Target == null || !IsAttackable(Target))
@@ -347,7 +350,7 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region State : Moving
-    protected void LookAtTarget(Vector3 targetPos, bool snapToTarget = false, float speed = 100.0f)
+    protected void LookAtTarget(Vector3 targetPos, bool snapToTarget = false, float speed = 20.0f)
     {
         // 타겟을 바라보도록 방향 조정
         // snapToTarget : Target을 바로 바라볼지
@@ -412,6 +415,12 @@ public class MyPlayerController : PlayerController
 
                 return false;
             });
+
+            if(_nextTarget != null)
+            {
+                _target = _nextTarget;
+                _nextTarget = null;
+            }
 
             if (!_isAttackLoop)
             {
@@ -482,7 +491,8 @@ public class MyPlayerController : PlayerController
             CreatureController cc = hitObject.GetComponent<CreatureController>();
             if (IsAttackable(hitObject))
             {
-                Target = gameObject = hitObject;
+                //Target = gameObject = hitObject;
+                gameObject = hitObject;
                 _targetType = ObjectManager.GetObjectTypeById(cc.ObjInfo.ObjectId);
             }
         }
@@ -498,6 +508,7 @@ public class MyPlayerController : PlayerController
 
         Vector3 pos = go.transform.position;
         Vector3 dir = (pos - transform.position).normalized;
+        dir.y = 0f;
 
         float distance = Vector3.Distance(transform.position, pos);
 
@@ -560,8 +571,14 @@ public class MyPlayerController : PlayerController
     protected void ResetTarget()
     {
         Target = null;
+        _nextTarget = null;
         _targetType = GameObjectType.None;
         _finalPos = Vector3.zero;
+    }
+
+    protected void ChangeTarget(GameObject nextTarget)
+    {
+
     }
     #endregion
 
@@ -607,7 +624,7 @@ public class MyPlayerController : PlayerController
         ResetCharacterState();
     }
 
-    public void OnRespawn(S_Respawn respawnPacket)
+    public override void OnRespawn(S_Respawn respawnPacket)
     {
         Vector3 pos = new Vector3
         {
@@ -637,6 +654,7 @@ public class MyPlayerController : PlayerController
         Hp = respawnPacket.Hp;
         Stamina = respawnPacket.Stamina;
     }
+
     #endregion
 
     #region Input
@@ -818,10 +836,15 @@ public class MyPlayerController : PlayerController
 
             if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
             {
-                _agent.SetDestination(navHit.position);
+                if(_agent.isActiveAndEnabled)
+                {
+                    _agent.SetDestination(navHit.position);
 
-                _moveKeyPressed = true;
+                    _moveKeyPressed = true;
+                }                 
             }
+
+            UpdateTransform();
         }
     }
     #endregion
@@ -880,6 +903,9 @@ public class MyPlayerController : PlayerController
 
     protected void SetSkillInput(KeyCode keyCode)
     {
+        if (State == CreatureState.Skill)
+            return;
+
         _isUseSkill = true;
         _keyCode = keyCode;
     }
@@ -900,7 +926,7 @@ public class MyPlayerController : PlayerController
         Stamina = skillPacket.CostInfo.Stamina;
 
         // 스킬 실행 UI 연동
-        PlayerInterface.UseSkill(KeyToUIEnum(key));
+        //PlayerInterface.UseSkill(KeyToUIEnum(key));
     }
 
     IEnumerator CoInputCooltime(KeyCode key, float time)
@@ -924,7 +950,6 @@ public class MyPlayerController : PlayerController
 
         _coolDownDict[key].isCoolDown = false;
         _coolDownDict[key].coolTime = 0.0f;
-        Debug.Log("쿨타임 끝");
     }
 
     protected void MakeSkillDict()
@@ -1134,6 +1159,28 @@ public class MyPlayerController : PlayerController
         SetNameTagLevel();
     }
 
+    public void UpdateCool()
+    {
+        if (null == PlayerInterface) 
+            return;
+
+        PlayerInterface.SetSkillCool(GameObjects.QSkill, _coolDownDict[KeyCode.Q].coolTime);
+        PlayerInterface.SetSkillCool(GameObjects.WSkill, _coolDownDict[KeyCode.W].coolTime);
+        PlayerInterface.SetSkillCool(GameObjects.ESkill, _coolDownDict[KeyCode.E].coolTime);
+        PlayerInterface.SetSkillCool(GameObjects.RSkill, _coolDownDict[KeyCode.R].coolTime);
+        PlayerInterface.SetSkillCool(GameObjects.TSkill, _coolDownDict[KeyCode.T].coolTime);
+        //PlayerInterface.SetSkillCool(GameObjects.DSkill, );
+        //PlayerInterface.SetSkillCool(GameObjects.FSkill, );
+    }
+
+    private void MakeInventory()
+    {
+        for (int i = 0; i < _maxInventorySlot; ++i)
+        {
+            _inventory.Add(null); //비어 있는 인벤토리를 생성
+        }
+    }
+
     #endregion
 
     #region Util
@@ -1237,13 +1284,16 @@ public class MyPlayerController : PlayerController
         else
         {
             targetId = SkillTargetId;
+            SkillTargetId = -1;
         }
 
+        Vector3 mousePos = GetTargetPos(1000);
         C_Skill skillPacket = new C_Skill()
         {
             ObjectInfo = ObjInfo,
             SkillInfo = new SkillInfo() { KeyCode = (int)key },
-            TargetId = targetId
+            TargetId = targetId,
+            MousePosX = mousePos.x, MousePosZ = mousePos.z
         };
         Managers.Network.Send(skillPacket);
         Debug.Log("스킬 패킷 보내기");
@@ -1300,6 +1350,7 @@ public class MyPlayerController : PlayerController
         bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
 
         Vector3 dir = (hit.point - transform.position).normalized;
+        dir.y = 0;
 
         if (!isMaxDistance && (hit.point - transform.position).magnitude < range)
         {
@@ -1308,5 +1359,22 @@ public class MyPlayerController : PlayerController
 
         return transform.position + dir * range;
     }
+
+    // 마우스 바라보기
+    protected void LookAtMouse()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        int layerMask = (1 << LayerMask.NameToLayer("Map")) | (1 << LayerMask.NameToLayer("Wall"));
+        if (Physics.Raycast(ray, out RaycastHit hit, 1000, layerMask))
+        {
+            Vector3 direction = (hit.point - transform.position).normalized;
+            direction.y = 0;
+            direction.Normalize();
+            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+            transform.rotation = targetRotation;
+            UpdateTransform();
+        }
+    }
+
     #endregion
 }

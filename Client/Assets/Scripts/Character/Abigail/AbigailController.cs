@@ -25,7 +25,7 @@ public class AbigailController : MyPlayerController
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
         {
             Vector3 mousePos = GetCursorPos();
-            if (Vector3.Distance(mousePos, CellPos) > _warpRange)
+            if (Vector2.Distance(new Vector2(mousePos.x, mousePos.z), new Vector2(CellPos.x, CellPos.z)) > _warpRange)
                 return;
 
             GameObject target = TryGetAttackableObject(_warpRadius);
@@ -68,7 +68,11 @@ public class AbigailController : MyPlayerController
     {
         base.OnSkillConfirmed(skillPacket);
 
-        if((KeyCode)skillPacket.SkillInfo.KeyCode == KeyCode.E)
+        if((KeyCode)skillPacket.SkillInfo.KeyCode == KeyCode.W)
+        {
+            LookAtMouse();
+        }
+        else if((KeyCode)skillPacket.SkillInfo.KeyCode == KeyCode.E)
         {
             transform.position = _warpPos;
             _agent.Warp(_warpPos);

@@ -55,6 +55,30 @@ namespace Server.Data
     }
     #endregion
 
+    #region Item
+
+    public abstract class ItemInfoBase
+    {
+        public int Id;      //식별 번호? UI에서의 숫자? 흠 이거랑 이름 둘 중 하나를 키값으로 딕셔너리를 만들까나.
+        public string Name; //이름
+        public ItemGrade Grade = ItemGrade.End;   //등급
+        public string Description; //아이템 설명
+    }
+
+    //카메라
+    public class ConsumableItemInfo : ItemInfoBase
+    {
+        public int Count = 0; //개수
+    }
+
+    public class EquipItemInfo : ItemInfoBase
+    {
+        public EquipItemType Type = EquipItemType.End; // 어느 부위 인지
+        public ItemStat ItemStat = new ItemStat();
+    }
+
+    #endregion
+
     #region Skill
 
     [Serializable]

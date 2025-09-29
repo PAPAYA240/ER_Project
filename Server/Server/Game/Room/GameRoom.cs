@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Numerics;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
@@ -89,8 +93,8 @@ namespace Server.Game
             {
                 Player player = gameObject as Player;
                 _players.Add(gameObject.Id, player);
+                player.Init();
                 player.Info.Player.Team = AssignTeam();
-                player.StartRegen();
 
                 if (!_teams.TryGetValue(player.Info.Player.Team, out var teamPlayers))
                 {
@@ -185,7 +189,7 @@ namespace Server.Game
                 myTeam.Remove(player.Id);
 
                 player.Room = null;
-                player.StopRegen();
+                player.OnDestroy();
 
                 // 본인한테 정보 전송
                 {
@@ -307,7 +311,7 @@ namespace Server.Game
             skill.CostInfo = new CostInfo
             {
                 CoolTime = player.GetCoolTime(keyCode),
-                Stamina = player.Stat.Stamina,
+                Stamina = player.Stamina,
             };
             player.Session.Send(skill);
 
@@ -317,7 +321,8 @@ namespace Server.Game
             if (skills.TryGetValue((KeyCode)skillPacket.SkillInfo.KeyCode, out skillData) == false)
                 return;
 
-            _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode);
+            _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode, 
+                new Vector2(skillPacket.MousePosX, skillPacket.MousePosZ));
         }
 
         public void HandleAnim(Player player, C_Anim animPacket)
@@ -333,20 +338,17 @@ namespace Server.Game
 
         public void HandleAttackSkillTarget(Player player, C_AttackSkillTarget attackSkillTarget)
         {
-            if (player == null)
+            if (player == null || player.SkillTarget == null)
                 return;
 
-            float damage = player.GetSkillDamage(player.UsedTargetingSkill);
-            GameObject skillTarget = player.SkillTarget;
-            skillTarget.Info.StatInfo.Hp -= damage;
-            skillTarget.Info.StatInfo.Hp = Math.Max(0, skillTarget.Info.StatInfo.Hp);
+            float damage = 0f;
 
-            S_ChangeHp changeHpPkt = new S_ChangeHp()
-            {
-                ObjectId = skillTarget.Id,
-                Hp = skillTarget.Info.StatInfo.Hp
-            };
-            Broadcast(changeHpPkt);
+            if(player.SkillTarget.ObjectType == GameObjectType.Player)
+                damage = _collisionManager.CalcDamage(player, player.SkillTarget as Player, player.UsedTargetingSkill);
+            else
+                damage = _collisionManager.CalcDamage(player, player.SkillTarget.Stat, player.UsedTargetingSkill);   
+
+            player.SkillTarget.OnDamaged(player, damage);
         }
 
         public Player FindPlayer(Func<GameObject, bool> condition)
@@ -472,14 +474,13 @@ namespace Server.Game
                     dummyPlayer.Info.PosInfo.PosZ = rand.Next(-4, 4);
                     dummyPlayer.Info.Player = new PlayerInfo();
                     dummyPlayer.Info.Player.CharType = charType;
-                    dummyPlayer.Info.CharType = charType;
-                    dummyPlayer.MakeDict();
+                    dummyPlayer.Init();
 
                     StatInfo stat = null;
                     DataManager.StatDict.TryGetValue(charType, out stat);
                     dummyPlayer.Stat.MergeFrom(stat);
-                    dummyPlayer.Hp = dummyPlayer.Stat.MaxHp;
-                    dummyPlayer.Stamina = dummyPlayer.Stat.MaxStamina;
+                    dummyPlayer.Hp = dummyPlayer.MaxHp;
+                    dummyPlayer.Stamina = dummyPlayer.MaxStamina;
                     dummyPlayer.Session = clientSession;
                     _players.Add(dummyPlayer.Id, dummyPlayer);
                     dummyPlayer.Info.Player.Team = AssignTeam();

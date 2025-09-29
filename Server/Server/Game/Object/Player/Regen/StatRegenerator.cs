@@ -1,6 +1,7 @@
 ﻿using Server.Game;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using static Lucene.Net.Util.AttributeSource;
@@ -10,6 +11,8 @@ class StatRegenerator
     private readonly Player _owner;
     private Timer _timer;
     private readonly int _interval = 1000;  // 1초마다 실행
+
+    private readonly List<IRegenEffect> _effects = new List<IRegenEffect>();
 
     public StatRegenerator(Player owner) {  _owner = owner; }
 
@@ -24,13 +27,23 @@ class StatRegenerator
         _timer = null;
     }
 
+    public void AddEffect(IRegenEffect effect)
+    {
+        _effects.Add(effect);
+    }
+
     private void OnTick()
     {
         if (!_owner.CanRegenerate())
             return;
 
-        _owner.Hp = Math.Min(_owner.Stat.MaxHp, _owner.Hp + _owner.Stat.HpRegen);
-        _owner.Stamina = Math.Min(_owner.Stat.MaxStamina, _owner.Stamina + _owner.Stat.MaxStamina);
+        foreach(var effect in _effects.ToList())
+        {
+            effect.OnTick(_owner);
+
+            if(!effect.IsActive)
+                _effects.Remove(effect);
+        }
 
         _owner._isUpdatedStat = true;
     }

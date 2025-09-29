@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
 using Server.Data;
+using ServerCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,6 +16,58 @@ namespace Server.Game
 
         protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
         Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
+        Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
+        ItemStat _totalItemStat = new ItemStat();
+        List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
+
+        #region Stat Property
+        public override float Attack 
+        {
+            get { return base.Attack + _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level; }
+            set { base.Attack = value; }
+        }
+
+        public override float Defense 
+        {
+            get { return base.Defense + _totalItemStat.Defense; }
+            set { base.Defense = value; }
+        }
+
+        public override float MaxHp 
+        {
+            get { return base.MaxHp + _totalItemStat.MaxHp + _totalItemStat.MaxHpPerLevel * Stat.Level; }
+            set { base.MaxHp = value; }
+        }
+
+        public override float Hp 
+        {
+            get { return base.Hp; }
+            set { Stat.Hp = Math.Clamp(value, 0, MaxHp); }
+        }
+
+        public override float MaxStamina 
+        { 
+            get { return base.MaxStamina + _totalItemStat.MaxStamina; }
+            set { base.MaxStamina = value; }
+        }
+
+        public override float Stamina
+        {
+            get { return base.Stamina; }
+            set { Stat.Stamina = Math.Clamp(value, 0, MaxStamina); } 
+        }
+
+        public float SkillAmplification
+        {
+            get { return (_totalItemStat.FixedSkillAmplification + _totalItemStat.SkillAmplificationPerLevel * Stat.Level) 
+                    * _totalItemStat.PercentageSkillAmplification; }
+        }
+
+        public override float FixedDefensePenetration { get { return _totalItemStat.FixedDefensePenetration; } }
+        public override float PercentageDefensePenetration { get { return _totalItemStat.PercentageDefensePenetration; } }
+
+        #endregion
+
         class CoolTime
         {
             public bool isCoolDown;     // 쿨타임이 돌고 있는지 (false : 사용 가능)
@@ -25,53 +78,77 @@ namespace Server.Game
         public bool _isUpdatedStat = false;
         private StatRegenerator _statRegenerator;
 
+        //Inventory
+        static int MaxInventorySlot = 10;
+
         public Player()
         {
             ObjectType = GameObjectType.Player;
+
             _statRegenerator = new StatRegenerator(this);
+            _statRegenerator.AddEffect(new BaseRegenEffect());
+            _statRegenerator.AddEffect(new RestRegenEffect());
         }
 
         public GameObject SkillTarget { get; set; }
         public KeyCode UsedTargetingSkill { get; set; }
 
         #region Init
+        public void Init()
+        {
+            MakeDict();
+            StartRegen();
+            InitAboutItem();
+        }
+
+        public void OnDestroy()
+        {
+            StopRegen();
+        }
+
         public void MakeDict()
         {
             MakeSkillDict();
             MakeCoolDownDict();
+        }
+
+        public void InitAboutItem()
+        {
+            MakeItemSlot();
+            MakeInventory();
         }
         #endregion
 
         #region Update
         public override void Update()
         {
-            UpdateController();
+            //base.Update();
             CheckUpdateStat();
         }
 
-        protected virtual void UpdateController()
-        {
-            switch (State)
-            {
-                case CreatureState.Idle:
-                    // 예시로 
-                    if(Target != null)
-                        Get_CalculatePath(new Vector3(Target.PosInfo.PosX, Target.PosInfo.PosY, Target.PosInfo.PosZ));
-                    break;
-                case CreatureState.Moving:
-                    Get_MoveAlongPath();
-                    break;
-                case CreatureState.Attack:
-                    break;
-                case CreatureState.Skill:
-                    break;
-                case CreatureState.Dead:
-                    break;
-                case CreatureState.Rest:
-                    UpdateRest();
-                    break;
-            }
-        }
+        //protected virtual void UpdateController()
+        //{
+        //    switch (State)
+        //    {
+        //        case CreatureState.Idle:
+        //            // 사용 예시
+        //            if(Target != null)
+        //                Get_CalculatePath(new Vector3(Target.PosInfo.PosX, Target.PosInfo.PosY, Target.PosInfo.PosZ));
+        //            break;
+        //        case CreatureState.Moving:
+        //            Get_MoveAlongPath();
+        //            break;
+        //        case CreatureState.Attack:
+        //            break;
+        //        case CreatureState.Skill:
+        //            break;
+        //        case CreatureState.Dead:
+        //            break;
+        //        case CreatureState.Rest:
+        //            UpdateRest();
+        //            break;
+        //    }
+        //}
         #endregion
         #region State : Dead
         public override void OnDead(GameObject attacker)
@@ -84,40 +161,39 @@ namespace Server.Game
             S_Die diePacket = new S_Die();
             diePacket.ObjectId = Id;
             diePacket.AttackerId = attacker.Id;
-            diePacket.RespawnTime = DataManager.RespawnDict[Stat.Level];
+            if(Stat.Level == 1)
+            {
+                _ = CoRespawnTime(diePacket.RespawnTime, false);
+                diePacket.RespawnTime = 0;
+            }
+            else
+            {
+                _ = CoRespawnTime(diePacket.RespawnTime);
+                diePacket.RespawnTime = DataManager.RespawnDict[Stat.Level];
+            }
+
             Room.Broadcast(diePacket);
-
-            _ = CoRespawnTime(diePacket.RespawnTime);
-        }
-        #endregion
-
-        #region State : Rest
-        protected void UpdateRest()
-        {
-
         }
         #endregion
 
         #region Stat
-        public void StartRegen()
-        {
-            _statRegenerator.Start();
-        }
-
-        public void StopRegen()
-        {
-            _statRegenerator.Stop();
-        }
+        public void StartRegen() => _statRegenerator.Start();
+        public void StopRegen() => _statRegenerator.Stop();
 
         public bool CanRegenerate()
         {
             if(State == CreatureState.Dead)
                 return false;
 
-            if(Hp == Stat.MaxHp && Stamina == Stat.MaxStamina)
+            if(Hp == MaxHp && Stamina == MaxStamina)
                 return false;
 
             return true;
+        }
+
+        public void UseHealPack(float amount, float durationSeconds)
+        {
+            _statRegenerator.AddEffect(new HealPackEffect(amount, durationSeconds));
         }
 
         private void CheckUpdateStat()
@@ -127,8 +203,9 @@ namespace Server.Game
                 S_ChangeStat statPacket = new S_ChangeStat();
                 statPacket.ObjectId = Id;
                 statPacket.Hp = Hp;
+                statPacket.Barrier = Barrier;
                 statPacket.Stamina = Stamina;
-                Session.Send(statPacket);
+                Room.Push(Room.Broadcast, statPacket);
 
                 _isUpdatedStat = false;
             }
@@ -215,6 +292,8 @@ namespace Server.Game
 
                 _skills.Add(skillData.Key, skill);
             }
+
+            _skills[KeyCode.T].CurLevel = 1;
         }
 
         private void MakeCoolDownDict()
@@ -224,6 +303,8 @@ namespace Server.Game
                 _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
             }
         }
+
+
 
         //TODO D랑 F는 어떻게 하지?
         public bool SkillLevelUp(KeyCode key)
@@ -303,6 +384,11 @@ namespace Server.Game
                     break;
             }
 
+            if (Info.Player.CharType == CharacterType.Abigail && key == KeyCode.Q && result)
+            {
+                _skills[KeyCode.F1].CurLevel++;
+            }
+
             return result;
         }
 
@@ -311,10 +397,33 @@ namespace Server.Game
             return _skills[keyCode].GetSkillDamage();
         }
 
+        public Skill GetSkill(KeyCode keyCode)
+        {
+            return _skills[keyCode];
+        }
+
+        #endregion
+
+        #region Item
+        private void MakeItemSlot()
+        {
+            for (int i = 0; i < (int)EquipItemType.End; ++i)
+            {
+                _equipItemSlot.Add((EquipItemType)i, new EquipItemInfo());
+            }
+        }
+
+        private void MakeInventory()
+        {
+            for(int i = 0; i < MaxInventorySlot; ++i)
+            {
+                _inventory.Add(null); //비어 있는 인벤토리를 생성
+            }
+        }
         #endregion
 
         #region Respawn
-        private async Task CoRespawnTime(float respawnTime)
+        private async Task CoRespawnTime(float respawnTime, bool respawnAtZero = true)
         {
             var sw = Stopwatch.StartNew();
 
@@ -328,22 +437,30 @@ namespace Server.Game
 
             S_Respawn respawnPacket = new S_Respawn();
             respawnPacket.ObjectId = Id;
-            respawnPacket.PosInfo = Info.PosInfo = new PositionInfo
+            if(true == respawnAtZero)
             {
-                PosX = 0,
-                PosY = 0,
-                PosZ = 0
-            };
-            respawnPacket.RotInfo = Info.RotInfo = new RotationInfo
+                respawnPacket.PosInfo = Info.PosInfo = new PositionInfo
+                {
+                    PosX = 0,
+                    PosY = 0,
+                    PosZ = 0
+                };
+                respawnPacket.RotInfo = Info.RotInfo = new RotationInfo
+                {
+                    Qx = 0,
+                    Qy = 0,
+                    Qz = 0,
+                    Qw = 1
+                };
+            }
+            else
             {
-                Qx = 0,
-                Qy = 0,
-                Qz = 0,
-                Qw = 1
-            };
+                respawnPacket.PosInfo = Info.PosInfo;
+                respawnPacket.RotInfo = Info.RotInfo;
+            }
 
-            respawnPacket.Hp = Stat.Hp = Stat.MaxHp;
-            respawnPacket.Stamina = Stat.Stamina = Stat.MaxStamina;
+            respawnPacket.Hp = Hp = MaxHp;
+            respawnPacket.Stamina = Stamina = MaxStamina;
             Session.Send(respawnPacket);
 
             State = CreatureState.Idle;
@@ -360,7 +477,7 @@ namespace Server.Game
         }
         #endregion
 
-        #region Stat
+        #region Level
         public int CheckLevelUp()
         {
             int levelUp = 0;
@@ -369,7 +486,7 @@ namespace Server.Game
             {
                 Stat.Exp -= DataManager.ExpDict[Stat.Level];
                 Stat.Level++;
-                StatInfo statInfo = DataManager.StatGrowthDict[Info.CharType];
+                StatInfo statInfo = DataManager.StatGrowthDict[Info.Player.CharType];
                 Stat.AddStat(statInfo);
                 levelUp++;
             }

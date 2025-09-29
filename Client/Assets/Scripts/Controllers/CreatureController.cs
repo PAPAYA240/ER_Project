@@ -28,6 +28,12 @@ public class CreatureController : BaseController
         set { base.MaxHp = value; UpdateMaxHp(); }
     }
 
+    public override float Barrier
+    {
+        get { return Stat.Barrier; }
+        set { base.Barrier = value; UpdateBarrier(); }
+    }
+
     public override float Stamina
     {
         get { return Stat.Stamina; }
@@ -46,6 +52,11 @@ public class CreatureController : BaseController
     }
 
     virtual protected void UpdateMaxHp()
+    {
+
+    }
+
+    virtual protected void UpdateBarrier()
     {
 
     }
@@ -108,7 +119,7 @@ public class CreatureController : BaseController
             return false;
 
         // 같은 팀일 때
-        if (cc.ObjectType == Define.Object.OtherPlayer && cc.ObjInfo.Team == ObjInfo.Team)
+        if (cc.ObjectType == Define.Object.OtherPlayer && cc.ObjInfo.Player.Team == ObjInfo.Player.Team)
             return false;
 
         // 대상이 죽었을 때 || 무적 상태일 때 || 시야 밖일 때(부시) 등등

@@ -26,4 +26,24 @@ namespace Google.Protobuf.Protocol
             return new Quaternion(v.Qx, v.Qy, v.Qz, v.Qw);
         }
     }
+
+    public sealed partial class PositionInfo
+    {
+        public PositionInfo(Vector3 vec) : this()
+        {
+            posX_ = vec.x;
+            posY_ = vec.y;
+            posZ_ = vec.z;
+        }
+
+        public Vector3 ToVector()
+        {
+            return new Vector3(posX_, posY_, posZ_);
+        }
+
+        public static implicit operator PositionInfo(Vector3 vec)
+        {
+            return new PositionInfo(vec);
+        }
+    }
 }
