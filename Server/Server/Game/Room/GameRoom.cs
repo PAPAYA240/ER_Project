@@ -5,6 +5,7 @@ using System.IO;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Numerics;
+using System.Threading;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
@@ -28,6 +29,19 @@ namespace Server.Game
         bool _teamToggle = false;
         bool _dummyAdded = false;
 
+        #region Phase, Time
+
+        public float NextPhaseTime { get; private set; }
+        int _curPhase;
+
+        public int CurPhase 
+        { 
+            get { return _curPhase; }
+            set { _curPhase = value; }
+        }
+
+        #endregion
+
         public bool TryGetMonster(int objectId, out Monster monster)
         {
             return _monsters.TryGetValue(objectId, out monster);
@@ -46,6 +60,8 @@ namespace Server.Game
             _envManager.Init(this);
 
             _collisionManager.Init();
+
+
         }
 
         public override void Update()

@@ -1,0 +1,144 @@
+{
+  "items": [
+    {
+      "$type": "Data.ConsumableItemInfo, Assembly-CSharp",
+      "Id": 502212,
+      "Name": "망원 카메라",
+      "Grade": "Uncommon",
+      "Description": "주변 반경 13m의 시야를 확인할 수 있는 망원 카메라.",
+      "Count": 2
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 110405,
+      "Name": "단영촌천투",
+      "Grade": "Epic",
+      "Description": "진정한 파이터는 도구따윈 쓰지 않지!",
+      "Type": "Weapon",
+      "ItemStat": {
+        "AttackDamage": 64,
+        "Defense": 6,
+        "StaminaRegen": 0.5,
+        "AttackSpeed": 0.3
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 116405,
+      "Name": "일렉트론 블라스터",
+      "Grade": "Epic",
+      "Description": "우주 건너편에서 사용되는 광선총으로\n광선검보다는 못하지만 강력한 위력을 발휘한다.",
+      "Type": "Weapon",
+      "ItemStat": {
+        "AttackDamage": 75,
+        "AttackSpeed": 0.4
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 201407,
+      "Name": "기사단장의 투구",
+      "Grade": "Epic",
+      "Description": "전쟁이 시작되고, 고결한 기사는 자신이 지켜야 할 것을 위해 선봉에 섰다. 그의 머리 위로 승리의 축복이 내려앉는다.",
+      "Type": "Head",
+      "ItemStat": {
+        "Defense": 12,
+        "MaxHp": 100,
+        "MaxStamina": 200,
+        "SkillAcceleration": 15
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 201414,
+      "Name": "다이아뎀",
+      "Grade": "Epic",
+      "Description": "호화로운 장식이 달린 왕관.\n고대 오리엔트 제국의 왕관으로 알려져 있다.",
+      "Type": "Head",
+      "ItemStat": {
+        "AttackDamage": 25,
+        "MaxHp": 100,
+        "SkillAcceleration": 15,
+        "FixedDefensePenetration": 7
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 202408,
+      "Name": "성기사의 갑옷",
+      "Grade": "Epic",
+      "Description": "이걸 착용하면 언데드에 특화된 방어력을 얻을 수 있다.\n물론 이 세계에는 언데드 따위는 없다.",
+      "Type": "Body",
+      "ItemStat": {
+        "Defense": 35,
+        "HpRegen": 1,
+        "MaxHpPerLevel": 18
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 202418,
+      "Name": "턱시도",
+      "Grade": "Epic",
+      "Description": "서양식 정장 중에서도 고급 예복이다.\n소유하기 보다는 대체로 대여하는 편이다.",
+      "Type": "Body",
+      "ItemStat": {
+        "AttackDamagePerLevel": 3,
+        "Defense": 12,
+        "AttackSpeed": 0.15,
+        "CriticalRatio": 0.24
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 203405,
+      "Name": "바이탈 센서",
+      "Grade": "Epic",
+      "Description": "전방에 생체신호 감지!",
+      "Type": "Arm",
+      "ItemStat": {
+        "AttackSpeed": 0.33,
+        "CriticalRatio": 0.26
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 203412,
+      "Name": "플라즈마 아크",
+      "Grade": "Epic",
+      "Description": "최고의 공격은 방어라는 말이 있죠.",
+      "Type": "Arm",
+      "ItemStat": {
+        "AttackDamage": 22,
+        "Defense": 10,
+        "AttackSpeed": 0.25
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 204412,
+      "Name": "타키온 브레이스",
+      "Grade": "Epic",
+      "Description": "기동성과 보호 능력을 모두 갖춘 미래형 동력 외골격.\n조금 익숙해지면 승차감(?)이 탁월하다고 한다.",
+      "Type": "Leg",
+      "ItemStat": {
+        "Defense": 8,
+        "FixedSpeed": 0.22,
+        "SkillAcceleration": 10
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 204418,
+      "Name": "글레디에이터",
+      "Grade": "Epic",
+      "Description": "황제 폐하 만세, 곧 죽을 자들이 인사 올립니다.﻿",
+      "Type": "Leg",
+      "ItemStat": {
+        "AttackSpeed": 0.14,
+        "FixedSpeed": 0.22,
+        "CriticalRatio": 0.25
+      }
+    }
+  ]
+}

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -36,6 +37,8 @@ namespace Server.Data
         public static Dictionary<int, int> PhaseDict { get; private set; } = new Dictionary<int, int>();
         public static Dictionary<int, int> RespawnDict { get; private set; } = new Dictionary<int, int>();
 
+        public static Dictionary<int, ItemInfoBase> ItemDict { get; private set; } = new Dictionary<int, ItemInfoBase>();
+
         public static void LoadData()
         {
             // For PlayerData
@@ -54,6 +57,10 @@ namespace Server.Data
             // For EnvironmentData
             EnvironmentObjDict = LoadJson<Data.EnvObjectData, EnvType, EnvInfo>("Env/EnvData", "monster").MakeDict();
 
+            // For Item
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+            ItemDict = LoadJson<Data.ItemDict, int, ItemInfoBase>("ItemData", "player", settings).MakeDict();
+
             // For System
             PhaseDict = LoadJson<Data.PhaseData, int, int>("PhaseData", "player").MakeDict();
             RespawnDict = LoadJson<Data.RespawnData, int, int>("RespawnData", "player").MakeDict();
@@ -63,6 +70,13 @@ namespace Server.Data
         {
             string text = File.ReadAllText($"{ConfigManager.Config.dataPaths[key]}/{path}.json");
             return Newtonsoft.Json.JsonConvert.DeserializeObject<Loader>(text);
+        }
+
+        // 역직렬화 세팅 설정
+        static Loader LoadJson<Loader, Key, Value>(string path, string key, JsonSerializerSettings settings) where Loader : ILoader<Key, Value>
+        {
+            string text = File.ReadAllText($"{ConfigManager.Config.dataPaths[key]}/{path}.json");
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Loader>(text, settings);
         }
     }
 }

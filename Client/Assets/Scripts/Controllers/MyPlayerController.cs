@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem.EnhancedTouch;
 using static UI_PlayerInterface;
 using static UI_SkillBase;
 
@@ -1177,6 +1178,50 @@ public class MyPlayerController : PlayerController
         }
     }
 
+    #endregion
+
+    #region Inventory
+
+    public void ChangeInventory(S_ChangeInventory packet)
+    {
+        foreach (var change in packet.Changes)
+        {
+            //빈칸 처리
+            if(change.ItemId == 0)
+            {
+                //TODO UI 작업
+                _inventory[change.InventoryIndex] = null;
+            }
+            else
+            {
+                if (DataManager.ItemDict.TryGetValue(change.ItemId, out ItemInfoBase item))
+                {
+                    if(change.Count == 0)
+                    {
+                        // 장비 아이템
+                        _inventory[change.InventoryIndex] = item;
+                    }
+                    else
+                    {
+                        // 소모 아이템
+                        ConsumableItemInfo consumableItem = item as ConsumableItemInfo;
+                        if (consumableItem == null)
+                        {
+                            Debug.Log($"Error. [{GetType()}] in ChangeInventory, consumableItem == null");
+                            continue;
+                        }
+                        consumableItem.Count = change.Count;
+
+                        _inventory[change.InventoryIndex] = consumableItem;
+                    }
+                }
+                else
+                {
+                    //유효하지 않은 아이템 아이디.
+                }
+            }
+        }
+    }
     #endregion
 
     #region Util

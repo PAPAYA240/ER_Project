@@ -300,6 +300,20 @@ public class PlayerController : CreatureController
 
     #endregion
 
+    #region Item
+    public void UpdateItemStat(ItemStat stat)
+    {
+        ItemStat = stat;
+        //TODO UI 업데이트
+    }
+
+    public void EquipItem(int itemId)
+    {
+        //TODO 아이템 도감에서 아이템을 가져와서 처리(+UI도)
+    }
+
+    #endregion
+
     #region Effect
     public virtual void PlayEffectFromServer(EffectInfo fxInfo)
     {

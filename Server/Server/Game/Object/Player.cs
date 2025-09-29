@@ -408,6 +408,7 @@ namespace Server.Game
         #endregion
 
         #region Item
+
         private void MakeItemSlot()
         {
             for (int i = 0; i < (int)EquipItemType.End; ++i)
@@ -423,6 +424,220 @@ namespace Server.Game
                 _inventory.Add(null); //비어 있는 인벤토리를 생성
             }
         }
+
+        // 아이템 획득 함수
+        public bool AcquireItem(ItemInfoBase item)
+        {
+            // _inventory 리스트에서 null 값이 있는 첫 번째 인덱스를 반환해줌.
+            int firstEmptySlotIndex = _inventory.IndexOf(null);
+
+            switch (item)
+            {
+                case ConsumableItemInfo consumableItem:
+                    {
+                        S_ChangeInventory packet = new S_ChangeInventory();
+
+                        GameRoom room = Room;
+                        ClientSession session = Session;
+
+                        // 이미 있는 소모품이라면
+                        for (int i = 0; i < MaxInventorySlot; ++i)
+                        {
+                            if (_inventory[i] != null && _inventory[i] is ConsumableItemInfo itemInfo && _inventory[i].Id == consumableItem.Id)
+                            {
+                                itemInfo.Count += consumableItem.Count;
+
+                                packet.Changes.Add(new ChangeInventoryInfo { ItemId = itemInfo.Id, InventoryIndex = i, Count = itemInfo.Count });
+
+                                if (room != null && session != null)
+                                    room.Push(session.Send, packet);
+
+                                return true;
+                            }
+                        }
+
+                        // 새로운 소모품인데 인벤토리가 꽉 참.
+                        if (firstEmptySlotIndex == -1)
+                            return false;
+
+                        _inventory[firstEmptySlotIndex] = consumableItem;
+
+                        packet.Changes.Add(new ChangeInventoryInfo { ItemId = consumableItem.Id, InventoryIndex = firstEmptySlotIndex, Count = consumableItem.Count });
+
+                        if (room != null && session != null)
+                            room.Push(session.Send, packet);
+
+                        return true; 
+                    }
+                case EquipItemInfo equipItem:
+                    {
+                        // 인벤토리가 꽉 참.
+                        if (firstEmptySlotIndex == -1)
+                            return false;
+
+                        _inventory[firstEmptySlotIndex] = equipItem;
+
+                        // 획득한 장비의 칸이 비어 있으면 바로 장착 또는 얻은 장비의 등급이 높으면 자동 교체
+                        if (_equipItemSlot[equipItem.Type] == null || _equipItemSlot[equipItem.Type].Grade < equipItem.Grade)
+                            EquipItem(equipItem, firstEmptySlotIndex);
+                        else
+                        {
+                            S_ChangeInventory packet = new S_ChangeInventory();
+                            packet.Changes.Add(new ChangeInventoryInfo { ItemId = equipItem.Id, InventoryIndex = firstEmptySlotIndex });
+
+                            GameRoom room = Room;
+                            ClientSession session = Session;
+
+                            if (room != null && session != null)
+                                room.Push(session.Send, packet);
+                        }
+
+                        return true;
+                    }
+                default:
+                    break;
+            }
+
+            return false;
+        }
+
+        // 아이템 사용 함수(장착, 설치), 몇 번째 인벤에 있는 아이템을 사용하겠다.
+        public void UseItem(int index)
+        {
+            if (null == _inventory[index])
+                return;
+
+            switch (_inventory[index])
+            {
+                case ConsumableItemInfo consumableItem:
+                    {
+                        consumableItem.Use();
+                        consumableItem.Count--;
+                        if (consumableItem.Count == 0)
+                            _inventory[index] = null;
+                    }
+                    break;
+                case EquipItemInfo equipItem:
+                    EquipItem(equipItem, index);
+                    break;
+            }
+        }
+
+        // 장비 아이템 장착 함수
+        private void EquipItem(EquipItemInfo item, int inventoryIndex)
+        {
+            S_ChangeInventory changeInventoryPacket = new S_ChangeInventory();
+            S_ChangeEquipItem changeEquipItemPacket = new S_ChangeEquipItem();
+
+            if (null == _equipItemSlot[item.Type])
+            {
+                _equipItemSlot[item.Type] = item;
+                _inventory[inventoryIndex] = null;
+
+                changeInventoryPacket.Changes.Add(new ChangeInventoryInfo { ItemId = 0, InventoryIndex = inventoryIndex });
+            }
+            else
+            {
+                EquipItemInfo temp = _equipItemSlot[item.Type];
+                _equipItemSlot[item.Type] = item;
+                _inventory[inventoryIndex] = temp;
+
+                changeInventoryPacket.Changes.Add(new ChangeInventoryInfo { ItemId = _inventory[inventoryIndex].Id, InventoryIndex = inventoryIndex });
+            }
+
+            changeEquipItemPacket.ObjectId = Id;
+            changeEquipItemPacket.ItemId = item.Id;
+
+            GameRoom room = Room;
+            ClientSession session = Session;
+
+            if (room != null)
+            {
+                room.Push(session.Send, changeInventoryPacket);
+                room.Push(room.Broadcast, changeEquipItemPacket);
+            }
+
+            UpdateItemStat();
+        }
+
+        // 인벤토리 스왑(아이템 위치 바꾸기) 
+        public void SwapInventory(int firstIndex, int secondIndex)
+        {
+            // 1. 유효성 검사 (인덱스 범위 및 동일 인덱스 스왑 방지)
+            if (firstIndex < 0 || firstIndex >= _inventory.Count ||
+                secondIndex < 0 || secondIndex >= _inventory.Count ||
+                firstIndex == secondIndex)
+                return; 
+
+            ItemInfoBase temp = _inventory[firstIndex];
+            _inventory[firstIndex] = _inventory[secondIndex];
+            _inventory[secondIndex] = temp;
+
+            S_ChangeInventory packet = new S_ChangeInventory();
+
+            if(_inventory[firstIndex] != null)
+            {
+                if (_inventory[firstIndex] is ConsumableItemInfo firstItem)
+                {
+                    packet.Changes.Add(new ChangeInventoryInfo { ItemId = _inventory[firstIndex].Id, InventoryIndex = firstIndex, Count = firstItem.Count });
+                }
+                else
+                {
+                    packet.Changes.Add(new ChangeInventoryInfo { ItemId = _inventory[firstIndex].Id, InventoryIndex = firstIndex });
+                }
+            }
+            else //빈칸 처리
+            {
+                packet.Changes.Add(new ChangeInventoryInfo { ItemId = 0, InventoryIndex = firstIndex });
+            }
+
+            if( _inventory[secondIndex] != null )
+            {
+                if (_inventory[secondIndex] is ConsumableItemInfo secondItem)
+                {
+                    packet.Changes.Add(new ChangeInventoryInfo { ItemId = _inventory[secondIndex].Id, InventoryIndex = secondIndex, Count = secondItem.Count });
+                }
+                else
+                {
+                    packet.Changes.Add(new ChangeInventoryInfo { ItemId = _inventory[secondIndex].Id, InventoryIndex = secondIndex });
+                }
+            }
+            else //빈칸 처리
+            {
+                packet.Changes.Add(new ChangeInventoryInfo { ItemId = 0, InventoryIndex = secondIndex });
+
+            }
+
+            GameRoom room = Room;
+            ClientSession session = Session;
+
+            if( room != null && session != null)
+                room.Push(session.Send, packet);
+        }
+
+        // 업데이트 아이템 스탯
+        private void UpdateItemStat()
+        {
+            _totalItemStat = new ItemStat();
+
+            foreach(var itemKvp in _equipItemSlot)
+            {
+                if (itemKvp.Value == null)
+                    continue;
+
+                _totalItemStat += itemKvp.Value.ItemStat;
+            }
+
+            S_ChangeItemStat packet = new S_ChangeItemStat();
+            packet.ObjectId = Id;
+            packet.ItemStat = _totalItemStat;
+
+            GameRoom room = Room;
+
+            if (room != null)
+                room.Push(room.Broadcast, packet);
+        }
+
         #endregion
 
         #region Respawn

@@ -57,15 +57,30 @@ namespace Server.Data
 
     #region Item
 
+    [Serializable]
+    public class ItemDict : ILoader<int, ItemInfoBase>
+    {
+        public List<ItemInfoBase> items = new List<ItemInfoBase>();
+        public Dictionary<int, ItemInfoBase> MakeDict()
+        {
+            Dictionary<int, ItemInfoBase> dict = new Dictionary<int, ItemInfoBase>();
+            foreach (ItemInfoBase item in items)
+                dict.Add(item.Id, item);
+            return dict;
+        }
+    }
+
     public abstract class ItemInfoBase
     {
         public int Id;      //식별 번호? UI에서의 숫자? 흠 이거랑 이름 둘 중 하나를 키값으로 딕셔너리를 만들까나.
         public string Name; //이름
         public ItemGrade Grade = ItemGrade.End;   //등급
         public string Description; //아이템 설명
+
+        public virtual void Use() { }
     }
 
-    //카메라
+    //카메라 등의 아이템
     public class ConsumableItemInfo : ItemInfoBase
     {
         public int Count = 0; //개수

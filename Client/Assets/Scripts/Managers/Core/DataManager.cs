@@ -1,5 +1,6 @@
 ﻿using Data;
 using Google.Protobuf.Protocol;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,6 +28,8 @@ public class DataManager
     public static Dictionary<CharacterType, Dictionary<KeyCode, List<EffectData>>> PlayerFxDict { get; private set; } 
         = new Dictionary<CharacterType, Dictionary<KeyCode, List<EffectData>>>();
 
+    public static Dictionary<int, ItemInfoBase> ItemDict { get; private set; } = new Dictionary<int, ItemInfoBase>();
+
     public void Init()
     {
         //GameData = LoadJson<Data.GameData, string, Data.CharacterData>("newSkillData").MakeDict();
@@ -40,12 +43,24 @@ public class DataManager
         // For Effect
         MonsterSkillDict = LoadJson<Data.MonsterEffectDict, MonsterSkill, List<EffectData>>("MonsterData/EffectData/MonsterEffectData").MakeDict();
         PlayerFxDict = LoadJson<Data.PlayerEffectDict, CharacterType, Dictionary<KeyCode, List<EffectData>>>("PlayerEffectData").MakeDict();
+
+        // For Item
+        JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+        ItemDict = LoadJson<Data.ItemDict, int, ItemInfoBase>("ItemData", "player", settings).MakeDict();
+
     }
 
     Loader LoadJson<Loader, Key, Value>(string path) where Loader : ILoader<Key, Value>
     {
         string text = File.ReadAllText($"Assets/Resources/Data/{path}.json");
         return Newtonsoft.Json.JsonConvert.DeserializeObject<Loader>(text);
+    }
+
+    // 역직렬화 세팅 설정
+    static Loader LoadJson<Loader, Key, Value>(string path, string key, JsonSerializerSettings settings) where Loader : ILoader<Key, Value>
+    {
+        string text = File.ReadAllText($"Assets/Resources/Data/{path}.json");
+        return Newtonsoft.Json.JsonConvert.DeserializeObject<Loader>(text, settings);
     }
 }
 

@@ -25,6 +25,20 @@ namespace Data
     #endregion
 
     #region Item
+
+    [Serializable]
+    public class ItemDict : ILoader<int, ItemInfoBase>
+    {
+        public List<ItemInfoBase> items = new List<ItemInfoBase>();
+        public Dictionary<int, ItemInfoBase> MakeDict()
+        {
+            Dictionary<int, ItemInfoBase> dict = new Dictionary<int, ItemInfoBase>();
+            foreach (ItemInfoBase item in items)
+                dict.Add(item.Id, item);
+            return dict;
+        }
+    }
+
     public abstract class ItemInfoBase
     {
         public int Id;      //식별 번호? UI에서의 숫자?

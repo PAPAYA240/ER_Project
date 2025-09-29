@@ -42,6 +42,9 @@ enum MsgId {
   C_PLAYER_STATE = 34;
   S_CHANGE_STAT = 35;
   C_ATTACK_SKILL_TARGET = 36;
+  S_CHANGE_ITEM_STAT = 37;
+  S_CHANGE_EQUIP_ITEM = 38;
+  S_CHANGE_INVENTORY = 39;
 }
 
 enum CreatureState{
@@ -382,6 +385,20 @@ message S_ChangeStat{
 	float barrier = 4;
 }
 
+message S_ChangeItemStat{
+	int32 objectId = 1;
+	ItemStat itemStat = 2;
+}
+
+message S_ChangeEquipItem{
+	int32 objectId = 1;
+	int32 itemId = 2;
+}
+
+message S_ChangeInventory{
+	repeated ChangeInventoryInfo changes = 1;
+}
+
 message PositionInfo{
 	CreatureState state = 1;
 	float posX = 2;
@@ -528,6 +545,12 @@ message ItemStat{
     float AttackDamagePerLevel = 25;          //레벨 당 공격력
     float SkillAmplificationPerLevel = 26;    //레벨 당 스킬 증폭
     float MaxHpPerLevel = 27;                 //레벨 당 최대 체력
+}
+
+message ChangeInventoryInfo{
+	int32 itemId = 1;
+	int32 inventoryIndex = 2;
+	int32 count = 3;
 }
 
 message C_AttackSkillTarget{
