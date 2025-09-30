@@ -91,9 +91,12 @@ public class TheodoreController : MyPlayerController
     {
         while (Input.GetKey(KeyCode.Q))
         {
-            Debug.Log($"{ _elapsedTime}");
             _elapsedTime += Time.deltaTime;
             _ratioSkillDuration = _elapsedTime / _effectDuration;
+
+            if (_elapsedTime >= _effectDuration)
+                _ratioSkillDuration = 1.0f; 
+
             yield return null;
         }
 

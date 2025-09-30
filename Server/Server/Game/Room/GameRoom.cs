@@ -297,7 +297,7 @@ namespace Server.Game
                 player.Session.Send(skill);
                 return; 
             }
-            // 스킬 사용이 가능하면 자원 소모
+            // 스킬 사용이 가능하면 자원 소모f
             else
             {
                 player.CommitSkillUsage(keyCode);
