@@ -82,6 +82,12 @@ namespace Server.Game
             set { Stat.MoveSpeed = value; }
         }
 
+        public virtual float HpRegen
+        {
+            get { return Stat.HpRegen; }
+            set { Stat.HpRegen = Math.Max(value, 0); }
+        }
+
         public virtual float Hp
         {
             get { return Stat.Hp; }
@@ -98,6 +104,12 @@ namespace Server.Game
         { 
             get { return Stat.Barrier; }
             set { Stat.Barrier = Math.Max(value, 0); }
+        }
+
+        public virtual float StaminaRegen
+        {
+            get { return Stat.StaminaRegen; }
+            set { Stat.StaminaRegen = Math.Max(value, 0); }
         }
 
         public virtual float Stamina
