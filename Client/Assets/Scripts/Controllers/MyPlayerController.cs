@@ -17,28 +17,25 @@ public class MyPlayerController : PlayerController
 
     private void Awake()
     {
-        _input = gameObject.GetOrAddComponent<PlayerInputController>();
-        _input.SetPlayer(this);
-        
+        _input = gameObject.GetOrAddComponent<PlayerInputController>();      
         _view = gameObject.GetOrAddComponent<PlayerViewController>();
     }
 
     protected override void Init()
     {
         base.Init();
-
         Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
-        // NavMesh Agent
-        _agent = GetComponent<NavMeshAgent>();
-        _input.SetAgent(_agent);
     }
 
-    PositionInfo _targetPos;
     private void Update()
     {
+        // 1) 이동 입력 → 로컬에서 즉시 이동 적용 → 2) 서버에 C_Move 의도 통보
         var moveCmd = _input.GetMoveCommand();
-        if(moveCmd != null)
-            Managers.Network.Send(moveCmd);
+        if (moveCmd != null)
+        {
+            _view.ApplyLocalMove(moveCmd, _attackRange); // 부드러운 입력감
+            Managers.Network.Send(moveCmd);              // 서버 검증/브로드캐스트
+        }
 
         var skillCmd = _input.GetSkillCommand();
         if (skillCmd != null)
@@ -52,7 +49,7 @@ public class MyPlayerController : PlayerController
         //if (moveCmd != null)
         //    Managers.Network.Send(restCmd);
 
-        //CheckUpdatedFlag();
+        CheckUpdatedFlag();
     }
 
     // 서버 응답 전달
@@ -73,14 +70,14 @@ public class MyPlayerController : PlayerController
 
     protected override void CheckUpdatedFlag()
     {
-        //if (_updated)
-        //{
-        //    C_Move movePacket = new C_Move();
-        //    movePacket.PosInfo = PosInfo;
-        //    movePacket.RotInfo = RotInfo;
-        //    Managers.Network.Send(movePacket);
-        //    _updated = false;
-        //}
+        if (_updated)
+        {
+            C_MoveSync syncPacket = new C_MoveSync();
+            syncPacket.PosInfo = PosInfo;
+            syncPacket.RotInfo = RotInfo;
+            Managers.Network.Send(syncPacket);
+            _updated = false;
+        }
     }
 
     public void SendPacket(IMessage packet)

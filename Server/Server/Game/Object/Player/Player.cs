@@ -35,12 +35,6 @@ namespace Server.Game
             get { return _curState; }
             set { _curState = value; }
         }
-        private PositionInfo _clientPosInfo = new PositionInfo();
-        public PositionInfo ClientPos
-        {
-            get { return _clientPosInfo; }
-            set { _clientPosInfo = value; }
-        }
 
         // StatRegenerator
         public bool _isUpdatedStat = false;

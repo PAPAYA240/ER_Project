@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Google.Protobuf;
+using Google.Protobuf.Protocol;
+using Server.Data;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Numerics;
-using Google.Protobuf;
-using Google.Protobuf.Protocol;
-using Server.Data;
+using static Lucene.Net.Util.AttributeSource;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -247,8 +248,8 @@ namespace Server.Game
         {
             if (player == null)
                 return;
-
-            player.ClientPos = movePacket.PosInfo;
+            
+            player.PosInfo.MergeFrom(movePacket.PosInfo);
         }
 
         public void HandleVF(Player player, C_Fx skillPacket)

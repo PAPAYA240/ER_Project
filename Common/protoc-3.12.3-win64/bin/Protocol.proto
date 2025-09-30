@@ -384,8 +384,9 @@ message S_ChangeStat{
 }
 
 message C_MoveSync{
-	int32 objectIde = 1;
+	int32 objectId = 1;
 	PositionInfo posInfo = 2;
+	RotationInfo rotInfo = 3;
 }
 
 message PositionInfo{

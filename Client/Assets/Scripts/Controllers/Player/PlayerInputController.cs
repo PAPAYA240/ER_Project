@@ -12,17 +12,16 @@ using static UnityEngine.GraphicsBuffer;
 
 public class PlayerInputController : MonoBehaviour
 {
-    private MyPlayerController _player;     // TEMP
-    private NavMeshAgent _agent;            // TEMP
+    private MyPlayerController _player;    
+    private NavMeshAgent _agent;         
 
-    public void SetPlayer(MyPlayerController player)
-    {
-        _player = player;
-    }
+    [SerializeField] float _attackRange = 3.0f;  
+    [SerializeField] float _stopBuffer = 0.1f;  
 
-    public void SetAgent(NavMeshAgent agent)
+    private void Awake()
     {
-        _agent = agent;
+        _player = GetComponentInChildren<MyPlayerController>();
+        _agent = GetComponentInChildren<NavMeshAgent>();
     }
 
     public C_Move GetMoveCommand()
@@ -32,33 +31,29 @@ public class PlayerInputController : MonoBehaviour
             GameObject target = GetAttackableUnderCursor();
             if (target == null)
             {
-                int mapMask = 1 << LayerMask.NameToLayer("Map");
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out RaycastHit rayHit, 1000.0f, mapMask))
+                if (TryGetGroundDestination(out Vector3 final))
                 {
-                    Vector3 hitPos = rayHit.point;
-
-                    if (NavMesh.SamplePosition(hitPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
+                    return new C_Move
                     {
-                        return new C_Move
-                        {
-                            IsTargetOn = false,
-                            TargetPosition = navHit.position,
-                        };
-                    }
+                        IsTargetOn = false,
+                        TargetPosition = final 
+                    };
                 }
             }
             else
             {
-                return new C_Move
+                if (TryGetTargetDestination(target, out Vector3 final, out int targetId))
                 {
-                    IsTargetOn = true,
-                    TargetId = target.GetComponentInChildren<CreatureController>().Id,
-                    TargetPosition = target.transform.position,
-                };
-            }                                 
+                    return new C_Move
+                    {
+                        IsTargetOn = true,
+                        TargetId = targetId,
+                        TargetPosition = final 
+                    };
+                }
+            }
         }
-        return null;        
+        return null;
     }
 
     private static readonly KeyCode[] _skillKeys =
@@ -105,6 +100,7 @@ public class PlayerInputController : MonoBehaviour
     //    return null;
     //}
 
+    #region Util
     private Vector3 GetMouseWorldPosition()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -134,6 +130,75 @@ public class PlayerInputController : MonoBehaviour
         return gameObject;
     }
 
+    // 지형 클릭 시
+    private bool TryGetGroundDestination(out Vector3 final)
+    {
+        final = default;
+
+        int mapMask = 1 << LayerMask.NameToLayer("Map");
+        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (!Physics.Raycast(ray, out var hit, 1000f, mapMask))
+            return false;
+
+        if (!NavMesh.SamplePosition(hit.point, out var navHit, 2f, NavMesh.AllAreas))
+            return false;
+
+        Vector3 desired = navHit.position;
+        final = CalculateFinalDestination(_player.transform.position, desired);
+        return true;
+    }
+
+    // 타겟 클릭 시
+    private bool TryGetTargetDestination(GameObject targetGo, out Vector3 final, out int targetId)
+    {
+        final = default;
+        targetId = 0;
+
+        var cc = targetGo.GetComponentInChildren<CreatureController>();
+        if (cc == null)
+            return false;
+        targetId = cc.Id;
+
+        Vector3 targetPos = targetGo.transform.position;
+        Vector3 desiredStop = GetAttackStopPosition(_player.transform.position, targetPos);
+        final = CalculateFinalDestination(_player.transform.position, desiredStop);
+        return true;
+    }
+
+    // 사거리-타겟 지점 계산
+    private Vector3 GetAttackStopPosition(Vector3 from, Vector3 target)
+    {
+        Vector3 dir = target - from;
+        dir.y = 0f;
+        float dist = dir.magnitude;
+        if (dist <= Mathf.Epsilon)
+            return target;
+        dir /= dist;
+
+        float stop = Mathf.Max(0.05f, _attackRange - _stopBuffer); 
+        return target - dir * stop;
+    }
+
+    // 경로가 부분 경로면 마지막 코너를 반환
+    private Vector3 CalculateFinalDestination(Vector3 from, Vector3 desired)
+    {
+        if (!NavMesh.SamplePosition(from, out var fromHit, 2f, NavMesh.AllAreas))
+            fromHit.position = from;
+        if (!NavMesh.SamplePosition(desired, out var toHit, 2f, NavMesh.AllAreas))
+            toHit.position = desired;
+
+        Vector3 start = fromHit.position;
+        Vector3 end = toHit.position;
+
+        var path = new NavMeshPath();
+        if (!NavMesh.CalculatePath(start, end, NavMesh.AllAreas, path) || path.corners.Length == 0)
+        {
+            return end;
+        }
+
+        return path.corners[path.corners.Length - 1];
+    }
+
     private bool IsAttackable(GameObject targetObject)
     {
         if (targetObject == null)
@@ -157,5 +222,6 @@ public class PlayerInputController : MonoBehaviour
 
         return true;
     }
+    #endregion
 }
 

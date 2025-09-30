@@ -83,9 +83,9 @@ public class Player_AttackState : IPlayerState
         }
 
         // 거리 판정(서버는 클라 보간 위치도 가지고 있음: Player_MovingState가 ClientPos 사용)
-        Vector3 clientPos = new Vector3(player.ClientPos.PosX, player.ClientPos.PosY, player.ClientPos.PosZ);
+        Vector3 pos = new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ);
         Vector3 targetPos = new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ);
-        bool inRange = Vector3.Distance(clientPos, targetPos) <= _attackRange;
+        bool inRange = Vector3.Distance(pos, targetPos) <= _attackRange;
 
         var now = DateTime.UtcNow;
 
