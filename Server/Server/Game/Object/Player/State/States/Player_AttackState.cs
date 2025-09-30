@@ -2,28 +2,32 @@
 using Server.Game;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 public class Player_AttackState : IPlayerState
 {
-    // === 튜닝 포인트(프로젝트 수치/테이블로 대체 가능) ===
-    public const float DefaultAttackRange = 3.0f;   // 클라 _attackRange 기본값 매칭
-    private const float WindupSeconds = 0.20f;  // 선딜
-    private const float BackswingSeconds = 0.30f;  // 후딜
-    private const float ComboResetSeconds = 2.00f;  // 클라 CoComboResetTimer와 동일
-    private const float ReattackGap = 0.10f;  // 연속 스윙 사이 최소 간격
+    // ===== 튜닝 파라미터(테이블화 가능) =====
+    public const float DefaultAttackRange = 3.0f; // MyPlayerController 기본값 매칭
+    private const float WindupSeconds = 0.20f; // 선딜(히트 타이밍까지)
+    private const float BackswingSeconds = 0.30f; // 후딜
+    private const float ReattackGapSeconds = 0.10f; // 연속 스윙 사이 최소 텀
+    private const float ComboResetSeconds = 2.00f; // 콤보 리셋 타이머
 
-    private const int AnimAttackA = 1001; // 실제 프로젝트 애니 ID/이름으로 교체
-    private const int AnimAttackB = 1002;
+    // 애니메이션(프로젝트 애니 자원명/ID에 맞춰 교체)
+    private const string AnimAttackA = "ATTACK_1";
+    private const string AnimAttackB = "ATTACK_2";
+    private const string AnimRun = "RUN";
 
+    // ===== 상태 필드 =====
     private readonly float _attackRange;
-    private int _currentTargetId;
-    private int? _pendingTargetId;
+    private int _targetId;
+    private int? _pendingTargetId;           // 스윙 중 들어온 타겟 변경은 스윙 종료 후 반영
 
     private bool _swingActive;
     private bool _damageApplied;
-    private bool _comboToggle;           // A/B 번갈이
-    private int _attackIndex;           // 0/1 (콤보 리셋 시 0으로)
+    private int _attackIndex;               // 0/1 → A/B 번갈이
+    private bool _runAnimSent;               // 추격 시작 시 1회만 전송
 
     private DateTime _swingStartUtc;
     private DateTime _hitMomentUtc;
@@ -31,37 +35,40 @@ public class Player_AttackState : IPlayerState
     private DateTime _nextAttackReadyUtc;
     private DateTime _comboResetDeadlineUtc;
 
-    public Player_AttackState(int targetId = -99, float attackRange = DefaultAttackRange)
+    public Player_AttackState(int targetId, float attackRange = DefaultAttackRange)
     {
-        _currentTargetId = targetId;
-        _attackRange = Math.Max(0.1f, attackRange);
+        _targetId = targetId;
+        _attackRange = MathF.Max(0.1f, attackRange);
     }
 
     public void Enter(Player player)
     {
-        player.State = CreatureState.Attack;
+        player.State = CreatureState.Attack;         // 상태 노출(애니는 명시적으로 보냄)
+        //player.SendAnimPacket(AnimAttackA, 0.1f);   // TEMP : attack index?
+
         _swingActive = false;
         _damageApplied = false;
-        _nextAttackReadyUtc = DateTime.UtcNow;       // 즉시 가능
-        // 콤보 유지: 이전 인스턴스에서 이어가고 싶다면 p에 저장/복원 로직 추가 가능
+        _runAnimSent = false;
+
+        var now = DateTime.UtcNow;
+        _nextAttackReadyUtc = now;              // 즉시 공격 가능
+        _comboResetDeadlineUtc = default;
     }
 
     public void Execute(Player player)
     {
         if (player == null || player.Room == null || !player.CanAttack())
-        {
-            player?.ChangeState(new Player_IdleState());
             return;
-        }
 
-        GameObject target = player.FindTarget(_currentTargetId);
+        GameObject target = player.FindTarget(_targetId);
         if(target == null || target.State == CreatureState.Dead)
         {
-            if (_swingActive == false && _pendingTargetId.HasValue)
+            // 스윙 중이 아니고 pending 타겟이 있으면 교체 후 재시도
+            if (!_swingActive && _pendingTargetId.HasValue)
             {
-                _currentTargetId = _pendingTargetId.Value;
+                _targetId = _pendingTargetId.Value;
                 _pendingTargetId = null;
-                target = player.FindTarget(_currentTargetId);
+                target = player.FindTarget(_targetId);
                 if (target == null || target.State == CreatureState.Dead)
                 {
                     player.ChangeState(new Player_IdleState());
@@ -75,11 +82,14 @@ public class Player_AttackState : IPlayerState
             }
         }
 
-        float dist = player.PosInfo.Distance(target.PosInfo);
-        bool inRange = dist <= _attackRange;
+        // 거리 판정(서버는 클라 보간 위치도 가지고 있음: Player_MovingState가 ClientPos 사용)
+        Vector3 clientPos = new Vector3(player.ClientPos.PosX, player.ClientPos.PosY, player.ClientPos.PosZ);
+        Vector3 targetPos = new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ);
+        bool inRange = Vector3.Distance(clientPos, targetPos) <= _attackRange;
+
         var now = DateTime.UtcNow;
 
-        // === 스윙 진행 중 ===
+        // ===== 스윙 진행 중 =====
         if (_swingActive)
         {
             if (!_damageApplied && now >= _hitMomentUtc)
@@ -90,27 +100,109 @@ public class Player_AttackState : IPlayerState
 
             if (now >= _swingEndUtc)
             {
-                // 스윙 종료
                 _swingActive = false;
                 _damageApplied = false;
-                _nextAttackReadyUtc = now.AddSeconds(ReattackGap);
+                _nextAttackReadyUtc = now.AddSeconds(ReattackGapSeconds);
                 _comboResetDeadlineUtc = now.AddSeconds(ComboResetSeconds);
 
-                // 스윙 끝났으니 pending 타겟 교체
+                // 스윙 종료 후에만 타겟 변경 반영
                 if (_pendingTargetId.HasValue)
                 {
-                    _currentTargetId = _pendingTargetId.Value;
+                    _targetId = _pendingTargetId.Value;
                     _pendingTargetId = null;
                 }
             }
-
             return; // 스윙 중에는 추가 개시 없음
+        }
+
+        // ===== 스윙 중이 아님 =====
+
+        // 콤보 리셋(클라 CoComboResetTimer 이식)
+        if (_comboResetDeadlineUtc != default && now >= _comboResetDeadlineUtc)
+        {
+            _attackIndex = 0; // 다음 스윙은 첫타
+            _comboResetDeadlineUtc = default;
+        }
+
+        // 사거리 밖 → 서버가 직접 MovingState로 넘겨 '타겟 추격'(A* 경로는 기존 파이프라인 사용)
+        if (!inRange)
+        {
+            // 추격 시작 시 1회만 러닝 애니 보내기(과도 송출 방지)
+            if (!_runAnimSent)
+            {
+                player.SendAnimPacket(AnimRun, 0.1f);
+                _runAnimSent = true;
+            }
+
+            // AttackState에서 직접 이동 로직을 새로 짜지 않고,
+            // 기존 이동 상태(서버 A* 경로/브로드캐스트)를 그대로 재사용
+            var move = new C_Move
+            {
+                IsTargetOn = true,
+                TargetId = _targetId,
+                TargetPosition = new PositionInfo
+                {
+                    PosX = targetPos.X,
+                    PosY = targetPos.Y,
+                    PosZ = targetPos.Z
+                }
+            };
+            player.ChangeState(new Player_MovingState(move));
+            return;
+        }
+
+        // 사거리 내 + 다음 타 가능 → 스윙 개시
+        if (now >= _nextAttackReadyUtc)
+        {
+            StartSwing(player, now);
+            _runAnimSent = false; // 다음에 다시 추격 시작하면 러닝 애니 재송출 허용
         }
     }
 
     public void Exit(Player player)
     {
-
+        _swingActive = false;
+        _pendingTargetId = null;
+        _runAnimSent = false;
     }
+
+    // 외부에서 타겟 변경을 요청할 때 호출(스윙 진행 중이면 종료 후에 반영)
+    public void RequestTargetChange(Player p, int newTargetId)
+    {
+        if (_swingActive)
+            _pendingTargetId = newTargetId;
+        else
+            _targetId = newTargetId;
+    }
+
+    // ===== 내부 유틸 =====
+    private void StartSwing(Player p, DateTime now)
+    {
+        _swingActive = true;
+        _damageApplied = false;
+
+        _swingStartUtc = now;
+        _hitMomentUtc = now.AddSeconds(WindupSeconds);
+        _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds);
+
+        // A/B 번갈이
+        string animName = (_attackIndex == 0) ? AnimAttackA : AnimAttackB;
+        _attackIndex = 1 - _attackIndex;
+
+        // 명시적 공격 애니(상태 State와 분리)
+        p.SendAnimPacket(animName, 0.05f);
+
+        // 필요 시 바라보기 보정(마우스/타겟 방향)도 여기서 처리 가능
+    }
+
+    //private void ApplyHit(Player p, GameObject target)
+    //{
+    //    if (target == null || target.State == CreatureState.Dead)
+    //        return;
+
+    //    // TODO: 프로젝트 데미지 계산 체계로 연결(예: CollisionManager/스탯/크리티컬 등)
+    //    // 예시: 임시 고정 피해 10
+    //    target.OnDamaged(p, 10f);
+    //}
 }
 

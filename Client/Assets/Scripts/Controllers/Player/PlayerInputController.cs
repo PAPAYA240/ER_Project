@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Assertions.Must;
 using static UnityEditor.PlayerSettings;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerInputController : MonoBehaviour
 {
@@ -28,16 +29,34 @@ public class PlayerInputController : MonoBehaviour
     {
         if (Input.GetMouseButton(1))
         {
-            Vector3 dest = GetMouseWorldPosition();
+            GameObject target = GetAttackableUnderCursor();
+            if (target == null)
+            {
+                int mapMask = 1 << LayerMask.NameToLayer("Map");
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit rayHit, 1000.0f, mapMask))
+                {
+                    Vector3 hitPos = rayHit.point;
 
-            if (NavMesh.SamplePosition(dest, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
+                    if (NavMesh.SamplePosition(hitPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
+                    {
+                        return new C_Move
+                        {
+                            IsTargetOn = false,
+                            TargetPosition = navHit.position,
+                        };
+                    }
+                }
+            }
+            else
             {
                 return new C_Move
                 {
-                    IsTargetOn = false,
-                    TargetPosition = navHit.position,
+                    IsTargetOn = true,
+                    TargetId = target.GetComponentInChildren<CreatureController>().Id,
+                    TargetPosition = target.transform.position,
                 };
-            }                           
+            }                                 
         }
         return null;        
     }
@@ -92,6 +111,51 @@ public class PlayerInputController : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit))
             return hit.point;
         return Vector3.zero;
+    }
+
+    private GameObject GetAttackableUnderCursor(float radius = 0.1f)
+    {
+        GameObject gameObject = null;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        int monsterMask = 1 << LayerMask.NameToLayer("Monster");
+        int playerMask = 1 << LayerMask.NameToLayer("Fog");
+        if (Physics.SphereCast(ray, radius, out RaycastHit sphereHit, 1000.0f, monsterMask | playerMask))
+        {
+            GameObject hitObject = sphereHit.collider.gameObject;
+            CreatureController cc = hitObject.GetComponent<CreatureController>();
+            if (IsAttackable(hitObject))    // TEMP : _player.IsAttackable
+            {
+                gameObject = hitObject;
+            }
+        }
+
+        return gameObject;
+    }
+
+    private bool IsAttackable(GameObject targetObject)
+    {
+        if (targetObject == null)
+            return false;
+
+        CreatureController cc = targetObject.GetComponent<CreatureController>();
+        if (cc == null)
+            return false;
+
+        // 나 자신일 때
+        if (cc.Id == _player.Id)
+            return false;
+
+        // 같은 팀일 때
+        if (cc.ObjectType == Define.Object.OtherPlayer && cc.ObjInfo.Player.Team == _player.ObjInfo.Player.Team)
+            return false;
+
+        // 대상이 죽었을 때 || 무적 상태일 때 || 시야 밖일 때(부시) 등등
+        if (cc.State == CreatureState.Dead)
+            return false;
+
+        return true;
     }
 }
 

@@ -93,8 +93,8 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
             // 사거리 안에 들어가면 Attack으로 전환
             float attackRange = 3.0f;   // TODO: 무기/스킬별 실제 사거리로 교체
             if (Vector3.Distance(clientPos, _targetPos) <= attackRange)
-            {
-                player.ChangeState(new Player_AttackState());
+            { 
+                player.ChangeState(new Player_AttackState(_targetId, attackRange));
                 return;
             }
         }

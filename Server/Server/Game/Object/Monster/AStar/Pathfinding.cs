@@ -190,7 +190,7 @@ namespace Server.Game
                 if (currentNode.Equals(targetNode))
                 {
                     List<Vector3> rawPath = SmoothPath(RetracePath(startNode, currentNode), start, end);
-                    float epsilon = 5.0f; // Agent Radius 0.5에 비해 적절한 값으로 테스트 시작
+                    float epsilon = 20.0f; // Agent Radius 0.5에 비해 적절한 값으로 테스트 시작
                     List<Vector3> finalPath = PathSimplifier.DouglasPeuckerSimplify(rawPath, epsilon);
                     // 부드러운 이동
                     return finalPath;

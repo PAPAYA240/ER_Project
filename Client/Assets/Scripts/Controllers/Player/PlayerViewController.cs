@@ -42,11 +42,7 @@ public class PlayerViewController : MonoBehaviour
             _agent.SetDestination(navHit.position);
             //_player.transform.position = navHit.position;
             _player.UpdateTransform();
-        }
 
-        float stopRange = 0.1f;
-        if (Vector3.Distance(targetPos, _player.transform.position) < stopRange)
-        {
             C_MoveSync syncPacket = new C_MoveSync()
             {
                 PosInfo = _player.PosInfo,
