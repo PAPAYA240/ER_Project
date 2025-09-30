@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Google.Protobuf.Protocol
 {
@@ -62,5 +63,14 @@ namespace Google.Protobuf.Protocol
         public Vector3 Right() => this * new Vector3(1, 0, 0);
         public Vector3 Back() => -Forward();
         public Vector3 Left() => -Right();
+    }
+
+    public sealed partial class SkillHitbox
+    {
+        public void SetDefaultsIfEmpty()
+        {
+            if (Fps == 0)
+                Fps = 30;
+        }
     }
 }

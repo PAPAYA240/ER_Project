@@ -205,11 +205,13 @@ public class PlayerController : CreatureController
 
     public void CreateSkillMesh(KeyCode keyCode)
     {
-        SkillHitbox skillHitbox = DataManager.SkillHitboxDict[ObjInfo.Player.CharType][keyCode];
+        SkillHitbox hitbox = DataManager.SkillHitboxDict[ObjInfo.Player.CharType][keyCode];
+        if (hitbox.EndFrame <= 0)
+            return;
         GameObject go = Managers.Resource.Instantiate("Debug/SkillMesh", gameObject.transform);
         SkillMesh sm = go.GetComponent<SkillMesh>();
         if (sm == null) return;
-        sm.Init(skillHitbox, gameObject.transform, ObjInfo.Player.Team);
+        sm.Init(hitbox, gameObject.transform, ObjInfo.Player.Team);     
     }
 
     #endregion

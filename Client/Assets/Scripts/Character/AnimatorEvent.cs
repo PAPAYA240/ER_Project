@@ -32,14 +32,6 @@ public class AnimatorEvent : MonoBehaviour
         _controller.OnAttackTiming();
     }
 
-    public void OnSkillMeshTiming(KeyCode key)
-    {
-        if (_controller == null)
-            return;
-
-        _controller.CreateSkillMesh(key);
-    }
-
     //public void OnAttackEnd()
     //{
     //    if (_controller == null)

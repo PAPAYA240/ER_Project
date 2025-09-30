@@ -44,8 +44,6 @@ namespace Server.Game
 
             // Spawn Env
             _envManager.Init(this);
-
-            _collisionManager.Init();
         }
 
         public override void Update()
@@ -76,9 +74,11 @@ namespace Server.Game
 
             Flush();
 
-            _collisionManager.Update();
+            _collisionManager.CurTick = Environment.TickCount;
+            _collisionManager.Flush();
             _collisionManager.CheckAllCollisions(_teams, _monsters, _projectiles);
-
+            _collisionManager.Update();
+            
             BroadcastVisibleObjs();
             CheckLastPing();
         }
@@ -313,7 +313,7 @@ namespace Server.Game
                 CoolTime = player.GetCoolTime(keyCode),
                 Stamina = player.Stat.Stamina,
             };
-            player.Session.Send(skill);
+            Broadcast(skill);
 
             SkillData skillData = null;
             Dictionary<KeyCode, SkillData> skills = DataManager.SkillDict[info.Player.CharType];

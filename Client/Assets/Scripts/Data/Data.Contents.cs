@@ -143,6 +143,7 @@ namespace Data
                 {
                     KeyCode keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), skills.Key);
                     dict.Add(keyCode, skills.Value);
+                    skills.Value.SetDefaultsIfEmpty();
                 }
                 nestedDict.Add(chartype, dict);
             }
