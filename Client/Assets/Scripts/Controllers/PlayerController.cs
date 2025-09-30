@@ -139,7 +139,7 @@ public class PlayerController : CreatureController
             //StartCoroutine(CoStartSkill());
             Debug.Log("스킬 코루틴 시작");
 
-            CreateSkillMesh(keyCode);
+            CreateSkillMesh(keyCode, skillPacket.ChargeRatio);
         }
     }
 
@@ -219,7 +219,7 @@ public class PlayerController : CreatureController
 
     #region SkillMesh
 
-    public void CreateSkillMesh(KeyCode keyCode)
+    public void CreateSkillMesh(KeyCode keyCode, float chargeRatio)
     {
         SkillHitbox hitbox = DataManager.SkillHitboxDict[ObjInfo.Player.CharType][keyCode];
         if (hitbox.EndFrame <= 0)
@@ -227,7 +227,9 @@ public class PlayerController : CreatureController
         GameObject go = Managers.Resource.Instantiate("Debug/SkillMesh", gameObject.transform);
         SkillMesh sm = go.GetComponent<SkillMesh>();
         if (sm == null) return;
-        sm.Init(hitbox, gameObject.transform, ObjInfo.Player.Team);     
+        if (false == hitbox.Charge)
+            chargeRatio = 1;
+        sm.Init(hitbox, gameObject.transform, ObjInfo.Player.Team, chargeRatio);     
     }
 
     #endregion

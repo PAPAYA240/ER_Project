@@ -203,7 +203,7 @@ namespace Server.Game
             }
         }
 
-        void HandleCollision<T>(Hitbox hitbox, IDictionary<int, T> targets, List<T> hitTargets, Dictionary<int, float> damageDict) where T : GameObject, new()
+        void HandleCollision<T>(Hitbox hitbox, IDictionary<int, T> targets, List<T> hitTargets, Dictionary<int, Dictionary<int, float>> damageDict) where T : GameObject, new()
         {
             foreach (var targetKvp in targets)
             {
@@ -216,7 +216,7 @@ namespace Server.Game
             }
         }
 
-        void HandleDamage<T>(Hitbox hitbox, List<T> hitTargets, Dictionary<int, float> damageDict) where T : GameObject, new()
+        void HandleDamage<T>(Hitbox hitbox, List<T> hitTargets, Dictionary<int, Dictionary<int, float>> damageDict) where T : GameObject, new()
         {
             if (false == hitbox.Data.IsOneTimeUse) // 단일대상 히트박스가 아닌 경우
             {
@@ -321,24 +321,35 @@ namespace Server.Game
             return false;
         }
          
-        void ApplyDamage(Hitbox hitbox, GameObject target, Dictionary<int, float> damageDict)
+        void ApplyDamage(Hitbox hitbox, GameObject target, Dictionary<int, Dictionary<int, float>> damageDict)
         {
             float dmg = CalcDamage(hitbox.Player, target.Stat, hitbox.KeyCode);
-            if(target is Player)
+
+            if (target is Player)
                 Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Player.Id}, Target:{target.Info.Player.CharType}_{target.Id}, Damage:{dmg}");
-            else if(target is Monster)
+            else if (target is Monster)
                 Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Player.Id}, Target:{target.Info.Monster.MonsterType}_{target.Id}, Damage:{dmg}");
             else
                 Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Player.Id}, Target:Env_{target.Id}, Damage:{dmg}");
 
             if (damageDict.ContainsKey(target.Id))
-                damageDict[target.Id] += dmg;
+            {
+                if (damageDict[target.Id].ContainsKey(hitbox.Player.Id))
+                {
+                    damageDict[target.Id][hitbox.Player.Id] += dmg;
+                }
+                else
+                    damageDict[target.Id][hitbox.Player.Id] = dmg;
+            }
             else
-                damageDict[target.Id] = dmg;
+            {
+                damageDict[target.Id] = new Dictionary<int, float>();
+                damageDict[target.Id][hitbox.Player.Id] = dmg;
+            }
             hitbox.HitObjs.TryAdd(target.Id, 0);
         }
 
-        float CalcDamage(Player attacker, StatInfo target, KeyCode key)
+        public float CalcDamage(Player attacker, Player target, KeyCode keyCode)
         {
             // 플레이어가 플레이어 때릴 때
             StatInfo info = target.Stat.Clone();
