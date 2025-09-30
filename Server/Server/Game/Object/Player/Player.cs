@@ -86,10 +86,7 @@ namespace Server.Game
         {
             StopRegen();
         }
-        protected override void IdleState()
-        {
-            _stateMachine.ChangeState(new Player_IdleState(), this);
-        }
+
         #region State
         public void ChangeState(IPlayerState newState)
         {

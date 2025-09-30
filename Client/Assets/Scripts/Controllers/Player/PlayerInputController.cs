@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Assertions.Must;
-using static UnityEditor.PlayerSettings;
 using static UnityEngine.GraphicsBuffer;
 
 public class PlayerInputController : MonoBehaviour

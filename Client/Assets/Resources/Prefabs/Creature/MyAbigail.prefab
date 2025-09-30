@@ -1163,7 +1163,9 @@ GameObject:
   - component: {fileID: 1452643310727855392}
   - component: {fileID: 8691479134577812688}
   - component: {fileID: -6654736425494255908}
-  - component: {fileID: 6511396969008993207}
+  - component: {fileID: 7452682666481714043}
+  - component: {fileID: -1648578487641322686}
+  - component: {fileID: -7829966264731262584}
   m_Layer: 0
   m_Name: MyAbigail
   m_TagString: Untagged
@@ -1232,7 +1234,7 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &6511396969008993207
+--- !u!114 &7452682666481714043
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1241,9 +1243,38 @@ MonoBehaviour:
   m_GameObject: {fileID: 1872682378519393342}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3561299f3c6bd55429a8ba0a807b44b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 5d07a4ac14489814e9692da7473da8c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-1648578487641322686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1872682378519393342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b45822c208a4ffe40909f65084d07e82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _attackRange: 3
+  _stopBuffer: 0.1
+--- !u!114 &-7829966264731262584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1872682378519393342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59c136465ba5ff64a92847f1c690590d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _syncInterval: 0.05
+  _minMoveDelta: 0.03
+  _minAngleDelta: 1
 --- !u!1 &1936378632354409582
 GameObject:
   m_ObjectHideFlags: 0
@@ -10215,7 +10246,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38bbf0c8ec18e0747b035ba9e225aad8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _controller: {fileID: 6511396969008993207}
+  _controller: {fileID: 0}
 --- !u!1 &7539182574120620767
 GameObject:
   m_ObjectHideFlags: 0
