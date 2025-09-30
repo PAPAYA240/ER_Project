@@ -128,6 +128,7 @@ class PacketHandler
         if (cc != null)
         {
             cc.Hp = changePacket.Hp;
+            cc.Barrier = changePacket.Barrier;
         }
     }
 
@@ -341,6 +342,48 @@ class PacketHandler
             return;
 
         pc.Hp = statPacket.Hp;
+        pc.Barrier = statPacket.Barrier;
         pc.Stamina = statPacket.Stamina;
+    }
+
+    public static void S_ChangeItemStatHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeItemStat changeItemStatPacket = packet as S_ChangeItemStat;
+
+        GameObject go = Managers.Object.FindById(changeItemStatPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.UpdateItemStat(changeItemStatPacket.ItemStat);
+    }
+
+    public static void S_ChangeEquipItemHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeEquipItem changeEquipPacket = packet as S_ChangeEquipItem;
+
+        GameObject go = Managers.Object.FindById(changeEquipPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.EquipItem(changeEquipPacket.ItemId);
+    }
+
+    public static void S_ChangeInventoryHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeInventory changeInventoryPacket = packet as S_ChangeInventory;
+
+        MyPlayerController mpc = Managers.Object.MyPlayer;
+        if (mpc == null) 
+            return;
+
+        mpc.ChangeInventory(changeInventoryPacket);
     }
 }

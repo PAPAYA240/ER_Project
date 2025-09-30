@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Google.Protobuf;
+using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
+using Server.Data;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
+using System.Threading;
 using System.Threading.Tasks;
-using Google.Protobuf;
-using Google.Protobuf.Protocol;
-using Server.Data;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -87,7 +89,7 @@ namespace Server.Game
             ConcurrentDictionary<int, Monster> monsters,
             Dictionary<int, Projectile> projectiles)
         {
-            Dictionary<int, float> damageDict = new Dictionary<int, float>();
+            Dictionary<int, Dictionary<int, float>> damageDict = new Dictionary<int, Dictionary<int, float>>();
             CheckPlayerHit(teams, damageDict);
             CheckHit(monsters, damageDict);
             SendChangeHpPkts(teams, damageDict);
@@ -124,7 +126,7 @@ namespace Server.Game
                 {
                     if (hitbox.Player == null || hitbox.Data == null)
                         continue;
-                    if (false == Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
+                    if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
                         continue;
                     if (type != SkillType.SkillTrack)
                         continue;
@@ -146,7 +148,7 @@ namespace Server.Game
             }
         }
 
-        void CheckPlayerHit(Dictionary<int, Dictionary<int, Player>> teams, Dictionary<int, float> damageDict)
+        void CheckPlayerHit(Dictionary<int, Dictionary<int, Player>> teams, Dictionary<int, Dictionary<int, float>> damageDict)
         {
             foreach(var nestedKvp in _hitboxDict)
             {
@@ -178,7 +180,7 @@ namespace Server.Game
             }
         }
 
-        void CheckHit<T>(IDictionary<int, T> targets, Dictionary<int, float> damageDict) where T : GameObject, new() 
+        void CheckHit<T>(IDictionary<int, T> targets, Dictionary<int, Dictionary<int, float>> damageDict) where T : GameObject, new() 
         {
             foreach(var nestedKvp in _hitboxDict)
             {
@@ -252,7 +254,7 @@ namespace Server.Game
 
         bool CheckCollision(Hitbox hitbox, GameObject go)
         {
-            if (!Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
+            if (!System.Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
                 return false;
 
             switch (shape)
@@ -289,7 +291,7 @@ namespace Server.Game
                         float projForward = Vector2.Dot(toTarget, forward);
                         float projRight = Vector2.Dot(toTarget, right);
 
-                        if (!Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
+                        if (!System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
                             return false;
 
                         float range = hitbox.Data.MaxRange;
@@ -338,33 +340,33 @@ namespace Server.Game
 
         float CalcDamage(Player attacker, StatInfo target, KeyCode key)
         {
-            // temp dmg
-            // 여기서 어떤 정보를 받아와야하는가?
-            // 1 어태커의 스킬 정보(스킬 기본 데미지랑 스킬 데미지계수가 포함된 매커니즘?)
-            // 2 어태커의 스탯 정보(기본 스탯이랑 아이템 스탯 더해진....값?)
-            // 3 타겟의 스탯 정보 (기본 스탯이랑 아이템 스탯 더해진....값?)
+            // 플레이어가 플레이어 때릴 때
+            StatInfo info = target.Stat.Clone();
+            info.Defense = target.Defense;
+            info.MaxHp = target.MaxHp;
+            return CalcDamage(attacker, info, keyCode);
+        }
 
-            //스킬 타입을 가져옴
-            //attacker.GetSkilltype();
+        public float CalcDamage(Player attacker, StatInfo target, KeyCode keyCode)
+        {
+            // 플레이어가 몬스터 때릴 때
+            // TODO 버프 디버프 정보도 가지고 와야함. 예를 들면 방깍 디버프 같은거 
+            Skill skill = attacker.GetSkill(keyCode);
 
-            //해당 스킬의 레벨별 기본 데미지를 가져옴.
-            float damage = attacker.GetSkillDamage(key);
+            float damage = skill.GetSkillDamage()
+                + skill.SkillData.scaling.adRatio * attacker.Attack * 0.01f
+                + skill.SkillData.scaling.apRatio * attacker.SkillAmplification * 0.01f
+                + skill.SkillData.scaling.dstCurHpRatio * target.Hp * 0.01f
+                + skill.SkillData.scaling.dstMaxHpRatio * target.MaxHp * 0.01f
+                + skill.SkillData.scaling.srcCurHpRatio * attacker.Hp * 0.01f
+                + skill.SkillData.scaling.srcMaxHpRatio * attacker.MaxHp * 0.01f;
 
-            float defense = target.Defense;
+            float result = damage; 
 
-            //스킬의 계수 적용?
-
-            //대상의 방어력을 가져와서 방어력 관통을 적용 시킨다.
-            //이렇게 
-            //방어력 적용?
-
-            //프로퍼티를 어떻게 만들까.
-            // 플레이어 한테 프로퍼티
-
-            return 120;
+            return result;
         } 
 
-        void SendChangeHpPkts(Dictionary<int, Dictionary<int, Player>> teams, Dictionary<int, float> damageDict)
+        void SendChangeHpPkts(Dictionary<int, Dictionary<int, Player>> teams, Dictionary<int, Dictionary<int, float>> damageDict)
         {
             foreach (var kvp in damageDict)
             {
@@ -372,39 +374,14 @@ namespace Server.Game
                 if (hitTarget == null)
                     continue;
 
-                hitTarget.Info.StatInfo.Hp -= damageDict[kvp.Key];
-                hitTarget.Info.StatInfo.Hp = Math.Max(0, hitTarget.Info.StatInfo.Hp);
-
-                IMessage packet;
-                if(hitTarget.Info.StatInfo.Hp > 0)
+                foreach(var attakerKvp in kvp.Value)
                 {
-                    packet = new S_ChangeHp()
-                    {
-                        ObjectId = kvp.Key,
-                        Hp = hitTarget.Info.StatInfo.Hp,
-                    };
-                }
-                else
-                {
-                    hitTarget.OnDead(hitTarget);
-                    packet = new S_Die()
-                    {
-                        ObjectId = kvp.Key,
-                        //AttackerId = kvp.Key,
-                    };
-                }
+                    GameObject attacker = ObjectManager.Instance.Find(attakerKvp.Key);
+                    if (attacker == null) 
+                        continue;
 
-                foreach (var nestedKvp in teams)
-                {
-                    foreach(var keyValuePair in nestedKvp.Value)
-                    {
-                        Player p = keyValuePair.Value;
-                        if (p == null) 
-                            continue;
-
-                        // 모든 플레이어들한테 체력 변경 알림
-                        p.Session.Send(packet);
-                    }
+                    float damage = attakerKvp.Value;
+                    hitTarget.Room.Push(hitTarget.OnDamaged, attacker, damage);
                 }
             }
         }

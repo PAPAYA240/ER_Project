@@ -1,9 +1,11 @@
+using Data;
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem.EnhancedTouch;
 using static UI_PlayerInterface;
 using static UI_SkillBase;
 
@@ -14,6 +16,7 @@ public class MyPlayerController : PlayerController
     protected int _monsterMask;
     protected int _playerMask;
     protected int _myPlayerMask;
+    const int _maxInventorySlot = 10;
     // State
     public override CreatureState State
     {
@@ -22,6 +25,9 @@ public class MyPlayerController : PlayerController
         {
             if (PosInfo.State == value)
                 return;
+
+            // TEMP
+            Debug.Log($"Change State - Cur : {PosInfo.State}, Next : {value}");
 
             // Moving -> 다른 상태 : 길찾기 초기화
             if (_agent != null && _agent.isActiveAndEnabled &&
@@ -116,6 +122,9 @@ public class MyPlayerController : PlayerController
     //UI_PlayerHUD _playerHUD = null;
     public UI_PlayerInterface PlayerInterface { get; protected set; }
 
+    // Inventory
+    List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
+
     // Weapon
     public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
     public WeaponInfo MyWeapon { get; set; } = new WeaponInfo();
@@ -157,6 +166,7 @@ public class MyPlayerController : PlayerController
         ObjectType = Define.Object.MyPlayer;
         MakeSkillDict();
         MakeCoolDownDict();
+        MakeInventory();
 
         _monsterMask = 1 << LayerMask.NameToLayer("Monster");
         _playerMask = 1 << LayerMask.NameToLayer("Fog");
@@ -482,7 +492,8 @@ public class MyPlayerController : PlayerController
             CreatureController cc = hitObject.GetComponent<CreatureController>();
             if (IsAttackable(hitObject))
             {
-                Target = gameObject = hitObject;
+                //Target = gameObject = hitObject;
+                gameObject = hitObject;
                 _targetType = ObjectManager.GetObjectTypeById(cc.ObjInfo.ObjectId);
             }
         }
@@ -498,6 +509,7 @@ public class MyPlayerController : PlayerController
 
         Vector3 pos = go.transform.position;
         Vector3 dir = (pos - transform.position).normalized;
+        dir.y = 0f;
 
         float distance = Vector3.Distance(transform.position, pos);
 
@@ -720,6 +732,13 @@ public class MyPlayerController : PlayerController
         {
             ExitRest();
         }
+        // TEMP : 데미지 테스트용!!
+        else if(Input.GetKeyDown(KeyCode.P))
+        {
+            C_TestDamage packet = new C_TestDamage();
+            packet.ObjectId = Id;
+            Managers.Network.Send(packet);
+        }
 
         if (_isAttackGround == true)
         {
@@ -939,7 +958,6 @@ public class MyPlayerController : PlayerController
 
         _coolDownDict[key].isCoolDown = false;
         _coolDownDict[key].coolTime = 0.0f;
-        Debug.Log("쿨타임 끝");
     }
 
     protected void MakeSkillDict()
@@ -1163,6 +1181,58 @@ public class MyPlayerController : PlayerController
         //PlayerInterface.SetSkillCool(GameObjects.FSkill, );
     }
 
+    private void MakeInventory()
+    {
+        for (int i = 0; i < _maxInventorySlot; ++i)
+        {
+            _inventory.Add(null); //비어 있는 인벤토리를 생성
+        }
+    }
+
+    #endregion
+
+    #region Inventory
+
+    public void ChangeInventory(S_ChangeInventory packet)
+    {
+        foreach (var change in packet.Changes)
+        {
+            //빈칸 처리
+            if(change.ItemId == 0)
+            {
+                //TODO UI 작업
+                _inventory[change.InventoryIndex] = null;
+            }
+            else
+            {
+                if (DataManager.ItemDict.TryGetValue(change.ItemId, out ItemInfoBase item))
+                {
+                    if(change.Count == 0)
+                    {
+                        // 장비 아이템
+                        _inventory[change.InventoryIndex] = item;
+                    }
+                    else
+                    {
+                        // 소모 아이템
+                        ConsumableItemInfo consumableItem = item as ConsumableItemInfo;
+                        if (consumableItem == null)
+                        {
+                            Debug.Log($"Error. [{GetType()}] in ChangeInventory, consumableItem == null");
+                            continue;
+                        }
+                        consumableItem.Count = change.Count;
+
+                        _inventory[change.InventoryIndex] = consumableItem;
+                    }
+                }
+                else
+                {
+                    //유효하지 않은 아이템 아이디.
+                }
+            }
+        }
+    }
     #endregion
 
     #region Util
@@ -1251,6 +1321,7 @@ public class MyPlayerController : PlayerController
     }
     #endregion
 
+    protected float _ratioSkillDuration = 0f;
     #region Packet
     private void SendSkillPacket(KeyCode key)
     {
@@ -1275,8 +1346,11 @@ public class MyPlayerController : PlayerController
             ObjectInfo = ObjInfo,
             SkillInfo = new SkillInfo() { KeyCode = (int)key },
             TargetId = targetId,
-            MousePosX = mousePos.x, MousePosZ = mousePos.z
+            MousePosX = mousePos.x, MousePosZ = mousePos.z,
+            ChargeRatio = _ratioSkillDuration
         };
+        _ratioSkillDuration = 0f;
+
         Managers.Network.Send(skillPacket);
         Debug.Log("스킬 패킷 보내기");
     }
@@ -1332,6 +1406,7 @@ public class MyPlayerController : PlayerController
         bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
 
         Vector3 dir = (hit.point - transform.position).normalized;
+        dir.y = 0;
 
         if (!isMaxDistance && (hit.point - transform.position).magnitude < range)
         {

@@ -1,4 +1,5 @@
-﻿using Google.Protobuf.Protocol;
+﻿using Data;
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,7 +33,9 @@ public class UI_PlayerInterface : UI_Base
         StaminaBar,
         Death,
         LevelAndExp,
-        Credit
+        Credit,
+        Equipment,
+        Inventory
     }
 
     //TODO 디파인으로 각 요소들을 관리?
@@ -87,7 +90,13 @@ public class UI_PlayerInterface : UI_Base
         OnLevelUp(1);
         SpecificSkillLevelUp(GameObjects.FSkill);
 
-        //OnDeath();
+        //equip
+        Equip(DataManager.ItemDict[116405] as EquipItemInfo);
+        Equip(DataManager.ItemDict[201414] as EquipItemInfo);
+        Equip(DataManager.ItemDict[202418] as EquipItemInfo);
+        Equip(DataManager.ItemDict[203405] as EquipItemInfo);
+        Equip(DataManager.ItemDict[204418] as EquipItemInfo);
+
     }
     private void Start()
     {
@@ -443,4 +452,15 @@ public class UI_PlayerInterface : UI_Base
             uI_Credit.UseCredit(credit);
     }
     #endregion
+
+    public void Equip(EquipItemInfo item)
+    {
+        GetObject((int)GameObjects.Equipment).GetComponent<UI_Equipment>().Equip(item);
+    }
+
+    public void SetInventoryItem()
+    {
+
+    }
+
 }

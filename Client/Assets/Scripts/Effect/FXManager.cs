@@ -44,7 +44,9 @@ public class FXManager : MonoBehaviour
                 fxPool[data.prefabName].Add(fxObject);
             }
 
-            fxObject.transform.SetPositionAndRotation(GetSpawnPosition(data, casterTransform, targetPos, out Transform parentTransform), GetSpawnRotation(data, rot));
+            fxObject.transform.SetPositionAndRotation(
+                GetSpawnPosition(data, casterTransform, targetPos, out Transform parentTransform), 
+                GetSpawnRotation(data, casterTransform, targetPos, rot));
             fxObject.transform.SetParent(parentTransform);
 
             SettingLayer(fxObject, fxLayer);
@@ -61,6 +63,10 @@ public class FXManager : MonoBehaviour
             case EEffectTarget.Self:
                 parentTransform = casterTransform;
                 return casterTransform.position + data.position;
+            case EEffectTarget.Relative:
+                parentTransform = casterTransform;
+                Quaternion yawRotationOnly = Quaternion.Euler(0, casterTransform.eulerAngles.y, 0);
+                return casterTransform.position + yawRotationOnly * data.position;
             case EEffectTarget.Target:
                 parentTransform = null;
                 return targetPos;
@@ -73,6 +79,22 @@ public class FXManager : MonoBehaviour
             default:
                 parentTransform = null;
                 return Vector3.zero;
+        }
+    }
+    private Quaternion GetSpawnRotation(EffectData data, Transform casterTransform, Vector3 targetPos, Quaternion rot)
+    {
+        switch (data.target)
+        {
+            case EEffectTarget.Self:
+            case EEffectTarget.Relative:
+                return casterTransform.rotation;
+
+            case EEffectTarget.Target:
+            case EEffectTarget.Shoot:
+                return rot;
+
+            default:
+                return Quaternion.identity;
         }
     }
 
@@ -165,10 +187,7 @@ public class FXManager : MonoBehaviour
         foreach (Transform child in obj.transform)
             SettingLayer(child.gameObject, newLayer);
     }
-    private Quaternion GetSpawnRotation(EffectData data, Quaternion rot)
-    {
-        return rot;
-    }
+
     public void Clear()
     {
     }

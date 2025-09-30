@@ -24,6 +24,43 @@ namespace Data
     }
     #endregion
 
+    #region Item
+
+    [Serializable]
+    public class ItemDict : ILoader<int, ItemInfoBase>
+    {
+        public List<ItemInfoBase> items = new List<ItemInfoBase>();
+        public Dictionary<int, ItemInfoBase> MakeDict()
+        {
+            Dictionary<int, ItemInfoBase> dict = new Dictionary<int, ItemInfoBase>();
+            foreach (ItemInfoBase item in items)
+                dict.Add(item.Id, item);
+            return dict;
+        }
+    }
+
+    public abstract class ItemInfoBase
+    {
+        public int Id;      //식별 번호? UI에서의 숫자?
+        public string Name; //이름
+        public ItemGrade Grade = ItemGrade.End;   //등급
+        public string Description; //아이템 설명
+    }
+
+    //카메라
+    public class ConsumableItemInfo : ItemInfoBase
+    {
+        public int Count = 0; //개수
+    }
+
+    public class EquipItemInfo : ItemInfoBase
+    {
+        public EquipItemType Type = EquipItemType.End; // 어느 부위 인지
+        public ItemStat ItemStat = new ItemStat();
+    }
+
+    #endregion
+
     #region Skill
     [Serializable]
     public class GameData : ILoader<CharacterType, Dictionary<KeyCode, SkillData>>
@@ -160,10 +197,11 @@ namespace Data
     {
         public enum EEffectTarget
         {
-            Self, // 스킬을 시전하는 오브젝트에 생성
-            Target, // 공격 대상 오브젝트에게 생성
-            Ground, // 특정 위치에 생성
-            Shoot,
+            Self,       // 캐스터의 위치에 부착 (자식으로)
+            Relative,   // 캐스터의 회전을 고려한 상대적 위치
+            Target,     // 특정 타겟의 위치
+            Ground,     // 월드 좌표의 특정 위치
+            Shoot       // 발사체
         }
 
         public string type;    // Buff / Debuff / Burn 등

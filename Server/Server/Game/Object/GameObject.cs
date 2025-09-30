@@ -75,24 +75,63 @@ namespace Server.Game
                     Info.StatInfo.MergeFrom(value);
             }
         }
-        public Monster Target { get; internal set; }
 
-        public float Speed
+        public virtual float Speed
         {
             get { return Stat.MoveSpeed; }
             set { Stat.MoveSpeed = value; }
         }
 
-        public float Hp
+        public virtual float Hp
         {
             get { return Stat.Hp; }
             set { Stat.Hp = Math.Clamp(value, 0, Stat.MaxHp); }
         }
 
-        public float Stamina
+        public virtual float MaxHp
+        {
+            get { return Stat.MaxHp; }
+            set { Stat.MaxHp = Math.Max(value, 0); }
+        }
+        
+        public float Barrier 
+        { 
+            get { return Stat.Barrier; }
+            set { Stat.Barrier = Math.Max(value, 0); }
+        }
+
+        public virtual float Stamina
         {
             get { return Stat.Stamina; }
             set { Stat.Stamina = Math.Clamp(value, 0, Stat.MaxStamina); }
+        }
+
+        public virtual float MaxStamina
+        {
+            get { return Stat.MaxStamina; }
+            set { Stat.MaxStamina = Math.Max(value, 0); }
+        }
+
+        public virtual float Attack
+        {
+            get { return Stat.Attack; }
+            set { Stat.Attack = Math.Max(value, 0); }
+        }
+
+        public virtual float FixedDefensePenetration
+        {
+            get { return 0f; }
+        }
+
+        public virtual float PercentageDefensePenetration
+        {
+            get { return 0f; }
+        }
+
+        public virtual float Defense
+        {
+            get { return Stat.Defense; }
+            set { Stat.Defense = Math.Max(value, 0); }
         }
 
         public CreatureState State
@@ -103,7 +142,26 @@ namespace Server.Game
 
         public virtual void Update()
         {
+            UpdateController();
+        }
 
+        protected virtual void UpdateController()
+        {
+            //switch (State)
+            //{
+            //    case CreatureState.Idle:
+            //        break;
+            //    case CreatureState.Moving:
+            //        break;
+            //    case CreatureState.Attack:
+            //        break;
+            //    case CreatureState.Skill:
+            //        break;
+            //    case CreatureState.Dead:
+            //        break;
+            //    case CreatureState.Rest:
+            //        break;
+            //}
         }
 
         public virtual void OnDamaged(GameObject attacker, float damage)
@@ -111,14 +169,22 @@ namespace Server.Game
             if (Room == null || State == CreatureState.Dead)
                 return;
 
-            Stat.Hp = Math.Max((int)(Stat.Hp - damage), 0);
+            float finalDefense = Defense * (1f - attacker.PercentageDefensePenetration * 0.01f) - attacker.FixedDefensePenetration;
+            float finalDamage = damage * 100f / (100f + finalDefense);
+
+            //배리어가 흡수할 수치 계산
+            float absorbed = Math.Min(Barrier, finalDamage);
+            Barrier -= absorbed;
+            float remaining = finalDamage - absorbed;
+            Hp = Math.Max(0, Hp - remaining);
 
             S_ChangeHp changePacket = new S_ChangeHp();
             changePacket.ObjectId = Id;
-            changePacket.Hp = Stat.Hp;
+            changePacket.Hp = Hp;
+            changePacket.Barrier = Barrier;
             Room.Broadcast(changePacket);
 
-            if(Stat.Hp <= 0)
+            if(Hp <= 0)
             {
                 OnDead(attacker);
             }
@@ -137,8 +203,8 @@ namespace Server.Game
             GameRoom room = Room;
             room.LeaveGame(Id);
 
-            Stat.Hp = Stat.MaxHp;
-            Stat.Stamina = Stat.MaxStamina;
+            Hp = MaxHp;
+            Stamina = MaxStamina;
             State = CreatureState.Idle;
             PosInfo.PosX = 0;
             PosInfo.PosY = 0;

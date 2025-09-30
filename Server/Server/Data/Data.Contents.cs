@@ -57,14 +57,30 @@ namespace Server.Data
 
     #region Item
 
-    public abstract class ItemInfoBase
+    [Serializable]
+    public class ItemDict : ILoader<int, ItemInfoBase>
     {
-        public int Id;      //식별 번호? UI에서의 숫자?
-        public string Name; //이름
-        public int Grade;   //등급?
+        public List<ItemInfoBase> items = new List<ItemInfoBase>();
+        public Dictionary<int, ItemInfoBase> MakeDict()
+        {
+            Dictionary<int, ItemInfoBase> dict = new Dictionary<int, ItemInfoBase>();
+            foreach (ItemInfoBase item in items)
+                dict.Add(item.Id, item);
+            return dict;
+        }
     }
 
-    //카메라
+    public abstract class ItemInfoBase
+    {
+        public int Id;      //식별 번호? UI에서의 숫자? 흠 이거랑 이름 둘 중 하나를 키값으로 딕셔너리를 만들까나.
+        public string Name; //이름
+        public ItemGrade Grade = ItemGrade.End;   //등급
+        public string Description; //아이템 설명
+
+        public virtual void Use() { }
+    }
+
+    //카메라 등의 아이템
     public class ConsumableItemInfo : ItemInfoBase
     {
         public int Count = 0; //개수
@@ -72,39 +88,21 @@ namespace Server.Data
 
     public class EquipItemInfo : ItemInfoBase
     {
-        public ItemType Type = ItemType.End; // 어느 부위 인지
+        public EquipItemType Type = EquipItemType.End; // 어느 부위 인지
         public ItemStat ItemStat = new ItemStat();
     }
 
-    public class ItemStat 
+    public class ItemSet : ILoader<CharacterType, List<List<int>>>
     {
-        public float AttackDamage;                  //공격력
-        public float AttackSpeed;                   //공격속도
-        public float CriticalRatio;                 //치명타 확률
-        public float CriticalDamage;                //치명타 피해량
-        public float AttackRange;                   //기본 공격 사거리
-        public float FixedSkillAmplification;       //고정 스킬 증폭
-        public float PercentageSkillAmplification;  //퍼센트 스킬 증폭
-        public float SkillAcceleration;             //스킬 가속
-        public float FixedDefensePenetration;       //고정 방어 관통
-        public float PercentageDefensePenetration;  //퍼센트 방어 관통
-        public float FixedSpeed;                    //고정 이동 속도
-        public float PercentageSpeed;               //퍼센트 이동 속도
-        public float MaxHp;                         //최대 체력
-        public float HpRegen;                       //체력 재생
-        public float MaxStamina;                    //최대 스테미나
-        public float StaminaRegen;                  //스테미나 재생
-        public float Defense;                       //방어력
-        public float LifeSteal;                     //생명력 흡수
-        public float Omnivamp;                      //모든 피해 흡혈
-        public float HealingPower;                  //주는 회복 증가
-        public float SlowResistance;                //둔화 효과 저항
-        public float CCResistance;                  //방해 효과 저항(속박, 기절)
-        public float AdaptiveStat;                  //적응형 능력치 공격력 : 스킬증폭 = 1 : 2
-        public float Vision;                        //시야
-        public float AttackDamagePerLevel;          //레벨 당 공격력
-        public float SkillAmplificationPerLevel;    //레벨 당 스킬 증폭
-        public float MaxHpPerLevel;                 //레벨 당 최대 체력
+        public Dictionary<string, List<List<int>>> characters = new Dictionary<string, List<List<int>>>();
+
+        public Dictionary<CharacterType, List<List<int>>> MakeDict()
+        {
+            Dictionary<CharacterType, List<List<int>>> dict = new Dictionary<CharacterType, List<List<int>>>();
+            foreach (var pair in characters)
+                dict.Add((CharacterType)Enum.Parse(typeof(CharacterType), pair.Key), pair.Value);
+            return dict;
+        }
     }
 
     #endregion

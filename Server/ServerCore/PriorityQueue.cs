@@ -84,4 +84,89 @@ namespace ServerCore
 			return _heap[0];
 		}
 	}
+
+    public struct PriorityQueueItem<TElement, TPriority> : IComparable<PriorityQueueItem<TElement, TPriority>>
+    where TPriority : IComparable<TPriority>
+    {
+        public TElement Element;
+        public TPriority Priority;
+
+        public int CompareTo(PriorityQueueItem<TElement, TPriority> other)
+        {
+            return Priority.CompareTo(other.Priority);
+        }
+    }
+
+    public class PriorityQueue<TElement, TPriority>
+		where TPriority : IComparable<TPriority>
+	{
+        List<PriorityQueueItem<TElement, TPriority>> _heap = new List<PriorityQueueItem<TElement, TPriority>>();
+
+        public int Count { get { return _heap.Count; } }
+
+		public void Push(TElement element, TPriority priority)
+		{
+			var item = new PriorityQueueItem<TElement, TPriority> { Element = element, Priority = priority };
+			_heap.Add(item);
+
+			int now = _heap.Count - 1;
+			while (now > 0)
+			{
+				int next = (now - 1) / 2;
+				if (_heap[now].CompareTo(_heap[next]) >= 0)
+					break;
+
+				var tmp = _heap[now];
+				_heap[now] = _heap[next];
+				_heap[next] = tmp;
+
+				now = next;
+			}
+		}
+
+		public TElement Pop()
+		{
+			if (_heap.Count == 0)
+				return default;
+
+			TElement ret = _heap[0].Element;
+
+			int lastIdx = _heap.Count - 1;
+			_heap[0] = _heap[lastIdx];
+			_heap.RemoveAt(lastIdx);
+			--lastIdx;
+
+			int now = 0;
+            while (true)
+            {
+                int left = 2 * now + 1;
+                int right = 2 * now + 2;
+
+                int next = now;
+
+                if (left <= lastIdx && _heap[next].CompareTo(_heap[left]) > 0)
+                    next = left;
+
+                if (right <= lastIdx && _heap[next].CompareTo(_heap[right]) > 0)
+                    next = right;
+
+                if (next == now)
+                    break;
+
+                var temp = _heap[now];
+                _heap[now] = _heap[next];
+                _heap[next] = temp;
+
+                now = next;
+            }
+
+            return ret;
+        }
+        public TElement Peek()
+        {
+            if (_heap.Count == 0)
+                return default;
+            return _heap[0].Element;
+        }
+    }
 }
