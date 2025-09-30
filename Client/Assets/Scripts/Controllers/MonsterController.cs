@@ -1,6 +1,7 @@
 using Assets.Scripts.Highlight;
 using Google.Protobuf.Protocol;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
@@ -49,11 +50,15 @@ public class MonsterController : CreatureController
         InitHpBar();
         Stat = Stat;
     }
-
+    //private List<Vector3> trailPoints = new List<Vector3>();
     protected override void UpdateController()
     {
        transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
        transform.rotation = transform.rotation;
+
+        //trailPoints.Add(transform.position);
+        //for (int i = 0; i < trailPoints.Count - 1; i++)
+        //    Debug.DrawLine(trailPoints[i], trailPoints[i + 1], Color.yellow, 100f);
 
         if (MonsterType.Omega == _monsterType || MonsterType.Alpha == _monsterType)
         {
@@ -71,11 +76,11 @@ public class MonsterController : CreatureController
     #region 패킷
     public void OnIdlePacket(S_State packet)
     {
-        if (_agent == null)
-            return;
+        if (_agent != null)
+            _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
 
-        _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
-       _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
+        _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
+
         Skill = MonsterSkill.MsNone;
 
         OnStateChanged?.Invoke(State);
@@ -83,19 +88,21 @@ public class MonsterController : CreatureController
 
     public void OnMovePacket(S_State packet)
     {
-        if (_agent == null)
-            return;
+        if (_agent != null)
+            _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
 
-        _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
         _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
 
     public void OnSkillPacket(S_State packet)
     {
-        _agent.ResetPath();
         Skill = packet.Skilltype;
 
-        _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+        if (_agent != null)
+        {
+            _agent.ResetPath();
+            _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+        }
         _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
 
@@ -109,9 +116,6 @@ public class MonsterController : CreatureController
         if(packet.TargetPosition != null)
             _targetPos = new Vector3(packet.TargetPosition.PosX, packet.TargetPosition.PosY, packet.TargetPosition.PosZ);
 
-        if (_agent == null)
-            return;
-
         switch (State)
         {
             case CreatureState.Idle:
@@ -121,7 +125,6 @@ public class MonsterController : CreatureController
                 OnMovePacket(packet);
                 break;
             case CreatureState.Skill:
-               
                 OnSkillPacket(packet);
                 break;
             case CreatureState.Dead:

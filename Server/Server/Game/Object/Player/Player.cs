@@ -10,7 +10,7 @@ using static Server.Data.DataUtils;
 
 namespace Server.Game
 {
-    public class Player : GameObject
+    public class Player : Creature
     {
         public ClientSession Session { get; set; }
 
@@ -77,6 +77,7 @@ namespace Server.Game
         // StatRegenerator
         public bool _isUpdatedStat = false;
         private StatRegenerator _statRegenerator;
+        private long _lastUpdateTick;
 
         //Inventory
         static int MaxInventorySlot = 10;
@@ -84,7 +85,10 @@ namespace Server.Game
         public Player()
         {
             ObjectType = GameObjectType.Player;
-            _statRegenerator = new StatRegenerator(this);
+
+            _statRegenerator = new StatRegenerator(this, intervalMs: 1000);
+            _statRegenerator.AddEffect(new BaseRegenEffect());
+            _statRegenerator.AddEffect(new RestRegenEffect());
         }
 
         public GameObject SkillTarget { get; set; }
@@ -94,7 +98,10 @@ namespace Server.Game
         public void Init()
         {
             MakeDict();
+
+            _lastUpdateTick = Environment.TickCount64;
             StartRegen();
+
             InitAboutItem();
         }
 
@@ -119,28 +126,7 @@ namespace Server.Game
         #region Update
         public override void Update()
         {
-            UpdateController();
-            CheckUpdateStat();
-        }
-
-        protected virtual void UpdateController()
-        {
-            switch (State)
-            {
-                case CreatureState.Idle:
-                    break;
-                case CreatureState.Moving:
-                    break;
-                case CreatureState.Attack:
-                    break;
-                case CreatureState.Skill:
-                    break;
-                case CreatureState.Dead:
-                    break;
-                case CreatureState.Rest:
-                    UpdateRest();
-                    break;
-            }
+            UpdateStatRegenerator();
         }
         #endregion
 
@@ -157,35 +143,37 @@ namespace Server.Game
             diePacket.AttackerId = attacker.Id;
             if(Stat.Level == 1)
             {
-                _ = CoRespawnTime(diePacket.RespawnTime, false);
                 diePacket.RespawnTime = 0;
+                _ = CoRespawnTime(diePacket.RespawnTime, false);
             }
             else
             {
-                _ = CoRespawnTime(diePacket.RespawnTime);
                 diePacket.RespawnTime = DataManager.RespawnDict[Stat.Level];
+                _ = CoRespawnTime(diePacket.RespawnTime);
             }
 
             Room.Broadcast(diePacket);
         }
         #endregion
 
-        #region State : Rest
-        protected void UpdateRest()
-        {
-
-        }
-        #endregion
-
         #region Stat
-        public void StartRegen()
-        {
-            _statRegenerator.Start();
-        }
+        public void StartRegen() => _statRegenerator.Start();
+        public void StopRegen() => _statRegenerator.Stop();
 
-        public void StopRegen()
+        private void UpdateStatRegenerator()
         {
-            _statRegenerator.Stop();
+            long now = Environment.TickCount64;
+            int deltaMs = 0;
+            long diff = now - _lastUpdateTick;
+            if (diff < 0)
+                diff = 0;
+            if (diff > int.MaxValue)
+                diff = int.MaxValue;
+            deltaMs = (int)diff;
+            _lastUpdateTick = now;
+
+            _statRegenerator.Update(deltaMs);
+            CheckUpdateStat();
         }
 
         public bool CanRegenerate()
@@ -197,6 +185,11 @@ namespace Server.Game
                 return false;
 
             return true;
+        }
+
+        public void UseHealPack(float amount, float durationSeconds)
+        {
+            _statRegenerator.AddEffect(new HealPackEffect(amount, durationSeconds));
         }
 
         private void CheckUpdateStat()
@@ -698,7 +691,7 @@ namespace Server.Game
         }
         #endregion
 
-        #region Stat
+        #region Level
         public int CheckLevelUp()
         {
             int levelUp = 0;

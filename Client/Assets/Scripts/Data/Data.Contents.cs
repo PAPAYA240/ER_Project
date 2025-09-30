@@ -196,10 +196,11 @@ namespace Data
     {
         public enum EEffectTarget
         {
-            Self, // 스킬을 시전하는 오브젝트에 생성
-            Target, // 공격 대상 오브젝트에게 생성
-            Ground, // 특정 위치에 생성
-            Shoot,
+            Self,       // 캐스터의 위치에 부착 (자식으로)
+            Relative,   // 캐스터의 회전을 고려한 상대적 위치
+            Target,     // 특정 타겟의 위치
+            Ground,     // 월드 좌표의 특정 위치
+            Shoot       // 발사체
         }
 
         public string type;    // Buff / Debuff / Burn 등

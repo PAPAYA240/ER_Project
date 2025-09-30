@@ -45,6 +45,7 @@ enum MsgId {
   S_CHANGE_ITEM_STAT = 37;
   S_CHANGE_EQUIP_ITEM = 38;
   S_CHANGE_INVENTORY = 39;
+  C_TEST_DAMAGE = 40;
 }
 
 enum CreatureState{
@@ -397,6 +398,10 @@ message S_ChangeEquipItem{
 
 message S_ChangeInventory{
 	repeated ChangeInventoryInfo changes = 1;
+}
+
+message C_TestDamage{
+	int32 objectId = 1;
 }
 
 message PositionInfo{

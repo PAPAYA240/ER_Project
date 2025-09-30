@@ -26,6 +26,9 @@ public class MyPlayerController : PlayerController
             if (PosInfo.State == value)
                 return;
 
+            // TEMP
+            Debug.Log($"Change State - Cur : {PosInfo.State}, Next : {value}");
+
             // Moving -> 다른 상태 : 길찾기 초기화
             if (_agent != null && _agent.isActiveAndEnabled &&
                 State == CreatureState.Moving)
@@ -489,7 +492,8 @@ public class MyPlayerController : PlayerController
             CreatureController cc = hitObject.GetComponent<CreatureController>();
             if (IsAttackable(hitObject))
             {
-                Target = gameObject = hitObject;
+                //Target = gameObject = hitObject;
+                gameObject = hitObject;
                 _targetType = ObjectManager.GetObjectTypeById(cc.ObjInfo.ObjectId);
             }
         }
@@ -505,6 +509,7 @@ public class MyPlayerController : PlayerController
 
         Vector3 pos = go.transform.position;
         Vector3 dir = (pos - transform.position).normalized;
+        dir.y = 0f;
 
         float distance = Vector3.Distance(transform.position, pos);
 
@@ -727,6 +732,13 @@ public class MyPlayerController : PlayerController
         {
             ExitRest();
         }
+        // TEMP : 데미지 테스트용!!
+        else if(Input.GetKeyDown(KeyCode.P))
+        {
+            C_TestDamage packet = new C_TestDamage();
+            packet.ObjectId = Id;
+            Managers.Network.Send(packet);
+        }
 
         if (_isAttackGround == true)
         {
@@ -946,7 +958,6 @@ public class MyPlayerController : PlayerController
 
         _coolDownDict[key].isCoolDown = false;
         _coolDownDict[key].coolTime = 0.0f;
-        Debug.Log("쿨타임 끝");
     }
 
     protected void MakeSkillDict()
@@ -1391,6 +1402,7 @@ public class MyPlayerController : PlayerController
         bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
 
         Vector3 dir = (hit.point - transform.position).normalized;
+        dir.y = 0;
 
         if (!isMaxDistance && (hit.point - transform.position).magnitude < range)
         {

@@ -24,7 +24,7 @@
         "z": 1
       }
     },
-   
+
     {
       "prefabName": "Projectile_FX_BI_Gamma_skill03_Explosion1",
       "skillType": "MsGammaSkill3",
@@ -75,19 +75,6 @@
       }
     },
     {
-      "prefabName": "FX_BI_AttackDrone_Normal_Attack_01",
-      "skillType": "MsDroneAttack1",
-      "target": "Self",
-      "duration": 1.5,
-      "delayTime": 0,
-      "position": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      }
-    },
-
-    {
       "prefabName": "Omega_Slash",
       "skillType": "MsAttack1",
       "target": "Self",
@@ -123,13 +110,25 @@
         "z": 0
       }
     },
-    
+
     {
       "prefabName": "Omega_Attack2",
       "skillType": "MsAttack2",
       "target": "Self",
       "duration": 1.5,
       "delayTime": 0.2,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "prefabName": "FX_Drone_Attack",
+      "skillType": "MsDroneAttack1",
+      "target": "Shoot",
+      "duration": 1,
+      "delayTime": 0,
       "position": {
         "x": 0,
         "y": 0,

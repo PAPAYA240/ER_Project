@@ -17,7 +17,7 @@ namespace Server.Game
         private long _lastUpdateTime = 0;
 
         // 타겟과 비교해서 다른 타겟을 쏘게 되면 Idle로 돌이키기 위한 정보.
-        Player _player = null;
+        Creature _player = null;
 
         public void Enter(Monster monster)
         {
@@ -28,7 +28,7 @@ namespace Server.Game
             monster._delaySkillAnimationTimer = skillData.skillCoolTime;
             monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
 
-            _player = monster.PlayerTarget;
+            _player = monster.Target;
         }
 
         public void Execute(Monster monster)
@@ -36,6 +36,8 @@ namespace Server.Game
             bool timeout = Environment.TickCount64 >= _skillEndTime;
 
             if (monster.Info.Monster.MonsterType == MonsterType.Drone)
+                LookAtTarget(monster);
+            if (monster.Info.Monster.MonsterType == MonsterType.Turret)
                 LookAtTarget(monster);
 
             monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
@@ -46,7 +48,7 @@ namespace Server.Game
 
         private void LookAtTarget(Monster monster)
         {
-            Player target = monster.PlayerTarget;
+            Creature target = monster.Target;
             if (target != null)
             {
                 long tick = Environment.TickCount64;
