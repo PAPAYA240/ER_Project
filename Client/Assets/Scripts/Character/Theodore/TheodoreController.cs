@@ -37,7 +37,8 @@ public class TheodoreController : MyPlayerController
     {
         if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))
         {
-            _isUseSkill = true;
+            ReadySkillQ();
+            StartCoroutine(ShootSkillQ());
             _keyCode = KeyCode.Q;
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.W))
@@ -76,21 +77,29 @@ public class TheodoreController : MyPlayerController
     }
 
     #region Q Skill
-    protected override void Skill_Q()
-    {
-        ReadySkillQ();
-        StartCoroutine(ShootSkillQ());
-    }
+    protected override void Skill_Q()  { }
     private void ReadySkillQ()
     {
         _currentEffectList = Managers.FX.PlayEffect(Find_EffectList(KeyCode.Q), this.transform);
+        _effectDuration =DataManager.PlayerFxDict[CharacterType.Theodore][KeyCode.Q][0].duration;
         SendFXPacket(_keyCode);
     }
 
+    private float _elapsedTime = 0f;
+    private float _effectDuration = 0f;
     IEnumerator ShootSkillQ()
     {
         while (Input.GetKey(KeyCode.Q))
+        {
+            Debug.Log($"{ _elapsedTime}");
+            _elapsedTime += Time.deltaTime;
+            _ratioSkillDuration = _elapsedTime / _effectDuration;
             yield return null;
+        }
+
+        _isUseSkill = true;
+        _elapsedTime = 0;
+        _effectDuration = 0;
 
         foreach (GameObject effect in _currentEffectList)
         {

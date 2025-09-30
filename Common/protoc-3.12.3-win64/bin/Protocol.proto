@@ -257,6 +257,7 @@ message C_Skill{
 	int32 targetId = 3;
 	float mousePosX = 4;
 	float mousePosZ = 5;
+	float chargeRatio = 6;
 }
 
 message S_Skill{
@@ -264,6 +265,7 @@ message S_Skill{
 	int32 objectId = 2;
 	SkillInfo skillInfo = 3;
 	CostInfo costInfo = 4;
+ 	float chargeRatio = 5;
 }
 
 message C_SkillLevelUp{

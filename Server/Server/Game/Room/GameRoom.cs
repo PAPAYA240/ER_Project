@@ -288,6 +288,7 @@ namespace Server.Game
             S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
 
             KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
+            float SkillDuration = skillPacket.ChargeRatio;
 
             // 스킬 사용이 불가능하면 바로 실패 패킷 전송
             if (!player.CanUseSkill(keyCode))

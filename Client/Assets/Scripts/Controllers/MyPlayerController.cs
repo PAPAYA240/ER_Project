@@ -1321,6 +1321,7 @@ public class MyPlayerController : PlayerController
     }
     #endregion
 
+    protected float _ratioSkillDuration = 0f;
     #region Packet
     private void SendSkillPacket(KeyCode key)
     {
@@ -1345,8 +1346,11 @@ public class MyPlayerController : PlayerController
             ObjectInfo = ObjInfo,
             SkillInfo = new SkillInfo() { KeyCode = (int)key },
             TargetId = targetId,
-            MousePosX = mousePos.x, MousePosZ = mousePos.z
+            MousePosX = mousePos.x, MousePosZ = mousePos.z,
+            ChargeRatio = _ratioSkillDuration
         };
+        _ratioSkillDuration = 0f;
+
         Managers.Network.Send(skillPacket);
         Debug.Log("스킬 패킷 보내기");
     }
