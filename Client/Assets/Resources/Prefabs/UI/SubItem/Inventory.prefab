@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2797173310951927776}
+  - component: {fileID: 962721861070680756}
   m_Layer: 5
   m_Name: Inventory
   m_TagString: Untagged
@@ -45,6 +46,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &962721861070680756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8759617003144500447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ff815371d5fb4e41aa5760b36bea585, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &521234838355031965
 PrefabInstance:
   m_ObjectHideFlags: 0

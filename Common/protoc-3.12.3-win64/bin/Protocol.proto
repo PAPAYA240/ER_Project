@@ -527,7 +527,7 @@ message ItemStat{
     float PercentageSkillAmplification = 7;  //퍼센트 스킬 증폭
     float SkillAcceleration = 8;             //스킬 가속
     float FixedDefensePenetration = 9;       //고정 방어 관통
-    float PercentageDefensePenetration = 10;  //퍼센트 방어 관통 ex) 20퍼센트면 20
+    float PercentageDefensePenetration = 10;  //퍼센트 방어 관통 
     float FixedSpeed = 11;                    //고정 이동 속도
     float PercentageSpeed = 12;               //퍼센트 이동 속도
     float MaxHp = 13;                         //최대 체력

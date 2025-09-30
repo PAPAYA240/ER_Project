@@ -38,6 +38,8 @@ namespace Server.Data
         public static Dictionary<int, int> RespawnDict { get; private set; } = new Dictionary<int, int>();
 
         public static Dictionary<int, ItemInfoBase> ItemDict { get; private set; } = new Dictionary<int, ItemInfoBase>();
+       
+        public static Dictionary<CharacterType, List<List<int>>> ItemSetDict { get; private set; } = new Dictionary<CharacterType, List<List<int>>>();
 
         public static void LoadData()
         {
@@ -60,6 +62,7 @@ namespace Server.Data
             // For Item
             JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
             ItemDict = LoadJson<Data.ItemDict, int, ItemInfoBase>("ItemData", "player", settings).MakeDict();
+            ItemSetDict = LoadJson<Data.ItemSet, CharacterType, List<List<int>>>("ItemSetData", "player").MakeDict();
 
             // For System
             PhaseDict = LoadJson<Data.PhaseData, int, int>("PhaseData", "player").MakeDict();

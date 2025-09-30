@@ -92,6 +92,19 @@ namespace Server.Data
         public ItemStat ItemStat = new ItemStat();
     }
 
+    public class ItemSet : ILoader<CharacterType, List<List<int>>>
+    {
+        public Dictionary<string, List<List<int>>> characters = new Dictionary<string, List<List<int>>>();
+
+        public Dictionary<CharacterType, List<List<int>>> MakeDict()
+        {
+            Dictionary<CharacterType, List<List<int>>> dict = new Dictionary<CharacterType, List<List<int>>>();
+            foreach (var pair in characters)
+                dict.Add((CharacterType)Enum.Parse(typeof(CharacterType), pair.Key), pair.Value);
+            return dict;
+        }
+    }
+
     #endregion
 
     #region Skill

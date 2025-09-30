@@ -10564,7 +10564,7 @@ namespace Google.Protobuf.Protocol {
     public const int PercentageDefensePenetrationFieldNumber = 10;
     private float percentageDefensePenetration_;
     /// <summary>
-    ///퍼센트 방어 관통 ex) 20퍼센트면 20
+    ///퍼센트 방어 관통 
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float PercentageDefensePenetration {

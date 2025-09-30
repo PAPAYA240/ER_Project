@@ -208,7 +208,10 @@ namespace Server.Game
                 statPacket.Hp = Hp;
                 statPacket.Barrier = Barrier;
                 statPacket.Stamina = Stamina;
-                Room.Push(Room.Broadcast, statPacket);
+
+                GameRoom room = Room;
+                if(room != null)
+                    room.Push(room.Broadcast, statPacket);
 
                 _isUpdatedStat = false;
             }
