@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -91,7 +92,6 @@ namespace Server.Game
             long tick = Environment.TickCount64;
             if (_lastUpdateTime == 0)
                 _lastUpdateTime = tick;
-
 
             // =========== 경과 시간 계산 =========== 
             double elapsedTime = (tick - _lastUpdateTime) / 1000.0;
