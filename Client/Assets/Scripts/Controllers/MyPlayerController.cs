@@ -731,6 +731,13 @@ public class MyPlayerController : PlayerController
         {
             ExitRest();
         }
+        // TEMP : 데미지 테스트용!!
+        else if(Input.GetKeyDown(KeyCode.P))
+        {
+            C_TestDamage packet = new C_TestDamage();
+            packet.ObjectId = Id;
+            Managers.Network.Send(packet);
+        }
 
         if (_isAttackGround == true)
         {

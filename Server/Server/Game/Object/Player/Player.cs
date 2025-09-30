@@ -77,6 +77,7 @@ namespace Server.Game
         // StatRegenerator
         public bool _isUpdatedStat = false;
         private StatRegenerator _statRegenerator;
+        private long _lastUpdateTick;
 
         //Inventory
         static int MaxInventorySlot = 10;
@@ -85,7 +86,7 @@ namespace Server.Game
         {
             ObjectType = GameObjectType.Player;
 
-            _statRegenerator = new StatRegenerator(this);
+            _statRegenerator = new StatRegenerator(this, intervalMs: 1000);
             _statRegenerator.AddEffect(new BaseRegenEffect());
             _statRegenerator.AddEffect(new RestRegenEffect());
         }
@@ -97,7 +98,10 @@ namespace Server.Game
         public void Init()
         {
             MakeDict();
+
+            _lastUpdateTick = Environment.TickCount64;
             StartRegen();
+
             InitAboutItem();
         }
 
@@ -122,10 +126,10 @@ namespace Server.Game
         #region Update
         public override void Update()
         {
-            //base.Update();
-            CheckUpdateStat();
+            UpdateStatRegenerator();
         }
         #endregion
+
         #region State : Dead
         public override void OnDead(GameObject attacker)
         {
@@ -139,13 +143,13 @@ namespace Server.Game
             diePacket.AttackerId = attacker.Id;
             if(Stat.Level == 1)
             {
-                _ = CoRespawnTime(diePacket.RespawnTime, false);
                 diePacket.RespawnTime = 0;
+                _ = CoRespawnTime(diePacket.RespawnTime, false);
             }
             else
             {
-                _ = CoRespawnTime(diePacket.RespawnTime);
                 diePacket.RespawnTime = DataManager.RespawnDict[Stat.Level];
+                _ = CoRespawnTime(diePacket.RespawnTime);
             }
 
             Room.Broadcast(diePacket);
@@ -155,6 +159,22 @@ namespace Server.Game
         #region Stat
         public void StartRegen() => _statRegenerator.Start();
         public void StopRegen() => _statRegenerator.Stop();
+
+        private void UpdateStatRegenerator()
+        {
+            long now = Environment.TickCount64;
+            int deltaMs = 0;
+            long diff = now - _lastUpdateTick;
+            if (diff < 0)
+                diff = 0;
+            if (diff > int.MaxValue)
+                diff = int.MaxValue;
+            deltaMs = (int)diff;
+            _lastUpdateTick = now;
+
+            _statRegenerator.Update(deltaMs);
+            CheckUpdateStat();
+        }
 
         public bool CanRegenerate()
         {

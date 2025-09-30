@@ -226,4 +226,14 @@ class PacketHandler
 
         room.Push(room.HandleAttackSkillTarget, player, atkSkillTargetPkt);
     }
+
+    public static void C_TestDamageHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_TestDamage damagePacket = packet as C_TestDamage;
+
+        // 검증 필요하면 추가하기..
+        Player player = clientSession.MyPlayer;
+        player.OnDamaged(player, 500);
+    }
 }
