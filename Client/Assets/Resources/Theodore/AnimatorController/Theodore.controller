@@ -877,7 +877,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WeaponSniper_Start
+  m_Name: SKILL_START
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -1865,7 +1865,7 @@ AnimatorStateMachine:
     m_Position: {x: 1640, y: 590, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102319735114125628}
-    m_Position: {x: 250, y: 610, z: 0}
+    m_Position: {x: -30, y: -100, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102116668491160871}
     m_Position: {x: 500, y: 610, z: 0}
@@ -1883,7 +1883,7 @@ AnimatorStateMachine:
     m_Position: {x: 1500, y: 610, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102521393047814187}
-    m_Position: {x: -30, y: -110, z: 0}
+    m_Position: {x: -30, y: -50, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102913660087499940}
     m_Position: {x: 250, y: 710, z: 0}

@@ -73,6 +73,11 @@ public class MonsterController : CreatureController
     {
     }
 
+    public override void OnDead()
+    {
+        // DEAD 주금
+    }
+
     #region 패킷
     public void OnIdlePacket(S_State packet)
     {

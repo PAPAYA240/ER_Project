@@ -209,6 +209,9 @@ namespace Data
         public float duration; // 지속시간
         public string condition; // 옵션 (예: "HP<50%")
 
+        public string attachBoneName; // 뼈대에 달고자 한다면 그 뼈의 이름
+        
+
         // + 추가
         public string prefabName;
         public float delayTime;

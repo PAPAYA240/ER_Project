@@ -45,15 +45,15 @@ public class MyPlayerController : PlayerController
             if (State == CreatureState.Attack)
             {
                 _isAttackLoop = false;
-                if(_coLookAtTarget != null)
+                if (_coLookAtTarget != null)
                     StopCoroutine(_coLookAtTarget);
 
-                if(value != CreatureState.Moving)
+                if (value != CreatureState.Moving)
                     ResetTarget();
             }
 
             // Dead -> 다른 상태 : agent 활성화
-            if(State == CreatureState.Dead)
+            if (State == CreatureState.Dead)
                 _agent.enabled = true;
 
             PosInfo.State = value;
@@ -69,6 +69,8 @@ public class MyPlayerController : PlayerController
     protected KeyCode _keyCode = KeyCode.None;
     protected Dictionary<KeyCode, SkillBase> _skills = new Dictionary<KeyCode, SkillBase>();
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
+
+
     class CoolTime
     {
         public bool isCoolDown;
@@ -89,6 +91,8 @@ public class MyPlayerController : PlayerController
     protected float _attackRange = 3.0f; // Temp
     protected GameObject _target;
     protected GameObject _nextTarget = null;
+
+
     protected GameObject Target
     {
         get { return _target; }

@@ -73,7 +73,9 @@ public class CreatureController : BaseController
 
 	protected override void Init()
     {
-		base.Init();
+        SyncPos();
+
+        base.Init();
     }
     public virtual void OnDamaged()
     {

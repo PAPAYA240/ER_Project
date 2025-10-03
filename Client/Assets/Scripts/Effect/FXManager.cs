@@ -18,6 +18,7 @@ public class FXManager : MonoBehaviour
         fxLayer = LayerMask.NameToLayer("FX");
     }
 
+    // casterTransform = 붙여줄 캐릭터(본체) Transform (특정 뼈대에 붙이고자 한다면 json에 따로 추가)
     public List<GameObject> PlayEffect(List<EffectData> effectData, Transform casterTransform, Vector3 targetPos = new Vector3(), Quaternion rot = new Quaternion())
     {
         if (effectData == null || effectData.Count == 0)
@@ -44,6 +45,9 @@ public class FXManager : MonoBehaviour
                 fxPool[data.prefabName].Add(fxObject);
             }
 
+            if (data.attachBoneName != null)
+                casterTransform = Util.FindChildByName(casterTransform, data.attachBoneName);
+
             fxObject.transform.SetPositionAndRotation(
                 GetSpawnPosition(data, casterTransform, targetPos, out Transform parentTransform), 
                 GetSpawnRotation(data, casterTransform, targetPos, rot));
@@ -63,19 +67,24 @@ public class FXManager : MonoBehaviour
             case EEffectTarget.Self:
                 parentTransform = casterTransform;
                 return casterTransform.position + data.position;
+
             case EEffectTarget.Relative:
                 parentTransform = casterTransform;
                 Quaternion yawRotationOnly = Quaternion.Euler(0, casterTransform.eulerAngles.y, 0);
                 return casterTransform.position + yawRotationOnly * data.position;
+
             case EEffectTarget.Target:
                 parentTransform = null;
                 return targetPos;
+
             case EEffectTarget.Ground:
                 parentTransform = null;
                 return data.position;
+
             case EEffectTarget.Shoot:
                 parentTransform = null;
                 return casterTransform.position + data.position;
+
             default:
                 parentTransform = null;
                 return Vector3.zero;
@@ -119,9 +128,10 @@ public class FXManager : MonoBehaviour
             Vector3 nextPosition = effect.transform.position + forwardTrans * moveSpeed * Time.deltaTime;
             RaycastHit hit;
 
-            // TODO : 일단 몬스터만
             if (Physics.Raycast(effect.transform.position, forwardTrans, out hit, 
-                (nextPosition - effect.transform.position).magnitude, LayerMask.GetMask("Monster")))
+                (nextPosition - effect.transform.position).magnitude, LayerMask.GetMask("Monster")) ||
+                Physics.Raycast(effect.transform.position, forwardTrans, out hit,
+                (nextPosition - effect.transform.position).magnitude, LayerMask.GetMask("Player")))
             {
                 effect.transform.position = hit.point;
                 yield break;

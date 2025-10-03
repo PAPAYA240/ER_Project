@@ -7,7 +7,6 @@ namespace Server.Game
         private static FSMManager _instance = new FSMManager();
         public static FSMManager Instance { get { return _instance; } }
 
-
         private FSMManager()
         {
         }

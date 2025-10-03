@@ -16,21 +16,11 @@
       ],
       "Q": [
         {
-          "prefabName": "FX_Skill1_OutCircle",
+          "prefabName": "FX_Charging",
           "target": "Self",
           "duration": 5,
           "delayTime": 0,
-          "position": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          }
-        },
-        {
-          "prefabName": "FX_Skill1_InCircle",
-          "target": "Self",
-          "duration": 5,
-          "delayTime": 0,
+          "attachBoneName": "ShotPoint",
           "position": {
             "x": 0,
             "y": 0,

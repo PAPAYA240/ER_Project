@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.UI.GridLayoutGroup;
 
 public class TheodoreController : MyPlayerController
 {
@@ -37,9 +38,12 @@ public class TheodoreController : MyPlayerController
     {
         if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))
         {
-            ReadySkillQ();
-            StartCoroutine(ShootSkillQ());
+            _isUseSkill = true;
             _keyCode = KeyCode.Q;
+
+            _sniperRifle.GetComponent<WeaponController>().PlayAnimation("SKILL_READY_Q", 0.1f);
+            ReadySkillQ();
+            StartCoroutine(ShotSkillQ());
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.W))
         {
@@ -80,14 +84,18 @@ public class TheodoreController : MyPlayerController
     protected override void Skill_Q()  { }
     private void ReadySkillQ()
     {
+        PlayAnimation("SKILL_START", 0.1f);
+
         _currentEffectList = Managers.FX.PlayEffect(Find_EffectList(KeyCode.Q), this.transform);
-        _effectDuration =DataManager.PlayerFxDict[CharacterType.Theodore][KeyCode.Q][0].duration;
+        _effectDuration =DataManager.PlayerFxDict[CharacterType.Theodore][KeyCode.Q][0].duration - 2.5f;
+
+        indicator.SetLastKey(_keyCode);
         SendFXPacket(_keyCode);
     }
 
     private float _elapsedTime = 0f;
     private float _effectDuration = 0f;
-    IEnumerator ShootSkillQ()
+    IEnumerator ShotSkillQ()
     {
         while (Input.GetKey(KeyCode.Q))
         {
@@ -95,14 +103,22 @@ public class TheodoreController : MyPlayerController
             _ratioSkillDuration = _elapsedTime / _effectDuration;
 
             if (_elapsedTime >= _effectDuration)
-                _ratioSkillDuration = 1.0f; 
+            {
+                PlayAnimation("WAIT", 0.1f);
 
+                _ratioSkillDuration = 0f;
+                _elapsedTime = 0;
+                _effectDuration = 0;
+                yield break;
+            }
             yield return null;
         }
 
         _isUseSkill = true;
         _elapsedTime = 0;
         _effectDuration = 0;
+
+        _sniperRifle.GetComponent<WeaponController>().PlayAnimation("SKILL_Q", 0.1f);
 
         foreach (GameObject effect in _currentEffectList)
         {
@@ -113,7 +129,7 @@ public class TheodoreController : MyPlayerController
             }
         }
         _currentEffectList.Clear();
-
+        
         PlayAnimation("SKILL_Q", 0.1f);
 
         LookAtMouse();
@@ -139,13 +155,19 @@ public class TheodoreController : MyPlayerController
         }
     }
 
-    #region W Skill
-    protected override void Skill_W()
+    protected void Passive()
     {
         // 바라보는 방향대로 스크린 호출
         StartCoroutine(CoPassive());
         SendFXPacket(_keyCode);
         State = CreatureState.Idle;
+    }
+
+    #region W Skill
+    protected override void Skill_W()
+    {
+        PlayAnimation("WAIT", 0.1f);
+        indicator.SetLastKey(KeyCode.W);
     }
     #endregion
 
@@ -153,10 +175,10 @@ public class TheodoreController : MyPlayerController
 
     protected override void Skill_E()
     {
-        StartCoroutine(ShootSkillE());
+        StartCoroutine(ShotSkillE());
     }
 
-    IEnumerator ShootSkillE()
+    IEnumerator ShotSkillE()
     {
         while (Input.GetKey(KeyCode.E))
             yield return null;
@@ -189,11 +211,12 @@ public class TheodoreController : MyPlayerController
         StartCoroutine(CoPassive());
     }
 
+    UI_IndicatorTheodore indicator;
     #region init
     private bool Equip_Weapon()
     {
-       Transform RTransform = this.FindInDescendants(transform, "Equip_R");
-       _equipTransform = this.FindInDescendants(transform, "Equip_L");
+       Transform RTransform = Util.FindChildByName(transform, "Equip_R");
+       _equipTransform = Util.FindChildByName(transform, "Equip_L");
         if (_equipTransform == null || RTransform == null)
             return false;
 
@@ -203,6 +226,8 @@ public class TheodoreController : MyPlayerController
         {
             if (RTransform != null)
             {
+                _sniperRifle.gameObject.AddComponent<WeaponController>();
+
                 _sniperRifle.transform.SetParent(RTransform);
                 _sniperRifle.transform.localPosition = Vector3.zero;
                 _sniperRifle.transform.localRotation = Quaternion.identity;
@@ -225,9 +250,14 @@ public class TheodoreController : MyPlayerController
         }
         else
             return false;
+
+        indicator = gameObject.GetOrAddComponent<UI_IndicatorTheodore>();
+        indicator._owner = this;
+
         return true;
     }
 
+   
     private bool Add_Material()
     {
         myRenderer = this.GetComponentInChildren<Renderer>();

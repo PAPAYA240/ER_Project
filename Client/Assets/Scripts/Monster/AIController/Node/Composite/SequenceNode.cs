@@ -8,16 +8,6 @@ public class SequenceNode : CompositeNode
         if (_currentIdx >= children.Count)
             _currentIdx = 0;
 
-        MonsterController monsterController = obj.GetComponentInChildren<MonsterController>();
-        if (monsterController)
-        {
-            //if (monsterController.ObjInfo.Monster.MonsterType == MonsterType.Alpha)
-            {
-                if (_currentIdx >= children.Count)
-                    _currentIdx = 0;
-            }
-        }
-
         for (int i = _currentIdx; i < children.Count; i++)
         {
             _currentIdx = i;
@@ -28,7 +18,6 @@ public class SequenceNode : CompositeNode
 
             if (status == NodeStatus.Failure)
             {
-                // 실패 시 다시 시작
                 _currentIdx = 0;    
                 return NodeStatus.Failure;
             }

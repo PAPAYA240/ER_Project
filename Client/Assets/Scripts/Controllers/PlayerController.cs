@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using Data;
 using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Windows;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using static Define;
 
 public class PlayerController : CreatureController
 {
