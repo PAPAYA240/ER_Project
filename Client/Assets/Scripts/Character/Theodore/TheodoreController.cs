@@ -40,10 +40,6 @@ public class TheodoreController : MyPlayerController
         {
             _isUseSkill = true;
             _keyCode = KeyCode.Q;
-
-            _sniperRifle.GetComponent<WeaponController>().PlayAnimation("SKILL_READY_Q", 0.1f);
-            ReadySkillQ();
-            StartCoroutine(ShotSkillQ());
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.W))
         {
@@ -80,61 +76,6 @@ public class TheodoreController : MyPlayerController
         myRenderer.material = originMaterial;
     }
 
-    #region Q Skill
-    protected override void Skill_Q()  { }
-    private void ReadySkillQ()
-    {
-        PlayAnimation("SKILL_START", 0.1f);
-
-        _currentEffectList = Managers.FX.PlayEffect(Find_EffectList(KeyCode.Q), this.transform);
-        _effectDuration =DataManager.PlayerFxDict[CharacterType.Theodore][KeyCode.Q][0].duration - 2.5f;
-
-        indicator.SetLastKey(_keyCode);
-        SendFXPacket(_keyCode);
-    }
-
-    private float _elapsedTime = 0f;
-    private float _effectDuration = 0f;
-    IEnumerator ShotSkillQ()
-    {
-        while (Input.GetKey(KeyCode.Q))
-        {
-            _elapsedTime += Time.deltaTime;
-            _ratioSkillDuration = _elapsedTime / _effectDuration;
-
-            if (_elapsedTime >= _effectDuration)
-            {
-                PlayAnimation("WAIT", 0.1f);
-
-                _ratioSkillDuration = 0f;
-                _elapsedTime = 0;
-                _effectDuration = 0;
-                yield break;
-            }
-            yield return null;
-        }
-
-        _isUseSkill = true;
-        _elapsedTime = 0;
-        _effectDuration = 0;
-
-        _sniperRifle.GetComponent<WeaponController>().PlayAnimation("SKILL_Q", 0.1f);
-
-        foreach (GameObject effect in _currentEffectList)
-        {
-            if (effect != null)
-            {
-                Managers.FX.StopAndReturnEffect(effect);
-                effect.SetActive(false);
-            }
-        }
-        _currentEffectList.Clear();
-        
-        PlayAnimation("SKILL_Q", 0.1f);
-
-        LookAtMouse();
-    }
-    #endregion
     public override void OnAttackTiming()
     {
         // 평타
@@ -163,11 +104,103 @@ public class TheodoreController : MyPlayerController
         State = CreatureState.Idle;
     }
 
+    #region Q Skill
+    protected override void Skill_Q() 
+    {
+        ReadySkillQ();
+        StartCoroutine(ShotSkillQ());
+    }
+    private void ReadySkillQ()
+    {
+        _sniperRifle.GetComponent<WeaponController>().PlayAnimation("SKILL_READY_Q", 0.1f);
+        PlayAnimation("SKILL_START", 0.1f);
+
+        _currentEffectList = Managers.FX.PlayEffect(Find_EffectList(KeyCode.Q), this.transform);
+        _effectDuration =DataManager.PlayerFxDict[CharacterType.Theodore][KeyCode.Q][0].duration - 2.5f;
+
+        indicator.EnableIndicator(KeyCode.Q);
+        SendFXPacket(_keyCode);
+    }
+
+    private float _elapsedTime = 0f;
+    private float _effectDuration = 0f;
+    IEnumerator ShotSkillQ()
+    {
+        while (Input.GetKey(KeyCode.Q))
+        {
+            _elapsedTime += Time.deltaTime;
+            _ratioSkillDuration = _elapsedTime / _effectDuration;
+
+            if (_elapsedTime >= _effectDuration)
+            {
+                State = CreatureState.Idle;
+
+                indicator.DisableAllIndicators();
+
+                _ratioSkillDuration = 0f;
+                _elapsedTime = 0;
+                _effectDuration = 0;
+                yield break;
+            }
+            yield return null;
+        }
+
+        indicator.DisableAllIndicators();
+        _isUseSkill = true;
+        _elapsedTime = 0;
+        _effectDuration = 0;
+
+        _sniperRifle.GetComponent<WeaponController>().PlayAnimation("SKILL_Q", 0.1f);
+
+        foreach (GameObject effect in _currentEffectList)
+        {
+            if (effect != null)
+            {
+                Managers.FX.StopAndReturnEffect(effect);
+                effect.SetActive(false);
+            }
+        }
+        _currentEffectList.Clear();
+        
+        PlayAnimation("SKILL_Q", 0.1f);
+
+        LookAtMouse();
+    }
+    #endregion
+
     #region W Skill
     protected override void Skill_W()
     {
-        PlayAnimation("WAIT", 0.1f);
-        indicator.SetLastKey(KeyCode.W);
+        State = CreatureState.Idle;
+
+        indicator.EnableIndicator(KeyCode.W);
+        StartCoroutine(ShotSkillW());
+    }
+
+    IEnumerator ShotSkillW()
+    {
+        while (Input.GetKey(KeyCode.W) && !Input.GetMouseButtonDown(0))
+        {
+            // 오른 마우스 누르면 취소
+            if(Input.GetMouseButtonDown(1))
+            {
+                indicator.DisableAllIndicators();
+                yield break;
+            }
+            yield return null;
+        }
+
+        _isUseSkill = true;
+
+        // w키를 떼거나, 왼 마우스를 누르거나
+        // _currentEffectList = Managers.FX.PlayEffect(Find_EffectList(KeyCode.W), this.transform);
+        indicator.DisableAllIndicators();
+        
+        LookAtMouse();
+
+        State = CreatureState.Idle;
+
+         yield break;
     }
     #endregion
 
@@ -175,6 +208,7 @@ public class TheodoreController : MyPlayerController
 
     protected override void Skill_E()
     {
+        indicator.EnableIndicator(KeyCode.E);
         StartCoroutine(ShotSkillE());
     }
 
@@ -183,8 +217,9 @@ public class TheodoreController : MyPlayerController
         while (Input.GetKey(KeyCode.E))
             yield return null;
 
+        indicator.DisableAllIndicators();
         PlayAnimation("SKILL_E", 0.1f);
-      
+
         LookAtMouse();
     }
   
@@ -193,6 +228,10 @@ public class TheodoreController : MyPlayerController
     #region R Skill
     protected override void Skill_R()
     {
+        State = CreatureState.Idle;
+
+        indicator.EnableIndicator(KeyCode.R);
+
         StartCoroutine(ShootSkillR());
     }
     IEnumerator ShootSkillR()
@@ -200,6 +239,7 @@ public class TheodoreController : MyPlayerController
         while (Input.GetKey(KeyCode.R))
             yield return null;
 
+        indicator.DisableAllIndicators();
         PlayAnimation("SKILL_R", 0.1f);
 
         LookAtMouse();
@@ -252,7 +292,6 @@ public class TheodoreController : MyPlayerController
             return false;
 
         indicator = gameObject.GetOrAddComponent<UI_IndicatorTheodore>();
-        indicator._owner = this;
 
         return true;
     }

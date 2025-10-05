@@ -864,10 +864,6 @@ public class MyPlayerController : PlayerController
     #region Animation
     protected override void PlayAnimation(string animName, float ratio)
     {
-        int layerIndex = _animator.GetLayerIndex(layerName);
-        if (layerIndex == -1)
-            return;
-
         _animator.CrossFadeInFixedTime(animName, ratio);
         SendAnimPacket(animName, ratio);
     }

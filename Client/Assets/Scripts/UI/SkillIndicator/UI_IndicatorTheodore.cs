@@ -1,73 +1,118 @@
-﻿using Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class UI_IndicatorTheodore : UI_Base
 {
-    public MyPlayerController _owner = null;
-    Canvas _indicatorCanvas = null;
-    Canvas _indicatorCanvasW = null;
-    Vector3 _targetScaled = new Vector3(1, 1, 1);
-    private Dictionary<KeyCode, GameObject> _indicatorMap = new Dictionary<KeyCode, GameObject>();
+    public MyPlayerController Owner { get; private set; } = null;
+    private readonly Dictionary<KeyCode, GameObject> _indicatorMap = new Dictionary<KeyCode, GameObject>();
+    
+    Canvas _qIndicatorCanvas = null;
+    Canvas _wIndicatorCanvas = null;
+    Canvas _eIndicatorCanvas = null;
+    Canvas _rIndicatorCanvas = null;
 
-    public KeyCode _lastKey = KeyCode.None;
+    Vector3 _targetScaled = new Vector3(1, 1, 1);
+    private const float SCALE_SPEED = 1.5f;
+
+    private readonly Dictionary<KeyCode, Action> _skillUpdateMap = new Dictionary<KeyCode, Action>();
+    public KeyCode CurrentActiveKey { get; private set; } = KeyCode.None;
+
     public override void Init()
     {
+        Owner = GetComponentInParent<MyPlayerController>();
+
         // Q Indicator
         _indicatorMap[KeyCode.Q] = Managers.Resource.Instantiate($"UI/Character/Theodore/IndicatorQ");
-        _indicatorCanvas = _indicatorMap[KeyCode.Q].GetComponent<Canvas>();
-        if (_indicatorCanvas != null)
+        _qIndicatorCanvas = _indicatorMap[KeyCode.Q].GetComponent<Canvas>();
+        if (_qIndicatorCanvas != null)
         {
-            _indicatorCanvas.transform.SetParent(_owner.transform, false);
-            _indicatorCanvas.enabled = false;
+            _qIndicatorCanvas.transform.SetParent(Owner.transform, false);
+            _qIndicatorCanvas.enabled = false;
         }
 
-        Transform pos = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "OutCircle");
-        _targetScaled = pos.localScale + new Vector3(0.01f, 0.01f, 0);
+        Transform Outpos = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "OutCircle");
+        _targetScaled = Outpos.localScale + new Vector3(0.01f, 0.01f, 0);
+        Transform pos = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "InCircle");
+        pos.localScale = Vector3.zero;
 
         // W Indicator
         _indicatorMap[KeyCode.W] = Managers.Resource.Instantiate($"UI/Character/Theodore/IndicatorW");
-        _indicatorCanvasW = _indicatorMap[KeyCode.W].GetComponent<Canvas>();
-        if (_indicatorCanvasW != null)
+        _wIndicatorCanvas = _indicatorMap[KeyCode.W].GetComponent<Canvas>();
+        if (_wIndicatorCanvas != null)
         {
-             _indicatorCanvasW.transform.SetParent(_owner.transform, false);
-            _indicatorCanvasW.enabled = false;
+             _wIndicatorCanvas.transform.SetParent(Owner.transform, false);
+            _wIndicatorCanvas.enabled = false;
         }
+
+        // E Indicator
+        _indicatorMap[KeyCode.E] = Managers.Resource.Instantiate($"UI/Character/Theodore/IndicatorE");
+        _eIndicatorCanvas = _indicatorMap[KeyCode.E].GetComponent<Canvas>();
+        if (_eIndicatorCanvas != null)
+        {
+            _eIndicatorCanvas.transform.SetParent(Owner.transform, false);
+            _eIndicatorCanvas.enabled = false;
+        }
+
+        // R Indicator
+        _indicatorMap[KeyCode.R] = Managers.Resource.Instantiate($"UI/Character/Theodore/IndicatorR");
+        _rIndicatorCanvas = _indicatorMap[KeyCode.R].GetComponent<Canvas>();
+        if (_rIndicatorCanvas != null)
+        {
+            _rIndicatorCanvas.transform.SetParent(Owner.transform, false);
+            _rIndicatorCanvas.enabled = false;
+        }
+        _skillUpdateMap[KeyCode.Q] = AbilityQ; 
+        _skillUpdateMap[KeyCode.W] = AbilityW;
+        _skillUpdateMap[KeyCode.E] = AbilityE;
+        _skillUpdateMap[KeyCode.R] = AbilityR;
     }
 
-    public void SetLastKey(KeyCode key)
-    {
-        _lastKey = key;
-    }
+
     private void Update()
     {
-        if (_indicatorCanvas == null)
+        if (CurrentActiveKey == KeyCode.None)
             return;
 
-        switch (_lastKey)
+        // Dictionary를 사용하여 O(1) 시간 복잡도로 스킬 로직 호출
+        if (_skillUpdateMap.TryGetValue(CurrentActiveKey, out Action updateAction))
+            updateAction?.Invoke();
+
+        
+    }
+
+    public void EnableIndicator(KeyCode key)
+    {
+        CurrentActiveKey = key;
+    }
+
+    public void DisableAllIndicators()
+    {
+        if (CurrentActiveKey != KeyCode.None)
+            DisableIndicator(CurrentActiveKey);
+
+        CurrentActiveKey = KeyCode.None;
+    }
+    private void DisableIndicator(KeyCode key)
+    {
+        if (_indicatorMap.TryGetValue(key, out GameObject go))
         {
-            case KeyCode.Q:
-                AbilityQ();
-            break;
+            Canvas canvas = go.GetComponent<Canvas>();
+            if (canvas != null)
+                canvas.enabled = false; 
 
-            case KeyCode.W:
-                AbilityW();
-            break;
+            if (key == KeyCode.Q)
+            {
+                Transform pos = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "InCircle");
+                pos.localScale = Vector3.zero;
+            }
         }
-
-        //_indicatorCanvas.enabled = false;
-        //Transform pos = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "InCircle");
-        //pos.localScale = Vector3.zero;
     }
 
     #region Skill W
     private void AbilityW()
     {
-        _indicatorCanvasW.enabled = true;
+        _wIndicatorCanvas.enabled = true;
 
         Vector3 position = Vector3.zero;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -76,7 +121,7 @@ public class UI_IndicatorTheodore : UI_Base
 
         Quaternion rot = Quaternion.LookRotation(position - transform.position);
         rot.eulerAngles = new Vector3(0, rot.eulerAngles.y, rot.eulerAngles.z);
-        _indicatorCanvasW.transform.rotation = Quaternion.Lerp(rot, _indicatorCanvasW.transform.rotation, 0);
+        _wIndicatorCanvas.transform.rotation = Quaternion.Lerp(rot, _wIndicatorCanvas.transform.rotation, 0);
 
         Util.FindChildByName(_indicatorMap[KeyCode.W].transform, "Indicator").transform.position = position;
     }
@@ -85,7 +130,7 @@ public class UI_IndicatorTheodore : UI_Base
     #region Skill Q
     private void AbilityQ()
     {
-        _indicatorCanvas.enabled = true;
+        _qIndicatorCanvas.enabled = true;
 
         Scale();
 
@@ -98,10 +143,9 @@ public class UI_IndicatorTheodore : UI_Base
 
         Quaternion rot = Quaternion.LookRotation(position - transform.position);
         rot.eulerAngles = new Vector3(0, rot.eulerAngles.y, rot.eulerAngles.z);
-        _indicatorCanvas.transform.rotation = Quaternion.Lerp(rot, _indicatorCanvas.transform.rotation, 0);
+        _qIndicatorCanvas.transform.rotation = Quaternion.Lerp(rot, _qIndicatorCanvas.transform.rotation, 0);
     }
 
-    private float _scaleSpeed = 1.5f;
     private void Scale()
     {
         Transform _inCircleTransform = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "InCircle");
@@ -113,8 +157,44 @@ public class UI_IndicatorTheodore : UI_Base
         _inCircleTransform.localScale = Vector3.Lerp(
                 _inCircleTransform.localScale,
                 _targetScaled,
-                Time.deltaTime * _scaleSpeed
+                Time.deltaTime * SCALE_SPEED
             );
     }
     #endregion
+
+    #region Skill E
+    private void AbilityE()
+    {
+        _eIndicatorCanvas.enabled = true;
+
+        Vector3 position = Vector3.zero;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
+        {
+            position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+        }
+
+        Quaternion rot = Quaternion.LookRotation(position - transform.position);
+        rot.eulerAngles = new Vector3(0, rot.eulerAngles.y, rot.eulerAngles.z);
+        _eIndicatorCanvas.transform.rotation = Quaternion.Lerp(rot, _eIndicatorCanvas.transform.rotation, 0);
+    }
+    #endregion
+
+    #region Skill R
+    private void AbilityR()
+    {
+        _rIndicatorCanvas.enabled = true;
+
+        Vector3 position = Vector3.zero;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
+        {
+            position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+        }
+
+        Quaternion rot = Quaternion.LookRotation(position - transform.position);
+        rot.eulerAngles = new Vector3(0, rot.eulerAngles.y, rot.eulerAngles.z);
+        _rIndicatorCanvas.transform.rotation = Quaternion.Lerp(rot, _rIndicatorCanvas.transform.rotation, 0);
+    }
+#endregion
 }
