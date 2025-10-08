@@ -309,6 +309,7 @@ namespace Server.Game
                 player.Target = target;
                 player.SkillTarget = target;
                 player.UsedTargetingSkill = keyCode;
+
             }
             else if(_players.TryGetValue(skillPacket.TargetId, out Player skillTarget))
             {
@@ -323,7 +324,7 @@ namespace Server.Game
             skill.SkillInfo = new SkillInfo
             {
                 SkillId = skillPacket.SkillInfo.SkillId,
-                KeyCode = skillPacket.SkillInfo.KeyCode,              
+                KeyCode = skillPacket.SkillInfo.KeyCode,
             };
             skill.CostInfo = new CostInfo
             {

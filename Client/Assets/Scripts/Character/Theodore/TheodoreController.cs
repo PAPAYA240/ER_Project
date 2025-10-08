@@ -1,8 +1,9 @@
-﻿using Google.Protobuf.Protocol;
+﻿using Data;
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.UI.GridLayoutGroup;
+using static UnityEngine.GraphicsBuffer;
 
 public class TheodoreController : MyPlayerController
 {
@@ -31,6 +32,7 @@ public class TheodoreController : MyPlayerController
         }
 
         base.Init();
+
         _attackRange = 10;
     }
 
@@ -68,7 +70,7 @@ public class TheodoreController : MyPlayerController
         Renderer sniperRender = _sniperRifle.GetComponentInChildren<Renderer>();
         myRenderer.material = passiveMaterial;
         sniperRender.material = passiveMaterial;
-        Managers.FX.PlayEffect(Find_EffectList(KeyCode.W), this.transform);
+        PlayEffectTransform(CreatureState.Skill, KeyCode.W);
 
         yield return new WaitForSeconds(4f);
 
@@ -82,7 +84,7 @@ public class TheodoreController : MyPlayerController
         if (State == CreatureState.Attack)
         {
             Transform childTransform = Util.FindChildByName(_sniperRifle.transform, "ShotPoint");
-            List<GameObject> EffectList = Managers.FX.PlayEffect(Find_EffectList(KeyCode.Z), childTransform);
+            PlayEffectTransform(CreatureState.Skill, KeyCode.Z, false, null, childTransform);
         }
         // 스킬
         else if (State == CreatureState.Skill)
@@ -104,6 +106,8 @@ public class TheodoreController : MyPlayerController
         State = CreatureState.Idle;
     }
 
+ 
+
     #region Q Skill
     protected override void Skill_Q() 
     {
@@ -115,8 +119,8 @@ public class TheodoreController : MyPlayerController
         _sniperRifle.GetComponent<WeaponController>().PlayAnimation("SKILL_READY_Q", 0.1f);
         PlayAnimation("SKILL_START", 0.1f);
 
-        _currentEffectList = Managers.FX.PlayEffect(Find_EffectList(KeyCode.Q), this.transform);
-        _effectDuration =DataManager.PlayerFxDict[CharacterType.Theodore][KeyCode.Q][0].duration - 2.5f;
+        List<GameObject> effectList = PlayEffectTransform(CreatureState.Skill, KeyCode.Q);
+        _effectDuration = 5.0f; // TODO : 예시로 하드 코딩, 나중에 CC Data에서 가져와 줄 것
 
         indicator.EnableIndicator(KeyCode.Q);
         SendFXPacket(_keyCode);
@@ -126,10 +130,13 @@ public class TheodoreController : MyPlayerController
     private float _effectDuration = 0f;
     IEnumerator ShotSkillQ()
     {
+        GameObject target = null;
         while (Input.GetKey(KeyCode.Q))
         {
             _elapsedTime += Time.deltaTime;
             _ratioSkillDuration = _elapsedTime / _effectDuration;
+
+            target = TryGetAttackableObject();
 
             if (_elapsedTime >= _effectDuration)
             {
@@ -142,8 +149,12 @@ public class TheodoreController : MyPlayerController
                 _effectDuration = 0;
                 yield break;
             }
+
             yield return null;
         }
+
+        if (target != null && target.GetComponent<CreatureController>().IsStun)
+            PlayEffectTransform(CreatureState.Skill, KeyCode.Q, true, target);
 
         indicator.DisableAllIndicators();
         _isUseSkill = true;
@@ -193,14 +204,45 @@ public class TheodoreController : MyPlayerController
         _isUseSkill = true;
 
         // w키를 떼거나, 왼 마우스를 누르거나
-        // _currentEffectList = Managers.FX.PlayEffect(Find_EffectList(KeyCode.W), this.transform);
-        indicator.DisableAllIndicators();
-        
+        Vector3 mousePos = GetMouseWorldPosition();
+
         LookAtMouse();
+
+        indicator.DisableAllIndicators();
 
         State = CreatureState.Idle;
 
-         yield break;
+        // 플레이어 y축 회전 값만 적용
+        float playerYaw = transform.rotation.eulerAngles.y;
+        Quaternion yawRotationOnly = Quaternion.Euler(0, playerYaw, 0);
+        Quaternion desiredXRotation = Quaternion.Euler(-90f, 180f, 0);
+        Quaternion finalRotation = yawRotationOnly * desiredXRotation;
+
+        if (mousePos != Vector3.zero)
+            PlayEffectAtPosition(CreatureState.Skill, KeyCode.W, mousePos, finalRotation, true);
+
+        /*
+         일반 공격이 스크린을 통과하면 추가 스킬 피해를 주고 적 주변으로 확산된다.
+
+        에너지 포(Q)가 스크린을 통과하면 잠시 후 증폭 스크린 전방으로 에너지를 발사하여 적에게 피해를 주고 
+        아군을 회복시킨다. 발사한 에너지포의 방향과는 상관없이 무조건 중앙에 발사된다.
+
+        스파크탄(E)이 스크린에 통과하면 평타처럼 적 주변으로 확산하고 투사체 속도와 사거리가 증가한다.
+        */
+        yield break;
+    }
+
+    private Vector3 GetMouseWorldPosition()
+    {
+        Camera mainCam = Camera.main;
+        if (mainCam == null) return Vector3.zero;
+
+        Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Map")))
+            return hit.point;
+
+        return Vector3.zero;
     }
     #endregion
 
@@ -248,7 +290,8 @@ public class TheodoreController : MyPlayerController
 
     public override void PlayEffectFromServer(EffectInfo fxInfo)
     {
-        StartCoroutine(CoPassive());
+        PlayEffectTransform(CreatureState.Skill, (KeyCode)fxInfo.KeyCode);
+        //StartCoroutine(CoPassive());
     }
 
     UI_IndicatorTheodore indicator;

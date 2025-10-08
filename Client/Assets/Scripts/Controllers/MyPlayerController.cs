@@ -239,7 +239,7 @@ public class MyPlayerController : PlayerController
                 GetMouseInput(1);
                 break;
             case CreatureState.Moving:
-                GetMouseInput(1);
+               GetMouseInput(1);
                 break;
             case CreatureState.Attack:
                 GetMouseInput(1);
@@ -283,7 +283,7 @@ public class MyPlayerController : PlayerController
     protected override void UpdateIdle()
     {
         // 이동 상태로 갈지 확인
-        if (_moveKeyPressed)
+        if (_moveKeyPressed && IsStun == false)
         {
             State = CreatureState.Moving;
             return;
@@ -1191,6 +1191,45 @@ public class MyPlayerController : PlayerController
 
     #endregion
 
+    #region Effect
+    protected override List<GameObject> PlayEffectTransform(CreatureState state, KeyCode key, bool bTarget = false, 
+        GameObject target = null, Transform targetTransform = null)
+    {
+        List<EffectData> effectList = 
+            Managers.FX.GetSkillEffectList(ObjInfo.Player.CharType, state, key, bTarget);
+
+        List<GameObject> EffectList = null;
+
+        // 타겟의 이펙트
+        if (bTarget == true && target != null)
+        {
+            EffectList = (targetTransform != null) ?
+             Managers.FX.PlayEffect(effectList, targetTransform)
+             : Managers.FX.PlayEffect(effectList, target.transform);
+        }
+        // 나의 이펙트
+        else if (bTarget == false)
+        {
+            EffectList = (targetTransform != null) ?
+            Managers.FX.PlayEffect(effectList, targetTransform)
+            : Managers.FX.PlayEffect(effectList, this.transform);
+        }
+
+        return EffectList;
+    }
+
+    protected List<GameObject> PlayEffectAtPosition(CreatureState state, KeyCode key, Vector3 position, Quaternion rot, bool bTarget = false)
+    {
+        List<EffectData> effectList =
+            Managers.FX.GetSkillEffectList(ObjInfo.Player.CharType, state, key, bTarget); 
+
+        if (effectList == null || effectList.Count == 0) return null;
+
+        List<GameObject> EffectList = Managers.FX.PlayEffect(effectList, this.transform, position, rot);
+
+        return EffectList;
+    }
+    #endregion
     #region Inventory
 
     public void ChangeInventory(S_ChangeInventory packet)
@@ -1332,6 +1371,7 @@ public class MyPlayerController : PlayerController
             if (monster)
             {
                 targetId = monster.ObjInfo.ObjectId;
+                CreatureController targetCreature = Target.GetComponent<CreatureController>();
             }
         }
         else
@@ -1347,7 +1387,7 @@ public class MyPlayerController : PlayerController
             SkillInfo = new SkillInfo() { KeyCode = (int)key },
             TargetId = targetId,
             MousePosX = mousePos.x, MousePosZ = mousePos.z,
-            ChargeRatio = _ratioSkillDuration
+            ChargeRatio = _ratioSkillDuration,
         };
         _ratioSkillDuration = 0f;
 

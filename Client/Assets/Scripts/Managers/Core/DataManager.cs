@@ -25,9 +25,8 @@ public class DataManager
         = new Dictionary<CharacterType, Dictionary<KeyCode, SkillHitbox>>();
 
     public static Dictionary<MonsterSkill, List<EffectData>> MonsterSkillDict { get; private set; } = new Dictionary<MonsterSkill, List<EffectData>>();
-    public static Dictionary<CharacterType, Dictionary<KeyCode, List<EffectData>>> PlayerFxDict { get; private set; } 
-        = new Dictionary<CharacterType, Dictionary<KeyCode, List<EffectData>>>();
-
+    public static Dictionary<CharacterType, Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>> PlayerFxDict { get; private set; }
+        = new Dictionary<CharacterType, Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>>();
     public static Dictionary<int, ItemInfoBase> ItemDict { get; private set; } = new Dictionary<int, ItemInfoBase>();
 
     public void Init()
@@ -42,7 +41,7 @@ public class DataManager
 
         // For Effect
         MonsterSkillDict = LoadJson<Data.MonsterEffectDict, MonsterSkill, List<EffectData>>("MonsterData/EffectData/MonsterEffectData").MakeDict();
-        PlayerFxDict = LoadJson<Data.PlayerEffectDict, CharacterType, Dictionary<KeyCode, List<EffectData>>>("PlayerEffectData").MakeDict();
+        PlayerFxDict = LoadJson<Data.PlayerEffectDict, CharacterType, Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>>("PlayerEffectData").MakeDict();
 
         // For Item
         JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };

@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class CreatureController : BaseController
 {
+    public bool IsStun { get; set; } = false;    // CC기
+
     Define.Object _object = Define.Object.Unknown;
     public Define.Object ObjectType
     {

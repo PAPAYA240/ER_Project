@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using Data;
 using static Data.EffectData;
+using Google.Protobuf.Protocol;
 
 public class FXManager : MonoBehaviour
 {
@@ -42,6 +43,7 @@ public class FXManager : MonoBehaviour
                 fxObject = Instantiate(fxPrefab);
                 if (!fxPool.ContainsKey(data.prefabName))
                     fxPool[data.prefabName] = new List<GameObject>();
+               fxObject.gameObject.AddComponent<FxController>();
                 fxPool[data.prefabName].Add(fxObject);
             }
 
@@ -165,6 +167,27 @@ public class FXManager : MonoBehaviour
     #endregion
 
     #region Util
+    public List<EffectData> GetSkillEffectList(CharacterType charType, CreatureState state, KeyCode keyCode, bool bTarget = false)
+    {
+        // 1단계: CharacterType 확인
+        if (DataManager.PlayerFxDict== null || !DataManager.PlayerFxDict.TryGetValue(charType, out var stateDict))
+            return null;
+
+        // 2단계: CreatureState 확인
+        if (!stateDict.TryGetValue(state, out var keyCodeDict))
+            return null;
+
+        if (keyCodeDict.TryGetValue(keyCode, out var effectList))
+        {
+            if (bTarget == false)
+                return effectList.Caster;
+            else
+                return effectList.HitTarget;
+        }
+        else
+            return null;
+    }
+
     private void LoadFxPrefabs()
     {
         GameObject[] loadedPrefabs = Resources.LoadAll<GameObject>("effects/prefab");

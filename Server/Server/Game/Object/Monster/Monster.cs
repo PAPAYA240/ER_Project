@@ -30,6 +30,7 @@ namespace Server.Game
         // TODO : 감마 총알 예시
         public float _delaySkillAnimationTimer = 0;
 
+        public bool IsStun { get; set; } = false;
         public Monster() => ObjectType = GameObjectType.Monster;
 
         public void Init(string name)

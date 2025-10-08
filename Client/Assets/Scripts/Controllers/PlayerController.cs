@@ -12,6 +12,7 @@ public class PlayerController : CreatureController
     int _atkCount = 1;
     int _maxAtkCount = 2;
 
+
     // Fog
     private FogOfWarVision _fogOfWarVision;
 
@@ -28,6 +29,7 @@ public class PlayerController : CreatureController
     // 화살
     protected GameObject _projectile = null;
     protected Transform _equipTransform = null;
+    
 
     public bool IsKeyInput
     {
@@ -312,15 +314,18 @@ public class PlayerController : CreatureController
     #region Effect
     public virtual void PlayEffectFromServer(EffectInfo fxInfo)
     {
-        Managers.FX.PlayEffect(Find_EffectList((KeyCode)fxInfo.KeyCode), this.transform);
+        PlayEffectTransform(CreatureState.Skill, (KeyCode)fxInfo.KeyCode);
     }
 
-    protected List<EffectData> Find_EffectList(KeyCode key)
+    // 현재 상태, 키, 타겟팅 상대에게 이펙트
+    protected virtual List<GameObject> PlayEffectTransform(CreatureState state, KeyCode key, bool bTarget = false,
+        GameObject target = null, Transform targetTransform = null)
     {
-        var skillDict = DataManager.PlayerFxDict[ObjInfo.Player.CharType];
-        if (skillDict.ContainsKey(key))
-            return skillDict[key];
-        return null;
+        List<EffectData> effectList = Managers.FX.GetSkillEffectList(ObjInfo.Player.CharType, state, key, bTarget);
+        List<GameObject> EffectList = null;
+        EffectList = Managers.FX.PlayEffect(effectList, transform);
+
+        return EffectList;
     }
     #endregion
 

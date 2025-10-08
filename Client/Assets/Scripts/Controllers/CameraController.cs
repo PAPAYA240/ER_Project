@@ -40,6 +40,7 @@ public class CameraController : MonoBehaviour
             gameObject.AddComponent<PhysicsRaycaster>();
 
         Camera.main.cullingMask |= (1 << LayerMask.NameToLayer("FX"));
+        Camera.main.cullingMask |= (1 << LayerMask.NameToLayer("Projectile"));
 
         _currentZoom = _zoomSteps[_currentStep];
         _targetZoom = _currentZoom;

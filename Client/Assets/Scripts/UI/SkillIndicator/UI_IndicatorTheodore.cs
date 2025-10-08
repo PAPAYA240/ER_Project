@@ -77,8 +77,6 @@ public class UI_IndicatorTheodore : UI_Base
         // Dictionary를 사용하여 O(1) 시간 복잡도로 스킬 로직 호출
         if (_skillUpdateMap.TryGetValue(CurrentActiveKey, out Action updateAction))
             updateAction?.Invoke();
-
-        
     }
 
     public void EnableIndicator(KeyCode key)

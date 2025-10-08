@@ -41,7 +41,7 @@ namespace Server.Game
             }
 
             // 2. 타게팅이 없으면 스폰 자리에 있어야 함
-            if (monster.Target == null)
+            if (monster.Target == null && monster.IsStun == false)
             {
                 if (!monster.IsArrivalSpawn())
                     monster.ChangeState(FSMManager.Instance.GetMovingState());
