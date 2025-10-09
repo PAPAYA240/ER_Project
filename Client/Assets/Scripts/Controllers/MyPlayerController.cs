@@ -283,7 +283,7 @@ public class MyPlayerController : PlayerController
     protected override void UpdateIdle()
     {
         // 이동 상태로 갈지 확인
-        if (_moveKeyPressed && IsStun == false)
+        if (_moveKeyPressed)
         {
             State = CreatureState.Moving;
             return;
@@ -1360,8 +1360,12 @@ public class MyPlayerController : PlayerController
     }
     #endregion
 
+
+  
+
     protected float _ratioSkillDuration = 0f;
     #region Packet
+
     private void SendSkillPacket(KeyCode key)
     {
         int targetId = -1;

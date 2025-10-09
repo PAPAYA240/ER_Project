@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using static Lucene.Net.Util.AttributeSource;
+using static Server.Data.DataUtils;
 
 public class Skill
 {
@@ -45,6 +47,15 @@ public class Skill
     public float GetSkillDamage()
     {
         return _skillData.levels[CurLevel].damage;
+    }
+
+    // 증폭 뎀
+    public float GetSkillBonusDamage()
+    {
+        string bonusDam = _skillData.descriptionInfo["damage"][CurLevel];
+        if(!int.TryParse(bonusDam, out int percentage))
+            return 0f;
+        return percentage;
     }
 }
 

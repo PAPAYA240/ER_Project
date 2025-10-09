@@ -144,11 +144,13 @@ namespace Server.Data
         public string description;
         public string type;
         public int maxLevel;
+        public bool canMoveDuringCast;
         public Mechanics mechanics;
         public Scaling scaling;
         public Dictionary<int, SkillLevel> levels;
+        public Dictionary<string, List<string>> descriptionInfo;
+        public Dictionary<string, List<string>> popupInfo;
     }
-
     [Serializable]
     public class Mechanics
     {

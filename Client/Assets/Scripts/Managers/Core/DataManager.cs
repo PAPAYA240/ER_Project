@@ -38,7 +38,7 @@ public class DataManager
         StatDict = LoadJson<Data.StatData, CharacterType, StatInfo>("StatData").MakeDict();
         SkillDict = LoadJson<Data.GameData, CharacterType, Dictionary<KeyCode, SkillData>>("newSkillData").MakeDict();
         SkillHitboxDict = LoadJson<Data.HitboxData, CharacterType, Dictionary<KeyCode, SkillHitbox>>("HitboxData").MakeDict();
-
+        
         // For Effect
         MonsterSkillDict = LoadJson<Data.MonsterEffectDict, MonsterSkill, List<EffectData>>("MonsterData/EffectData/MonsterEffectData").MakeDict();
         PlayerFxDict = LoadJson<Data.PlayerEffectDict, CharacterType, Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>>("PlayerEffectData").MakeDict();

@@ -351,6 +351,10 @@ namespace Server.Game
                 + skill.SkillData.scaling.srcCurHpRatio * attacker.Hp * 0.01f
                 + skill.SkillData.scaling.srcMaxHpRatio * attacker.MaxHp * 0.01f;
 
+            // 그냥 예시 : 추가 데미지를 입힐 시에
+            if(attacker.IsSkillAmplification)
+                damage += skill.GetSkillBonusDamage();
+            
             float result = damage; 
 
             return result;

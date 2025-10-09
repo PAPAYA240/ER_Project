@@ -11,6 +11,9 @@ namespace Server.Game
     public class Creature : GameObject
     {
         public Creature Target { get; set; }
+        public bool IsSkillAmplification { get; set; } = false;
+
+        public bool IsStun { get; set; }
 
         public List<Vector3> _path = new List<Vector3>();
         public int _pathIdx = 0;

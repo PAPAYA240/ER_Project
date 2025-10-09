@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Data;
 using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -111,7 +112,7 @@ public class PlayerController : CreatureController
     #region Util
     protected string GetCharacterName()
     {
-        return Enum.GetName(typeof(CharacterType), ObjInfo.Player.CharType);
+        return System.Enum.GetName(typeof(CharacterType), ObjInfo.Player.CharType);
     }
     #endregion
 
@@ -337,6 +338,7 @@ public class PlayerController : CreatureController
         Stamina = respawnPacket.Stamina;
     }
     #endregion
+
 
     public void SpawnProjectile()
     {

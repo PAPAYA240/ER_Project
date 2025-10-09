@@ -209,6 +209,7 @@ namespace Data
             Ground,     // 월드 좌표의 특정 위치
             Shoot       // 발사체
         }
+
         public string type;    // Buff / Debuff / Burn 등
         public string stat;    // MoveSpeed / Defense / AttackSpeed 등
         public float value;    // 수치 (%는 그냥 숫자로 저장) 

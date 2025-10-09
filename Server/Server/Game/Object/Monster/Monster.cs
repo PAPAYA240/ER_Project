@@ -30,7 +30,6 @@ namespace Server.Game
         // TODO : 감마 총알 예시
         public float _delaySkillAnimationTimer = 0;
 
-        public bool IsStun { get; set; } = false;
         public Monster() => ObjectType = GameObjectType.Monster;
 
         public void Init(string name)
@@ -41,11 +40,15 @@ namespace Server.Game
             ChangeState(new IdleState());
         }
        
-        
-
         public override void Update()
         {
-            if(_currentState != null)
+            if (IsStun && !(_currentState is IdleState))
+            {
+                ChangeState(new IdleState());
+                return;
+            }
+            
+            if (_currentState != null)
                 _currentState?.Execute(this);
         }
         public void ChangeState(IMonsterState newState)
@@ -80,7 +83,6 @@ namespace Server.Game
             }
 
             Target.Room.Push(OnDamaged, this, skillData.damage + Attack);
-            //PlayerTarget.OnDamaged(this, skillData.damage + Stat.Attack);
 
             return skillData;
         }

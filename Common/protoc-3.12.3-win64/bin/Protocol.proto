@@ -46,6 +46,8 @@ enum MsgId {
   S_CHANGE_EQUIP_ITEM = 38;
   S_CHANGE_INVENTORY = 39;
   C_TEST_DAMAGE = 40;
+  C_STUN = 41;
+  S_STUN = 42;
 }
 
 enum CreatureState{
@@ -404,6 +406,18 @@ message S_ChangeInventory{
 
 message C_TestDamage{
 	int32 objectId = 1;
+}
+
+message C_Stun{
+	int32 objectId = 1;
+	bool isStun = 2;
+	float duration = 3;
+}
+
+message S_Stun{
+	int32 objectId = 1;
+	bool isStun = 2;
+	float duration = 3;
 }
 
 message PositionInfo{

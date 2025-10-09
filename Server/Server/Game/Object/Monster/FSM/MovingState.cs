@@ -53,7 +53,7 @@ namespace Server.Game
                 return;
             }
 
-            if (!monster.IsFindTargetRange() || monster.Target.Room != monster.Room || monster.IsStun)
+            if (!monster.IsFindTargetRange() || monster.Target.Room != monster.Room)
             {
                 TargetNotFound(monster);
                 return;

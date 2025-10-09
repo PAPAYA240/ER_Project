@@ -267,6 +267,7 @@ namespace Server.Game
             resMovePacket.IsWarp = movePacket.IsWarp;
             Broadcast(resMovePacket);
         }
+
         public void HandleVF(Player player, C_Fx skillPacket)
         {
             if (player == null)

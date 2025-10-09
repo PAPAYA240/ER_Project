@@ -375,7 +375,7 @@ class PacketHandler
 
         pc.EquipItem(changeEquipPacket.ItemId);
     }
-
+    
     public static void S_ChangeInventoryHandler(PacketSession session, IMessage packet)
     {
         S_ChangeInventory changeInventoryPacket = packet as S_ChangeInventory;
@@ -385,5 +385,20 @@ class PacketHandler
             return;
 
         mpc.ChangeInventory(changeInventoryPacket);
+    }
+
+    public static void S_StunHandler(PacketSession session, IMessage packet)
+    {
+        S_Stun stunPacket = packet as S_Stun;
+        GameObject go = Managers.Object.FindById(stunPacket.ObjectId);
+        if (go == null)
+            return;
+
+        CreatureController cc = go.GetComponentInChildren<CreatureController>();
+        if (cc != null)
+        {
+            if (stunPacket.IsStun)
+                cc.ApplyStun(stunPacket.Duration);
+        }
     }
 }

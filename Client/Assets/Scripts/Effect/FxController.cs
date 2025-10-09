@@ -7,8 +7,12 @@ using UnityEngine;
 
 public class FxController : MonoBehaviour
 {
-    void OnParticleCollision(GameObject other)
+    void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"파티클이 {other.name}과 충돌했습니다!");
+        if (other.gameObject.layer == LayerMask.NameToLayer("Projectile") ||
+            other.gameObject.layer == LayerMask.NameToLayer("FX"))
+        {
+            Debug.Log("FX Controller Trigger : Projectile");
+        }
     }
 }

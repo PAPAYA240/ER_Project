@@ -3,33 +3,28 @@ using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
+using UnityEngine.UI;
+using static UnityEngine.UI.GridLayoutGroup;
 
 public class TheodoreController : MyPlayerController
 {
-    // 머터리얼
+    // Material
     Material passiveMaterial, originMaterial;
     Renderer myRenderer;
 
-    // 장비
+    // Weapon
     private GameObject _sniperRifle = null;
 
-    // 이펙트
+    // Fx
     List<GameObject> _currentEffectList = new List<GameObject>();
 
     protected override void Init()
     {
         if (!Add_Material())
-        {
-            Debug.LogError("TheodoreController : 필요한 Material이 할당되지 않았음");
             return;
-        }
 
         if (!Equip_Weapon())
-        {
-            Debug.LogError("TheodoreController : 필요한 무기가 할당되지 않았음");
             return;
-        }
 
         base.Init();
 
@@ -40,8 +35,11 @@ public class TheodoreController : MyPlayerController
     {
         if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))
         {
-            _isUseSkill = true;
             _keyCode = KeyCode.Q;
+
+            ReadySkillQ();
+
+            StartCoroutine(ShotSkillQ());
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.W))
         {
@@ -50,8 +48,9 @@ public class TheodoreController : MyPlayerController
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
         {
-            _isUseSkill = true;
             _keyCode = KeyCode.E;
+
+            ReadySkillE();
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))
         {
@@ -64,7 +63,8 @@ public class TheodoreController : MyPlayerController
             _keyCode = KeyCode.F;
         }
     }
-  
+
+    #region CC
     IEnumerator CoPassive()
     {
         Renderer sniperRender = _sniperRifle.GetComponentInChildren<Renderer>();
@@ -77,27 +77,6 @@ public class TheodoreController : MyPlayerController
         sniperRender.material = originMaterial;
         myRenderer.material = originMaterial;
     }
-
-    public override void OnAttackTiming()
-    {
-        // 평타
-        if (State == CreatureState.Attack)
-        {
-            Transform childTransform = Util.FindChildByName(_sniperRifle.transform, "ShotPoint");
-            PlayEffectTransform(CreatureState.Skill, KeyCode.Z, false, null, childTransform);
-        }
-        // 스킬
-        else if (State == CreatureState.Skill)
-        {
-            switch (_keyCode)
-            {
-                case KeyCode.E:
-                    SpawnProjectile();
-                    return;
-            }
-        }
-    }
-
     protected void Passive()
     {
         // 바라보는 방향대로 스크린 호출
@@ -105,77 +84,112 @@ public class TheodoreController : MyPlayerController
         SendFXPacket(_keyCode);
         State = CreatureState.Idle;
     }
+    #endregion
 
- 
-
-    #region Q Skill
-    protected override void Skill_Q() 
+    private void Bondage(GameObject target)
     {
-        ReadySkillQ();
-        StartCoroutine(ShotSkillQ());
-    }
-    private void ReadySkillQ()
-    {
-        _sniperRifle.GetComponent<WeaponController>().PlayAnimation("SKILL_READY_Q", 0.1f);
-        PlayAnimation("SKILL_START", 0.1f);
+        CreatureController myTarget = target.GetComponent<CreatureController>();
+        float duration = DataManager.SkillDict[ObjInfo.Player.CharType][_keyCode].levels[myTarget.Stat.Level].effects[0].duration;
 
-        List<GameObject> effectList = PlayEffectTransform(CreatureState.Skill, KeyCode.Q);
-        _effectDuration = 5.0f; // TODO : 예시로 하드 코딩, 나중에 CC Data에서 가져와 줄 것
+        C_Stun stunPacket = new C_Stun()
+        {
+            ObjectId = myTarget.ObjInfo.ObjectId,
+            IsStun = true,
+            Duration = duration,
+        };
+        Managers.Network.Send(stunPacket);
 
-        indicator.EnableIndicator(KeyCode.Q);
+        target.GetComponent<CreatureController>().HasCrowdControl = false;
+
+        PlayEffectTransform(CreatureState.Skill, KeyCode.Q, true, _currentTarget);
         SendFXPacket(_keyCode);
     }
 
+    #region Q Skill
     private float _elapsedTime = 0f;
     private float _effectDuration = 0f;
+    private GameObject _currentTarget = null;
+
+    protected override void Skill_Q() 
+    {
+    }
+
+    private void ReadySkillQ()
+    {
+        PlayAnimation("SKILL_START", 0.1f);
+        _sniperRifle.GetComponent<WeaponController>().PlayAnimation("SKILL_READY_Q", 0.1f);
+
+        List<GameObject> effectList = PlayEffectTransform(CreatureState.Skill, _keyCode);
+        SendFXPacket(_keyCode);
+
+        _effectDuration = 5.0f; // TODO : 예시로 하드 코딩, 나중에 CC Data에서 가져와 줄 것
+        indicator.EnableIndicator(_keyCode);
+    }
+    
     IEnumerator ShotSkillQ()
     {
-        GameObject target = null;
-        while (Input.GetKey(KeyCode.Q))
+        // 1. 키를 누르고 있거나, 최대 충전 시간이 지나지 않은 경우
+        while (Input.GetKey(KeyCode.Q) && _elapsedTime < _effectDuration)
         {
-            _elapsedTime += Time.deltaTime;
-            _ratioSkillDuration = _elapsedTime / _effectDuration;
-
-            target = TryGetAttackableObject();
-
-            if (_elapsedTime >= _effectDuration)
-            {
-                State = CreatureState.Idle;
-
-                indicator.DisableAllIndicators();
-
-                _ratioSkillDuration = 0f;
-                _elapsedTime = 0;
-                _effectDuration = 0;
-                yield break;
-            }
-
+            UpdateChargeState();
             yield return null;
         }
 
-        if (target != null && target.GetComponent<CreatureController>().IsStun)
-            PlayEffectTransform(CreatureState.Skill, KeyCode.Q, true, target);
+        // 2. 최대 충전 시간 초과 -> 스킬 취소
+        if (_elapsedTime >= _effectDuration)
+        {
+            State = CreatureState.Idle;
+            FinalizeSkillQ(_currentTarget, true);
+            yield break;
+        }
 
+        FinalizeSkillQ(_currentTarget, false);
+    }
+
+    private void UpdateChargeState()
+    {
+        _elapsedTime += Time.deltaTime;
+        _ratioSkillDuration = _elapsedTime / _effectDuration; 
+        _currentTarget = TryGetAttackableObject();
+    }
+
+    private void FinalizeSkillQ(GameObject target, bool isMaxCharge)
+    {
         indicator.DisableAllIndicators();
-        _isUseSkill = true;
         _elapsedTime = 0;
         _effectDuration = 0;
 
-        _sniperRifle.GetComponent<WeaponController>().PlayAnimation("SKILL_Q", 0.1f);
-
-        foreach (GameObject effect in _currentEffectList)
+        if (isMaxCharge)
         {
-            if (effect != null)
-            {
-                Managers.FX.StopAndReturnEffect(effect);
-                effect.SetActive(false);
-            }
+            _ratioSkillDuration = 0f;
+            _isUseSkill = false;
         }
-        _currentEffectList.Clear();
-        
-        PlayAnimation("SKILL_Q", 0.1f);
+        else
+        {
+            _isUseSkill = true;
+            
+            // 애니메이션
+            LookAtMouse();
+            PlayAnimation("SKILL_Q", 0.1f);
+            _sniperRifle.GetComponent<WeaponController>().PlayAnimation("SKILL_Q", 0.1f);
 
-        LookAtMouse();
+            // 스턴 가능 경우 속박
+            if (_currentTarget != null && _currentTarget.GetComponent<CreatureController>().HasCrowdControl)
+            {
+                Bondage(_currentTarget);
+            }
+
+            // 이펙트 없애기
+            foreach (GameObject effect in _currentEffectList)
+            {
+                if (effect != null)
+                {
+                    Managers.FX.StopAndReturnEffect(effect);
+                    effect.SetActive(false);
+                }
+            }
+            _currentEffectList.Clear();
+        }
     }
     #endregion
 
@@ -183,85 +197,92 @@ public class TheodoreController : MyPlayerController
     protected override void Skill_W()
     {
         State = CreatureState.Idle;
-
         indicator.EnableIndicator(KeyCode.W);
         StartCoroutine(ShotSkillW());
     }
-
+  
     IEnumerator ShotSkillW()
     {
+        // 1. 대기 : W 키를 누르고 있거나, 왼 마우스를 누르지 않았을 때
         while (Input.GetKey(KeyCode.W) && !Input.GetMouseButtonDown(0))
         {
-            // 오른 마우스 누르면 취소
             if(Input.GetMouseButtonDown(1))
             {
-                indicator.DisableAllIndicators();
+                CancelSkillW();
                 yield break;
             }
             yield return null;
         }
 
+        FinalizeSkillW();
+        yield break;
+    }
+
+    private void FinalizeSkillW()
+    {
+        /*
+        일반 공격이 스크린을 통과하면 추가 스킬 피해를 주고 적 주변으로 확산된다.
+
+       에너지 포(Q)가 스크린을 통과하면 잠시 후 증폭 스크린 전방으로 에너지를 발사하여 적에게 피해를 주고 
+       아군을 회복시킨다. 발사한 에너지포의 방향과는 상관없이 무조건 중앙에 발사된다.
+
+       스파크탄(E)이 스크린에 통과하면 평타처럼 적 주변으로 확산하고 투사체 속도와 사거리가 증가한다.
+       */
+        // 1. 상태 및 플래그 설정
         _isUseSkill = true;
-
-        // w키를 떼거나, 왼 마우스를 누르거나
-        Vector3 mousePos = GetMouseWorldPosition();
-
-        LookAtMouse();
-
         indicator.DisableAllIndicators();
-
         State = CreatureState.Idle;
 
-        // 플레이어 y축 회전 값만 적용
+        // 2. 마우스
+        Vector3 mousePos = GetMouseWorldPosition();
+        LookAtMouse();
+
+        // 3. 이펙트 
         float playerYaw = transform.rotation.eulerAngles.y;
         Quaternion yawRotationOnly = Quaternion.Euler(0, playerYaw, 0);
         Quaternion desiredXRotation = Quaternion.Euler(-90f, 180f, 0);
         Quaternion finalRotation = yawRotationOnly * desiredXRotation;
 
         if (mousePos != Vector3.zero)
+        {
             PlayEffectAtPosition(CreatureState.Skill, KeyCode.W, mousePos, finalRotation, true);
-
-        /*
-         일반 공격이 스크린을 통과하면 추가 스킬 피해를 주고 적 주변으로 확산된다.
-
-        에너지 포(Q)가 스크린을 통과하면 잠시 후 증폭 스크린 전방으로 에너지를 발사하여 적에게 피해를 주고 
-        아군을 회복시킨다. 발사한 에너지포의 방향과는 상관없이 무조건 중앙에 발사된다.
-
-        스파크탄(E)이 스크린에 통과하면 평타처럼 적 주변으로 확산하고 투사체 속도와 사거리가 증가한다.
-        */
-        yield break;
+            SendFXPacket(_keyCode);
+        }
     }
-
-    private Vector3 GetMouseWorldPosition()
+    private void CancelSkillW()
     {
-        Camera mainCam = Camera.main;
-        if (mainCam == null) return Vector3.zero;
-
-        Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Map")))
-            return hit.point;
-
-        return Vector3.zero;
+        indicator.DisableAllIndicators();
+        State = CreatureState.Idle;
     }
+
     #endregion
 
     #region E Skill
-
     protected override void Skill_E()
     {
+    }
+    private void ReadySkillE()
+    {
         indicator.EnableIndicator(KeyCode.E);
+
+        _currentTarget = TryGetAttackableObject();
+
         StartCoroutine(ShotSkillE());
     }
-
+  
     IEnumerator ShotSkillE()
     {
         while (Input.GetKey(KeyCode.E))
-            yield return null;
+        {
+            _currentTarget = TryGetAttackableObject();
+            yield return null; 
+        }
 
+        _isUseSkill = true;
         indicator.DisableAllIndicators();
         PlayAnimation("SKILL_E", 0.1f);
 
+        // 구속 가능
         LookAtMouse();
     }
   
@@ -283,19 +304,71 @@ public class TheodoreController : MyPlayerController
 
         indicator.DisableAllIndicators();
         PlayAnimation("SKILL_R", 0.1f);
+        
+        // 속박 가능 시 => 속박
+        if (_currentTarget != null && _currentTarget.GetComponent<CreatureController>().HasCrowdControl)
+            Bondage(_currentTarget);
 
         LookAtMouse();
     }
     #endregion
+
+    #region Util
+    // 추가 데미지
+    public float CalculateBonusDamage(float currentAttackPower)
+    {
+        string damagePercentageStr = DataManager.SkillDict[ObjInfo.Player.CharType][_keyCode].descriptionInfo["damage"][Stat.Level];
+        if (!int.TryParse(damagePercentageStr, out int percentage))
+            return 0f;
+
+        float damageRatio = (float)percentage / 100f;
+
+        float bonusDamage = currentAttackPower * damageRatio;
+
+        return bonusDamage;
+    }
+
+    public override void OnAttackTiming()
+    {
+        // 평타
+        if (State == CreatureState.Attack)
+        {
+            Transform childTransform = Util.FindChildByName(_sniperRifle.transform, "ShotPoint");
+            PlayEffectTransform(CreatureState.Skill, KeyCode.Z, false, null, childTransform);
+        }
+        // 스킬
+        else if (State == CreatureState.Skill)
+        {
+            switch (_keyCode)
+            {
+                case KeyCode.E:
+                    SpawnProjectile();
+                    return;
+            }
+        }
+    }
+    private Vector3 GetMouseWorldPosition()
+    {
+        Camera mainCam = Camera.main;
+        if (mainCam == null) return Vector3.zero;
+
+        Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Map")))
+            return hit.point;
+
+        return Vector3.zero;
+    }
 
     public override void PlayEffectFromServer(EffectInfo fxInfo)
     {
         PlayEffectTransform(CreatureState.Skill, (KeyCode)fxInfo.KeyCode);
         //StartCoroutine(CoPassive());
     }
+    #endregion
 
-    UI_IndicatorTheodore indicator;
     #region init
+    UI_IndicatorTheodore indicator;
     private bool Equip_Weapon()
     {
        Transform RTransform = Util.FindChildByName(transform, "Equip_R");
@@ -329,11 +402,15 @@ public class TheodoreController : MyPlayerController
                 _projectile.transform.localPosition = _equipTransform.localPosition;
                 _projectile.transform.localRotation = Quaternion.identity;
                 _projectile.transform.localScale = Vector3.one;
+
+                Projectile sparkProjectile = _projectile.AddComponent<Projectile>();
+                sparkProjectile.Owner = this.gameObject;
             }
         }
         else
             return false;
 
+        // Skill Indicator UI
         indicator = gameObject.GetOrAddComponent<UI_IndicatorTheodore>();
 
         return true;

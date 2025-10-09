@@ -1,9 +1,48 @@
 ﻿using Google.Protobuf.Protocol;
+using System.Collections;
 using UnityEngine;
 
 public class CreatureController : BaseController
 {
-    public bool IsStun { get; set; } = false;    // CC기
+    #region CC기 면역
+    protected UI_TargetingMark targetingMark = null;
+    private bool _hasCrowdControl = false;
+    public bool HasCrowdControl 
+    {
+        get
+        {
+            return _hasCrowdControl;
+        }
+        set
+        {
+            _hasCrowdControl = value;
+
+            // 구속이 가능한 상태 시에 UI 띄우기
+            if (_hasCrowdControl)
+                targetingMark.ShowCCMark(this.gameObject);
+
+            else
+                targetingMark.HideCCMark();
+        }
+    }
+
+    public void ApplyStun(float duration)
+    {
+        StartCoroutine(CoEndStun(duration));
+    }
+
+    IEnumerator CoEndStun(float duration)
+    {
+        Debug.Log($"Stun applied for {duration} seconds.");
+        yield return new WaitForSeconds(duration);
+        C_Stun stunPacket = new C_Stun()
+        {
+            ObjectId = ObjInfo.ObjectId,
+            IsStun = false,
+        };
+        Managers.Network.Send(stunPacket);
+    }
+    #endregion
 
     Define.Object _object = Define.Object.Unknown;
     public Define.Object ObjectType
@@ -77,6 +116,9 @@ public class CreatureController : BaseController
     {
         SyncPos();
 
+        // TODO : 예비 UI
+        GameObject mark = Managers.Resource.Instantiate($"UI/Character/Theodore/MarkE");
+        targetingMark = mark.gameObject.AddComponent<UI_TargetingMark>();
         base.Init();
     }
     public virtual void OnDamaged()

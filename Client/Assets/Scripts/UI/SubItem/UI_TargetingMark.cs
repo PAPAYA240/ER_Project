@@ -1,18 +1,15 @@
 ﻿using System.Collections;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class UI_TargetingMark : UI_Base
 {
     private RectTransform uiElementRect;
-
+    private Camera mainCamera;
     private GameObject _target;
-
     private Canvas canvas;
     private float _duration;
 
-    [SerializeField]
-    public Vector3 offset = new Vector3(0, 2.5f, 0);
+    private Vector3 offset = new Vector3(0, 2.5f, 0);
 
     public override void Init()
     {
@@ -24,16 +21,27 @@ public class UI_TargetingMark : UI_Base
         mainCamera = Camera.main;
     }
 
-    public void SetTarget(GameObject target, float duration = 10.0f)
+    float _elapsedTime = 0;
+    Coroutine _co = null;
+    public GameObject ShowCCMark(GameObject target, float duration = 10.0f)
     {
         _target = target;
         _duration = duration;
         _elapsedTime = 0;
-        StartCoroutine(CoActive());
+        _co = StartCoroutine(CoActive());
+
+        return this.gameObject;
     }
 
-    private Camera mainCamera;
-    float _elapsedTime = 0;
+    public void HideCCMark()
+    {
+        StopCoroutine(_co);
+        uiElementRect.gameObject.SetActive(false);
+
+        _co = null;
+        _elapsedTime = 0;
+    }
+
     IEnumerator CoActive()
     {
         while (_elapsedTime < _duration)
@@ -48,6 +56,7 @@ public class UI_TargetingMark : UI_Base
             if (screenPosition.z < 0)
             {
                 uiElementRect.gameObject.SetActive(false);
+                _co = null;
                 yield break;
             }
 
@@ -66,8 +75,9 @@ public class UI_TargetingMark : UI_Base
             uiElementRect.gameObject.SetActive(true);
             yield return null;
         }
+
         // 스턴 끝
-        _target.GetComponent<CreatureController>().IsStun = false;
+         _co = null;
         uiElementRect.gameObject.SetActive(false);
     }
 }

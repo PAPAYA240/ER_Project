@@ -74,7 +74,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SChangeEquipItem, MakePacket<S_ChangeEquipItem>);
 		_handler.Add((ushort)MsgId.SChangeEquipItem, PacketHandler.S_ChangeEquipItemHandler);		
 		_onRecv.Add((ushort)MsgId.SChangeInventory, MakePacket<S_ChangeInventory>);
-		_handler.Add((ushort)MsgId.SChangeInventory, PacketHandler.S_ChangeInventoryHandler);
+		_handler.Add((ushort)MsgId.SChangeInventory, PacketHandler.S_ChangeInventoryHandler);		
+		_onRecv.Add((ushort)MsgId.SStun, MakePacket<S_Stun>);
+		_handler.Add((ushort)MsgId.SStun, PacketHandler.S_StunHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

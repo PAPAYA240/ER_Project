@@ -1,22 +1,16 @@
-using Data;
 using Google.Protobuf.Protocol;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.UI.GridLayoutGroup;
 
 public class Projectile : MonoBehaviour
 {
+    public GameObject Owner { get; set; } = null;
+
     private Vector3 _lastForward;
-    private UI_TargetingMark targetingMark = null;
 
     void Start()
     {
         gameObject.SetActive(false);
-        // EX ) E Mark
-        GameObject mark = Managers.Resource.Instantiate($"UI/Character/Theodore/MarkE");
-        targetingMark = mark.gameObject.AddComponent<UI_TargetingMark>();
-
     }
 
     IEnumerator CoThrow()
@@ -40,9 +34,9 @@ public class Projectile : MonoBehaviour
         {
             gameObject.SetActive(false);
 
-            // EX ) 테오도르 공격 시, 추가 필요시 로직 수정
-            targetingMark.SetTarget(other.gameObject);
-            other.GetComponent<CreatureController>().IsStun = true;
+            CreatureController targetController = other.GetComponent<CreatureController>();
+            // 마크 활성화 시 구속 가능
+            targetController.HasCrowdControl = true;
         }
     }
     public void Run(Vector3 startPos, Vector3 startforward)
