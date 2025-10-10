@@ -64,9 +64,18 @@ class PacketHandler
             {
                 cc.SyncPos(movePacket.IsWarp);
             }
-        }          
+        }     
     }
-     public static void S_StateHandler(PacketSession session, IMessage packet)
+
+    public static void S_SetMoveTargetHandler(PacketSession session, IMessage packet)
+    {
+        S_SetMoveTarget targetPacket = packet as S_SetMoveTarget;
+        ServerSession serverSession = session as ServerSession;
+
+        Managers.Object.MyPlayer.OnServerUpdate(targetPacket);
+    }
+
+    public static void S_StateHandler(PacketSession session, IMessage packet)
     {
         S_State skillPacket = packet as S_State;
         if (skillPacket == null)
@@ -257,6 +266,12 @@ class PacketHandler
         mpc.VisibleObjectIds.Clear(); // 나중에 렌더링 하고나서 바로 Clear하는게 나을듯?
         mpc.VisibleObjectIds = visibleObjectsPkt.VisibleObjectIds.ToHashSet();
         Managers.Object.SetObjectVisible();
+
+        // TEMP
+        PlayerViewController pvc = go.GetComponent<PlayerViewController>();
+        if (pvc == null) return;
+        pvc.VisibleObjectIds.Clear();
+        pvc.VisibleObjectIds = visibleObjectsPkt.VisibleObjectIds.ToHashSet();
     }
 
     public static void S_LevelUpHandler(PacketSession session, IMessage packet)

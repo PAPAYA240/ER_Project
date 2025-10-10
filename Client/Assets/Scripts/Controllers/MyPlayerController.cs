@@ -29,21 +29,27 @@ public class MyPlayerController : PlayerController
 
     private void Update()
     {
-        // 1) 이동 입력 → 로컬에서 즉시 이동 적용 → 2) 서버에 C_Move 의도 통보
-        var moveCmd = _input.GetMoveCommand();
-        if (moveCmd != null)
+        // 1) 정지(S/H)
+        var stopCmd = _input.GetStopCommand();
+        if (stopCmd != null)
+            Managers.Network.Send(stopCmd);
+
+        // 2) 우클릭 "타겟 공격" 의도
+        var atkCmd = _input.GetAttackCommand();
+        if (atkCmd != null)
+            Managers.Network.Send(atkCmd);
+
+        // 3) 우클릭 유지: 타겟 이동 or 땅 이동
+        var setMove = _input.GetSetMoveTarget();
+        if (setMove != null)
         {
-            _view.ApplyLocalMove(moveCmd, _attackRange); // 부드러운 입력감
-            Managers.Network.Send(moveCmd);              // 서버 검증/브로드캐스트
+            _view.ApplyLocalSetMoveTarget(setMove);
+            Managers.Network.Send(setMove);
         }
 
         var skillCmd = _input.GetSkillCommand();
         if (skillCmd != null)
             Managers.Network.Send(skillCmd);
-
-        //var attackCmd = _input.GetAttackCommand();
-        //if (attackCmd != null)
-        //    Managers.Network.Send(attackCmd);
 
         //var restCmd = _input.GetRestCommand();
         //if (moveCmd != null)
@@ -60,6 +66,16 @@ public class MyPlayerController : PlayerController
     public void OnServerUpdate(S_ChangeHp packet) => _view.OnHpChanged(packet);
     public void OnServerUpdate(S_Die packet) => _view.OnDead(packet);
     public void OnServerUpdate(S_Respawn packet) => _view.OnRespawn(packet);
+    public void OnServerUpdate(S_SetMoveTarget packet)
+    {
+        // 서버가 내려준 의도 그대로 로컬 네비 실행
+        _view.ApplyLocalSetMoveTarget(new C_SetMoveTarget
+        {
+            IsGround = packet.IsGround,
+            TargetId = packet.TargetId,
+            TargetPos = packet.TargetPos != null ? new PositionInfo(packet.TargetPos) : null
+        });
+    }
 
     public void UpdateTransform(bool isWarp = false)
     {

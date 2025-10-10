@@ -47,22 +47,9 @@ class PacketHandler
     }
 
     public static void C_MoveHandler(PacketSession session, IMessage packet)
-	{
-		C_Move movePacket = packet as C_Move;
-		ClientSession clientSession = session as ClientSession;
-
-        //Console.WriteLine($"C_Move ({movePacket.PosInfo.PosX}, {movePacket.PosInfo.PosY}, {movePacket.PosInfo.PosZ})");
-
-		Player player = clientSession.MyPlayer;
-        if (player == null)
-			return;
-
-		GameRoom room = player.Room;
-		if (room == null)
-			return;
-
-		room.Push(room.HandleMove, player, movePacket);
-	}
+    {
+        // TEMP
+    }
 
     public static void C_MoveSyncHandler(PacketSession session, IMessage packet)
     {
@@ -231,5 +218,38 @@ class PacketHandler
             return;
 
         room.Push(room.HandleAttackSkillTarget, player, atkSkillTargetPkt);
+    }
+
+    public static void C_AttackHandler(PacketSession session, IMessage packet)
+    {
+        var client = (ClientSession)session;
+        var player = client?.MyPlayer;
+        if (player?.Room == null)
+            return;
+        var req = (C_Attack)packet;
+
+        player.Room.Push(player.Room.HandleAttack, player, req);
+    }
+
+    public static void C_SetMoveTargetHandler(PacketSession session, IMessage packet)
+    {
+        var client = (ClientSession)session;
+        var player = client?.MyPlayer;
+        if (player?.Room == null)
+            return;
+        var req = (C_SetMoveTarget)packet;
+
+        player.Room.Push(player.Room.HandleSetMoveTarget, player, req);
+    }
+
+    public static void C_StopHandler(PacketSession session, IMessage packet)
+    {
+        var client = (ClientSession)session;
+        var player = client?.MyPlayer;
+        if (player?.Room == null)
+            return;
+        var req = (C_Stop)packet;
+
+        player.Room.Push(player.Room.HandleStop, player, req);
     }
 }

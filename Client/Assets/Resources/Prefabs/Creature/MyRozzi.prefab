@@ -2777,6 +2777,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _attackRange: 3
   _stopBuffer: 0.1
+  _destEps: 0.15
+  _groundMask:
+    serializedVersion: 2
+    m_Bits: 2048
+  _monsterMask:
+    serializedVersion: 2
+    m_Bits: 256
+  _playerMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!114 &-5177017171371246027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2789,7 +2799,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59c136465ba5ff64a92847f1c690590d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _syncInterval: 0.05
   _minMoveDelta: 0.03
   _minAngleDelta: 1
 --- !u!1 &4552065746279300795

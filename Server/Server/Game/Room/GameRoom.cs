@@ -13,7 +13,7 @@ using static Server.Data.DataUtils;
 
 namespace Server.Game
 {
-    public class GameRoom : Room
+    public partial class GameRoom : Room
     {
         Dictionary<int, Player> _players = new Dictionary<int, Player>();
         ConcurrentDictionary<int, EnvironmentObject> _envs = new ConcurrentDictionary<int, EnvironmentObject>();
@@ -228,28 +228,15 @@ namespace Server.Game
             }
         }
 
-        public void HandleMove(Player player, C_Move movePacket)
-        {
-            if (player == null)
-                return;
-
-            // 이미 이동 중이면 상태 유지 + 목표지만 갱신
-            if (player.CurState is IReceivesMoveCommand moving)
-            {
-                moving.OnMoveCommand(player, movePacket);
-                return;
-            }
-
-            // 이동 중이 아니면 그때만 상태 전환
-            player.ChangeState(new Player_MovingState(movePacket));
-        }
-
         public void HandleMoveSync(Player player, C_MoveSync movePacket)
         {
             if (player == null)
                 return;
             
             player.PosInfo.MergeFrom(movePacket.PosInfo);
+            player.RotInfo.MergeFrom(movePacket.RotInfo);
+
+            player.SendMovePacket(new PositionInfo(player.PosInfo), new RotationInfo(player.RotInfo));
         }
 
         public void HandleVF(Player player, C_Fx skillPacket)
@@ -384,6 +371,7 @@ namespace Server.Game
             _teamToggle = !_teamToggle;
             return _teamToggle ? 1 : 2;
         }
+
         private void AddVisibleObjects<T>(List<int> visibleObjs, ConcurrentDictionary<int, T> dict, Player player, int range = 8) where T : GameObject
         {
             foreach (var pair in dict)
@@ -502,6 +490,6 @@ namespace Server.Game
             clientSession.Send(spawnPacket);
 
             _dummyAdded = true;
-        }
+        }        
     }
 }

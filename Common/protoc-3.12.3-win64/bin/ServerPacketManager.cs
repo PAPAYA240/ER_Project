@@ -50,7 +50,13 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CAttackSkillTarget, MakePacket<C_AttackSkillTarget>);
 		_handler.Add((ushort)MsgId.CAttackSkillTarget, PacketHandler.C_AttackSkillTargetHandler);		
 		_onRecv.Add((ushort)MsgId.CMoveSync, MakePacket<C_MoveSync>);
-		_handler.Add((ushort)MsgId.CMoveSync, PacketHandler.C_MoveSyncHandler);
+		_handler.Add((ushort)MsgId.CMoveSync, PacketHandler.C_MoveSyncHandler);		
+		_onRecv.Add((ushort)MsgId.CAttack, MakePacket<C_Attack>);
+		_handler.Add((ushort)MsgId.CAttack, PacketHandler.C_AttackHandler);		
+		_onRecv.Add((ushort)MsgId.CSetMoveTarget, MakePacket<C_SetMoveTarget>);
+		_handler.Add((ushort)MsgId.CSetMoveTarget, PacketHandler.C_SetMoveTargetHandler);		
+		_onRecv.Add((ushort)MsgId.CStop, MakePacket<C_Stop>);
+		_handler.Add((ushort)MsgId.CStop, PacketHandler.C_StopHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

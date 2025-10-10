@@ -18,22 +18,40 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
     private const float STOP_RANGE = 0.10f; // 지형 이동 도착 허용 반경
     private const float DEST_CHANGE_EPS = 0.05f; // 목적지 미세변경 무시
 
+    private long _nextPathTick;
+
     public Player_MovingState(C_Move packet)
     {
         _isTargetOn = packet.IsTargetOn;
         _targetId = packet.TargetId;
-        _targetPos = new Vector3
-        {
-            X = packet.TargetPosition.PosX,
-            Y = packet.TargetPosition.PosY,
-            Z = packet.TargetPosition.PosZ
-        };
+        _targetPos = new Vector3(packet.TargetPosition.PosX, packet.TargetPosition.PosY, packet.TargetPosition.PosZ);
+        _nextPathTick = Environment.TickCount64;
     }
 
     public void Enter(Player player)
     {
         player.State = CreatureState.Moving;
         player.SendAnimPacket("RUN", 0.1f);
+
+        if (_isTargetOn)
+        {
+            var t = player.FindTarget(_targetId);
+            if (t != null)
+                _targetPos = t.Position;
+
+            // 클라에 “타겟 추격” 시작 지시
+            player.SendSetMoveTarget(isGround: false, targetId: _targetId);
+        }
+        else
+        {
+            // 클라에 “땅 이동” 시작 지시
+            player.SendSetMoveTarget(isGround: true, targetId: 0, posOpt: new PositionInfo
+            {
+                PosX = _targetPos.X,
+                PosY = _targetPos.Y,
+                PosZ = _targetPos.Z
+            });
+        }
     }
 
     public void Execute(Player player)
@@ -41,37 +59,54 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
         if (player == null || player.Room == null)
             return;
 
-        var serverPos = new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ);
+        long now = Environment.TickCount64;
 
-        // 타겟팅 이동이면, 매 틱 타겟 현재 좌표로 갱신
+        // 주기적으로 타겟 추적 갱신
+        if (_isTargetOn && now >= _nextPathTick)
+        {
+            _nextPathTick = now + 250;
+            var t = player.FindTarget(_targetId);
+            if (t == null /*|| !t.IsAttackable()*/)
+            {
+                player.ChangeState(new Player_IdleState());
+                return;
+            }
+            _targetPos = t.Position;
+        }
+
+        // 사거리 진입하면 즉시 공격 전환(타겟 이동의 경우)
         if (_isTargetOn)
         {
-            GameObject target = player.FindTarget(_targetId); 
-            if (target == null || target.State == CreatureState.Dead)
+            var t = player.FindTarget(_targetId);
+            if (t != null)
             {
-                // 타겟을 잃었으면 지형 이동 모드로 전환
-                _isTargetOn = false;
-                _targetId = 0;
-            }
-            else
-            {
-                _targetPos = new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ);
-
-                // 사거리 들어오면 Attack 으로 전환
-                if (Vector3.Distance(serverPos, _targetPos) <= ATTACK_RANGE)
+                float dist = Vector3.Distance(player.Position, t.Position);
+                if (dist <= player.AttackRange)
                 {
-                    player.ChangeState(new Player_AttackState(_targetId, ATTACK_RANGE));
+                    player.ChangeState(new Player_AttackState(_targetId, chaseAllowed: true));
                     return;
                 }
             }
-
-            return;
         }
 
+        // 도착 판정
+        var serverPos = new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ);
         if (Vector3.Distance(serverPos, _targetPos) <= STOP_RANGE)
         {
-            player.ChangeState(new Player_IdleState());
-            return;
+            if (_isTargetOn)
+            {
+                // 타겟 이동: 사정거리 진입 의미로 공격 전환
+                player.ChangeState(new Player_AttackState(_targetId, chaseAllowed: true));
+            }
+            else
+            {
+                // 땅 이동: 도착 시 주변 적 스캔 후 자동 공격
+                var enemy = player.FindNearestEnemy(player.AttackRange);
+                if (enemy != null)
+                    player.ChangeState(new Player_AttackState(enemy.Id, chaseAllowed: true));
+                else
+                    player.ChangeState(new Player_IdleState());
+            }
         }
     }
 
@@ -112,9 +147,6 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
                 _targetPos = new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ);
             }
         }
-
-        // 위치 정보 목적지 통보
-        player.SendMovePacket(new PositionInfo(player.PosInfo), new RotationInfo(player.RotInfo));
     }
 }
 

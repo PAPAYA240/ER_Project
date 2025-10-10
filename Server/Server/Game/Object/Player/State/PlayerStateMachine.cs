@@ -14,7 +14,7 @@ public class PlayerStateMachine
         _currentState = newState;
         _currentState?.Enter(player);
 
-        player.CurState = _currentState;
+        player.CurrentState = _currentState;
     }
 
     public void Update(Player player)

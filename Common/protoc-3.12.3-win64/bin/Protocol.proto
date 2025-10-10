@@ -43,6 +43,10 @@ enum MsgId {
   S_CHANGE_STAT = 35;
   C_ATTACK_SKILL_TARGET = 36;
   C_MOVE_SYNC = 37;
+  C_ATTACK = 38;
+  C_SET_MOVE_TARGET = 39;
+  C_STOP = 40;
+  S_SET_MOVE_TARGET = 41;
 }
 
 enum CreatureState{
@@ -193,6 +197,11 @@ enum ItemGrade{
 	LEGENDARY = 4;
 	MYTHIC = 5;
 	ITEM_GRADE_END = 6;
+}
+
+enum StopReason {
+  STOP_ALL = 0;           // S: 이동/공격 전부 중지 → Idle
+  STOP_MOVE_ONLY = 1;     // H: 이동만 중지(추격 금지)
 }
 
 message C_Interact {
@@ -539,4 +548,24 @@ message ItemStat{
 
 message C_AttackSkillTarget{
 	bool attack = 1;
+}
+
+message C_Attack {					// 우클릭 타겟 공격
+  int32 targetId = 1;
+}
+
+message C_SetMoveTarget {			// 우클릭 결과 : 타겟 이동 or 땅 이동
+  bool isGround = 1;				// true = 땅, false = 타겟
+  int32 targetId = 2;				// isGround = false인 경우 유효
+  PositionInfo targetPos = 3;		// isGround = true인 경우 유효
+}
+
+message C_Stop {
+  StopReason reason = 1;
+}
+
+message S_SetMoveTarget {
+  bool isGround   = 1;  // true=땅 이동, false=타겟 추격 이동
+  int32 targetId  = 2;  // isGround=false 때 사용
+  PositionInfo targetPos = 3; // isGround=true 때 사용(땅 목적지)
 }

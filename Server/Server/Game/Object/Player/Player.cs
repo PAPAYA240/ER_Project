@@ -5,13 +5,14 @@ using ServerCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Sockets;
 using System.Numerics;
 using System.Threading.Tasks;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
 {
-    public class Player : Creature
+    public partial class Player : Creature
     {
         public ClientSession Session { get; set; }
 
@@ -29,11 +30,11 @@ namespace Server.Game
 
         // StateMachine
         private PlayerStateMachine _stateMachine;
-        private IPlayerState _curState;
-        public IPlayerState CurState
+        private IPlayerState _currentState;
+        public IPlayerState CurrentState
         {
-            get { return _curState; }
-            set { _curState = value; }
+            get { return _currentState; }
+            set { _currentState = value; }
         }
 
         // StatRegenerator
@@ -290,6 +291,17 @@ namespace Server.Game
                 ObjectId = Id,
                 PosInfo = posInfo,
                 RotInfo = rotInfo
+            };
+            Room.Push(Room.Broadcast, packet);
+        }
+
+        public void SendSetMoveTarget(bool isGround, int targetId, PositionInfo posOpt = null)
+        {
+            S_SetMoveTarget packet = new S_SetMoveTarget
+            {
+                IsGround = isGround,
+                TargetId = isGround ? 0 : targetId,
+                TargetPos = isGround && posOpt != null ? new PositionInfo(posOpt) : null
             };
             Room.Push(Room.Broadcast, packet);
         }

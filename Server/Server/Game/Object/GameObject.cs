@@ -147,6 +147,12 @@ namespace Server.Game
             set { PosInfo.PosX = value.X; PosInfo.PosY = value.Y; PosInfo.PosZ = value.Z; }
         }
 
+        public int Team
+        {
+            get { return Info.Player.Team; }
+            set { Info.Player.Team = value; }
+        }
+
         public virtual void Update()
         {
 

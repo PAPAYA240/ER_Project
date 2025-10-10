@@ -15,43 +15,103 @@ public class PlayerInputController : MonoBehaviour
     private NavMeshAgent _agent;         
 
     [SerializeField] float _attackRange = 3.0f;  
-    [SerializeField] float _stopBuffer = 0.1f;  
+    [SerializeField] float _stopBuffer = 0.1f;
+
+    private Vector3 _lastCmdDest;
+    private int _lastCmdTargetId;
+    private bool _lastCmdIsTarget;
+    [SerializeField] float _destEps = 0.15f; // 15cm 이상 움직일 때만 새 명령
+
+    [SerializeField] private LayerMask _groundMask;
+    [SerializeField] private LayerMask _monsterMask;
+    [SerializeField] private LayerMask _playerMask;
 
     private void Awake()
     {
         _player = GetComponentInChildren<MyPlayerController>();
         _agent = GetComponentInChildren<NavMeshAgent>();
+
+        _groundMask = 1 << LayerMask.NameToLayer("Map");
+        _monsterMask = 1 << LayerMask.NameToLayer("Monster");
+        _playerMask = 1 << LayerMask.NameToLayer("Fog");    // TEMP
     }
 
-    public C_Move GetMoveCommand()
+    // 우클릭 유지 중 이동 의도(타겟 이동 or 땅 이동)
+    public C_SetMoveTarget GetSetMoveTarget()
     {
-        if (Input.GetMouseButton(1))
+        if (!Input.GetMouseButton(1))
+            return null;
+
+        GameObject target = GetAttackableUnderCursor();
+        if (target == null)
         {
-            GameObject target = GetAttackableUnderCursor();
-            if (target == null)
+            // 땅 이동
+            if (!TryGetGroundDestination(out Vector3 final))
+                return null;
+
+            // 중복 억제: 연속 같은 목적지면 전송 생략
+            if (!_lastCmdIsTarget &&
+                (final - _lastCmdDest).sqrMagnitude < _destEps * _destEps)
+                return null;
+
+            _lastCmdIsTarget = false;
+            _lastCmdDest = final;
+            _lastCmdTargetId = 0;
+
+            return new C_SetMoveTarget
             {
-                if (TryGetGroundDestination(out Vector3 final))
-                {
-                    return new C_Move
-                    {
-                        IsTargetOn = false,
-                        TargetPosition = final 
-                    };
-                }
-            }
-            else
-            {
-                if (TryGetTargetDestination(target, out Vector3 final, out int targetId))
-                {
-                    return new C_Move
-                    {
-                        IsTargetOn = true,
-                        TargetId = targetId,
-                        TargetPosition = final 
-                    };
-                }
-            }
+                IsGround = true,
+                TargetPos = new PositionInfo { PosX = final.x, PosY = final.y, PosZ = final.z }
+            };
         }
+        else
+        {
+            // 타겟팅 이동
+            if (!TryGetTargetDestination(target, out Vector3 final, out int id))
+                return null;
+
+            // 중복 억제: 같은 타겟이면 전송 생략
+            if (_lastCmdIsTarget && id == _lastCmdTargetId)
+                return null;
+
+            _lastCmdIsTarget = true;
+            _lastCmdTargetId = id;
+            _lastCmdDest = final; // (정보 유지용)
+
+            return new C_SetMoveTarget
+            {
+                IsGround = false,
+                TargetId = id
+                // TargetPos는 필요 없음(서버가 타겟 현재 위치로 갱신)
+            };
+        }
+    }
+
+    // 우클릭 "타겟 공격" (클릭 순간 1회)
+    public C_Attack GetAttackCommand()
+    {
+        if (!Input.GetMouseButtonDown(1))
+            return null;
+
+        GameObject target = GetAttackableUnderCursor();
+        if (target == null)
+            return null;
+
+        var cc = target.GetComponentInChildren<CreatureController>();
+        if (cc == null)
+            return null;
+
+        return new C_Attack { TargetId = cc.Id };
+    }
+
+    // S키 : 공격, 이동 중지 -> Idle 상태 벗어나면 다시 자동 공격
+    // H키 : 이동 중지
+    public C_Stop GetStopCommand()
+    {
+        if (Input.GetKeyDown(KeyCode.S))
+            return new C_Stop { Reason = StopReason.StopAll };
+        if (Input.GetKeyDown(KeyCode.H))
+            return new C_Stop { Reason = StopReason.StopMoveOnly };
         return null;
     }
 
@@ -81,15 +141,6 @@ public class PlayerInputController : MonoBehaviour
         return null;
     }
 
-    //public C_Attack GetAttackCommand()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.A))
-    //    {
-    //        return new C_Attack { TargetId = 123 }; // TODO: 실제 타겟 선택
-    //    }
-    //    return null;
-    //}
-
     //public C_Rest GetRestCommand()
     //{
     //    if (Input.GetKeyDown(KeyCode.X))
@@ -110,23 +161,15 @@ public class PlayerInputController : MonoBehaviour
 
     private GameObject GetAttackableUnderCursor(float radius = 0.1f)
     {
-        GameObject gameObject = null;
-
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        int monsterMask = 1 << LayerMask.NameToLayer("Monster");
-        int playerMask = 1 << LayerMask.NameToLayer("Fog");
-        if (Physics.SphereCast(ray, radius, out RaycastHit sphereHit, 1000.0f, monsterMask | playerMask))
+        if (Physics.SphereCast(ray, radius, out RaycastHit hit, 1000f, _monsterMask | _playerMask))
         {
-            GameObject hitObject = sphereHit.collider.gameObject;
-            CreatureController cc = hitObject.GetComponent<CreatureController>();
-            if (IsAttackable(hitObject))    // TEMP : _player.IsAttackable
-            {
-                gameObject = hitObject;
-            }
+            var cc = hit.collider.GetComponentInParent<CreatureController>();
+            if (cc != null && IsAttackable(hit.collider.gameObject))
+                return cc.gameObject;
         }
 
-        return gameObject;
+        return null;
     }
 
     // 지형 클릭 시
