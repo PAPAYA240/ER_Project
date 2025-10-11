@@ -4,6 +4,7 @@ using System.Collections;
 using Data;
 using static Data.EffectData;
 using Google.Protobuf.Protocol;
+using static Data.SkillEffectList;
 
 public class FXManager : MonoBehaviour
 {
@@ -47,16 +48,17 @@ public class FXManager : MonoBehaviour
                 fxPool[data.prefabName].Add(fxObject);
             }
 
+            Transform copyTransform = casterTransform;
             if (data.attachBoneName != null)
-                casterTransform = Util.FindChildByName(casterTransform, data.attachBoneName);
+                copyTransform = Util.FindChildByName(casterTransform, data.attachBoneName).transform;
 
             fxObject.transform.SetPositionAndRotation(
-                GetSpawnPosition(data, casterTransform, targetPos, out Transform parentTransform), 
-                GetSpawnRotation(data, casterTransform, targetPos, rot));
+                GetSpawnPosition(data, copyTransform, targetPos, out Transform parentTransform), 
+                GetSpawnRotation(data, copyTransform, targetPos, rot));
             fxObject.transform.SetParent(parentTransform);
 
             SettingLayer(fxObject, fxLayer);
-            StartEffectLogic(fxObject, data, casterTransform);
+            StartEffectLogic(fxObject, data, copyTransform);
             effectList.Add(fxObject);
         }
         return effectList;
@@ -167,7 +169,53 @@ public class FXManager : MonoBehaviour
     #endregion
 
     #region Util
-    public List<EffectData> GetSkillEffectList(CharacterType charType, CreatureState state, KeyCode keyCode, bool bTarget = false)
+    public List<EffectData> GetEffectsByPrefabName(string targetPrefabName)
+    {
+        List<EffectData> matchingEffectData = new List<EffectData>();
+
+        if (string.IsNullOrEmpty(targetPrefabName) || DataManager.PlayerFxDict == null)
+            return matchingEffectData;
+
+        foreach (var charEffectEntry in DataManager.PlayerFxDict)
+        {
+            var creatureStateEffects = charEffectEntry.Value;
+
+            foreach (var stateEffectEntry in creatureStateEffects)
+            {
+                var keyCodeEffects = stateEffectEntry.Value;
+
+                foreach (var keyCodeEntry in keyCodeEffects)
+                {
+                    var skillEffectList = keyCodeEntry.Value as SkillEffectList;
+                    // 4단계: Effect Type 순회 (직접 접근 방식으로 수정)
+                    var allEffectLists = new List<List<EffectData>>
+                {
+                    skillEffectList?.Caster,
+                    skillEffectList?.HitTarget,
+                    skillEffectList?.Select
+                };
+
+                    foreach (var effectDataList in allEffectLists)
+                    {
+                        if (effectDataList == null) continue;
+
+                        // 5단계: EffectData 리스트 순회
+                        foreach (var effectData in effectDataList)
+                        {
+                            if (effectData != null &&
+                                effectData.prefabName.Equals(targetPrefabName, System.StringComparison.OrdinalIgnoreCase))
+                            {
+                                matchingEffectData.Add(effectData);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return matchingEffectData;
+    }
+
+    public List<EffectData> GetSkillEffectList(CharacterType charType, CreatureState state, KeyCode keyCode, EffectType type = EffectType.Caster)
     {
         // 1단계: CharacterType 확인
         if (DataManager.PlayerFxDict== null || !DataManager.PlayerFxDict.TryGetValue(charType, out var stateDict))
@@ -179,10 +227,14 @@ public class FXManager : MonoBehaviour
 
         if (keyCodeDict.TryGetValue(keyCode, out var effectList))
         {
-            if (bTarget == false)
+            if (type == EffectType.Caster)
                 return effectList.Caster;
-            else
+            else if (type == EffectType.HitTarget)
                 return effectList.HitTarget;
+            else if (type == EffectType.Select)
+                return effectList.Select;
+            else
+                return null;
         }
         else
             return null;

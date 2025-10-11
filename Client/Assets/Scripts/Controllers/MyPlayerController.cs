@@ -5,9 +5,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
+using static Data.SkillEffectList;
 using static UI_PlayerInterface;
 using static UI_SkillBase;
+using static UnityEngine.GraphicsBuffer;
 
 public class MyPlayerController : PlayerController
 {
@@ -1192,23 +1195,30 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region Effect
-    protected override List<GameObject> PlayEffectTransform(CreatureState state, KeyCode key, bool bTarget = false, 
+    protected List<GameObject> PlayEffect(string fxName)
+    {
+        List<EffectData> effectList =Managers.FX.GetEffectsByPrefabName(fxName);
+
+        return Managers.FX.PlayEffect(effectList, transform);
+    }
+
+    protected override List<GameObject> PlayEffectTransform(CreatureState state, KeyCode key, EffectType type = EffectType.Caster, 
         GameObject target = null, Transform targetTransform = null)
     {
         List<EffectData> effectList = 
-            Managers.FX.GetSkillEffectList(ObjInfo.Player.CharType, state, key, bTarget);
+            Managers.FX.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
 
         List<GameObject> EffectList = null;
 
         // 타겟의 이펙트
-        if (bTarget == true && target != null)
+        if (type == EffectType.HitTarget && target != null)
         {
             EffectList = (targetTransform != null) ?
              Managers.FX.PlayEffect(effectList, targetTransform)
              : Managers.FX.PlayEffect(effectList, target.transform);
         }
         // 나의 이펙트
-        else if (bTarget == false)
+        else if (type == EffectType.Caster)
         {
             EffectList = (targetTransform != null) ?
             Managers.FX.PlayEffect(effectList, targetTransform)
@@ -1218,10 +1228,9 @@ public class MyPlayerController : PlayerController
         return EffectList;
     }
 
-    protected List<GameObject> PlayEffectAtPosition(CreatureState state, KeyCode key, Vector3 position, Quaternion rot, bool bTarget = false)
+    protected List<GameObject> PlayEffectAtPosition(CreatureState state, KeyCode key, Vector3 position, Quaternion rot, EffectType type = EffectType.Caster)
     {
-        List<EffectData> effectList =
-            Managers.FX.GetSkillEffectList(ObjInfo.Player.CharType, state, key, bTarget); 
+        List<EffectData> effectList = Managers.FX.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type); 
 
         if (effectList == null || effectList.Count == 0) return null;
 
@@ -1365,7 +1374,6 @@ public class MyPlayerController : PlayerController
 
     protected float _ratioSkillDuration = 0f;
     #region Packet
-
     private void SendSkillPacket(KeyCode key)
     {
         int targetId = -1;

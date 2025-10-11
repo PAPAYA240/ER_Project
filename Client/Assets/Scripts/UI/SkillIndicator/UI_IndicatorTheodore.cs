@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,6 +16,7 @@ public class UI_IndicatorTheodore : UI_Base
     Vector3 _targetScaled = new Vector3(1, 1, 1);
     private const float SCALE_SPEED = 1.5f;
 
+    GameObject QAttack = null;
     private readonly Dictionary<KeyCode, Action> _skillUpdateMap = new Dictionary<KeyCode, Action>();
     public KeyCode CurrentActiveKey { get; private set; } = KeyCode.None;
 
@@ -23,17 +25,20 @@ public class UI_IndicatorTheodore : UI_Base
         Owner = GetComponentInParent<MyPlayerController>();
 
         // Q Indicator
+        QAttack= Managers.Resource.Instantiate($"UI/Character/Theodore/bound");
         _indicatorMap[KeyCode.Q] = Managers.Resource.Instantiate($"UI/Character/Theodore/IndicatorQ");
         _qIndicatorCanvas = _indicatorMap[KeyCode.Q].GetComponent<Canvas>();
         if (_qIndicatorCanvas != null)
         {
+            QAttack.transform.SetParent(Owner.transform, false);
             _qIndicatorCanvas.transform.SetParent(Owner.transform, false);
             _qIndicatorCanvas.enabled = false;
+            QAttack.SetActive(false);
         }
 
-        Transform Outpos = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "OutCircle");
+        Transform Outpos = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "OutCircle").transform;
         _targetScaled = Outpos.localScale + new Vector3(0.01f, 0.01f, 0);
-        Transform pos = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "InCircle");
+        Transform pos = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "InCircle").transform;
         pos.localScale = Vector3.zero;
 
         // W Indicator
@@ -101,12 +106,19 @@ public class UI_IndicatorTheodore : UI_Base
 
             if (key == KeyCode.Q)
             {
-                Transform pos = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "InCircle");
+                Transform pos = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "InCircle").transform;
                 pos.localScale = Vector3.zero;
+                StartCoroutine(AttackEffectEnd(4.0f));
             }
         }
     }
 
+    private IEnumerator AttackEffectEnd(float duration)
+    {
+        QAttack.SetActive(true);
+        yield return new WaitForSeconds(duration);
+        QAttack.SetActive(false);
+    }
     #region Skill W
     private void AbilityW()
     {
@@ -120,6 +132,7 @@ public class UI_IndicatorTheodore : UI_Base
         Quaternion rot = Quaternion.LookRotation(position - transform.position);
         rot.eulerAngles = new Vector3(0, rot.eulerAngles.y, rot.eulerAngles.z);
         _wIndicatorCanvas.transform.rotation = Quaternion.Lerp(rot, _wIndicatorCanvas.transform.rotation, 0);
+        QAttack.transform.rotation = _wIndicatorCanvas.transform.rotation;
 
         Util.FindChildByName(_indicatorMap[KeyCode.W].transform, "Indicator").transform.position = position;
     }
@@ -146,7 +159,7 @@ public class UI_IndicatorTheodore : UI_Base
 
     private void Scale()
     {
-        Transform _inCircleTransform = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "InCircle");
+        Transform _inCircleTransform = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "InCircle").transform;
         if (Vector3.Distance(_inCircleTransform.localScale, _targetScaled) < 0.01f)
         {
             _inCircleTransform.localScale = _targetScaled;

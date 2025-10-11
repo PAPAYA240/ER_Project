@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static Data.SkillEffectList;
 using static UnityEngine.UI.GridLayoutGroup;
 
 public class TheodoreController : MyPlayerController
@@ -11,9 +12,6 @@ public class TheodoreController : MyPlayerController
     // Material
     Material passiveMaterial, originMaterial;
     Renderer myRenderer;
-
-    // Weapon
-    private GameObject _sniperRifle = null;
 
     // Fx
     List<GameObject> _currentEffectList = new List<GameObject>();
@@ -67,7 +65,7 @@ public class TheodoreController : MyPlayerController
     #region CC
     IEnumerator CoPassive()
     {
-        Renderer sniperRender = _sniperRifle.GetComponentInChildren<Renderer>();
+        Renderer sniperRender = _eqipWeapon.GetComponentInChildren<Renderer>();
         myRenderer.material = passiveMaterial;
         sniperRender.material = passiveMaterial;
         PlayEffectTransform(CreatureState.Skill, KeyCode.W);
@@ -101,7 +99,7 @@ public class TheodoreController : MyPlayerController
 
         target.GetComponent<CreatureController>().HasCrowdControl = false;
 
-        PlayEffectTransform(CreatureState.Skill, KeyCode.Q, true, _currentTarget);
+        PlayEffectTransform(CreatureState.Skill, KeyCode.Q, EffectType.HitTarget, _currentTarget);
         SendFXPacket(_keyCode);
     }
 
@@ -117,9 +115,9 @@ public class TheodoreController : MyPlayerController
     private void ReadySkillQ()
     {
         PlayAnimation("SKILL_START", 0.1f);
-        _sniperRifle.GetComponent<WeaponController>().PlayAnimation("SKILL_READY_Q", 0.1f);
+        _eqipWeapon.GetComponent<WeaponController>().PlayAnimation("SKILL_READY_Q", 0.1f);
 
-        List<GameObject> effectList = PlayEffectTransform(CreatureState.Skill, _keyCode);
+        _currentEffectList = PlayEffectTransform(CreatureState.Skill, _keyCode);
         SendFXPacket(_keyCode);
 
         _effectDuration = 5.0f; // TODO : 예시로 하드 코딩, 나중에 CC Data에서 가져와 줄 것
@@ -171,7 +169,7 @@ public class TheodoreController : MyPlayerController
             // 애니메이션
             LookAtMouse();
             PlayAnimation("SKILL_Q", 0.1f);
-            _sniperRifle.GetComponent<WeaponController>().PlayAnimation("SKILL_Q", 0.1f);
+            _eqipWeapon.GetComponent<WeaponController>().PlayAnimation("SKILL_Q", 0.1f);
 
             // 스턴 가능 경우 속박
             if (_currentTarget != null && _currentTarget.GetComponent<CreatureController>().HasCrowdControl)
@@ -189,6 +187,7 @@ public class TheodoreController : MyPlayerController
                 }
             }
             _currentEffectList.Clear();
+            _currentEffectList = PlayEffect("FX_SkillFire");
         }
     }
     #endregion
@@ -245,7 +244,7 @@ public class TheodoreController : MyPlayerController
 
         if (mousePos != Vector3.zero)
         {
-            PlayEffectAtPosition(CreatureState.Skill, KeyCode.W, mousePos, finalRotation, true);
+            PlayEffectAtPosition(CreatureState.Skill, KeyCode.W, mousePos, finalRotation, EffectType.HitTarget);
             SendFXPacket(_keyCode);
         }
     }
@@ -333,8 +332,8 @@ public class TheodoreController : MyPlayerController
         // 평타
         if (State == CreatureState.Attack)
         {
-            Transform childTransform = Util.FindChildByName(_sniperRifle.transform, "ShotPoint");
-            PlayEffectTransform(CreatureState.Skill, KeyCode.Z, false, null, childTransform);
+            GameObject childTransform = Util.FindChildByName(_eqipWeapon.transform, "ShotPoint");
+            PlayEffectTransform(CreatureState.Skill, KeyCode.Z, EffectType.Caster, null, childTransform.transform);
         }
         // 스킬
         else if (State == CreatureState.Skill)
@@ -371,26 +370,8 @@ public class TheodoreController : MyPlayerController
     UI_IndicatorTheodore indicator;
     private bool Equip_Weapon()
     {
-       Transform RTransform = Util.FindChildByName(transform, "Equip_R");
-       _equipTransform = Util.FindChildByName(transform, "Equip_L");
-        if (_equipTransform == null || RTransform == null)
-            return false;
-
-        // 스나이퍼
-        _sniperRifle = Managers.Resource.Instantiate($"Creature/Weapon/WP_Theodore_SP01_Sniperrifle_LOD");
-        if (_sniperRifle != null)
-        {
-            if (RTransform != null)
-            {
-                _sniperRifle.gameObject.AddComponent<WeaponController>();
-
-                _sniperRifle.transform.SetParent(RTransform);
-                _sniperRifle.transform.localPosition = Vector3.zero;
-                _sniperRifle.transform.localRotation = Quaternion.identity;
-                _sniperRifle.transform.localScale = Vector3.one;
-            }
-        }
-        else
+       _equipTransform = Util.FindChildByName(transform, "Equip_L").transform;
+        if (_equipTransform == null)
             return false;
 
         // 스파크 탄

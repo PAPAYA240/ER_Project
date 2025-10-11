@@ -6,6 +6,7 @@ using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 using UnityEngine.AI;
+using static Data.SkillEffectList;
 
 public class PlayerController : CreatureController
 {
@@ -23,6 +24,7 @@ public class PlayerController : CreatureController
     // 장착 아이템
     Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
     public ItemStat ItemStat { get; private set; }
+    protected GameObject _eqipWeapon = null;
 
     // 레이어
     protected string layerName;
@@ -84,6 +86,31 @@ public class PlayerController : CreatureController
         for (int i = 0; i < (int)EquipItemType.End; ++i)
         {
             _equipItemSlot.Add((EquipItemType)i, new EquipItemInfo());
+        }
+
+        EquipWeapon();
+    }
+
+    private void EquipWeapon()
+    {
+        if (ObjInfo.Player.CharType == CharacterType.Theodore)
+        {
+            Transform RTransform = Util.FindChildByName(transform, "Equip_R").transform;
+
+            // 스나이퍼
+            _eqipWeapon = Managers.Resource.Instantiate($"Creature/Weapon/WP_Theodore_SP01_Sniperrifle_LOD");
+            if (_eqipWeapon != null)
+            {
+                if (RTransform != null)
+                {
+                    _eqipWeapon.gameObject.AddComponent<WeaponController>();
+
+                    _eqipWeapon.transform.SetParent(RTransform);
+                    _eqipWeapon.transform.localPosition = Vector3.zero;
+                    _eqipWeapon.transform.localRotation = Quaternion.identity;
+                    _eqipWeapon.transform.localScale = Vector3.one;
+                }
+            }
         }
     }
 
@@ -319,10 +346,10 @@ public class PlayerController : CreatureController
     }
 
     // 현재 상태, 키, 타겟팅 상대에게 이펙트
-    protected virtual List<GameObject> PlayEffectTransform(CreatureState state, KeyCode key, bool bTarget = false,
-        GameObject target = null, Transform targetTransform = null)
+    protected virtual List<GameObject> PlayEffectTransform(CreatureState state, KeyCode key, EffectType type = EffectType.Caster,
+       GameObject target = null, Transform targetTransform = null)
     {
-        List<EffectData> effectList = Managers.FX.GetSkillEffectList(ObjInfo.Player.CharType, state, key, bTarget);
+        List<EffectData> effectList = Managers.FX.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
         List<GameObject> EffectList = null;
         EffectList = Managers.FX.PlayEffect(effectList, transform);
 

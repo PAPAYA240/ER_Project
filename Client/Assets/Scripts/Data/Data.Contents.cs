@@ -193,10 +193,17 @@ namespace Data
 
     [Serializable]
     public class SkillEffectList
-    {  
-            public List<EffectData> Caster { get; set; }  // 시전자 이펙트
-            public List<EffectData> HitTarget { get; set; } // 피격자 이펙트
-      }
+    {
+        public enum EffectType
+        {
+            Caster,     // 시전자 이펙트
+            HitTarget,  // 피격자 이펙트
+            Select      // 선택에 따른 이펙트
+        }
+        public List<EffectData> Caster { get; set; }  // 시전자 이펙트
+        public List<EffectData> HitTarget { get; set; } // 피격자 이펙트
+        public List<EffectData> Select { get; set; } // 선택에 따른 이펙트
+    }
 
     [Serializable]
     public class EffectData

@@ -117,8 +117,17 @@ public class CreatureController : BaseController
         SyncPos();
 
         // TODO : 예비 UI
-        GameObject mark = Managers.Resource.Instantiate($"UI/Character/Theodore/MarkE");
-        targetingMark = mark.gameObject.AddComponent<UI_TargetingMark>();
+        string path = "Prefabs/UI/Character/Theodore/FX_BI_Theodore_Skill03_Target_Mark";
+        Vector3 pos = transform.position + new Vector3(0f, 2.2f, 0f);
+        GameObject loadedPrefab = Resources.Load<GameObject>(path);
+        GameObject markInstance = Instantiate(
+               loadedPrefab,
+               pos,
+               Quaternion.identity 
+           );
+        markInstance.transform.SetParent(transform);
+        targetingMark = markInstance.gameObject.AddComponent<UI_TargetingMark>();
+
         base.Init();
     }
     public virtual void OnDamaged()

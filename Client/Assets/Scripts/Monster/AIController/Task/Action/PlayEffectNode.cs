@@ -14,7 +14,7 @@ public class PlayEffectNode : ActionNode, IStateChangeListener
          if (monster.ObjInfo.Monster.MonsterType == MonsterType.Alpha)
          {
              monster = owner.GetComponentInChildren<MonsterController>();
-             Transform handL = Util.FindChildByName(monster.transform, "Fx_Hand_L");
+             Transform handL = Util.FindChildByName(monster.transform, "Fx_Hand_L").transform;
 
              if (DataManager.MonsterSkillDict.TryGetValue(monster.Skill, out List<EffectData> data))
              {

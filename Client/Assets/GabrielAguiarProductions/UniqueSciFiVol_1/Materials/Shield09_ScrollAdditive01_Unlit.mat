@@ -13,6 +13,7 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - _ALPHAPREMULTIPLY_ON
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -102,6 +103,7 @@ Material:
     - _BUILTIN_ZWrite: 0
     - _BUILTIN_ZWriteControl: 0
     - _Blend: 2
+    - _BlendModePreserveSpecular: 1
     - _CastShadows: 0
     - _Clip: 0
     - _Cull: 2
@@ -109,11 +111,13 @@ Material:
     - _MasterIntensity: 3
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _SrcBlend: 5
+    - _ReceiveShadows: 1
+    - _SrcBlend: 1
     - _Surface: 1
     - _Tex01Intensity: 6
     - _Tex02Intensity: 5
     - _Tex3Intensity: 10
+    - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 0
     - _ZWriteControl: 0
