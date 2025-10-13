@@ -91,12 +91,14 @@
     },
     "Theodore": {
       "Q": {
-          "shape": "Ray",
-          "type": "SkillStatic",
-          "charge": true,
-          "width": 2.8,
-          "minRange": 6,
-          "maxRange": 11
+        "shape": "Ray",
+        "type": "SkillStatic",
+        "startFrame": 9,
+        "endFrame": 24,
+        "charge": true,
+        "width": 2.8,
+        "minRange": 6,
+        "maxRange": 11
       },
       "W":{
           "shape": "Rectangle",
