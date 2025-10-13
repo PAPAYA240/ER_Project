@@ -1,8 +1,49 @@
 ﻿using Google.Protobuf.Protocol;
+using System.Collections;
 using UnityEngine;
 
 public class CreatureController : BaseController
 {
+    #region CC기 면역
+    protected UI_TargetingMark targetingMark = null;
+    private bool _hasCrowdControl = false;
+    public bool HasCrowdControl 
+    {
+        get
+        {
+            return _hasCrowdControl;
+        }
+        set
+        {
+            _hasCrowdControl = value;
+
+            // 구속이 가능한 상태 시에 UI 띄우기
+            if (_hasCrowdControl)
+                targetingMark.ShowCCMark(this.gameObject);
+
+            else
+                targetingMark.HideCCMark();
+        }
+    }
+
+    public void ApplyStun(float duration)
+    {
+        StartCoroutine(CoEndStun(duration));
+    }
+
+    IEnumerator CoEndStun(float duration)
+    {
+        Debug.Log($"Stun applied for {duration} seconds.");
+        yield return new WaitForSeconds(duration);
+        C_Stun stunPacket = new C_Stun()
+        {
+            ObjectId = ObjInfo.ObjectId,
+            IsStun = false,
+        };
+        Managers.Network.Send(stunPacket);
+    }
+    #endregion
+
     Define.Object _object = Define.Object.Unknown;
     public Define.Object ObjectType
     {
@@ -73,7 +114,21 @@ public class CreatureController : BaseController
 
 	protected override void Init()
     {
-		base.Init();
+        SyncPos();
+
+        // TODO : 예비 UI
+        string path = "Prefabs/UI/Character/Theodore/FX_BI_Theodore_Skill03_Target_Mark";
+        Vector3 pos = transform.position + new Vector3(0f, 2.2f, 0f);
+        GameObject loadedPrefab = Resources.Load<GameObject>(path);
+        GameObject markInstance = Instantiate(
+               loadedPrefab,
+               pos,
+               Quaternion.identity 
+           );
+        markInstance.transform.SetParent(transform);
+        targetingMark = markInstance.gameObject.AddComponent<UI_TargetingMark>();
+
+        base.Init();
     }
     public virtual void OnDamaged()
     {

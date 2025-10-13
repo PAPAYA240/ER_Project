@@ -1,9 +1,7 @@
 ﻿using Google.Protobuf.Protocol;
 using System.Collections.Generic;
 using UnityEngine;
-#if UNITY_EDITOR
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
-#endif
+
 
 public class ParallelNode : CompositeNode, IStateChangeListener
 {

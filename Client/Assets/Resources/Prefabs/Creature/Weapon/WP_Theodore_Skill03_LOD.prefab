@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4931270379067568}
   - component: {fileID: 137353754114201607}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wp_Theodore_000_LOD1_Skill02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4995430121132097}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bone Bomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,10 +127,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4454012105871754}
-  - component: {fileID: 8679055817841073171}
   - component: {fileID: 8883306984610812871}
   - component: {fileID: -6422207580313495938}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: WP_Theodore_Skill03_LOD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -153,18 +152,6 @@ Transform:
   - {fileID: 4259718274554167}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
---- !u!114 &8679055817841073171
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1856141672192019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3bd71ab600f22384bbdda1f2f6a9ee32, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!136 &8883306984610812871
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -225,7 +212,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4259718274554167}
   - component: {fileID: 95300407818551656}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: WP_Theodore_Skill03_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

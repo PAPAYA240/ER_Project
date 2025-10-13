@@ -170,8 +170,6 @@ public class BaseController : MonoBehaviour
     {
         _animator = GetComponentInChildren<Animator>();
 
-        SyncPos();
-
         UpdateAnimation();
     }
 
@@ -200,20 +198,7 @@ public class BaseController : MonoBehaviour
         }
     }
 
-    // 뼈 찾는 함수
-    public Transform FindInDescendants(Transform parent, string name)
-    {
-        if (parent.name == name)
-            return parent;
-
-        foreach (Transform child in parent)
-        {
-            Transform result = FindInDescendants(child, name);
-            if (result != null)
-                return result;
-        }
-        return null;
-    }
+   
     protected virtual void UpdateIdle()
     {
     }

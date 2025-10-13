@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Collections;
 using Data;
+using Google.Protobuf.Protocol;
 using static Data.EffectData;
+using static Data.SkillEffectList;
 
 public class FXManager : MonoBehaviour
 {
@@ -10,6 +12,7 @@ public class FXManager : MonoBehaviour
     private Dictionary<string, List<GameObject>> fxPool = new Dictionary<string, List<GameObject>>();
     private int fxLayer;
    
+    private Dictionary<int, List<GameObject>> currentlyPlayingEffects = new Dictionary<int, List<GameObject>>();
     public void Init()
     {
         if (fxPrefabs.Count > 0)
@@ -18,7 +21,8 @@ public class FXManager : MonoBehaviour
         fxLayer = LayerMask.NameToLayer("FX");
     }
 
-    public List<GameObject> PlayEffect(List<EffectData> effectData, Transform casterTransform, Vector3 targetPos = new Vector3(), Quaternion rot = new Quaternion())
+    // casterTransform = 붙여줄 캐릭터(본체) Transform (특정 뼈대에 붙이고자 한다면 json에 따로 추가)
+    public List<GameObject> PlayEffect(int ownerId, List<EffectData> effectData, Transform casterTransform, Vector3 targetPos = new Vector3(), Quaternion rot = new Quaternion())
     {
         if (effectData == null || effectData.Count == 0)
             return null;
@@ -44,15 +48,29 @@ public class FXManager : MonoBehaviour
                 fxPool[data.prefabName].Add(fxObject);
             }
 
+            Transform copyTransform = casterTransform;
+            if (data.attachBoneName != null)
+                copyTransform = Util.FindChildByName(casterTransform, data.attachBoneName).transform;
+
             fxObject.transform.SetPositionAndRotation(
-                GetSpawnPosition(data, casterTransform, targetPos, out Transform parentTransform), 
-                GetSpawnRotation(data, casterTransform, targetPos, rot));
+                GetSpawnPosition(data, copyTransform, targetPos, out Transform parentTransform), 
+                GetSpawnRotation(data, copyTransform, targetPos, rot));
             fxObject.transform.SetParent(parentTransform);
 
             SettingLayer(fxObject, fxLayer);
-            StartEffectLogic(fxObject, data, casterTransform);
+            StartEffectLogic(ownerId, fxObject, data, copyTransform);
             effectList.Add(fxObject);
         }
+
+        // 진행 중인 이펙트 리스트
+        if (effectList != null && effectList.Count > 0)
+        {
+            if (!currentlyPlayingEffects.ContainsKey(ownerId))
+                currentlyPlayingEffects[ownerId] = new List<GameObject>();
+
+            currentlyPlayingEffects[ownerId].AddRange(effectList);
+        }
+
         return effectList;
     }
 
@@ -63,19 +81,24 @@ public class FXManager : MonoBehaviour
             case EEffectTarget.Self:
                 parentTransform = casterTransform;
                 return casterTransform.position + data.position;
+
             case EEffectTarget.Relative:
                 parentTransform = casterTransform;
                 Quaternion yawRotationOnly = Quaternion.Euler(0, casterTransform.eulerAngles.y, 0);
                 return casterTransform.position + yawRotationOnly * data.position;
+
             case EEffectTarget.Target:
                 parentTransform = null;
                 return targetPos;
+
             case EEffectTarget.Ground:
                 parentTransform = null;
                 return data.position;
+
             case EEffectTarget.Shoot:
                 parentTransform = null;
                 return casterTransform.position + data.position;
+
             default:
                 parentTransform = null;
                 return Vector3.zero;
@@ -98,11 +121,11 @@ public class FXManager : MonoBehaviour
         }
     }
 
-    private void StartEffectLogic(GameObject fxObject, EffectData data, Transform casterTransform)
+    private void StartEffectLogic(int ownerId, GameObject fxObject, EffectData data, Transform casterTransform)
     {
         fxObject.SetActive(false);
 
-        activeCoroutines[fxObject] = StartCoroutine(ReturnToPoolAfterDelay(fxObject, data.prefabName, data.delayTime, data.duration, casterTransform));
+        activeCoroutines[fxObject] = StartCoroutine(ReturnToPoolAfterDelay(ownerId, fxObject, data.prefabName, data.delayTime, data.duration, casterTransform));
 
         if (data.target == EEffectTarget.Shoot)
             StartCoroutine(ControlEffect(fxObject, casterTransform.forward, data.duration));
@@ -119,9 +142,10 @@ public class FXManager : MonoBehaviour
             Vector3 nextPosition = effect.transform.position + forwardTrans * moveSpeed * Time.deltaTime;
             RaycastHit hit;
 
-            // TODO : 일단 몬스터만
             if (Physics.Raycast(effect.transform.position, forwardTrans, out hit, 
-                (nextPosition - effect.transform.position).magnitude, LayerMask.GetMask("Monster")))
+                (nextPosition - effect.transform.position).magnitude, LayerMask.GetMask("Monster")) ||
+                Physics.Raycast(effect.transform.position, forwardTrans, out hit,
+                (nextPosition - effect.transform.position).magnitude, LayerMask.GetMask("Player")))
             {
                 effect.transform.position = hit.point;
                 yield break;
@@ -143,7 +167,7 @@ public class FXManager : MonoBehaviour
         }
     }
 
-    private IEnumerator ReturnToPoolAfterDelay(GameObject fxObject, string prefabName, float delayTime, float duration, Transform casterTransform)
+    private IEnumerator ReturnToPoolAfterDelay(int ownerId, GameObject fxObject, string prefabName, float delayTime, float duration, Transform casterTransform)
     {
         yield return new WaitForSeconds(delayTime);
         if (fxObject)
@@ -151,10 +175,123 @@ public class FXManager : MonoBehaviour
         yield return new WaitForSeconds(duration);
         if (fxObject)
             fxObject.SetActive(false);
+
+        RemoveEffect(ownerId, fxObject);
     }
     #endregion
 
     #region Util
+    public GameObject FindEffect(int ownerId, string prefabName)
+    {
+        if (currentlyPlayingEffects.TryGetValue(ownerId, out List<GameObject> effectList))
+        {
+            foreach (GameObject effect in effectList)
+            {
+                if (effect.name.Replace("(Clone)", "") == prefabName)
+                    return effect;
+            }
+        }
+        return null;
+    }
+    public void RemoveAllEffect(int ownerId)
+    {
+        if (currentlyPlayingEffects.TryGetValue(ownerId, out List<GameObject> effectList))
+        {
+            foreach (GameObject effect in new List<GameObject>(effectList))
+                StopAndReturnEffect(effect);
+
+            effectList.Clear();
+            currentlyPlayingEffects.Remove(ownerId);
+        }
+    }
+
+    public void RemoveEffect(int ownerId, GameObject fxObject)
+    {
+        if (currentlyPlayingEffects.TryGetValue(ownerId, out List<GameObject> effectList))
+        {
+            foreach (GameObject effect in effectList)
+            {
+                if (effect == fxObject)
+                {
+                    StopAndReturnEffect(effect);
+                    effectList.Remove(effect);
+                    return;
+                }
+            }
+        }
+    }
+
+    public List<EffectData> GetEffectsByPrefabName(string targetPrefabName)
+    {
+        List<EffectData> matchingEffectData = new List<EffectData>();
+
+        if (string.IsNullOrEmpty(targetPrefabName) || DataManager.PlayerFxDict == null)
+            return matchingEffectData;
+
+        foreach (var charEffectEntry in DataManager.PlayerFxDict)
+        {
+            var creatureStateEffects = charEffectEntry.Value;
+
+            foreach (var stateEffectEntry in creatureStateEffects)
+            {
+                var keyCodeEffects = stateEffectEntry.Value;
+
+                foreach (var keyCodeEntry in keyCodeEffects)
+                {
+                    var skillEffectList = keyCodeEntry.Value as SkillEffectList;
+                    // 4단계: Effect Type 순회 (직접 접근 방식으로 수정)
+                    var allEffectLists = new List<List<EffectData>>
+                {
+                    skillEffectList?.Caster,
+                    skillEffectList?.HitTarget,
+                    skillEffectList?.Select
+                };
+
+                    foreach (var effectDataList in allEffectLists)
+                    {
+                        if (effectDataList == null) continue;
+
+                        // 5단계: EffectData 리스트 순회
+                        foreach (var effectData in effectDataList)
+                        {
+                            if (effectData != null &&
+                                effectData.prefabName.Equals(targetPrefabName, System.StringComparison.OrdinalIgnoreCase))
+                            {
+                                matchingEffectData.Add(effectData);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return matchingEffectData;
+    }
+
+    public List<EffectData> GetSkillEffectList(CharacterType charType, CreatureState state, KeyCode keyCode, EffectType type = EffectType.Caster)
+    {
+        // 1단계: CharacterType 확인
+        if (DataManager.PlayerFxDict== null || !DataManager.PlayerFxDict.TryGetValue(charType, out var stateDict))
+            return null;
+
+        // 2단계: CreatureState 확인
+        if (!stateDict.TryGetValue(state, out var keyCodeDict))
+            return null;
+
+        if (keyCodeDict.TryGetValue(keyCode, out var effectList))
+        {
+            if (type == EffectType.Caster)
+                return effectList.Caster;
+            else if (type == EffectType.HitTarget)
+                return effectList.HitTarget;
+            else if (type == EffectType.Select)
+                return effectList.Select;
+            else
+                return null;
+        }
+        else
+            return null;
+    }
+
     private void LoadFxPrefabs()
     {
         GameObject[] loadedPrefabs = Resources.LoadAll<GameObject>("effects/prefab");

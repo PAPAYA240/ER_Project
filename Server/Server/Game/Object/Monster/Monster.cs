@@ -40,6 +40,17 @@ namespace Server.Game
             ChangeState(new IdleState());
         }
        
+        public override void Update()
+        {
+            if (IsStun && !(_currentState is IdleState))
+            {
+                ChangeState(new IdleState());
+                return;
+            }
+            
+            if (_currentState != null)
+                _currentState?.Execute(this);
+        }
         public void ChangeState(IMonsterState newState)
         {
             if (_currentState != null)
@@ -50,11 +61,6 @@ namespace Server.Game
                 _currentState.Enter(this);
         }
 
-        public override void Update()
-        {
-            if(_currentState != null)
-                _currentState?.Execute(this);
-        }
         protected override void IdleState()
         {
              ChangeState(new IdleState());
@@ -77,15 +83,21 @@ namespace Server.Game
             }
 
             Target.Room.Push(OnDamaged, this, skillData.damage + Attack);
-            //PlayerTarget.OnDamaged(this, skillData.damage + Stat.Attack);
 
             return skillData;
         }
 
-        protected virtual void UpdateDead()
+        public override void OnDead(GameObject attacker)
         {
-            // TODO: 몬스터 사망 시 처리
-            State =CreatureState.Dead;
+            if (Room == null)
+                return;
+
+            PosInfo.State = CreatureState.Dead;
+
+            S_Die diePacket = new S_Die();
+            diePacket.ObjectId = Id;
+            diePacket.AttackerId = attacker.Id;
+            Room.Broadcast(diePacket);
         }
 
         #region Helper Functions

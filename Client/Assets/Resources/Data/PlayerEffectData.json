@@ -1,56 +1,77 @@
 {
   "effects": {
-    "Theodore": {
-      "Z": [
-        {
-          "prefabName": "FX_Attack",
-          "target": "Shoot",
-          "duration": 0.5,
-          "delayTime": 0,
-          "position": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          }
-        }
-      ],
-      "Q": [
-        {
-          "prefabName": "FX_Skill1_OutCircle",
-          "target": "Self",
-          "duration": 5,
-          "delayTime": 0,
-          "position": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          }
+    "Theodore": {     // 1단계 키: CharacterType
+      "Skill": { // 2단계 키: CreatureState 
+        "Z": { // 3단계 키: KeyCode 
+          "Caster": [ // 4단계 값: SkillEffectList
+            {
+              "prefabName": "FX_Attack",
+              "target": "Shoot",
+              "duration": 0.5,
+              "delayTime": 0,
+              "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ],
+          "HitTarget": []
         },
-        {
-          "prefabName": "FX_Skill1_InCircle",
-          "target": "Self",
-          "duration": 5,
-          "delayTime": 0,
-          "position": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          }
+        "Q": {
+          "Caster": [
+            {
+              "prefabName": "FX_Charging",
+              "target": "Self",
+              "duration": 5.0,
+              "attachBoneName": "ShotPoint"
+            }
+          ],
+          "HitTarget": [
+            {
+              "prefabName": "FX_Plexus",
+              "target": "Self",
+              "duration": 5.0
+            }
+          ],
+          "Select": [
+            {
+              "prefabName": "FX_SkillFire",
+              "target": "Self",
+              "duration": 2.5,
+              "attachBoneName": "ShotPoint"
+            },
+            {
+              "prefabName": "FX_QSkill_Indicator",
+              "target": "Target",
+              "duration": 2.5,
+              "attachBoneName": "ShotPoint"
+            }
+          ]
+        },
+        "W": {
+          "Caster": [
+            {
+              "prefabName": "FX_PassiveShideld",
+              "target": "Self",
+              "duration": 5,
+              "delayTime": 0
+            }
+          ],
+          "HitTarget": [
+            {
+              "prefabName": "FX_Shield",
+              "target": "Target",
+              "duration": 5,
+              "delayTime": 0
+            }
+          ]
+        },
+        "E": {
+          "Caster": [],
+          "HitTarget": []
         }
-      ],
-      "W": [
-        {
-          "prefabName": "FX_PassiveShideld",
-          "target": "Self",
-          "duration": 5,
-          "delayTime": 0,
-          "position": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          }
         }
-      ]
-    }
+      }
   }
 }

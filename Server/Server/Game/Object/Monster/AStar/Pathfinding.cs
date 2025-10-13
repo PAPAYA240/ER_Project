@@ -400,9 +400,7 @@ public static class PathSimplifier
     public static List<Vector3> DouglasPeuckerSimplify(List<Vector3> points, float epsilon)
     {
         if (points == null || points.Count < 3)
-        {
             return points; // 2개 이하의 점은 단순화할 수 없습니다.
-        }
 
         // 재귀 함수 호출로 단순화 시작
         return Simplify(points, 0, points.Count - 1, epsilon);
@@ -438,6 +436,7 @@ public static class PathSimplifier
         else
         {
             result.Add(points[firstIndex]);
+
             result.Add(points[lastIndex]);
         }
         return result;
@@ -454,9 +453,7 @@ public static class PathSimplifier
         float lengthSq = Vector2.Distance(a2d, b2d);
     
         if (lengthSq == 0)
-        {
             return Vector2.Distance(p2d, a2d);
-        }
     
         // t = (AP dot AB) / |AB|^2
         // Vector2.Dot은 Vector2 구조체에 정의되어 있다고 가정합니다.
@@ -465,7 +462,6 @@ public static class PathSimplifier
         // ⭐️ Math.Clamp01(t) 대체 ⭐️
         // t가 0보다 작으면 0을, 1보다 크면 1을 사용합니다.
         t = (float)Math.Max(0, Math.Min(1, t)); 
-        // 또는 t = Math.Max(0f, Math.Min(1f, t)); (float 명시)
     
         Vector2 projection = a2d + t * (b2d - a2d);
     

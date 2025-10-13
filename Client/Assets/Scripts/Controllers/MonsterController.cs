@@ -1,10 +1,7 @@
-using Assets.Scripts.Highlight;
 using Google.Protobuf.Protocol;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UIElements;
 
 public class MonsterController : CreatureController
 {
@@ -71,6 +68,11 @@ public class MonsterController : CreatureController
 
     public override void OnDamaged()
     {
+    }
+
+    public override void OnDead()
+    {
+        // DEAD 주금
     }
 
     #region 패킷
@@ -158,7 +160,7 @@ public class MonsterController : CreatureController
         
         originalMaterial = monsterRenderer.material;
         skillMaterial = Resources.Load<Material>("materials/effect/auraMaterial");
-        this.gameObject.AddComponent<HighlightEffect>();
+        gameObject.AddComponent<HighlightEffect>();
 
         if (_animator == null)
             return false;

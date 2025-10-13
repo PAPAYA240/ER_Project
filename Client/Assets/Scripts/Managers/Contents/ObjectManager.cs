@@ -75,11 +75,15 @@ public class ObjectManager
             _objects.Add(info.ObjectId, go);
 
             PlayerController pc = go.GetComponent<PlayerController>();
+
             pc.ObjInfo = info;
             pc.Id = info.ObjectId;
             pc.SyncPos();
             pc.ManualInit();
-           
+
+            if (MyPlayer.ObjInfo.Player.Team != pc.ObjInfo.Player.Team)
+                go.gameObject.AddComponent<HighlightEffect>();
+
             Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.TeamPlayer, pc);
         }
     }

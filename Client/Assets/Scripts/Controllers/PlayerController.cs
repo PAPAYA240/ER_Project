@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using Data;
 using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Windows;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using static Define;
+using static Data.SkillEffectList;
 
 public class PlayerController : CreatureController
 {
     bool _isKeyInput = false;
     int _atkCount = 1;
     int _maxAtkCount = 2;
+
 
     // Fog
     private FogOfWarVision _fogOfWarVision;
@@ -26,6 +24,7 @@ public class PlayerController : CreatureController
     // 장착 아이템
     Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
     public ItemStat ItemStat { get; private set; }
+    protected GameObject _eqipWeapon = null;
 
     // 레이어
     protected string layerName;
@@ -33,6 +32,7 @@ public class PlayerController : CreatureController
     // 화살
     protected GameObject _projectile = null;
     protected Transform _equipTransform = null;
+    
 
     public bool IsKeyInput
     {
@@ -87,6 +87,31 @@ public class PlayerController : CreatureController
         {
             _equipItemSlot.Add((EquipItemType)i, new EquipItemInfo());
         }
+
+        EquipWeapon();
+    }
+
+    private void EquipWeapon()
+    {
+        if (ObjInfo.Player.CharType == CharacterType.Theodore)
+        {
+            Transform RTransform = Util.FindChildByName(transform, "Equip_R").transform;
+
+            // 스나이퍼
+            _eqipWeapon = Managers.Resource.Instantiate($"Creature/Weapon/WP_Theodore_SP01_Sniperrifle_LOD");
+            if (_eqipWeapon != null)
+            {
+                if (RTransform != null)
+                {
+                    _eqipWeapon.gameObject.AddComponent<WeaponController>();
+
+                    _eqipWeapon.transform.SetParent(RTransform);
+                    _eqipWeapon.transform.localPosition = Vector3.zero;
+                    _eqipWeapon.transform.localRotation = Quaternion.identity;
+                    _eqipWeapon.transform.localScale = Vector3.one;
+                }
+            }
+        }
     }
 
     public void ManualInit()
@@ -114,7 +139,7 @@ public class PlayerController : CreatureController
     #region Util
     protected string GetCharacterName()
     {
-        return Enum.GetName(typeof(CharacterType), ObjInfo.Player.CharType);
+        return System.Enum.GetName(typeof(CharacterType), ObjInfo.Player.CharType);
     }
     #endregion
 
@@ -321,15 +346,18 @@ public class PlayerController : CreatureController
     #region Effect
     public virtual void PlayEffectFromServer(EffectInfo fxInfo)
     {
-        Managers.FX.PlayEffect(Find_EffectList((KeyCode)fxInfo.KeyCode), this.transform);
+        PlayEffectTransform(CreatureState.Skill, (KeyCode)fxInfo.KeyCode);
     }
 
-    protected List<EffectData> Find_EffectList(KeyCode key)
+    // 현재 상태, 키, 타겟팅 상대에게 이펙트
+    protected virtual List<GameObject> PlayEffectTransform(CreatureState state, KeyCode key, EffectType type = EffectType.Caster,
+       GameObject target = null, Transform targetTransform = null)
     {
-        var skillDict = DataManager.PlayerFxDict[ObjInfo.Player.CharType];
-        if (skillDict.ContainsKey(key))
-            return skillDict[key];
-        return null;
+        List<EffectData> effectList = Managers.FX.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
+        List<GameObject> EffectList = null;
+        EffectList = Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, transform);
+
+        return EffectList;
     }
     #endregion
 
@@ -342,6 +370,7 @@ public class PlayerController : CreatureController
     }
     #endregion
 
+
     public void SpawnProjectile()
     {
         _projectile.SetActive(true);
@@ -351,4 +380,16 @@ public class PlayerController : CreatureController
         if (_equipTransform != null && projectileScript != null)
             projectileScript.Run(_equipTransform.position, transform.forward);
     }
+
+    public void LaunchProjectile(List<CreatureController> target)
+    {
+        //_currentTarget = target;
+        //// 스피드 감소, 시야 제공, 공격 시 => [스킬 피해 추가, 속박]
+        //// 30/60/90/120/150(+스킬 증폭의 65%)
+        //if (targetCreature != null)
+        //    StartCoroutine(AbilitySkillE(targetCreature));
+
+        // 공격을 받으면 데미지를 입혀야 함
+    }
+
 }

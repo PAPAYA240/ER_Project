@@ -236,4 +236,30 @@ class PacketHandler
         Player player = clientSession.MyPlayer;
         player.OnDamaged(player, 500);
     }
+
+    public static void C_StunHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_Stun stunPacket = packet as C_Stun;
+
+        GameRoom room = clientSession.MyPlayer.Room;
+        if (room == null)
+            return;
+
+        room.Push(() =>
+        {
+            Creature stunTarget = ObjectManager.Instance.Find(stunPacket.ObjectId) as Creature;
+            if (stunTarget == null)
+                return;
+
+            stunTarget.IsStun = stunPacket.IsStun;
+
+            S_Stun resPacket = new S_Stun();
+            resPacket.ObjectId = stunTarget.Id;
+            resPacket.IsStun = stunTarget.IsStun;
+            resPacket.Duration = stunPacket.Duration;
+
+            room.Broadcast(resPacket);
+        });
+    }
 }

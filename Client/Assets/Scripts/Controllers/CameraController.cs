@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
+using System;
 using UnityEngine.EventSystems;
-using static UnityEngine.GraphicsBuffer;
+using UnityEngine.Rendering.Universal;
 
 public class CameraController : MonoBehaviour
 {
@@ -27,6 +22,9 @@ public class CameraController : MonoBehaviour
 
     [SerializeField]
     GameObject _player = null;
+    private Camera _mainCamera;
+    private Camera _mapCamera;
+    private Camera _uiCamera;
 
     public Action LateUpdateAction = null;
 
@@ -34,12 +32,12 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
-        PhysicsRaycaster raycaster = GetComponent<PhysicsRaycaster>();
+        _mainCamera = Camera.main;
 
-        if (raycaster == null)
+        if (GetComponent<PhysicsRaycaster>() == null)
             gameObject.AddComponent<PhysicsRaycaster>();
 
-        Camera.main.cullingMask |= (1 << LayerMask.NameToLayer("FX"));
+        SetupLayerCameras_URP(); 
 
         _currentZoom = _zoomSteps[_currentStep];
         _targetZoom = _currentZoom;
@@ -47,6 +45,42 @@ public class CameraController : MonoBehaviour
         _zoomSpeed = 8f;
         _lerpSpeed = 16f;
     }
+
+    void SetupLayerCameras_URP()
+    {
+        var mainCamData = _mainCamera.gameObject.GetOrAddComponent<UniversalAdditionalCameraData>();
+        mainCamData.renderType = CameraRenderType.Base;
+        mainCamData.cameraStack.Clear();
+        _mainCamera.clearFlags = CameraClearFlags.SolidColor; 
+        _mainCamera.cullingMask = (1 << LayerMask.NameToLayer("Map"));
+
+        GameObject uiCamObj = new GameObject("UICamera");
+        uiCamObj.transform.SetParent(this.transform);
+        _uiCamera = uiCamObj.AddComponent<Camera>();
+        _uiCamera.CopyFrom(_mainCamera);
+        _uiCamera.clearFlags = CameraClearFlags.Nothing;
+        _uiCamera.cullingMask = (1 << LayerMask.NameToLayer("IndicatorUI"));
+
+        var uiCamData = _uiCamera.gameObject.GetOrAddComponent<UniversalAdditionalCameraData>();
+        uiCamData.renderType = CameraRenderType.Overlay;
+
+        GameObject playerCamObj = new GameObject("PlayerCamera");
+        playerCamObj.transform.SetParent(this.transform);
+        var _playerCamera = playerCamObj.AddComponent<Camera>();
+        _playerCamera.CopyFrom(_mainCamera);
+        _playerCamera.clearFlags = CameraClearFlags.Nothing;
+
+        int everythingMask = ~0;
+        int layersToExclude = (1 << LayerMask.NameToLayer("Map")) | (1 << LayerMask.NameToLayer("IndicatorUI"));
+        _playerCamera.cullingMask = everythingMask & ~layersToExclude;
+
+        var playerCamData = _playerCamera.gameObject.GetOrAddComponent<UniversalAdditionalCameraData>();
+        playerCamData.renderType = CameraRenderType.Overlay;
+
+        mainCamData.cameraStack.Add(_uiCamera);     
+        mainCamData.cameraStack.Add(_playerCamera);  
+    }
+
 
     void Update()
     {
@@ -63,7 +97,6 @@ public class CameraController : MonoBehaviour
             _targetZoom = _zoomSteps[_currentStep];
         }
 
-
         if (_isLerpComplete)
         {
             _currentZoom = Mathf.MoveTowards(_currentZoom, _targetZoom, _zoomSpeed * Time.deltaTime);
@@ -73,14 +106,13 @@ public class CameraController : MonoBehaviour
     void LateUpdate()
     {
         if (_mode == Define.CameraMode.QuaterView)
-        { 
-            if (_player.IsValid() == false)
-            { 
+        {
+            if (_player == null || !_player.activeSelf) // IsValid() 대신 null 또는 activeSelf 체크
+            {
                 return;
             }
 
             Vector3 targetDelta = (_currentZoom <= _lastZoom) ? _nearDelta : _farDelta;
-
             _delta = Vector3.MoveTowards(_delta, targetDelta, _lerpSpeed * Time.deltaTime);
 
             if (Vector3.Distance(_delta, targetDelta) < 0.01f)
@@ -89,11 +121,9 @@ public class CameraController : MonoBehaviour
                 _isLerpComplete = false;
 
             Vector3 zoomedOffset = _delta.normalized * _currentZoom;
-
             transform.position = _player.transform.position + zoomedOffset;
             transform.LookAt(_player.transform.position + Vector3.up);
 
-            //네임 태그 자꾸 덜덜거림
             LateUpdateAction?.Invoke();
         }
     }
@@ -104,4 +134,3 @@ public class CameraController : MonoBehaviour
         _farDelta = delta;
     }
 }
-
