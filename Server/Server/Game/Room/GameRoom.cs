@@ -302,7 +302,6 @@ namespace Server.Game
                 player.CommitSkillUsage(keyCode);
             }
 
-            // TODO : (임시) 몬스터 찾아주기, 공격 범위에 나간다면 target 은 null로 전달해야 함
             foreach (int targetid in skillPacket.TargetsId)
             {
                 if (TryGetMonster(targetid, out Monster target))

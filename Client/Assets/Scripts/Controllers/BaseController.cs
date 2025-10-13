@@ -186,6 +186,9 @@ public class BaseController : MonoBehaviour
             case CreatureState.Attack:
                 UpdateAttack();
                 break;
+            case CreatureState.Charging:
+                UpdateCharging();
+                break;
             case CreatureState.Skill:
                 UpdateSkill();
                 break;
@@ -217,6 +220,9 @@ public class BaseController : MonoBehaviour
 
     }
 
+    protected virtual void UpdateCharging()
+    {
+    }
     protected virtual void UpdateSkill()
     {
 

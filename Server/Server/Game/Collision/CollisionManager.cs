@@ -74,6 +74,15 @@ namespace Server.Game
                     MousePos = mousePos
                 };
 
+                if (System.Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
+                {
+                    if (shape == SkillShape.Point)
+                    {
+                        hitbox.PosX = hitbox.MousePos.X;
+                        hitbox.PosZ = hitbox.MousePos.Y;
+                    }
+                }
+
                 _pendingHitboxes.Add(hitbox);
             }            
         }
@@ -129,7 +138,7 @@ namespace Server.Game
                     if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
                         continue;
                     if (type != SkillType.SkillTrack)
-                        continue;
+                        continue; 
 
                     Quaternion rot = new Quaternion(
                         hitbox.Player.RotInfo.Qx,
@@ -199,6 +208,8 @@ namespace Server.Game
                     HandleCollision<T>(hitbox, targets, hitTargets, damageDict);
                     if(hitTargets.Count > 0)
                         HandleDamage<T>(hitbox, hitTargets, damageDict);
+
+                    Console.WriteLine($"{hitbox.PosX}, {hitbox.PosZ}");
                 }
             }
         }
@@ -269,18 +280,41 @@ namespace Server.Game
                 case SkillShape.Rectangle:
                     {
                         Vector2 center = hitbox.MousePos;
+
                         Vector2 forward = Vector2.Normalize(new Vector2(center.X - hitbox.Player.PosInfo.PosX, center.Y - hitbox.Player.PosInfo.PosZ));
+
                         Vector2 right = new Vector2(-forward.Y, forward.X);
+
                         Vector2 toTarget = new Vector2(go.PosInfo.PosX - center.X, go.PosInfo.PosZ - center.Y);
+
                         float projForward = Vector2.Dot(toTarget, forward);
                         float projRight = Vector2.Dot(toTarget, right);
 
-                        float halfHeight = hitbox.Data.Height * 0.5f; 
-                        float halfWidth = hitbox.Data.Width * 0.5f;  
+                        float halfHeight = hitbox.Data.Height * 0.5f;
+                        float halfWidth = hitbox.Data.Width * 0.5f;
 
                         return MathF.Abs(projForward) <= halfHeight &&
                                MathF.Abs(projRight) <= halfWidth;
                     }
+
+                case SkillShape.Point:
+                    {
+                        Vector2 center = hitbox.MousePos;
+                        Vector2 playerPos = new Vector2(hitbox.Player.PosInfo.PosX, hitbox.Player.PosInfo.PosZ);
+                        Vector2 forward = Vector2.Normalize(center - playerPos);
+
+                        Vector2 right = new Vector2(-forward.Y, forward.X);
+                        Vector2 toTarget = new Vector2(go.PosInfo.PosX - center.X, go.PosInfo.PosZ - center.Y);
+
+                        float projForward = Vector2.Dot(toTarget, forward);
+                        float projRight = Vector2.Dot(toTarget, right);
+
+                        float halfHeight = hitbox.Data.Height * 0.5f;
+                        float halfWidth = hitbox.Data.Width * 0.5f;
+
+                        return MathF.Abs(projForward) <= halfHeight && MathF.Abs(projRight) <= halfWidth;
+                    }
+
                 case SkillShape.Ray:
                     {
                         Vector2 origin = new Vector2(hitbox.PosX, hitbox.PosZ);

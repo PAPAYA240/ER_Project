@@ -6,6 +6,7 @@ using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 using static Data.SkillEffectList;
 
 public class PlayerController : CreatureController
@@ -164,7 +165,12 @@ public class PlayerController : CreatureController
             //StartCoroutine(CoStartSkill());
             Debug.Log("스킬 코루틴 시작");
 
-            CreateSkillMesh(keyCode, skillPacket.ChargeRatio);
+            Vector3 MousePos = new Vector3();
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
+                MousePos = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+
+            CreateSkillMesh(keyCode, skillPacket.ChargeRatio, MousePos);
         }
     }
 
@@ -244,7 +250,7 @@ public class PlayerController : CreatureController
 
     #region SkillMesh
 
-    public void CreateSkillMesh(KeyCode keyCode, float chargeRatio)
+    public void CreateSkillMesh(KeyCode keyCode, float chargeRatio, Vector3 mousePos = new Vector3())
     {
         SkillHitbox hitbox = DataManager.SkillHitboxDict[ObjInfo.Player.CharType][keyCode];
         if (hitbox.EndFrame <= 0)
@@ -254,7 +260,8 @@ public class PlayerController : CreatureController
         if (sm == null) return;
         if (false == hitbox.Charge)
             chargeRatio = 1;
-        sm.Init(hitbox, gameObject.transform, ObjInfo.Player.Team, chargeRatio);     
+
+        sm.Init(hitbox, gameObject.transform, ObjInfo.Player.Team, chargeRatio, mousePos);     
     }
 
     #endregion

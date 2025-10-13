@@ -57,6 +57,7 @@ enum CreatureState{
   SKILL = 3;
   DEAD = 4;
   REST = 5;
+  CHARGING = 6;
 }
 
 enum GameObjectType{
@@ -81,6 +82,7 @@ enum SkillType{
 	SKILL_PROJECTILE = 2;
 	SKILL_STATIC = 3;
 	SKILL_TRACK = 4;
+	SKILL_POINT = 5;
 }
 
 enum MonsterSkill{
@@ -160,6 +162,7 @@ enum SkillShape{
 	RAY = 2;
 	RECTANGLE = 3;
 	SECTOR = 4;
+	POINT = 5;
 }
 
 enum TraitType{

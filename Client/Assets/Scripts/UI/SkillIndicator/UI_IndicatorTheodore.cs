@@ -16,7 +16,7 @@ public class UI_IndicatorTheodore : UI_Base
     Vector3 _targetScaled = new Vector3(1, 1, 1);
     private const float SCALE_SPEED = 1.5f;
 
-    GameObject QAttack = null;
+   // GameObject QAttack = null;
     private readonly Dictionary<KeyCode, Action> _skillUpdateMap = new Dictionary<KeyCode, Action>();
     public KeyCode CurrentActiveKey { get; private set; } = KeyCode.None;
 
@@ -25,15 +25,15 @@ public class UI_IndicatorTheodore : UI_Base
         Owner = GetComponentInParent<MyPlayerController>();
 
         // Q Indicator
-        QAttack= Managers.Resource.Instantiate($"UI/Character/Theodore/bound");
+        //QAttack= Managers.Resource.Instantiate($"UI/Character/Theodore/bound");
         _indicatorMap[KeyCode.Q] = Managers.Resource.Instantiate($"UI/Character/Theodore/IndicatorQ");
         _qIndicatorCanvas = _indicatorMap[KeyCode.Q].GetComponent<Canvas>();
         if (_qIndicatorCanvas != null)
         {
-            QAttack.transform.SetParent(Owner.transform, false);
+            //QAttack.transform.SetParent(Owner.transform, false);
             _qIndicatorCanvas.transform.SetParent(Owner.transform, false);
             _qIndicatorCanvas.enabled = false;
-            QAttack.SetActive(false);
+            //QAttack.SetActive(false);
         }
 
         Transform InCircleTransform = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "InCircle").transform;
@@ -107,17 +107,10 @@ public class UI_IndicatorTheodore : UI_Base
             {
                 Transform pos = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "InCircle").transform;
                 pos.localScale = Vector3.zero;
-                StartCoroutine(AttackEffectEnd(4.0f));
             }
         }
     }
 
-    private IEnumerator AttackEffectEnd(float duration)
-    {
-        QAttack.SetActive(true);
-        yield return new WaitForSeconds(duration);
-        QAttack.SetActive(false);
-    }
     #region Skill W
     private void AbilityW()
     {
