@@ -17,7 +17,7 @@ public class UI_TargetingMark : UI_Base
 
     float _elapsedTime = 0;
     Coroutine _co = null;
-    public GameObject ShowCCMark(GameObject target, float duration = 10.0f)
+    public GameObject ShowCCMark(GameObject target, float duration = 5.0f)
     {
         gameObject.SetActive(true);
         _target = target;

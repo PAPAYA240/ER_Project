@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Collections;
 using Data;
-using static Data.EffectData;
 using Google.Protobuf.Protocol;
+using static Data.EffectData;
 using static Data.SkillEffectList;
 
 public class FXManager : MonoBehaviour
@@ -12,6 +12,7 @@ public class FXManager : MonoBehaviour
     private Dictionary<string, List<GameObject>> fxPool = new Dictionary<string, List<GameObject>>();
     private int fxLayer;
    
+    private Dictionary<int, List<GameObject>> currentlyPlayingEffects = new Dictionary<int, List<GameObject>>();
     public void Init()
     {
         if (fxPrefabs.Count > 0)
@@ -21,7 +22,7 @@ public class FXManager : MonoBehaviour
     }
 
     // casterTransform = 붙여줄 캐릭터(본체) Transform (특정 뼈대에 붙이고자 한다면 json에 따로 추가)
-    public List<GameObject> PlayEffect(List<EffectData> effectData, Transform casterTransform, Vector3 targetPos = new Vector3(), Quaternion rot = new Quaternion())
+    public List<GameObject> PlayEffect(int ownerId, List<EffectData> effectData, Transform casterTransform, Vector3 targetPos = new Vector3(), Quaternion rot = new Quaternion())
     {
         if (effectData == null || effectData.Count == 0)
             return null;
@@ -44,7 +45,6 @@ public class FXManager : MonoBehaviour
                 fxObject = Instantiate(fxPrefab);
                 if (!fxPool.ContainsKey(data.prefabName))
                     fxPool[data.prefabName] = new List<GameObject>();
-               fxObject.gameObject.AddComponent<FxController>();
                 fxPool[data.prefabName].Add(fxObject);
             }
 
@@ -58,9 +58,19 @@ public class FXManager : MonoBehaviour
             fxObject.transform.SetParent(parentTransform);
 
             SettingLayer(fxObject, fxLayer);
-            StartEffectLogic(fxObject, data, copyTransform);
+            StartEffectLogic(ownerId, fxObject, data, copyTransform);
             effectList.Add(fxObject);
         }
+
+        // 진행 중인 이펙트 리스트
+        if (effectList != null && effectList.Count > 0)
+        {
+            if (!currentlyPlayingEffects.ContainsKey(ownerId))
+                currentlyPlayingEffects[ownerId] = new List<GameObject>();
+
+            currentlyPlayingEffects[ownerId].AddRange(effectList);
+        }
+
         return effectList;
     }
 
@@ -111,11 +121,11 @@ public class FXManager : MonoBehaviour
         }
     }
 
-    private void StartEffectLogic(GameObject fxObject, EffectData data, Transform casterTransform)
+    private void StartEffectLogic(int ownerId, GameObject fxObject, EffectData data, Transform casterTransform)
     {
         fxObject.SetActive(false);
 
-        activeCoroutines[fxObject] = StartCoroutine(ReturnToPoolAfterDelay(fxObject, data.prefabName, data.delayTime, data.duration, casterTransform));
+        activeCoroutines[fxObject] = StartCoroutine(ReturnToPoolAfterDelay(ownerId, fxObject, data.prefabName, data.delayTime, data.duration, casterTransform));
 
         if (data.target == EEffectTarget.Shoot)
             StartCoroutine(ControlEffect(fxObject, casterTransform.forward, data.duration));
@@ -157,7 +167,7 @@ public class FXManager : MonoBehaviour
         }
     }
 
-    private IEnumerator ReturnToPoolAfterDelay(GameObject fxObject, string prefabName, float delayTime, float duration, Transform casterTransform)
+    private IEnumerator ReturnToPoolAfterDelay(int ownerId, GameObject fxObject, string prefabName, float delayTime, float duration, Transform casterTransform)
     {
         yield return new WaitForSeconds(delayTime);
         if (fxObject)
@@ -165,10 +175,52 @@ public class FXManager : MonoBehaviour
         yield return new WaitForSeconds(duration);
         if (fxObject)
             fxObject.SetActive(false);
+
+        RemoveEffect(ownerId, fxObject);
     }
     #endregion
 
     #region Util
+    public GameObject FindEffect(int ownerId, string prefabName)
+    {
+        if (currentlyPlayingEffects.TryGetValue(ownerId, out List<GameObject> effectList))
+        {
+            foreach (GameObject effect in effectList)
+            {
+                if (effect.name.Replace("(Clone)", "") == prefabName)
+                    return effect;
+            }
+        }
+        return null;
+    }
+    public void RemoveAllEffect(int ownerId)
+    {
+        if (currentlyPlayingEffects.TryGetValue(ownerId, out List<GameObject> effectList))
+        {
+            foreach (GameObject effect in new List<GameObject>(effectList))
+                StopAndReturnEffect(effect);
+
+            effectList.Clear();
+            currentlyPlayingEffects.Remove(ownerId);
+        }
+    }
+
+    public void RemoveEffect(int ownerId, GameObject fxObject)
+    {
+        if (currentlyPlayingEffects.TryGetValue(ownerId, out List<GameObject> effectList))
+        {
+            foreach (GameObject effect in effectList)
+            {
+                if (effect == fxObject)
+                {
+                    StopAndReturnEffect(effect);
+                    effectList.Remove(effect);
+                    return;
+                }
+            }
+        }
+    }
+
     public List<EffectData> GetEffectsByPrefabName(string targetPrefabName)
     {
         List<EffectData> matchingEffectData = new List<EffectData>();

@@ -1,5 +1,6 @@
 using Google.Protobuf.Protocol;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
@@ -30,11 +31,19 @@ public class Projectile : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
+        // 스크린 활용 시 모든 몬스터와 플레이어도 맞게 할 수 있음
         if (other.gameObject.layer == LayerMask.NameToLayer("Monster"))
         {
             gameObject.SetActive(false);
 
             CreatureController targetController = other.GetComponent<CreatureController>();
+
+            PlayerController ownerController = Owner.GetComponent<PlayerController>();
+
+            List<CreatureController> hitList = new List<CreatureController>();
+            hitList.Add(targetController);
+            ownerController.LaunchProjectile(hitList);
+
             // 마크 활성화 시 구속 가능
             targetController.HasCrowdControl = true;
         }

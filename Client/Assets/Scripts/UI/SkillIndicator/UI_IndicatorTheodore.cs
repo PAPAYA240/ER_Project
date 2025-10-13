@@ -36,8 +36,6 @@ public class UI_IndicatorTheodore : UI_Base
             QAttack.SetActive(false);
         }
 
-        Transform Outpos = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "OutCircle").transform;
-        _targetScaled = Outpos.localScale + new Vector3(0.01f, 0.01f, 0);
         Transform pos = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "InCircle").transform;
         pos.localScale = Vector3.zero;
 
@@ -132,7 +130,6 @@ public class UI_IndicatorTheodore : UI_Base
         Quaternion rot = Quaternion.LookRotation(position - transform.position);
         rot.eulerAngles = new Vector3(0, rot.eulerAngles.y, rot.eulerAngles.z);
         _wIndicatorCanvas.transform.rotation = Quaternion.Lerp(rot, _wIndicatorCanvas.transform.rotation, 0);
-        QAttack.transform.rotation = _wIndicatorCanvas.transform.rotation;
 
         Util.FindChildByName(_indicatorMap[KeyCode.W].transform, "Indicator").transform.position = position;
     }

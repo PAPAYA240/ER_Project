@@ -40,7 +40,7 @@ public class AbigailController : MyPlayerController
                 SetSkillInput(KeyCode.E);
                 _warpPos = mousePos;
                 CreatureController cc = _skillTarget.GetComponentInChildren<CreatureController>();
-                SkillTargetId = cc.Id;
+                SkillTargetId.Add(cc.Id);
             }
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))

@@ -13,8 +13,13 @@ public class FogOfWarVision : MonoBehaviour
     Mesh _mesh;
     Vector3 _origin;
 
+    private MeshRenderer _meshRenderer;
+
     void Start()
     {
+        _meshRenderer = GetComponent<MeshRenderer>();
+        SetVisionVisible(false);
+
         _obstacleMask = LayerMask.GetMask("Map");
         _mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = _mesh;
@@ -24,7 +29,12 @@ public class FogOfWarVision : MonoBehaviour
         Color whiteTransparent = new Color(1f, 1f, 1f, 1f); 
         _mat.color = whiteTransparent;
     }
-
+    public void SetVisionVisible(bool isVisible)
+    {
+        // TODO : (ny) 카메라를 바꿨는데 끄는 방법을 몰라서 일단 추가했는데 문제 생기면 알려주세요 ;^;
+        if (_meshRenderer != null)
+            _meshRenderer.enabled = isVisible;
+    }
     void LateUpdate()
     {
         _origin = transform.position;

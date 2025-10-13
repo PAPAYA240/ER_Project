@@ -3,6 +3,7 @@ using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
@@ -119,7 +120,7 @@ public class MyPlayerController : PlayerController
     protected GameObjectType _targetType;
     protected Vector3 _finalPos;
 
-    protected int SkillTargetId { get; set; }
+    protected List<int> SkillTargetId { get; set; }
 
     // State : Rest
     protected bool _isResting = false;
@@ -485,6 +486,34 @@ public class MyPlayerController : PlayerController
                 _moveKeyPressed = true;
             }
         }
+    }
+
+    // 주변에 존재하는 공격 가능한 모든 오브젝트  반환
+    protected List<GameObject> TryGetAttackableObjectList(float radius = 0.1f)
+    {
+        List<GameObject> hitList = new List<GameObject>();
+        _targetType = GameObjectType.None;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        RaycastHit[] hits = Physics.SphereCastAll(ray, radius, 1000.0f, _monsterMask | _playerMask);
+
+        if (hits.Length > 1)
+            hits = hits.OrderBy(h => h.distance).ToArray();
+
+        foreach (RaycastHit hit in hits)
+        {
+            GameObject hitObject = hit.collider.gameObject;
+            CreatureController cc = hitObject.GetComponent<CreatureController>();
+
+            if (IsAttackable(hitObject))
+            {
+                hitList.Add(hitObject);
+                if (_targetType == GameObjectType.None)
+                    _targetType = ObjectManager.GetObjectTypeById(cc.ObjInfo.ObjectId);
+            }
+        }
+        return hitList;
     }
 
     protected GameObject TryGetAttackableObject(float radius = 0.1f)
@@ -1195,11 +1224,24 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region Effect
-    protected List<GameObject> PlayEffect(string fxName)
+    protected GameObject FindEffect(string fxName)
+    {
+        return Managers.FX.FindEffect(ObjInfo.ObjectId, fxName);
+    }
+            // 스킬 시전 이펙트 : TODO : 나중에 키에 따른 이펙트만 지워줄 것
+    protected void RemoveAllEffect()
+    {
+        Managers.FX.RemoveAllEffect(ObjInfo.ObjectId);
+    }
+    protected void RemoveEffect(string fxName)
+    {
+        Managers.FX.RemoveEffect(ObjInfo.ObjectId, FindEffect(fxName));
+    }
+    protected List<GameObject> PlayEffect(string fxName, Vector3 position = new Vector3(), Quaternion rot = new Quaternion())
     {
         List<EffectData> effectList =Managers.FX.GetEffectsByPrefabName(fxName);
 
-        return Managers.FX.PlayEffect(effectList, transform);
+        return Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, transform, position, rot);
     }
 
     protected override List<GameObject> PlayEffectTransform(CreatureState state, KeyCode key, EffectType type = EffectType.Caster, 
@@ -1214,15 +1256,15 @@ public class MyPlayerController : PlayerController
         if (type == EffectType.HitTarget && target != null)
         {
             EffectList = (targetTransform != null) ?
-             Managers.FX.PlayEffect(effectList, targetTransform)
-             : Managers.FX.PlayEffect(effectList, target.transform);
+             Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, targetTransform)
+             : Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, target.transform);
         }
         // 나의 이펙트
         else if (type == EffectType.Caster)
         {
             EffectList = (targetTransform != null) ?
-            Managers.FX.PlayEffect(effectList, targetTransform)
-            : Managers.FX.PlayEffect(effectList, this.transform);
+            Managers.FX.PlayEffect(ObjInfo.ObjectId,effectList, targetTransform)
+            : Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, this.transform);
         }
 
         return EffectList;
@@ -1234,7 +1276,7 @@ public class MyPlayerController : PlayerController
 
         if (effectList == null || effectList.Count == 0) return null;
 
-        List<GameObject> EffectList = Managers.FX.PlayEffect(effectList, this.transform, position, rot);
+        List<GameObject> EffectList = Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, this.transform, position, rot);
 
         return EffectList;
     }
@@ -1376,20 +1418,20 @@ public class MyPlayerController : PlayerController
     #region Packet
     private void SendSkillPacket(KeyCode key)
     {
-        int targetId = -1;
-        if (Target && _targetType == GameObjectType.Monster)
-        {         
-            MonsterController monster = Target.GetComponentInChildren<MonsterController>();
-            if (monster)
-            {
-                targetId = monster.ObjInfo.ObjectId;
-                CreatureController targetCreature = Target.GetComponent<CreatureController>();
-            }
-        }
-        else
+        List<int> targetIdList = new List<int>();
+
+        if (Target)
         {
-            targetId = SkillTargetId;
-            SkillTargetId = -1;
+            CreatureController creature = Target.GetComponentInChildren<CreatureController>();
+            if (ObjectManager.GetObjectTypeById(creature.ObjInfo.ObjectId) == GameObjectType.Monster)
+            {
+                 targetIdList.Add(creature.ObjInfo.ObjectId);
+            }
+            else
+            {
+                targetIdList = SkillTargetId;
+                SkillTargetId.Clear();
+            }
         }
 
         Vector3 mousePos = GetTargetPos(1000);
@@ -1397,10 +1439,11 @@ public class MyPlayerController : PlayerController
         {
             ObjectInfo = ObjInfo,
             SkillInfo = new SkillInfo() { KeyCode = (int)key },
-            TargetId = targetId,
             MousePosX = mousePos.x, MousePosZ = mousePos.z,
             ChargeRatio = _ratioSkillDuration,
         };
+        skillPacket.TargetsId.AddRange(targetIdList);
+
         _ratioSkillDuration = 0f;
 
         Managers.Network.Send(skillPacket);

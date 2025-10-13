@@ -305,17 +305,20 @@ namespace Server.Game
             }
 
             // TODO : (임시) 몬스터 찾아주기, 공격 범위에 나간다면 target 은 null로 전달해야 함
-            if(TryGetMonster(skillPacket.TargetId, out Monster target))
+            foreach (int targetid in skillPacket.TargetsId)
             {
-                player.Target = target;
-                player.SkillTarget = target;
-                player.UsedTargetingSkill = keyCode;
+                if (TryGetMonster(targetid, out Monster target))
+                {
+                    player.Target = target;
+                    player.SkillTarget = target;
+                    player.UsedTargetingSkill = keyCode;
 
-            }
-            else if(_players.TryGetValue(skillPacket.TargetId, out Player skillTarget))
-            {
-                player.SkillTarget = skillTarget;
-                player.UsedTargetingSkill = keyCode;
+                }
+                else if (_players.TryGetValue(targetid, out Player skillTarget))
+                {
+                    player.SkillTarget = skillTarget;
+                    player.UsedTargetingSkill = keyCode; 
+                }
             }
 
             // 스킬 사용이 가능하다 판단되면 패킷 전송

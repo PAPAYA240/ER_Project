@@ -351,7 +351,7 @@ public class PlayerController : CreatureController
     {
         List<EffectData> effectList = Managers.FX.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
         List<GameObject> EffectList = null;
-        EffectList = Managers.FX.PlayEffect(effectList, transform);
+        EffectList = Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, transform);
 
         return EffectList;
     }
@@ -376,4 +376,16 @@ public class PlayerController : CreatureController
         if (_equipTransform != null && projectileScript != null)
             projectileScript.Run(_equipTransform.position, transform.forward);
     }
+
+    public void LaunchProjectile(List<CreatureController> target)
+    {
+        //_currentTarget = target;
+        //// 스피드 감소, 시야 제공, 공격 시 => [스킬 피해 추가, 속박]
+        //// 30/60/90/120/150(+스킬 증폭의 65%)
+        //if (targetCreature != null)
+        //    StartCoroutine(AbilitySkillE(targetCreature));
+
+        // 공격을 받으면 데미지를 입혀야 함
+    }
+
 }

@@ -256,7 +256,7 @@ message S_Move{
 message C_Skill{
 	ObjectInfo objectInfo = 1;
 	SkillInfo skillInfo = 2;
-	int32 targetId = 3;
+	repeated int32 targetsId = 3; 
 	float mousePosX = 4;
 	float mousePosZ = 5;
 	float chargeRatio = 6;

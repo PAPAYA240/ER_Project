@@ -1,11 +1,7 @@
-﻿using Data;
-using Google.Protobuf.Protocol;
+﻿using Google.Protobuf.Protocol;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using static Data.SkillEffectList;
-using static UnityEngine.UI.GridLayoutGroup;
 
 public class TheodoreController : MyPlayerController
 {
@@ -13,16 +9,11 @@ public class TheodoreController : MyPlayerController
     Material passiveMaterial, originMaterial;
     Renderer myRenderer;
 
-    // Fx
-    List<GameObject> _currentEffectList = new List<GameObject>();
-
     protected override void Init()
     {
-        if (!Add_Material())
-            return;
+        if (!Add_Material())  return;
 
-        if (!Equip_Weapon())
-            return;
+        if (!Equip_Weapon()) return;
 
         base.Init();
 
@@ -33,11 +24,8 @@ public class TheodoreController : MyPlayerController
     {
         if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))
         {
+            _isUseSkill = true;
             _keyCode = KeyCode.Q;
-
-            ReadySkillQ();
-
-            StartCoroutine(ShotSkillQ());
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.W))
         {
@@ -46,9 +34,8 @@ public class TheodoreController : MyPlayerController
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
         {
+            _isUseSkill = true;
             _keyCode = KeyCode.E;
-
-            ReadySkillE();
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))
         {
@@ -110,6 +97,9 @@ public class TheodoreController : MyPlayerController
 
     protected override void Skill_Q() 
     {
+        ReadySkillQ();
+
+        StartCoroutine(ShotSkillQ());
     }
 
     private void ReadySkillQ()
@@ -117,11 +107,11 @@ public class TheodoreController : MyPlayerController
         PlayAnimation("SKILL_START", 0.1f);
         _eqipWeapon.GetComponent<WeaponController>().PlayAnimation("SKILL_READY_Q", 0.1f);
 
-        _currentEffectList = PlayEffectTransform(CreatureState.Skill, _keyCode);
+        PlayEffectTransform(CreatureState.Skill, _keyCode);
         SendFXPacket(_keyCode);
 
         _effectDuration = 5.0f; // TODO : 예시로 하드 코딩, 나중에 CC Data에서 가져와 줄 것
-        indicator.EnableIndicator(_keyCode);
+        indicator.EnableIndicator(KeyCode.Q);
     }
     
     IEnumerator ShotSkillQ()
@@ -129,6 +119,12 @@ public class TheodoreController : MyPlayerController
         // 1. 키를 누르고 있거나, 최대 충전 시간이 지나지 않은 경우
         while (Input.GetKey(KeyCode.Q) && _elapsedTime < _effectDuration)
         {
+            if (Input.GetMouseButtonDown(1))
+            {
+                CancelSkill();
+                yield break;
+            }
+
             UpdateChargeState();
             yield return null;
         }
@@ -151,6 +147,7 @@ public class TheodoreController : MyPlayerController
         _currentTarget = TryGetAttackableObject();
     }
 
+    bool bScreenInvo = false;
     private void FinalizeSkillQ(GameObject target, bool isMaxCharge)
     {
         indicator.DisableAllIndicators();
@@ -177,17 +174,7 @@ public class TheodoreController : MyPlayerController
                 Bondage(_currentTarget);
             }
 
-            // 이펙트 없애기
-            foreach (GameObject effect in _currentEffectList)
-            {
-                if (effect != null)
-                {
-                    Managers.FX.StopAndReturnEffect(effect);
-                    effect.SetActive(false);
-                }
-            }
-            _currentEffectList.Clear();
-            _currentEffectList = PlayEffect("FX_SkillFire");
+            PlayEffect("FX_SkillFire");
         }
     }
     #endregion
@@ -207,12 +194,13 @@ public class TheodoreController : MyPlayerController
         {
             if(Input.GetMouseButtonDown(1))
             {
-                CancelSkillW();
+                CancelSkill();
                 yield break;
             }
             yield return null;
         }
 
+        bScreenInvo = true;
         FinalizeSkillW();
         yield break;
     }
@@ -244,11 +232,11 @@ public class TheodoreController : MyPlayerController
 
         if (mousePos != Vector3.zero)
         {
-            PlayEffectAtPosition(CreatureState.Skill, KeyCode.W, mousePos, finalRotation, EffectType.HitTarget);
+           PlayEffectAtPosition(CreatureState.Skill, KeyCode.W, mousePos, finalRotation, EffectType.HitTarget);
             SendFXPacket(_keyCode);
         }
     }
-    private void CancelSkillW()
+    private void CancelSkill()
     {
         indicator.DisableAllIndicators();
         State = CreatureState.Idle;
@@ -259,7 +247,9 @@ public class TheodoreController : MyPlayerController
     #region E Skill
     protected override void Skill_E()
     {
+        ReadySkillE();
     }
+
     private void ReadySkillE()
     {
         indicator.EnableIndicator(KeyCode.E);
@@ -273,18 +263,45 @@ public class TheodoreController : MyPlayerController
     {
         while (Input.GetKey(KeyCode.E))
         {
+            if (Input.GetMouseButtonDown(1))
+            {
+                CancelSkill();
+                yield break;
+            }
             _currentTarget = TryGetAttackableObject();
             yield return null; 
         }
+
+        CreatureController targetCreature = _currentTarget?.GetComponentInChildren<CreatureController>();
 
         _isUseSkill = true;
         indicator.DisableAllIndicators();
         PlayAnimation("SKILL_E", 0.1f);
 
+        // 스피드 감소, 시야 제공, 공격 시 => [스킬 피해 추가, 속박]
+        // 30/60/90/120/150(+스킬 증폭의 65%)
+        if (targetCreature != null)
+            StartCoroutine(AbilitySkillE(targetCreature));
+
         // 구속 가능
         LookAtMouse();
     }
-  
+
+    private IEnumerator AbilitySkillE(CreatureController creature)
+    {
+        float targetOrigionSpeed = creature.Speed;
+
+        string decreaseSpeed = 
+            DataManager.SkillDict[ObjInfo.Player.CharType][_keyCode].
+            descriptionInfo["speed"][Stat.Level];
+
+        int numberInt = int.Parse(decreaseSpeed);
+        creature.Speed = creature.Speed * (1.0f - 0.01f * numberInt);
+
+        // 이동 속도를 2동안 감소시킨다.
+        yield return new WaitForSeconds(2.0f);
+        creature.Speed = targetOrigionSpeed;
+    }
     #endregion
 
     #region R Skill
@@ -299,7 +316,14 @@ public class TheodoreController : MyPlayerController
     IEnumerator ShootSkillR()
     {
         while (Input.GetKey(KeyCode.R))
-            yield return null;
+        {
+            if (Input.GetMouseButtonDown(1))
+            {
+                CancelSkill();
+                yield break;
+            }
+            yield return null; 
+        }
 
         indicator.DisableAllIndicators();
         PlayAnimation("SKILL_R", 0.1f);
@@ -396,8 +420,11 @@ public class TheodoreController : MyPlayerController
 
         return true;
     }
+    public override void OnSkillConfirmed(S_Skill skillPacket)
+    {
+        base.OnSkillConfirmed(skillPacket);
+    }
 
-   
     private bool Add_Material()
     {
         myRenderer = this.GetComponentInChildren<Renderer>();
