@@ -24,13 +24,19 @@ public class TheodoreController : MyPlayerController
     {
         if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))
         {
-            _isUseSkill = true;
             _keyCode = KeyCode.Q;
+
+            ReadySkillQ();
+
+            StartCoroutine(ShotSkillQ());
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.W))
         {
-            _isUseSkill = true;
             _keyCode = KeyCode.W;
+
+            State = CreatureState.Idle;
+            indicator.EnableIndicator(KeyCode.W);
+            StartCoroutine(ShotSkillW());
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
         {
@@ -39,8 +45,13 @@ public class TheodoreController : MyPlayerController
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))
         {
-            _isUseSkill = true;
             _keyCode = KeyCode.R;
+
+            State = CreatureState.Idle;
+
+            indicator.EnableIndicator(KeyCode.R);
+
+            StartCoroutine(ShootSkillR());
         }
         else if (Input.GetKeyDown(KeyCode.F))
         {
@@ -97,10 +108,7 @@ public class TheodoreController : MyPlayerController
 
     protected override void Skill_Q() 
     {
-        ReadySkillQ();
-
-        StartCoroutine(ShotSkillQ());
-    }
+     }
 
     private void ReadySkillQ()
     {
@@ -110,7 +118,7 @@ public class TheodoreController : MyPlayerController
         PlayEffectTransform(CreatureState.Skill, _keyCode);
         SendFXPacket(_keyCode);
 
-        _effectDuration = 5.0f; // TODO : 예시로 하드 코딩, 나중에 CC Data에서 가져와 줄 것
+        _effectDuration = 2.0f; // TODO : 예시로 하드 코딩, 나중에 CC Data에서 가져와 줄 것
         indicator.EnableIndicator(KeyCode.Q);
     }
     
@@ -182,9 +190,6 @@ public class TheodoreController : MyPlayerController
     #region W Skill
     protected override void Skill_W()
     {
-        State = CreatureState.Idle;
-        indicator.EnableIndicator(KeyCode.W);
-        StartCoroutine(ShotSkillW());
     }
   
     IEnumerator ShotSkillW()
@@ -199,6 +204,8 @@ public class TheodoreController : MyPlayerController
             }
             yield return null;
         }
+
+        _isUseSkill = true;
 
         bScreenInvo = true;
         FinalizeSkillW();
@@ -307,11 +314,7 @@ public class TheodoreController : MyPlayerController
     #region R Skill
     protected override void Skill_R()
     {
-        State = CreatureState.Idle;
-
-        indicator.EnableIndicator(KeyCode.R);
-
-        StartCoroutine(ShootSkillR());
+        
     }
     IEnumerator ShootSkillR()
     {
@@ -324,6 +327,8 @@ public class TheodoreController : MyPlayerController
             }
             yield return null; 
         }
+
+        _isUseSkill = true;
 
         indicator.DisableAllIndicators();
         PlayAnimation("SKILL_R", 0.1f);
