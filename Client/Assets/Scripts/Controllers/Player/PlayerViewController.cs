@@ -45,6 +45,8 @@ public class PlayerViewController : MonoBehaviour
             _agent.remainingDistance <= _agent.stoppingDistance &&
             (_agent.hasPath == false || _agent.velocity.sqrMagnitude < 0.0001f);
 
+        _player.UpdateTransform();
+
         if (arrived)
         {
             if (!_sentArriveSnapshot)
@@ -62,11 +64,11 @@ public class PlayerViewController : MonoBehaviour
         if ((pos - _lastSentPos).sqrMagnitude >= _minMoveDelta * _minMoveDelta ||
             Quaternion.Angle(rot, _lastSentRot) >= _minAngleDelta)
         {
-            _player.UpdateTransform();
-
             _lastSentPos = pos;
             _lastSentRot = rot;
             _sentArriveSnapshot = false;
+        
+            _player.UpdateTransform();
         }
     }
 
@@ -113,6 +115,25 @@ public class PlayerViewController : MonoBehaviour
         _syncing = false; // 리스폰 직후는 입력 올 때까지 동기화 중지
     }
 
+    #region State
+    public void ApplyState(S_PlayerState packet)
+    {
+        CreatureState state = packet.State;
+        switch (state)
+        {
+            case CreatureState.Idle:
+                ApplyStop(StopReason.StopAll);
+                break;
+            case CreatureState.Moving:
+
+                break;
+            case CreatureState.Attack:
+                ApplyStop(StopReason.StopAll);
+                break;
+        }
+    }
+    #endregion
+
     #region Moving
     public void ApplyLocalSetMoveTarget(C_SetMoveTarget cmd, float attackRange = 3.0f)
     {
@@ -143,7 +164,7 @@ public class PlayerViewController : MonoBehaviour
 
             // 즉시 한 번 갱신 후, 주기 추적 시작
             UpdateFollowDestinationOnce();
-            _coFollow = StartCoroutine(CoFollowTarget(0.25f)); // 0.2~0.3s 주기 권장
+            _coFollow = StartCoroutine(CoFollowTarget(0.01f)); // 0.2~0.3s 주기 권장
         }
 
         // MoveSync 루프 스타트(좌표/회전 동기화는 계속 필요)
@@ -197,7 +218,9 @@ public class PlayerViewController : MonoBehaviour
         if (_followTargetId == 0)
             return;
 
-        var targetView = FindVisibleObjectById(_followTargetId);
+        // TEMP : 나중에 Target 상태 체크해서 쫓아갈지 검사
+        //var targetView = FindVisibleObjectById(_followTargetId);
+        var targetView = Managers.Object.FindById(_followTargetId);
         if (targetView == null)
         {
             // 타겟이 사라졌으면 추적 종료
@@ -217,11 +240,16 @@ public class PlayerViewController : MonoBehaviour
         _followTargetId = 0;
         if (_coFollow != null)
         { StopCoroutine(_coFollow); _coFollow = null; }
-    }
 
+        _agent.isStopped = true;
+        _agent.ResetPath();              
+    }
+    #endregion
+
+    #region Helper
     private GameObject FindVisibleObjectById(int objectId)
     {
-        if(VisibleObjectIds.Contains(objectId))
+        if (VisibleObjectIds.Contains(objectId))
         {
             return Managers.Object.FindById(objectId);
         }

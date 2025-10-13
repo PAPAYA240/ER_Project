@@ -374,10 +374,10 @@ class PacketHandler
         if (go == null)
             return;
 
-        PlayerController pc = go.GetComponent<PlayerController>();
-        if (pc == null)
+        MyPlayerController mpc = go.GetComponent<MyPlayerController>();
+        if (mpc == null)
             return;
 
-        pc.PlayAnimFromServer(statePacket);
+        mpc.OnServerUpdate(statePacket);
     }
 }

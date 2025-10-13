@@ -2,6 +2,7 @@
 using Server.Game;
 using System;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using System.Numerics;
 using System.Text;
 using System.Threading;
@@ -31,6 +32,7 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
     public void Enter(Player player)
     {
         player.State = CreatureState.Moving;
+        player.SendStatePacket();
         player.SendAnimPacket("RUN", 0.1f);
 
         if (_isTargetOn)
@@ -101,10 +103,10 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
             else
             {
                 // 땅 이동: 도착 시 주변 적 스캔 후 자동 공격
-                var enemy = player.FindNearestEnemy(player.AttackRange);
-                if (enemy != null)
-                    player.ChangeState(new Player_AttackState(enemy.Id, chaseAllowed: true));
-                else
+                //var enemy = player.FindNearestEnemy(player.AttackRange);
+                //if (enemy != null)
+                //    player.ChangeState(new Player_AttackState(enemy.Id, chaseAllowed: true));
+                //else
                     player.ChangeState(new Player_IdleState());
             }
         }

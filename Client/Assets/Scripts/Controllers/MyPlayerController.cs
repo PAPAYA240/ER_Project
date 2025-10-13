@@ -76,6 +76,11 @@ public class MyPlayerController : PlayerController
             TargetPos = packet.TargetPos != null ? new PositionInfo(packet.TargetPos) : null
         });
     }
+    public void OnServerUpdate(S_PlayerState packet)
+    {
+        State = packet.State;
+        _view.ApplyState(packet);
+    }
 
     public void UpdateTransform(bool isWarp = false)
     {

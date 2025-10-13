@@ -28,7 +28,6 @@ public class Player_AttackState : IPlayerState
     private bool _swingActive;
     private bool _damageApplied;
     private int _attackIndex;               // 0/1 → A/B 번갈이
-    private bool _runAnimSent;              // 추격 시작 시 1회만 전송
 
     private DateTime _swingStartUtc;
     private DateTime _hitMomentUtc;
@@ -53,9 +52,9 @@ public class Player_AttackState : IPlayerState
     public void Enter(Player player)
     {
         player.State = CreatureState.Attack;
+        player.SendStatePacket();
         _swingActive = false;
         _damageApplied = false;
-        _runAnimSent = false;
 
         var now = DateTime.UtcNow;
         _nextAttackReadyUtc = now;              // 즉시 공격 가능
@@ -149,13 +148,6 @@ public class Player_AttackState : IPlayerState
                 return;
             }
 
-            // 추격 시작 시 1회만 러닝 애니 송출
-            if (!_runAnimSent)
-            {
-                player.SendAnimPacket(AnimRun, 0.1f);
-                _runAnimSent = true;
-            }
-
             // 기존 이동 상태 재사용(타겟 추격)
             var move = new C_Move
             {
@@ -176,7 +168,6 @@ public class Player_AttackState : IPlayerState
         if (now >= _nextAttackReadyUtc)
         {
             StartSwing(player, now);
-            _runAnimSent = false; // 다음에 다시 추격 시작하면 러닝 애니 재송출 허용
         }
     }
 
@@ -184,7 +175,6 @@ public class Player_AttackState : IPlayerState
     {
         _swingActive = false;
         _pendingTargetId = null;
-        _runAnimSent = false;
     }
 
     // 외부에서 타겟 변경을 요청할 때 호출(스윙 진행 중이면 종료 후에 반영)

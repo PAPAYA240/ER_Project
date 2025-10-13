@@ -265,15 +265,21 @@ namespace Server.Game
             Session.Send(visibleObjsPkt);
         }
 
-        //public void SendStatePacket(S_PlayerState packet)
-        //{
-        //    Room.Push(Room.Broadcast, packet);
-        //}
+        public void SendStatePacket()
+        {
+            S_PlayerState packet = new S_PlayerState()
+            {
+                ObjectId = Id,
+                State = State,
+            };
+            Room.Push(Room.Broadcast, packet);
+            Console.WriteLine($"ID : {Id} - State : {State}");
+        }
 
         public void SendAnimPacket(string animName, float ratio)
         {
             S_Anim packet = new S_Anim()
-            {
+            { 
                 ObjectId = Id,
                 AnimInfo = new AnimInfo()
                 {
@@ -293,6 +299,7 @@ namespace Server.Game
                 RotInfo = rotInfo
             };
             Room.Push(Room.Broadcast, packet);
+            Console.WriteLine($"Char : {Info.Player.CharType} / x : {posInfo.PosX}, z : {posInfo.PosZ}");
         }
 
         public void SendSetMoveTarget(bool isGround, int targetId, PositionInfo posOpt = null)
