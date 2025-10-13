@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -12,27 +12,27 @@ public class UI_DamageText : UI_Base
     Poolable _poolable;
     TextMeshProUGUI _textMeshProUGUI;
 
-    // ====== ¼³Á¤ °¡´ÉÇÑ ¾Ö´Ï¸ŞÀÌ¼Ç º¯¼öµé ======
+    // ====== ì„¤ì • ê°€ëŠ¥í•œ ì• ë‹ˆë©”ì´ì…˜ ë³€ìˆ˜ë“¤ ======
     [Header("Animation Settings")]
-    [Tooltip("¾Ö´Ï¸ŞÀÌ¼Ç ÀüÃ¼ Áö¼Ó ½Ã°£ (¿Ã¶ó°¬´Ù°¡ ¶³¾îÁö´Â °úÁ¤ Æ÷ÇÔ)")]
-    public float totalAnimationDuration = 0.5f; // ÀüÃ¼ ¾Ö´Ï¸ŞÀÌ¼Ç ½Ã°£
-    [Tooltip("½ÃÀÛÁ¡¿¡¼­ °¡Àå ³ôÀº ÁöÁ¡±îÁö ¿Ã¶ó°¡´Â ³ôÀÌ (Æ÷¹°¼± ¾ÆÅ©ÀÇ ³ôÀÌ)")]
+    [Tooltip("ì• ë‹ˆë©”ì´ì…˜ ì „ì²´ ì§€ì† ì‹œê°„ (ì˜¬ë¼ê°”ë‹¤ê°€ ë–¨ì–´ì§€ëŠ” ê³¼ì • í¬í•¨)")]
+    public float totalAnimationDuration = 0.5f; // ì „ì²´ ì• ë‹ˆë©”ì´ì…˜ ì‹œê°„
+    [Tooltip("ì‹œì‘ì ì—ì„œ ê°€ì¥ ë†’ì€ ì§€ì ê¹Œì§€ ì˜¬ë¼ê°€ëŠ” ë†’ì´ (í¬ë¬¼ì„  ì•„í¬ì˜ ë†’ì´)")]
     public float maxUpwardHeight = 0.2f;
-    [Tooltip("ÁÂ¿ì·Î ¿òÁ÷ÀÌ´Â ¹üÀ§ (XÃà ±âÁØ)")]
+    [Tooltip("ì¢Œìš°ë¡œ ì›€ì§ì´ëŠ” ë²”ìœ„ (Xì¶• ê¸°ì¤€)")]
     public Vector2 horizontalDriftRange = new Vector2(-1f, 1f);
-    [Tooltip("ÃÖÁ¾ÀûÀ¸·Î ½ÃÀÛÁ¡ YÁÂÇ¥·ÎºÎÅÍ ¾ó¸¶³ª ¶³¾îÁúÁö (À½¼ö °ªµµ °¡´É)")]
-    public float finalYOffsetFromStart = 0f; // ½ÃÀÛ Yº¸´Ù ¾à°£ ¾Æ·¡·Î ¶³¾îÁö°Ô ¼³Á¤ÇÏ¸é ÁÁ½À´Ï´Ù.
+    [Tooltip("ìµœì¢…ì ìœ¼ë¡œ ì‹œì‘ì  Yì¢Œí‘œë¡œë¶€í„° ì–¼ë§ˆë‚˜ ë–¨ì–´ì§ˆì§€ (ìŒìˆ˜ ê°’ë„ ê°€ëŠ¥)")]
+    public float finalYOffsetFromStart = 0f; // ì‹œì‘ Yë³´ë‹¤ ì•½ê°„ ì•„ë˜ë¡œ ë–¨ì–´ì§€ê²Œ ì„¤ì •í•˜ë©´ ì¢‹ìŠµë‹ˆë‹¤.
 
-    [Tooltip("¾Ö´Ï¸ŞÀÌ¼Ç ½ÃÀÛ ½Ã ÅØ½ºÆ®ÀÇ Å©±â")]
+    [Tooltip("ì• ë‹ˆë©”ì´ì…˜ ì‹œì‘ ì‹œ í…ìŠ¤íŠ¸ì˜ í¬ê¸°")]
     public Vector3 startScale = Vector3.one * 0.8f;
-    [Tooltip("¾Ö´Ï¸ŞÀÌ¼Ç Áß ÅØ½ºÆ®ÀÇ ÃÖ´ë Å©±â (Æ÷¹°¼±ÀÇ Á¤Á¡ ºÎ±Ù)")]
+    [Tooltip("ì• ë‹ˆë©”ì´ì…˜ ì¤‘ í…ìŠ¤íŠ¸ì˜ ìµœëŒ€ í¬ê¸° (í¬ë¬¼ì„ ì˜ ì •ì  ë¶€ê·¼)")]
     public Vector3 peakScale = Vector3.one * 1.2f;
-    [Tooltip("¾Ö´Ï¸ŞÀÌ¼Ç Á¾·á ½Ã ÅØ½ºÆ®ÀÇ Å©±â")]
+    [Tooltip("ì• ë‹ˆë©”ì´ì…˜ ì¢…ë£Œ ì‹œ í…ìŠ¤íŠ¸ì˜ í¬ê¸°")]
     public Vector3 endScale = Vector3.one * 0.8f;
 
-    // ====== ³»ºÎ ¾Ö´Ï¸ŞÀÌ¼Ç °ü·Ã º¯¼ö ======
-    private Vector3 _initialPosition; // µ¥¹ÌÁö ÅØ½ºÆ®°¡ ½ÃÀÛµÇ´Â ¿ùµå ÁÂÇ¥
-    private Vector3 _targetEndPoint;  // Æ÷¹°¼±ÀÌ ³¡³ª´Â ÃÖÁ¾ ¿ùµå ÁÂÇ¥
+    // ====== ë‚´ë¶€ ì• ë‹ˆë©”ì´ì…˜ ê´€ë ¨ ë³€ìˆ˜ ======
+    private Vector3 _initialPosition; // ë°ë¯¸ì§€ í…ìŠ¤íŠ¸ê°€ ì‹œì‘ë˜ëŠ” ì›”ë“œ ì¢Œí‘œ
+    private Vector3 _targetEndPoint;  // í¬ë¬¼ì„ ì´ ëë‚˜ëŠ” ìµœì¢… ì›”ë“œ ì¢Œí‘œ
 
     Coroutine _coroutine = null;
 
@@ -67,15 +67,15 @@ public class UI_DamageText : UI_Base
         _type = type;
         _damageValue = value;
 
-        // ÃÊ±â À§Ä¡¿Í ½ºÄÉÀÏ ¼³Á¤
+        // ì´ˆê¸° ìœ„ì¹˜ì™€ ìŠ¤ì¼€ì¼ ì„¤ì •
         _initialPosition = worldPos;
         transform.localScale = startScale;
 
-        // Åõ¸íµµ ÃÊ±âÈ­ (ÀÌÀü »ç¿ë ÈÄ ³²¾ÆÀÖÀ» ¼ö ÀÖÀ¸¹Ç·Î)
+        // íˆ¬ëª…ë„ ì´ˆê¸°í™” (ì´ì „ ì‚¬ìš© í›„ ë‚¨ì•„ìˆì„ ìˆ˜ ìˆìœ¼ë¯€ë¡œ)
         Color currentTextColor = Color.white;
         currentTextColor.a = 1f;
 
-        //ÆùÆ® »ö + ¼ıÀÚ ¼³Á¤.
+        //í°íŠ¸ ìƒ‰ + ìˆ«ì ì„¤ì •.
         switch (type)
         {
             case TextType.AdDamage:
@@ -98,16 +98,22 @@ public class UI_DamageText : UI_Base
                 break;
         }
 
-        //ÃÖÁ¾ µµÂø ÁöÁ¡ °è»ê: ½ÃÀÛÁ¡¿¡¼­ ÁÂ¿ì·Î ·£´ıÇÏ°Ô ¿òÁ÷ÀÌ°í, YÃàÀ¸·Î finalYOffsetFromStart¸¸Å­ ÀÌµ¿ÇÕ´Ï´Ù.
+        //ìµœì¢… ë„ì°© ì§€ì  ê³„ì‚°: ì‹œì‘ì ì—ì„œ ì¢Œìš°ë¡œ ëœë¤í•˜ê²Œ ì›€ì§ì´ê³ , Yì¶•ìœ¼ë¡œ finalYOffsetFromStartë§Œí¼ ì´ë™í•©ë‹ˆë‹¤.
         _targetEndPoint = new Vector3(
             _initialPosition.x + Random.Range(horizontalDriftRange.x, horizontalDriftRange.y),
-            _initialPosition.y + finalYOffsetFromStart, // ½ÃÀÛ YÁÂÇ¥¿¡¼­ ÃÖÁ¾ YÁÂÇ¥ ¿ÀÇÁ¼Â Àû¿ë
+            _initialPosition.y + finalYOffsetFromStart, // ì‹œì‘ Yì¢Œí‘œì—ì„œ ìµœì¢… Yì¢Œí‘œ ì˜¤í”„ì…‹ ì ìš©
             _initialPosition.z + Random.Range(horizontalDriftRange.x, horizontalDriftRange.y)
         );
 
+        Debug.Log(Random.Range(horizontalDriftRange.x, horizontalDriftRange.y));
+        Debug.Log(Random.Range(horizontalDriftRange.x, horizontalDriftRange.y));
+        Debug.Log(Random.Range(horizontalDriftRange.x, horizontalDriftRange.y));
+        Debug.Log(Random.Range(horizontalDriftRange.x, horizontalDriftRange.y));
+        Debug.Log(Random.Range(horizontalDriftRange.x, horizontalDriftRange.y));
+
         if(null != _coroutine)
-            StopCoroutine(_coroutine); // ÀÌÀü¿¡ ½ÇÇà ÁßÀÎ ÄÚ·çÆ¾ÀÌ ÀÖ´Ù¸é ÁßÁö
-        _coroutine = StartCoroutine(AnimateFloatingText()); // »õ ¾Ö´Ï¸ŞÀÌ¼Ç ÄÚ·çÆ¾ ½ÃÀÛ
+            StopCoroutine(_coroutine); // ì´ì „ì— ì‹¤í–‰ ì¤‘ì¸ ì½”ë£¨í‹´ì´ ìˆë‹¤ë©´ ì¤‘ì§€
+        _coroutine = StartCoroutine(AnimateFloatingText()); // ìƒˆ ì• ë‹ˆë©”ì´ì…˜ ì½”ë£¨í‹´ ì‹œì‘
     }
 
     private IEnumerator AnimateFloatingText()
@@ -117,62 +123,62 @@ public class UI_DamageText : UI_Base
         while (timer < totalAnimationDuration)
         {
             timer += Time.deltaTime;
-            float t = timer / totalAnimationDuration; // 0¿¡¼­ 1±îÁö Áõ°¡ÇÏ´Â ºñÀ²
+            float t = timer / totalAnimationDuration; // 0ì—ì„œ 1ê¹Œì§€ ì¦ê°€í•˜ëŠ” ë¹„ìœ¨
 
             Debug.Log($"{timer}{totalAnimationDuration}");
 
-            // ====== À§Ä¡ °è»ê (Æ÷¹°¼± ¿òÁ÷ÀÓ) ======
-            // ½ÃÀÛÁ¡°ú ÃÖÁ¾ µµÂø ÁöÁ¡ »çÀÌ¸¦ ¼±ÇüÀûÀ¸·Î º¸°£ÇÕ´Ï´Ù.
+            // ====== ìœ„ì¹˜ ê³„ì‚° (í¬ë¬¼ì„  ì›€ì§ì„) ======
+            // ì‹œì‘ì ê³¼ ìµœì¢… ë„ì°© ì§€ì  ì‚¬ì´ë¥¼ ì„ í˜•ì ìœ¼ë¡œ ë³´ê°„í•©ë‹ˆë‹¤.
             Vector3 currentPosition = Vector3.Lerp(_initialPosition, _targetEndPoint, t);
 
-            // YÃà¿¡ Æ÷¹°¼± ¾ÆÅ© ³ôÀÌ¸¦ Ãß°¡ÇÕ´Ï´Ù.
-            // (4 * t * (1 - t))´Â t°¡ 0ÀÏ ¶§ 0, t°¡ 0.5ÀÏ ¶§ 1, t°¡ 1ÀÏ ¶§ 0ÀÌ µÇ´Â Æ÷¹°¼± ÇÔ¼öÀÔ´Ï´Ù.
-            // ÀÌ¸¦ maxUpwardHeight¿¡ °öÇÏ¸é Á¤Á¡¿¡¼­ maxUpwardHeight¸¸Å­ ¶°¿À¸£°Ô µË´Ï´Ù.
+            // Yì¶•ì— í¬ë¬¼ì„  ì•„í¬ ë†’ì´ë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
+            // (4 * t * (1 - t))ëŠ” tê°€ 0ì¼ ë•Œ 0, tê°€ 0.5ì¼ ë•Œ 1, tê°€ 1ì¼ ë•Œ 0ì´ ë˜ëŠ” í¬ë¬¼ì„  í•¨ìˆ˜ì…ë‹ˆë‹¤.
+            // ì´ë¥¼ maxUpwardHeightì— ê³±í•˜ë©´ ì •ì ì—ì„œ maxUpwardHeightë§Œí¼ ë– ì˜¤ë¥´ê²Œ ë©ë‹ˆë‹¤.
             float arcHeight = maxUpwardHeight * (4 * t * (1 - t));
-            currentPosition.y += arcHeight; // ¼±Çü À§Ä¡¿¡ Æ÷¹°¼± ¾ÆÅ© ³ôÀÌ¸¦ ´õÇØÁİ´Ï´Ù.
+            currentPosition.y += arcHeight; // ì„ í˜• ìœ„ì¹˜ì— í¬ë¬¼ì„  ì•„í¬ ë†’ì´ë¥¼ ë”í•´ì¤ë‹ˆë‹¤.
 
             Vector3 screenPos = Camera.main.WorldToScreenPoint(currentPosition);
             _rectTransform.anchoredPosition = screenPos;
             //Vector3 screenPos = Camera.main.WorldToScreenPoint(currentPosition);
             //if(RectTransformUtility.ScreenPointToLocalPointInRectangle(_rectTransform, new Vector2(screenPos.x, screenPos.y), Camera.main, out Vector2 local))
             //{
-            //    _rectTransform.localPosition = local; // °è»êµÈ À§Ä¡ Àû¿ë
+            //    _rectTransform.localPosition = local; // ê³„ì‚°ëœ ìœ„ì¹˜ ì ìš©
             //}
 
 
-            // ====== ½ºÄÉÀÏ °è»ê (½ÃÀÛ -> ÇÇÅ© -> ³¡) ======
+            // ====== ìŠ¤ì¼€ì¼ ê³„ì‚° (ì‹œì‘ -> í”¼í¬ -> ë) ======
             Vector3 currentScale;
-            if (t < 0.5f) // ¾Ö´Ï¸ŞÀÌ¼Ç Àü¹İºÎ (0% ~ 50% ÁöÁ¡): startScale¿¡¼­ peakScale·Î Ä¿Áı´Ï´Ù.
+            if (t < 0.5f) // ì• ë‹ˆë©”ì´ì…˜ ì „ë°˜ë¶€ (0% ~ 50% ì§€ì ): startScaleì—ì„œ peakScaleë¡œ ì»¤ì§‘ë‹ˆë‹¤.
             {
                 currentScale = Vector3.Lerp(startScale, peakScale, t * 2);
             }
-            else // ¾Ö´Ï¸ŞÀÌ¼Ç ÈÄ¹İºÎ (50% ~ 100% ÁöÁ¡): peakScale¿¡¼­ endScale·Î ÀÛ¾ÆÁı´Ï´Ù.
+            else // ì• ë‹ˆë©”ì´ì…˜ í›„ë°˜ë¶€ (50% ~ 100% ì§€ì ): peakScaleì—ì„œ endScaleë¡œ ì‘ì•„ì§‘ë‹ˆë‹¤.
             {
                 currentScale = Vector3.Lerp(peakScale, endScale, (t - 0.5f) * 2);
             }
-            transform.localScale = currentScale; // °è»êµÈ ½ºÄÉÀÏ Àû¿ë
+            transform.localScale = currentScale; // ê³„ì‚°ëœ ìŠ¤ì¼€ì¼ ì ìš©
 
-            // ====== Åõ¸íµµ ÆäÀÌµå ¾Æ¿ô ======
+            // ====== íˆ¬ëª…ë„ í˜ì´ë“œ ì•„ì›ƒ ======
             Color currentColor = _textMeshProUGUI.color;
-            currentColor.a = Mathf.Lerp(1f, 0.8f, t); // 0%¿¡¼­ 100%±îÁö Åõ¸íµµ¸¦ 1¿¡¼­ 0À¸·Î º¯È­
-            _textMeshProUGUI.color = currentColor; // °è»êµÈ Åõ¸íµµ Àû¿ë
+            currentColor.a = Mathf.Lerp(1f, 0.8f, t); // 0%ì—ì„œ 100%ê¹Œì§€ íˆ¬ëª…ë„ë¥¼ 1ì—ì„œ 0ìœ¼ë¡œ ë³€í™”
+            _textMeshProUGUI.color = currentColor; // ê³„ì‚°ëœ íˆ¬ëª…ë„ ì ìš©
 
-            yield return null; // ´ÙÀ½ ÇÁ·¹ÀÓ±îÁö ´ë±â
+            yield return null; // ë‹¤ìŒ í”„ë ˆì„ê¹Œì§€ ëŒ€ê¸°
         }
 
-        // ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ¿ÏÀüÈ÷ ³¡³­ ÈÄ ÃÖÁ¾ »óÅÂ¸¦ ¸íÈ®È÷ ¼³Á¤ÇÕ´Ï´Ù.
-        _textMeshProUGUI.color = new Color(_textMeshProUGUI.color.r, _textMeshProUGUI.color.g, _textMeshProUGUI.color.b, 0f); // ¿ÏÀüÈ÷ Åõ¸íÇÏ°Ô
-        transform.localScale = endScale; // ÃÖÁ¾ ½ºÄÉÀÏ Àû¿ë
+        // ì• ë‹ˆë©”ì´ì…˜ì´ ì™„ì „íˆ ëë‚œ í›„ ìµœì¢… ìƒíƒœë¥¼ ëª…í™•íˆ ì„¤ì •í•©ë‹ˆë‹¤.
+        _textMeshProUGUI.color = new Color(_textMeshProUGUI.color.r, _textMeshProUGUI.color.g, _textMeshProUGUI.color.b, 0f); // ì™„ì „íˆ íˆ¬ëª…í•˜ê²Œ
+        transform.localScale = endScale; // ìµœì¢… ìŠ¤ì¼€ì¼ ì ìš©
 
         _coroutine = null;
 
-        // ¿ÀºêÁ§Æ®¸¦ Ç®¿¡ ¹İÈ¯
+        // ì˜¤ë¸Œì íŠ¸ë¥¼ í’€ì— ë°˜í™˜
         Managers.Resource.Destroy(gameObject);
     }
 
     //void UpdateAnim()
     //{
-    //    // ¾î¶»°Ô ¿òÁ÷ÀÏ Áö
+    //    // ì–´ë–»ê²Œ ì›€ì§ì¼ ì§€
 
     //    Vector3 screenPos = Camera.main.WorldToScreenPoint(_worldPos);
 
