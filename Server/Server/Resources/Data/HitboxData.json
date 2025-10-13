@@ -100,23 +100,30 @@
         "minRange": 6,
         "maxRange": 11
       },
-      "W":{
-          "shape": "Rectangle",
-          "type": "SkillStatic",
-          "width": 5,
-          "height": 1,
-          "maxRange": 5.5
+      "W": {
+        "shape": "Rectangle",
+        "type": "SkillStatic",
+        "width": 5,
+        "height": 1,
+        "maxRange": 5.5,
+        "startFrame": 0,
+        "endFrame": 200
       },
-      "E":{
-          "shape": "Circle",
-          "type": "SkillProjectile",
-          "maxRange": 6.5
+      "E": {
+        "shape": "Circle",
+        "type": "SkillProjectile",
+        "radius": 1,
+        "speed": 4,
+        "duration": 0.6,
+        "maxRange": 5.5
       },
-      "R":{
-          "shape": "Rectangle",
-          "type": "SkillProjectile",
-          "width": 5,
-          "height": 18
+      "R": {
+        "shape": "Rectangle",
+        "type": "SkillProjectile",
+        "width": 5,
+        "height": 14,
+        "startFrame": 0,
+        "endFrame": 150
       }
     },
     "Yuki": {

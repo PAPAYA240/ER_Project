@@ -1411,29 +1411,16 @@ public class MyPlayerController : PlayerController
     }
     #endregion
 
+    // 타겟 저장
+    protected void RegisterTarget(GameObject target)
+    {
 
-  
+    }
 
     protected float _ratioSkillDuration = 0f;
     #region Packet
     private void SendSkillPacket(KeyCode key)
     {
-        List<int> targetIdList = new List<int>();
-
-        if (Target)
-        {
-            CreatureController creature = Target.GetComponentInChildren<CreatureController>();
-            if (ObjectManager.GetObjectTypeById(creature.ObjInfo.ObjectId) == GameObjectType.Monster)
-            {
-                 targetIdList.Add(creature.ObjInfo.ObjectId);
-            }
-            else
-            {
-                targetIdList = SkillTargetId;
-                SkillTargetId.Clear();
-            }
-        }
-
         Vector3 mousePos = GetTargetPos(1000);
         C_Skill skillPacket = new C_Skill()
         {
@@ -1442,7 +1429,6 @@ public class MyPlayerController : PlayerController
             MousePosX = mousePos.x, MousePosZ = mousePos.z,
             ChargeRatio = _ratioSkillDuration,
         };
-        skillPacket.TargetsId.AddRange(targetIdList);
 
         _ratioSkillDuration = 0f;
 
