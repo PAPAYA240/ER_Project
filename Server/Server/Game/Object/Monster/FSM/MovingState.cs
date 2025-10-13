@@ -21,7 +21,6 @@ namespace Server.Game
                 if (monster.Target != null)
                     monster.Target.Target = null;
                 monster.Target = null;
-                Console.WriteLine("스포너 이동");
                 monster.Get_CalculatePath(monster.spawnPosition);
             }
             else // 플레이어를 찾아 이동

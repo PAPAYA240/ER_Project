@@ -26,11 +26,10 @@ public class SkillMesh : MonoBehaviour
         _playerTransform = playerTransform;
         ChargeRatio = chargeRatio;
 
-        Enum.TryParse<SkillShape>(_hitbox.Shape, out SkillShape shape);
-        CreateVisual(shape, team);
-
-        if (_hitbox.Duration > 0f)
-            StartCoroutine(AutoDestroy(_hitbox.Duration));
+        float startTime = (float)_hitbox.StartFrame / _hitbox.Fps;
+        float endTime = (float)_hitbox.EndFrame / _hitbox.Fps;
+                
+        StartCoroutine(AutoDestroy(startTime, endTime, team));
     }
 
     private void CreateVisual(SkillShape shape, int team)
@@ -152,9 +151,18 @@ public class SkillMesh : MonoBehaviour
         lr.SetPosition(segments + 2, Vector3.zero);
     }
 
-    private IEnumerator AutoDestroy(float duration)
+    private IEnumerator AutoDestroy(float startTime, float endTime, int team)
     {
-        yield return new WaitForSeconds(duration);
+        yield return new WaitForSeconds(startTime);
+
+        // 도형 생성
+        if (Enum.TryParse<SkillShape>(_hitbox.Shape, out SkillShape shape))
+            CreateVisual(shape, team);
+
+        float duration = endTime - startTime;
+        if (duration > 0f)
+            yield return new WaitForSeconds(duration);
+
         if (visualObject != null)
             Destroy(visualObject);
 
