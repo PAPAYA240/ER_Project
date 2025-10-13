@@ -194,6 +194,13 @@ namespace Server.Game
             changePacket.ObjectId = Id;
             changePacket.Hp = Hp;
             changePacket.Barrier = Barrier;
+
+            //temp
+            changePacket.Damages.Add(new DamageInfo { Damage = remaining, Type = DamageType.Ad });
+
+            if (absorbed > 0)
+                changePacket.Absorbed = absorbed;
+
             Room.Broadcast(changePacket);
 
             if(Hp <= 0)
