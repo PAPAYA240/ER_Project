@@ -123,7 +123,7 @@ enum MonsterType {
    	ALPHA = 1;
    	OMEGA = 2;
 	DRONE = 3;
-        GAMMA = 4;
+    GAMMA = 4;
 	TURRET = 5;
 }
 
@@ -518,19 +518,20 @@ message SkillInfo{
 message SkillHitbox{
 	string shape = 1;
 	string type = 2;
-	bool charge = 3;
-	float lookOffset = 4;
-	float rightOffset = 5;
-	float dirX = 6;
-	float dirY = 7;
-	float radius = 8;
-	float angle = 9;
-	float width = 10;
-	float height = 11;
-	float duration = 12;
+	int32 startFrame = 3;
+	int32 endFrame = 4;
+	int32 fps = 5;
+	bool charge = 6;
+	float lookOffset = 7;
+	float rightOffset = 8;
+	float radius = 9;
+	float angle = 10;
+	float width = 11;
+	float height = 12;
 	float speed = 13;
 	float minRange = 14;
 	float maxRange = 15;
+	bool isOneTimeUse = 16;
 }
 
 message CostInfo{

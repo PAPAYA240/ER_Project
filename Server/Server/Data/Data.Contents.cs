@@ -213,10 +213,12 @@ namespace Server.Data
             {
                 CharacterType chartype = (CharacterType)Enum.Parse(typeof(CharacterType), chars.Key);
                 var dict = new Dictionary<KeyCode, SkillHitbox>();
+
                 foreach (var skills in chars.Value)
                 {
                     KeyCode keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), skills.Key);
                     dict.Add(keyCode, skills.Value);
+                    skills.Value.SetDefaultsIfEmpty();
                 }
                 nestedDict.Add(chartype, dict);
             }

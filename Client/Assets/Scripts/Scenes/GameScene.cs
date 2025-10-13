@@ -20,7 +20,7 @@ public class GameScene : BaseScene
         // 서버로 패킷 보내기
         C_EnterGame EnterGamePacket = new C_EnterGame();
         EnterGamePacket.DummyPlayers.Add(CharacterType.Rozzi);
-        //EnterGamePacket.DummyPlayers.Add(CharacterType.Yuki);
+        EnterGamePacket.DummyPlayers.Add(CharacterType.Yuki);
         //EnterGamePacket.DummyPlayers.Add(CharacterType.Hyunwoo);
         EnterGamePacket.DummyPlayers.Add(CharacterType.Abigail);
         EnterGamePacket.DummyPlayers.Add(CharacterType.Theodore);

@@ -58,10 +58,6 @@ namespace Server.Game
 
             // Spawn Env
             _envManager.Init(this);
-
-            _collisionManager.Init();
-
-
         }
 
         public override void Update()
@@ -92,9 +88,11 @@ namespace Server.Game
 
             Flush();
 
-            _collisionManager.Update();
+            _collisionManager.CurTick = Environment.TickCount;
+            _collisionManager.Flush();
             _collisionManager.CheckAllCollisions(_teams, _monsters, _projectiles);
-
+            _collisionManager.Update();
+            
             BroadcastVisibleObjs();
             CheckLastPing();
         }
@@ -289,7 +287,7 @@ namespace Server.Game
             S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
 
             KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
-            float SkillDuration = skillPacket.ChargeRatio;
+            skill.ChargeRatio = skillPacket.ChargeRatio;
 
             // 스킬 사용이 불가능하면 바로 실패 패킷 전송
             if (!player.CanUseSkill(keyCode))
@@ -335,7 +333,7 @@ namespace Server.Game
                 CoolTime = player.GetCoolTime(keyCode),
                 Stamina = player.Stamina,
             };
-            player.Session.Send(skill);
+            Broadcast(skill);
 
             SkillData skillData = null;
             Dictionary<KeyCode, SkillData> skills = DataManager.SkillDict[info.Player.CharType];
@@ -344,7 +342,7 @@ namespace Server.Game
                 return;
 
             _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode, 
-                new Vector2(skillPacket.MousePosX, skillPacket.MousePosZ));
+                new Vector2(skillPacket.MousePosX, skillPacket.MousePosZ), skillPacket.ChargeRatio);
         }
 
         public void HandleAnim(Player player, C_Anim animPacket)

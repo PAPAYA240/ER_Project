@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Google.Protobuf.Protocol
 {
@@ -99,6 +100,15 @@ namespace Google.Protobuf.Protocol
                 SkillAmplificationPerLevel = a.SkillAmplificationPerLevel + b.SkillAmplificationPerLevel,
                 MaxHpPerLevel = a.MaxHpPerLevel + b.MaxHpPerLevel,
             };
+        }
+    }
+
+    public sealed partial class SkillHitbox
+    {
+        public void SetDefaultsIfEmpty()
+        {
+            if (Fps == 0)
+                Fps = 30;
         }
     }
 }

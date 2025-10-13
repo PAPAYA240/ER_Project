@@ -5,6 +5,7 @@ using Server.Data;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,6 +28,9 @@ namespace Server.Game
         public SkillHitbox Data { get; set; }
         
         public int StartTick { get; set; } // Skill Start Time
+        public int EndTick { get; set; } // Skill End Time
+
+        public bool IsUsed { get; set; } = false;
 
         // Key: ObjectId, Value: Nothing
         public ConcurrentDictionary<int, byte> HitObjs = new ConcurrentDictionary<int, byte>();
@@ -45,49 +49,32 @@ namespace Server.Game
         // Key: ObjectId
         Dictionary<int, HashSet<Hitbox>> _hitboxDict = new Dictionary<int, HashSet<Hitbox>>();
 
-        Dictionary<CharacterType, Dictionary<KeyCode, HitboxChain>> _hitboxChainDict = new Dictionary<CharacterType, Dictionary<KeyCode, HitboxChain>>();
+        List<Hitbox> _pendingHitboxes = new List<Hitbox>();
 
-        public void Init()
-        {
-            // 히트박스 특정 시간 후 자동 생성
-            AddHitboxChain(CharacterType.Abigail, KeyCode.Q, new HitboxChain { KeyCode = KeyCode.F1, MilliSecs = 333 });
-        }
+        public int CurTick { get; set; }
 
-        public void AddHitbox(Player player, CharacterType charType, KeyCode keyCode, Vector2 mousePos = new Vector2())
+        public void AddHitbox(Player player, CharacterType charType, KeyCode keyCode, Vector2 mousePos = new Vector2(), float chargeRatio = 0)
         {
             lock (_lock)
             {
-                Vector3 forward = player.RotInfo.Forward();
+                SkillHitbox skillHitbox = DataManager.SkillHitboxDict[charType][keyCode];
+                if (skillHitbox.EndFrame <= 0)
+                    return;
 
                 Hitbox hitbox = new Hitbox
                 {
                     Player = player,
                     PosX = player.PosInfo.PosX,
                     PosZ = player.PosInfo.PosZ,
+                    ChargeRatio = chargeRatio,
                     CharType = charType,
                     KeyCode = keyCode,
                     Team = player.Info.Player.Team,
-                    Data = DataManager.SkillHitboxDict[charType][keyCode],
-                    StartTick = Environment.TickCount,
+                    Data = skillHitbox,
                     MousePos = mousePos
                 };
 
-                if (!_hitboxDict.TryGetValue(player.Id, out var set))
-                {
-                    set = new HashSet<Hitbox>();
-                    _hitboxDict[player.Id] = set;
-                }
-
-                set.Add(hitbox);
-
-                if (_hitboxChainDict.TryGetValue(charType, out Dictionary<KeyCode, HitboxChain> dict))
-                {
-                    if(dict.TryGetValue(keyCode, out HitboxChain hitboxChain))
-                    {
-                        // 딜레이 이후 자동으로 2타 히트박스 추가
-                        _ = AddHitboxAfterDelay(player, charType, hitboxChain.KeyCode, hitboxChain.MilliSecs);
-                    }
-                }
+                _pendingHitboxes.Add(hitbox);
             }            
         }
 
@@ -111,13 +98,12 @@ namespace Server.Game
         public void RemoveExpired()
         {
             List<Hitbox> removeQueue = new List<Hitbox>();
-            int now = Environment.TickCount; 
 
             foreach (HashSet<Hitbox> hitboxSet in _hitboxDict.Values)
             {
                 foreach (Hitbox hitbox in hitboxSet)
                 {
-                    if (now - hitbox.StartTick >= (int)(hitbox.Data.Duration * 1000))
+                    if (CurTick >= hitbox.EndTick || hitbox.IsUsed)
                         removeQueue.Add(hitbox);
                 }
             }
@@ -172,46 +158,24 @@ namespace Server.Game
                     continue;
 
                 int myTeam = ObjectManager.Instance.GetTeam(ownerId);
-                foreach (var teamKvp in teams)
+
+                foreach (var hitbox in hitboxes)
                 {
-                    int teamId = teamKvp.Key;
-                    if (teamId == myTeam)
+                    if (CurTick < hitbox.StartTick || CurTick > hitbox.EndTick)
                         continue;
 
-                    Dictionary<int, Player> enemyPlayers = teamKvp.Value;
+                    List<Player> hitPlayers = new List<Player>();
 
-                    foreach (var playerKvp in enemyPlayers)
+                    foreach (var teamKvp in teams)
                     {
-                        Player target = playerKvp.Value;
+                        int teamId = teamKvp.Key;
+                        if (teamId == myTeam) continue;
 
-                        // Collision Check
-                        foreach (var hitbox in hitboxes)
-                        {
-                            if (hitbox.HitObjs.ContainsKey(playerKvp.Key))
-                                continue;
-
-                            if (CheckCollision(hitbox, target))
-                            {
-                                float dmg = CalcDamage(hitbox.Player, target, hitbox.KeyCode);
-                                if (damageDict.ContainsKey(target.Id))
-                                {
-                                    if (damageDict[target.Id].ContainsKey(hitbox.Player.Id))
-                                    {
-                                        damageDict[target.Id][hitbox.Player.Id] += dmg;
-                                    }
-                                    else
-                                        damageDict[target.Id][hitbox.Player.Id] = dmg;
-                                }
-                                else
-                                {
-                                    damageDict[target.Id] = new Dictionary<int, float>();
-                                    damageDict[target.Id][hitbox.Player.Id] = dmg;
-                                }
-
-                                hitbox.HitObjs.TryAdd(target.Id, 0);
-                            }
-                        }
+                        HandleCollision<Player>(hitbox, teamKvp.Value, hitPlayers, damageDict);
                     }
+
+                    if(hitPlayers.Count > 0)
+                        HandleDamage<Player>(hitbox, hitPlayers, damageDict);
                 }
             }
         }
@@ -225,37 +189,67 @@ namespace Server.Game
                 if (hitboxes.Count == 0)
                     continue;
 
-                foreach (var targetKvp in targets)
+                foreach (var hitbox in hitboxes)
                 {
-                    T target = targetKvp.Value;
-                    // Collision Check
-                    foreach (var hitbox in hitboxes)
-                    {
-                        if (hitbox.HitObjs.ContainsKey(targetKvp.Key))
-                            continue;
+                    if (CurTick < hitbox.StartTick || CurTick > hitbox.EndTick)
+                        continue;
 
-                        if (CheckCollision(hitbox, target))
-                        {
-                            float dmg = CalcDamage(hitbox.Player, target.Stat, hitbox.KeyCode);
-                            if (damageDict.ContainsKey(target.Id))
-                            {
-                                if (damageDict[target.Id].ContainsKey(hitbox.Player.Id))
-                                {
-                                    damageDict[target.Id][hitbox.Player.Id] += dmg;
-                                }
-                                else
-                                    damageDict[target.Id][hitbox.Player.Id] = dmg;
-                            }
-                            else
-                            {
-                                damageDict[target.Id] = new Dictionary<int, float>();
-                                damageDict[target.Id][hitbox.Player.Id] = dmg;
-                            }
-                            hitbox.HitObjs.TryAdd(target.Id, 0);
-                        }
-                    }
+                    List<T> hitTargets = new List<T>();
+
+                    HandleCollision<T>(hitbox, targets, hitTargets, damageDict);
+                    if(hitTargets.Count > 0)
+                        HandleDamage<T>(hitbox, hitTargets, damageDict);
                 }
             }
+        }
+
+        void HandleCollision<T>(Hitbox hitbox, IDictionary<int, T> targets, List<T> hitTargets, Dictionary<int, Dictionary<int, float>> damageDict) where T : GameObject, new()
+        {
+            foreach (var targetKvp in targets)
+            {
+                T target = targetKvp.Value;
+                if (hitbox.HitObjs.ContainsKey(targetKvp.Key) || true == hitbox.IsUsed)
+                    continue;
+
+                if (CheckCollision(hitbox, target))
+                    hitTargets.Add(target);
+            }
+        }
+
+        void HandleDamage<T>(Hitbox hitbox, List<T> hitTargets, Dictionary<int, Dictionary<int, float>> damageDict) where T : GameObject, new()
+        {
+            if (false == hitbox.Data.IsOneTimeUse) // 단일대상 히트박스가 아닌 경우
+            {
+                foreach (T target in hitTargets)
+                    ApplyDamage(hitbox, target, damageDict);
+            }
+            else
+            {
+                T target = FindNearestTarget(hitbox, hitTargets);
+                if (target == null) return;
+
+                ApplyDamage(hitbox, target, damageDict);
+                hitbox.IsUsed = true;
+            }
+        }
+
+        T FindNearestTarget<T>(Hitbox hitbox, List<T> targets) where T : GameObject, new()
+        {
+            T nearestTarget = null;
+            float nearestDistSq = float.MaxValue;
+            foreach (var target in targets)
+            {
+                float dx = target.PosInfo.PosX - hitbox.PosX;
+                float dz = target.PosInfo.PosZ - hitbox.PosZ;
+                float distSq = dx * dx + dz * dz;
+
+                if (distSq < nearestDistSq)
+                {
+                    nearestDistSq = distSq;
+                    nearestTarget = target;
+                }
+            }
+            return nearestTarget;
         }
 
         bool CheckCollision(Hitbox hitbox, GameObject go)
@@ -326,7 +320,34 @@ namespace Server.Game
             
             return false;
         }
+         
+        void ApplyDamage(Hitbox hitbox, GameObject target, Dictionary<int, Dictionary<int, float>> damageDict)
+        {
+            float dmg = CalcDamage(hitbox.Player, target.Stat, hitbox.KeyCode);
 
+            if (target is Player)
+                Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Player.Id}, Target:{target.Info.Player.CharType}_{target.Id}, Damage:{dmg}");
+            else if (target is Monster)
+                Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Player.Id}, Target:{target.Info.Monster.MonsterType}_{target.Id}, Damage:{dmg}");
+            else
+                Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Player.Id}, Target:Env_{target.Id}, Damage:{dmg}");
+
+            if (damageDict.ContainsKey(target.Id))
+            {
+                if (damageDict[target.Id].ContainsKey(hitbox.Player.Id))
+                {
+                    damageDict[target.Id][hitbox.Player.Id] += dmg;
+                }
+                else
+                    damageDict[target.Id][hitbox.Player.Id] = dmg;
+            }
+            else
+            {
+                damageDict[target.Id] = new Dictionary<int, float>();
+                damageDict[target.Id][hitbox.Player.Id] = dmg;
+            }
+            hitbox.HitObjs.TryAdd(target.Id, 0);
+        }
 
         public float CalcDamage(Player attacker, Player target, KeyCode keyCode)
         {
@@ -380,19 +401,26 @@ namespace Server.Game
             }
         }
 
-        public void AddHitboxChain(CharacterType character, KeyCode key, HitboxChain chain)
+        public void Flush()
         {
-            if (!_hitboxChainDict.ContainsKey(character))
-                _hitboxChainDict[character] = new Dictionary<KeyCode, HitboxChain>();
+            lock (_lock)
+            {
+                foreach (Hitbox pendingHitbox in _pendingHitboxes)
+                {
 
-            _hitboxChainDict[character][key] = chain;
-        }
+                    if (!_hitboxDict.TryGetValue(pendingHitbox.Player.Id, out var set))
+                    {
+                        set = new HashSet<Hitbox>();
+                        _hitboxDict[pendingHitbox.Player.Id] = set;
+                    }
 
-        async Task AddHitboxAfterDelay(Player player, CharacterType charType, KeyCode keyCode, int millisecondsDelay)
-        {
-            await Task.Delay(millisecondsDelay);
+                    pendingHitbox.StartTick = CurTick + (int)((pendingHitbox.Data.StartFrame / (float)pendingHitbox.Data.Fps) * 1000);
+                    pendingHitbox.EndTick = CurTick + (int)((pendingHitbox.Data.EndFrame / (float)pendingHitbox.Data.Fps) * 1000);
 
-            AddHitbox(player, charType, keyCode);
+                    set.Add(pendingHitbox);
+                }
+                _pendingHitboxes.Clear();
+            }
         }
     }
 }

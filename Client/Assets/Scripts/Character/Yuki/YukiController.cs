@@ -49,6 +49,16 @@ public class YukiController : MyPlayerController
         }
     }
 
+    public override void OnSkillConfirmed(S_Skill skillPacket)
+    {
+        base.OnSkillConfirmed(skillPacket);
+
+        if ((KeyCode)skillPacket.SkillInfo.KeyCode == KeyCode.R)
+        {
+            LookAtMouse();
+        }
+    }
+
     protected override void Skill_Q()
     {
         PlayAnimation("SKILL_Q", 0.1f);
@@ -86,7 +96,7 @@ public class YukiController : MyPlayerController
         {
             transform.rotation = Quaternion.LookRotation(direction);
         }
-
+        UpdateTransform();
         StartCoroutine(DashCoroutine(direction));
     }
 
@@ -118,12 +128,14 @@ public class YukiController : MyPlayerController
         {
             transform.position = Vector3.Lerp(startPos, endPos, elapsed / dashDuration);
             elapsed += Time.deltaTime;
+            UpdateTransform();
             yield return null;
         }
 
         transform.position = endPos;
         _agent.enabled = true;
         isDashing = false;
+        UpdateTransform();
     }
 
     // Collider 있는 벽 체크
