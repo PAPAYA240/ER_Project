@@ -20,6 +20,7 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
     private const float DEST_CHANGE_EPS = 0.05f; // 목적지 미세변경 무시
 
     private long _nextPathTick;
+    private long _findTick = 10L;
 
     public Player_MovingState(C_Move packet)
     {
@@ -41,12 +42,12 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
             if (t != null)
                 _targetPos = t.Position;
 
-            // 클라에 “타겟 추격” 시작 지시
+            // 클라 네비: 타겟 추격 시작
             player.SendSetMoveTarget(isGround: false, targetId: _targetId);
         }
         else
         {
-            // 클라에 “땅 이동” 시작 지시
+            // 클라 네비: 지형 이동 시작
             player.SendSetMoveTarget(isGround: true, targetId: 0, posOpt: new PositionInfo
             {
                 PosX = _targetPos.X,
@@ -66,7 +67,7 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
         // 주기적으로 타겟 추적 갱신
         if (_isTargetOn && now >= _nextPathTick)
         {
-            _nextPathTick = now + 250;
+            _nextPathTick = now + _findTick;
             var t = player.FindTarget(_targetId);
             if (t == null /*|| !t.IsAttackable()*/)
             {
@@ -102,19 +103,13 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
             }
             else
             {
-                // 땅 이동: 도착 시 주변 적 스캔 후 자동 공격
-                //var enemy = player.FindNearestEnemy(player.AttackRange);
-                //if (enemy != null)
-                //    player.ChangeState(new Player_AttackState(enemy.Id, chaseAllowed: true));
-                //else
-                    player.ChangeState(new Player_IdleState());
+                player.ChangeState(new Player_IdleState());
             }
         }
     }
 
     public void Exit(Player player)
     {
-
     }
 
     // C_Move가 연속으로 들어올 때 "상태 재진입 없이" 목표지/타겟만 갱신

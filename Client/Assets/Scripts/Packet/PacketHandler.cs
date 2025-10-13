@@ -64,6 +64,12 @@ class PacketHandler
             {
                 cc.SyncPos(movePacket.IsWarp);
             }
+
+            //PlayerController pc = go.GetComponentInChildren<PlayerController>();
+            //if (pc == null)
+            //    return;
+
+            //pc.SyncPosFromServer(movePacket);        
         }     
     }
 
@@ -72,7 +78,10 @@ class PacketHandler
         S_SetMoveTarget targetPacket = packet as S_SetMoveTarget;
         ServerSession serverSession = session as ServerSession;
 
-        Managers.Object.MyPlayer.OnServerUpdate(targetPacket);
+        if (Managers.Object.MyPlayer.Id == targetPacket.Id)
+        {
+            Managers.Object.MyPlayer.OnServerUpdate(targetPacket);
+        }
     }
 
     public static void S_StateHandler(PacketSession session, IMessage packet)
@@ -124,7 +133,7 @@ class PacketHandler
         PlayerController pc = go.GetComponent<PlayerController>();
         if (pc != null)
         {
-            if (pc.ObjectType == Define.Object.OtherPlayer)
+            //if (pc.ObjectType == Define.Object.OtherPlayer)
                 pc.PlayAnimFromServer(animPacket.AnimInfo);
         }
     }
@@ -374,10 +383,32 @@ class PacketHandler
         if (go == null)
             return;
 
-        MyPlayerController mpc = go.GetComponent<MyPlayerController>();
-        if (mpc == null)
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
             return;
 
-        mpc.OnServerUpdate(statePacket);
+        pc.ChangeState(statePacket);
+    }
+
+    public static void S_StopHandler(PacketSession session, IMessage packet)
+    {
+        S_Stop stopPacket = packet as S_Stop;
+
+        GameObject go = Managers.Object.FindById(stopPacket.Id);
+        if (go == null)
+            return;
+
+        if (Managers.Object.MyPlayer.Id == stopPacket.Id)
+        {
+            Managers.Object.MyPlayer.OnServerUpdate(stopPacket);
+        }
+        else
+        {
+            PlayerController pc = go.GetComponentInChildren<PlayerController>();
+            if (pc == null)
+                return;
+
+            pc.OnStop(stopPacket);
+        }
     }
 }

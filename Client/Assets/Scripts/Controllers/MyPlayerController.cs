@@ -24,6 +24,7 @@ public class MyPlayerController : PlayerController
     protected override void Init()
     {
         base.Init();
+        ObjectType = Define.Object.MyPlayer;
         Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
     }
 
@@ -76,11 +77,7 @@ public class MyPlayerController : PlayerController
             TargetPos = packet.TargetPos != null ? new PositionInfo(packet.TargetPos) : null
         });
     }
-    public void OnServerUpdate(S_PlayerState packet)
-    {
-        State = packet.State;
-        _view.ApplyState(packet);
-    }
+    public void OnServerUpdate(S_Stop packet) => _view.OnStop(packet);
 
     public void UpdateTransform(bool isWarp = false)
     {

@@ -53,6 +53,7 @@ public class Player_AttackState : IPlayerState
     {
         player.State = CreatureState.Attack;
         player.SendStatePacket();
+        player.SendStopPacket(StopReason.StopMoveOnly);
         _swingActive = false;
         _damageApplied = false;
 

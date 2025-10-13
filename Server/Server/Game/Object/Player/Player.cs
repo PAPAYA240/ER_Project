@@ -273,7 +273,16 @@ namespace Server.Game
                 State = State,
             };
             Room.Push(Room.Broadcast, packet);
-            Console.WriteLine($"ID : {Id} - State : {State}");
+        }
+
+        public void SendStopPacket(StopReason reason)
+        {
+            S_Stop packet = new S_Stop()
+            {
+                Id = Id,
+                Reason = reason,
+            };
+            Room.Push(Room.Broadcast, packet);
         }
 
         public void SendAnimPacket(string animName, float ratio)
@@ -298,7 +307,9 @@ namespace Server.Game
                 PosInfo = posInfo,
                 RotInfo = rotInfo
             };
+
             Room.Push(Room.Broadcast, packet);
+
             Console.WriteLine($"Char : {Info.Player.CharType} / x : {posInfo.PosX}, z : {posInfo.PosZ}");
         }
 
@@ -306,6 +317,7 @@ namespace Server.Game
         {
             S_SetMoveTarget packet = new S_SetMoveTarget
             {
+                Id = Id,
                 IsGround = isGround,
                 TargetId = isGround ? 0 : targetId,
                 TargetPos = isGround && posOpt != null ? new PositionInfo(posOpt) : null

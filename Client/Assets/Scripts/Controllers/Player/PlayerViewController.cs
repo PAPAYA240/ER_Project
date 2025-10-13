@@ -39,37 +39,20 @@ public class PlayerViewController : MonoBehaviour
         if (!_syncing || _agent == null || _player == null)
             return;
 
-        // 1) 도착/정지 감지
-        bool arrived =
-            !_agent.pathPending &&
-            _agent.remainingDistance <= _agent.stoppingDistance &&
-            (_agent.hasPath == false || _agent.velocity.sqrMagnitude < 0.0001f);
-
         _player.UpdateTransform();
 
-        if (arrived)
-        {
-            if (!_sentArriveSnapshot)
-            {
-                _player.UpdateTransform();
-                _sentArriveSnapshot = true;
-            }
-            _syncing = false;
-            return;
-        }
+        //Vector3 pos = _player.transform.position;
+        //Quaternion rot = _player.transform.rotation;
 
-        Vector3 pos = _player.transform.position;
-        Quaternion rot = _player.transform.rotation;
-
-        if ((pos - _lastSentPos).sqrMagnitude >= _minMoveDelta * _minMoveDelta ||
-            Quaternion.Angle(rot, _lastSentRot) >= _minAngleDelta)
-        {
-            _lastSentPos = pos;
-            _lastSentRot = rot;
-            _sentArriveSnapshot = false;
+        //if ((pos - _lastSentPos).sqrMagnitude >= _minMoveDelta * _minMoveDelta ||
+        //    Quaternion.Angle(rot, _lastSentRot) >= _minAngleDelta)
+        //{
+        //    _lastSentPos = pos;
+        //    _lastSentRot = rot;
+        //    _sentArriveSnapshot = false;
         
-            _player.UpdateTransform();
-        }
+        //    _player.UpdateTransform();
+        //}
     }
 
     public void OnMove(S_Move packet)
@@ -115,24 +98,10 @@ public class PlayerViewController : MonoBehaviour
         _syncing = false; // 리스폰 직후는 입력 올 때까지 동기화 중지
     }
 
-    #region State
-    public void ApplyState(S_PlayerState packet)
+    public void OnStop(S_Stop packet)
     {
-        CreatureState state = packet.State;
-        switch (state)
-        {
-            case CreatureState.Idle:
-                ApplyStop(StopReason.StopAll);
-                break;
-            case CreatureState.Moving:
-
-                break;
-            case CreatureState.Attack:
-                ApplyStop(StopReason.StopAll);
-                break;
-        }
+        ApplyStop(packet.Reason);
     }
-    #endregion
 
     #region Moving
     public void ApplyLocalSetMoveTarget(C_SetMoveTarget cmd, float attackRange = 3.0f)
@@ -150,7 +119,6 @@ public class PlayerViewController : MonoBehaviour
             if (NavMesh.SamplePosition(final, out var navHit, 2.0f, NavMesh.AllAreas))
                 final = navHit.position;
 
-            _agent.stoppingDistance = 0.05f;
             _agent.isStopped = false;
             _agent.SetDestination(final);
         }
@@ -158,8 +126,6 @@ public class PlayerViewController : MonoBehaviour
         {
             // 타겟팅 이동: 타겟 현재 위치를 주기적으로 따라간다
             _followTargetId = cmd.TargetId;
-            float stopDist = Mathf.Max(0.05f, attackRange * 0.9f); // 살짝 여유를 줘서 덜 출렁이게
-            _agent.stoppingDistance = stopDist;
             _agent.isStopped = false;
 
             // 즉시 한 번 갱신 후, 주기 추적 시작
@@ -182,23 +148,17 @@ public class PlayerViewController : MonoBehaviour
         switch (reason)
         {
             case StopReason.StopAll:
-                // 이동 정지 + 추적 취소
-                _agent.isStopped = true;
-                StopFollowTarget();
-                // (공격 정지는 서버 상태머신이 처리. 여기선 이동만)
-                break;
-
             case StopReason.StopMoveOnly:
-                // 이동만 정지, 추적 금지
                 _agent.isStopped = true;
-                StopFollowTarget(); // 추적도 중단(클라 측 추격 금지)
+                StopFollowTarget(); // 추적 종료(서버 사인에 의해)
+                _agent.ResetPath();
                 break;
         }
 
         // 동기화 루프는 유지(서버에 현재 정지 상태 포지션 계속 보고)
-        _syncing = true;
         _lastSentPos = _player.transform.position;
         _lastSentRot = _player.transform.rotation;
+        _player.UpdateTransform(true);
     }
 
     // ---- 타겟 추적 코루틴 ----
@@ -242,7 +202,7 @@ public class PlayerViewController : MonoBehaviour
         { StopCoroutine(_coFollow); _coFollow = null; }
 
         _agent.isStopped = true;
-        _agent.ResetPath();              
+        _agent.ResetPath();
     }
     #endregion
 

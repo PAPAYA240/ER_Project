@@ -71,6 +71,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SPlayerState, PacketHandler.S_PlayerStateHandler);		
 		_onRecv.Add((ushort)MsgId.SChangeStat, MakePacket<S_ChangeStat>);
 		_handler.Add((ushort)MsgId.SChangeStat, PacketHandler.S_ChangeStatHandler);		
+		_onRecv.Add((ushort)MsgId.SStop, MakePacket<S_Stop>);
+		_handler.Add((ushort)MsgId.SStop, PacketHandler.S_StopHandler);		
 		_onRecv.Add((ushort)MsgId.SSetMoveTarget, MakePacket<S_SetMoveTarget>);
 		_handler.Add((ushort)MsgId.SSetMoveTarget, PacketHandler.S_SetMoveTargetHandler);
 	}
