@@ -682,6 +682,11 @@ namespace Server.Game
         #endregion
 
         #region Packet
+        public void SendSkillPkt()
+        {
+
+        }
+
         public void SendVisibleObjsPkt(List<int> Ids)
         {
             S_VisibleObjects visibleObjsPkt = new S_VisibleObjects();
@@ -708,5 +713,6 @@ namespace Server.Game
             return levelUp;
         }
         #endregion
+
     }
 }

@@ -360,7 +360,8 @@ public class MyPlayerController : PlayerController
 
         if (_agent.remainingDistance <= _agent.stoppingDistance)
         {
-            PlayAnimation("CHARGING", 0.1f);
+            if (_moveKeyPressed)
+                PlayAnimation("CHARGING", 0.1f);
 
             _agent.speed = _originSpeed;
             _moveKeyPressed = false;
@@ -910,9 +911,9 @@ public class MyPlayerController : PlayerController
                     {
                         if(_keyCode == KeyCode.Q)
                             PlayAnimation("CHARGING_RUN", 0.1f);
-
                         _agent.speed = _originSpeed * 0.5f;
                     }
+
                     _agent.SetDestination(navHit.position);
                     _moveKeyPressed = true;
                 }

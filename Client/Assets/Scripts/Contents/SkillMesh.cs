@@ -1,15 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Google.Protobuf.Protocol;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UI_PlayerInterface;
-using static UnityEngine.Rendering.DebugUI;
 
 public class SkillMesh : MonoBehaviour
 {
@@ -70,6 +62,8 @@ public class SkillMesh : MonoBehaviour
         if (type == SkillType.SkillTrack || type == SkillType.SkillProjectile)
         {
             transform.SetParent(_playerTransform);
+            visualObject.transform.localPosition = Vector3.zero;
+            visualObject.transform.localRotation = Quaternion.identity;
         }
         else if (type == SkillType.SkillPoint)
         {

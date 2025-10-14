@@ -175,8 +175,8 @@ public class TheodoreController : MyPlayerController
         if (isMaxCharge)
         {
             _isUseSkill = false;
-            State = CreatureState.Idle;
             _ratioSkillDuration = 0f;
+            State = CreatureState.Idle;
         }
         // 스킬 시전
         else
@@ -220,7 +220,6 @@ public class TheodoreController : MyPlayerController
        */
         // 1. 상태 및 플래그 설정
         bScreenInvo = true;
-        indicator.DisableAllIndicators();
 
         // 2. 마우스
         Vector3 mousePos = GetMouseWorldPosition();
@@ -237,8 +236,8 @@ public class TheodoreController : MyPlayerController
            PlayEffectAtPosition(CreatureState.Skill, KeyCode.W, mousePos, finalRotation, EffectType.HitTarget);
             SendFXPacket(_keyCode);
         }
+        CancelSkill();
 
-        State = CreatureState.Idle;
     }
 
     private void CancelSkill()
@@ -295,6 +294,8 @@ public class TheodoreController : MyPlayerController
         CreatureController targetCreature = _currentTarget?.GetComponentInChildren<CreatureController>();
 
         _isUseSkill = true;
+        _isInputLocked = false;
+
         indicator.DisableAllIndicators();
         PlayAnimation("SKILL_E", 0.1f);
 
@@ -311,12 +312,12 @@ public class TheodoreController : MyPlayerController
     {
         float targetOrigionSpeed = creature.Speed;
 
-        string decreaseSpeed = 
-            DataManager.SkillDict[ObjInfo.Player.CharType][_keyCode].
-            descriptionInfo["speed"][Stat.Level];
+        //string decreaseSpeed = 
+        //    DataManager.SkillDict[ObjInfo.Player.CharType][_keyCode].
+        //    descriptionInfo["speed"][Stat.Level];
 
-        int numberInt = int.Parse(decreaseSpeed);
-        creature.Speed = creature.Speed * (1.0f - 0.01f * numberInt);
+        //int numberInt = int.Parse(decreaseSpeed);
+        //creature.Speed = creature.Speed * (1.0f - 0.01f * numberInt);
 
         // 이동 속도를 2동안 감소시킨다.
         yield return new WaitForSeconds(2.0f);
@@ -345,6 +346,7 @@ public class TheodoreController : MyPlayerController
         }
 
         _isUseSkill = true;
+        _isInputLocked = false;
 
         indicator.DisableAllIndicators();
         PlayAnimation("SKILL_R", 0.1f);

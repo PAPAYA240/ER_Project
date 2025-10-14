@@ -82,7 +82,7 @@
       "R": {
         "shape": "Circle",
         "type": "SkillProjectile",
-        "radius": 1,
+        "radius": 0.3,
         "speed": 4,
         "duration": 0.6,
         "maxRange": 5.5
@@ -107,15 +107,22 @@
         "height": 1,
         "maxRange": 5.5,
         "startFrame": 0,
-        "endFrame": 200
+        "endFrame": 200,
+        "interactions": {
+          "E": {
+            "interaction": [ "Attack" ]
+          }
+        }
       },
       "E": {
         "shape": "Circle",
         "type": "SkillProjectile",
-        "radius": 1,
+        "radius": 0.4,
         "speed": 4,
         "duration": 0.6,
-        "maxRange": 5.5
+        "maxRange": 5.5,
+        "startFrame": 0,
+        "endFrame": 30
       },
       "R": {
         "shape": "Ray",

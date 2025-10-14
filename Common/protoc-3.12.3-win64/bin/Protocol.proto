@@ -204,12 +204,14 @@ enum ItemGrade{
 }
 
 message C_Interact {
-    int32 objectId = 1;
+    	int32 objectId = 1;
+	
 }
 
 message S_Interact  {
-    int32 objectId = 1;
-    int64 nextUseTime = 2;
+    	int32 objectId = 1;
+    	int32 keyCode = 2;
+	int32 targetKeyCode = 3;
 }
 
 message C_EnterGame {
@@ -518,6 +520,9 @@ message SkillInfo{
 	int32 targetId = 4;
 }
 
+message InteractionList {
+    repeated string interaction = 1; 
+}
 message SkillHitbox{
 	string shape = 1;
 	string type = 2;
@@ -535,6 +540,7 @@ message SkillHitbox{
 	float minRange = 14;
 	float maxRange = 15;
 	bool isOneTimeUse = 16;
+	map<string, InteractionList> interactions = 17;
 }
 
 message CostInfo{

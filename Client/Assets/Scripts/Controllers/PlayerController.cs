@@ -170,7 +170,8 @@ public class PlayerController : CreatureController
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
                 MousePos = new Vector3(hit.point.x, hit.point.y, hit.point.z);
 
-            CreateSkillMesh(keyCode, skillPacket.ChargeRatio, MousePos);
+            bool bProjectile = (DataManager.SkillDict[ObjInfo.Player.CharType][keyCode].type == "Projectile");
+            CreateSkillMesh(keyCode, skillPacket.ChargeRatio, MousePos, bProjectile);
         }
     }
 
@@ -250,18 +251,28 @@ public class PlayerController : CreatureController
 
     #region SkillMesh
 
-    public void CreateSkillMesh(KeyCode keyCode, float chargeRatio, Vector3 mousePos = new Vector3())
+    public void CreateSkillMesh(KeyCode keyCode, float chargeRatio, Vector3 mousePos = new Vector3(), bool bProjectile = false)
     {
         SkillHitbox hitbox = DataManager.SkillHitboxDict[ObjInfo.Player.CharType][keyCode];
         if (hitbox.EndFrame <= 0)
             return;
-        GameObject go = Managers.Resource.Instantiate("Debug/SkillMesh", gameObject.transform);
-        SkillMesh sm = go.GetComponent<SkillMesh>();
+
+        GameObject go = null;
+        if (bProjectile) 
+        {
+            go = _projectile.gameObject;
+            go.SetActive(true);
+        }
+        else
+            go = gameObject;
+
+        GameObject skillMeshGO = Managers.Resource.Instantiate("Debug/SkillMesh", go.transform);
+        SkillMesh sm = skillMeshGO.GetComponent<SkillMesh>();
         if (sm == null) return;
         if (false == hitbox.Charge)
             chargeRatio = 1;
 
-        sm.Init(hitbox, gameObject.transform, ObjInfo.Player.Team, chargeRatio, mousePos);     
+        sm.Init(hitbox, go.transform, ObjInfo.Player.Team, chargeRatio, mousePos);     
     }
 
     #endregion

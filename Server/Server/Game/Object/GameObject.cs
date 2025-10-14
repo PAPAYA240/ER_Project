@@ -1,5 +1,6 @@
 ﻿using System;
 using Google.Protobuf.Protocol;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.Game
 {
