@@ -284,9 +284,6 @@ namespace Server.Game
                 if (hitbox.HitObjs.ContainsKey(targetKvp.Key) || true == hitbox.IsUsed)
                     continue;
 
-                if (hitbox.Player == target)
-                    continue;
-
                 if (CheckCollision(hitbox, target))
                     hitTargets.Add(target);
             }
