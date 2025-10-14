@@ -129,6 +129,11 @@ class PacketHandler
         {
             cc.Hp = changePacket.Hp;
             cc.Barrier = changePacket.Barrier;
+
+            foreach(var v in changePacket.Damages)
+            {
+                Managers.CombatText.SetCombatText(CombatTextManager.TextType.AdDamage, v.Damage, cc.transform.position);
+            }
         }
     }
 

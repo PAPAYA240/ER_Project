@@ -203,6 +203,13 @@ enum ItemGrade{
 	ITEM_GRADE_END = 6;
 }
 
+enum DamageType{
+	AD = 0;
+	AP = 1;
+	TRUE = 2;
+	END = 3;
+}
+
 message C_Interact {
     	int32 objectId = 1;
 	
@@ -348,6 +355,10 @@ message S_ChangeHp{
 	int32 objectId = 1;
 	float hp = 2;
 	float barrier = 3;
+
+	float recovery = 4;
+	float absorbed = 5;
+	repeated DamageInfo damages = 6;
 }
 
  message S_Die{
@@ -582,6 +593,11 @@ message ChangeInventoryInfo{
 	int32 itemId = 1;
 	int32 inventoryIndex = 2;
 	int32 count = 3;
+}
+
+message DamageInfo {
+	DamageType type = 1;
+	float damage = 2;
 }
 
 message C_AttackSkillTarget{

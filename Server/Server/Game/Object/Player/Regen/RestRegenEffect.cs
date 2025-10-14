@@ -14,11 +14,11 @@ public class RestRegenEffect : IRegenEffect
         if (owner.State != Google.Protobuf.Protocol.CreatureState.Rest)
             return;
 
-        float hpRegen = owner.Stat.HpRegen * bonusRegen;
-        float staminaRegen = owner.Stat.StaminaRegen * bonusRegen;
+        float hpRegen = owner.HpRegen * bonusRegen;
+        float staminaRegen = owner.StaminaRegen * bonusRegen;
 
-        owner.Hp = MathF.Min(owner.Stat.MaxHp, owner.Hp + hpRegen);
-        owner.Stamina = MathF.Min(owner.Stat.MaxStamina, owner.Stamina + staminaRegen);
+        owner.Hp = MathF.Min(owner.MaxHp, owner.Hp + hpRegen);
+        owner.Stamina = MathF.Min(owner.MaxStamina, owner.Stamina + staminaRegen);
     }
 }
 

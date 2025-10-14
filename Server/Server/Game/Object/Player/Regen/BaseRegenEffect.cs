@@ -9,11 +9,11 @@ public class BaseRegenEffect : IRegenEffect
 
     public void OnTick(Player owner)
     {
-        float hpRegen = owner.Stat.HpRegen;
-        float staminaRegen = owner.Stat.StaminaRegen;
+        float hpRegen = owner.HpRegen;
+        float staminaRegen = owner.StaminaRegen;
 
-        owner.Hp = MathF.Min(owner.Stat.MaxHp, owner.Hp + hpRegen);
-        owner.Stamina = MathF.Min(owner.Stat.MaxStamina, owner.Stamina +  staminaRegen);
+        owner.Hp = MathF.Min(owner.MaxHp, owner.Hp + hpRegen);
+        owner.Stamina = MathF.Min(owner.MaxStamina, owner.Stamina + staminaRegen);
     }
 }
 
