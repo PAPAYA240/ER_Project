@@ -238,11 +238,11 @@ namespace Server.Game
                         continue;
 
                     List<Player> hitPlayers = new List<Player>();
-                    List<Player> hillPlayers = new List<Player>();
 
                     foreach (var teamKvp in teams)
                     {
                         int teamId = teamKvp.Key;
+                        if (teamId == myTeam) continue;
 
                         HandleCollision<Player>(hitbox, teamKvp.Value, hitPlayers, damageDict);
                     }
