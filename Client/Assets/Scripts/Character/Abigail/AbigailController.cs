@@ -103,4 +103,14 @@ public class AbigailController : MyPlayerController
         PlayAnimation("SKILL_R", 0.1f);
     }
     #endregion
+
+    #region SkillMesh
+    public override void CreateSkillMesh(KeyCode keyCode, float chargeRatio)
+    {
+        base.CreateSkillMesh(keyCode, chargeRatio);
+
+        if(keyCode == KeyCode.Q)
+            base.CreateSkillMesh(KeyCode.F1, 0);
+    }
+    #endregion
 }

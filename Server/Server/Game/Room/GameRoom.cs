@@ -58,6 +58,8 @@ namespace Server.Game
 
             // Spawn Env
             _envManager.Init(this);
+
+            _collisionManager.Init();
         }
 
         public override void Update()

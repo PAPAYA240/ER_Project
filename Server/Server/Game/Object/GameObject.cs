@@ -190,6 +190,19 @@ namespace Server.Game
             }
         }
 
+        public virtual void OnHeal(GameObject go, float heal)
+        {
+            if (Room == null || State == CreatureState.Dead)
+                return;
+
+            Hp = Math.Min(MaxHp, Hp + heal);
+
+            S_ChangeHp changePacket = new S_ChangeHp();
+            changePacket.ObjectId = Id;
+            changePacket.Hp = Hp;
+            Room.Broadcast(changePacket);
+        }
+
         public virtual void OnDead(GameObject attacker)
         {
             if (Room == null)

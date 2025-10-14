@@ -36,12 +36,6 @@ namespace Server.Game
         public ConcurrentDictionary<int, byte> HitObjs = new ConcurrentDictionary<int, byte>();
     }
 
-    class HitboxChain
-    {
-        public KeyCode KeyCode { get; set; }
-        public int MilliSecs { get; set; }
-    }
-
     class CollisionManager
     {
         object _lock = new object();
@@ -49,9 +43,24 @@ namespace Server.Game
         // Key: ObjectId
         Dictionary<int, HashSet<Hitbox>> _hitboxDict = new Dictionary<int, HashSet<Hitbox>>();
 
+        // 2타 
+        Dictionary<CharacterType, Dictionary<KeyCode, KeyCode>> _hitboxChainDict = new Dictionary<CharacterType, Dictionary<KeyCode, KeyCode>>();
+
+        // 아군 대상 스킬
+        Dictionary<CharacterType, HashSet<KeyCode>> _allyHitSkillDict = new Dictionary<CharacterType, HashSet<KeyCode>>();
+
         List<Hitbox> _pendingHitboxes = new List<Hitbox>();
 
         public int CurTick { get; set; }
+
+        public void Init()
+        {
+            // 2타 hitbox 세팅
+            Dictionary<KeyCode, KeyCode> abigailChainDict = new Dictionary<KeyCode, KeyCode> { { KeyCode.Q, KeyCode.F1 } };
+            _hitboxChainDict.Add(CharacterType.Abigail, abigailChainDict);
+
+            SetUpAllyHitSkills();
+        }
 
         public void AddHitbox(Player player, CharacterType charType, KeyCode keyCode, Vector2 mousePos = new Vector2(), float chargeRatio = 0)
         {
@@ -76,6 +85,13 @@ namespace Server.Game
 
                 _pendingHitboxes.Add(hitbox);
             }            
+
+            // 2타 hitbox 추가
+            if(_hitboxChainDict.TryGetValue(charType, out Dictionary<KeyCode, KeyCode> chainDict))
+            {
+                if (chainDict.TryGetValue(keyCode, out KeyCode value))
+                    AddHitbox(player, charType, value, mousePos, chargeRatio);
+            }
         }
 
         public void Update()
@@ -169,7 +185,11 @@ namespace Server.Game
                     foreach (var teamKvp in teams)
                     {
                         int teamId = teamKvp.Key;
-                        if (teamId == myTeam) continue;
+                        if (teamId == myTeam)
+                        {
+                            HandleAllyHit(hitbox, teamKvp.Value);
+                            continue;
+                        }                            
 
                         HandleCollision<Player>(hitbox, teamKvp.Value, hitPlayers, damageDict);
                     }
@@ -420,6 +440,58 @@ namespace Server.Game
                     set.Add(pendingHitbox);
                 }
                 _pendingHitboxes.Clear();
+            }
+        }
+
+        void SetUpAllyHitSkills() // 아군 대상 스킬 
+        {
+            foreach(var nestedKvp in DataManager.SkillDict)
+            {
+                foreach(var kvp in nestedKvp.Value)
+                {
+                    if(kvp.Value.levels.TryGetValue(1, out SkillLevel skillLevel))
+                    {
+                        if (skillLevel.effects == null)
+                            continue;
+
+                        foreach (EffectData effect in skillLevel.effects)
+                        {
+                            if (effect.condition == "AllyHit") // 아군 적중
+                            {
+                                if (!_allyHitSkillDict.ContainsKey(nestedKvp.Key))
+                                    _allyHitSkillDict[nestedKvp.Key] = new HashSet<KeyCode>();
+
+                                _allyHitSkillDict[nestedKvp.Key].Add(kvp.Key); // Key: CharactorType, Value: Keycode
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        void HandleAllyHit(Hitbox hitbox, Dictionary<int, Player> targets)
+        {
+            foreach (var targetKvp in targets)
+            {
+                Player target = targetKvp.Value;
+                if (hitbox.HitObjs.ContainsKey(targetKvp.Key) || true == hitbox.IsUsed)
+                    continue;
+
+                if (CheckCollision(hitbox, target))
+                {
+                    Skill skill = hitbox.Player.GetSkill(hitbox.KeyCode);
+                    SkillLevel skillLevel = skill.SkillData.levels[skill.CurLevel];
+                    if (skillLevel.effects.Count == 0)
+                        continue;
+
+                    foreach (EffectData effect in skillLevel.effects)
+                    {
+                        if(effect.type == "Heal")
+                            target.Room.Push(target.OnHeal, target, effect.value);
+                    }
+
+                    hitbox.HitObjs.TryAdd(target.Id, 0);
+                }
             }
         }
     }

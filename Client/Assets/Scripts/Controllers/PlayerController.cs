@@ -244,7 +244,7 @@ public class PlayerController : CreatureController
 
     #region SkillMesh
 
-    public void CreateSkillMesh(KeyCode keyCode, float chargeRatio)
+    public virtual void CreateSkillMesh(KeyCode keyCode, float chargeRatio)
     {
         SkillHitbox hitbox = DataManager.SkillHitboxDict[ObjInfo.Player.CharType][keyCode];
         if (hitbox.EndFrame <= 0)

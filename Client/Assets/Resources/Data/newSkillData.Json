@@ -1058,86 +1058,71 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "100"
+          "apRatio": 70
         },
         "levels": {
           "1": {
-            "damage": 30,
+            "damage": 50,
             "cooldown": 2,
             "staminaCost": 40,
             "effects": [
               {
-                "type": "Dash",
-                "condition": "Hit"
-              },
-              {
-                "type": "CDR",
+                "type": "Heal",
+                "condition": "AllyHit",
                 "value": 40,
-                "condition": "Hit"
+                "apRatio": 20
               }
             ]
           },
           "2": {
-            "damage": 55,
-            "cooldown": 5,
+            "damage": 90,
+            "cooldown": 3,
             "staminaCost": 45,
             "effects": [
               {
-                "type": "Dash",
-                "condition": "Hit"
-              },
-              {
-                "type": "CDR",
-                "value": 40,
-                "condition": "Hit"
+                "type": "Heal",
+                "condition": "AllyHit",
+                "value": 65,
+                "apRatio": 20
               }
             ]
           },
           "3": {
             "damage": 80,
-            "cooldown": 5,
+            "cooldown": 3,
             "staminaCost": 50,
             "effects": [
               {
-                "type": "Dash",
-                "condition": "Hit"
-              },
-              {
-                "type": "CDR",
-                "value": 40,
-                "condition": "Hit"
+                "type": "Heal",
+                "condition": "AllyHit",
+                "value": 90,
+                "apRatio": 20
               }
             ]
           },
           "4": {
             "damage": 105,
-            "cooldown": 5,
+            "cooldown": 3,
             "staminaCost": 55,
             "effects": [
               {
-                "type": "Dash",
-                "condition": "Hit"
-              },
-              {
-                "type": "CDR",
-                "value": 40,
-                "condition": "Hit"
+                "type": "Heal",
+                "condition": "AllyHit",
+                "value": 115,
+                "apRatio": 20
               }
             ]
           },
           "5": {
             "damage": 130,
-            "cooldown": 5,
+            "cooldown": 3,
             "staminaCost": 60,
             "effects": [
               {
-                "type": "Dash",
-                "condition": "Hit"
-              },
-              {
-                "type": "CDR",
-                "value": 40,
-                "condition": "Hit"
+                "type": "Heal",
+                "condition": "AllyHit",
+                "value": 140,
+                "apRatio": 20
               }
             ]
           }
