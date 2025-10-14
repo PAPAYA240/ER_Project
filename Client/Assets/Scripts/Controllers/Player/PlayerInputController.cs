@@ -117,7 +117,7 @@ public class PlayerInputController : MonoBehaviour
 
     private static readonly KeyCode[] _skillKeys =
     {
-        KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R, KeyCode.F
+        KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R, KeyCode.D, KeyCode.F
     };
 
     public C_Skill GetSkillCommand()

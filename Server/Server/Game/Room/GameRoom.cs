@@ -8,6 +8,7 @@ using System.IO;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Numerics;
+using static Lucene.Net.Index.SegmentReader;
 using static Lucene.Net.Util.AttributeSource;
 using static Server.Data.DataUtils;
 
@@ -25,6 +26,8 @@ namespace Server.Game
         EnvManager _envManager = new EnvManager();
 
         Dictionary<int, Dictionary<int, Player>> _teams = new Dictionary<int, Dictionary<int, Player>>();
+
+        string _navmeshPath = "../../../Resources/Data/NavmeshData.json"; // 배포 경로
 
         bool _teamToggle = false;
         bool _dummyAdded = true;    // TEMP : Dummy
@@ -256,64 +259,37 @@ namespace Server.Game
 
         public void HandleSkill(Player player, C_Skill skillPacket)
         {
-            if(player == null) 
+            if (player == null)
                 return;
 
-            //ObjectInfo info = player.Info;
-            //S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
+            // 1) 스펙 로드(JSON DB에 맞춰 구현)
+            var key = (KeyCode)skillPacket.SkillInfo.KeyCode;
+            //SkillSpec spec = SkillDatabase.Resolve(player.Info.Player.CharType, key);
 
-            //KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
+            // TEMP
+            SkillSpec spec = new SkillSpec
+            {
+                AnimName = "SKILL_Q",
+                Windup = 0.5f,
+                Backswing = 0.5f,
 
-            //// 스킬 사용이 불가능하면 바로 실패 패킷 전송
-            //if (!player.CanUseSkill(keyCode))
-            //{
-            //    skill.CanUse = false;
-            //    player.Session.Send(skill);
-            //    return; 
-            //}
-            //// 스킬 사용이 가능하면 자원 소모
-            //else
-            //{
-            //    player.CommitSkillUsage(keyCode);
-            //}
+                Move = new MoveSpec { Distance = 3.0f, Speed = 8.0f, },
+                Collision = new CollisionSpec { StopOnWall = true, },
+            };
 
-            //// TODO : (임시) 몬스터 찾아주기, 공격 범위에 나간다면 target 은 null로 전달해야 함
-            //if(TryGetMonster(skillPacket.TargetId, out Monster target))
-            //{
-            //    player.Target = target;
-            //    player.SkillTarget = target;
-            //    player.UsedTargetingSkill = keyCode;
-            //}
-            //else if(_players.TryGetValue(skillPacket.TargetId, out Player skillTarget))
-            //{
-            //    player.SkillTarget = skillTarget;
-            //    player.UsedTargetingSkill = keyCode;
-            //}
+            // 2) 컨텍스트 구성(마우스 XZ/타겟)
+            var ctx = new SkillContext
+            {
+                MousePos = new Vector2(skillPacket.MousePosX, skillPacket.MousePosZ),
+                TargetId = 0, // 필요하면 패킷에 포함
+                Key = key
+            };
 
-            //// 스킬 사용이 가능하다 판단되면 패킷 전송
-            //info.PosInfo.State = CreatureState.Skill;
-            //skill.CanUse = true;
-            //skill.ObjectId = info.ObjectId;
-            //skill.SkillInfo = new SkillInfo
-            //{
-            //    SkillId = skillPacket.SkillInfo.SkillId,
-            //    KeyCode = skillPacket.SkillInfo.KeyCode,              
-            //};
-            //skill.CostInfo = new CostInfo
-            //{
-            //    CoolTime = player.GetCoolTime(keyCode),
-            //    Stamina = player.Stamina,
-            //};
-            //player.Session.Send(skill);
+            // 3) 핸들러 결정
+            ISkillHandler handler = SkillRegistry.Resolve(player.Info.Player.CharType, key);
 
-            //SkillData skillData = null;
-            //Dictionary<KeyCode, SkillData> skills = DataManager.SkillDict[info.Player.CharType];
-
-            //if (skills.TryGetValue((KeyCode)skillPacket.SkillInfo.KeyCode, out skillData) == false)
-            //    return;
-
-            //_collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode, 
-            //    new Vector2(skillPacket.MousePosX, skillPacket.MousePosZ));
+            // 4) SkillState로 전환
+            player.ChangeState(new Player_SkillState(handler, spec, ctx));
         }
 
         public void HandleAnim(Player player, C_Anim animPacket)
@@ -497,9 +473,8 @@ namespace Server.Game
 
         public void InitNavmeshPipeline()
         {
-            // 1) 클라에서 Export한 NavMesh JSON 불러오기
-            string path = "../../../Resources/Data/NavmeshData.json"; // 배포 경로
-            NavmeshData nav = NavmeshImporter.LoadFromJson(path);
+            // 1) 클라에서 Export한 NavMesh JSON 불러오기        
+            NavmeshData nav = NavmeshImporter.LoadFromJson(_navmeshPath);
 
             // 2) TriCache(전처리) 빌드
             TriCache triCache = TriCacheBuilder.Build(nav);   // 아래 1-1 참고
