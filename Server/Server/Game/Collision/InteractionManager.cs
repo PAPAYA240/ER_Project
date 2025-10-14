@@ -2,7 +2,9 @@
 using Server.Game;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using static Server.Data.DataUtils;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.Game
 {
@@ -15,6 +17,7 @@ namespace Server.Game
         {
             _interactionDispatchers = new Dictionary<string, Action<Hitbox, Hitbox>>{
                  {
+                    // 필요한 조건이 있다면 추가
                     "Interaction", (interactor, target) =>
                     {
                         S_Interact packet = new S_Interact()
@@ -23,6 +26,8 @@ namespace Server.Game
                             KeyCode = (int)interactor.KeyCode,
                             TargetKeyCode = (int)target.KeyCode
                         };
+                        GameObject hitTarget = ObjectManager.Instance.Find(interactor.Player.Id);
+                        //hitTarget.Room.Push(hitTarget.OnDamaged, attacker, damage);
                     }
                  }
              };

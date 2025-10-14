@@ -212,7 +212,6 @@ enum DamageType{
 
 message C_Interact {
     	int32 objectId = 1;
-	
 }
 
 message S_Interact  {
@@ -529,6 +528,8 @@ message SkillInfo{
 	int32 keyCode = 2;
 	float coolTime = 3;
 	int32 targetId = 4;
+	bool amplification = 5;
+	int32 amplifiKeyCode = 6;
 }
 
 message InteractionList {

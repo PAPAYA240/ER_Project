@@ -185,7 +185,17 @@ class PacketHandler
     
     public static void S_InteractHandler(PacketSession session, IMessage packet)
     {
-        
+        S_Interact interactPacket = packet as S_Interact;
+
+        GameObject go = Managers.Object.FindById(interactPacket.ObjectId);
+        if (go == null) return;
+
+        CreatureController player = go.GetComponentInChildren<CreatureController>();
+        if (player == null) return;
+
+        KeyCode mkey = (KeyCode)interactPacket.KeyCode;
+        KeyCode tKey = (KeyCode)interactPacket.TargetKeyCode;
+        player.AmplificationSkill(mkey, tKey);
     }
 
     public static void S_WeaponHandler(PacketSession session, IMessage packet)

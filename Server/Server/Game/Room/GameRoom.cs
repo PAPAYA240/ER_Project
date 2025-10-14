@@ -287,19 +287,30 @@ namespace Server.Game
             S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
 
             KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
-            skill.ChargeRatio = skillPacket.ChargeRatio;
 
-            // 스킬 사용이 불가능하면 바로 실패 패킷 전송
-            if (!player.CanUseSkill(keyCode))
+            // 1.증폭 스킬
+            if (skillPacket.SkillInfo.Amplification)
             {
-                skill.CanUse = false;
-                player.Session.Send(skill);
-                return; 
+                // 해당 키 스킬이 아직 진행 중 && 증폭을 아직 사용하지 않았다면 허가
+
             }
-            // 스킬 사용이 가능하면 자원 소모f
+            // 2. 일반 스킬
             else
             {
-                player.CommitSkillUsage(keyCode);
+                skill.ChargeRatio = skillPacket.ChargeRatio;
+
+                // 스킬 사용이 불가능하면 바로 실패 패킷 전송
+                if (!player.CanUseSkill(keyCode))
+                {
+                    skill.CanUse = false;
+                    player.Session.Send(skill);
+                    return;
+                }
+                // 스킬 사용이 가능하면 자원 소모f
+                else
+                {
+                    player.CommitSkillUsage(keyCode);
+                }
             }
 
             foreach (int targetid in skillPacket.TargetsId)

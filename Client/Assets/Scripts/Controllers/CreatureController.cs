@@ -148,6 +148,7 @@ public class CreatureController : BaseController
 
     public virtual void UseSkill(S_Skill skillPacket) {}
 
+    public virtual void AmplificationSkill(KeyCode kc, KeyCode tkc) { }
     public void ChangeStat(StatInfo growth)
     {
         Stat.Attack += growth.Attack;

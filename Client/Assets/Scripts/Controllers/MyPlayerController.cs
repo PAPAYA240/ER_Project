@@ -986,6 +986,11 @@ public class MyPlayerController : PlayerController
         }
     }
 
+    public override void AmplificationSkill(KeyCode kc, KeyCode tkc)
+    {
+        SendSkillPacket(kc, tkc, true);
+    }
+
     protected SkillBase FindSkill(KeyCode keyCode)
     {
         SkillBase skillBase = null;
@@ -1037,7 +1042,6 @@ public class MyPlayerController : PlayerController
         }
 
         _coolDownDict[key].isCoolDown = true;
-
         float elapsed = 0f;
         while (elapsed < time)
         {
@@ -1387,8 +1391,12 @@ public class MyPlayerController : PlayerController
     // 스킬 사용이 가능한가?
     protected bool EnabledSkill(KeyCode key)
     {
+        if (!PlayerInterface.IsActiveKey.ContainsKey(key))
+            return false;
+
         if (_coolDownDict[key].isCoolDown)
             return false;
+
         return true;
     }
     protected void UpdateTransform(bool isWarp = false)
@@ -1484,10 +1492,8 @@ public class MyPlayerController : PlayerController
 
     protected float _ratioSkillDuration = 0f;
     #region Packet
-    private void SendSkillPacket(KeyCode key)
+    private void SendSkillPacket(KeyCode key, KeyCode tKey = KeyCode.None, bool isAmplification = false)
     {
-        //Vector3 mousePos = GetTargetPos(1000);
-
         Vector3 mousePos = new Vector3();
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
@@ -1496,7 +1502,13 @@ public class MyPlayerController : PlayerController
         C_Skill skillPacket = new C_Skill()
         {
             ObjectInfo = ObjInfo,
-            SkillInfo = new SkillInfo() { KeyCode = (int)key },
+            SkillInfo = new SkillInfo() 
+            {
+                KeyCode = (int)key, 
+                Amplification = isAmplification,
+                AmplifiKeyCode = (int)tKey,
+
+            },
             MousePosX = mousePos.x, MousePosZ = mousePos.z,
             ChargeRatio = _ratioSkillDuration,
         };

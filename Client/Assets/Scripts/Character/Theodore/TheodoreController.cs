@@ -291,8 +291,6 @@ public class TheodoreController : MyPlayerController
             yield return null; 
         }
 
-        CreatureController targetCreature = _currentTarget?.GetComponentInChildren<CreatureController>();
-
         _isUseSkill = true;
         _isInputLocked = false;
 
@@ -301,6 +299,7 @@ public class TheodoreController : MyPlayerController
 
         // 스피드 감소, 시야 제공, 공격 시 => [스킬 피해 추가, 속박]
         // 30/60/90/120/150(+스킬 증폭의 65%)
+        CreatureController targetCreature = _currentTarget?.GetComponentInChildren<CreatureController>();
         if (targetCreature != null)
             StartCoroutine(AbilitySkillE(targetCreature));
 
@@ -459,6 +458,10 @@ public class TheodoreController : MyPlayerController
         
         return true;
     }
+    #endregion
+
+    #region 증폭 스킬
+    
     #endregion
 }
 

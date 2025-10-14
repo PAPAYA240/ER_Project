@@ -177,6 +177,11 @@ namespace Server.Game
             //}
         }
 
+        public virtual void OnInteract(S_Interact packet)
+        {
+            Room.Broadcast(packet);
+        }
+
         public virtual void OnDamaged(GameObject attacker, float damage)
         {
             if (Room == null || State == CreatureState.Dead)
