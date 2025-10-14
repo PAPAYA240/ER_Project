@@ -1088,7 +1088,7 @@
             ]
           },
           "3": {
-            "damage": 80,
+            "damage": 135,
             "cooldown": 3,
             "staminaCost": 50,
             "effects": [
@@ -1101,7 +1101,7 @@
             ]
           },
           "4": {
-            "damage": 105,
+            "damage": 170,
             "cooldown": 3,
             "staminaCost": 55,
             "effects": [
@@ -1114,7 +1114,7 @@
             ]
           },
           "5": {
-            "damage": 130,
+            "damage": 210,
             "cooldown": 3,
             "staminaCost": 60,
             "effects": [
@@ -1354,7 +1354,7 @@
       "E": {
         "name": "스파크탄",
         "description": "<color=#2EE635>지속 효과:</color> <color=#FFFFFF>에너지 포</color> 또는 <color=#FFFFFF>스파크탄</color> 적중 시 다음 기본 공격 사거리가 1 증가합니다.\n\n테오도르가 스파크탄을 던져 적중한 적의 이동 속도를 2초동안 {speed}% 감소시키며 4초 동안 <color=#FFFFFF>목표물</color>로 지정합니다. 테오도르는 목표물이 된 대상으로부터 시야를 제공받으며, 기본 공격 또는 스킬로 공격하면 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 60%)</color>의 스킬 피해를 입히고 {CC}초 동안 속박합니다.",
-        "type": "Normal",
+        "type": "Projectile",
         "maxLevel": 5,
         "mechanics": {
           "targetType": "TargetUnit",
@@ -1365,8 +1365,8 @@
         },
         "levels": {
           "1": {
-            "damage": 30,
-            "cooldown": 18,
+            "damage": 1000,
+            "cooldown": 1,
             "staminaCost": 60,
             "effects": [
               {
@@ -1380,7 +1380,7 @@
           },
           "2": {
             "damage": 50,
-            "cooldown": 17,
+            "cooldown": 1,
             "staminaCost": 70,
             "effects": [
               {
@@ -1394,7 +1394,7 @@
           },
           "3": {
             "damage": 70,
-            "cooldown": 16,
+            "cooldown": 1,
             "staminaCost": 80,
             "effects": [
               {
@@ -1408,7 +1408,7 @@
           },
           "4": {
             "damage": 90,
-            "cooldown": 15,
+            "cooldown": 1,
             "staminaCost": 90,
             "effects": [
               {
