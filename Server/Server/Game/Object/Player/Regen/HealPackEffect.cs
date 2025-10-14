@@ -24,7 +24,7 @@ public class HealPackEffect : IRegenEffect
             return;
 
         float heal = MathF.Min(_perTick, _remaining);
-        owner.Hp = MathF.Min(owner.Stat.MaxHp, owner.Hp + heal);    
+        owner.Hp = MathF.Min(owner.MaxHp, owner.Hp + heal);    
         _remaining -= heal;
     }
 }

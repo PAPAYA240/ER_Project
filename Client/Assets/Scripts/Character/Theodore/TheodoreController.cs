@@ -18,38 +18,40 @@ public class TheodoreController : MyPlayerController
         base.Init();
 
         _attackRange = 10;
+
     }
+
 
     protected override void UpdateSkillKeyInput()
     {
         if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))
         {
+            if (!EnabledSkill(KeyCode.Q))  return;
             _keyCode = KeyCode.Q;
 
+            State = CreatureState.Charging;
             ReadySkillQ();
-
-            StartCoroutine(ShotSkillQ());
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.W))
         {
+            if (!EnabledSkill(KeyCode.W))  return;
             _keyCode = KeyCode.W;
 
-            State = CreatureState.Idle;
             indicator.EnableIndicator(KeyCode.W);
+
             StartCoroutine(ShotSkillW());
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
         {
-            _isUseSkill = true;
+            if (!EnabledSkill(KeyCode.E))  return;
             _keyCode = KeyCode.E;
+
+            ReadySkillE();
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))
         {
+            if (!EnabledSkill(KeyCode.R))  return;
             _keyCode = KeyCode.R;
-
-            State = CreatureState.Idle;
-
-            indicator.EnableIndicator(KeyCode.R);
 
             StartCoroutine(ShootSkillR());
         }
@@ -108,39 +110,45 @@ public class TheodoreController : MyPlayerController
 
     protected override void Skill_Q() 
     {
-     }
+        _agent.ResetPath();
+
+        // 1. 애니메이션
+        LookAtMouse();
+        PlayAnimation("SKILL_Q", 0.1f);
+        _eqipWeapon.GetComponent<WeaponController>().PlayAnimation("SKILL_Q", 0.1f);
+
+        // 2. 스턴 가능 경우 속박
+        if (_currentTarget != null && _currentTarget.GetComponent<CreatureController>().HasCrowdControl)
+            Bondage(_currentTarget);
+
+        PlayEffect("FX_SkillFire");
+    }
 
     private void ReadySkillQ()
     {
-        PlayAnimation("SKILL_START", 0.1f);
-        _eqipWeapon.GetComponent<WeaponController>().PlayAnimation("SKILL_READY_Q", 0.1f);
+        PlayAnimation("CHARGING", 0.1f);
+        _eqipWeapon.GetComponent<WeaponController>().PlayAnimation("CHARGING", 0.1f);
 
-        PlayEffectTransform(CreatureState.Skill, _keyCode);
-        SendFXPacket(_keyCode);
-
-        _effectDuration = 2.0f; // TODO : 예시로 하드 코딩, 나중에 CC Data에서 가져와 줄 것
+        // TODO : 예시로 하드 코딩, 나중에 CC Data에서 가져와 줄 것
+        _effectDuration = 2.0f;
         indicator.EnableIndicator(KeyCode.Q);
+
+        StartCoroutine(ShotSkillQ());
     }
-    
+
     IEnumerator ShotSkillQ()
     {
         // 1. 키를 누르고 있거나, 최대 충전 시간이 지나지 않은 경우
-        while (Input.GetKey(KeyCode.Q) && _elapsedTime < _effectDuration)
+        while (Input.GetKey(KeyCode.Q) && !Input.GetMouseButtonDown(0) 
+            && _elapsedTime < _effectDuration)
         {
-            if (Input.GetMouseButtonDown(1))
-            {
-                CancelSkill();
-                yield break;
-            }
-
             UpdateChargeState();
             yield return null;
         }
 
-        // 2. 최대 충전 시간 초과 -> 스킬 취소
+        // 2. 스킬 시간 초과 시 스킬 취소
         if (_elapsedTime >= _effectDuration)
         {
-            State = CreatureState.Idle;
             FinalizeSkillQ(_currentTarget, true);
             yield break;
         }
@@ -161,39 +169,31 @@ public class TheodoreController : MyPlayerController
         indicator.DisableAllIndicators();
         _elapsedTime = 0;
         _effectDuration = 0;
+        _agent.speed = _originSpeed;
 
+        // 충전 시간 초과
         if (isMaxCharge)
         {
-            _ratioSkillDuration = 0f;
             _isUseSkill = false;
+            _ratioSkillDuration = 0f;
+            State = CreatureState.Idle;
         }
+        // 스킬 시전
         else
-        {
             _isUseSkill = true;
-            
-            // 애니메이션
-            LookAtMouse();
-            PlayAnimation("SKILL_Q", 0.1f);
-            _eqipWeapon.GetComponent<WeaponController>().PlayAnimation("SKILL_Q", 0.1f);
-
-            // 스턴 가능 경우 속박
-            if (_currentTarget != null && _currentTarget.GetComponent<CreatureController>().HasCrowdControl)
-            {
-                Bondage(_currentTarget);
-            }
-
-            PlayEffect("FX_SkillFire");
-        }
     }
     #endregion
 
     #region W Skill
     protected override void Skill_W()
     {
+        FinalizeSkillW();
     }
   
     IEnumerator ShotSkillW()
     {
+        _isInputLocked = true;
+
         // 1. 대기 : W 키를 누르고 있거나, 왼 마우스를 누르지 않았을 때
         while (Input.GetKey(KeyCode.W) && !Input.GetMouseButtonDown(0))
         {
@@ -206,10 +206,6 @@ public class TheodoreController : MyPlayerController
         }
 
         _isUseSkill = true;
-
-        bScreenInvo = true;
-        FinalizeSkillW();
-        yield break;
     }
 
     private void FinalizeSkillW()
@@ -223,9 +219,7 @@ public class TheodoreController : MyPlayerController
        스파크탄(E)이 스크린에 통과하면 평타처럼 적 주변으로 확산하고 투사체 속도와 사거리가 증가한다.
        */
         // 1. 상태 및 플래그 설정
-        _isUseSkill = true;
-        indicator.DisableAllIndicators();
-        State = CreatureState.Idle;
+        bScreenInvo = true;
 
         // 2. 마우스
         Vector3 mousePos = GetMouseWorldPosition();
@@ -242,11 +236,27 @@ public class TheodoreController : MyPlayerController
            PlayEffectAtPosition(CreatureState.Skill, KeyCode.W, mousePos, finalRotation, EffectType.HitTarget);
             SendFXPacket(_keyCode);
         }
+        CancelSkill();
+
     }
+
     private void CancelSkill()
     {
         indicator.DisableAllIndicators();
+
+        _agent.ResetPath();
+
         State = CreatureState.Idle;
+
+        StartCoroutine(InputLockCancel());
+    }
+
+    // 입력 조절
+    private IEnumerator InputLockCancel()
+    {
+        yield return new WaitForSeconds(0.3f);
+
+        _isInputLocked = false;
     }
 
     #endregion
@@ -254,7 +264,6 @@ public class TheodoreController : MyPlayerController
     #region E Skill
     protected override void Skill_E()
     {
-        ReadySkillE();
     }
 
     private void ReadySkillE()
@@ -263,12 +272,15 @@ public class TheodoreController : MyPlayerController
 
         _currentTarget = TryGetAttackableObject();
 
+        _isInputLocked = true;
+
         StartCoroutine(ShotSkillE());
     }
   
+    
     IEnumerator ShotSkillE()
     {
-        while (Input.GetKey(KeyCode.E))
+        while (Input.GetKey(KeyCode.E) && !Input.GetMouseButtonDown(0))
         {
             if (Input.GetMouseButtonDown(1))
             {
@@ -282,6 +294,8 @@ public class TheodoreController : MyPlayerController
         CreatureController targetCreature = _currentTarget?.GetComponentInChildren<CreatureController>();
 
         _isUseSkill = true;
+        _isInputLocked = false;
+
         indicator.DisableAllIndicators();
         PlayAnimation("SKILL_E", 0.1f);
 
@@ -298,12 +312,12 @@ public class TheodoreController : MyPlayerController
     {
         float targetOrigionSpeed = creature.Speed;
 
-        string decreaseSpeed = 
-            DataManager.SkillDict[ObjInfo.Player.CharType][_keyCode].
-            descriptionInfo["speed"][Stat.Level];
+        //string decreaseSpeed = 
+        //    DataManager.SkillDict[ObjInfo.Player.CharType][_keyCode].
+        //    descriptionInfo["speed"][Stat.Level];
 
-        int numberInt = int.Parse(decreaseSpeed);
-        creature.Speed = creature.Speed * (1.0f - 0.01f * numberInt);
+        //int numberInt = int.Parse(decreaseSpeed);
+        //creature.Speed = creature.Speed * (1.0f - 0.01f * numberInt);
 
         // 이동 속도를 2동안 감소시킨다.
         yield return new WaitForSeconds(2.0f);
@@ -318,7 +332,10 @@ public class TheodoreController : MyPlayerController
     }
     IEnumerator ShootSkillR()
     {
-        while (Input.GetKey(KeyCode.R))
+        _isInputLocked = true;
+        indicator.EnableIndicator(KeyCode.R);
+
+        while (Input.GetKey(KeyCode.R) && !Input.GetMouseButtonDown(0))
         {
             if (Input.GetMouseButtonDown(1))
             {
@@ -329,6 +346,7 @@ public class TheodoreController : MyPlayerController
         }
 
         _isUseSkill = true;
+        _isInputLocked = false;
 
         indicator.DisableAllIndicators();
         PlayAnimation("SKILL_R", 0.1f);

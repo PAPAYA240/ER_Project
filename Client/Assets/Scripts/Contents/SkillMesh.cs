@@ -1,36 +1,30 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Google.Protobuf.Protocol;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UI_PlayerInterface;
-using static UnityEngine.Rendering.DebugUI;
 
 public class SkillMesh : MonoBehaviour
 {
     SkillHitbox _hitbox = new SkillHitbox();
     Transform _playerTransform = null;
-
+    Vector3 _mousePos = new Vector3();
     public float ChargeRatio { get; set; } = 1;
 
     private GameObject visualObject;
 
-    public void Init(SkillHitbox hitbox, Transform playerTransform, int team = 0, float chargeRatio = 1) // 투사체일 경우엔 투사체의 transform을 넣어줘야함
+    public void Init(SkillHitbox hitbox, Transform playerTransform, int team = 0, float chargeRatio = 1, Vector3 mousePos = new Vector3()) // 투사체일 경우엔 투사체의 transform을 넣어줘야함
     {
         _hitbox = hitbox;
         _playerTransform = playerTransform;
         ChargeRatio = chargeRatio;
+        _mousePos = mousePos;
 
         float startTime = (float)_hitbox.StartFrame / _hitbox.Fps;
         float endTime = (float)_hitbox.EndFrame / _hitbox.Fps;
-                
+
         StartCoroutine(AutoDestroy(startTime, endTime, team));
     }
+
 
     private void CreateVisual(SkillShape shape, int team)
     {
@@ -65,8 +59,22 @@ public class SkillMesh : MonoBehaviour
         lr.useWorldSpace = false;
 
         Enum.TryParse<SkillType>(_hitbox.Type, out SkillType type);
-        if (type == SkillType.SkillTrack || type == SkillType.SkillProjectile) 
+        if (type == SkillType.SkillTrack || type == SkillType.SkillProjectile)
+        {
             transform.SetParent(_playerTransform);
+            visualObject.transform.localPosition = Vector3.zero;
+            visualObject.transform.localRotation = Quaternion.identity;
+        }
+        else if (type == SkillType.SkillPoint)
+        {
+            transform.SetParent(null);
+            transform.position = _mousePos;
+            transform.rotation = _playerTransform.rotation;
+
+            visualObject.transform.localPosition = Vector3.zero; 
+            visualObject.transform.localRotation = Quaternion.identity;
+            Debug.Log($"{transform.position}");
+        }
         else
         {
             visualObject.transform.position = _playerTransform.position;
@@ -80,8 +88,13 @@ public class SkillMesh : MonoBehaviour
                 DrawCircle(lr, _hitbox.Radius, 36);
                 break;
 
-            case SkillShape.Rectangle:                
-                visualObject.transform.localPosition = new Vector3(_hitbox.RightOffset, 0, _hitbox.LookOffset);
+            case SkillShape.Point:
+                visualObject.transform.localPosition = Vector3.zero;
+                DrawRectangle(lr, _hitbox.Width, _hitbox.Height);
+                break;
+
+            case SkillShape.Rectangle:
+               visualObject.transform.localPosition = new Vector3(_hitbox.RightOffset, 0, _hitbox.LookOffset);
                 DrawRectangle(lr, _hitbox.Width, _hitbox.Height); 
                 break;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using Google.Protobuf.Protocol;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.Game
 {
@@ -82,6 +83,12 @@ namespace Server.Game
             set { Stat.MoveSpeed = value; }
         }
 
+        public virtual float HpRegen
+        {
+            get { return Stat.HpRegen; }
+            set { Stat.HpRegen = Math.Max(value, 0); }
+        }
+
         public virtual float Hp
         {
             get { return Stat.Hp; }
@@ -98,6 +105,12 @@ namespace Server.Game
         { 
             get { return Stat.Barrier; }
             set { Stat.Barrier = Math.Max(value, 0); }
+        }
+
+        public virtual float StaminaRegen
+        {
+            get { return Stat.StaminaRegen; }
+            set { Stat.StaminaRegen = Math.Max(value, 0); }
         }
 
         public virtual float Stamina
@@ -182,6 +195,13 @@ namespace Server.Game
             changePacket.ObjectId = Id;
             changePacket.Hp = Hp;
             changePacket.Barrier = Barrier;
+
+            //temp
+            changePacket.Damages.Add(new DamageInfo { Damage = remaining, Type = DamageType.Ad });
+
+            if (absorbed > 0)
+                changePacket.Absorbed = absorbed;
+
             Room.Broadcast(changePacket);
 
             if(Hp <= 0)

@@ -11,12 +11,14 @@ public class Managers : MonoBehaviour
     MapManager _map = new MapManager();
     ObjectManager _obj = new ObjectManager();
     NetworkManager _network = new NetworkManager();
+    CombatTextManager _combatText = new CombatTextManager();
     private FXManager _fx;
     public static FXManager FX { get { return s_instance._fx; } }
 
     public static MapManager Map { get { return Instance._map; } }
     public static ObjectManager Object { get { return Instance._obj; } }
     public static NetworkManager Network { get { return Instance._network; } }
+    public static CombatTextManager CombatText { get { return Instance._combatText; } }
 	#endregion
 
 	#region Core
@@ -65,6 +67,7 @@ public class Managers : MonoBehaviour
             s_instance._network.Init();
             s_instance._data.Init();
             s_instance._pool.Init();
+            s_instance._combatText.Init();
             s_instance._sound.Init();
             s_instance._fx.Init();
         }		

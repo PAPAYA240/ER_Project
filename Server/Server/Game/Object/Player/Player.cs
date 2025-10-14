@@ -45,6 +45,12 @@ namespace Server.Game
             set { Stat.Hp = Math.Clamp(value, 0, MaxHp); }
         }
 
+        public override float HpRegen
+        {
+            get { return base.HpRegen + _totalItemStat.HpRegen; }
+            set { Stat.HpRegen = Math.Max(value, 0); }
+        }
+
         public override float MaxStamina 
         { 
             get { return base.MaxStamina + _totalItemStat.MaxStamina; }
@@ -55,6 +61,12 @@ namespace Server.Game
         {
             get { return base.Stamina; }
             set { Stat.Stamina = Math.Clamp(value, 0, MaxStamina); } 
+        }
+
+        public override float StaminaRegen
+        {
+            get { return base.StaminaRegen + _totalItemStat.StaminaRegen; }
+            set { Stat.StaminaRegen = Math.Max(value, 0); } 
         }
 
         public float SkillAmplification
@@ -682,6 +694,11 @@ namespace Server.Game
         #endregion
 
         #region Packet
+        public void SendSkillPkt()
+        {
+
+        }
+
         public void SendVisibleObjsPkt(List<int> Ids)
         {
             S_VisibleObjects visibleObjsPkt = new S_VisibleObjects();
@@ -708,5 +725,6 @@ namespace Server.Game
             return levelUp;
         }
         #endregion
+
     }
 }

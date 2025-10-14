@@ -57,6 +57,7 @@ enum CreatureState{
   SKILL = 3;
   DEAD = 4;
   REST = 5;
+  CHARGING = 6;
 }
 
 enum GameObjectType{
@@ -81,6 +82,7 @@ enum SkillType{
 	SKILL_PROJECTILE = 2;
 	SKILL_STATIC = 3;
 	SKILL_TRACK = 4;
+	SKILL_POINT = 5;
 }
 
 enum MonsterSkill{
@@ -160,6 +162,7 @@ enum SkillShape{
 	RAY = 2;
 	RECTANGLE = 3;
 	SECTOR = 4;
+	POINT = 5;
 }
 
 enum TraitType{
@@ -200,13 +203,22 @@ enum ItemGrade{
 	ITEM_GRADE_END = 6;
 }
 
+enum DamageType{
+	AD = 0;
+	AP = 1;
+	TRUE = 2;
+	END = 3;
+}
+
 message C_Interact {
-    int32 objectId = 1;
+    	int32 objectId = 1;
+	
 }
 
 message S_Interact  {
-    int32 objectId = 1;
-    int64 nextUseTime = 2;
+    	int32 objectId = 1;
+    	int32 keyCode = 2;
+	int32 targetKeyCode = 3;
 }
 
 message C_EnterGame {
@@ -343,6 +355,10 @@ message S_ChangeHp{
 	int32 objectId = 1;
 	float hp = 2;
 	float barrier = 3;
+
+	float recovery = 4;
+	float absorbed = 5;
+	repeated DamageInfo damages = 6;
 }
 
  message S_Die{
@@ -515,6 +531,9 @@ message SkillInfo{
 	int32 targetId = 4;
 }
 
+message InteractionList {
+    repeated string interaction = 1; 
+}
 message SkillHitbox{
 	string shape = 1;
 	string type = 2;
@@ -532,6 +551,7 @@ message SkillHitbox{
 	float minRange = 14;
 	float maxRange = 15;
 	bool isOneTimeUse = 16;
+	map<string, InteractionList> interactions = 17;
 }
 
 message CostInfo{
@@ -573,6 +593,11 @@ message ChangeInventoryInfo{
 	int32 itemId = 1;
 	int32 inventoryIndex = 2;
 	int32 count = 3;
+}
+
+message DamageInfo {
+	DamageType type = 1;
+	float damage = 2;
 }
 
 message C_AttackSkillTarget{
