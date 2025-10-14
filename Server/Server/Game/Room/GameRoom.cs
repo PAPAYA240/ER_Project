@@ -27,7 +27,7 @@ namespace Server.Game
         Dictionary<int, Dictionary<int, Player>> _teams = new Dictionary<int, Dictionary<int, Player>>();
 
         bool _teamToggle = false;
-        bool _dummyAdded = false;
+        bool _dummyAdded = true;    // TEMP : Dummy
 
         public bool TryGetMonster(int objectId, out Monster monster)
         {
@@ -47,6 +47,9 @@ namespace Server.Game
             _envManager.Init(this);
 
             _collisionManager.Init();
+
+            // NavMesh
+            InitNavmeshPipeline();
         }
 
         public override void Update()
@@ -490,6 +493,26 @@ namespace Server.Game
             clientSession.Send(spawnPacket);
 
             _dummyAdded = true;
-        }        
+        }
+
+        public void InitNavmeshPipeline()
+        {
+            // 1) 클라에서 Export한 NavMesh JSON 불러오기
+            string path = "../../../Resources/Data/NavmeshData.json"; // 배포 경로
+            NavmeshData nav = NavmeshImporter.LoadFromJson(path);
+
+            // 2) TriCache(전처리) 빌드
+            TriCache triCache = TriCacheBuilder.Build(nav);   // 아래 1-1 참고
+
+            // 3) Uniform Grid 가속구조 빌드
+            var accel = new UniformGridAccel(cell: 0.5f);     // 셀 크기 튜닝 포인트
+            accel.Build(triCache, nav.Min, nav.Max);
+
+            // 4) NavmeshService에 장착
+            NavmeshService.Instance.Init(triCache, accel);
+
+            // (선택) 버전 로그/검증
+            Console.WriteLine($"[Navmesh] loaded: {nav.Version}, tris={triCache.Tris.Length}");
+        }
     }
 }

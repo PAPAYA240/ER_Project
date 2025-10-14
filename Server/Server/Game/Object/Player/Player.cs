@@ -310,7 +310,7 @@ namespace Server.Game
 
             Room.Push(Room.Broadcast, packet);
 
-            Console.WriteLine($"Char : {Info.Player.CharType} / x : {posInfo.PosX}, z : {posInfo.PosZ}");
+            //Console.WriteLine($"Char : {Info.Player.CharType} / x : {posInfo.PosX}, z : {posInfo.PosZ}");
         }
 
         public void SendSetMoveTarget(bool isGround, int targetId, PositionInfo posOpt = null)
