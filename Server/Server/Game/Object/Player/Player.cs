@@ -9,12 +9,22 @@ using System.Net.Sockets;
 using System.Numerics;
 using System.Threading.Tasks;
 using static Server.Data.DataUtils;
+using static Server.Game.GameRoom;
 
 namespace Server.Game
 {
     public partial class Player : Creature
     {
         public ClientSession Session { get; set; }
+
+        public PlayerFlags Flags { get; } = new PlayerFlags();
+        public class PlayerFlags
+        {
+            public bool IsInSkillMotion;
+            public Vector3 SkillMotionStart;
+            public Vector3 SkillMotionEnd;
+            public float SkillMotionEndTimeUtc; // utcSeconds
+        }
 
         #region Stat Property
         ItemStat _totalItemStat = new ItemStat();
@@ -323,6 +333,29 @@ namespace Server.Game
                 TargetPos = isGround && posOpt != null ? new PositionInfo(posOpt) : null
             };
             Room.Push(Room.Broadcast, packet);
+        }
+
+        public void SendSkillMotion(SkillMotionType type, Vector3 start, Vector3 end,
+                            float duration, string anim, string curveId,
+                            bool serverCollision, bool authoritativeEnd)
+        {
+            S_SkillMotion pkt = new S_SkillMotion
+            {
+                ObjectId = Id,
+                Type = type,
+                StartX = start.X,
+                StartY = start.Y,
+                StartZ = start.Z,
+                EndX = end.X,
+                EndY = end.Y,
+                EndZ = end.Z,
+                Duration = duration,
+                Anim = anim ?? "",
+                CurveId = curveId ?? "",
+                ServerCollision = serverCollision,
+                AuthoritativeEnd = authoritativeEnd
+            };
+            Room.Broadcast(pkt);
         }
         #endregion
     }

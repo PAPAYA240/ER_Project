@@ -380,13 +380,13 @@ public class PlayerController : CreatureController
             y = movePacket.PosInfo.PosY,
             z = movePacket.PosInfo.PosZ
         };
-
+        
         //if (true == movePacket.IsWarp)
         //    _agent.Warp(CellPos);
 
-        //if (Vector3.Distance(_agent.destination, pos) > minDiff)
-        //{
-            _agent.SetDestination(pos);
-        //}
+        if (Vector3.Distance(_agent.destination, pos) > minDiff)
+        {
+          _agent.SetDestination(pos);
+        }
     }
 }

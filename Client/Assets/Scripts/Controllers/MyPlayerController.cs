@@ -62,7 +62,7 @@ public class MyPlayerController : PlayerController
     // 서버 응답 전달
     //public void OnServerUpdate(S_Idle packet) => _view.OnIdle(packet);
     public void OnServerUpdate(S_Move packet) => _view.OnMove(packet);
-    public void OnServerUpdate(S_Skill packet) => _view.OnSkill(packet);
+    public void OnServerUpdate(S_SkillMotion packet) => _view.OnSkill(packet);
     public void OnServerUpdate(S_Anim packet) => _view.OnAnim(packet);
     public void OnServerUpdate(S_ChangeHp packet) => _view.OnHpChanged(packet);
     public void OnServerUpdate(S_Die packet) => _view.OnDead(packet);

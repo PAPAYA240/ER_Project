@@ -53,23 +53,23 @@ class PacketHandler
         }
         else
         {
-            CreatureController cc = go.GetComponentInChildren<CreatureController>();
-            if (cc == null)
-                return;
-
-            cc.PosInfo = movePacket.PosInfo;
-            cc.RotInfo = movePacket.RotInfo;
-
-            if (cc.ObjectType == Define.Object.OtherPlayer)
-            {
-                cc.SyncPos(movePacket.IsWarp);
-            }
-
-            //PlayerController pc = go.GetComponentInChildren<PlayerController>();
-            //if (pc == null)
+            //CreatureController cc = go.GetComponentInChildren<CreatureController>();
+            //if (cc == null)
             //    return;
 
-            //pc.SyncPosFromServer(movePacket);        
+            //cc.PosInfo = movePacket.PosInfo;
+            //cc.RotInfo = movePacket.RotInfo;
+
+            //if (cc.ObjectType == Define.Object.OtherPlayer)
+            //{
+            //    cc.SyncPos(movePacket.IsWarp);
+            //}
+
+            PlayerController pc = go.GetComponentInChildren<PlayerController>();
+            if (pc == null)
+                return;
+
+            pc.SyncPosFromServer(movePacket);        
         }     
     }
 
@@ -409,6 +409,20 @@ class PacketHandler
                 return;
 
             pc.OnStop(stopPacket);
+        }
+    }
+
+    public static void S_SkillMotionHandler(PacketSession session, IMessage packet)
+    {
+        S_SkillMotion motionPacket = packet as S_SkillMotion;
+
+        GameObject go = Managers.Object.FindById(motionPacket.ObjectId);
+        if (go == null)
+            return;
+
+        if (Managers.Object.MyPlayer.Id == motionPacket.ObjectId)
+        {
+            Managers.Object.MyPlayer.OnServerUpdate(motionPacket);
         }
     }
 }

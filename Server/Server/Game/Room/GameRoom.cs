@@ -238,7 +238,19 @@ namespace Server.Game
         {
             if (player == null)
                 return;
-            
+
+            //var clientPos = new Vector3(movePacket.PosInfo.PosX, movePacket.PosInfo.PosY, movePacket.PosInfo.PosZ);
+
+            //if (movePacket.IsSkillMotion || player.Flags.IsInSkillMotion)
+            //{
+            //    // 감시 모드: 브로드캐스트 X
+            //    // 가벼운 보정 1회
+            //    player.SendMovePacket(new PositionInfo { PosX = player.PosInfo.PosX, PosY = player.PosInfo.PosY, PosZ = player.PosInfo.PosZ },
+            //                         new RotationInfo(player.RotInfo));
+                
+            //    return;
+            //}
+
             player.PosInfo.MergeFrom(movePacket.PosInfo);
             player.RotInfo.MergeFrom(movePacket.RotInfo);
 

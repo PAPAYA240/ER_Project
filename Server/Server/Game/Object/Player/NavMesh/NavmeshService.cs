@@ -92,17 +92,27 @@ public sealed class NavmeshService
         hitNormal = tri.normal;
         tHit = 2f;
 
+        // 0) 바닥 삼각형은 스킵 (위로 향한 면)
+        // 임계값은 0.75~0.95 사이에서 튜닝 (0.9 권장)
+        if (Vector3.Dot(tri.normal, Vector3.UnitY) > 0.9f)
+            return false;
+
         // 빠른 AABB 전검사(세그먼트 + 반경)
         Vector3 segMin = new Vector3(MathF.Min(a.X, b.X) - r, MathF.Min(a.Y, b.Y) - r, MathF.Min(a.Z, b.Z) - r);
         Vector3 segMax = new Vector3(MathF.Max(a.X, b.X) + r, MathF.Max(a.Y, b.Y) + r, MathF.Max(a.Z, b.Z) + r);
         if (!AabbOverlap(segMin, segMax, tri.aabbMin, tri.aabbMax))
             return false;
 
-        // coarse: 균등 샘플로 최초 교차 구간 찾기
-        const int STEPS = 16;
+        // === 아래 샘플/이분 탐색 로직은 그대로 ===
         Vector3 v = b - a;
+        float dist = v.Length();
+        float stepLen = MathF.Max(0.0001f, (r > 0f ? r * 0.5f : 0.25f));
+        int STEPS = Math.Max(16, (int)MathF.Ceiling(dist / stepLen));
+
         float prevT = 0f;
         float prevVal = DistanceToTriangleSquared(a, tri) - r * r;
+        if (prevVal <= 0f)
+            return false; // 시작이 겹쳐도 바닥이 아니니 여기선 바로 false로
 
         bool found = false;
         float t0 = 0f, t1 = 0f;
@@ -115,7 +125,6 @@ public sealed class NavmeshService
 
             if (val <= 0f && prevVal > 0f)
             {
-                // 처음 안으로 들어온 구간 [prevT, t]
                 t0 = prevT;
                 t1 = t;
                 found = true;
@@ -124,13 +133,11 @@ public sealed class NavmeshService
             prevT = t;
             prevVal = val;
         }
-
         if (!found)
             return false;
 
-        // refine: 이분 탐색으로 tHit 정밀화
         float lo = t0, hi = t1;
-        for (int it = 0; it < 8; it++)
+        for (int it = 0; it < 10; it++)
         {
             float mid = 0.5f * (lo + hi);
             Vector3 pm = a + v * mid;
@@ -142,22 +149,14 @@ public sealed class NavmeshService
         }
 
         tHit = hi;
-        Vector3 pc = a + v * tHit;             // 충돌 시점의 구 중심
-        Vector3 q = ClosestPointOnTriangle(pc, tri, out Vector3 featureN); // 최근접 삼각형점 & 대략적 노멀
+        Vector3 pc = a + v * tHit;
+        Vector3 q = ClosestPointOnTriangle(pc, tri, out Vector3 featureN);
         hitPoint = q;
 
-        // 노멀: hp -> 구 중심 (너무 짧으면 tri.normal 참고)
         Vector3 n = pc - q;
-        if (n.LengthSquared() < 1e-12f)
-            n = featureN; // 안전
-        else
-            n = Vector3.Normalize(n);
-
-        // 뒤집히지 않게 삼각형 노멀과 방향 정리(원하는 규칙으로)
-        if (Vector3.Dot(n, tri.normal) < 0)
-            n = -n;
-        hitNormal = n;
-
+        hitNormal = (n.LengthSquared() < 1e-12f) ? featureN : Vector3.Normalize(n);
+        if (Vector3.Dot(hitNormal, tri.normal) < 0)
+            hitNormal = -hitNormal;
         return true;
     }
 

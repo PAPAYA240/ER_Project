@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
 using Server.Game;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Text;
 
 public sealed class Rozzi_Q : ISkillHandler
 {
-    object _lock = new object();
+    private Vector3 _finalEnd; private float _duration;
 
     public void OnEnter(Player p, SkillSpec spec, SkillContext ctx)
     {
@@ -18,49 +19,67 @@ public sealed class Rozzi_Q : ISkillHandler
 
     public void OnHit(Player p, SkillSpec spec, SkillContext ctx)
     {
-        lock (_lock)
+        var from = new System.Numerics.Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
+        var aim = new System.Numerics.Vector3(ctx.MousePos.X, from.Y, ctx.MousePos.Y);
+        var flat = new System.Numerics.Vector3(aim.X - from.X, 0, aim.Z - from.Z);
+        var dir = flat.LengthSquared() > 1e-6f ? System.Numerics.Vector3.Normalize(flat) : System.Numerics.Vector3.UnitZ;
+
+        // 0) 의도한 목적지
+        var wish = from + dir * spec.Move.Distance;
+
+        // 1) 스윕(진짜 충돌) 먼저. 반경에 작은 여유(skin) 더하기
+        var nm = NavmeshService.Instance;
+        float sweepRadius = spec.Hitbox.Radius + 0.05f;   // 안전 여유
+        if (nm.SweepCapsule(from, wish, sweepRadius, out var hit, out var nrm))
         {
-            // from/dir 계산
-            var from = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
-            var toXZ = new Vector3(ctx.MousePos.X, from.Y, ctx.MousePos.Y);
-            var flat = new Vector3(toXZ.X - from.X, 0, toXZ.Z - from.Z);
-            var dir = flat.LengthSquared() > 1e-6f ? Vector3.Normalize(flat) : (Vector3.UnitZ);
+            // 벽 앞에서 멈추기
+            wish = hit - dir * spec.Collision.Skin;
+        }
 
-            var wishEnd = from + dir * spec.Move.Distance;
+        // 2) 최종점 워커블로 클램프 (끝점만)
+        wish = nm.ClampPointToNavmesh(wish);
 
-            // 1) 캡슐 스윕으로 충돌 체크(서버 NavmeshService 사용)
-            var nm = NavmeshService.Instance;
-            if (nm.SweepCapsule(from, wishEnd, spec.Hitbox.Radius, out var hit, out var normal))
-            {
-                if (spec.Collision.StopOnWall)
-                    wishEnd = hit - dir * spec.Collision.Skin;
+        // 3) 재생 시간은 "실제 이동 거리"로 산정
+        float dist = System.Numerics.Vector3.Distance(from, wish);
+        float speed = (spec.Move.Speed > 0 ? spec.Move.Speed : 20f);
+        _duration = MathF.Max(0.01f, dist / speed);
+        _finalEnd = wish;
 
-                if (spec.Collision.SlideOnWall)
-                {
-                    var tangent = Vector3.Normalize(dir - Vector3.Dot(dir, normal) * normal);
-                    var remain = (from + dir * spec.Move.Distance) - hit;
-                    var slideEnd = hit + tangent * remain.Length();
-                    // (옵션) 2차 스윕으로 정밀화
-                    wishEnd = slideEnd;
-                }
-            }
+        // 범용 스킬 모션 패킷
+        p.SendSkillMotion(
+            type: SkillMotionType.Dash,
+            start: from,
+            end: _finalEnd,
+            duration: _duration,
+            anim: ""/*spec.AnimName*/,
+            curveId: "EaseOutCubic",
+            serverCollision: true,
+            authoritativeEnd: true);
 
-            // 2) 워커블 클램프
-            wishEnd = nm.ClampPointToNavmesh(wishEnd);
-
-            // 3) 권위 좌표 브로드캐스트 (클라는 Warp 보정)
-            p.PosInfo.PosX = wishEnd.X;
-            p.PosInfo.PosY = wishEnd.Y;
-            p.PosInfo.PosZ = wishEnd.Z;
-            //p.SendMovePacket(new PositionInfo(p.PosInfo), new RotationInfo(p.RotInfo));
-            PositionInfo final = new PositionInfo { PosX = wishEnd.X, PosY = wishEnd.Y, PosZ = wishEnd.Z };
-            p.SendMovePacket(final, new RotationInfo(p.RotInfo));
-        }        
+        // 스킬 중 MoveSync 감시 모드
+        p.Flags.IsInSkillMotion = true;
+        p.Flags.SkillMotionStart = from;
+        p.Flags.SkillMotionEnd = _finalEnd;
+        p.Flags.SkillMotionEndTimeUtc = (float)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000f + _duration;
     }
 
     public void OnExit(Player p, SkillSpec spec, SkillContext ctx)
     {
-        // i-frame 해제/락 해제 등 필요시
+        // 종료 시 최종 보정
+        p.PosInfo.PosX = _finalEnd.X;
+        p.PosInfo.PosY = _finalEnd.Y;
+        p.PosInfo.PosZ = _finalEnd.Z;
+        p.SendMovePacket(new PositionInfo(p.PosInfo), new RotationInfo(p.RotInfo));
+
+        p.Flags.IsInSkillMotion = false;
+
+        //// 스킬 종료 시 최종 보정 1회
+        //p.PosInfo.PosX = _finalEnd.X;
+        //p.PosInfo.PosY = _finalEnd.Y;
+        //p.PosInfo.PosZ = _finalEnd.Z;
+        //p.SendMovePacket(new PositionInfo(p.PosInfo), new RotationInfo(p.RotInfo));
+
+        //p.EndSkillMotion();                  // ← 스킬 끝: MoveSync 평상시 복귀
     }
 }
 
