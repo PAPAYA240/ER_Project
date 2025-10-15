@@ -1,14 +1,16 @@
-﻿using System;
+﻿using Google.Protobuf;
+using Google.Protobuf.Protocol;
+using Server.Data;
+using ServerCore;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Threading;
-using Google.Protobuf;
-using Google.Protobuf.Protocol;
-using Server.Data;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -30,14 +32,119 @@ namespace Server.Game
         bool _dummyAdded = false;
 
         #region Phase, Time
+        
+        public TimeSpan RemainTime { get { return TimeSpan.FromSeconds(DataManager.PhaseDict[CurPhase]) - _phaseStopwatch.Elapsed; } }
+        public TimeSpan TimeStamp { get { return _timeStampStopwatch.Elapsed; } }
 
-        public float NextPhaseTime { get; private set; }
-        int _curPhase;
+        //private DateTime _timeStamp; // 게임이 시작된 시간
+        private Stopwatch _timeStampStopwatch; // 게임 시작부터 얼마나 시간이 흘렀는지 측정하는 스톱워치
 
-        public int CurPhase 
-        { 
-            get { return _curPhase; }
-            set { _curPhase = value; }
+        private DateTime _phaseStartTime; // 현재 페이즈가 시작된 시간
+        private Stopwatch _phaseStopwatch; // 현재 페이즈가 얼마나 진행되었는가를 측정하는 스톱워치
+        private Timer _phaseTransitionTimer; // 페이즈 전환을 예약하는 타이머
+        public int CurPhase { get; private set; } = 5;
+
+        // 외부로 페이즈 변경을 알리는 이벤트 (예: GameSessionManager 또는 네트워크 레이어로 전달)
+        //public event Action<string, GamePhase> OnPhaseChanged;
+
+
+        public void ChangePhase(int newPhase)
+        {
+            if (CurPhase == newPhase) 
+                return; 
+
+            CurPhase = newPhase;
+            _phaseStartTime = DateTime.UtcNow; // 페이즈 시작 시간 기록 (UTC)
+
+            _phaseStopwatch.Restart(); // 페이즈 경과 시간 측정 시작/재시작
+
+            // 현재 페이즈의 지속 시간을 가져옴
+            int duration;
+            if (DataManager.PhaseDict.TryGetValue(newPhase, out duration))
+            {
+                // 다음 페이즈 전환을 위한 타이머 설정
+                // 이전 타이머가 있으면 Dispose 후 새로 생성
+
+                TimeSpan newPhaseDuration = TimeSpan.FromSeconds(duration);
+
+                _phaseTransitionTimer?.Dispose();
+                _phaseTransitionTimer = new Timer(OnPhaseTimerElapsed, null, (int)newPhaseDuration.TotalMilliseconds, Timeout.Infinite); // 한 번만 실행되도록 설정
+            }
+            else
+            {
+                // 지속 시간이 정의되지 않은 페이즈 (수동 전환 필요)
+                Console.WriteLine($"Error Occured : ChangePhase");
+                _phaseTransitionTimer?.Dispose(); // 혹시 모를 이전 타이머 정리
+            }
+
+            // 클라이언트들에게 페이즈 변경 사실을 통보 (네트워크 전송)
+            //NotifyClientsPhaseChanged();
+            SyncTimer();
+
+            // 특별한 페이즈에 대한 추가 로직
+            switch (newPhase)
+            {
+                case 0:
+                    // 게임 시작 시 필요한 초기화 (예: 맵 생성, 플레이어 스폰)
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+            }
+        }
+
+        public void SyncTimer()
+        {
+            S_SyncTimer syncTimerPacket = new S_SyncTimer();
+
+            syncTimerPacket.Phase = CurPhase;
+            syncTimerPacket.CurrentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            syncTimerPacket.PhaseEndTime = CalculatePhaseServerEndTime();
+
+            Push(Broadcast, syncTimerPacket);
+        }
+
+        private long CalculatePhaseServerEndTime()
+        {
+            return _phaseStartTime.Millisecond + DataManager.PhaseDict[CurPhase] * 1000;
+        }
+
+
+        public TimeSpan GetRemainingPhaseTime()
+        {
+            // 페이즈 지속 시간이 정의되지 않았다면 남은 시간 없음으로 처리
+            if (!DataManager.PhaseDict.TryGetValue(CurPhase, out int totalDuration))
+            {
+                return TimeSpan.Zero;
+            }
+
+            // 스톱워치로 측정한 경과 시간
+            TimeSpan elapsedTime = _phaseStopwatch.Elapsed;
+            TimeSpan remainingTime = TimeSpan.FromSeconds(totalDuration) - elapsedTime;
+
+            return remainingTime.TotalSeconds > 0 ? remainingTime : TimeSpan.Zero;
+        }
+
+        private void OnPhaseTimerElapsed(object state)
+        {
+            int nextPhase = CurPhase + 1;
+            if (nextPhase != 5)
+            {
+                ChangePhase(nextPhase);
+            }
+            else
+            {
+                //모든 페이즈 종료
+                _phaseTransitionTimer?.Dispose();
+                _phaseStopwatch.Stop();
+                //Console.WriteLine($"[{SessionId}] 최종 페이즈({CurrentPhase})이므로 더 이상 자동으로 전환되지 않습니다. 세션을 종료합니다.");
+                //EndSession();
+            }
         }
 
         #endregion
@@ -58,6 +165,14 @@ namespace Server.Game
 
             // Spawn Env
             _envManager.Init(this);
+
+            // Time
+            //_timeStamp = DateTime.UtcNow; // 게임 시작 시간 기록 (UTC)
+            _timeStampStopwatch = new Stopwatch(); 
+            _timeStampStopwatch.Restart(); // 게임 시간 측정 시작.
+
+            _phaseStopwatch = new Stopwatch();
+            ChangePhase(0);
         }
 
         public override void Update()
@@ -188,6 +303,8 @@ namespace Server.Game
                         p.Session.Send(spawnPacket);
                 }
             }
+
+            SyncTimer();
         }
 
         public void LeaveGame(int objectId)

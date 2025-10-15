@@ -32,7 +32,24 @@ public class PlayerController : CreatureController
     // 화살
     protected GameObject _projectile = null;
     protected Transform _equipTransform = null;
-    
+
+    #region KDA
+
+    public int KillAmount { get; private set; } = 0; 
+    public int DeathAmount { get; private set; } = 0; 
+    public int AsistAmount { get; private set; } = 0; 
+
+    public virtual void SetKDA(int Kiil,int Death,int Asist)
+    {
+        KillAmount = Kiil;
+        DeathAmount = Death;
+        AsistAmount = Asist;
+
+        // UI에 알리는 코드 필요할 듯.
+    }
+
+    #endregion
+
 
     public bool IsKeyInput
     {

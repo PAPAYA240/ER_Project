@@ -1,3 +1,4 @@
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ public class UI_PlayerHUD : UI_Scene
 {
     public enum GameObjects
     { 
+        Timer,
         TurbineLeft, 
         TurbineCenter, 
         TurbineRight,
@@ -29,6 +31,11 @@ public class UI_PlayerHUD : UI_Scene
         TurbineOff = Managers.Resource.Load<Sprite>("Sprite/Ico_Map_AmpliTurbine_Off");
 
         Bind<GameObject>(typeof(GameObjects));
+    }
+
+    private void Start()
+    {
+        
     }
 
     void Update()
@@ -86,5 +93,10 @@ public class UI_PlayerHUD : UI_Scene
                 }
                 break;
         }
+    }
+
+    public void SetTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)
+    {
+        GetObject((int)GameObjects.Timer).GetComponent<UI_Timer>().SetTimer(phase, clientLocalTargetRealtimeSinceStartupEnd);
     }
 }

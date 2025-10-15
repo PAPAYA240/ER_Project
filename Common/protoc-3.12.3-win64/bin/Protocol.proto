@@ -48,6 +48,9 @@ enum MsgId {
   C_TEST_DAMAGE = 40;
   C_STUN = 41;
   S_STUN = 42;
+  S_COMBAT_TEXT = 43;
+  S_CHANGE_K_D_A = 44;
+  S_SYNC_TIMER = 45;
 }
 
 enum CreatureState{
@@ -200,11 +203,14 @@ enum ItemGrade{
 	ITEM_GRADE_END = 6;
 }
 
-enum DamageType{
+enum CombatTextType{
 	AD = 0;
 	AP = 1;
 	TRUE = 2;
-	END = 3;
+	HP_RECOVERY = 3;
+	STAMINA_RECOVERY = 4;
+	BARRIER = 5;
+	END = 6;
 }
 
 message C_Interact {
@@ -350,10 +356,6 @@ message S_ChangeHp{
 	int32 objectId = 1;
 	float hp = 2;
 	float barrier = 3;
-
-	float recovery = 4;
-	float absorbed = 5;
-	repeated DamageInfo damages = 6;
 }
 
  message S_Die{
@@ -429,6 +431,22 @@ message S_Stun{
 	int32 objectId = 1;
 	bool isStun = 2;
 	float duration = 3;
+}
+
+message S_CombatText{
+	int32 objectId = 1;
+	CombatTextType type = 2;
+	float value = 3;
+}
+
+message S_ChangeKDA{
+	repeated KDAInfo KDAs = 1;
+}
+
+message S_SyncTimer{
+	int32 phase = 1;
+	int64 currentTimestamp = 2;
+	int64 phaseEndTime = 3;
 }
 
 message PositionInfo{
@@ -586,9 +604,11 @@ message ChangeInventoryInfo{
 	int32 count = 3;
 }
 
-message DamageInfo {
-	DamageType type = 1;
-	float damage = 2;
+message KDAInfo{
+	int32 objectId = 1;
+	int32 kill = 2;
+	int32 death = 3;
+	int32 asist = 4;
 }
 
 message C_AttackSkillTarget{

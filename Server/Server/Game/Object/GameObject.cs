@@ -1,5 +1,6 @@
 ﻿using System;
 using Google.Protobuf.Protocol;
+using ServerCore;
 
 namespace Server.Game
 {
@@ -176,18 +177,30 @@ namespace Server.Game
             //}
         }
 
-        public virtual void OnDamaged(GameObject attacker, float damage)
+        public virtual void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false)
         {
             if (Room == null || State == CreatureState.Dead)
                 return;
 
-            float finalDefense = Defense * (1f - attacker.PercentageDefensePenetration * 0.01f) - attacker.FixedDefensePenetration;
-            float finalDamage = damage * 100f / (100f + finalDefense);
+            if (isTrueDamage)
+            {
+                OnDamaged(attacker, damage);
+            }
+            else
+            {
+                float finalDefense = Defense * (1f - attacker.PercentageDefensePenetration * 0.01f) - attacker.FixedDefensePenetration;
+                float finalDamage = damage * 100f / (100f + finalDefense);
 
+                OnDamaged(attacker, finalDamage);
+            }
+        }
+
+        private void OnDamaged(GameObject attacker, float damage)
+        {
             //배리어가 흡수할 수치 계산
-            float absorbed = Math.Min(Barrier, finalDamage);
+            float absorbed = Math.Min(Barrier, damage);
             Barrier -= absorbed;
-            float remaining = finalDamage - absorbed;
+            float remaining = damage - absorbed;
             Hp = Math.Max(0, Hp - remaining);
 
             S_ChangeHp changePacket = new S_ChangeHp();
@@ -195,15 +208,48 @@ namespace Server.Game
             changePacket.Hp = Hp;
             changePacket.Barrier = Barrier;
 
-            //temp
-            changePacket.Damages.Add(new DamageInfo { Damage = remaining, Type = DamageType.Ad });
+            Player targetPlayer = this as Player;
+            Player attackPlayer = attacker as Player;
 
+            // 보호막 데미지 텍스트를 공격자와 피격자에게 보냄.
             if (absorbed > 0)
-                changePacket.Absorbed = absorbed;
+            {
+                S_CombatText barrierTextPacket = new S_CombatText();
+                barrierTextPacket.ObjectId = Id;
+                barrierTextPacket.Type = CombatTextType.Barrier;
+                barrierTextPacket.Value = absorbed;
+
+                if(targetPlayer != null)
+                {
+                    targetPlayer.Session.Send(barrierTextPacket);
+                }
+
+                if(attackPlayer != null)
+                {
+                    attackPlayer.Session.Send(barrierTextPacket);
+                }
+            }
+
+            // 데미지 텍스트를 공격자와 피격자에게 보냄.
+            //TODO 데미지 타입을 받아와야함.
+            S_CombatText damageTextPacket = new S_CombatText();
+            damageTextPacket.ObjectId = Id;
+            damageTextPacket.Type = CombatTextType.Ad;
+            damageTextPacket.Value = remaining;
+
+            if (targetPlayer != null)
+            {
+                targetPlayer.Session.Send(damageTextPacket);
+            }
+
+            if (attackPlayer != null)
+            {
+                attackPlayer.Session.Send(damageTextPacket);
+            }
 
             Room.Broadcast(changePacket);
 
-            if(Hp <= 0)
+            if (Hp <= 0)
             {
                 OnDead(attacker);
             }

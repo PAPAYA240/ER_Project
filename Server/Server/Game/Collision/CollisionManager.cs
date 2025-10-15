@@ -375,10 +375,8 @@ namespace Server.Game
             // 그냥 예시 : 추가 데미지를 입힐 시에
             if(attacker.IsSkillAmplification)
                 damage += skill.GetSkillBonusDamage();
-            
-            float result = damage; 
 
-            return result;
+            return damage;
         } 
 
         void SendChangeHpPkts(Dictionary<int, Dictionary<int, Player>> teams, Dictionary<int, Dictionary<int, float>> damageDict)
@@ -396,7 +394,8 @@ namespace Server.Game
                         continue;
 
                     float damage = attakerKvp.Value;
-                    hitTarget.Room.Push(hitTarget.OnDamaged, attacker, damage);
+                    // 고정 데미지 처리를 어떻게 해야 할까?
+                    hitTarget.Room.Push(hitTarget.OnDamaged, attacker, damage, false);
                 }
             }
         }

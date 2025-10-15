@@ -82,7 +82,7 @@ namespace Server.Game
                 return null;
             }
 
-            Target.Room.Push(OnDamaged, this, skillData.damage + Attack);
+            Target.Room.Push(OnDamaged, this, skillData.damage + Attack, false);
 
             return skillData;
         }

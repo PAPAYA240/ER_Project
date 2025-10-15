@@ -127,7 +127,7 @@ public class MyPlayerController : PlayerController
     protected Coroutine _coRest;
 
     //UI
-    //UI_PlayerHUD _playerHUD = null;
+    UI_PlayerHUD _playerHUD;
     public UI_PlayerInterface PlayerInterface { get; protected set; }
 
     // Inventory
@@ -191,6 +191,8 @@ public class MyPlayerController : PlayerController
         //UI
         GameObject go = Managers.Resource.Instantiate("UI/Scene/PlayerHUD");
         go.transform.SetParent(gameObject.transform);
+        _playerHUD = go.GetComponent<UI_PlayerHUD>();
+        _playerHUD.Init();
         PlayerInterface = go.GetComponentInChildren<UI_PlayerInterface>();
         PlayerInterface.CharacterCode = CharTypeToCharCode(ObjInfo.Player.CharType);
         PlayerInterface.CharacterName = Enum.GetName(typeof(CharacterType), ObjInfo.Player.CharType);
@@ -1219,6 +1221,11 @@ public class MyPlayerController : PlayerController
         {
             _inventory.Add(null); //비어 있는 인벤토리를 생성
         }
+    }
+
+    public void SetTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)
+    {
+        _playerHUD.SetTimer(phase, clientLocalTargetRealtimeSinceStartupEnd);
     }
 
     #endregion

@@ -1,3 +1,4 @@
+using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -34,9 +35,11 @@ public class UI_Timer : UI_Base
     {
         
     }
-    public void StartTimer(int phase, int seconds)
+    public void StartTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)
     {
-        _coTimer = StartCoroutine(CoTimer(phase, seconds));
+
+
+        _coTimer = StartCoroutine(CoTimer(phase, clientLocalTargetRealtimeSinceStartupEnd));
     }
 
     public void StopTimer()
@@ -53,7 +56,7 @@ public class UI_Timer : UI_Base
         int minute = seconds / 60;
         int second = seconds % 60;
 
-        GetText((int)Texts.TimerText).text = minute + " : " + second;
+        GetText((int)Texts.TimerText).text = minute + " : " + second.ToString("D2");
     }
 
     private void SetPhase(int phase)
@@ -61,21 +64,36 @@ public class UI_Timer : UI_Base
         GetText((int)Texts.PhaseText).text = $"Phase {phase}";
     }
 
-    IEnumerator CoTimer(int phase,int seconds)
+    IEnumerator CoTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)
     {
-        SetTimer(seconds);
         SetPhase(phase);
 
-        int remain = seconds;
-
-        while (true)
+        while (Time.realtimeSinceStartup < clientLocalTargetRealtimeSinceStartupEnd)
         {
-            yield return new WaitForSeconds(1);
-            remain--;
-            SetTimer(remain);
-
-            if (remain <= 0)
-                break;
+            float remainingDuration = clientLocalTargetRealtimeSinceStartupEnd - Time.realtimeSinceStartup;
+            SetTimer(Mathf.Max(0, Mathf.CeilToInt(remainingDuration))); // 음수 방지 및 올림 처리
+            yield return null; // 매 프레임 업데이트
         }
+
+        SetTimer(0); // 타이머 종료 시 0으로 설정
+        Debug.Log($"Phase {phase} Synced Timer Finished!");
+
+        //int remain = seconds;
+
+        //while (true)
+        //{
+        //    yield return new WaitForSeconds(1);
+        //    remain--;
+        //    SetTimer(remain);
+
+        //    if (remain <= 0)
+        //        break;
+        //}
+    }
+
+    public void SetTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)
+    {
+        StopTimer();
+        StartTimer(phase, clientLocalTargetRealtimeSinceStartupEnd);
     }
 }

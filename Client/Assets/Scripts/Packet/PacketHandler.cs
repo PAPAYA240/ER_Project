@@ -130,10 +130,10 @@ class PacketHandler
             cc.Hp = changePacket.Hp;
             cc.Barrier = changePacket.Barrier;
 
-            foreach(var v in changePacket.Damages)
-            {
-                Managers.CombatText.SetCombatText(CombatTextManager.TextType.AdDamage, v.Damage, cc.transform.position);
-            }
+            //foreach(var v in changePacket.Damages)
+            //{
+            //    Managers.CombatText.SetCombatText(CombatTextManager.TextType.AdDamage, v.Damage, cc.transform.position);
+            //}
         }
     }
 
@@ -405,5 +405,69 @@ class PacketHandler
             if (stunPacket.IsStun)
                 cc.ApplyStun(stunPacket.Duration);
         }
+    }
+
+    public static void S_CombatTextHandler(PacketSession session, IMessage packet)
+    {
+        S_CombatText textPacket = packet as S_CombatText;
+
+        GameObject go = Managers.Object.FindById(textPacket.ObjectId);
+        if (go == null)
+            return;
+
+        Managers.CombatText.SetCombatText(textPacket.Type, textPacket.Value, go.transform.position);
+    }
+
+    public static void S_ChangeKDAHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeKDA KDAPacket = packet as S_ChangeKDA;
+
+        foreach(KDAInfo info in KDAPacket.KDAs)
+        {
+            GameObject go = Managers.Object.FindById(info.ObjectId);
+            if (go != null)
+            {
+                PlayerController pc = go.GetComponentInChildren<PlayerController>();
+                if (pc != null)
+                {
+                    pc.SetKDA(info.Kill, info.Death, info.Asist);
+                    Debug.Log($"{pc.Id} {pc.name} K: {pc.KillAmount} D: {pc.DeathAmount} A: {pc.AsistAmount}");
+                }
+            }               
+        }
+    }
+
+    public static void S_SyncTimerHandler(PacketSession session, IMessage packet)
+    {
+        S_SyncTimer syncTimerPacket = packet as S_SyncTimer;
+
+
+        float clientPacketReceiveTime = Time.realtimeSinceStartup; // 패킷을 받은 로컬 시간 (Unity)
+
+
+        // 이 부분에서 OneWayLatency를 계산해야 합니다.
+        // 가장 정확한 방법은 클라이언트가 주기적으로 서버에 RTT를 측정하는 핑 요청을 보내고
+        // 그 값을 미리 저장해두는 것입니다.
+        float oneWayLatencySeconds = GetCurrentEstimatedOneWayLatency(); // (예시 함수, 실제 구현 필요)
+
+        long compensatedServerCurrentTimeMs = syncTimerPacket.CurrentTimestamp + (long)(oneWayLatencySeconds * 1000);
+        long compensatedPhaseServerEndTimeMs = syncTimerPacket.PhaseEndTime + (long)(oneWayLatencySeconds * 1000);
+
+        // 서버가 생각하는 남은 시간 (밀리초)
+        long estimatedServerRemainingDurationMs = compensatedPhaseServerEndTimeMs - compensatedServerCurrentTimeMs;
+
+        // 클라이언트의 Time.realtimeSinceStartup을 기준으로 타이머가 끝날 최종 목표 시간
+        float clientLocalTargetRealtimeSinceStartupEnd = clientPacketReceiveTime + (estimatedServerRemainingDurationMs / 1000f);
+
+
+        if(Managers.Object.MyPlayer != null)
+        {
+            Managers.Object.MyPlayer.SetTimer(syncTimerPacket.Phase, clientLocalTargetRealtimeSinceStartupEnd);
+        }
+    }
+
+    static float GetCurrentEstimatedOneWayLatency()
+    {
+        return 0.05f;
     }
 }
