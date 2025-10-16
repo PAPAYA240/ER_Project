@@ -159,5 +159,9 @@ namespace Server.Game
             RotInfo.Qw = newRotation.W;
         }
     }
-#endregion
+    #endregion
+
+    #region Damage
+
+    #endregion
 }

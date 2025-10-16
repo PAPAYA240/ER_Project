@@ -122,6 +122,8 @@ public class MyPlayerController : PlayerController
 
     protected List<int> SkillTargetId { get; set; }
 
+    protected float _ratioSkillDuration = 0f;
+
     // State : Rest
     protected bool _isResting = false;
     protected Coroutine _coRest;
@@ -967,9 +969,9 @@ public class MyPlayerController : PlayerController
 
         if (_coolDownDict.ContainsKey(_keyCode))
         {
-            // 스킬을 사용하고 있는 상태가 아닐 때
-            if (State == CreatureState.Skill)
-                return;
+            // 스킬 쓰는 시간이 한 순간일 때(0.5초쯤..) 판단을 못해서 지울게요
+            //if (State == CreatureState.Skill)
+               // return;
 
             // 쿨타임이 끝났을 때
             if (_coolDownDict[_keyCode].isCoolDown)
@@ -1490,11 +1492,11 @@ public class MyPlayerController : PlayerController
 
     }
 
-    protected float _ratioSkillDuration = 0f;
     #region Packet
     private void SendSkillPacket(KeyCode key, KeyCode tKey = KeyCode.None, bool isAmplification = false)
     {
         Vector3 mousePos = new Vector3();
+
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
             mousePos = new Vector3(hit.point.x, hit.point.y, hit.point.z);
@@ -1507,16 +1509,13 @@ public class MyPlayerController : PlayerController
                 KeyCode = (int)key, 
                 Amplification = isAmplification,
                 AmplifiKeyCode = (int)tKey,
-
             },
-            MousePosX = mousePos.x, MousePosZ = mousePos.z,
+            TargetPosX = mousePos.x, TargetPosZ = mousePos.z,
             ChargeRatio = _ratioSkillDuration,
         };
 
         _ratioSkillDuration = 0f;
-
         Managers.Network.Send(skillPacket);
-        Debug.Log("스킬 패킷 보내기");
     }
 
     protected void SendFXPacket(KeyCode key)

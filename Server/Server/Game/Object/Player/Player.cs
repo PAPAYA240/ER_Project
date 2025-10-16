@@ -20,6 +20,7 @@ namespace Server.Game
         ItemStat _totalItemStat = new ItemStat();
         List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
 
+
         #region Stat Property
         public override float Attack 
         {

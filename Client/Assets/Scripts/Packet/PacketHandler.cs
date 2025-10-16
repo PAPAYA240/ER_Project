@@ -6,6 +6,7 @@ using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
 using UnityEngine;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 class PacketHandler
 {
@@ -190,12 +191,16 @@ class PacketHandler
         GameObject go = Managers.Object.FindById(interactPacket.ObjectId);
         if (go == null) return;
 
-        CreatureController player = go.GetComponentInChildren<CreatureController>();
-        if (player == null) return;
+        CreatureController creature = go.GetComponentInChildren<CreatureController>();
+        if (creature == null) return;
 
-        KeyCode mkey = (KeyCode)interactPacket.KeyCode;
-        KeyCode tKey = (KeyCode)interactPacket.TargetKeyCode;
-        player.AmplificationSkill(mkey, tKey);
+        GameObjectType objectType = ObjectManager.GetObjectTypeById(creature.Id);
+        if (objectType == GameObjectType.Player)
+        {
+            KeyCode mkey = (KeyCode)interactPacket.KeyCode;
+            KeyCode tKey = (KeyCode)interactPacket.TargetKeyCode;
+            creature.AmplificationSkill(mkey, tKey);
+        }
     }
 
     public static void S_WeaponHandler(PacketSession session, IMessage packet)
@@ -390,7 +395,24 @@ class PacketHandler
 
         pc.EquipItem(changeEquipPacket.ItemId);
     }
-    
+    public static void S_DrawmeshHandler(PacketSession session, IMessage packet)
+    {
+        S_Drawmesh Packet = packet as S_Drawmesh;
+
+        GameObject go = Managers.Object.FindById(Packet.ObjectId);
+        if (go == null)
+            return;
+
+        CreatureController cc= go.GetComponentInChildren<CreatureController>();
+        if (cc == null) return;
+
+        Vector3 pos = new Vector3(Packet.PosInfo.PosX, Packet.PosInfo.PosY, Packet.PosInfo.PosZ);
+        Vector3 forward = new Vector3(Packet.Forward.PosX, Packet.Forward.PosY, Packet.Forward.PosZ);
+        Vector3 right = new Vector3(Packet.Right.PosX, Packet.Right.PosY, Packet.Right.PosZ);
+
+        cc.OnDraw(Packet.Hitbox, pos, forward, right);
+
+    }
     public static void S_ChangeInventoryHandler(PacketSession session, IMessage packet)
     {
         S_ChangeInventory changeInventoryPacket = packet as S_ChangeInventory;

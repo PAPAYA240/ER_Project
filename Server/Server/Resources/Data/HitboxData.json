@@ -91,11 +91,11 @@
     "Theodore": {
       "Q": {
         "shape": "Ray",
-        "type": "SkillStatic",
+        "type": "SkillTrack",
         "width": 2,
         "height": 8,
         "startFrame": 0,
-        "endFrame": 30,
+        "endFrame": 70,
         "charge": true,
         "minRange": 6,
         "maxRange": 11
@@ -109,6 +109,9 @@
         "startFrame": 0,
         "endFrame": 200,
         "interactions": {
+          "Q": {
+            "interaction": [ "Attack" ]
+          },
           "E": {
             "interaction": [ "Attack" ]
           }
@@ -122,14 +125,14 @@
         "duration": 0.6,
         "maxRange": 5.5,
         "startFrame": 0,
-        "endFrame": 30
+        "endFrame": 60
       },
       "R": {
         "shape": "Ray",
         "type": "SkillStatic",
         "width": 5,
         "height": 20,
-        "startFrame": 0,
+        "startFrame": 10,
         "endFrame": 150,
         "charge": true,
         "minRange": 5,

@@ -20,11 +20,13 @@ namespace Server.Game
         ConcurrentDictionary<int, Monster> _monsters = new ConcurrentDictionary<int, Monster>();
         Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
 
+
         MonsterManager _monsterManager = new MonsterManager();
         CollisionManager _collisionManager = new CollisionManager();
         EnvManager _envManager = new EnvManager();
 
         Dictionary<int, Dictionary<int, Player>> _teams = new Dictionary<int, Dictionary<int, Player>>();
+        Dictionary<CharacterType, SkillHandler> _skillHandlers = new Dictionary<CharacterType, SkillHandler>();
 
         bool _teamToggle = false;
         bool _dummyAdded = false;
@@ -40,12 +42,14 @@ namespace Server.Game
             set { _curPhase = value; }
         }
 
+        public CollisionManager CollisionManager { get { return _collisionManager; } private set { } }
         #endregion
 
         public bool TryGetMonster(int objectId, out Monster monster)
         {
             return _monsters.TryGetValue(objectId, out monster);
         }
+         public CollisionManager CollManager { get { return _collisionManager; } private set { } }
 
         public void Init(int mapId)
         {
@@ -54,10 +58,11 @@ namespace Server.Game
 
             // Spawn Monster
             _monsterManager.Init(this);
-            //_monsterManager.Add(1, MonsterType.Gamma);
-
+             
             // Spawn Env
             _envManager.Init(this);
+
+            _skillHandlers[CharacterType.Theodore] = new TheodoreSkillHandler();
         }
 
         public override void Update()
@@ -278,40 +283,57 @@ namespace Server.Game
             Broadcast(effect);
         }
 
+        #region Handler Skill
         public void HandleSkill(Player player, C_Skill skillPacket)
         {
-            if(player == null) 
+            if (player == null)
                 return;
+
+            if (skillPacket.SkillInfo.Amplification)
+            {
+                HandleAmplificationSkill(player, skillPacket);
+            }
+            else
+            {
+                HandleNormalSkill(player, skillPacket);
+            }
+        }
+
+        private void HandleAmplificationSkill(Player player, C_Skill skillPacket)
+        {
+            ObjectInfo info = player.Info;
+
+            info.PosInfo.State = CreatureState.Skill;
+            S_Skill skillPacketToSend = new S_Skill()
+            {
+                CanUse = true,
+                ObjectId = player.Info.ObjectId,
+                SkillInfo = skillPacket.SkillInfo
+            };
+            Broadcast(skillPacketToSend);
+
+            if (_skillHandlers.TryGetValue(player.Info.Player.CharType, out var handler))
+                handler.CanUse(player, skillPacketToSend);
+        }
+
+        private void HandleNormalSkill(Player player, C_Skill skillPacket)
+        {
+            if (player == null) return;
 
             ObjectInfo info = player.Info;
             S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
-
             KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
 
-            // 1.증폭 스킬
-            if (skillPacket.SkillInfo.Amplification)
-            {
-                // 해당 키 스킬이 아직 진행 중 && 증폭을 아직 사용하지 않았다면 허가
+            skill.ChargeRatio = skillPacket.ChargeRatio;
 
+            if (!player.CanUseSkill(keyCode))
+            {
+                skill.CanUse = false;
+                player.Session.Send(skill);
+                return;
             }
-            // 2. 일반 스킬
             else
-            {
-                skill.ChargeRatio = skillPacket.ChargeRatio;
-
-                // 스킬 사용이 불가능하면 바로 실패 패킷 전송
-                if (!player.CanUseSkill(keyCode))
-                {
-                    skill.CanUse = false;
-                    player.Session.Send(skill);
-                    return;
-                }
-                // 스킬 사용이 가능하면 자원 소모f
-                else
-                {
-                    player.CommitSkillUsage(keyCode);
-                }
-            }
+                player.CommitSkillUsage(keyCode);
 
             foreach (int targetid in skillPacket.TargetsId)
             {
@@ -325,11 +347,10 @@ namespace Server.Game
                 else if (_players.TryGetValue(targetid, out Player skillTarget))
                 {
                     player.SkillTarget = skillTarget;
-                    player.UsedTargetingSkill = keyCode; 
+                    player.UsedTargetingSkill = keyCode;
                 }
             }
 
-            // 스킬 사용이 가능하다 판단되면 패킷 전송
             info.PosInfo.State = CreatureState.Skill;
             skill.CanUse = true;
             skill.ObjectId = info.ObjectId;
@@ -351,10 +372,10 @@ namespace Server.Game
             if (skills.TryGetValue((KeyCode)skillPacket.SkillInfo.KeyCode, out skillData) == false)
                 return;
 
-            _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode, 
-                new Vector2(skillPacket.MousePosX, skillPacket.MousePosZ), skillPacket.ChargeRatio);
+            _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode,
+                new Vector2(skillPacket.TargetPosX, skillPacket.TargetPosZ), skillPacket.ChargeRatio);
         }
-
+        #endregion
         public void HandleAnim(Player player, C_Anim animPacket)
         {
             if (player == null)

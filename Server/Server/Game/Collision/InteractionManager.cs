@@ -1,10 +1,7 @@
 ﻿using Google.Protobuf.Protocol;
-using Server.Game;
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using static Server.Data.DataUtils;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.Game
 {
@@ -15,19 +12,28 @@ namespace Server.Game
         public InteractionManager() => Initialize();
         public void Initialize()
         {
+            // 충돌체끼리 부딪혔을 때,
             _interactionDispatchers = new Dictionary<string, Action<Hitbox, Hitbox>>{
                  {
                     // 필요한 조건이 있다면 추가
-                    "Interaction", (interactor, target) =>
+                    "Attack", (interactor, target) =>
                     {
                         S_Interact packet = new S_Interact()
                         {
-                            ObjectId = interactor.Player.Id,
+                            ObjectId = interactor.Creature.Id,
                             KeyCode = (int)interactor.KeyCode,
                             TargetKeyCode = (int)target.KeyCode
                         };
-                        GameObject hitTarget = ObjectManager.Instance.Find(interactor.Player.Id);
-                        //hitTarget.Room.Push(hitTarget.OnDamaged, attacker, damage);
+
+                        Player player = interactor.Creature as Player;
+                        if(player == null) return;
+
+                        ClientSession session = player.Session;
+                        GameRoom room = interactor.Creature.Room;
+
+                        GameObject hitTarget = ObjectManager.Instance.Find(interactor.Creature.Id);
+                        if (room != null && session != null)
+                            room.Push(session.Send, packet);
                     }
                  }
              };
@@ -35,7 +41,7 @@ namespace Server.Game
 
         public void HandleInteraction(Hitbox myHitbox, Hitbox targetHitbox)
         {
-            if (myHitbox.Player == null || myHitbox.Player != targetHitbox.Player)
+            if (myHitbox.Creature == null || myHitbox.Creature != targetHitbox.Creature)
                 return;
 
             Dictionary<KeyCode, List<string>> interactions = myHitbox.Interactions;
@@ -47,7 +53,7 @@ namespace Server.Game
                 foreach (string name in interactionNames)
                 {
                     if (_interactionDispatchers.TryGetValue(name, out var action))
-                        action(myHitbox, myHitbox);
+                        action(myHitbox, targetHitbox);
                 }
             }
         }

@@ -1,79 +1,177 @@
 ﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections;
 using UnityEngine;
 using static Data.SkillEffectList;
 
 public class TheodoreController : MyPlayerController
 {
-    // Material
-    Material passiveMaterial, originMaterial;
-    Renderer myRenderer;
+    private Material _passiveMaterial, _originMaterial;
+    private Renderer _myRenderer;
+    private UI_IndicatorTheodore _indicator;
+    private GameObject _skillTarget;
+
+    private float _elapsedTime = 0f;
+    private float _effectDuration = 0f;
 
     protected override void Init()
     {
         if (!Add_Material())  return;
-
         if (!Equip_Weapon()) return;
 
         base.Init();
-
         _attackRange = 10;
-
     }
 
-
+    #region Skill
     protected override void UpdateSkillKeyInput()
     {
-        if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))
-        {
-            if (!EnabledSkill(KeyCode.Q))  return;
-            _keyCode = KeyCode.Q;
+        if (_isInputLocked) return;
 
-            State = CreatureState.Charging;
-            ReadySkillQ();
-        }
-        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.W))
-        {
-            if (!EnabledSkill(KeyCode.W))  return;
-            _keyCode = KeyCode.W;
-
-            indicator.EnableIndicator(KeyCode.W);
-
-            StartCoroutine(ShotSkillW());
-        }
-        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
-        {
-            if (!EnabledSkill(KeyCode.E))  return;
-            _keyCode = KeyCode.E;
-
-            ReadySkillE();
-        }
-        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))
-        {
-            if (!EnabledSkill(KeyCode.R))  return;
-            _keyCode = KeyCode.R;
-
-            StartCoroutine(ShootSkillR());
-        }
-        else if (Input.GetKeyDown(KeyCode.F))
-        {
-            _isUseSkill = true;
-            _keyCode = KeyCode.F;
-        }
+        if (Input.GetKeyDown(KeyCode.Q)) PrepareSkill(KeyCode.Q);
+        else if (Input.GetKeyDown(KeyCode.W)) PrepareSkill(KeyCode.W);
+        else if (Input.GetKeyDown(KeyCode.E)) PrepareSkill(KeyCode.E);
+        else if (Input.GetKeyDown(KeyCode.R)) PrepareSkill(KeyCode.R);
+        else if (Input.GetKeyDown(KeyCode.F)) _keyCode = KeyCode.F;
     }
 
-    #region CC
+    private void PrepareSkill(KeyCode key)
+    {
+        if (!EnabledSkill(key)) return;
+        _keyCode = key;
+
+        // 차징 방식은 별도 처리
+        if (key == KeyCode.Q)
+        {
+            State = CreatureState.Charging;
+            StartCoroutine(ChargingSkill());
+            return;
+        }
+
+        Action onConfirm = () => CallSkill(key);
+        Action onCancel = () => CancelSkill();
+        StartCoroutine(AimingSkillCo(key, onConfirm, onCancel));
+    }
+
+    private IEnumerator AimingSkillCo(KeyCode key, Action onConfirm, Action onCancel)
+    {
+        _isInputLocked = true;
+        _indicator.EnableIndicator(key);
+
+        while (!Input.GetKeyUp(key) && !Input.GetMouseButtonDown(0))
+        {
+            if (Input.GetMouseButtonDown(1))
+            {
+                onCancel?.Invoke();
+                yield break;
+            }
+            yield return null;
+        }
+        onConfirm?.Invoke();
+    }
+
+    private void CallSkill(KeyCode key)
+    {
+        _isUseSkill = true;
+        State = CreatureState.Skill;
+        _indicator.DisableAllIndicators();
+
+        LookAtMouse();
+
+        switch (key)
+        {
+            case KeyCode.W:
+                PlayEffectAtPosition(CreatureState.Skill, KeyCode.W, GetMouseWorldPosition(), GetIndicatorRotation(), EffectType.HitTarget);
+                SendFXPacket(KeyCode.W);
+                StartCoroutine(DelayAnimation());
+                return;
+
+            case KeyCode.E:
+                PlayAnimation("SKILL_E", 0.1f);
+                CreatureController targetCreature = _skillTarget?.GetComponentInChildren<CreatureController>();
+                if (targetCreature != null)
+                    StartCoroutine(ApplyDebuffE(targetCreature));
+                break;
+
+            case KeyCode.R:
+                PlayAnimation("SKILL_R", 0.1f);
+                if (_skillTarget != null && _skillTarget.GetComponent<CreatureController>().HasCrowdControl)
+                    Bondage(_skillTarget);
+                break;
+        }
+    }
+    #endregion
+  
+    #region Q Skill (Charging Type)
+    IEnumerator ChargingSkill()
+    {
+        _indicator.EnableIndicator(KeyCode.Q);
+        PlayAnimation("CHARGING", 0.1f);
+        _eqipWeapon.GetComponent<WeaponController>().PlayAnimation("CHARGING", 0.1f);
+
+        _elapsedTime = 0f;
+        _effectDuration = 2.0f; // DataManager에서 가져오는 것을 권장
+
+        while (Input.GetKey(KeyCode.Q) && _elapsedTime < _effectDuration)
+        {
+            _elapsedTime += Time.deltaTime;
+            _ratioSkillDuration = _elapsedTime / _effectDuration;
+            _skillTarget = TryGetAttackableObject();
+            yield return null;
+        }
+
+        // 최대 시간 초과 시 스킬 사용 안함
+        _isUseSkill = _elapsedTime < _effectDuration; 
+        FinalizeSkillQ();
+    }
+    private void FinalizeSkillQ()
+    {
+        _indicator.DisableAllIndicators();
+        _elapsedTime = 0;
+        _agent.speed = _originSpeed;
+
+        if (_isUseSkill)
+        {
+            State = CreatureState.Skill;
+            _agent.ResetPath();
+            LookAtMouse();
+            PlayAnimation("SKILL_Q", 0.1f);
+            _eqipWeapon.GetComponent<WeaponController>().PlayAnimation("SKILL_Q", 0.1f);
+
+            if (_skillTarget != null && _skillTarget.GetComponent<CreatureController>().HasCrowdControl)
+                Bondage(_skillTarget);
+
+            PlayEffect("FX_SkillFire");
+            return;
+        }
+
+        _ratioSkillDuration = 0f;
+    }
+    #endregion
+
+    #region E Skill
+    private IEnumerator ApplyDebuffE(CreatureController creature)
+    {
+        float originalSpeed = creature.Speed;
+
+        yield return new WaitForSeconds(2.0f); // 지속시간도 DataManager에서...
+
+        creature.Speed = originalSpeed;
+    }
+    #endregion
+
+    #region CC기
     IEnumerator CoPassive()
     {
         Renderer sniperRender = _eqipWeapon.GetComponentInChildren<Renderer>();
-        myRenderer.material = passiveMaterial;
-        sniperRender.material = passiveMaterial;
+        _myRenderer.material = _passiveMaterial;
+        sniperRender.material = _passiveMaterial;
         PlayEffectTransform(CreatureState.Skill, KeyCode.W);
 
         yield return new WaitForSeconds(4f);
 
-        sniperRender.material = originMaterial;
-        myRenderer.material = originMaterial;
+        sniperRender.material = _originMaterial;
+        _myRenderer.material = _originMaterial;
     }
     protected void Passive()
     {
@@ -84,6 +182,49 @@ public class TheodoreController : MyPlayerController
     }
     #endregion
 
+    #region 증폭 Skill
+    public override void AmplificationSkill(KeyCode kc, KeyCode tkc)
+    {
+        base.AmplificationSkill(kc, tkc);
+
+        if (tkc == KeyCode.Q)
+        {
+        }
+        else if (tkc == KeyCode.E)
+        {
+        }
+    }
+
+    #endregion
+
+    #region Skill 취소
+    private IEnumerator DelayAnimation()
+    {
+        State = CreatureState.Skill;
+
+        yield return new WaitForSeconds(0.2f);
+
+        State = CreatureState.Idle;
+        IsKeyInput = false;
+        StartCoroutine(InputLockCancel());
+    }
+    public override void OnSkillAnimationEnd()
+    {
+        StartCoroutine(InputLockCancel());
+    }
+    private void CancelSkill()
+    {
+        _indicator.DisableAllIndicators();
+
+        _agent.ResetPath();
+
+        State = CreatureState.Idle;
+
+        StartCoroutine(InputLockCancel());
+    }
+    #endregion
+
+    #region 보조 함수
     private void Bondage(GameObject target)
     {
         CreatureController myTarget = target.GetComponent<CreatureController>();
@@ -99,278 +240,33 @@ public class TheodoreController : MyPlayerController
 
         target.GetComponent<CreatureController>().HasCrowdControl = false;
 
-        PlayEffectTransform(CreatureState.Skill, KeyCode.Q, EffectType.HitTarget, _currentTarget);
+        PlayEffectTransform(CreatureState.Skill, KeyCode.Q, EffectType.HitTarget, _skillTarget);
         SendFXPacket(_keyCode);
     }
-
-    #region Q Skill
-    private float _elapsedTime = 0f;
-    private float _effectDuration = 0f;
-    private GameObject _currentTarget = null;
-
-    protected override void Skill_Q() 
-    {
-        _agent.ResetPath();
-
-        // 1. 애니메이션
-        LookAtMouse();
-        PlayAnimation("SKILL_Q", 0.1f);
-        _eqipWeapon.GetComponent<WeaponController>().PlayAnimation("SKILL_Q", 0.1f);
-
-        // 2. 스턴 가능 경우 속박
-        if (_currentTarget != null && _currentTarget.GetComponent<CreatureController>().HasCrowdControl)
-            Bondage(_currentTarget);
-
-        PlayEffect("FX_SkillFire");
-    }
-
-    private void ReadySkillQ()
-    {
-        PlayAnimation("CHARGING", 0.1f);
-        _eqipWeapon.GetComponent<WeaponController>().PlayAnimation("CHARGING", 0.1f);
-
-        // TODO : 예시로 하드 코딩, 나중에 CC Data에서 가져와 줄 것
-        _effectDuration = 2.0f;
-        indicator.EnableIndicator(KeyCode.Q);
-
-        StartCoroutine(ShotSkillQ());
-    }
-
-    IEnumerator ShotSkillQ()
-    {
-        // 1. 키를 누르고 있거나, 최대 충전 시간이 지나지 않은 경우
-        while (Input.GetKey(KeyCode.Q) && !Input.GetMouseButtonDown(0) 
-            && _elapsedTime < _effectDuration)
-        {
-            UpdateChargeState();
-            yield return null;
-        }
-
-        // 2. 스킬 시간 초과 시 스킬 취소
-        if (_elapsedTime >= _effectDuration)
-        {
-            FinalizeSkillQ(_currentTarget, true);
-            yield break;
-        }
-
-        FinalizeSkillQ(_currentTarget, false);
-    }
-
-    private void UpdateChargeState()
-    {
-        _elapsedTime += Time.deltaTime;
-        _ratioSkillDuration = _elapsedTime / _effectDuration; 
-        _currentTarget = TryGetAttackableObject();
-    }
-
-    bool bScreenInvo = false;
-    private void FinalizeSkillQ(GameObject target, bool isMaxCharge)
-    {
-        indicator.DisableAllIndicators();
-        _elapsedTime = 0;
-        _effectDuration = 0;
-        _agent.speed = _originSpeed;
-
-        // 충전 시간 초과
-        if (isMaxCharge)
-        {
-            _isUseSkill = false;
-            _ratioSkillDuration = 0f;
-            State = CreatureState.Idle;
-        }
-        // 스킬 시전
-        else
-            _isUseSkill = true;
-    }
-    #endregion
-
-    #region W Skill
-    protected override void Skill_W()
-    {
-        FinalizeSkillW();
-    }
-  
-    IEnumerator ShotSkillW()
-    {
-        _isInputLocked = true;
-
-        // 1. 대기 : W 키를 누르고 있거나, 왼 마우스를 누르지 않았을 때
-        while (Input.GetKey(KeyCode.W) && !Input.GetMouseButtonDown(0))
-        {
-            if(Input.GetMouseButtonDown(1))
-            {
-                CancelSkill();
-                yield break;
-            }
-            yield return null;
-        }
-
-        _isUseSkill = true;
-    }
-
-    private void FinalizeSkillW()
-    {
-        /*
-        일반 공격이 스크린을 통과하면 추가 스킬 피해를 주고 적 주변으로 확산된다.
-
-       에너지 포(Q)가 스크린을 통과하면 잠시 후 증폭 스크린 전방으로 에너지를 발사하여 적에게 피해를 주고 
-       아군을 회복시킨다. 발사한 에너지포의 방향과는 상관없이 무조건 중앙에 발사된다.
-
-       스파크탄(E)이 스크린에 통과하면 평타처럼 적 주변으로 확산하고 투사체 속도와 사거리가 증가한다.
-       */
-        // 1. 상태 및 플래그 설정
-        bScreenInvo = true;
-
-        // 2. 마우스
-        Vector3 mousePos = GetMouseWorldPosition();
-        LookAtMouse();
-
-        // 3. 이펙트 
-        float playerYaw = transform.rotation.eulerAngles.y;
-        Quaternion yawRotationOnly = Quaternion.Euler(0, playerYaw, 0);
-        Quaternion desiredXRotation = Quaternion.Euler(-90f, 180f, 0);
-        Quaternion finalRotation = yawRotationOnly * desiredXRotation;
-
-        if (mousePos != Vector3.zero)
-        {
-           PlayEffectAtPosition(CreatureState.Skill, KeyCode.W, mousePos, finalRotation, EffectType.HitTarget);
-            SendFXPacket(_keyCode);
-        }
-        CancelSkill();
-
-    }
-
-    private void CancelSkill()
-    {
-        indicator.DisableAllIndicators();
-
-        _agent.ResetPath();
-
-        State = CreatureState.Idle;
-
-        StartCoroutine(InputLockCancel());
-    }
-
-    // 입력 조절
+   
     private IEnumerator InputLockCancel()
     {
         yield return new WaitForSeconds(0.3f);
-
         _isInputLocked = false;
     }
-
-    #endregion
-
-    #region E Skill
-    protected override void Skill_E()
+    private Quaternion GetIndicatorRotation()
     {
+        float playerYaw = transform.rotation.eulerAngles.y;
+        Quaternion yawRotationOnly = Quaternion.Euler(0, playerYaw, 0);
+        Quaternion desiredXRotation = Quaternion.Euler(-90f, 180f, 0);
+        return yawRotationOnly * desiredXRotation;
     }
-
-    private void ReadySkillE()
+    private Vector3 GetMouseWorldPosition()
     {
-        indicator.EnableIndicator(KeyCode.E);
+        Camera mainCam = Camera.main;
+        if (mainCam == null) return Vector3.zero;
 
-        _currentTarget = TryGetAttackableObject();
+        Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
 
-        _isInputLocked = true;
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Map")))
+            return hit.point;
 
-        StartCoroutine(ShotSkillE());
-    }
-  
-    
-    IEnumerator ShotSkillE()
-    {
-        while (Input.GetKey(KeyCode.E) && !Input.GetMouseButtonDown(0))
-        {
-            if (Input.GetMouseButtonDown(1))
-            {
-                CancelSkill();
-                yield break;
-            }
-            _currentTarget = TryGetAttackableObject();
-            yield return null; 
-        }
-
-        _isUseSkill = true;
-        _isInputLocked = false;
-
-        indicator.DisableAllIndicators();
-        PlayAnimation("SKILL_E", 0.1f);
-
-        // 스피드 감소, 시야 제공, 공격 시 => [스킬 피해 추가, 속박]
-        // 30/60/90/120/150(+스킬 증폭의 65%)
-        CreatureController targetCreature = _currentTarget?.GetComponentInChildren<CreatureController>();
-        if (targetCreature != null)
-            StartCoroutine(AbilitySkillE(targetCreature));
-
-        // 구속 가능
-        LookAtMouse();
-    }
-
-    private IEnumerator AbilitySkillE(CreatureController creature)
-    {
-        float targetOrigionSpeed = creature.Speed;
-
-        //string decreaseSpeed = 
-        //    DataManager.SkillDict[ObjInfo.Player.CharType][_keyCode].
-        //    descriptionInfo["speed"][Stat.Level];
-
-        //int numberInt = int.Parse(decreaseSpeed);
-        //creature.Speed = creature.Speed * (1.0f - 0.01f * numberInt);
-
-        // 이동 속도를 2동안 감소시킨다.
-        yield return new WaitForSeconds(2.0f);
-        creature.Speed = targetOrigionSpeed;
-    }
-    #endregion
-
-    #region R Skill
-    protected override void Skill_R()
-    {
-        
-    }
-    IEnumerator ShootSkillR()
-    {
-        _isInputLocked = true;
-        indicator.EnableIndicator(KeyCode.R);
-
-        while (Input.GetKey(KeyCode.R) && !Input.GetMouseButtonDown(0))
-        {
-            if (Input.GetMouseButtonDown(1))
-            {
-                CancelSkill();
-                yield break;
-            }
-            yield return null; 
-        }
-
-        _isUseSkill = true;
-        _isInputLocked = false;
-
-        indicator.DisableAllIndicators();
-        PlayAnimation("SKILL_R", 0.1f);
-        
-        // 속박 가능 시 => 속박
-        if (_currentTarget != null && _currentTarget.GetComponent<CreatureController>().HasCrowdControl)
-            Bondage(_currentTarget);
-
-        LookAtMouse();
-    }
-    #endregion
-
-    #region Util
-    // 추가 데미지
-    public float CalculateBonusDamage(float currentAttackPower)
-    {
-        string damagePercentageStr = DataManager.SkillDict[ObjInfo.Player.CharType][_keyCode].descriptionInfo["damage"][Stat.Level];
-        if (!int.TryParse(damagePercentageStr, out int percentage))
-            return 0f;
-
-        float damageRatio = (float)percentage / 100f;
-
-        float bonusDamage = currentAttackPower * damageRatio;
-
-        return bonusDamage;
+        return Vector3.zero;
     }
 
     public override void OnAttackTiming()
@@ -392,19 +288,6 @@ public class TheodoreController : MyPlayerController
             }
         }
     }
-    private Vector3 GetMouseWorldPosition()
-    {
-        Camera mainCam = Camera.main;
-        if (mainCam == null) return Vector3.zero;
-
-        Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Map")))
-            return hit.point;
-
-        return Vector3.zero;
-    }
-
     public override void PlayEffectFromServer(EffectInfo fxInfo)
     {
         PlayEffectTransform(CreatureState.Skill, (KeyCode)fxInfo.KeyCode);
@@ -413,7 +296,6 @@ public class TheodoreController : MyPlayerController
     #endregion
 
     #region init
-    UI_IndicatorTheodore indicator;
     private bool Equip_Weapon()
     {
        _equipTransform = Util.FindChildByName(transform, "Equip_L").transform;
@@ -438,7 +320,7 @@ public class TheodoreController : MyPlayerController
             return false;
 
         // Skill Indicator UI
-        indicator = gameObject.GetOrAddComponent<UI_IndicatorTheodore>();
+        _indicator = gameObject.GetOrAddComponent<UI_IndicatorTheodore>();
 
         return true;
     }
@@ -449,19 +331,16 @@ public class TheodoreController : MyPlayerController
 
     private bool Add_Material()
     {
-        myRenderer = this.GetComponentInChildren<Renderer>();
-        if (myRenderer == null) return false;
+        _myRenderer = this.GetComponentInChildren<Renderer>();
+        if (_myRenderer == null) return false;
 
-        originMaterial = myRenderer.material;
-        passiveMaterial = Resources.Load<Material>("materials/effect/TheoPassiveMaterial");
-        if (passiveMaterial == null) return false;
+        _originMaterial = _myRenderer.material;
+        _passiveMaterial = Resources.Load<Material>("materials/effect/TheoPassiveMaterial");
+        if (_passiveMaterial == null) return false;
         
         return true;
     }
-    #endregion
 
-    #region 증폭 스킬
-    
     #endregion
 }
 

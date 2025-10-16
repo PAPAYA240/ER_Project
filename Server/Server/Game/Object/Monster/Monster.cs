@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Google.Protobuf.Protocol;
 using Server.Data;
+using static Server.Data.DataUtils;
 
 namespace Server.Game
 {
@@ -30,13 +31,16 @@ namespace Server.Game
         // TODO : 감마 총알 예시
         public float _delaySkillAnimationTimer = 0;
 
+        public Action<GameObject> OnAttacked;
+
         public Monster() => ObjectType = GameObjectType.Monster;
 
+        public Action<GameObject, float> OnDamage;
         public void Init(string name)
         {
             if (!Add_MonsterData(name))
                 return;
-
+            this.OnAttacked += HandleAttacked;
             ChangeState(new IdleState());
         }
        
@@ -66,6 +70,13 @@ namespace Server.Game
              ChangeState(new IdleState());
         }
 
+        public void MonsterCollision(MonsterSkill skilltype)
+        {
+            if(Room == null || Room.CollisionManager == null) return;
+
+            Room.CollisionManager.AddHitbox(this, skilltype);
+        }
+
         // 스킬 선택
         public MonsterSkillData Get_DecideAndUseSkill()
         {
@@ -81,6 +92,9 @@ namespace Server.Game
                 Console.WriteLine($"--> 사용할 스킬 ID({skillName})가 데이터에 없습니다.");
                 return null;
             }
+
+            if (Target == null || Target.Room == null)
+                return skillData;
 
             Target.Room.Push(OnDamaged, this, skillData.damage + Attack);
 
@@ -98,6 +112,13 @@ namespace Server.Game
             diePacket.ObjectId = Id;
             diePacket.AttackerId = attacker.Id;
             Room.Broadcast(diePacket);
+        }
+
+        private void HandleAttacked(GameObject attacker)
+        {
+            if (attacker is Player attackerPlayer)
+                 Target = attackerPlayer;
+
         }
 
         #region Helper Functions
@@ -148,24 +169,6 @@ namespace Server.Game
             if (distanceToWaypoint < 0.1f)
                 return true;
             return false;
-        }
-
-        public Creature FindTarget(Monster monster)
-        {
-            // 플레이어 판단
-            monster.Target = monster.Room.FindPlayer(p =>
-            {
-                Vector3 playerPos = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
-                Vector3 monsterPos = new Vector3(monster.PosInfo.PosX, monster.PosInfo.PosY, monster.PosInfo.PosZ);
-
-                Creature target = p as Creature;
-                Creature targetMonster = target.Target;
-                if (targetMonster == this)
-                    return true;
-                else
-                    return false;
-            });
-            return monster.Target;
         }
 
         private long GetCurrentTimeMs()

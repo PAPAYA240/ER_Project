@@ -1,0 +1,44 @@
+{
+  "hitbox": {
+    "Omega": {
+      "MsAttack1": {
+        "shape": "Sector",
+        "type": "SkillStatic",
+        "radius": 2.2,
+        "angle": 90,
+        "duration": 0.2,
+        "startFrame": 0,
+        "endFrame": 70
+      },
+      "MsAttack2": {
+        "shape": "Ray",
+        "type": "SkillTrack",
+        "width": 2,
+        "height": 8,
+        "startFrame": 0,
+        "endFrame": 70,
+        "charge": true,
+        "minRange": 6,
+        "maxRange": 11
+      },
+      "MsSkill1": {
+        "shape": "Sector",
+        "type": "SkillStatic",
+        "radius": 3.5,
+        "angle": 90,
+        "duration": 0.2,
+        "startFrame": 40,
+        "endFrame": 60
+      },
+      "MsSkill2": {
+        "shape": "Circle",
+        "type": "SkillTrack",
+        "radius": 2,
+        "lookOffset" : 3,
+        "startFrame": 10,
+        "endFrame": 50,
+        "isOneTimeUse": true
+      }
+    }
+  }
+}
