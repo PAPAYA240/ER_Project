@@ -176,6 +176,7 @@ namespace Server.Game
                 hitbox.PosX = hitbox.MousePos.X + hitbox.OffsetPos.X;
                 hitbox.PosZ = hitbox.MousePos.Y + hitbox.OffsetPos.Y;
                 forward = Vector2.Normalize(hitbox.MousePos - origin);
+                return;
             }
             else                                                                                                                        // Creature 기준 생성
             {
@@ -209,12 +210,6 @@ namespace Server.Game
 
             hitbox.PosX = hitbox.Creature.PosInfo.PosX + rotatedOffset.X;
             hitbox.PosZ = hitbox.Creature.PosInfo.PosZ + rotatedOffset.Z;
-
-            if (shape == SkillShape.Point)
-            {
-                hitbox.PosX = hitbox.MousePos.X;
-                hitbox.PosZ = hitbox.MousePos.Y;
-            }
 
             hitbox.Rot = new RotationInfo { Qx = rotation.X, Qy = rotation.Y, Qz = rotation.Z, Qw = rotation.W };
             hitbox.Forward = forward;
@@ -281,7 +276,7 @@ namespace Server.Game
             {
                 foreach (Hitbox hitbox in set)
                 {
-                    // TODO - 특수 케이스 : 투사체
+                    // 특수 케이스 : 투사체
                     if (Enum.TryParse<SkillType>(hitbox.Data.Type, out var type) && type == SkillType.SkillProjectile)
                     {
                         Quaternion rot = new Quaternion(
@@ -291,7 +286,8 @@ namespace Server.Game
                           hitbox.Creature.RotInfo.Qw
                         );
 
-                        // TODO : 움직임 속도 예시
+                        // TODO : 움직임 속도 예시 (데이터로 변경 예정)
+                        // : 움직임 플레이어에 영향 받지 못하게 고정해야 함
                         const float moveSpeed = 10;
                         Vector3 toForward = Vector3.Transform(new Vector3(0, 0, 1), rot);
                         const float TickInterval = 1.0f / 70.0f;
