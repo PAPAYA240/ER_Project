@@ -152,9 +152,28 @@ class PacketHandler
             cc.OnDead();
         }
 
-        if(Managers.Object.MyPlayer != null && Managers.Object.MyPlayer.Id == diePacket.ObjectId)
+        if (Managers.Object.MyPlayer != null)
         {
-            go.GetComponentInChildren<MyPlayerController>().PlayerInterface.OnDead(diePacket.RespawnTime);
+            if(Managers.Object.MyPlayer.Id == diePacket.ObjectId)
+            {
+                go.GetComponentInChildren<MyPlayerController>().PlayerInterface.OnDead(diePacket.RespawnTime);
+            }
+            
+            // 죽은 플레이어
+            PlayerController pc = cc as PlayerController;
+            if (pc == null)
+                return;
+
+            // 공격 플레이어
+            GameObject attackerGo = Managers.Object.FindById(diePacket.AttackerId);
+            if (attackerGo == null) 
+                return;
+
+            PlayerController attPc = attackerGo.GetComponentInChildren<PlayerController>();
+            if (attPc == null) 
+                return;
+
+            Managers.Object.MyPlayer.NotifyKill(attPc, pc); 
         }
     }
 
@@ -273,7 +292,6 @@ class PacketHandler
 
         cc.Stat.Level += levelUpPkt.LevelUpCnt;
 
-        //사실 이때 적용되야되는데?
         cc.ChangeStat(levelUpPkt.StatGrowth);
 
         //아래는 레벨이 제대로 표시되게 하는 코드
@@ -431,7 +449,7 @@ class PacketHandler
                 if (pc != null)
                 {
                     pc.SetKDA(info.Kill, info.Death, info.Asist);
-                    Debug.Log($"{pc.Id} {pc.name} K: {pc.KillAmount} D: {pc.DeathAmount} A: {pc.AsistAmount}");
+                    //Debug.Log($"{pc.Id} {pc.name} K: {pc.KillAmount} D: {pc.DeathAmount} A: {pc.AsistAmount}");
                 }
             }               
         }
@@ -444,11 +462,7 @@ class PacketHandler
 
         float clientPacketReceiveTime = Time.realtimeSinceStartup; // 패킷을 받은 로컬 시간 (Unity)
 
-
-        // 이 부분에서 OneWayLatency를 계산해야 합니다.
-        // 가장 정확한 방법은 클라이언트가 주기적으로 서버에 RTT를 측정하는 핑 요청을 보내고
-        // 그 값을 미리 저장해두는 것입니다.
-        float oneWayLatencySeconds = GetCurrentEstimatedOneWayLatency(); // (예시 함수, 실제 구현 필요)
+        float oneWayLatencySeconds = GetCurrentEstimatedOneWayLatency(); 
 
         long compensatedServerCurrentTimeMs = syncTimerPacket.CurrentTimestamp + (long)(oneWayLatencySeconds * 1000);
         long compensatedPhaseServerEndTimeMs = syncTimerPacket.PhaseEndTime + (long)(oneWayLatencySeconds * 1000);

@@ -1228,6 +1228,17 @@ public class MyPlayerController : PlayerController
         _playerHUD.SetTimer(phase, clientLocalTargetRealtimeSinceStartupEnd);
     }
 
+    public override void SetKDA(int kill, int death, int asist)
+    {
+        base.SetKDA(kill, death, asist);
+        _playerHUD.SetKDA(kill, death, asist);
+    }
+
+    public void NotifyKill(PlayerController attPc, PlayerController diePc)
+    {
+        _playerHUD.NotifyKill(attPc, diePc);
+    }
+
     #endregion
 
     #region Effect

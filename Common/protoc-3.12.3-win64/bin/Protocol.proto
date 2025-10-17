@@ -484,6 +484,7 @@ message PlayerInfo {
     CharacterType charType = 1;
     int32 skillPoints = 2;
     int32 team = 3;
+	Weapon weapon = 4;
 }
 
 message MonsterInfo {

@@ -12,7 +12,9 @@ public class UI_PlayerHUD : UI_Scene
         TurbineLeft, 
         TurbineCenter, 
         TurbineRight,
-        Minimap
+        Minimap,
+        KDA,
+        KillNoti
     }
 
 
@@ -20,6 +22,8 @@ public class UI_PlayerHUD : UI_Scene
     public Sprite TurbineEnemy;
     public Sprite TurbineNeutral;
     public Sprite TurbineOff;
+
+    private Coroutine _coNotifyKill = null;
 
     public override void Init()
     {
@@ -31,6 +35,8 @@ public class UI_PlayerHUD : UI_Scene
         TurbineOff = Managers.Resource.Load<Sprite>("Sprite/Ico_Map_AmpliTurbine_Off");
 
         Bind<GameObject>(typeof(GameObjects));
+
+        GetObject((int)GameObjects.KillNoti).SetActive(false);
     }
 
     private void Start()
@@ -98,5 +104,31 @@ public class UI_PlayerHUD : UI_Scene
     public void SetTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)
     {
         GetObject((int)GameObjects.Timer).GetComponent<UI_Timer>().SetTimer(phase, clientLocalTargetRealtimeSinceStartupEnd);
+    }
+
+    public void SetKDA(int kill, int death, int asist)
+    {
+        GetObject((int)GameObjects.KDA).GetComponent<UI_KDA>().SetKDA(kill, death, asist);
+    }
+
+    public void NotifyKill(PlayerController attPc, PlayerController diePc)
+    {
+        if(_coNotifyKill != null)
+        {
+            StopCoroutine(_coNotifyKill);
+            _coNotifyKill = null;
+        }
+
+        StartCoroutine(CoNotifyKill(attPc, diePc));
+    }
+
+    IEnumerator CoNotifyKill(PlayerController attPc, PlayerController diePc)
+    {
+        GetObject((int)GameObjects.KillNoti).SetActive(true);
+        GetObject((int)GameObjects.KillNoti).GetComponent<UI_KillNoti>().NotifyKill(attPc, diePc);
+
+        yield return new WaitForSeconds(3);
+
+        GetObject((int)GameObjects.KillNoti).SetActive(false);
     }
 }

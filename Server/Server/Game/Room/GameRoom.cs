@@ -33,20 +33,16 @@ namespace Server.Game
 
         #region Phase, Time
         
-        public TimeSpan RemainTime { get { return TimeSpan.FromSeconds(DataManager.PhaseDict[CurPhase]) - _phaseStopwatch.Elapsed; } }
         public TimeSpan TimeStamp { get { return _timeStampStopwatch.Elapsed; } }
 
         //private DateTime _timeStamp; // 게임이 시작된 시간
         private Stopwatch _timeStampStopwatch; // 게임 시작부터 얼마나 시간이 흘렀는지 측정하는 스톱워치
 
-        private DateTime _phaseStartTime; // 현재 페이즈가 시작된 시간
+        //private DateTime _phaseStartTime; // 현재 페이즈가 시작된 시간
         private Stopwatch _phaseStopwatch; // 현재 페이즈가 얼마나 진행되었는가를 측정하는 스톱워치
         private Timer _phaseTransitionTimer; // 페이즈 전환을 예약하는 타이머
+        private Timer _syncTimer; // 일정 주기마다 싱크 타이머를 호출하는 타이머
         public int CurPhase { get; private set; } = 5;
-
-        // 외부로 페이즈 변경을 알리는 이벤트 (예: GameSessionManager 또는 네트워크 레이어로 전달)
-        //public event Action<string, GamePhase> OnPhaseChanged;
-
 
         public void ChangePhase(int newPhase)
         {
@@ -54,7 +50,7 @@ namespace Server.Game
                 return; 
 
             CurPhase = newPhase;
-            _phaseStartTime = DateTime.UtcNow; // 페이즈 시작 시간 기록 (UTC)
+            //_phaseStartTime = DateTime.UtcNow; // 페이즈 시작 시간 기록 
 
             _phaseStopwatch.Restart(); // 페이즈 경과 시간 측정 시작/재시작
 
@@ -78,7 +74,6 @@ namespace Server.Game
             }
 
             // 클라이언트들에게 페이즈 변경 사실을 통보 (네트워크 전송)
-            //NotifyClientsPhaseChanged();
             SyncTimer();
 
             // 특별한 페이즈에 대한 추가 로직
@@ -98,20 +93,20 @@ namespace Server.Game
             }
         }
 
-        public void SyncTimer()
+        public void SyncTimer(object state = null)
         {
             S_SyncTimer syncTimerPacket = new S_SyncTimer();
 
             syncTimerPacket.Phase = CurPhase;
-            syncTimerPacket.CurrentTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            syncTimerPacket.PhaseEndTime = CalculatePhaseServerEndTime();
+            syncTimerPacket.CurrentTimestamp = System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(); 
+            syncTimerPacket.PhaseEndTime = CalculatePhaseServerEndTime(CurPhase); 
 
             Push(Broadcast, syncTimerPacket);
         }
 
-        private long CalculatePhaseServerEndTime()
+        private long CalculatePhaseServerEndTime(int phase)
         {
-            return _phaseStartTime.Millisecond + DataManager.PhaseDict[CurPhase] * 1000;
+            return System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + (long)GetRemainingPhaseTime().TotalMilliseconds;
         }
 
 
@@ -142,8 +137,6 @@ namespace Server.Game
                 //모든 페이즈 종료
                 _phaseTransitionTimer?.Dispose();
                 _phaseStopwatch.Stop();
-                //Console.WriteLine($"[{SessionId}] 최종 페이즈({CurrentPhase})이므로 더 이상 자동으로 전환되지 않습니다. 세션을 종료합니다.");
-                //EndSession();
             }
         }
 
@@ -166,13 +159,12 @@ namespace Server.Game
             // Spawn Env
             _envManager.Init(this);
 
-            // Time
-            //_timeStamp = DateTime.UtcNow; // 게임 시작 시간 기록 (UTC)
+            // Timer
             _timeStampStopwatch = new Stopwatch(); 
             _timeStampStopwatch.Restart(); // 게임 시간 측정 시작.
-
             _phaseStopwatch = new Stopwatch();
             ChangePhase(0);
+            _syncTimer = new Timer(SyncTimer, null, TimeSpan.Zero, TimeSpan.FromSeconds(5)); //주기적으로 동기화
         }
 
         public override void Update()
@@ -224,6 +216,7 @@ namespace Server.Game
                 _players.Add(gameObject.Id, player);
                 player.Init();
                 player.Info.Player.Team = AssignTeam();
+                player.Info.Player.Weapon = FindWeapon(player.Info.Player.CharType);
 
                 if (!_teams.TryGetValue(player.Info.Player.Team, out var teamPlayers))
                 {
@@ -638,6 +631,25 @@ namespace Server.Game
             clientSession.Send(spawnPacket);
 
             _dummyAdded = true;
+        }
+
+        private Weapon FindWeapon(CharacterType type)
+        {
+            switch (type)
+            {
+                case CharacterType.Rozzi:
+                    return Weapon.Pistol;
+                case CharacterType.Yuki:
+                    return Weapon.TwoHandSword;
+                case CharacterType.Abigail:
+                    return Weapon.Axe;
+                case CharacterType.Theodore:
+                    return Weapon.SniperRifle;
+                case CharacterType.Hyunwoo:
+                    return Weapon.Glove;
+            }
+
+            return Weapon.Pistol;
         }
     }
 }

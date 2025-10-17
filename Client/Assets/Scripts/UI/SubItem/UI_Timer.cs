@@ -22,8 +22,6 @@ public class UI_Timer : UI_Base
     private void Awake()
     {
         Init();
-
-        StartTimer(1, 1200);
     }
 
     void Start()
@@ -37,8 +35,6 @@ public class UI_Timer : UI_Base
     }
     public void StartTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)
     {
-
-
         _coTimer = StartCoroutine(CoTimer(phase, clientLocalTargetRealtimeSinceStartupEnd));
     }
 
@@ -77,18 +73,6 @@ public class UI_Timer : UI_Base
 
         SetTimer(0); // 타이머 종료 시 0으로 설정
         Debug.Log($"Phase {phase} Synced Timer Finished!");
-
-        //int remain = seconds;
-
-        //while (true)
-        //{
-        //    yield return new WaitForSeconds(1);
-        //    remain--;
-        //    SetTimer(remain);
-
-        //    if (remain <= 0)
-        //        break;
-        //}
     }
 
     public void SetTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)
