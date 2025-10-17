@@ -157,6 +157,9 @@ namespace Server.Game
             if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
                 return;
 
+            if (type == SkillType.SkillStatic)
+                return;
+
             // Track 타입 && 추적 대상이 있는 경우
             if (type == SkillType.SkillTrack && hitbox.trackingHitbox != null)
             {

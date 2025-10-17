@@ -183,7 +183,6 @@ namespace Server.Game
             Room.Broadcast(packet);
         }
 
-        public virtual void OnDamaged(GameObject attacker, float damage)
         public virtual void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false)
         {
             if (Room == null || State == CreatureState.Dead)
