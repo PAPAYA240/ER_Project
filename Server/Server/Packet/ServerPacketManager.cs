@@ -54,7 +54,7 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CTestDamage, MakePacket<C_TestDamage>);
 		_handler.Add((ushort)MsgId.CTestDamage, PacketHandler.C_TestDamageHandler);		
 		_onRecv.Add((ushort)MsgId.CStun, MakePacket<C_Stun>);
-		_handler.Add((ushort)MsgId.CStun, PacketHandler.C_StunHandler);
+		_handler.Add((ushort)MsgId.CStun, PacketHandler.C_StunHandler);		
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

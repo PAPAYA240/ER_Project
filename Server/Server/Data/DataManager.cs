@@ -24,7 +24,8 @@ namespace Server.Data
 
         public static Dictionary<CharacterType, Dictionary<KeyCode, SkillHitbox>> SkillHitboxDict { get; private set; } =
             new Dictionary<CharacterType, Dictionary<KeyCode, SkillHitbox>>();
-
+        public static Dictionary<MonsterType, Dictionary<MonsterSkill, SkillHitbox>> MonstSkillHitboxDict { get; private set; } =
+            new Dictionary<MonsterType, Dictionary<MonsterSkill, SkillHitbox>>();
         public static Dictionary<Weapon, WeaponInfo> WeaponDict { get; private set; } = new Dictionary<Weapon, WeaponInfo>();
 
         public static Dictionary<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>> WeaponMasteryDict { get; private set; }
@@ -47,14 +48,15 @@ namespace Server.Data
             StatDict = LoadJson<Data.StatData, CharacterType, StatInfo>("StatData", "player").MakeDict();
             ExpDict = LoadJson<Data.ExpData, int, int>("ExpData", "player").MakeDict();
             SkillDict = LoadJson<Data.GameData, CharacterType, Dictionary<KeyCode, SkillData>>("newSkillData", "player").MakeDict();
-            SkillHitboxDict = LoadJson<Data.HitboxData, CharacterType, Dictionary<KeyCode, SkillHitbox>>("HitboxData", "player").MakeDict();
             StatGrowthDict = LoadJson<Data.StatGrowthData, CharacterType, StatInfo>("StatGrowthData", "player").MakeDict();
             WeaponDict = LoadJson<Data.WeaponData, Weapon, WeaponInfo>("WeaponData", "player").MakeDict();
             WeaponMasteryDict = LoadJson<Data.WeaponMasteryData, CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>("WeaponMasteryData", "player").MakeDict();
+            SkillHitboxDict = LoadJson<Data.HitboxData, CharacterType, Dictionary<KeyCode, SkillHitbox>>("HitboxData", "player").MakeDict();
 
             // For MonsterData
             MonsterDict = LoadJson<Data.MonsterDict, string, Data.MonsterData>("MonsterData/MonsterData", "monster").MakeDict();
             MonsterSkillDict = LoadJson<Data.MonsterSkillDict, MonsterSkill, Data.MonsterSkillData>("MonsterData/MonsterSkillData", "monster").MakeDict();
+            MonstSkillHitboxDict = LoadJson<Data.MonstHitboxData, MonsterType, Dictionary<MonsterSkill, SkillHitbox>>("MonsterData/HitboxData", "monster").MakeDict();
 
             // For EnvironmentData
             EnvironmentObjDict = LoadJson<Data.EnvObjectData, EnvType, EnvInfo>("Env/EnvData", "monster").MakeDict();

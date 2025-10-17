@@ -20,8 +20,7 @@ namespace Server.Game
             if (skillData == null)
                 return;
 
-            //if(monster.Info.MonsterType == MonsterType.Alpha)
-            //    DataManager.MonsterSkillDict.TryGetValue(MonsterSkill.MsAttack2, out skillData);
+            monster.MonsterCollision(skillData.skillType);
 
             _isClientEndReceived = false;
             long durationInMilliseconds = (long)(skillData.skillDuration * 1000f);
@@ -33,12 +32,8 @@ namespace Server.Game
             monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
         }
 
-        //private float _delayTimer = 0;
         public void Execute(Monster monster)
         {
-           // if (Environment.TickCount64 < _delayTimer)
-           //    return;
-
             bool clientEnded = _isClientEndReceived;
 
             if (Environment.TickCount64 >= _skillEndTime)
@@ -83,7 +78,6 @@ namespace Server.Game
                 monster.LookAtTarget(dirQ, elapsedTime, false);
             }
         }
-
 
         public void Exit(Monster monster)
         {

@@ -200,11 +200,34 @@ namespace Server.Data
 
     #region Hitbox
     [Serializable]
+    public class MonstHitboxData : ILoader<MonsterType, Dictionary<MonsterSkill, SkillHitbox>>
+    {
+        public Dictionary<string, Dictionary<string, SkillHitbox>> hitbox = new Dictionary<string, Dictionary<string, SkillHitbox>>();
+        public Dictionary<MonsterType, Dictionary<MonsterSkill, SkillHitbox>> MakeDict()
+        {
+            var nestedDict = new Dictionary<MonsterType, Dictionary<MonsterSkill, SkillHitbox>>();
+
+            foreach (var chars in hitbox)
+            {
+                MonsterType chartype = (MonsterType)Enum.Parse(typeof(MonsterType), chars.Key);
+                var dict = new Dictionary<MonsterSkill, SkillHitbox>();
+
+                foreach (var skills in chars.Value)
+                {
+                    MonsterSkill keyCode = (MonsterSkill)Enum.Parse(typeof(MonsterSkill), skills.Key);
+                    dict.Add(keyCode, skills.Value);
+                    skills.Value.SetDefaultsIfEmpty();
+                }
+                nestedDict.Add(chartype, dict);
+            }
+            return nestedDict;
+        }
+    }
+
+    [Serializable]
     public class HitboxData : ILoader<CharacterType, Dictionary<KeyCode, SkillHitbox>>
     {
-
         public Dictionary<string, Dictionary<string, SkillHitbox>> hitbox = new Dictionary<string, Dictionary<string, SkillHitbox>>();
-
         public Dictionary<CharacterType, Dictionary<KeyCode, SkillHitbox>> MakeDict()
         {
             var nestedDict = new Dictionary<CharacterType, Dictionary<KeyCode, SkillHitbox>>();

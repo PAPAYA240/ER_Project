@@ -23,25 +23,22 @@ namespace Server.Game
                 return; 
             _nextSearchTick = Environment.TickCount64 + SEARCH_INTERVAL_MS;
 
+            // 1. 몬스터 타겟  찾기
             if (monster.Target != null)
             {
-                if (monster.Info.Monster.MonsterType == MonsterType.Gamma ||
-               monster.Info.Monster.MonsterType == MonsterType.Drone)
-                    LookAtTarget(monster);
-            }
+                if (Environment.TickCount64 < _delayTimer)
+                    return;
 
-            // 1. 몬스터 타겟  찾기
-            if (monster.FindTarget(monster) != null)
-            {
-               if (Environment.TickCount64 < _delayTimer)
-                  return;
+                if (monster.Info.Monster.MonsterType == MonsterType.Gamma ||
+              monster.Info.Monster.MonsterType == MonsterType.Drone)
+                    LookAtTarget(monster);
 
                 monster.ChangeState(FSMManager.Instance.EvaluateTargetForNextState(monster));
                 return;
             }
 
             // 2. 타게팅이 없으면 스폰 자리에 있어야 함
-            if (monster.Target == null)
+            else if (monster.Target == null)
             {
                 if (!monster.IsArrivalSpawn())
                     monster.ChangeState(FSMManager.Instance.GetMovingState());

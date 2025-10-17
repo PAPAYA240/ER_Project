@@ -73,7 +73,7 @@ public class MyPlayerController : PlayerController
     protected KeyCode _keyCode = KeyCode.None;
     protected Dictionary<KeyCode, SkillBase> _skills = new Dictionary<KeyCode, SkillBase>();
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
-
+   
 
     class CoolTime
     {
@@ -96,7 +96,7 @@ public class MyPlayerController : PlayerController
     protected GameObject _target;
     protected GameObject _nextTarget = null;
 
-
+    
     protected GameObject Target
     {
         get { return _target; }
@@ -121,6 +121,8 @@ public class MyPlayerController : PlayerController
     protected Vector3 _finalPos;
 
     protected List<int> SkillTargetId { get; set; }
+
+    protected float _ratioSkillDuration = 0f;
 
     // State : Rest
     protected bool _isResting = false;
@@ -208,6 +210,7 @@ public class MyPlayerController : PlayerController
 
         //업데이트 함수들 호출
         Stat = Stat;
+        _originSpeed = _agent.speed;
 
         _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHPColor();
     }
@@ -249,6 +252,10 @@ public class MyPlayerController : PlayerController
                 break;
             case CreatureState.Attack:
                 GetMouseInput(1);
+                break;
+            case CreatureState.Charging:
+                GetMouseInputDuringCharging();
+                UpdateTransform();
                 break;
             case CreatureState.Skill:
                 SkillBase currentSkill = FindSkill(_keyCode);
@@ -348,6 +355,22 @@ public class MyPlayerController : PlayerController
 
         LookAtTarget(Target.transform.position);
         UpdateTargetPos();
+    }
+
+    protected override void UpdateCharging()
+    {
+        if (_agent == null)
+            return;
+
+        if (_agent.remainingDistance <= _agent.stoppingDistance)
+        {
+            if (_moveKeyPressed)
+                PlayAnimation("CHARGING", 0.1f);
+
+            _agent.speed = _originSpeed;
+            _moveKeyPressed = false;
+        }
+        UpdateTransform();
     }
 
     protected override void UpdateRest()
@@ -786,10 +809,13 @@ public class MyPlayerController : PlayerController
 
     protected virtual void UpdateSkillKeyInput() { }
 
+    protected bool _isInputLocked = false;
     protected virtual void GetMouseInput(int mouseButton)
     {
         // 마우스 우클릭이 눌렸을 경우 유효한 곳이 클릭 되었다면 해당 위치를 목적지로 설정 -> Moving 상태로 변경
         // 몬스터 클릭 시 평타 사거리만큼 떨어진 곳으로 설정
+        if (_isInputLocked)
+            return; 
 
         // 그냥 우클릭 시 → 이동 처리
         if (Input.GetMouseButton(mouseButton))
@@ -865,6 +891,41 @@ public class MyPlayerController : PlayerController
         }
     }
 
+    protected float _originSpeed = 0;
+    protected virtual void GetMouseInputDuringCharging()
+    {
+        if (_agent == null)
+            return;
+
+        if (Input.GetMouseButton(1))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
+
+            Vector3 targetPos;
+
+            targetPos = hit.point;
+
+            if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
+            {
+                if (_agent.isActiveAndEnabled)
+                {
+                    if (!_moveKeyPressed)
+                    {
+                        if(_keyCode == KeyCode.Q)
+                            PlayAnimation("CHARGING_RUN", 0.1f);
+                        _agent.speed = _originSpeed * 0.5f;
+                    }
+
+                    _agent.SetDestination(navHit.position);
+                    _moveKeyPressed = true;
+                }
+            }
+            UpdateTransform();
+        }
+    }
+
     protected virtual void GetMouseInputDuringSkill()
     {
         if (_agent == null)
@@ -885,7 +946,6 @@ public class MyPlayerController : PlayerController
                 if(_agent.isActiveAndEnabled)
                 {
                     _agent.SetDestination(navHit.position);
-
                     _moveKeyPressed = true;
                 }                 
             }
@@ -911,9 +971,9 @@ public class MyPlayerController : PlayerController
 
         if (_coolDownDict.ContainsKey(_keyCode))
         {
-            // 스킬을 사용하고 있는 상태가 아닐 때
-            if (State == CreatureState.Skill)
-                return;
+            // 스킬 쓰는 시간이 한 순간일 때(0.5초쯤..) 판단을 못해서 지울게요
+            //if (State == CreatureState.Skill)
+               // return;
 
             // 쿨타임이 끝났을 때
             if (_coolDownDict[_keyCode].isCoolDown)
@@ -928,6 +988,11 @@ public class MyPlayerController : PlayerController
 
             Debug.Log($"스킬 사용! : {_keyCode}");         
         }
+    }
+
+    public override void AmplificationSkill(KeyCode kc, KeyCode tkc)
+    {
+        SendSkillPacket(kc, tkc, true);
     }
 
     protected SkillBase FindSkill(KeyCode keyCode)
@@ -981,7 +1046,6 @@ public class MyPlayerController : PlayerController
         }
 
         _coolDownDict[key].isCoolDown = true;
-
         float elapsed = 0f;
         while (elapsed < time)
         {
@@ -1344,6 +1408,17 @@ public class MyPlayerController : PlayerController
     #endregion
 
     #region Util
+    // 스킬 사용이 가능한가?
+    protected bool EnabledSkill(KeyCode key)
+    {
+        if (!PlayerInterface.IsActiveKey.ContainsKey(key))
+            return false;
+
+        if (_coolDownDict[key].isCoolDown)
+            return false;
+
+        return true;
+    }
     protected void UpdateTransform(bool isWarp = false)
     {
         CellPos = transform.position;
@@ -1435,23 +1510,30 @@ public class MyPlayerController : PlayerController
 
     }
 
-    protected float _ratioSkillDuration = 0f;
     #region Packet
-    private void SendSkillPacket(KeyCode key)
+    private void SendSkillPacket(KeyCode key, KeyCode tKey = KeyCode.None, bool isAmplification = false)
     {
-        Vector3 mousePos = GetTargetPos(1000);
+        Vector3 mousePos = new Vector3();
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
+            mousePos = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+
         C_Skill skillPacket = new C_Skill()
         {
             ObjectInfo = ObjInfo,
-            SkillInfo = new SkillInfo() { KeyCode = (int)key },
-            MousePosX = mousePos.x, MousePosZ = mousePos.z,
+            SkillInfo = new SkillInfo() 
+            {
+                KeyCode = (int)key, 
+                Amplification = isAmplification,
+                AmplifiKeyCode = (int)tKey,
+            },
+            TargetPosX = mousePos.x, TargetPosZ = mousePos.z,
             ChargeRatio = _ratioSkillDuration,
         };
 
         _ratioSkillDuration = 0f;
-
         Managers.Network.Send(skillPacket);
-        Debug.Log("스킬 패킷 보내기");
     }
 
     protected void SendFXPacket(KeyCode key)

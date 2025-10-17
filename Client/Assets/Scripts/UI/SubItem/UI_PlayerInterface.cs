@@ -45,6 +45,7 @@ public class UI_PlayerInterface : UI_Base
     public string WeaponCode { get; set; } = "081";
     public string TacticalCode { get; set; } = "4000000";
 
+    public Dictionary<KeyCode, bool> IsActiveKey { get; set; } = new Dictionary<KeyCode, bool>();
     public Action<SkillEnum> OnCharSkillLevelUpAction = null;
 
     int _remainSkillPoint = 0; //이건 QWERT에만 적용되야함.
@@ -301,11 +302,15 @@ public class UI_PlayerInterface : UI_Base
         if (CanLevelUp() == false)
             return;
 
+        if (!IsActiveKey.ContainsKey(key))
+            IsActiveKey.Add(key, true);
+
         C_SkillLevelUp packet = new C_SkillLevelUp();
         packet.KeyCode = (int)key;
 
         Managers.Network.Send(packet);
     }
+
 
     #endregion
 

@@ -1,11 +1,33 @@
-﻿using System;
+﻿using Google.Protobuf.Collections;
+using Google.Protobuf.Protocol;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Server.Data
 {
     public class DataUtils
     {
+        public static Dictionary<DataUtils.KeyCode, List<string>> ConvertProtoInteractionsToKeyCodeDictionary(MapField<string, InteractionList> protoInteractions)
+        {
+            if (protoInteractions == null)
+                return new Dictionary<DataUtils.KeyCode, List<string>>();
+
+            return protoInteractions
+                .Where(pair => Enum.TryParse(typeof(DataUtils.KeyCode), pair.Key, true, out _))
+                .ToDictionary(
+                    pair =>
+                    {
+                        return (DataUtils.KeyCode)Enum.Parse(typeof(DataUtils.KeyCode), pair.Key, true);
+                    },
+                    pair =>
+                    {
+                        return new List<string>(pair.Value.Interaction);
+                    }
+                );
+        }
+
         public enum KeyCode
         {
             None = 0,

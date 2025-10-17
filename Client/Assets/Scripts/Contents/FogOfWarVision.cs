@@ -35,6 +35,7 @@ public class FogOfWarVision : MonoBehaviour
         if (_meshRenderer != null)
             _meshRenderer.enabled = isVisible;
     }
+
     void LateUpdate()
     {
         _origin = transform.position;

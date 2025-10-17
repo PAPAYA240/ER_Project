@@ -21,6 +21,7 @@ namespace Server.Game
         ItemStat _totalItemStat = new ItemStat();
         List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
 
+
         #region Stat Property
         public override float Attack 
         {
@@ -791,6 +792,11 @@ namespace Server.Game
         #endregion
 
         #region Packet
+        public void SendSkillPkt()
+        {
+
+        }
+
         public void SendVisibleObjsPkt(List<int> Ids)
         {
             S_VisibleObjects visibleObjsPkt = new S_VisibleObjects();
@@ -817,5 +823,6 @@ namespace Server.Game
             return levelUp;
         }
         #endregion
+
     }
 }

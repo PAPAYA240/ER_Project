@@ -148,6 +148,7 @@ public class CreatureController : BaseController
 
     public virtual void UseSkill(S_Skill skillPacket) {}
 
+    public virtual void AmplificationSkill(KeyCode kc, KeyCode tkc) { }
     public void ChangeStat(StatInfo growth)
     {
         Stat.Attack += growth.Attack;
@@ -183,4 +184,14 @@ public class CreatureController : BaseController
 
         return true;
     }
+
+    public void OnDraw(SkillHitbox hitbox, Vector3 pos, Vector3 forward, Vector3 right)
+    {
+        GameObject instance = Managers.Resource.Instantiate("Debug/SkillMesh");
+
+        SkillMesh skillMesh = instance.GetComponent<SkillMesh>();
+        if (skillMesh != null)
+            skillMesh.OnDraw(hitbox, pos, forward, right);
+    }
+
 }

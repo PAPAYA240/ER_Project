@@ -1,6 +1,7 @@
 ﻿using System;
 using Google.Protobuf.Protocol;
 using ServerCore;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.Game
 {
@@ -177,6 +178,12 @@ namespace Server.Game
             //}
         }
 
+        public virtual void OnInteract(S_Interact packet)
+        {
+            Room.Broadcast(packet);
+        }
+
+        public virtual void OnDamaged(GameObject attacker, float damage)
         public virtual void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false)
         {
             if (Room == null || State == CreatureState.Dead)
