@@ -444,9 +444,8 @@ class PacketHandler
         Vector3 pos = new Vector3(Packet.PosInfo.PosX, Packet.PosInfo.PosY, Packet.PosInfo.PosZ);
         Vector3 forward = new Vector3(Packet.Forward.PosX, Packet.Forward.PosY, Packet.Forward.PosZ);
         Vector3 right = new Vector3(Packet.Right.PosX, Packet.Right.PosY, Packet.Right.PosZ);
-        float offsetRadius = Packet.OffsetRadius;
 
-        cc.OnDraw(Packet.Hitbox, pos, forward, right, offsetRadius);
+        cc.OnDraw(Packet.Hitbox, pos, forward, right);
 
     }
     public static void S_ChangeInventoryHandler(PacketSession session, IMessage packet)

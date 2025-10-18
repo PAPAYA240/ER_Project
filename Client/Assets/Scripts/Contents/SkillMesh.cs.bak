@@ -214,6 +214,7 @@ public class SkillMesh : MonoBehaviour
         Material originalMat = Resources.Load<Material>("Prefabs/Debug/hitbox");
         lr.material = Instantiate(originalMat);
 
+        // 컬러
         UnityEngine.Color color;
         switch (team)
         {
