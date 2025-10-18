@@ -14,11 +14,13 @@ public class MyPlayerController : PlayerController
 {
     private PlayerInputController _input;
     private PlayerViewController _view;
+    private PlayerSkillController _skill;
 
     private void Awake()
     {
         _input = gameObject.GetOrAddComponent<PlayerInputController>();      
         _view = gameObject.GetOrAddComponent<PlayerViewController>();
+        _skill = gameObject.GetOrAddComponent<PlayerSkillController>();
     }
 
     protected override void Init()
@@ -62,7 +64,6 @@ public class MyPlayerController : PlayerController
     // 서버 응답 전달
     //public void OnServerUpdate(S_Idle packet) => _view.OnIdle(packet);
     public void OnServerUpdate(S_Move packet) => _view.OnMove(packet);
-    public void OnServerUpdate(S_SkillMotion packet) => _view.OnSkill(packet);
     public void OnServerUpdate(S_Anim packet) => _view.OnAnim(packet);
     public void OnServerUpdate(S_ChangeHp packet) => _view.OnHpChanged(packet);
     public void OnServerUpdate(S_Die packet) => _view.OnDead(packet);
@@ -78,6 +79,9 @@ public class MyPlayerController : PlayerController
         });
     }
     public void OnServerUpdate(S_Stop packet) => _view.OnStop(packet);
+
+    public void OnServerUpdate(S_SkillMotion packet) => _skill.OnSkill(packet);
+    public void OnServerUpdate(S_SkillFollow packet) => _skill.OnSkillConfirm(packet);
 
     public void UpdateTransform(bool isWarp = false)
     {

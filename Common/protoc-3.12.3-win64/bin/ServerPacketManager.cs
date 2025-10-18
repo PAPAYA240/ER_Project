@@ -56,7 +56,11 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CSetMoveTarget, MakePacket<C_SetMoveTarget>);
 		_handler.Add((ushort)MsgId.CSetMoveTarget, PacketHandler.C_SetMoveTargetHandler);		
 		_onRecv.Add((ushort)MsgId.CStop, MakePacket<C_Stop>);
-		_handler.Add((ushort)MsgId.CStop, PacketHandler.C_StopHandler);
+		_handler.Add((ushort)MsgId.CStop, PacketHandler.C_StopHandler);		
+		_onRecv.Add((ushort)MsgId.CSkillInput, MakePacket<C_SkillInput>);
+		_handler.Add((ushort)MsgId.CSkillInput, PacketHandler.C_SkillInputHandler);		
+		_onRecv.Add((ushort)MsgId.CSkillCollisionPropose, MakePacket<C_SkillCollisionPropose>);
+		_handler.Add((ushort)MsgId.CSkillCollisionPropose, PacketHandler.C_SkillCollisionProposeHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

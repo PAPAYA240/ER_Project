@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Threading.Tasks;
+using static ISkillHandler;
 using static Server.Data.DataUtils;
 using static Server.Game.GameRoom;
 
@@ -24,6 +25,33 @@ namespace Server.Game
             public Vector3 SkillMotionStart;
             public Vector3 SkillMotionEnd;
             public float SkillMotionEndTimeUtc; // utcSeconds
+        }
+
+        public MoveIntent Intent { get; } = new MoveIntent();
+        public sealed class MoveIntent
+        {
+            public bool Has;
+            public C_Move Packet;
+
+            public void Set(C_Move packet) { Has = true; Packet = packet; }
+            public bool TryConsume(out C_Move packet)
+            {
+                if (Has)
+                { packet = Packet; Has = false; return true; }
+                packet = default;
+                return false;
+            }
+            public void Clear() { Has = false; }
+        }
+        public void EnqueueMove(C_Move packet) => Intent.Set(packet);
+
+        public PendingSkillProposal PendingProposal;
+        public struct PendingSkillProposal
+        {
+            public int SkillKey;
+            public int Seq;
+            public SkillCollisionProposal Prop;
+            public bool Has;
         }
 
         #region Stat Property

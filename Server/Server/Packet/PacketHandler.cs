@@ -70,18 +70,18 @@ class PacketHandler
 
     public static void C_SkillHandler(PacketSession session, IMessage packet)
 	{
-        C_Skill skillPacket = packet as C_Skill;
-        ClientSession clientSession = session as ClientSession;
+  //      C_Skill skillPacket = packet as C_Skill;
+  //      ClientSession clientSession = session as ClientSession;
 
-        Player player = clientSession.MyPlayer;
-        if (player == null)
-            return;
+  //      Player player = clientSession.MyPlayer;
+  //      if (player == null)
+  //          return;
 
-        GameRoom room = player.Room;
-        if (room == null)
-            return;
+  //      GameRoom room = player.Room;
+  //      if (room == null)
+  //          return;
 
-		room.Push(room.HandleSkill, player, skillPacket);
+		//room.Push(room.HandleSkill, player, skillPacket);
     }
 
     public static void C_AnimHandler(PacketSession session, IMessage packet)
@@ -253,4 +253,36 @@ class PacketHandler
 
         player.Room.Push(player.Room.HandleStop, player, req);
     }
+
+    public static void C_SkillInputHandler(PacketSession session, IMessage packet)
+    {
+        C_SkillInput skillPacket = packet as C_SkillInput;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleSkill, player, skillPacket);
+    }
+
+    public static void C_SkillCollisionProposeHandler(PacketSession session, IMessage packet)
+    {
+        C_SkillCollisionPropose skillPacket = packet as C_SkillCollisionPropose;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleSkillCollision, player, skillPacket);
+    }   
 }

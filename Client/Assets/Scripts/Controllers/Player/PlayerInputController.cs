@@ -12,7 +12,9 @@ using static UnityEngine.GraphicsBuffer;
 public class PlayerInputController : MonoBehaviour
 {
     private MyPlayerController _player;    
-    private NavMeshAgent _agent;         
+    private NavMeshAgent _agent;
+
+    [SerializeField] PlayerSkillController _skill;
 
     [SerializeField] float _attackRange = 3.0f;  
     [SerializeField] float _stopBuffer = 0.1f;
@@ -30,6 +32,7 @@ public class PlayerInputController : MonoBehaviour
     {
         _player = GetComponentInChildren<MyPlayerController>();
         _agent = GetComponentInChildren<NavMeshAgent>();
+        _skill = GetComponentInChildren<PlayerSkillController>();
 
         _groundMask = 1 << LayerMask.NameToLayer("Map");
         _monsterMask = 1 << LayerMask.NameToLayer("Monster");
@@ -93,15 +96,7 @@ public class PlayerInputController : MonoBehaviour
         if (!Input.GetMouseButtonDown(1))
             return null;
 
-        GameObject target = GetAttackableUnderCursor();
-        if (target == null)
-            return null;
-
-        var cc = target.GetComponentInChildren<CreatureController>();
-        if (cc == null)
-            return null;
-
-        return new C_Attack { TargetId = cc.Id };
+        return new C_Attack { TargetId = GetAttackableUnderCursorID() };
     }
 
     // S키 : 공격, 이동 중지 -> Idle 상태 벗어나면 다시 자동 공격
@@ -120,7 +115,7 @@ public class PlayerInputController : MonoBehaviour
         KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R, KeyCode.D, KeyCode.F
     };
 
-    public C_Skill GetSkillCommand()
+    public C_SkillInput GetSkillCommand()
     {
         // 배열 순서대로 키다운 검사 -> 처음 눌린 키에 대해 바로 생성/리턴
         for (int i = 0; i < _skillKeys.Length; i++)
@@ -129,13 +124,7 @@ public class PlayerInputController : MonoBehaviour
             if (!Input.GetKeyDown(key))
                 continue;
 
-            var mousePos = GetMouseWorldPosition();
-            return new C_Skill
-            {
-                SkillInfo = new SkillInfo { KeyCode = (int)key },
-                MousePosX = mousePos.x,
-                MousePosZ = mousePos.z
-            };
+            return _skill.TryCast((int)key, GetAttackableUnderCursorID(), GetMouseWorldPosition());
         }
 
         return null;
@@ -170,6 +159,19 @@ public class PlayerInputController : MonoBehaviour
         }
 
         return null;
+    }
+
+    private int GetAttackableUnderCursorID(float radius = 0.1f)
+    {
+        GameObject target = GetAttackableUnderCursor();
+        if (target == null)
+            return 0;
+
+        var cc = target.GetComponentInChildren<CreatureController>();
+        if (cc == null)
+            return 0;
+
+        return cc.Id;
     }
 
     // 지형 클릭 시

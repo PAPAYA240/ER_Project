@@ -1,22 +1,31 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using static Server.Data.DataUtils;
 
-public sealed class SkillSpec
+public class SkillSpec
 {
-    public string Id;
-    public string AnimName;
-    public float Windup = 0f;
-    public float Backswing = 0f;
+    public ProposalMode proposalMode;
 
-    public MoveSpec Move = new MoveSpec();
-    public HitboxSpec Hitbox = new HitboxSpec();
-    public CollisionSpec Collision = new CollisionSpec();
+    public SkillNeed needs;
+    public SkillLimits limits;
+}
 
-    // JSON 태그/효과가 있다면 여기에 보조 메서드 추가
-    public bool HasEffect(string tag) => false; // TODO: 필요하면 구현
+public class SkillNeed
+{
+    public bool endBlocked;
+    public bool endPass;
+    public bool behindBlocked;
+    public bool candidateTargetId;
+}
+
+public class SkillLimits
+{
+    public float baseMaxDist;
+    public float extraMaxBehind;
+    public float speed;
 }
 
 public sealed class MoveSpec

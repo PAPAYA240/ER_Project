@@ -1,0 +1,434 @@
+{
+  "characters": {
+    "Rozzi": {
+      "Q": {
+        "proposalMode": "SingleShot",
+        "needs": {
+          "endBlocked": true,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 3.0,
+          "extraMaxBehind": 0.0,
+          "speed": 18.0
+        }
+      },
+      "W": {
+        "proposalMode": "SingleShot",
+        "needs": {
+          "endBlocked": false,
+          "endPass": true,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 3.0,
+          "extraMaxBehind": 0.0,
+          "speed": 18.0
+        }
+      },
+      "E": {
+        "proposalMode": "Streaming",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": true,
+          "candidateTargetId": true
+        },
+        "limits": {
+          "baseMaxDist": 2.0,
+          "extraMaxBehind": 2.0,
+          "speed": 18.0
+        }
+      },
+      "R": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      },
+      "D": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      },
+      "F": {
+        "proposalMode": "SingleShot",
+        "needs": {
+          "endBlocked": false,
+          "endPass": true,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 3.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      }
+    },
+    "Yuki": {
+      "Q": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      },
+      "W": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      },
+      "E": {
+        "proposalMode": "Streaming",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": true,
+          "candidateTargetId": true
+        },
+        "limits": {
+          "baseMaxDist": 3.0,
+          "extraMaxBehind": 0.5,
+          "speed": 18.0
+        }
+      },
+      "R": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      },
+      "D": {
+        "proposalMode": "SingleShot",
+        "needs": {
+          "endBlocked": true,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 3.0,
+          "extraMaxBehind": 0.0,
+          "speed": 18.0
+        }
+      },
+      "F": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      }
+    },
+    "Theodore": {
+      "Q": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      },
+      "W": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      },
+      "E": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      },
+      "R": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      },
+      "D": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      },
+      "F": {
+        "proposalMode": "SingleShot",
+        "needs": {
+          "endBlocked": false,
+          "endPass": true,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 3.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      }
+    },
+    "Abigail": {
+      "Q": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      },
+      "W": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      },
+      "E": {
+        "proposalMode": "SingleShot",
+        "needs": {
+          "endBlocked": false,
+          "endPass": true,
+          "behindBlocked": false,
+          "candidateTargetId": true
+        },
+        "limits": {
+          "baseMaxDist": 3.0,
+          "extraMaxBehind": 0.0,
+          "speed": 18.0
+        }
+      },
+      "R": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      },
+      "D": {
+        "proposalMode": "SingleShot",
+        "needs": {
+          "endBlocked": true,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 2.0,
+          "extraMaxBehind": 0.0,
+          "speed": 18.0
+        }
+      },
+      "F": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      }
+    },
+    "Hyunwoo": {
+      "Q": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      },
+      "W": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      },
+      "E": {
+        "proposalMode": "SingleShot",
+        "needs": {
+          "endBlocked": true,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 3.0,
+          "extraMaxBehind": 0.0,
+          "speed": 18.0
+        }
+      },
+      "R": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      },
+      "D": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      },
+      "F": {
+        "proposalMode": "None",
+        "needs": {
+          "endBlocked": false,
+          "endPass": false,
+          "behindBlocked": false,
+          "candidateTargetId": false
+        },
+        "limits": {
+          "baseMaxDist": 0.0,
+          "extraMaxBehind": 0.0,
+          "speed": 0.0
+        }
+      }
+    }
+  }
+}

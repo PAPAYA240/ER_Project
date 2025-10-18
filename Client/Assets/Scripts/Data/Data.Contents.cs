@@ -77,6 +77,34 @@ namespace Data
     }
 
     [Serializable]
+    public class SkillSpecData : ILoader<CharacterType, Dictionary<KeyCode, SkillSpec>>
+    {
+        public Dictionary<string, Dictionary<string, SkillSpec>> characters = new Dictionary<string, Dictionary<string, SkillSpec>>();
+
+        public Dictionary<CharacterType, Dictionary<KeyCode, SkillSpec>> MakeDict()
+        {
+            var nestedDict = new Dictionary<CharacterType, Dictionary<KeyCode, SkillSpec>>();
+
+            foreach (var chars in characters)
+            {
+                CharacterType chartype = (CharacterType)Enum.Parse(typeof(CharacterType), chars.Key);
+
+                var dict = new Dictionary<KeyCode, SkillSpec>();
+                foreach (var skills in chars.Value)
+                {
+                    KeyCode keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), skills.Key);
+
+                    dict.Add(keyCode, skills.Value);
+                }
+
+                nestedDict.Add(chartype, dict);
+            }
+
+            return nestedDict;
+        }
+    }
+
+    [Serializable]
     public class SkillData
     {
         public string id;
@@ -90,6 +118,29 @@ namespace Data
         public Dictionary<int, SkillLevel> levels;
         public Dictionary<string, List<string>> descriptionInfo;
         public Dictionary<string, List<string>> popupInfo;
+    }
+
+    public class SkillSpec
+    {
+        public ProposalMode proposalMode;
+
+        public SkillNeed needs;
+        public SkillLimits limits;        
+    }
+
+    public class SkillNeed
+    {
+        public bool endBlocked;
+        public bool endPass;
+        public bool behindBlocked;
+        public bool candidateTargetId;
+    }
+
+    public class SkillLimits
+    {
+        public float baseMaxDist;
+        public float extraMaxBehind;
+        public float speed;
     }
 
     [Serializable]
@@ -144,7 +195,7 @@ namespace Data
         public float speed;
         public int range;
         public string prefab;
-    }
+    }  
     #endregion
 
     #region Hitbox

@@ -34,6 +34,45 @@ namespace Server.Game
             if (player.IsDead)
                 return;
 
+            // 스킬 중이면: 지금 당장 이동시키지 말고 '의도'로 저장
+            if (player.State == CreatureState.Skill)
+            {
+                var move = new C_Move();
+
+                if (pkt.IsGround)   // TEMP : C_Move
+                {
+                    // 땅 지정 이동
+                     move = new C_Move
+                    {
+                        IsTargetOn = false,
+                        TargetId = 0,
+                        TargetPosition = pkt.TargetPos
+                    };
+                }
+                else
+                {
+                    // 타겟팅 지정 이동(그 타겟만 고수)
+                    var target = player.FindTarget(pkt.TargetId);
+                    if (target == null)
+                        return;
+
+                    move = new C_Move
+                    {
+                        IsTargetOn = true,
+                        TargetId = pkt.TargetId,
+                        TargetPosition = new PositionInfo
+                        {
+                            PosX = target.PosInfo.PosX,
+                            PosY = target.PosInfo.PosY,
+                            PosZ = target.PosInfo.PosZ
+                        }
+                    };
+                }
+
+                player.EnqueueMove(move);
+                return;
+            }
+
             if (pkt.IsGround)   // TEMP : C_Move
             {
                 // 땅 지정 이동

@@ -29,12 +29,6 @@ public class PlayerViewController : MonoBehaviour
 
     public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
 
-    // Skill
-    private Coroutine _motionCo;
-    private bool _isSkillMotion;
-
-    public bool IsInSkillMotion => _isSkillMotion;
-
     private void Awake()
     {
         _agent = GetComponentInChildren<NavMeshAgent>();
@@ -74,15 +68,6 @@ public class PlayerViewController : MonoBehaviour
                 _player.UpdateTransform(true);
             }
         }
-    }
-
-    public void OnSkill(S_SkillMotion packet)
-    {
-        PlaySkillMotion((SkillMotionType)packet.Type,
-            new Vector3(packet.StartX, packet.StartY, packet.StartZ),
-            new Vector3(packet.EndX, packet.EndY, packet.EndZ),
-            packet.Duration, packet.Anim, packet.CurveId,
-            packet.ServerCollision, packet.AuthoritativeEnd);
     }
 
     public void OnAnim(S_Anim packet)
@@ -152,8 +137,8 @@ public class PlayerViewController : MonoBehaviour
     public void ApplyStop(StopReason reason)
     {
         // TEMP
-        if (_motionCo != null)
-            return;
+        //if (_motionCo != null)
+        //    return;
 
         if (_agent == null)
             return;
@@ -175,7 +160,7 @@ public class PlayerViewController : MonoBehaviour
     }
 
     // ---- 타겟 추적 코루틴 ----
-    private System.Collections.IEnumerator CoFollowTarget(float intervalSec)
+    private IEnumerator CoFollowTarget(float intervalSec)
     {
         var wait = new WaitForSeconds(intervalSec);
         while (_followTargetId != 0 && _agent != null && !_agent.isStopped)
@@ -219,70 +204,6 @@ public class PlayerViewController : MonoBehaviour
     }
     #endregion
 
-    #region Skill
-    public void PlaySkillMotion(SkillMotionType type, Vector3 start, Vector3 end,
-                            float duration, string anim, string curveId,
-                            bool serverCollision, bool authoritativeEnd)
-    {
-        if (_motionCo != null)
-            StopCoroutine(_motionCo);
-        _motionCo = StartCoroutine(Co_PlaySkillMotion(type, start, end, duration, anim, curveId, authoritativeEnd));
-    }
-
-    private IEnumerator Co_PlaySkillMotion(SkillMotionType type, Vector3 start, Vector3 end,
-                                           float duration, string anim, string curveId, bool authoritativeEnd)
-    {
-        _isSkillMotion = true;
-
-        // MoveSync 보낼 때 isSkillMotion=true로 태깅하도록 노출
-        _agent.isStopped = true;
-        _agent.updatePosition = false;
-        _agent.updateRotation = false;
-
-        _agent.enabled = false;
-
-        transform.position = start;
-        //if (!string.IsNullOrEmpty(anim))
-        //    PlayAnimFromServer(anim, 0.05f);
-
-        float t = 0f;
-        while (t < duration)
-        {
-            t += Time.deltaTime;
-            float u = Mathf.Clamp01(t / duration);
-            u = ApplyCurve(u, curveId);
-            transform.position = Vector3.Lerp(start, end, u);
-            yield return null;
-        }
-
-        // 최종 스냅: 서버 권위가 end라면 Warp
-        if (!_agent.enabled)
-            _agent.enabled = true;
-        if (authoritativeEnd)
-            _agent.Warp(end);
-        else
-            transform.position = end;
-
-        _agent.updatePosition = true;
-        _agent.updateRotation = true;
-        _agent.isStopped = false;
-
-        _isSkillMotion = false;
-        _motionCo = null;
-    }
-
-    private float ApplyCurve(float u, string id)
-    {
-        switch (id)
-        {
-            case "EaseOutCubic":
-                return 1f - Mathf.Pow(1f - u, 3f);
-            case "Linear":
-            default:
-                return u;
-        }
-    }
-    #endregion
 
     #region Helper
     private GameObject FindVisibleObjectById(int objectId)

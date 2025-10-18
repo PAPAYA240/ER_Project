@@ -48,7 +48,10 @@ enum MsgId {
   C_STOP = 40;
   S_STOP = 41;
   S_SET_MOVE_TARGET = 42;
-  S_SKILL_MOTION = 43;
+  S_SKILL_FOLLOW = 43;
+  S_SKILL_MOTION = 44;
+  C_SKILL_INPUT = 45;
+  C_SKILL_COLLISION_PROPOSE = 46;
 }
 
 enum CreatureState{
@@ -209,6 +212,12 @@ enum StopReason {
 enum SkillMotionType {
   Dash = 0;     
   Blink = 1;    
+}
+
+enum ProposalMode { 
+  None = 0;
+  SingleShot = 1; 
+  Streaming = 2;
 }
 
 message C_Interact {
@@ -584,6 +593,18 @@ message S_SetMoveTarget {
 	PositionInfo targetPos = 4;		// isGround=true 때 사용(땅 목적지)
 }
 
+message S_SkillFollow {
+  int32 objectId = 1;			
+  int32 skillKey = 2;			
+  int32 instanceId = 3;
+  int32 targetId = 4;
+  float speed = 5;
+  float arriveDist = 6;
+  float maxDuration = 7;
+  float behindOffset = 8;
+  bool  passThroughWalls = 9; 
+}
+
 message S_SkillMotion {
   int32  objectId   = 1;
   SkillMotionType type = 2;
@@ -599,4 +620,30 @@ message S_SkillMotion {
   bool   serverCollision = 12;		// 서버가 충돌 반영해 준 결과임
   bool   authoritativeEnd = 13;		// 끝난 시점에 서버 좌표가 권위
   repeated float keyframes = 14;	// [x0,y0,z0,t0, x1,y1,z1,t1, ...] (옵션)
+}
+
+message C_SkillInput { 
+  int32 skillKey = 1;
+  int32 targetId = 2; 
+  float mouseX = 3;
+  float mouseZ = 4; 
+}
+
+message C_SkillCollisionPropose {
+  int32  skillKey = 1;
+  int32  seq = 2;              // Streaming일 때만 증가 (서버는 최신만 사용)
+  ProposalMode  mode = 3;             // SingleShot or Streaming
+
+  // 후보 지점 2가지
+  float endBlockedX = 4;  // 벽 앞(Agent.Raycast hit - skin)
+  float endBlockedZ = 5; 
+  float endPassX = 6;   
+  float endPassZ = 7;    // 통과 가정 목표(타겟 쪽)
+  float behindBlockedX = 8;
+  float behindBlockedZ = 9;
+
+  int32 candidateTargetId = 10;
+  float speed = 11;
+  // 검증 힌트(서버는 자체 스펙으로 재검증)
+  //float  radius, maxDistance, speed;
 }

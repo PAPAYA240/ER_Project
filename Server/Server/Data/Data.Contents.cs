@@ -109,6 +109,34 @@ namespace Server.Data
     }
 
     [Serializable]
+    public class SkillSpecData : ILoader<CharacterType, Dictionary<KeyCode, SkillSpec>>
+    {
+        public Dictionary<string, Dictionary<string, SkillSpec>> characters = new Dictionary<string, Dictionary<string, SkillSpec>>();
+
+        public Dictionary<CharacterType, Dictionary<KeyCode, SkillSpec>> MakeDict()
+        {
+            var nestedDict = new Dictionary<CharacterType, Dictionary<KeyCode, SkillSpec>>();
+
+            foreach (var chars in characters)
+            {
+                CharacterType chartype = (CharacterType)Enum.Parse(typeof(CharacterType), chars.Key);
+
+                var dict = new Dictionary<KeyCode, SkillSpec>();
+                foreach (var skills in chars.Value)
+                {
+                    KeyCode keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), skills.Key);
+
+                    dict.Add(keyCode, skills.Value);
+                }
+
+                nestedDict.Add(chartype, dict);
+            }
+
+            return nestedDict;
+        }
+    }
+
+    [Serializable]
     public class SkillData
     {
         public string id;

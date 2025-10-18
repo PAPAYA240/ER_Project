@@ -10,7 +10,7 @@ public static class SkillRegistry
     {
         // 캐릭터/키별 매핑
         if (character == CharacterType.Rozzi && key == KeyCode.Q) return new Rozzi_Q();
-        //if (character == "Rozzi" && key == KeyCode.W) return new Rozzi_W();
+        if (character == CharacterType.Rozzi && key == KeyCode.W) return new Rozzi_W();
 
         return null;
     }

@@ -146,75 +146,90 @@ namespace Google.Protobuf.Protocol {
             "GAIgASgOMhQuUHJvdG9jb2wuU3RvcFJlYXNvbiJsCg9TX1NldE1vdmVUYXJn",
             "ZXQSCgoCaWQYASABKAUSEAoIaXNHcm91bmQYAiABKAgSEAoIdGFyZ2V0SWQY",
             "AyABKAUSKQoJdGFyZ2V0UG9zGAQgASgLMhYuUHJvdG9jb2wuUG9zaXRpb25J",
-            "bmZvIpsCCg1TX1NraWxsTW90aW9uEhAKCG9iamVjdElkGAEgASgFEicKBHR5",
-            "cGUYAiABKA4yGS5Qcm90b2NvbC5Ta2lsbE1vdGlvblR5cGUSDgoGc3RhcnRY",
-            "GAMgASgCEg4KBnN0YXJ0WRgEIAEoAhIOCgZzdGFydFoYBSABKAISDAoEZW5k",
-            "WBgGIAEoAhIMCgRlbmRZGAcgASgCEgwKBGVuZFoYCCABKAISEAoIZHVyYXRp",
-            "b24YCSABKAISDAoEYW5pbRgKIAEoCRIPCgdjdXJ2ZUlkGAsgASgJEhcKD3Nl",
-            "cnZlckNvbGxpc2lvbhgMIAEoCBIYChBhdXRob3JpdGF0aXZlRW5kGA0gASgI",
-            "EhEKCWtleWZyYW1lcxgOIAMoAirEBQoFTXNnSWQSEAoMQ19FTlRFUl9HQU1F",
-            "EAASEAoMU19FTlRFUl9HQU1FEAESEAoMU19MRUFWRV9HQU1FEAISCwoHU19T",
-            "UEFXThADEg0KCVNfREVTUEFXThAEEgoKBkNfTU9WRRAFEgoKBlNfTU9WRRAG",
-            "EgsKB0NfU0tJTEwQBxILCgdTX1NLSUxMEAgSDwoLU19DSEFOR0VfSFAQCRIJ",
-            "CgVTX0RJRRAKEgoKBkNfQU5JTRALEgoKBlNfQU5JTRAMEg8KC0NfQ0hBUkFD",
-            "VEVSEA0SCwoHU19TVEFURRAOEggKBENfRlgQDxIPCgtTX0NIQVJBQ1RFUhAQ",
-            "EhAKDFNfRU5URVJfUElDSxAREhAKDFNfU1BBV05fUElDSxASEhAKDFNfTEVB",
-            "VkVfUElDSxATEgoKBkNfUElORxAUEhUKEVNfVklTSUJMRV9PQkpFQ1RTEBUS",
-            "DgoKU19MRVZFTF9VUBAWEgsKB0NfUkVBRFkQFxIICgRTX0ZYEBgSCwoHQ19U",
-            "UkFJVBAZEgsKB1NfVFJBSVQQGhIMCghDX1dFQVBPThAbEgwKCFNfV0VBUE9O",
-            "EBwSDgoKQ19JTlRFUkFDVBAdEg4KClNfSU5URVJBQ1QQHhINCglTX1JFU1BB",
-            "V04QHxIUChBDX1NLSUxMX0xFVkVMX1VQECASFAoQU19TS0lMTF9MRVZFTF9V",
-            "UBAhEhIKDlNfUExBWUVSX1NUQVRFECISEQoNU19DSEFOR0VfU1RBVBAjEhkK",
-            "FUNfQVRUQUNLX1NLSUxMX1RBUkdFVBAkEg8KC0NfTU9WRV9TWU5DECUSDAoI",
-            "Q19BVFRBQ0sQJhIVChFDX1NFVF9NT1ZFX1RBUkdFVBAnEgoKBkNfU1RPUBAo",
-            "EgoKBlNfU1RPUBApEhUKEVNfU0VUX01PVkVfVEFSR0VUECoSEgoOU19TS0lM",
-            "TF9NT1RJT04QKypQCg1DcmVhdHVyZVN0YXRlEggKBElETEUQABIKCgZNT1ZJ",
-            "TkcQARIKCgZBVFRBQ0sQAhIJCgVTS0lMTBADEggKBERFQUQQBBIICgRSRVNU",
-            "EAUqVAoOR2FtZU9iamVjdFR5cGUSCAoETk9ORRAAEgoKBlBMQVlFUhABEgsK",
-            "B01PTlNURVIQAhIOCgpQUk9KRUNUSUxFEAMSDwoLRU5WSVJPTk1FTlQQBCpw",
-            "CgdFbnZUeXBlEgwKCEVOVl9OT05FEAASDAoISElMTF9PQkoQARIVChFERVZJ",
-            "Q0VfU1BBV05QT0lOVBACEhoKFkFDQ0JPVU5EQVJZX1NQQVdOUE9JTlQQAxIW",
-            "ChJCQVJSSUVSX1NQQVdOUE9JTlQQBCpkCglTa2lsbFR5cGUSDgoKU0tJTExf",
-            "Tk9ORRAAEg4KClNLSUxMX0FVVE8QARIUChBTS0lMTF9QUk9KRUNUSUxFEAIS",
-            "EAoMU0tJTExfU1RBVElDEAMSDwoLU0tJTExfVFJBQ0sQBCr/AQoMTW9uc3Rl",
-            "clNraWxsEgsKB01TX05PTkUQABIOCgpNU19BVFRBQ0sxEAESDgoKTVNfQVRU",
-            "QUNLMhACEg0KCU1TX1NLSUxMMRADEg0KCU1TX1NLSUxMMhAEEg0KCU1TX1NL",
-            "SUxMMxAFEhQKEE1TX0RST05FX0FUVEFDSzEQBhIUChBNU19EUk9ORV9BVFRB",
-            "Q0syEAcSFAoQTVNfR0FNTUFfQVRUQUNLMRAIEhMKD01TX0dBTU1BX1NLSUxM",
-            "MRAJEhMKD01TX0dBTU1BX1NLSUxMMhAKEhMKD01TX0dBTU1BX1NLSUxMMxAL",
-            "EhQKEE1TX1RVUlJFVF9BVFRBQ0sQDCo2CghBbmltVHlwZRIICgRQTEFZEAAS",
-            "CwoHVFJJR0dFUhABEggKBEJPT0wQAhIJCgVGTE9BVBADKmAKDUNoYXJhY3Rl",
-            "clR5cGUSEgoOQ0hBUkFDVEVSX05PTkUQABIJCgVST1paSRABEggKBFlVS0kQ",
-            "AhILCgdIWVVOV09PEAMSCwoHQUJJR0FJTBAEEgwKCFRIRU9ET1JFEAUqVwoL",
-            "TW9uc3RlclR5cGUSEAoMTU9OU1RFUl9OT05FEAASCQoFQUxQSEEQARIJCgVP",
-            "TUVHQRACEgkKBURST05FEAMSCQoFR0FNTUEQBBIKCgZUVVJSRVQQBSrGAgoG",
-            "V2VhcG9uEg8KC1dFQVBPTl9OT05FEAASCgoGREFHR0VSEAESEgoOVFdPX0hB",
-            "TkRfU1dPUkQQAhIHCgNBWEUQAxIPCgtEVUFMX1NXT1JEUxAEEgoKBlBJU1RP",
-            "TBAFEhEKDUFTU0FVTFRfUklGTEUQBhIQCgxTTklQRVJfUklGTEUQBxIKCgZS",
-            "QVBJRVIQCBIJCgVTUEVBUhAJEgoKBkhBTU1FUhAKEgcKA0JBVBALEgkKBVRI",
-            "Uk9XEAwSDAoIU0hVUklLRU4QDRIHCgNCT1cQDhIMCghDUk9TU0JPVxAPEgkK",
-            "BUdMT1ZFEBASCQoFVE9ORkEQERIKCgZHVUlUQVIQEhIMCghOVU5DSEFLVRAT",
-            "EggKBFdISVAQFBIKCgZDQU1FUkEQFRIKCgZBUkNBTkEQFhISCg5WX0ZfUFJP",
-            "U1RIRVRJQxAXKkwKClNraWxsU2hhcGUSDgoKU0hBUEVfTk9ORRAAEgoKBkNJ",
-            "UkNMRRABEgcKA1JBWRACEg0KCVJFQ1RBTkdMRRADEgoKBlNFQ1RPUhAEKsIC",
-            "CglUcmFpdFR5cGUSFgoSRlJBSUxUWV9JTkZMSUNUSU9OEAASFgoSVkFNUElS",
-            "SUNfQkxPT0RMSU5FEAESDgoKQURSRU5BTElORRACEg8KC0FDQ0VMRVJBVEVS",
-            "EAMSEgoOU1RFTExBUl9DSEFSR0UQBBIPCgtHSE9TVF9MSUdIVBAFEg4KClJF",
-            "RF9TUFJJVEUQBhIUChBTSVBIT05fTUFFTFNUT1JNEAcSEQoNRElBTU9ORF9T",
-            "SEFSRBAIEgwKCElST05DTEFEEAkSEgoOSEVBVllfS05FRVBBRFMQChIWChJC",
-            "SVRURVJfUkVUUklCVVRJT04QCxISCg5IRUFMSU5HX0ZBQ1RPUhAMEhcKE0FN",
-            "UExJRklDQVRJT05fRFJPTkUQDRIRCg1IRUFMSU5HX0RST05FEA4SDAoIU0VO",
-            "VElORUwQDypaCg1FcXVpcEl0ZW1UeXBlEgoKBldFQVBPThAAEggKBEJPRFkQ",
-            "ARIICgRIRUFEEAISBwoDQVJNEAMSBwoDTEVHEAQSFwoTRVFVSVBfSVRFTV9U",
-            "WVBFX0VORBAFKmgKCUl0ZW1HcmFkZRIKCgZDT01NT04QABIMCghVTkNPTU1P",
-            "ThABEggKBFJBUkUQAhIICgRFUElDEAMSDQoJTEVHRU5EQVJZEAQSCgoGTVlU",
-            "SElDEAUSEgoOSVRFTV9HUkFERV9FTkQQBiouCgpTdG9wUmVhc29uEgwKCFNU",
-            "T1BfQUxMEAASEgoOU1RPUF9NT1ZFX09OTFkQASomCg9Ta2lsbE1vdGlvblR5",
-            "cGUSCAoERGFzaBAAEgkKBUJsaW5rEAFCG6oCGEdvb2dsZS5Qcm90b2J1Zi5Q",
-            "cm90b2NvbGIGcHJvdG8z"));
+            "bmZvIsEBCg1TX1NraWxsRm9sbG93EhAKCG9iamVjdElkGAEgASgFEhAKCHNr",
+            "aWxsS2V5GAIgASgFEhIKCmluc3RhbmNlSWQYAyABKAUSEAoIdGFyZ2V0SWQY",
+            "BCABKAUSDQoFc3BlZWQYBSABKAISEgoKYXJyaXZlRGlzdBgGIAEoAhITCgtt",
+            "YXhEdXJhdGlvbhgHIAEoAhIUCgxiZWhpbmRPZmZzZXQYCCABKAISGAoQcGFz",
+            "c1Rocm91Z2hXYWxscxgJIAEoCCKbAgoNU19Ta2lsbE1vdGlvbhIQCghvYmpl",
+            "Y3RJZBgBIAEoBRInCgR0eXBlGAIgASgOMhkuUHJvdG9jb2wuU2tpbGxNb3Rp",
+            "b25UeXBlEg4KBnN0YXJ0WBgDIAEoAhIOCgZzdGFydFkYBCABKAISDgoGc3Rh",
+            "cnRaGAUgASgCEgwKBGVuZFgYBiABKAISDAoEZW5kWRgHIAEoAhIMCgRlbmRa",
+            "GAggASgCEhAKCGR1cmF0aW9uGAkgASgCEgwKBGFuaW0YCiABKAkSDwoHY3Vy",
+            "dmVJZBgLIAEoCRIXCg9zZXJ2ZXJDb2xsaXNpb24YDCABKAgSGAoQYXV0aG9y",
+            "aXRhdGl2ZUVuZBgNIAEoCBIRCglrZXlmcmFtZXMYDiADKAIiUgoMQ19Ta2ls",
+            "bElucHV0EhAKCHNraWxsS2V5GAEgASgFEhAKCHRhcmdldElkGAIgASgFEg4K",
+            "Bm1vdXNlWBgDIAEoAhIOCgZtb3VzZVoYBCABKAIihgIKF0NfU2tpbGxDb2xs",
+            "aXNpb25Qcm9wb3NlEhAKCHNraWxsS2V5GAEgASgFEgsKA3NlcRgCIAEoBRIk",
+            "CgRtb2RlGAMgASgOMhYuUHJvdG9jb2wuUHJvcG9zYWxNb2RlEhMKC2VuZEJs",
+            "b2NrZWRYGAQgASgCEhMKC2VuZEJsb2NrZWRaGAUgASgCEhAKCGVuZFBhc3NY",
+            "GAYgASgCEhAKCGVuZFBhc3NaGAcgASgCEhYKDmJlaGluZEJsb2NrZWRYGAgg",
+            "ASgCEhYKDmJlaGluZEJsb2NrZWRaGAkgASgCEhkKEWNhbmRpZGF0ZVRhcmdl",
+            "dElkGAogASgFEg0KBXNwZWVkGAsgASgCKooGCgVNc2dJZBIQCgxDX0VOVEVS",
+            "X0dBTUUQABIQCgxTX0VOVEVSX0dBTUUQARIQCgxTX0xFQVZFX0dBTUUQAhIL",
+            "CgdTX1NQQVdOEAMSDQoJU19ERVNQQVdOEAQSCgoGQ19NT1ZFEAUSCgoGU19N",
+            "T1ZFEAYSCwoHQ19TS0lMTBAHEgsKB1NfU0tJTEwQCBIPCgtTX0NIQU5HRV9I",
+            "UBAJEgkKBVNfRElFEAoSCgoGQ19BTklNEAsSCgoGU19BTklNEAwSDwoLQ19D",
+            "SEFSQUNURVIQDRILCgdTX1NUQVRFEA4SCAoEQ19GWBAPEg8KC1NfQ0hBUkFD",
+            "VEVSEBASEAoMU19FTlRFUl9QSUNLEBESEAoMU19TUEFXTl9QSUNLEBISEAoM",
+            "U19MRUFWRV9QSUNLEBMSCgoGQ19QSU5HEBQSFQoRU19WSVNJQkxFX09CSkVD",
+            "VFMQFRIOCgpTX0xFVkVMX1VQEBYSCwoHQ19SRUFEWRAXEggKBFNfRlgQGBIL",
+            "CgdDX1RSQUlUEBkSCwoHU19UUkFJVBAaEgwKCENfV0VBUE9OEBsSDAoIU19X",
+            "RUFQT04QHBIOCgpDX0lOVEVSQUNUEB0SDgoKU19JTlRFUkFDVBAeEg0KCVNf",
+            "UkVTUEFXThAfEhQKEENfU0tJTExfTEVWRUxfVVAQIBIUChBTX1NLSUxMX0xF",
+            "VkVMX1VQECESEgoOU19QTEFZRVJfU1RBVEUQIhIRCg1TX0NIQU5HRV9TVEFU",
+            "ECMSGQoVQ19BVFRBQ0tfU0tJTExfVEFSR0VUECQSDwoLQ19NT1ZFX1NZTkMQ",
+            "JRIMCghDX0FUVEFDSxAmEhUKEUNfU0VUX01PVkVfVEFSR0VUECcSCgoGQ19T",
+            "VE9QECgSCgoGU19TVE9QECkSFQoRU19TRVRfTU9WRV9UQVJHRVQQKhISCg5T",
+            "X1NLSUxMX0ZPTExPVxArEhIKDlNfU0tJTExfTU9USU9OECwSEQoNQ19TS0lM",
+            "TF9JTlBVVBAtEh0KGUNfU0tJTExfQ09MTElTSU9OX1BST1BPU0UQLipQCg1D",
+            "cmVhdHVyZVN0YXRlEggKBElETEUQABIKCgZNT1ZJTkcQARIKCgZBVFRBQ0sQ",
+            "AhIJCgVTS0lMTBADEggKBERFQUQQBBIICgRSRVNUEAUqVAoOR2FtZU9iamVj",
+            "dFR5cGUSCAoETk9ORRAAEgoKBlBMQVlFUhABEgsKB01PTlNURVIQAhIOCgpQ",
+            "Uk9KRUNUSUxFEAMSDwoLRU5WSVJPTk1FTlQQBCpwCgdFbnZUeXBlEgwKCEVO",
+            "Vl9OT05FEAASDAoISElMTF9PQkoQARIVChFERVZJQ0VfU1BBV05QT0lOVBAC",
+            "EhoKFkFDQ0JPVU5EQVJZX1NQQVdOUE9JTlQQAxIWChJCQVJSSUVSX1NQQVdO",
+            "UE9JTlQQBCpkCglTa2lsbFR5cGUSDgoKU0tJTExfTk9ORRAAEg4KClNLSUxM",
+            "X0FVVE8QARIUChBTS0lMTF9QUk9KRUNUSUxFEAISEAoMU0tJTExfU1RBVElD",
+            "EAMSDwoLU0tJTExfVFJBQ0sQBCr/AQoMTW9uc3RlclNraWxsEgsKB01TX05P",
+            "TkUQABIOCgpNU19BVFRBQ0sxEAESDgoKTVNfQVRUQUNLMhACEg0KCU1TX1NL",
+            "SUxMMRADEg0KCU1TX1NLSUxMMhAEEg0KCU1TX1NLSUxMMxAFEhQKEE1TX0RS",
+            "T05FX0FUVEFDSzEQBhIUChBNU19EUk9ORV9BVFRBQ0syEAcSFAoQTVNfR0FN",
+            "TUFfQVRUQUNLMRAIEhMKD01TX0dBTU1BX1NLSUxMMRAJEhMKD01TX0dBTU1B",
+            "X1NLSUxMMhAKEhMKD01TX0dBTU1BX1NLSUxMMxALEhQKEE1TX1RVUlJFVF9B",
+            "VFRBQ0sQDCo2CghBbmltVHlwZRIICgRQTEFZEAASCwoHVFJJR0dFUhABEggK",
+            "BEJPT0wQAhIJCgVGTE9BVBADKmAKDUNoYXJhY3RlclR5cGUSEgoOQ0hBUkFD",
+            "VEVSX05PTkUQABIJCgVST1paSRABEggKBFlVS0kQAhILCgdIWVVOV09PEAMS",
+            "CwoHQUJJR0FJTBAEEgwKCFRIRU9ET1JFEAUqVwoLTW9uc3RlclR5cGUSEAoM",
+            "TU9OU1RFUl9OT05FEAASCQoFQUxQSEEQARIJCgVPTUVHQRACEgkKBURST05F",
+            "EAMSCQoFR0FNTUEQBBIKCgZUVVJSRVQQBSrGAgoGV2VhcG9uEg8KC1dFQVBP",
+            "Tl9OT05FEAASCgoGREFHR0VSEAESEgoOVFdPX0hBTkRfU1dPUkQQAhIHCgNB",
+            "WEUQAxIPCgtEVUFMX1NXT1JEUxAEEgoKBlBJU1RPTBAFEhEKDUFTU0FVTFRf",
+            "UklGTEUQBhIQCgxTTklQRVJfUklGTEUQBxIKCgZSQVBJRVIQCBIJCgVTUEVB",
+            "UhAJEgoKBkhBTU1FUhAKEgcKA0JBVBALEgkKBVRIUk9XEAwSDAoIU0hVUklL",
+            "RU4QDRIHCgNCT1cQDhIMCghDUk9TU0JPVxAPEgkKBUdMT1ZFEBASCQoFVE9O",
+            "RkEQERIKCgZHVUlUQVIQEhIMCghOVU5DSEFLVRATEggKBFdISVAQFBIKCgZD",
+            "QU1FUkEQFRIKCgZBUkNBTkEQFhISCg5WX0ZfUFJPU1RIRVRJQxAXKkwKClNr",
+            "aWxsU2hhcGUSDgoKU0hBUEVfTk9ORRAAEgoKBkNJUkNMRRABEgcKA1JBWRAC",
+            "Eg0KCVJFQ1RBTkdMRRADEgoKBlNFQ1RPUhAEKsICCglUcmFpdFR5cGUSFgoS",
+            "RlJBSUxUWV9JTkZMSUNUSU9OEAASFgoSVkFNUElSSUNfQkxPT0RMSU5FEAES",
+            "DgoKQURSRU5BTElORRACEg8KC0FDQ0VMRVJBVEVSEAMSEgoOU1RFTExBUl9D",
+            "SEFSR0UQBBIPCgtHSE9TVF9MSUdIVBAFEg4KClJFRF9TUFJJVEUQBhIUChBT",
+            "SVBIT05fTUFFTFNUT1JNEAcSEQoNRElBTU9ORF9TSEFSRBAIEgwKCElST05D",
+            "TEFEEAkSEgoOSEVBVllfS05FRVBBRFMQChIWChJCSVRURVJfUkVUUklCVVRJ",
+            "T04QCxISCg5IRUFMSU5HX0ZBQ1RPUhAMEhcKE0FNUExJRklDQVRJT05fRFJP",
+            "TkUQDRIRCg1IRUFMSU5HX0RST05FEA4SDAoIU0VOVElORUwQDypaCg1FcXVp",
+            "cEl0ZW1UeXBlEgoKBldFQVBPThAAEggKBEJPRFkQARIICgRIRUFEEAISBwoD",
+            "QVJNEAMSBwoDTEVHEAQSFwoTRVFVSVBfSVRFTV9UWVBFX0VORBAFKmgKCUl0",
+            "ZW1HcmFkZRIKCgZDT01NT04QABIMCghVTkNPTU1PThABEggKBFJBUkUQAhII",
+            "CgRFUElDEAMSDQoJTEVHRU5EQVJZEAQSCgoGTVlUSElDEAUSEgoOSVRFTV9H",
+            "UkFERV9FTkQQBiouCgpTdG9wUmVhc29uEgwKCFNUT1BfQUxMEAASEgoOU1RP",
+            "UF9NT1ZFX09OTFkQASomCg9Ta2lsbE1vdGlvblR5cGUSCAoERGFzaBAAEgkK",
+            "BUJsaW5rEAEqNwoMUHJvcG9zYWxNb2RlEggKBE5vbmUQABIOCgpTaW5nbGVT",
+            "aG90EAESDQoJU3RyZWFtaW5nEAJCG6oCGEdvb2dsZS5Qcm90b2J1Zi5Qcm90",
+            "b2NvbGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.EnvType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.MonsterSkill), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.Weapon), typeof(global::Google.Protobuf.Protocol.SkillShape), typeof(global::Google.Protobuf.Protocol.TraitType), typeof(global::Google.Protobuf.Protocol.EquipItemType), typeof(global::Google.Protobuf.Protocol.ItemGrade), typeof(global::Google.Protobuf.Protocol.StopReason), typeof(global::Google.Protobuf.Protocol.SkillMotionType), }, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.EnvType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.MonsterSkill), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.Weapon), typeof(global::Google.Protobuf.Protocol.SkillShape), typeof(global::Google.Protobuf.Protocol.TraitType), typeof(global::Google.Protobuf.Protocol.EquipItemType), typeof(global::Google.Protobuf.Protocol.ItemGrade), typeof(global::Google.Protobuf.Protocol.StopReason), typeof(global::Google.Protobuf.Protocol.SkillMotionType), typeof(global::Google.Protobuf.Protocol.ProposalMode), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_Interact), global::Google.Protobuf.Protocol.C_Interact.Parser, new[]{ "ObjectId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Interact), global::Google.Protobuf.Protocol.S_Interact.Parser, new[]{ "ObjectId", "NextUseTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_EnterGame), global::Google.Protobuf.Protocol.C_EnterGame.Parser, new[]{ "EnterGame", "DummyPlayers" }, null, null, null, null),
@@ -274,7 +289,10 @@ namespace Google.Protobuf.Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_Stop), global::Google.Protobuf.Protocol.C_Stop.Parser, new[]{ "Reason" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Stop), global::Google.Protobuf.Protocol.S_Stop.Parser, new[]{ "Id", "Reason" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_SetMoveTarget), global::Google.Protobuf.Protocol.S_SetMoveTarget.Parser, new[]{ "Id", "IsGround", "TargetId", "TargetPos" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_SkillMotion), global::Google.Protobuf.Protocol.S_SkillMotion.Parser, new[]{ "ObjectId", "Type", "StartX", "StartY", "StartZ", "EndX", "EndY", "EndZ", "Duration", "Anim", "CurveId", "ServerCollision", "AuthoritativeEnd", "Keyframes" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_SkillFollow), global::Google.Protobuf.Protocol.S_SkillFollow.Parser, new[]{ "ObjectId", "SkillKey", "InstanceId", "TargetId", "Speed", "ArriveDist", "MaxDuration", "BehindOffset", "PassThroughWalls" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_SkillMotion), global::Google.Protobuf.Protocol.S_SkillMotion.Parser, new[]{ "ObjectId", "Type", "StartX", "StartY", "StartZ", "EndX", "EndY", "EndZ", "Duration", "Anim", "CurveId", "ServerCollision", "AuthoritativeEnd", "Keyframes" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_SkillInput), global::Google.Protobuf.Protocol.C_SkillInput.Parser, new[]{ "SkillKey", "TargetId", "MouseX", "MouseZ" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_SkillCollisionPropose), global::Google.Protobuf.Protocol.C_SkillCollisionPropose.Parser, new[]{ "SkillKey", "Seq", "Mode", "EndBlockedX", "EndBlockedZ", "EndPassX", "EndPassZ", "BehindBlockedX", "BehindBlockedZ", "CandidateTargetId", "Speed" }, null, null, null, null)
           }));
     }
     #endregion
@@ -325,7 +343,10 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("C_STOP")] CStop = 40,
     [pbr::OriginalName("S_STOP")] SStop = 41,
     [pbr::OriginalName("S_SET_MOVE_TARGET")] SSetMoveTarget = 42,
-    [pbr::OriginalName("S_SKILL_MOTION")] SSkillMotion = 43,
+    [pbr::OriginalName("S_SKILL_FOLLOW")] SSkillFollow = 43,
+    [pbr::OriginalName("S_SKILL_MOTION")] SSkillMotion = 44,
+    [pbr::OriginalName("C_SKILL_INPUT")] CSkillInput = 45,
+    [pbr::OriginalName("C_SKILL_COLLISION_PROPOSE")] CSkillCollisionPropose = 46,
   }
 
   public enum CreatureState {
@@ -489,6 +510,12 @@ namespace Google.Protobuf.Protocol {
   public enum SkillMotionType {
     [pbr::OriginalName("Dash")] Dash = 0,
     [pbr::OriginalName("Blink")] Blink = 1,
+  }
+
+  public enum ProposalMode {
+    [pbr::OriginalName("None")] None = 0,
+    [pbr::OriginalName("SingleShot")] SingleShot = 1,
+    [pbr::OriginalName("Streaming")] Streaming = 2,
   }
 
   #endregion
@@ -12105,6 +12132,359 @@ namespace Google.Protobuf.Protocol {
 
   }
 
+  public sealed partial class S_SkillFollow : pb::IMessage<S_SkillFollow> {
+    private static readonly pb::MessageParser<S_SkillFollow> _parser = new pb::MessageParser<S_SkillFollow>(() => new S_SkillFollow());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<S_SkillFollow> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[59]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public S_SkillFollow() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public S_SkillFollow(S_SkillFollow other) : this() {
+      objectId_ = other.objectId_;
+      skillKey_ = other.skillKey_;
+      instanceId_ = other.instanceId_;
+      targetId_ = other.targetId_;
+      speed_ = other.speed_;
+      arriveDist_ = other.arriveDist_;
+      maxDuration_ = other.maxDuration_;
+      behindOffset_ = other.behindOffset_;
+      passThroughWalls_ = other.passThroughWalls_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public S_SkillFollow Clone() {
+      return new S_SkillFollow(this);
+    }
+
+    /// <summary>Field number for the "objectId" field.</summary>
+    public const int ObjectIdFieldNumber = 1;
+    private int objectId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int ObjectId {
+      get { return objectId_; }
+      set {
+        objectId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "skillKey" field.</summary>
+    public const int SkillKeyFieldNumber = 2;
+    private int skillKey_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int SkillKey {
+      get { return skillKey_; }
+      set {
+        skillKey_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "instanceId" field.</summary>
+    public const int InstanceIdFieldNumber = 3;
+    private int instanceId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int InstanceId {
+      get { return instanceId_; }
+      set {
+        instanceId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "targetId" field.</summary>
+    public const int TargetIdFieldNumber = 4;
+    private int targetId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int TargetId {
+      get { return targetId_; }
+      set {
+        targetId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "speed" field.</summary>
+    public const int SpeedFieldNumber = 5;
+    private float speed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Speed {
+      get { return speed_; }
+      set {
+        speed_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "arriveDist" field.</summary>
+    public const int ArriveDistFieldNumber = 6;
+    private float arriveDist_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float ArriveDist {
+      get { return arriveDist_; }
+      set {
+        arriveDist_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "maxDuration" field.</summary>
+    public const int MaxDurationFieldNumber = 7;
+    private float maxDuration_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float MaxDuration {
+      get { return maxDuration_; }
+      set {
+        maxDuration_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "behindOffset" field.</summary>
+    public const int BehindOffsetFieldNumber = 8;
+    private float behindOffset_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float BehindOffset {
+      get { return behindOffset_; }
+      set {
+        behindOffset_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "passThroughWalls" field.</summary>
+    public const int PassThroughWallsFieldNumber = 9;
+    private bool passThroughWalls_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool PassThroughWalls {
+      get { return passThroughWalls_; }
+      set {
+        passThroughWalls_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as S_SkillFollow);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(S_SkillFollow other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (ObjectId != other.ObjectId) return false;
+      if (SkillKey != other.SkillKey) return false;
+      if (InstanceId != other.InstanceId) return false;
+      if (TargetId != other.TargetId) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Speed, other.Speed)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(ArriveDist, other.ArriveDist)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MaxDuration, other.MaxDuration)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(BehindOffset, other.BehindOffset)) return false;
+      if (PassThroughWalls != other.PassThroughWalls) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (ObjectId != 0) hash ^= ObjectId.GetHashCode();
+      if (SkillKey != 0) hash ^= SkillKey.GetHashCode();
+      if (InstanceId != 0) hash ^= InstanceId.GetHashCode();
+      if (TargetId != 0) hash ^= TargetId.GetHashCode();
+      if (Speed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Speed);
+      if (ArriveDist != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(ArriveDist);
+      if (MaxDuration != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MaxDuration);
+      if (BehindOffset != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(BehindOffset);
+      if (PassThroughWalls != false) hash ^= PassThroughWalls.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (ObjectId != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(ObjectId);
+      }
+      if (SkillKey != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(SkillKey);
+      }
+      if (InstanceId != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(InstanceId);
+      }
+      if (TargetId != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(TargetId);
+      }
+      if (Speed != 0F) {
+        output.WriteRawTag(45);
+        output.WriteFloat(Speed);
+      }
+      if (ArriveDist != 0F) {
+        output.WriteRawTag(53);
+        output.WriteFloat(ArriveDist);
+      }
+      if (MaxDuration != 0F) {
+        output.WriteRawTag(61);
+        output.WriteFloat(MaxDuration);
+      }
+      if (BehindOffset != 0F) {
+        output.WriteRawTag(69);
+        output.WriteFloat(BehindOffset);
+      }
+      if (PassThroughWalls != false) {
+        output.WriteRawTag(72);
+        output.WriteBool(PassThroughWalls);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (ObjectId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ObjectId);
+      }
+      if (SkillKey != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(SkillKey);
+      }
+      if (InstanceId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(InstanceId);
+      }
+      if (TargetId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(TargetId);
+      }
+      if (Speed != 0F) {
+        size += 1 + 4;
+      }
+      if (ArriveDist != 0F) {
+        size += 1 + 4;
+      }
+      if (MaxDuration != 0F) {
+        size += 1 + 4;
+      }
+      if (BehindOffset != 0F) {
+        size += 1 + 4;
+      }
+      if (PassThroughWalls != false) {
+        size += 1 + 1;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(S_SkillFollow other) {
+      if (other == null) {
+        return;
+      }
+      if (other.ObjectId != 0) {
+        ObjectId = other.ObjectId;
+      }
+      if (other.SkillKey != 0) {
+        SkillKey = other.SkillKey;
+      }
+      if (other.InstanceId != 0) {
+        InstanceId = other.InstanceId;
+      }
+      if (other.TargetId != 0) {
+        TargetId = other.TargetId;
+      }
+      if (other.Speed != 0F) {
+        Speed = other.Speed;
+      }
+      if (other.ArriveDist != 0F) {
+        ArriveDist = other.ArriveDist;
+      }
+      if (other.MaxDuration != 0F) {
+        MaxDuration = other.MaxDuration;
+      }
+      if (other.BehindOffset != 0F) {
+        BehindOffset = other.BehindOffset;
+      }
+      if (other.PassThroughWalls != false) {
+        PassThroughWalls = other.PassThroughWalls;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            ObjectId = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            SkillKey = input.ReadInt32();
+            break;
+          }
+          case 24: {
+            InstanceId = input.ReadInt32();
+            break;
+          }
+          case 32: {
+            TargetId = input.ReadInt32();
+            break;
+          }
+          case 45: {
+            Speed = input.ReadFloat();
+            break;
+          }
+          case 53: {
+            ArriveDist = input.ReadFloat();
+            break;
+          }
+          case 61: {
+            MaxDuration = input.ReadFloat();
+            break;
+          }
+          case 69: {
+            BehindOffset = input.ReadFloat();
+            break;
+          }
+          case 72: {
+            PassThroughWalls = input.ReadBool();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
   public sealed partial class S_SkillMotion : pb::IMessage<S_SkillMotion> {
     private static readonly pb::MessageParser<S_SkillMotion> _parser = new pb::MessageParser<S_SkillMotion>(() => new S_SkillMotion());
     private pb::UnknownFieldSet _unknownFields;
@@ -12113,7 +12493,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[59]; }
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[60]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12601,6 +12981,644 @@ namespace Google.Protobuf.Protocol {
           case 114:
           case 117: {
             keyframes_.AddEntriesFrom(input, _repeated_keyframes_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class C_SkillInput : pb::IMessage<C_SkillInput> {
+    private static readonly pb::MessageParser<C_SkillInput> _parser = new pb::MessageParser<C_SkillInput>(() => new C_SkillInput());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<C_SkillInput> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[61]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public C_SkillInput() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public C_SkillInput(C_SkillInput other) : this() {
+      skillKey_ = other.skillKey_;
+      targetId_ = other.targetId_;
+      mouseX_ = other.mouseX_;
+      mouseZ_ = other.mouseZ_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public C_SkillInput Clone() {
+      return new C_SkillInput(this);
+    }
+
+    /// <summary>Field number for the "skillKey" field.</summary>
+    public const int SkillKeyFieldNumber = 1;
+    private int skillKey_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int SkillKey {
+      get { return skillKey_; }
+      set {
+        skillKey_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "targetId" field.</summary>
+    public const int TargetIdFieldNumber = 2;
+    private int targetId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int TargetId {
+      get { return targetId_; }
+      set {
+        targetId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "mouseX" field.</summary>
+    public const int MouseXFieldNumber = 3;
+    private float mouseX_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float MouseX {
+      get { return mouseX_; }
+      set {
+        mouseX_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "mouseZ" field.</summary>
+    public const int MouseZFieldNumber = 4;
+    private float mouseZ_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float MouseZ {
+      get { return mouseZ_; }
+      set {
+        mouseZ_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as C_SkillInput);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(C_SkillInput other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (SkillKey != other.SkillKey) return false;
+      if (TargetId != other.TargetId) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MouseX, other.MouseX)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MouseZ, other.MouseZ)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (SkillKey != 0) hash ^= SkillKey.GetHashCode();
+      if (TargetId != 0) hash ^= TargetId.GetHashCode();
+      if (MouseX != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MouseX);
+      if (MouseZ != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MouseZ);
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (SkillKey != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(SkillKey);
+      }
+      if (TargetId != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(TargetId);
+      }
+      if (MouseX != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(MouseX);
+      }
+      if (MouseZ != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(MouseZ);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (SkillKey != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(SkillKey);
+      }
+      if (TargetId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(TargetId);
+      }
+      if (MouseX != 0F) {
+        size += 1 + 4;
+      }
+      if (MouseZ != 0F) {
+        size += 1 + 4;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(C_SkillInput other) {
+      if (other == null) {
+        return;
+      }
+      if (other.SkillKey != 0) {
+        SkillKey = other.SkillKey;
+      }
+      if (other.TargetId != 0) {
+        TargetId = other.TargetId;
+      }
+      if (other.MouseX != 0F) {
+        MouseX = other.MouseX;
+      }
+      if (other.MouseZ != 0F) {
+        MouseZ = other.MouseZ;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            SkillKey = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            TargetId = input.ReadInt32();
+            break;
+          }
+          case 29: {
+            MouseX = input.ReadFloat();
+            break;
+          }
+          case 37: {
+            MouseZ = input.ReadFloat();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class C_SkillCollisionPropose : pb::IMessage<C_SkillCollisionPropose> {
+    private static readonly pb::MessageParser<C_SkillCollisionPropose> _parser = new pb::MessageParser<C_SkillCollisionPropose>(() => new C_SkillCollisionPropose());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<C_SkillCollisionPropose> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Google.Protobuf.Protocol.ProtocolReflection.Descriptor.MessageTypes[62]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public C_SkillCollisionPropose() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public C_SkillCollisionPropose(C_SkillCollisionPropose other) : this() {
+      skillKey_ = other.skillKey_;
+      seq_ = other.seq_;
+      mode_ = other.mode_;
+      endBlockedX_ = other.endBlockedX_;
+      endBlockedZ_ = other.endBlockedZ_;
+      endPassX_ = other.endPassX_;
+      endPassZ_ = other.endPassZ_;
+      behindBlockedX_ = other.behindBlockedX_;
+      behindBlockedZ_ = other.behindBlockedZ_;
+      candidateTargetId_ = other.candidateTargetId_;
+      speed_ = other.speed_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public C_SkillCollisionPropose Clone() {
+      return new C_SkillCollisionPropose(this);
+    }
+
+    /// <summary>Field number for the "skillKey" field.</summary>
+    public const int SkillKeyFieldNumber = 1;
+    private int skillKey_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int SkillKey {
+      get { return skillKey_; }
+      set {
+        skillKey_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "seq" field.</summary>
+    public const int SeqFieldNumber = 2;
+    private int seq_;
+    /// <summary>
+    /// Streaming일 때만 증가 (서버는 최신만 사용)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Seq {
+      get { return seq_; }
+      set {
+        seq_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "mode" field.</summary>
+    public const int ModeFieldNumber = 3;
+    private global::Google.Protobuf.Protocol.ProposalMode mode_ = global::Google.Protobuf.Protocol.ProposalMode.None;
+    /// <summary>
+    /// SingleShot or Streaming
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Google.Protobuf.Protocol.ProposalMode Mode {
+      get { return mode_; }
+      set {
+        mode_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "endBlockedX" field.</summary>
+    public const int EndBlockedXFieldNumber = 4;
+    private float endBlockedX_;
+    /// <summary>
+    /// 후보 지점 2가지
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float EndBlockedX {
+      get { return endBlockedX_; }
+      set {
+        endBlockedX_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "endBlockedZ" field.</summary>
+    public const int EndBlockedZFieldNumber = 5;
+    private float endBlockedZ_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float EndBlockedZ {
+      get { return endBlockedZ_; }
+      set {
+        endBlockedZ_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "endPassX" field.</summary>
+    public const int EndPassXFieldNumber = 6;
+    private float endPassX_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float EndPassX {
+      get { return endPassX_; }
+      set {
+        endPassX_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "endPassZ" field.</summary>
+    public const int EndPassZFieldNumber = 7;
+    private float endPassZ_;
+    /// <summary>
+    /// 통과 가정 목표(타겟 쪽)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float EndPassZ {
+      get { return endPassZ_; }
+      set {
+        endPassZ_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "behindBlockedX" field.</summary>
+    public const int BehindBlockedXFieldNumber = 8;
+    private float behindBlockedX_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float BehindBlockedX {
+      get { return behindBlockedX_; }
+      set {
+        behindBlockedX_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "behindBlockedZ" field.</summary>
+    public const int BehindBlockedZFieldNumber = 9;
+    private float behindBlockedZ_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float BehindBlockedZ {
+      get { return behindBlockedZ_; }
+      set {
+        behindBlockedZ_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "candidateTargetId" field.</summary>
+    public const int CandidateTargetIdFieldNumber = 10;
+    private int candidateTargetId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CandidateTargetId {
+      get { return candidateTargetId_; }
+      set {
+        candidateTargetId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "speed" field.</summary>
+    public const int SpeedFieldNumber = 11;
+    private float speed_;
+    /// <summary>
+    /// 검증 힌트(서버는 자체 스펙으로 재검증)
+    ///float  radius, maxDistance, speed;
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float Speed {
+      get { return speed_; }
+      set {
+        speed_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as C_SkillCollisionPropose);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(C_SkillCollisionPropose other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (SkillKey != other.SkillKey) return false;
+      if (Seq != other.Seq) return false;
+      if (Mode != other.Mode) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(EndBlockedX, other.EndBlockedX)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(EndBlockedZ, other.EndBlockedZ)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(EndPassX, other.EndPassX)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(EndPassZ, other.EndPassZ)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(BehindBlockedX, other.BehindBlockedX)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(BehindBlockedZ, other.BehindBlockedZ)) return false;
+      if (CandidateTargetId != other.CandidateTargetId) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Speed, other.Speed)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (SkillKey != 0) hash ^= SkillKey.GetHashCode();
+      if (Seq != 0) hash ^= Seq.GetHashCode();
+      if (Mode != global::Google.Protobuf.Protocol.ProposalMode.None) hash ^= Mode.GetHashCode();
+      if (EndBlockedX != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(EndBlockedX);
+      if (EndBlockedZ != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(EndBlockedZ);
+      if (EndPassX != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(EndPassX);
+      if (EndPassZ != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(EndPassZ);
+      if (BehindBlockedX != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(BehindBlockedX);
+      if (BehindBlockedZ != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(BehindBlockedZ);
+      if (CandidateTargetId != 0) hash ^= CandidateTargetId.GetHashCode();
+      if (Speed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Speed);
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (SkillKey != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(SkillKey);
+      }
+      if (Seq != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Seq);
+      }
+      if (Mode != global::Google.Protobuf.Protocol.ProposalMode.None) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) Mode);
+      }
+      if (EndBlockedX != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(EndBlockedX);
+      }
+      if (EndBlockedZ != 0F) {
+        output.WriteRawTag(45);
+        output.WriteFloat(EndBlockedZ);
+      }
+      if (EndPassX != 0F) {
+        output.WriteRawTag(53);
+        output.WriteFloat(EndPassX);
+      }
+      if (EndPassZ != 0F) {
+        output.WriteRawTag(61);
+        output.WriteFloat(EndPassZ);
+      }
+      if (BehindBlockedX != 0F) {
+        output.WriteRawTag(69);
+        output.WriteFloat(BehindBlockedX);
+      }
+      if (BehindBlockedZ != 0F) {
+        output.WriteRawTag(77);
+        output.WriteFloat(BehindBlockedZ);
+      }
+      if (CandidateTargetId != 0) {
+        output.WriteRawTag(80);
+        output.WriteInt32(CandidateTargetId);
+      }
+      if (Speed != 0F) {
+        output.WriteRawTag(93);
+        output.WriteFloat(Speed);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (SkillKey != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(SkillKey);
+      }
+      if (Seq != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Seq);
+      }
+      if (Mode != global::Google.Protobuf.Protocol.ProposalMode.None) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Mode);
+      }
+      if (EndBlockedX != 0F) {
+        size += 1 + 4;
+      }
+      if (EndBlockedZ != 0F) {
+        size += 1 + 4;
+      }
+      if (EndPassX != 0F) {
+        size += 1 + 4;
+      }
+      if (EndPassZ != 0F) {
+        size += 1 + 4;
+      }
+      if (BehindBlockedX != 0F) {
+        size += 1 + 4;
+      }
+      if (BehindBlockedZ != 0F) {
+        size += 1 + 4;
+      }
+      if (CandidateTargetId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(CandidateTargetId);
+      }
+      if (Speed != 0F) {
+        size += 1 + 4;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(C_SkillCollisionPropose other) {
+      if (other == null) {
+        return;
+      }
+      if (other.SkillKey != 0) {
+        SkillKey = other.SkillKey;
+      }
+      if (other.Seq != 0) {
+        Seq = other.Seq;
+      }
+      if (other.Mode != global::Google.Protobuf.Protocol.ProposalMode.None) {
+        Mode = other.Mode;
+      }
+      if (other.EndBlockedX != 0F) {
+        EndBlockedX = other.EndBlockedX;
+      }
+      if (other.EndBlockedZ != 0F) {
+        EndBlockedZ = other.EndBlockedZ;
+      }
+      if (other.EndPassX != 0F) {
+        EndPassX = other.EndPassX;
+      }
+      if (other.EndPassZ != 0F) {
+        EndPassZ = other.EndPassZ;
+      }
+      if (other.BehindBlockedX != 0F) {
+        BehindBlockedX = other.BehindBlockedX;
+      }
+      if (other.BehindBlockedZ != 0F) {
+        BehindBlockedZ = other.BehindBlockedZ;
+      }
+      if (other.CandidateTargetId != 0) {
+        CandidateTargetId = other.CandidateTargetId;
+      }
+      if (other.Speed != 0F) {
+        Speed = other.Speed;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            SkillKey = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            Seq = input.ReadInt32();
+            break;
+          }
+          case 24: {
+            Mode = (global::Google.Protobuf.Protocol.ProposalMode) input.ReadEnum();
+            break;
+          }
+          case 37: {
+            EndBlockedX = input.ReadFloat();
+            break;
+          }
+          case 45: {
+            EndBlockedZ = input.ReadFloat();
+            break;
+          }
+          case 53: {
+            EndPassX = input.ReadFloat();
+            break;
+          }
+          case 61: {
+            EndPassZ = input.ReadFloat();
+            break;
+          }
+          case 69: {
+            BehindBlockedX = input.ReadFloat();
+            break;
+          }
+          case 77: {
+            BehindBlockedZ = input.ReadFloat();
+            break;
+          }
+          case 80: {
+            CandidateTargetId = input.ReadInt32();
+            break;
+          }
+          case 93: {
+            Speed = input.ReadFloat();
             break;
           }
         }

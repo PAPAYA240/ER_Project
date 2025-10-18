@@ -7,7 +7,7 @@ using System.Numerics;
 using System.Text;
 using static ISkillHandler;
 
-public sealed class Rozzi_Q : ISkillHandler
+public sealed class Rozzi_W : ISkillHandler
 {
     // 인터페이스 요구 프로퍼티의 백킹필드
     public int LastSeq { get; set; }
@@ -22,58 +22,23 @@ public sealed class Rozzi_Q : ISkillHandler
     public void OnEnter(Player p, SkillSpec spec, SkillContext ctx)
     {
         p.SendStopPacket(StopReason.StopMoveOnly);  // 이동 잠금
-        p.SendAnimPacket("ROZZI_Q", 0.05f);         // 애니 브로드캐스트
+        p.SendAnimPacket("ROZZI_W", 0.05f);         // 애니 브로드캐스트
                                                     // TODO: 코스트/쿨타임 차감
 
         _committed = false;
         LastSeq = 0;
         Latest = default;
-        //_deadline = DateTime.UtcNow.AddMilliseconds(150); // 짧게만 기다림(네트워크 품질에 맞춰 조절)
         _spec = spec;
     }
 
     public void OnHit(Player p, SkillSpec spec, SkillContext ctx)
     {
         return;
-
-        var from = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
-        if (LastSeq == 0) { }
-
-        _duration = MathF.Max(0.01f, 1.0f);
-        _finalEnd = Latest.EndBlocked;
-
-        // 범용 스킬 모션 패킷
-        p.SendSkillMotion(
-            type: SkillMotionType.Dash,
-            start: from,
-            end: _finalEnd,
-            duration: _duration,
-            anim: ""/*spec.AnimName*/,
-            curveId: "EaseOutCubic",
-            serverCollision: true,
-            authoritativeEnd: true);
-
-        // 스킬 중 MoveSync 감시 모드
-        p.Flags.IsInSkillMotion = true;
-        p.Flags.SkillMotionStart = /*from*/new Vector3();
-        p.Flags.SkillMotionEnd = _finalEnd;
-        p.Flags.SkillMotionEndTimeUtc = (float)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000f + _duration;
     }
 
     public void OnTick(Player p, SkillSpec spec, SkillContext ctx)
     {
         return;
-
-        if (_committed)
-            return;
-
-        // 폴백: 간단 StopOnWall 커밋(최소 구현)
-        var from = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
-        var end = Latest.EndBlocked;
-        _duration = MathF.Max(0.01f, 1.0f);
-
-        CommitMotionOnce(p, spec, from, end);
-        _committed = true;
     }
 
     public void OnExit(Player p, SkillSpec spec, SkillContext ctx)
@@ -85,14 +50,6 @@ public sealed class Rozzi_Q : ISkillHandler
         p.SendMovePacket(new PositionInfo(p.PosInfo), new RotationInfo(p.RotInfo));
 
         p.Flags.IsInSkillMotion = false;
-
-        //// 스킬 종료 시 최종 보정 1회
-        //p.PosInfo.PosX = _finalEnd.X;
-        //p.PosInfo.PosY = _finalEnd.Y;
-        //p.PosInfo.PosZ = _finalEnd.Z;
-        //p.SendMovePacket(new PositionInfo(p.PosInfo), new RotationInfo(p.RotInfo));
-
-        //p.EndSkillMotion();                  // ← 스킬 끝: MoveSync 평상시 복귀
     }
 
     private void CommitMotionOnce(Player p, SkillSpec spec, Vector3 from, Vector3 end)
@@ -127,7 +84,7 @@ public sealed class Rozzi_Q : ISkillHandler
         Latest = proposal;
 
         var from = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
-        var end = Latest.EndBlocked;
+        var end = Latest.EndPass;
         _duration = MathF.Max(0.01f, 1.0f);
 
         CommitMotionOnce(p, _spec, from, end);

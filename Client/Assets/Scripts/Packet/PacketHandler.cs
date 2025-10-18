@@ -412,6 +412,20 @@ class PacketHandler
         }
     }
 
+    public static void S_SkillFollowHandler(PacketSession session, IMessage packet)
+    {
+        S_SkillFollow followPacket = packet as S_SkillFollow;
+
+        GameObject go = Managers.Object.FindById(followPacket.ObjectId);
+        if (go == null)
+            return;
+
+        if (Managers.Object.MyPlayer.Id == followPacket.ObjectId)
+        {
+            Managers.Object.MyPlayer.OnServerUpdate(followPacket);
+        }
+    }
+
     public static void S_SkillMotionHandler(PacketSession session, IMessage packet)
     {
         S_SkillMotion motionPacket = packet as S_SkillMotion;
