@@ -633,65 +633,17 @@ namespace Server.Game
                         float dx = targetHitbox.PosX - myHitbox.PosX;
                         float dz = targetHitbox.PosZ - myHitbox.PosZ;
                         float distanceSq = dx * dx + dz * dz;
-                        return distanceSq <= myHitbox.Data.Radius * myHitbox.Data.Radius;
+
+                        float targetRadius = targetHitbox.Data.Radius;
+                        float effectiveRadius = myHitbox.Data.Radius + targetRadius;
+
+                        return distanceSq <= effectiveRadius * effectiveRadius;
                     }
                 case SkillShape.Rectangle:
-                    {
-                        Vector2 center = myHitbox.MousePos;
-
-                        Vector2 forward = Vector2.Normalize(new Vector2(center.X - myHitbox.Creature.PosInfo.PosX, center.Y - myHitbox.Creature.PosInfo.PosZ));
-
-                        Vector2 right = new Vector2(-forward.Y, forward.X);
-
-                        Vector2 toTarget = new Vector2(targetHitbox.PosX - center.X, targetHitbox.PosZ - center.Y);
-
-                        float projForward = Vector2.Dot(toTarget, forward);
-                        float projRight = Vector2.Dot(toTarget, right);
-
-                        float halfHeight = myHitbox.Data.Height * 0.5f;
-                        float halfWidth = myHitbox.Data.Width * 0.5f;
-
-                        return MathF.Abs(projForward) <= halfHeight &&
-                               MathF.Abs(projRight) <= halfWidth;
-                    }
-
                 case SkillShape.Point:
-                    {
-                        Vector2 center = myHitbox.MousePos;
-                        Vector2 playerPos = new Vector2(myHitbox.Creature.PosInfo.PosX, myHitbox.Creature.PosInfo.PosZ);
-                        Vector2 forward = Vector2.Normalize(center - playerPos);
-
-                        Vector2 right = new Vector2(-forward.Y, forward.X);
-                        Vector2 toTarget = new Vector2(targetHitbox.PosX - center.X, targetHitbox.PosZ - center.Y);
-
-                        float projForward = Vector2.Dot(toTarget, forward);
-                        float projRight = Vector2.Dot(toTarget, right);
-
-                        float halfHeight = myHitbox.Data.Height * 0.5f;
-                        float halfWidth = myHitbox.Data.Width * 0.5f;
-
-                        return MathF.Abs(projForward) <= halfHeight && MathF.Abs(projRight) <= halfWidth;
-                    }
-
                 case SkillShape.Ray:
-                    {
-                        Vector2 origin = new Vector2(myHitbox.PosX, myHitbox.PosZ);
-                        Vector2 forward = Vector2.Normalize(myHitbox.MousePos - origin);
-                        Vector2 right = new Vector2(-forward.Y, forward.X);
-                        Vector2 toTarget = new Vector2(targetHitbox.PosX - origin.X, targetHitbox.PosZ - origin.Y);
+                    return CheckPointRayCollision(myHitbox, targetHitbox);
 
-                        float projForward = Vector2.Dot(toTarget, forward);
-                        float projRight = Vector2.Dot(toTarget, right);
-
-                        if (!System.Enum.TryParse<SkillType>(myHitbox.Data.Type, out SkillType type))
-                            return false;
-
-                        float range = myHitbox.Data.MaxRange;
-                        if (type == SkillType.SkillTrack)
-                            range = myHitbox.Data.MinRange + (myHitbox.Data.MaxRange - myHitbox.Data.MinRange) * myHitbox.ChargeRatio;
-
-                        return projForward >= 0 && projForward <= range && MathF.Abs(projRight) <= myHitbox.Data.Width * 0.5f;
-                    }
                 case SkillShape.Sector:
                     {
                         Vector2 center = new Vector2(myHitbox.PosX, myHitbox.PosZ);
@@ -737,6 +689,64 @@ namespace Server.Game
                         HandlerInteraction(hitboxA, hitboxB);
                 }
             }
+        }
+
+        bool CheckPointRayCollision(Hitbox pointHitbox, Hitbox rayHitbox)
+        {
+            Vector2 centerA = pointHitbox.MousePos;
+            Vector2 playerPosA = new Vector2(pointHitbox.Creature.PosInfo.PosX, pointHitbox.Creature.PosInfo.PosZ);
+            Vector2 forwardA = Vector2.Normalize(centerA - playerPosA);
+            Vector2 rightA = new Vector2(-forwardA.Y, forwardA.X);
+            float halfHeightA = pointHitbox.Data.Height * 0.5f;
+            float halfWidthA = pointHitbox.Data.Width * 0.5f;
+
+
+            Vector2 originB = new Vector2(rayHitbox.PosX, rayHitbox.PosZ);
+            Vector2 forwardB = Vector2.Normalize(rayHitbox.MousePos - originB);
+            float rangeB = rayHitbox.Data.Height;
+            float halfHeightB = rangeB * 0.5f;
+            float halfWidthB = rayHitbox.Data.Width * 0.5f;
+            Vector2 centerB = originB + forwardB * halfHeightB;
+            Vector2 rightB = new Vector2(-forwardB.Y, forwardB.X);
+
+            // 1. OBB 대 OBB 충돌
+            Vector2 toTarget = new Vector2(centerB.X - centerA.X, centerB.Y - centerA.Y);
+
+            // 2.OBB A (Point) 축 검사
+            float projCenterA1 = Vector2.Dot(toTarget, forwardA);
+            float projRadiusA1 = halfHeightA + MathF.Abs(Vector2.Dot(forwardA, forwardB)) * halfHeightB + MathF.Abs(Vector2.Dot(forwardA, rightB)) * halfWidthB;
+            if (MathF.Abs(projCenterA1) > projRadiusA1) return false;
+
+            float projCenterA2 = Vector2.Dot(toTarget, rightA);
+            float projRadiusA2 = halfWidthA + MathF.Abs(Vector2.Dot(rightA, forwardB)) * halfHeightB + MathF.Abs(Vector2.Dot(rightA, rightB)) * halfWidthB;
+            if (MathF.Abs(projCenterA2) > projRadiusA2) return false;
+
+            // 3. OBB B 축 검사
+            float projCenterB1 = Vector2.Dot(toTarget, forwardB);
+            float projRadiusB1 = halfHeightB + MathF.Abs(Vector2.Dot(forwardB, forwardA)) * halfHeightA + MathF.Abs(Vector2.Dot(forwardB, rightA)) * halfWidthA;
+            if (MathF.Abs(projCenterB1) > projRadiusB1) return false;
+
+            float projCenterB2 = Vector2.Dot(toTarget, rightB);
+            float projRadiusB2 = halfWidthB + MathF.Abs(Vector2.Dot(rightB, forwardA)) * halfHeightA + MathF.Abs(Vector2.Dot(rightB, rightA)) * halfWidthA;
+            if (MathF.Abs(projCenterB2) > projRadiusB2) return false;
+
+            Vector2 toPointCenter = new Vector2(centerA.X - originB.X, centerA.Y - originB.Y);
+            float projPointForward = Vector2.Dot(toPointCenter, forwardB);
+
+            if (!System.Enum.TryParse<SkillType>(rayHitbox.Data.Type, out SkillType type))
+                return true;
+
+            float range = rayHitbox.Data.MaxRange;
+            if (type == SkillType.SkillTrack)
+                range = rayHitbox.Data.MinRange + (rayHitbox.Data.MaxRange - rayHitbox.Data.MinRange) * rayHitbox.ChargeRatio;
+
+            float pointHalfHeight = pointHitbox.Data.Height * 0.5f;
+
+            bool isWithinStart = projPointForward >= (0 - pointHalfHeight);
+
+            bool isWithinEnd = projPointForward <= (range + pointHalfHeight);
+
+            return isWithinStart && isWithinEnd;
         }
 
         void HandlerInteraction(Hitbox hitboxA, Hitbox hitboxB)

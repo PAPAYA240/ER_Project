@@ -7,7 +7,6 @@ using System.Xml.XPath;
 using Google.Protobuf.Protocol;
 using Lucene.Net.Messages;
 using Lucene.Net.Support;
-using Server.Game;
 using static Lucene.Net.Util.AttributeSource;
 using static Server.Data.DataUtils;
 
@@ -324,7 +323,6 @@ namespace Server.Data
     {
         public int id;
         public string name;
-        public string SkillBehavior;
         public MonsterSkill skillType;
         public float skillDuration;
         public int damage;
