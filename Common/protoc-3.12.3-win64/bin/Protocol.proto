@@ -117,8 +117,8 @@ enum AnimType{
 
 enum CharacterType {
 	CHARACTER_NONE = 0;
-    	ROZZI = 1;
-    	YUKI = 2;
+    ROZZI = 1;
+    YUKI = 2;
 	HYUNWOO = 3;
 	ABIGAIL = 4;
 	THEODORE = 5;
@@ -129,7 +129,7 @@ enum MonsterType {
    	ALPHA = 1;
    	OMEGA = 2;
 	DRONE = 3;
-    	GAMMA = 4;
+    GAMMA = 4;
 	TURRET = 5;
 }
 
@@ -223,9 +223,9 @@ message C_Interact {
 
 message S_Interact  {
     	int32 objectId = 1;
-    	int32 keyCode = 2;
-	int32 targetKeyCode = 3;
-	int32 TargetId = 4;
+	int32 targetId = 2;
+    	int32 keyCode = 3;
+	int32 targetKeyCode = 4;
 }
 
 message C_EnterGame {
@@ -279,7 +279,7 @@ message S_Drawmesh{
 	SkillHitbox hitbox = 4;
 	PositionInfo forward = 5;
   	PositionInfo right = 6;
-	float OffsetRadius = 7;
+	float offsetRadius = 7;
 }
 message C_Skill{
 	ObjectInfo objectInfo = 1;

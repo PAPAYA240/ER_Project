@@ -26,8 +26,8 @@ namespace Google.Protobuf.Protocol {
           string.Concat(
             "Cg5Qcm90b2NvbC5wcm90bxIIUHJvdG9jb2wiHgoKQ19JbnRlcmFjdBIQCghv",
             "YmplY3RJZBgBIAEoBSJYCgpTX0ludGVyYWN0EhAKCG9iamVjdElkGAEgASgF",
-            "Eg8KB2tleUNvZGUYAiABKAUSFQoNdGFyZ2V0S2V5Q29kZRgDIAEoBRIQCghU",
-            "YXJnZXRJZBgEIAEoBSJPCgtDX0VudGVyR2FtZRIRCgllbnRlckdhbWUYASAB",
+            "EhAKCHRhcmdldElkGAIgASgFEg8KB2tleUNvZGUYAyABKAUSFQoNdGFyZ2V0",
+            "S2V5Q29kZRgEIAEoBSJPCgtDX0VudGVyR2FtZRIRCgllbnRlckdhbWUYASAB",
             "KAgSLQoMZHVtbXlQbGF5ZXJzGAIgAygOMhcuUHJvdG9jb2wuQ2hhcmFjdGVy",
             "VHlwZSIzCgtTX0VudGVyR2FtZRIkCgZwbGF5ZXIYASABKAsyFC5Qcm90b2Nv",
             "bC5PYmplY3RJbmZvIg0KC1NfTGVhdmVHYW1lIoYCCgdTX1N0YXRlEhAKCE9i",
@@ -48,7 +48,7 @@ namespace Google.Protobuf.Protocol {
             "GAIgASgLMhYuUHJvdG9jb2wuUm90YXRpb25JbmZvEhAKCG9iamVjdElkGAMg",
             "ASgFEiUKBmhpdGJveBgEIAEoCzIVLlByb3RvY29sLlNraWxsSGl0Ym94EicK",
             "B2ZvcndhcmQYBSABKAsyFi5Qcm90b2NvbC5Qb3NpdGlvbkluZm8SJQoFcmln",
-            "aHQYBiABKAsyFi5Qcm90b2NvbC5Qb3NpdGlvbkluZm8SFAoMT2Zmc2V0UmFk",
+            "aHQYBiABKAsyFi5Qcm90b2NvbC5Qb3NpdGlvbkluZm8SFAoMb2Zmc2V0UmFk",
             "aXVzGAcgASgCIqsBCgdDX1NraWxsEigKCm9iamVjdEluZm8YASABKAsyFC5Q",
             "cm90b2NvbC5PYmplY3RJbmZvEiYKCXNraWxsSW5mbxgCIAEoCzITLlByb3Rv",
             "Y29sLlNraWxsSW5mbxIRCgl0YXJnZXRzSWQYAyADKAUSEgoKdGFyZ2V0UG9z",
@@ -232,7 +232,7 @@ namespace Google.Protobuf.Protocol {
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.EnvType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.MonsterSkill), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.Weapon), typeof(global::Google.Protobuf.Protocol.SkillShape), typeof(global::Google.Protobuf.Protocol.TraitType), typeof(global::Google.Protobuf.Protocol.EquipItemType), typeof(global::Google.Protobuf.Protocol.ItemGrade), typeof(global::Google.Protobuf.Protocol.CombatTextType), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_Interact), global::Google.Protobuf.Protocol.C_Interact.Parser, new[]{ "ObjectId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Interact), global::Google.Protobuf.Protocol.S_Interact.Parser, new[]{ "ObjectId", "KeyCode", "TargetKeyCode", "TargetId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Interact), global::Google.Protobuf.Protocol.S_Interact.Parser, new[]{ "ObjectId", "TargetId", "KeyCode", "TargetKeyCode" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_EnterGame), global::Google.Protobuf.Protocol.C_EnterGame.Parser, new[]{ "EnterGame", "DummyPlayers" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_EnterGame), global::Google.Protobuf.Protocol.S_EnterGame.Parser, new[]{ "Player" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_LeaveGame), global::Google.Protobuf.Protocol.S_LeaveGame.Parser, null, null, null, null, null),
@@ -671,9 +671,9 @@ namespace Google.Protobuf.Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public S_Interact(S_Interact other) : this() {
       objectId_ = other.objectId_;
+      targetId_ = other.targetId_;
       keyCode_ = other.keyCode_;
       targetKeyCode_ = other.targetKeyCode_;
-      targetId_ = other.targetId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -693,8 +693,19 @@ namespace Google.Protobuf.Protocol {
       }
     }
 
+    /// <summary>Field number for the "targetId" field.</summary>
+    public const int TargetIdFieldNumber = 2;
+    private int targetId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int TargetId {
+      get { return targetId_; }
+      set {
+        targetId_ = value;
+      }
+    }
+
     /// <summary>Field number for the "keyCode" field.</summary>
-    public const int KeyCodeFieldNumber = 2;
+    public const int KeyCodeFieldNumber = 3;
     private int keyCode_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int KeyCode {
@@ -705,24 +716,13 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "targetKeyCode" field.</summary>
-    public const int TargetKeyCodeFieldNumber = 3;
+    public const int TargetKeyCodeFieldNumber = 4;
     private int targetKeyCode_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int TargetKeyCode {
       get { return targetKeyCode_; }
       set {
         targetKeyCode_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "TargetId" field.</summary>
-    public const int TargetIdFieldNumber = 4;
-    private int targetId_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int TargetId {
-      get { return targetId_; }
-      set {
-        targetId_ = value;
       }
     }
 
@@ -740,9 +740,9 @@ namespace Google.Protobuf.Protocol {
         return true;
       }
       if (ObjectId != other.ObjectId) return false;
+      if (TargetId != other.TargetId) return false;
       if (KeyCode != other.KeyCode) return false;
       if (TargetKeyCode != other.TargetKeyCode) return false;
-      if (TargetId != other.TargetId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -750,9 +750,9 @@ namespace Google.Protobuf.Protocol {
     public override int GetHashCode() {
       int hash = 1;
       if (ObjectId != 0) hash ^= ObjectId.GetHashCode();
+      if (TargetId != 0) hash ^= TargetId.GetHashCode();
       if (KeyCode != 0) hash ^= KeyCode.GetHashCode();
       if (TargetKeyCode != 0) hash ^= TargetKeyCode.GetHashCode();
-      if (TargetId != 0) hash ^= TargetId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -770,17 +770,17 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(8);
         output.WriteInt32(ObjectId);
       }
-      if (KeyCode != 0) {
+      if (TargetId != 0) {
         output.WriteRawTag(16);
+        output.WriteInt32(TargetId);
+      }
+      if (KeyCode != 0) {
+        output.WriteRawTag(24);
         output.WriteInt32(KeyCode);
       }
       if (TargetKeyCode != 0) {
-        output.WriteRawTag(24);
-        output.WriteInt32(TargetKeyCode);
-      }
-      if (TargetId != 0) {
         output.WriteRawTag(32);
-        output.WriteInt32(TargetId);
+        output.WriteInt32(TargetKeyCode);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -793,14 +793,14 @@ namespace Google.Protobuf.Protocol {
       if (ObjectId != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(ObjectId);
       }
+      if (TargetId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(TargetId);
+      }
       if (KeyCode != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(KeyCode);
       }
       if (TargetKeyCode != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(TargetKeyCode);
-      }
-      if (TargetId != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(TargetId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -816,14 +816,14 @@ namespace Google.Protobuf.Protocol {
       if (other.ObjectId != 0) {
         ObjectId = other.ObjectId;
       }
+      if (other.TargetId != 0) {
+        TargetId = other.TargetId;
+      }
       if (other.KeyCode != 0) {
         KeyCode = other.KeyCode;
       }
       if (other.TargetKeyCode != 0) {
         TargetKeyCode = other.TargetKeyCode;
-      }
-      if (other.TargetId != 0) {
-        TargetId = other.TargetId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -841,15 +841,15 @@ namespace Google.Protobuf.Protocol {
             break;
           }
           case 16: {
-            KeyCode = input.ReadInt32();
+            TargetId = input.ReadInt32();
             break;
           }
           case 24: {
-            TargetKeyCode = input.ReadInt32();
+            KeyCode = input.ReadInt32();
             break;
           }
           case 32: {
-            TargetId = input.ReadInt32();
+            TargetKeyCode = input.ReadInt32();
             break;
           }
         }
@@ -2330,7 +2330,7 @@ namespace Google.Protobuf.Protocol {
       }
     }
 
-    /// <summary>Field number for the "OffsetRadius" field.</summary>
+    /// <summary>Field number for the "offsetRadius" field.</summary>
     public const int OffsetRadiusFieldNumber = 7;
     private float offsetRadius_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
