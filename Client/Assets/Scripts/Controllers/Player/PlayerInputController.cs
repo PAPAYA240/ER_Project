@@ -130,14 +130,14 @@ public class PlayerInputController : MonoBehaviour
         return null;
     }
 
-    //public C_Rest GetRestCommand()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.X))
-    //    {
-    //        return new C_Rest();
-    //    }
-    //    return null;
-    //}
+    public C_Rest GetRestCommand()
+    {
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            return new C_Rest() { IsRest = true };
+        }
+        return null;
+    }
 
     #region Util
     private Vector3 GetMouseWorldPosition()

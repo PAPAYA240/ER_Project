@@ -386,7 +386,7 @@ public class PlayerController : CreatureController
     {
         _agent.isStopped = false;
 
-        Vector3 pos = new Vector3
+        _serverPos = new Vector3
         {
             x = movePacket.PosInfo.PosX,
             y = movePacket.PosInfo.PosY,

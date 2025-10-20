@@ -284,5 +284,16 @@ class PacketHandler
             return;
 
         room.Push(room.HandleSkillCollision, player, skillPacket);
-    }   
+    }
+
+    public static void C_RestHandler(PacketSession session, IMessage packet)
+    {
+        var client = (ClientSession)session;
+        var player = client?.MyPlayer;
+        if (player?.Room == null)
+            return;
+        var req = (C_Rest)packet;
+
+        player.Room.Push(player.Room.HandleRest, player, req);
+    }
 }

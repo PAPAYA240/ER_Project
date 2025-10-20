@@ -27,6 +27,9 @@ public class PlayerViewController : MonoBehaviour
     private int _followTargetId = 0;
     private Coroutine _coFollow;
 
+    // Attack
+    private int _targetId;
+
     public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
 
     private void Awake()
@@ -52,9 +55,24 @@ public class PlayerViewController : MonoBehaviour
         //    _lastSentPos = pos;
         //    _lastSentRot = rot;
         //    _sentArriveSnapshot = false;
-        
+
         //    _player.UpdateTransform();
         //}
+
+        if (_player.State == CreatureState.Attack)
+        {
+            var targetView = Managers.Object.FindById(_targetId);
+            // TEMP
+            if (targetView != null)
+            {
+                Vector3 pos = targetView.transform.position;
+                UpdateTarget(pos);
+            }
+        }
+        else
+        {
+            _player.UpdateTransform();
+        }
     }
 
     public void OnMove(S_Move packet)
@@ -206,6 +224,23 @@ public class PlayerViewController : MonoBehaviour
 
 
     #region Helper
+    public void DeliveryTargetId(int targetId)
+    {
+        _targetId = targetId;
+    }
+
+    public void UpdateTarget(Vector3 targetPos)
+    {
+        Vector3 dir = targetPos - transform.position;
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.001f)
+            return;
+
+        transform.rotation = Quaternion.LookRotation(dir);
+
+        _player.UpdateTransform();
+    }
+
     private GameObject FindVisibleObjectById(int objectId)
     {
         if (VisibleObjectIds.Contains(objectId))

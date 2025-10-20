@@ -358,6 +358,17 @@ namespace Server.Game
             //player.SkillTarget.OnDamaged(player, damage);
         }
 
+        public void HandleRest(Player player, C_Rest pkt)
+        {
+            if (player == null)
+                return;
+            if (player.IsDead)
+                return;
+
+            if (pkt.IsRest == true)
+                player.ChangeState(new Player_RestState());
+        }
+
         public Player FindPlayer(Func<GameObject, bool> condition)
         {
             foreach(Player player in _players.Values)

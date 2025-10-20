@@ -53,23 +53,21 @@ class PacketHandler
         }
         else
         {
-            //CreatureController cc = go.GetComponentInChildren<CreatureController>();
-            //if (cc == null)
-            //    return;
-
-            //cc.PosInfo = movePacket.PosInfo;
-            //cc.RotInfo = movePacket.RotInfo;
-
-            //if (cc.ObjectType == Define.Object.OtherPlayer)
-            //{
-            //    cc.SyncPos(movePacket.IsWarp);
-            //}
-
             PlayerController pc = go.GetComponentInChildren<PlayerController>();
             if (pc == null)
                 return;
 
-            pc.SyncPosFromServer(movePacket);        
+            if (pc.State == CreatureState.Moving)
+            {
+                pc.SyncPosFromServer(movePacket);
+            }
+            else
+            {
+                pc.transform.position = movePacket.PosInfo.ToVector();
+                pc.transform.rotation = movePacket.RotInfo;
+                pc.PosInfo = movePacket.PosInfo;
+                pc.RotInfo = movePacket.RotInfo;
+            }
         }     
     }
 

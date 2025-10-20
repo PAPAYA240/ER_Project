@@ -52,6 +52,7 @@ enum MsgId {
   S_SKILL_MOTION = 44;
   C_SKILL_INPUT = 45;
   C_SKILL_COLLISION_PROPOSE = 46;
+  C_REST = 47;
 }
 
 enum CreatureState{
@@ -646,4 +647,8 @@ message C_SkillCollisionPropose {
   float speed = 11;
   // 검증 힌트(서버는 자체 스펙으로 재검증)
   //float  radius, maxDistance, speed;
+}
+
+message C_Rest {
+  bool isRest = 1;
 }

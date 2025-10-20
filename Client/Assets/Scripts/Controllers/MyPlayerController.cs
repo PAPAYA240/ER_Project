@@ -40,7 +40,10 @@ public class MyPlayerController : PlayerController
         // 2) 우클릭 "타겟 공격" 의도
         var atkCmd = _input.GetAttackCommand();
         if (atkCmd != null)
+        {
+            _view.DeliveryTargetId(atkCmd.TargetId);
             Managers.Network.Send(atkCmd);
+        }
 
         // 3) 우클릭 유지: 타겟 이동 or 땅 이동
         var setMove = _input.GetSetMoveTarget();
@@ -54,9 +57,9 @@ public class MyPlayerController : PlayerController
         if (skillCmd != null)
             Managers.Network.Send(skillCmd);
 
-        //var restCmd = _input.GetRestCommand();
-        //if (moveCmd != null)
-        //    Managers.Network.Send(restCmd);
+        var restCmd = _input.GetRestCommand();
+        if (restCmd != null)
+            Managers.Network.Send(restCmd);
 
         CheckUpdatedFlag();
     }
