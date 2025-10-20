@@ -18,7 +18,7 @@ public class FogOfWarVision : MonoBehaviour
     void Start()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
-        SetVisionVisible(false);
+        //SetVisionVisible(false);
 
         _obstacleMask = LayerMask.GetMask("Map");
         _mesh = new Mesh();

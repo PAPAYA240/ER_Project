@@ -2,7 +2,9 @@
 using System.Collections;
 using Google.Protobuf.Protocol;
 using UnityEngine;
+#if UNITY_EDITOR
 using static UnityEditor.PlayerSettings;
+#endif
 
 public class SkillMesh : MonoBehaviour
 {

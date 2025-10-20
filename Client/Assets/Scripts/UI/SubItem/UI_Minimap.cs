@@ -20,7 +20,8 @@ public class UI_Minimap : UI_Base
     {
         TurbineIconLeft,
         TurbineIconCenter,
-        TurbineIconRight
+        TurbineIconRight,
+        Fog
     }
 
     enum GameObjects
@@ -58,7 +59,11 @@ public class UI_Minimap : UI_Base
 
     void Start()
     {
-        
+        //GetImage((int)Images.Fog).material
+
+        Image img = GetImage((int)Images.Fog);
+        Texture texture = GameObject.Find("FogCamera").GetComponent<FogCameraController>().FogTexture;
+        img.material.SetTexture("_VisionMask", texture);
     }
 
     void Update()

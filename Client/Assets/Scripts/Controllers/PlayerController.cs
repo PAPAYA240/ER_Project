@@ -17,10 +17,6 @@ public class PlayerController : CreatureController
     int _atkCount = 1;
     int _maxAtkCount = 2;
 
-
-    // Fog
-    private FogOfWarVision _fogOfWarVision;
-
     // NameTag
     protected UI_PlayerNameTag _nameTag;
 
@@ -84,8 +80,15 @@ public class PlayerController : CreatureController
         this.gameObject.layer = LayerMask.NameToLayer("Player");
 
         // Fog
-        _fogOfWarVision = gameObject.GetOrAddComponent<FogOfWarVision>();
-        gameObject.layer = LayerMask.NameToLayer("Fog");
+        GameObject go = new GameObject();
+        go.name = "FogOfWarVision";
+        go.transform.parent = transform;
+        go.transform.localPosition = Vector3.zero;
+        go.transform.localRotation = Quaternion.identity;
+        go.transform.localScale = Vector3.one;
+        go.AddComponent<FogOfWarVision>();
+        string layerName = $"FogTeam{ObjInfo.Player.Team}";
+        go.layer = LayerMask.NameToLayer(layerName);
 
         // 체력바
         InitNameTag();

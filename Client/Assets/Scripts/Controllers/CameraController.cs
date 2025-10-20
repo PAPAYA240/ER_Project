@@ -71,7 +71,7 @@ public class CameraController : MonoBehaviour
         _playerCamera.clearFlags = CameraClearFlags.Nothing;
 
         int everythingMask = ~0;
-        int layersToExclude = (1 << LayerMask.NameToLayer("Map")) | (1 << LayerMask.NameToLayer("IndicatorUI"));
+        int layersToExclude = (1 << LayerMask.NameToLayer("Map")) | (1 << LayerMask.NameToLayer("IndicatorUI")) | (1 << LayerMask.NameToLayer("FogTeam1")) | (1 << LayerMask.NameToLayer("FogTeam2"));
         _playerCamera.cullingMask = everythingMask & ~layersToExclude;
 
         var playerCamData = _playerCamera.gameObject.GetOrAddComponent<UniversalAdditionalCameraData>();

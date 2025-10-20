@@ -179,7 +179,7 @@ public class MyPlayerController : PlayerController
         MakeInventory();
 
         _monsterMask = 1 << LayerMask.NameToLayer("Monster");
-        _playerMask = 1 << LayerMask.NameToLayer("Fog");
+        _playerMask = 1 << LayerMask.NameToLayer("Player");
         _myPlayerMask = 1 << LayerMask.NameToLayer("MyPlayer");
         gameObject.layer = LayerMask.NameToLayer("MyPlayer");
 
@@ -213,6 +213,14 @@ public class MyPlayerController : PlayerController
         _originSpeed = _agent.speed;
 
         _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHPColor();
+
+        // 전장의 안개 카메라 설정
+        GameObject fogCamGo = GameObject.Find("FogCamera");
+        if(null != fogCamGo)
+        {
+            string fogLayerName = $"FogTeam{ObjInfo.Player.Team}";
+            fogCamGo.GetComponent<Camera>().cullingMask |= (1 << LayerMask.NameToLayer(fogLayerName));
+        }
     }
     #endregion
 
