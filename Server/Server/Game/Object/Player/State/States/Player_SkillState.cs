@@ -32,12 +32,6 @@ public class Player_SkillState : IPlayerState
         //_tEnd = _tHit.AddSeconds(_spec.Backswing);
 
         _handler.OnEnter(player, _spec, _ctx);
-
-        if (player.PendingProposal.Has /*&& player.PendingProposal.SkillKey == _spec.Key*/)
-        {
-            _handler.OnPropose(player, player.PendingProposal.Prop);
-            player.PendingProposal = default; // consume once
-        }
     }
 
     public void RequestFinish() => _forceEnd = true;
@@ -52,14 +46,13 @@ public class Player_SkillState : IPlayerState
 
         if (_forceEnd || now >= _tEnd)
         {
-            // 여기서 다음 상태를 결정하고 한 번만 ChangeState
             IPlayerState next;
             if (player.Intent.TryConsume(out var dest))
                 next = new Player_MovingState(dest);
             else
                 next = new Player_IdleState();
 
-            player.ChangeState(next); // 이 호출 안에서 현재 상태 Exit()가 불립니다.
+            player.ChangeState(next);
         }
     }
 

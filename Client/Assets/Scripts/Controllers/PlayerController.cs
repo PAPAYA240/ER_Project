@@ -17,6 +17,11 @@ public class PlayerController : CreatureController
     int _atkCount = 1;
     int _maxAtkCount = 2;
 
+    // SyncPos
+    float _minDist = 3f;
+    float _syncSpeed = 20f;
+    Vector3 _serverPos;
+
     // MoveSync
     private float minDiff = 0.2f;
 
@@ -105,6 +110,15 @@ public class PlayerController : CreatureController
     protected override void UpdateController()
     {
         base.UpdateController();
+
+        if (ObjectType == Define.Object.OtherPlayer)
+        {
+            float dist = Vector3.Distance(transform.position, _serverPos);
+            if (dist > _minDist)
+                _agent.Warp(_serverPos);
+            else
+                transform.position = Vector3.Lerp(transform.position, _serverPos, Time.deltaTime * _syncSpeed);
+        }
     }
 
     protected virtual void CheckUpdatedFlag() { }
@@ -370,8 +384,6 @@ public class PlayerController : CreatureController
 
     public void SyncPosFromServer(S_Move movePacket)
     {
-        if(State != CreatureState.Moving) return;
-
         _agent.isStopped = false;
 
         Vector3 pos = new Vector3
@@ -380,13 +392,7 @@ public class PlayerController : CreatureController
             y = movePacket.PosInfo.PosY,
             z = movePacket.PosInfo.PosZ
         };
-        
-        //if (true == movePacket.IsWarp)
-        //    _agent.Warp(CellPos);
 
-        if (Vector3.Distance(_agent.destination, pos) > minDiff)
-        {
-          _agent.SetDestination(pos);
-        }
+        transform.rotation = movePacket.RotInfo;
     }
 }

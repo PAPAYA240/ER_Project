@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Android;
 using UnityEngine.InputSystem;
+using static UnityEditor.PlayerSettings;
 
 public class PlayerSkillController : MonoBehaviour
 {
@@ -135,7 +136,8 @@ public class PlayerSkillController : MonoBehaviour
             // 10~15Hz 전송
             if (Time.frameCount % 6 == 0)
             {
-                _player.SendPacket(ComputeSkillCollision((int)_key, _curSkill, _targetId, mousePos.x, mousePos.z));
+                ++seq;
+                _player.SendPacket(ComputeSkillCollision((int)_key, _curSkill, _targetId, mousePos.x, mousePos.z, seq));
             }
 
             // 로컬 추적 연출(간단)
@@ -155,11 +157,11 @@ public class PlayerSkillController : MonoBehaviour
         return _skillSpecs[key];
     }
 
-    private C_SkillCollisionPropose ComputeSkillCollision(int skillKey, SkillSpec spec, int targetId, float clickX, float clickZ)
+    private C_SkillCollisionPropose ComputeSkillCollision(int skillKey, SkillSpec spec, int targetId, float clickX, float clickZ, int seq = 1)
     {
         C_SkillCollisionPropose packet = new C_SkillCollisionPropose();
         packet.SkillKey = skillKey;
-        packet.Seq = 1; // TEMP
+        packet.Seq = seq;
         packet.Mode = spec.proposalMode;
         packet.Speed = spec.limits.speed;  // TEMP : 필요한가
 
@@ -201,7 +203,7 @@ public class PlayerSkillController : MonoBehaviour
                                            float duration, string anim, string curveId, bool authoritativeEnd)
     {
         _isSkillMotion = true;
-
+      
         // MoveSync 보낼 때 isSkillMotion=true로 태깅하도록 노출
         if (!_agent.enabled)
             _agent.enabled = true;
@@ -217,25 +219,34 @@ public class PlayerSkillController : MonoBehaviour
         //if (!string.IsNullOrEmpty(anim))
         //    PlayAnimFromServer(anim, 0.05f);
 
-        float t = 0f;
-        while (t < duration)
+        if (type == SkillMotionType.Blink)
         {
-            t += Time.deltaTime;
-            float u = Mathf.Clamp01(t / duration);
-            u = ApplyCurve(u, curveId);
-
-            // ★ 정상 보간값 u 사용 (Time.time * 20 금지)
-            Vector3 pos = Vector3.Lerp(start, end, u);
-
-            // ★ 에이전트 내부 좌표를 주도적으로 업데이트
-            _agent.nextPosition = pos;
-            transform.position = pos;  // 가시 좌표도 맞춤 (둘 중 하나만 써도 되지만 일치시키는 게 안전)
+            _agent.Warp(end);
+            transform.position = end;
             _player.UpdateTransform();
-
-            // (옵션) 회전도 보간하고 싶으면 여기서 수동 회전
-            yield return null;
         }
+        else
+        {
+            float t = 0f;
+            while (t < duration)
+            {
+                t += Time.deltaTime;
+                float u = Mathf.Clamp01(t / duration);
+                u = ApplyCurve(u, curveId);
 
+                // 정상 보간값 u 사용 (Time.time * 20 금지)
+                Vector3 pos = Vector3.Lerp(start, end, u);
+
+                // 에이전트 내부 좌표를 주도적으로 업데이트
+                _agent.nextPosition = pos;
+                transform.position = pos;  // 가시 좌표도 맞춤 (둘 중 하나만 써도 되지만 일치시키는 게 안전)
+                _player.UpdateTransform();
+
+                // (옵션) 회전도 보간하고 싶으면 여기서 수동 회전
+                yield return null;
+            }
+        }
+         
         // 최종 스냅: 서버 권위가 end라면 Warp
         if (authoritativeEnd)
             _agent.Warp(end);
@@ -333,39 +344,6 @@ public class PlayerSkillController : MonoBehaviour
         }
 
         return Vector3.zero;
-    }
-
-    // 타겟/오브젝트 좌표 및 전방을 얻는 헬퍼는 프로젝트에 맞춰 교체
-    Vector3 GetTargetPos(int targetId)
-    {
-        var obj = Managers.Object.FindById(targetId);
-        return obj != null ? obj.transform.position : transform.position;
-    }
-
-    Vector3 GetTargetForwardXZ(int targetId)
-    {
-        var obj = Managers.Object.FindById(targetId);
-        if (obj == null)
-            return transform.forward;
-        var f = obj.transform.forward;
-        f.y = 0f;
-        return f.sqrMagnitude > 1e-6f ? f.normalized : transform.forward;
-    }
-
-    // NavMesh 위로 살짝 보정하는 헬퍼
-    static Vector3 SampleOnNav(Vector3 p, float maxDist = 1.0f, int areaMask = NavMesh.AllAreas)
-    {
-        if (NavMesh.SamplePosition(p, out var hit, maxDist, areaMask))
-            return hit.position;
-        return p; // 실패시 원본 유지(서버가 최종 보정)
-    }
-
-    // 레이캐스트로 벽 앞 점 얻기 (없으면 dest 그대로 반환)
-    static Vector3 RaycastBlocked(Vector3 start, Vector3 dest, Vector3 dir, float skin)
-    {
-        if (NavMesh.Raycast(start, dest, out var hit, NavMesh.AllAreas))
-            return hit.position - dir * skin;
-        return dest;
     }
 
     void LocalFollowTick(int targetId, float speed, bool passWalls) 

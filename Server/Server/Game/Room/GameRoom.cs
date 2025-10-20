@@ -300,15 +300,6 @@ namespace Server.Game
             if (player == null)
                 return;
 
-            //// (선택) SingleShot이면 여기서 컷
-            //if (skillState.Spec.ProposalMode != ProposalMode.Streaming)
-            //    return;
-
-            //// (선택) 역전/중복 seq 무시
-            //if (m.Seq <= skillState.LastSeq)
-            //    return;
-            //skillState.LastSeq = m.Seq;
-
             // 제안 변환
             var prop = new SkillCollisionProposal
             {
@@ -322,7 +313,7 @@ namespace Server.Game
                 Speed = skillPacket.Speed
             };
 
-            if (!(player.CurrentState is Player_SkillState skillState) /*|| skillState.Spec.Key != skillPacket.SkillKey*/)
+            if (!(player.CurrentState is Player_SkillState skillState))
             {
                 //if (!player.PendingProposal.Has || skillPacket.Seq > player.PendingProposal.Seq)
                 //{
