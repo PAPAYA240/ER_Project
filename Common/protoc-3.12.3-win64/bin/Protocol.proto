@@ -644,7 +644,7 @@ message C_SkillCollisionPropose {
   float behindBlockedZ = 9;
 
   int32 candidateTargetId = 10;
-  float speed = 11;
+  //float speed = 11;
   // 검증 힌트(서버는 자체 스펙으로 재검증)
   //float  radius, maxDistance, speed;
 }

@@ -140,7 +140,7 @@ namespace Data
     {
         public float baseMaxDist;
         public float extraMaxBehind;
-        public float speed;
+        //public float speed;
     }
 
     [Serializable]

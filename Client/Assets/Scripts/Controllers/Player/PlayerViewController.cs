@@ -77,15 +77,18 @@ public class PlayerViewController : MonoBehaviour
 
     public void OnMove(S_Move packet)
     {
-        Vector3 serverPos = new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ);
-        if (Vector3.SqrMagnitude(serverPos - _player.transform.position) > 1.0f) // 1m 이상 벌어지면 보정
-        {
-            if (NavMesh.SamplePosition(serverPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
-            {
-                _agent.Warp(navHit.position);
-                _player.UpdateTransform(true);
-            }
-        }
+        if (_player.State == CreatureState.Skill)
+            return;
+
+        //Vector3 serverPos = new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ);
+        //if (Vector3.SqrMagnitude(serverPos - _player.transform.position) > 1.0f) // 1m 이상 벌어지면 보정
+        //{
+        //    if (NavMesh.SamplePosition(serverPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
+        //    {
+        //        _agent.Warp(navHit.position);
+        //        _player.UpdateTransform(true);
+        //    }
+        //}
     }
 
     public void OnAnim(S_Anim packet)

@@ -162,7 +162,7 @@ public class PlayerSkillController : MonoBehaviour
         packet.SkillKey = skillKey;
         packet.Seq = seq;
         packet.Mode = spec.proposalMode;
-        packet.Speed = spec.limits.speed;  // TEMP : 필요한가
+        //packet.Speed = spec.limits.speed;  // TEMP : 필요한가
 
         if (_curSkill.needs.endBlocked)
         {
@@ -221,6 +221,7 @@ public class PlayerSkillController : MonoBehaviour
         if (type == SkillMotionType.Blink)
         {
             _agent.Warp(end);
+            _agent.nextPosition = end;
             transform.position = end;
             _player.UpdateTransform();
         }
@@ -256,7 +257,7 @@ public class PlayerSkillController : MonoBehaviour
         }
 
         _agent.updatePosition = true;
-        _agent.updateRotation = true;
+        _agent.updateRotation = true;                        
         _agent.isStopped = false;
 
         _isSkillMotion = false;

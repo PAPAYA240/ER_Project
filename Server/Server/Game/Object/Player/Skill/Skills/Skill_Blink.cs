@@ -58,6 +58,8 @@ public sealed class Skill_Blink : SkillHandlerBase
              authoritativeEnd: true);
 
         p.Flags.IsInSkillMotion = true;
+
+        //p.PosInfo = new PositionInfo { PosX = end.X, PosY = end.Y, PosZ = end.Z };
     }
 }
 
