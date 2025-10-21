@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 7
+  version: 10
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -36,13 +36,14 @@ Material:
   - _RANDOMGLITCHFEATURE_ON
   - _SOFTINTERSECTION1FEATURE_OFF
   - _SOFTINTERSECTION2FEATURE_OFF
-  m_LightmapFlags: 0
+  m_LightmapFlags: 6
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
   m_CustomRenderQueue: -1
   stringTagMap:
     RenderType: Opaque
-  disabledShaderPasses: []
+  disabledShaderPasses:
+  - MOTIONVECTORS
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -119,6 +120,7 @@ Material:
     m_Floats:
     - DstBlend: 10
     - SrcBlend: 5
+    - _AddPrecomputedVelocity: 0
     - _Alpha: 0.053
     - _AlphaClip: 0
     - _AlphaMaskAffect: 0.5
@@ -293,7 +295,7 @@ Material:
     - __dirty: 1
     m_Colors:
     - _BaseColor: {r: 0.620945, g: 1.420074, b: 3.953349, a: 0.05098039}
-    - _Color: {r: 4.0858827, g: 4.0858827, b: 4.0858827, a: 1}
+    - _Color: {r: 0.620945, g: 1.420074, b: 3.953349, a: 0.05098039}
     - _DissolveScale: {r: 15, g: 0.1, b: 0.1, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FColor: {r: 1, g: 1, b: 1, a: 1}
@@ -317,3 +319,4 @@ Material:
     - _SoftIntersectionColor: {r: 63.999992, g: 9.382197, b: 9.382197, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

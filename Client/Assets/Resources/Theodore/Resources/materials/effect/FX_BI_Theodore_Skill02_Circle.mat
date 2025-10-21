@@ -14,13 +14,14 @@ Material:
   m_ValidKeywords:
   - _EMISSION
   m_InvalidKeywords: []
-  m_LightmapFlags: 0
+  m_LightmapFlags: 6
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 1
   m_CustomRenderQueue: -1
   stringTagMap:
     RenderType: Opaque
-  disabledShaderPasses: []
+  disabledShaderPasses:
+  - MOTIONVECTORS
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -88,6 +89,7 @@ Material:
     - _A_Offset: 0.12
     - _A_Pitch: 0
     - _A_Roll: -0.52
+    - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaToMask: 0
     - _Amplitude_A: 1.54
@@ -231,7 +233,7 @@ Material:
     - _node_9774: 8
     m_Colors:
     - _BaseColor: {r: 0, g: 0.4568243, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0, g: 0.4568243, b: 1, a: 1}
     - _Color2: {r: 1, g: 0, b: 0, a: 1}
     - _ColorInside: {r: 0.4811321, g: 0.26324186, b: 0.15659487, a: 0.4117647}
     - _ColorOutside: {r: 0.09371662, g: 0.392699, b: 0.735849, a: 1}
@@ -239,6 +241,7 @@ Material:
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _node_5660: {r: 0.6137934, g: 0, b: 1, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!114 &5098637365652765458
 MonoBehaviour:
   m_ObjectHideFlags: 11
@@ -251,4 +254,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 7
+  version: 10
