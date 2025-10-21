@@ -2,431 +2,257 @@
   "characters": {
     "Rozzi": {
       "Q": {
-        "proposalMode": "SingleShot",
-        "needs": {
-          "endBlocked": true,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 3.0,
-          "extraMaxBehind": 0.0,
-          "speed": 4.0
+        "variants": {
+          "followup": {
+            "proposalMode": "SingleShot",
+            "needs": {
+              "endBlocked": true,
+              "endPass": false,
+              "behindBlocked": false,
+              "candidateTargetId": false
+            },
+            "limits": {
+              "baseMaxDist": 3.0,
+              "extraMaxBehind": 0.0,
+              "speed": 4.0
+            }
+          }
         }
       },
       "W": {
-        "proposalMode": "SingleShot",
-        "needs": {
-          "endBlocked": false,
-          "endPass": true,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 3.0,
-          "extraMaxBehind": 0.0,
-          "speed": 4.0
+        "variants": {
         }
       },
       "E": {
-        "proposalMode": "Streaming",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": true,
-          "candidateTargetId": true
-        },
-        "limits": {
-          "baseMaxDist": 2.0,
-          "extraMaxBehind": 2.0,
-          "speed": 4.0
+        "variants": {
+          "cast": {
+            "proposalMode": "Streaming",
+            "needs": {
+              "endBlocked": false,
+              "endPass": false,
+              "behindBlocked": true,
+              "candidateTargetId": true
+            },
+            "limits": {
+              "baseMaxDist": 2.0,
+              "extraMaxBehind": 2.0,
+              "speed": 4.0
+            }
+          }
         }
       },
       "R": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       },
       "D": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       },
       "F": {
-        "proposalMode": "SingleShot",
-        "needs": {
-          "endBlocked": false,
-          "endPass": true,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 3.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
+          "cast": {
+            "proposalMode": "SingleShot",
+            "needs": {
+              "endBlocked": false,
+              "endPass": true,
+              "behindBlocked": false,
+              "candidateTargetId": false
+            },
+            "limits": {
+              "baseMaxDist": 3.0,
+              "extraMaxBehind": 0.0,
+              "speed": 0.0
+            }
+          }
         }
       }
     },
     "Yuki": {
       "Q": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       },
       "W": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       },
       "E": {
-        "proposalMode": "Streaming",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": true,
-          "candidateTargetId": true
-        },
-        "limits": {
-          "baseMaxDist": 3.0,
-          "extraMaxBehind": 0.5,
-          "speed": 18.0
+        "variants": {
+          "cast": {
+            "proposalMode": "Streaming",
+            "needs": {
+              "endBlocked": false,
+              "endPass": false,
+              "behindBlocked": true,
+              "candidateTargetId": true
+            },
+            "limits": {
+              "baseMaxDist": 3.0,
+              "extraMaxBehind": 0.5,
+              "speed": 18.0
+            }
+          }
         }
       },
       "R": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       },
       "D": {
-        "proposalMode": "SingleShot",
-        "needs": {
-          "endBlocked": true,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 3.0,
-          "extraMaxBehind": 0.0,
-          "speed": 18.0
+        "variants": {
+          "cast": {
+            "proposalMode": "SingleShot",
+            "needs": {
+              "endBlocked": true,
+              "endPass": false,
+              "behindBlocked": false,
+              "candidateTargetId": false
+            },
+            "limits": {
+              "baseMaxDist": 3.0,
+              "extraMaxBehind": 0.0,
+              "speed": 18.0
+            }
+          }
         }
       },
       "F": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       }
     },
     "Theodore": {
       "Q": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       },
       "W": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       },
       "E": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       },
       "R": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       },
       "D": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       },
       "F": {
-        "proposalMode": "SingleShot",
-        "needs": {
-          "endBlocked": false,
-          "endPass": true,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 3.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
+          "cast": {
+            "proposalMode": "SingleShot",
+            "needs": {
+              "endBlocked": false,
+              "endPass": true,
+              "behindBlocked": false,
+              "candidateTargetId": false
+            },
+            "limits": {
+              "baseMaxDist": 3.0,
+              "extraMaxBehind": 0.0,
+              "speed": 0.0
+            }
+          }
         }
       }
     },
     "Abigail": {
       "Q": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       },
       "W": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       },
       "E": {
-        "proposalMode": "SingleShot",
-        "needs": {
-          "endBlocked": false,
-          "endPass": true,
-          "behindBlocked": false,
-          "candidateTargetId": true
-        },
-        "limits": {
-          "baseMaxDist": 3.0,
-          "extraMaxBehind": 0.0,
-          "speed": 18.0
+        "variants": {
+          "cast": {
+            "proposalMode": "SingleShot",
+            "needs": {
+              "endBlocked": false,
+              "endPass": true,
+              "behindBlocked": false,
+              "candidateTargetId": true
+            },
+            "limits": {
+              "baseMaxDist": 3.0,
+              "extraMaxBehind": 0.0,
+              "speed": 18.0
+            }
+          }
         }
       },
       "R": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       },
       "D": {
-        "proposalMode": "SingleShot",
-        "needs": {
-          "endBlocked": true,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 2.0,
-          "extraMaxBehind": 0.0,
-          "speed": 18.0
+        "variants": {
+          "cast": {
+            "proposalMode": "SingleShot",
+            "needs": {
+              "endBlocked": true,
+              "endPass": false,
+              "behindBlocked": false,
+              "candidateTargetId": false
+            },
+            "limits": {
+              "baseMaxDist": 2.0,
+              "extraMaxBehind": 0.0,
+              "speed": 18.0
+            }
+          }
         }
       },
       "F": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       }
     },
     "Hyunwoo": {
       "Q": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       },
       "W": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       },
       "E": {
-        "proposalMode": "SingleShot",
-        "needs": {
-          "endBlocked": true,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 3.0,
-          "extraMaxBehind": 0.0,
-          "speed": 18.0
+        "variants": {
+          "cast": {
+            "proposalMode": "SingleShot",
+            "needs": {
+              "endBlocked": true,
+              "endPass": false,
+              "behindBlocked": false,
+              "candidateTargetId": false
+            },
+            "limits": {
+              "baseMaxDist": 3.0,
+              "extraMaxBehind": 0.0,
+              "speed": 18.0
+            }
+          }
         }
       },
       "R": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       },
       "D": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       },
       "F": {
-        "proposalMode": "None",
-        "needs": {
-          "endBlocked": false,
-          "endPass": false,
-          "behindBlocked": false,
-          "candidateTargetId": false
-        },
-        "limits": {
-          "baseMaxDist": 0.0,
-          "extraMaxBehind": 0.0,
-          "speed": 0.0
+        "variants": {
         }
       }
     }

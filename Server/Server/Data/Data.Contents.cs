@@ -109,30 +109,47 @@ namespace Server.Data
     }
 
     [Serializable]
-    public class SkillSpecData : ILoader<CharacterType, Dictionary<KeyCode, SkillSpec>>
+    public class SkillSpecData : ILoader<CharacterType, Dictionary<KeyCode, SkillVariants>>
     {
-        public Dictionary<string, Dictionary<string, SkillSpec>> characters = new Dictionary<string, Dictionary<string, SkillSpec>>();
+        public Dictionary<string, Dictionary<string, SkillVariantsWrapper>> characters =
+        new Dictionary<string, Dictionary<string, SkillVariantsWrapper>>();
 
-        public Dictionary<CharacterType, Dictionary<KeyCode, SkillSpec>> MakeDict()
+        [Serializable]
+        public class SkillVariantsWrapper
         {
-            var nestedDict = new Dictionary<CharacterType, Dictionary<KeyCode, SkillSpec>>();
+            public SkillVariants variants = new SkillVariants();
+        }
 
-            foreach (var chars in characters)
+        public Dictionary<CharacterType, Dictionary<KeyCode, SkillVariants>> MakeDict()
+        {
+            var result = new Dictionary<CharacterType, Dictionary<KeyCode, SkillVariants>>();
+
+            foreach (var ch in characters)
             {
-                CharacterType chartype = (CharacterType)Enum.Parse(typeof(CharacterType), chars.Key);
+                if (!Enum.TryParse(ch.Key, true, out CharacterType ctype))
+                    continue;
 
-                var dict = new Dictionary<KeyCode, SkillSpec>();
-                foreach (var skills in chars.Value)
+                var perChar = new Dictionary<KeyCode, SkillVariants>();
+
+                foreach (var sk in ch.Value)
                 {
-                    KeyCode keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), skills.Key);
+                    if (!Enum.TryParse(sk.Key, true, out KeyCode kcode))
+                        continue;
 
-                    dict.Add(keyCode, skills.Value);
+                    var wrap = sk.Value;
+                    var v = wrap?.variants ?? new SkillVariants();
+
+                    // 비워두면 “이 스킬은 서버 허가/충돌제안 흐름 없음”으로 간주
+                    // 필요하다면 아래처럼 아예 사전에 넣지 않는 것도 가능:
+                    if (v.IsEmpty) continue;
+
+                    perChar[kcode] = v;
                 }
 
-                nestedDict.Add(chartype, dict);
+                result[ctype] = perChar;
             }
 
-            return nestedDict;
+            return result;
         }
     }
 

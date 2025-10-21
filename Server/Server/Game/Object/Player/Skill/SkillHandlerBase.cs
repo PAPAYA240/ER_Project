@@ -16,7 +16,7 @@ public abstract class SkillHandlerBase : ISkillHandler
     protected bool _committed;
     protected Vector3 _finalEnd;
 
-    public virtual void OnEnter(Player p, SkillSpec spec, SkillContext ctx)
+    public virtual void OnEnter(Player p, SkillContext ctx)
     {
         LastSeq = 0;
         Latest = default;
@@ -35,7 +35,7 @@ public abstract class SkillHandlerBase : ISkillHandler
         //_deadline = DateTime.UtcNow.AddMilliseconds(150); // 짧게만 기다림(네트워크 품질에 맞춰 조절)
     }
 
-    public virtual void OnExit(Player p, SkillSpec spec, SkillContext ctx)
+    public virtual void OnExit(Player p, SkillContext ctx)
     {
         // 최종 보정 1회
         p.PosInfo.PosX = _finalEnd.X;
@@ -45,12 +45,12 @@ public abstract class SkillHandlerBase : ISkillHandler
         p.Flags.IsInSkillMotion = false;
     }
 
-    public virtual void OnHit(Player p, SkillSpec spec, SkillContext ctx)
+    public virtual void OnHit(Player p, SkillContext ctx)
     {
         throw new NotImplementedException();
     }
 
-    public virtual void OnTick(Player p, SkillSpec spec, SkillContext ctx)
+    public virtual void OnTick(Player p, SkillContext ctx)
     {
         throw new NotImplementedException();
     }
@@ -65,6 +65,11 @@ public abstract class SkillHandlerBase : ISkillHandler
 
         LastSeq = prop.Seq;
         Latest = prop;
+    }
+
+    public virtual bool CanCast(Player p, SkillContext ctx)
+    {
+        return true;
     }
 
     #region Utils

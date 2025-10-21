@@ -6,12 +6,13 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 
-public sealed class Rozzi_E : SkillHandlerBase
+public sealed class Rozzi_Q_Dash : SkillHandlerBase
 {
     public override void OnEnter(Player p, SkillContext ctx)
     {
         base.OnEnter(p, ctx);
-        p.SendAnimPacket("SKILL_E", 0.05f);        
+        p.SendAnimPacket("SKILL_Q_Dash", 0.05f);
+        p.SendSkillConfirmPacket(ctx.Key, VariantKey.Followup);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

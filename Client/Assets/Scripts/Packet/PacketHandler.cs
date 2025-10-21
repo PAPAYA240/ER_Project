@@ -410,9 +410,9 @@ class PacketHandler
         }
     }
 
-    public static void S_SkillFollowHandler(PacketSession session, IMessage packet)
+    public static void S_SkillConfirmHandler(PacketSession session, IMessage packet)
     {
-        S_SkillFollow followPacket = packet as S_SkillFollow;
+        S_SkillConfirm followPacket = packet as S_SkillConfirm;
 
         GameObject go = Managers.Object.FindById(followPacket.ObjectId);
         if (go == null)

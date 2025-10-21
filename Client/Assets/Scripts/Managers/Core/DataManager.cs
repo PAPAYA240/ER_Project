@@ -23,8 +23,8 @@ public class DataManager
     public static Dictionary<CharacterType, Dictionary<KeyCode, SkillHitbox>> SkillHitboxDict { get; private set; } 
         = new Dictionary<CharacterType, Dictionary<KeyCode, SkillHitbox>>();
 
-    public static Dictionary<CharacterType, Dictionary<KeyCode, SkillSpec>> SkillSpecDict { get; private set; }
-        = new Dictionary<CharacterType, Dictionary<KeyCode, SkillSpec>>();
+    public static Dictionary<CharacterType, Dictionary<KeyCode, SkillVariants>> SkillSpecDict { get; private set; }
+            = new Dictionary<CharacterType, Dictionary<KeyCode, SkillVariants>>();
 
     public static Dictionary<MonsterSkill, List<EffectData>> MonsterSkillDict { get; private set; } = new Dictionary<MonsterSkill, List<EffectData>>();
     public static Dictionary<CharacterType, Dictionary<KeyCode, List<EffectData>>> PlayerFxDict { get; private set; } 
@@ -39,7 +39,7 @@ public class DataManager
         StatDict = LoadJson<Data.StatData, CharacterType, StatInfo>("StatData").MakeDict();
         SkillDict = LoadJson<Data.GameData, CharacterType, Dictionary<KeyCode, SkillData>>("newSkillData").MakeDict();
         SkillHitboxDict = LoadJson<Data.HitboxData, CharacterType, Dictionary<KeyCode, SkillHitbox>>("HitboxData").MakeDict();
-        SkillSpecDict = LoadJson<Data.SkillSpecData, CharacterType, Dictionary<KeyCode, SkillSpec>>("SkillSpecData").MakeDict();
+        SkillSpecDict = LoadJson<Data.SkillSpecData, CharacterType, Dictionary<KeyCode, SkillVariants>>("SkillSpecData").MakeDict();
 
         // For Effect
         MonsterSkillDict = LoadJson<Data.MonsterEffectDict, MonsterSkill, List<EffectData>>("MonsterData/EffectData/MonsterEffectData").MakeDict();

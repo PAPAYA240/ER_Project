@@ -48,7 +48,7 @@ enum MsgId {
   C_STOP = 40;
   S_STOP = 41;
   S_SET_MOVE_TARGET = 42;
-  S_SKILL_FOLLOW = 43;
+  S_SKILL_CONFIRM = 43;
   S_SKILL_MOTION = 44;
   C_SKILL_INPUT = 45;
   C_SKILL_COLLISION_PROPOSE = 46;
@@ -219,6 +219,12 @@ enum ProposalMode {
   None = 0;
   SingleShot = 1; 
   Streaming = 2;
+}
+
+enum VariantKey { 
+  NoCollision = 0;
+  Cast = 1; 
+  Followup = 2; 
 }
 
 message C_Interact {
@@ -594,16 +600,12 @@ message S_SetMoveTarget {
 	PositionInfo targetPos = 4;		// isGround=true 때 사용(땅 목적지)
 }
 
-message S_SkillFollow {
+message S_SkillConfirm {
   int32 objectId = 1;			
   int32 skillKey = 2;			
   int32 instanceId = 3;
   int32 targetId = 4;
-  float speed = 5;
-  float arriveDist = 6;
-  float maxDuration = 7;
-  float behindOffset = 8;
-  bool  passThroughWalls = 9; 
+  VariantKey variants = 5;
 }
 
 message S_SkillMotion {

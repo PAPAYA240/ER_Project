@@ -84,7 +84,7 @@ public class MyPlayerController : PlayerController
     public void OnServerUpdate(S_Stop packet) => _view.OnStop(packet);
 
     public void OnServerUpdate(S_SkillMotion packet) => _skill.OnSkill(packet);
-    public void OnServerUpdate(S_SkillFollow packet) => _skill.OnSkillConfirm(packet);
+    public void OnServerUpdate(S_SkillConfirm packet) => _skill.OnSkillConfirm(packet);
 
     public void UpdateTransform(bool isWarp = false)
     {

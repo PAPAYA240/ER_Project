@@ -385,6 +385,19 @@ namespace Server.Game
             };
             Room.Broadcast(pkt);
         }
+
+        public void SendSkillConfirmPacket(KeyCode keyCode, VariantKey variants)
+        {
+            S_SkillConfirm packet = new S_SkillConfirm
+            {
+                ObjectId = Id,
+                SkillKey = (int)keyCode,
+                Variants = variants,
+                //InstanceId = ,
+                //TargetId = , 
+            };
+            Room.Push(Room.Broadcast, packet);
+        }
         #endregion
     }
 }

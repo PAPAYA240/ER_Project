@@ -16,7 +16,7 @@ public class PlayerSkillController : MonoBehaviour
     private MyPlayerController _player;
     private NavMeshAgent _agent;
 
-    private Dictionary<KeyCode, SkillSpec> _skillSpecs = new Dictionary<KeyCode, SkillSpec>();
+    private Dictionary<KeyCode, SkillVariants> _skillSpecs = new Dictionary<KeyCode, SkillVariants>();
 
     private Coroutine _motionCo;
     private bool _isSkillMotion;
@@ -47,11 +47,10 @@ public class PlayerSkillController : MonoBehaviour
     public C_SkillInput TryCast(int skillKey, int targetId, Vector3 clickWorld)
     {
         _key = (KeyCode)skillKey;
-        _curSkill = GetSkillSpec(_key);
         _targetId = targetId;
         mousePos = clickWorld;
 
-        SendSkillCollisionPacket();
+        //SendSkillCollisionPacket();
 
         return new C_SkillInput
         {
@@ -72,14 +71,21 @@ public class PlayerSkillController : MonoBehaviour
     }
 
     // 스킬 시작 승인(시전별 instanceId 포함 -> 안함)
-    public void OnSkillConfirm(S_SkillFollow m)
+    public void OnSkillConfirm(S_SkillConfirm packet)
     {
+        _curSkill = GetSkillSpec((KeyCode)packet.SkillKey, packet.Variants);
+        if(_curSkill != null )
+        {
+            SendSkillCollisionPacket();
+        }
+        
+
         //_currentInstanceId = m.instanceId;
         //if (!SkillSpecCache.TryGet(m.skillKey, out var spec))
         //    return;
         //if (spec.proposalMode != ProposalMode.SingleShot)
         //    return;
-            
+
     }
  
     public void OnS_SkillMotion(S_SkillMotion s)
@@ -151,9 +157,16 @@ public class PlayerSkillController : MonoBehaviour
     }
 
     #region Util
-    private SkillSpec GetSkillSpec(KeyCode key)
+    private SkillSpec GetSkillSpec(KeyCode key, VariantKey variants)
     {
-        return _skillSpecs[key];
+        if(variants == VariantKey.NoCollision)
+            return null;
+        if(variants == VariantKey.Cast)
+            return _skillSpecs[key].cast;
+        if(variants == VariantKey.Followup)
+            return _skillSpecs[key].followup;
+
+        return null;
     }
 
     private C_SkillCollisionPropose ComputeSkillCollision(int skillKey, SkillSpec spec, int targetId, float clickX, float clickZ, int seq = 1)
@@ -169,6 +182,8 @@ public class PlayerSkillController : MonoBehaviour
             Vector3 endBlocked = ComputeEndBlocked(skillKey, spec, clickX, clickZ);
             packet.EndBlockedX = endBlocked.x;
             packet.EndBlockedZ = endBlocked.z;
+
+            Debug.Log($"X : {endBlocked.x}, Z : {endBlocked.z}");
         }
         if(_curSkill.needs.endPass)
         {
@@ -361,11 +376,11 @@ public class PlayerSkillController : MonoBehaviour
 
     private void MakeSkillSpecDict()
     {
-        Dictionary<KeyCode, Data.SkillSpec> skills = DataManager.SkillSpecDict[_player.ObjInfo.Player.CharType];
+        Dictionary<KeyCode, Data.SkillVariants> skills = DataManager.SkillSpecDict[_player.ObjInfo.Player.CharType];
 
         foreach (var data in skills)
         {
-            SkillSpec skill = new SkillSpec();
+            SkillVariants skill = new SkillVariants();
             skill = data.Value;
             _skillSpecs.Add(data.Key, skill);
         }
