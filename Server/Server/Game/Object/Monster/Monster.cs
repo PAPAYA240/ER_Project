@@ -11,6 +11,14 @@ namespace Server.Game
         void Enter(Monster monster);
         void Execute(Monster monster);
         void Exit(Monster monster);
+        void OnHit(Monster monster, Creature target);
+    }
+    public interface ISkillBehavior
+    {
+        void OnStart(Monster caster, MonsterSkillData skillData);
+        void OnUpdate(Monster caster);
+        void OnHit(Monster caster, Creature target);
+        void OnEnd(Monster caster);
     }
 
     public class Monster : Creature
@@ -30,13 +38,16 @@ namespace Server.Game
         // TODO : 감마 총알 예시
         public float _delaySkillAnimationTimer = 0;
 
+        public Action<GameObject> OnAttacked;
+
         public Monster() => ObjectType = GameObjectType.Monster;
 
+        public Action<GameObject, float> OnDamage;
         public void Init(string name)
         {
             if (!Add_MonsterData(name))
                 return;
-
+            this.OnAttacked += HandleAttacked;
             ChangeState(new IdleState());
         }
        
@@ -66,6 +77,13 @@ namespace Server.Game
              ChangeState(new IdleState());
         }
 
+        public void MonsterCollision(MonsterSkill skilltype)
+        {
+            if(Room == null || Room.CollisionManager == null) return;
+
+            Room.CollisionManager.AddHitbox(this, skilltype);
+        }
+
         // 스킬 선택
         public MonsterSkillData Get_DecideAndUseSkill()
         {
@@ -82,7 +100,10 @@ namespace Server.Game
                 return null;
             }
 
-            Target.Room.Push(OnDamaged, this, skillData.damage + Attack);
+            if (Target == null || Target.Room == null)
+                return skillData;
+
+            Target.Room.Push(OnDamaged, this, skillData.damage + Attack, false);
 
             return skillData;
         }
@@ -98,6 +119,18 @@ namespace Server.Game
             diePacket.ObjectId = Id;
             diePacket.AttackerId = attacker.Id;
             Room.Broadcast(diePacket);
+        }
+
+        public void OnSkillHit(GameObject target)
+        {
+            if (target is Creature creatureTarget)
+                _currentState?.OnHit(this, creatureTarget);
+        }
+
+        private void HandleAttacked(GameObject attacker)
+        {
+            if (attacker is Player attackerPlayer)
+                 Target = attackerPlayer;
         }
 
         #region Helper Functions
@@ -150,27 +183,25 @@ namespace Server.Game
             return false;
         }
 
-        public Creature FindTarget(Monster monster)
-        {
-            // 플레이어 판단
-            monster.Target = monster.Room.FindPlayer(p =>
-            {
-                Vector3 playerPos = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
-                Vector3 monsterPos = new Vector3(monster.PosInfo.PosX, monster.PosInfo.PosY, monster.PosInfo.PosZ);
-
-                Creature target = p as Creature;
-                Creature targetMonster = target.Target;
-                if (targetMonster == this)
-                    return true;
-                else
-                    return false;
-            });
-            return monster.Target;
-        }
-
         private long GetCurrentTimeMs()
         {
             return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        }
+
+        public ISkillBehavior CreateSkillBehavior(string behaviorName)
+        {
+            const string BehaviorNamespace = "Server.Game";
+            string fullTypeName = $"{BehaviorNamespace}.{behaviorName}";
+
+            Type type = Type.GetType(fullTypeName);
+            if(behaviorName != null)
+                type = Type.GetType(fullTypeName);
+
+            if (type == null)
+                return null;
+
+            object instance = Activator.CreateInstance(type);
+            return instance as ISkillBehavior;
         }
         #endregion
 

@@ -4,46 +4,19 @@ using UnityEngine;
 
 public class CreatureController : BaseController
 {
-    #region CC기 면역
-    protected UI_TargetingMark targetingMark = null;
+    #region CC기 
     private bool _hasCrowdControl = false;
-    public bool HasCrowdControl 
+    public bool HasCrowdControl
     {
-        get
-        {
-            return _hasCrowdControl;
-        }
+        get { return _hasCrowdControl; }
         set
         {
             _hasCrowdControl = value;
-
-            // 구속이 가능한 상태 시에 UI 띄우기
-            if (_hasCrowdControl)
-                targetingMark.ShowCCMark(this.gameObject);
-
-            else
-                targetingMark.HideCCMark();
         }
     }
 
-    public void ApplyStun(float duration)
-    {
-        StartCoroutine(CoEndStun(duration));
-    }
-
-    IEnumerator CoEndStun(float duration)
-    {
-        Debug.Log($"Stun applied for {duration} seconds.");
-        yield return new WaitForSeconds(duration);
-        C_Stun stunPacket = new C_Stun()
-        {
-            ObjectId = ObjInfo.ObjectId,
-            IsStun = false,
-        };
-        Managers.Network.Send(stunPacket);
-    }
     #endregion
-
+    protected UI_TargetingMark targetingMark = null;
     Define.Object _object = Define.Object.Unknown;
     public Define.Object ObjectType
     {
@@ -148,6 +121,8 @@ public class CreatureController : BaseController
 
     public virtual void UseSkill(S_Skill skillPacket) {}
 
+    public virtual void OnHitboxCollision(KeyCode kc, KeyCode tkc) { }
+    public virtual void OnObjectCollision(GameObject obj, KeyCode key) { Debug.Log("타게팅!"); }
     public void ChangeStat(StatInfo growth)
     {
         Stat.Attack += growth.Attack;
@@ -183,4 +158,15 @@ public class CreatureController : BaseController
 
         return true;
     }
+
+    public void OnDraw(SkillHitbox hitbox, Vector3 pos, Vector3 forward, Vector3 right, float offsetRadius = 0.0f)
+    {
+        GameObject instance = Managers.Resource.Instantiate("Debug/SkillMesh");
+
+        SkillMesh skillMesh = instance.GetComponent<SkillMesh>();
+        if (ObjInfo.Player == null) return;
+        if (skillMesh != null)
+            skillMesh.OnDraw(hitbox, pos, forward, right, offsetRadius, ObjInfo.Player.Team);
+    }
+
 }

@@ -61,7 +61,9 @@ namespace Server.Game
                 monster.LookAtTarget(dirQ, elapsedTime, false);
             }
         }
-
+        public void OnHit(Monster monster, Creature target)
+        {
+        }
         public void Exit(Monster monster)
         {
             _skillEndTime = 0;

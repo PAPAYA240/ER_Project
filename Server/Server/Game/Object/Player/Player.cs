@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
+using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf.Protocol;
 using Server.Data;
@@ -21,6 +22,7 @@ namespace Server.Game
         Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
         ItemStat _totalItemStat = new ItemStat();
         List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
+
 
         #region Stat Property
         public override float Attack 
@@ -96,6 +98,68 @@ namespace Server.Game
         //Inventory
         static int MaxInventorySlot = 10;
 
+        #region KDA
+        //KDA
+        public int KillAmount {  get; set; }
+        public int DeathAmount { get; set; }
+        public int AsistAmount { get; set; }
+
+        private int AsistTime = 15;
+
+        private Dictionary<int, DamageRecord> _damageRecords = new Dictionary<int, DamageRecord>();
+
+        public class DamageRecord
+        { 
+            public int Id;
+            public float Damage;
+            public TimeSpan TimeStamp;
+
+            public DamageRecord(int id, float damage, TimeSpan timeStamp)
+            {
+                Id = id;
+                Damage = damage;
+                TimeStamp = timeStamp;
+            }
+        }
+
+        private void UpdateDamageRecords()
+        {
+            if (null == Room) return;
+
+            foreach (var record in _damageRecords.Values)
+            {
+                TimeSpan damageTime = Room.TimeStamp - record.TimeStamp;
+
+                if(damageTime.TotalSeconds > 15)
+                {
+                    _damageRecords.Remove(record.Id);
+                }
+            }
+        }
+
+        public override void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false)
+        {
+            if (Room == null || State == CreatureState.Dead)
+                return;
+
+            UpdateDamageRecords();
+
+            // 죽기 전에 추가하려고 순서를 이렇게 함.
+            if (_damageRecords.TryGetValue(attacker.Id, out DamageRecord damageRecord)) // 이미 해당 플레이어에게 데미지를 입었다면 시간을 최신화.
+            {
+                damageRecord.Damage += damage;
+                damageRecord.TimeStamp = Room.TimeStamp;
+            }
+            else
+            {
+                _damageRecords.Add(attacker.Id, new DamageRecord(attacker.Id, damage, Room.TimeStamp)); // 피해를 입은 적이 없다면 새로 추가.
+            }
+
+            base.OnDamaged(attacker, damage, isTrueDamage);
+        }
+
+        #endregion
+
         public Player()
         {
             ObjectType = GameObjectType.Player;
@@ -167,6 +231,40 @@ namespace Server.Game
             }
 
             Room.Broadcast(diePacket);
+            
+            // KDA 변화 패킷
+            S_ChangeKDA KdaPacket = new S_ChangeKDA();
+
+            // 데스 증가
+            {
+                ++DeathAmount;
+                KdaPacket.KDAs.Add(new KDAInfo { ObjectId = Id, Kill = KillAmount, Death = DeathAmount, Asist = AsistAmount });
+            }
+            
+            // 킬 증가
+            if(attacker is Player attackPlayer)
+            {
+                ++attackPlayer.KillAmount;
+                KdaPacket.KDAs.Add(new KDAInfo { ObjectId = attackPlayer.Id, Kill = attackPlayer.KillAmount, Death = attackPlayer.DeathAmount, Asist = attackPlayer.AsistAmount });
+            }
+
+            // 어시 증가
+            {
+                foreach(DamageRecord record in _damageRecords.Values)
+                {
+                    if (record.Id == attacker.Id)
+                        continue;
+
+                    Player asistPlayer = Room.FindPlayer(player => { return player.Id == record.Id; });
+                    if(asistPlayer != null)
+                    {
+                        ++asistPlayer.AsistAmount;
+                        KdaPacket.KDAs.Add(new KDAInfo { ObjectId = asistPlayer.Id, Kill = asistPlayer.KillAmount, Death = asistPlayer.DeathAmount, Asist = asistPlayer.AsistAmount });
+                    }
+                }
+            }
+
+            Room.Broadcast(KdaPacket);
         }
         #endregion
 

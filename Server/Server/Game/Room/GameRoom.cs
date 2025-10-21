@@ -1,14 +1,16 @@
-﻿using System;
+﻿using Google.Protobuf;
+using Google.Protobuf.Protocol;
+using Server.Data;
+using ServerCore;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Threading;
-using Google.Protobuf;
-using Google.Protobuf.Protocol;
-using Server.Data;
 using static Server.Data.DataUtils;
 using static Server.Game.GameObject;
 
@@ -21,11 +23,13 @@ namespace Server.Game
         ConcurrentDictionary<int, Monster> _monsters = new ConcurrentDictionary<int, Monster>();
         Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
 
+
         MonsterManager _monsterManager = new MonsterManager();
         CollisionManager _collisionManager = new CollisionManager();
         EnvManager _envManager = new EnvManager();
 
         Dictionary<int, Dictionary<int, Player>> _teams = new Dictionary<int, Dictionary<int, Player>>();
+        Dictionary<CharacterType, SkillHandler> _skillHandlers = new Dictionary<CharacterType, SkillHandler>();
 
         bool _teamToggle = false;
         bool _dummyAdded = false;
@@ -33,22 +37,122 @@ namespace Server.Game
         public int CurTick { get; set; }
 
         #region Phase, Time
+        
+        public TimeSpan TimeStamp { get { return _timeStampStopwatch.Elapsed; } }
 
-        public float NextPhaseTime { get; private set; }
-        int _curPhase;
+        //private DateTime _timeStamp; // 게임이 시작된 시간
+        private Stopwatch _timeStampStopwatch; // 게임 시작부터 얼마나 시간이 흘렀는지 측정하는 스톱워치
 
-        public int CurPhase 
-        { 
-            get { return _curPhase; }
-            set { _curPhase = value; }
+        //private DateTime _phaseStartTime; // 현재 페이즈가 시작된 시간
+        private Stopwatch _phaseStopwatch; // 현재 페이즈가 얼마나 진행되었는가를 측정하는 스톱워치
+        private Timer _phaseTransitionTimer; // 페이즈 전환을 예약하는 타이머
+        private Timer _syncTimer; // 일정 주기마다 싱크 타이머를 호출하는 타이머
+        public int CurPhase { get; private set; } = 5;
+
+        public void ChangePhase(int newPhase)
+        {
+            if (CurPhase == newPhase) 
+                return; 
+
+            CurPhase = newPhase;
+            //_phaseStartTime = DateTime.UtcNow; // 페이즈 시작 시간 기록 
+
+            _phaseStopwatch.Restart(); // 페이즈 경과 시간 측정 시작/재시작
+
+            // 현재 페이즈의 지속 시간을 가져옴
+            int duration;
+            if (DataManager.PhaseDict.TryGetValue(newPhase, out duration))
+            {
+                // 다음 페이즈 전환을 위한 타이머 설정
+                // 이전 타이머가 있으면 Dispose 후 새로 생성
+
+                TimeSpan newPhaseDuration = TimeSpan.FromSeconds(duration);
+
+                _phaseTransitionTimer?.Dispose();
+                _phaseTransitionTimer = new Timer(OnPhaseTimerElapsed, null, (int)newPhaseDuration.TotalMilliseconds, Timeout.Infinite); // 한 번만 실행되도록 설정
+            }
+            else
+            {
+                // 지속 시간이 정의되지 않은 페이즈 (수동 전환 필요)
+                Console.WriteLine($"Error Occured : ChangePhase");
+                _phaseTransitionTimer?.Dispose(); // 혹시 모를 이전 타이머 정리
+            }
+
+            // 클라이언트들에게 페이즈 변경 사실을 통보 (네트워크 전송)
+            SyncTimer();
+
+            // 특별한 페이즈에 대한 추가 로직
+            switch (newPhase)
+            {
+                case 0:
+                    // 게임 시작 시 필요한 초기화 (예: 맵 생성, 플레이어 스폰)
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+            }
         }
 
+        public void SyncTimer(object state = null)
+        {
+            S_SyncTimer syncTimerPacket = new S_SyncTimer();
+
+            syncTimerPacket.Phase = CurPhase;
+            syncTimerPacket.CurrentTimestamp = System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(); 
+            syncTimerPacket.PhaseEndTime = CalculatePhaseServerEndTime(CurPhase); 
+
+            Push(Broadcast, syncTimerPacket);
+        }
+
+        private long CalculatePhaseServerEndTime(int phase)
+        {
+            return System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + (long)GetRemainingPhaseTime().TotalMilliseconds;
+        }
+
+
+        public TimeSpan GetRemainingPhaseTime()
+        {
+            // 페이즈 지속 시간이 정의되지 않았다면 남은 시간 없음으로 처리
+            if (!DataManager.PhaseDict.TryGetValue(CurPhase, out int totalDuration))
+            {
+                return TimeSpan.Zero;
+            }
+
+            // 스톱워치로 측정한 경과 시간
+            TimeSpan elapsedTime = _phaseStopwatch.Elapsed;
+            TimeSpan remainingTime = TimeSpan.FromSeconds(totalDuration) - elapsedTime;
+
+            return remainingTime.TotalSeconds > 0 ? remainingTime : TimeSpan.Zero;
+        }
+
+        private void OnPhaseTimerElapsed(object state)
+        {
+            int nextPhase = CurPhase + 1;
+            if (nextPhase != 5)
+            {
+                ChangePhase(nextPhase);
+            }
+            else
+            {
+                //모든 페이즈 종료
+                _phaseTransitionTimer?.Dispose();
+                _phaseStopwatch.Stop();
+            }
+        }
+
+        public CollisionManager CollisionManager { get { return _collisionManager; } private set { } }
         #endregion
 
         public bool TryGetMonster(int objectId, out Monster monster)
         {
             return _monsters.TryGetValue(objectId, out monster);
         }
+         public CollisionManager CollManager { get { return _collisionManager; } private set { } }
 
         public void Init(int mapId)
         {
@@ -57,10 +161,18 @@ namespace Server.Game
 
             // Spawn Monster
             _monsterManager.Init(this);
-            //_monsterManager.Add(1, MonsterType.Gamma);
-
+             
             // Spawn Env
             _envManager.Init(this);
+
+            // Timer
+            _timeStampStopwatch = new Stopwatch(); 
+            _timeStampStopwatch.Restart(); // 게임 시간 측정 시작.
+            _phaseStopwatch = new Stopwatch();
+            ChangePhase(0);
+            _syncTimer = new Timer(SyncTimer, null, TimeSpan.Zero, TimeSpan.FromSeconds(5)); //주기적으로 동기화
+
+            _skillHandlers[CharacterType.Theodore] = new TheodoreSkillHandler();
 
             _collisionManager.Init();
         }
@@ -122,6 +234,7 @@ namespace Server.Game
                 _players.Add(gameObject.Id, player);
                 player.Init();
                 player.Info.Player.Team = AssignTeam();
+                player.Info.Player.Weapon = FindWeapon(player.Info.Player.CharType);
 
                 if (!_teams.TryGetValue(player.Info.Player.Team, out var teamPlayers))
                 {
@@ -201,6 +314,8 @@ namespace Server.Game
                         p.Session.Send(spawnPacket);
                 }
             }
+
+            SyncTimer();
         }
 
         public void LeaveGame(int objectId)
@@ -291,29 +406,57 @@ namespace Server.Game
             Broadcast(effect);
         }
 
+        #region Handler Skill
         public void HandleSkill(Player player, C_Skill skillPacket)
         {
-            if(player == null) 
+            if (player == null)
                 return;
+
+            if (skillPacket.SkillInfo.Amplification)
+            {
+                HandleAmplificationSkill(player, skillPacket);
+            }
+            else
+            {
+                HandleNormalSkill(player, skillPacket);
+            }
+        }
+
+        private void HandleAmplificationSkill(Player player, C_Skill skillPacket)
+        {
+            ObjectInfo info = player.Info;
+
+            info.PosInfo.State = CreatureState.Skill;
+            S_Skill skillPacketToSend = new S_Skill()
+            {
+                CanUse = true,
+                ObjectId = player.Info.ObjectId,
+                SkillInfo = skillPacket.SkillInfo
+            };
+            Broadcast(skillPacketToSend);
+
+            if (_skillHandlers.TryGetValue(player.Info.Player.CharType, out var handler))
+                handler.CanUse(player, skillPacketToSend);
+        }
+
+        private void HandleNormalSkill(Player player, C_Skill skillPacket)
+        {
+            if (player == null) return;
 
             ObjectInfo info = player.Info;
             S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
-
             KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
+
             skill.ChargeRatio = skillPacket.ChargeRatio;
 
-            // 스킬 사용이 불가능하면 바로 실패 패킷 전송
             if (!player.CanUseSkill(keyCode))
             {
                 skill.CanUse = false;
                 player.Session.Send(skill);
-                return; 
+                return;
             }
-            // 스킬 사용이 가능하면 자원 소모f
             else
-            {
                 player.CommitSkillUsage(keyCode);
-            }
 
             foreach (int targetid in skillPacket.TargetsId)
             {
@@ -327,11 +470,10 @@ namespace Server.Game
                 else if (_players.TryGetValue(targetid, out Player skillTarget))
                 {
                     player.SkillTarget = skillTarget;
-                    player.UsedTargetingSkill = keyCode; 
+                    player.UsedTargetingSkill = keyCode;
                 }
             }
 
-            // 스킬 사용이 가능하다 판단되면 패킷 전송
             info.PosInfo.State = CreatureState.Skill;
             skill.CanUse = true;
             skill.ObjectId = info.ObjectId;
@@ -353,10 +495,10 @@ namespace Server.Game
             if (skills.TryGetValue((KeyCode)skillPacket.SkillInfo.KeyCode, out skillData) == false)
                 return;
 
-            _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode, 
-                new Vector2(skillPacket.MousePosX, skillPacket.MousePosZ), skillPacket.ChargeRatio);
+            _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode,
+                new Vector2(skillPacket.TargetPosX, skillPacket.TargetPosZ), skillPacket.ChargeRatio);
         }
-
+        #endregion
         public void HandleAnim(Player player, C_Anim animPacket)
         {
             if (player == null)
@@ -533,6 +675,25 @@ namespace Server.Game
             clientSession.Send(spawnPacket);
 
             _dummyAdded = true;
+        }
+
+        private Weapon FindWeapon(CharacterType type)
+        {
+            switch (type)
+            {
+                case CharacterType.Rozzi:
+                    return Weapon.Pistol;
+                case CharacterType.Yuki:
+                    return Weapon.TwoHandSword;
+                case CharacterType.Abigail:
+                    return Weapon.Axe;
+                case CharacterType.Theodore:
+                    return Weapon.SniperRifle;
+                case CharacterType.Hyunwoo:
+                    return Weapon.Glove;
+            }
+
+            return Weapon.Pistol;
         }
 
         public void AddStatusEffect(Creature creature, StatusEffect statusEffect)

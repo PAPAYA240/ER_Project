@@ -7,17 +7,15 @@ using Google.Protobuf.WellKnownTypes;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 using static Data.SkillEffectList;
+using static UnityEngine.Rendering.DebugUI;
 
 public class PlayerController : CreatureController
 {
     bool _isKeyInput = false;
     int _atkCount = 1;
     int _maxAtkCount = 2;
-
-
-    // Fog
-    private FogOfWarVision _fogOfWarVision;
 
     // NameTag
     protected UI_PlayerNameTag _nameTag;
@@ -33,7 +31,24 @@ public class PlayerController : CreatureController
     // 화살
     protected GameObject _projectile = null;
     protected Transform _equipTransform = null;
-    
+
+    #region KDA
+
+    public int KillAmount { get; private set; } = 0; 
+    public int DeathAmount { get; private set; } = 0; 
+    public int AsistAmount { get; private set; } = 0; 
+
+    public virtual void SetKDA(int Kiil,int Death,int Asist)
+    {
+        KillAmount = Kiil;
+        DeathAmount = Death;
+        AsistAmount = Asist;
+
+        // UI에 알리는 코드 필요할 듯.
+    }
+
+    #endregion
+
 
     public bool IsKeyInput
     {
@@ -65,8 +80,15 @@ public class PlayerController : CreatureController
         this.gameObject.layer = LayerMask.NameToLayer("Player");
 
         // Fog
-        _fogOfWarVision = gameObject.GetOrAddComponent<FogOfWarVision>();
-        gameObject.layer = LayerMask.NameToLayer("Fog");
+        GameObject go = new GameObject();
+        go.name = "FogOfWarVision";
+        go.transform.parent = transform;
+        go.transform.localPosition = Vector3.zero;
+        go.transform.localRotation = Quaternion.identity;
+        go.transform.localScale = Vector3.one;
+        go.AddComponent<FogOfWarVision>();
+        string layerName = $"FogTeam{ObjInfo.Player.Team}";
+        go.layer = LayerMask.NameToLayer(layerName);
 
         // 체력바
         InitNameTag();
@@ -152,26 +174,33 @@ public class PlayerController : CreatureController
         // 서버에서 스킬 사용을 허락받으면
         if (skillPacket.CanUse)
         {
+            if(skillPacket.SkillInfo.Amplification)
+                State = CreatureState.Skill;
             State = CreatureState.Skill;
 
-            KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
+            KeyCode keyCode =
+                (skillPacket.SkillInfo.Amplification)? (KeyCode)skillPacket.SkillInfo.AmplifiKeyCode : (KeyCode)skillPacket.SkillInfo.KeyCode;
+
             ExecuteSkill(keyCode);
 
-            if (Define.Object.MyPlayer == ObjectType)
+            if (Define.Object.MyPlayer == ObjectType && !skillPacket.SkillInfo.Amplification)
             {
                 Managers.Object.MyPlayer.OnSkillConfirmed(skillPacket);
             }
 
             //StartCoroutine(CoStartSkill());
-            Debug.Log("스킬 코루틴 시작");
+            //Debug.Log("스킬 코루틴 시작");
 
-            Vector3 MousePos = new Vector3();
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
-                MousePos = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+            //Vector3 MousePos = new Vector3();
+            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
+            //    MousePos = new Vector3(hit.point.x, hit.point.y, hit.point.z);
 
-            bool bProjectile = (DataManager.SkillDict[ObjInfo.Player.CharType][keyCode].type == "Projectile");
-            CreateSkillMesh(keyCode, skillPacket.ChargeRatio, MousePos, bProjectile);
+            //bool bProjectile = (DataManager.SkillDict[ObjInfo.Player.CharType][keyCode].type == "Projectile");
+            //if (skillPacket.SkillInfo.Amplification && bProjectile)
+            //    ChangeInfoSkillMesh(keyCode);
+            //else
+            //    CreateSkillMesh(keyCode, skillPacket.ChargeRatio, MousePos, bProjectile);
         }
     }
 
@@ -249,7 +278,18 @@ public class PlayerController : CreatureController
 
     #endregion
 
+    Dictionary<KeyCode, SkillMesh> msDict = new Dictionary<KeyCode, SkillMesh>();
+
     #region SkillMesh
+    public void ChangeInfoSkillMesh(KeyCode keyCode, float offset = 1.0f)
+    {
+        SkillMesh currentSkillMesh = msDict[keyCode];
+
+        SkillHitbox hitbox = DataManager.SkillHitboxDict[ObjInfo.Player.CharType][keyCode];
+
+        if (System.Enum.TryParse<SkillShape>(currentSkillMesh._hitbox.Shape, out SkillShape shape))
+            currentSkillMesh.Draw(shape);
+    }
 
     public virtual void CreateSkillMesh(KeyCode keyCode, float chargeRatio, Vector3 mousePos = new Vector3(), bool bProjectile = false)
     {
@@ -269,6 +309,10 @@ public class PlayerController : CreatureController
         GameObject skillMeshGO = Managers.Resource.Instantiate("Debug/SkillMesh", go.transform);
         SkillMesh sm = skillMeshGO.GetComponent<SkillMesh>();
         if (sm == null) return;
+
+        if (!msDict.ContainsKey(keyCode))  msDict.Add(keyCode, sm);
+        else msDict[keyCode] = sm;
+
         if (false == hitbox.Charge)
             chargeRatio = 1;
 
@@ -371,7 +415,7 @@ public class PlayerController : CreatureController
     protected virtual List<GameObject> PlayEffectTransform(CreatureState state, KeyCode key, EffectType type = EffectType.Caster,
        GameObject target = null, Transform targetTransform = null)
     {
-        List<EffectData> effectList = Managers.FX.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
+        List<EffectData> effectList = Managers.Data.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
         List<GameObject> EffectList = null;
         EffectList = Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, transform);
 
@@ -410,4 +454,5 @@ public class PlayerController : CreatureController
         // 공격을 받으면 데미지를 입혀야 함
     }
 
+    public virtual void OnSkillAnimationEnd() { }
 }

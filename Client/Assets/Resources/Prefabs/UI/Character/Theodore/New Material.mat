@@ -25,7 +25,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 7
+  version: 10
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -54,6 +54,7 @@ Material:
     RenderType: Transparent
   disabledShaderPasses:
   - DepthOnly
+  - MOTIONVECTORS
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -83,6 +84,7 @@ Material:
     - _Clip: 0.01
     - _Cull: 2
     - _DstBlend: 10
+    - _DstBlendAlpha: 10
     - _ReceiveShadows: 1
     - _SrcBlend: 1
     - _Surface: 1
@@ -98,3 +100,4 @@ Material:
     - _Tex02Speed: {r: 0.41, g: 0, b: 0, a: 0}
     - _Tex02Tiling: {r: -9, g: 4.23, b: 0, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

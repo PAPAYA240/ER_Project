@@ -122,12 +122,14 @@ public class MyPlayerController : PlayerController
 
     protected List<int> SkillTargetId { get; set; }
 
+    protected float _ratioSkillDuration = 0f;
+
     // State : Rest
     protected bool _isResting = false;
     protected Coroutine _coRest;
 
     //UI
-    //UI_PlayerHUD _playerHUD = null;
+    UI_PlayerHUD _playerHUD;
     public UI_PlayerInterface PlayerInterface { get; protected set; }
 
     // Inventory
@@ -177,7 +179,7 @@ public class MyPlayerController : PlayerController
         MakeInventory();
 
         _monsterMask = 1 << LayerMask.NameToLayer("Monster");
-        _playerMask = 1 << LayerMask.NameToLayer("Fog");
+        _playerMask = 1 << LayerMask.NameToLayer("Player");
         _myPlayerMask = 1 << LayerMask.NameToLayer("MyPlayer");
         gameObject.layer = LayerMask.NameToLayer("MyPlayer");
 
@@ -191,6 +193,8 @@ public class MyPlayerController : PlayerController
         //UI
         GameObject go = Managers.Resource.Instantiate("UI/Scene/PlayerHUD");
         go.transform.SetParent(gameObject.transform);
+        _playerHUD = go.GetComponent<UI_PlayerHUD>();
+        _playerHUD.Init();
         PlayerInterface = go.GetComponentInChildren<UI_PlayerInterface>();
         PlayerInterface.CharacterCode = CharTypeToCharCode(ObjInfo.Player.CharType);
         PlayerInterface.CharacterName = Enum.GetName(typeof(CharacterType), ObjInfo.Player.CharType);
@@ -209,6 +213,14 @@ public class MyPlayerController : PlayerController
         _originSpeed = _agent.speed;
 
         _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHPColor();
+
+        // 전장의 안개 카메라 설정
+        GameObject fogCamGo = GameObject.Find("FogCamera");
+        if(null != fogCamGo)
+        {
+            string fogLayerName = $"FogTeam{ObjInfo.Player.Team}";
+            fogCamGo.GetComponent<Camera>().cullingMask |= (1 << LayerMask.NameToLayer(fogLayerName));
+        }
     }
     #endregion
 
@@ -967,9 +979,9 @@ public class MyPlayerController : PlayerController
 
         if (_coolDownDict.ContainsKey(_keyCode))
         {
-            // 스킬을 사용하고 있는 상태가 아닐 때
-            if (State == CreatureState.Skill)
-                return;
+            // 스킬 쓰는 시간이 한 순간일 때(0.5초쯤..) 판단을 못해서 지울게요
+            //if (State == CreatureState.Skill)
+               // return;
 
             // 쿨타임이 끝났을 때
             if (_coolDownDict[_keyCode].isCoolDown)
@@ -984,6 +996,11 @@ public class MyPlayerController : PlayerController
 
             Debug.Log($"스킬 사용! : {_keyCode}");         
         }
+    }
+
+    public override void OnHitboxCollision(KeyCode kc, KeyCode tkc)
+    {
+        SendSkillPacket(kc, tkc, true);
     }
 
     protected SkillBase FindSkill(KeyCode keyCode)
@@ -1037,7 +1054,6 @@ public class MyPlayerController : PlayerController
         }
 
         _coolDownDict[key].isCoolDown = true;
-
         float elapsed = 0f;
         while (elapsed < time)
         {
@@ -1279,12 +1295,28 @@ public class MyPlayerController : PlayerController
         }
     }
 
+    public void SetTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)
+    {
+        _playerHUD.SetTimer(phase, clientLocalTargetRealtimeSinceStartupEnd);
+    }
+
+    public override void SetKDA(int kill, int death, int asist)
+    {
+        base.SetKDA(kill, death, asist);
+        _playerHUD.SetKDA(kill, death, asist);
+    }
+
+    public void NotifyKill(PlayerController attPc, PlayerController diePc)
+    {
+        _playerHUD.NotifyKill(attPc, diePc);
+    }
+
     #endregion
 
     #region Effect
     protected GameObject FindEffect(string fxName)
     {
-        return Managers.FX.FindEffect(ObjInfo.ObjectId, fxName);
+        return Managers.FX.Effect.FindEffect(ObjInfo.ObjectId, fxName);
     }
             // 스킬 시전 이펙트 : TODO : 나중에 키에 따른 이펙트만 지워줄 것
     protected void RemoveAllEffect()
@@ -1293,11 +1325,11 @@ public class MyPlayerController : PlayerController
     }
     protected void RemoveEffect(string fxName)
     {
-        Managers.FX.RemoveEffect(ObjInfo.ObjectId, FindEffect(fxName));
+        Managers.FX.Effect.RemoveEffect(ObjInfo.ObjectId, FindEffect(fxName));
     }
     protected List<GameObject> PlayEffect(string fxName, Vector3 position = new Vector3(), Quaternion rot = new Quaternion())
     {
-        List<EffectData> effectList =Managers.FX.GetEffectsByPrefabName(fxName);
+        List<EffectData> effectList =Managers.Data.GetEffectsByPrefabName(fxName);
 
         return Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, transform, position, rot);
     }
@@ -1306,7 +1338,7 @@ public class MyPlayerController : PlayerController
         GameObject target = null, Transform targetTransform = null)
     {
         List<EffectData> effectList = 
-            Managers.FX.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
+            Managers.Data.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
 
         List<GameObject> EffectList = null;
 
@@ -1330,7 +1362,7 @@ public class MyPlayerController : PlayerController
 
     protected List<GameObject> PlayEffectAtPosition(CreatureState state, KeyCode key, Vector3 position, Quaternion rot, EffectType type = EffectType.Caster)
     {
-        List<EffectData> effectList = Managers.FX.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type); 
+        List<EffectData> effectList = Managers.Data.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type); 
 
         if (effectList == null || effectList.Count == 0) return null;
 
@@ -1387,8 +1419,12 @@ public class MyPlayerController : PlayerController
     // 스킬 사용이 가능한가?
     protected bool EnabledSkill(KeyCode key)
     {
+        if (!PlayerInterface.IsActiveKey.ContainsKey(key))
+            return false;
+
         if (_coolDownDict[key].isCoolDown)
             return false;
+
         return true;
     }
     protected void UpdateTransform(bool isWarp = false)
@@ -1482,13 +1518,11 @@ public class MyPlayerController : PlayerController
 
     }
 
-    protected float _ratioSkillDuration = 0f;
     #region Packet
-    private void SendSkillPacket(KeyCode key)
+    private void SendSkillPacket(KeyCode key, KeyCode tKey = KeyCode.None, bool isAmplification = false)
     {
-        //Vector3 mousePos = GetTargetPos(1000);
-
         Vector3 mousePos = new Vector3();
+
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
             mousePos = new Vector3(hit.point.x, hit.point.y, hit.point.z);
@@ -1496,15 +1530,18 @@ public class MyPlayerController : PlayerController
         C_Skill skillPacket = new C_Skill()
         {
             ObjectInfo = ObjInfo,
-            SkillInfo = new SkillInfo() { KeyCode = (int)key },
-            MousePosX = mousePos.x, MousePosZ = mousePos.z,
+            SkillInfo = new SkillInfo() 
+            {
+                KeyCode = (int)key, 
+                Amplification = isAmplification,
+                AmplifiKeyCode = (int)tKey,
+            },
+            TargetPosX = mousePos.x, TargetPosZ = mousePos.z,
             ChargeRatio = _ratioSkillDuration,
         };
 
         _ratioSkillDuration = 0f;
-
         Managers.Network.Send(skillPacket);
-        Debug.Log("스킬 패킷 보내기");
     }
 
     protected void SendFXPacket(KeyCode key)
