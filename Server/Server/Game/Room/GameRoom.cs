@@ -521,24 +521,5 @@ namespace Server.Game
 
             _dummyAdded = true;
         }
-
-        public void InitNavmeshPipeline()
-        {
-            // 1) 클라에서 Export한 NavMesh JSON 불러오기        
-            NavmeshData nav = NavmeshImporter.LoadFromJson(_navmeshPath);
-
-            // 2) TriCache(전처리) 빌드
-            TriCache triCache = TriCacheBuilder.Build(nav);   // 아래 1-1 참고
-
-            // 3) Uniform Grid 가속구조 빌드
-            var accel = new UniformGridAccel(cell: 0.5f);     // 셀 크기 튜닝 포인트
-            accel.Build(triCache, nav.Min, nav.Max);
-
-            // 4) NavmeshService에 장착
-            NavmeshService.Instance.Init(triCache, accel);
-
-            // (선택) 버전 로그/검증
-            Console.WriteLine($"[Navmesh] loaded: {nav.Version}, tris={triCache.Tris.Length}");
-        }
     }
 }

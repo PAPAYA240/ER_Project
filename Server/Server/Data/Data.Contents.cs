@@ -412,4 +412,76 @@ namespace Server.Data
         }
     }
     #endregion
+
+    #region Animation
+    public sealed class AnimationInfosData : ILoader<CharacterType, Dictionary<string, AnimLengthInfo>>
+    {
+        public int version;
+        public List<CharacterDTO> characters;
+
+        public Dictionary<CharacterType, Dictionary<string, AnimLengthInfo>> MakeDict()
+        {
+            var result = new Dictionary<CharacterType, Dictionary<string, AnimLengthInfo>>();
+
+            if (characters == null)
+                return result;
+
+            foreach (var ch in characters)
+            {
+                if (!Enum.TryParse(ch.character, ignoreCase: true, out CharacterType ct))
+                    continue;
+
+                var map = new Dictionary<string, AnimLengthInfo>(StringComparer.OrdinalIgnoreCase); // key: animName
+
+                if (ch.clips != null)
+                {
+                    foreach (var c in ch.clips)
+                    {
+                        if (string.IsNullOrEmpty(c.animName))
+                            continue;
+
+                        map[c.animName] = new AnimLengthInfo
+                        {
+                            Clip = c.clip,
+                            AnimName = c.animName,
+                            Length = (float)c.length,
+                            FrameRate = c.frameRate,
+                            Samples = c.samples,
+                        };
+                    }
+                }
+
+                result[ct] = map;
+            }
+
+            return result;
+        }
+    }
+
+    public sealed class CharacterDTO
+    {
+        public string character;
+        public string controller;
+        public List<ClipDTO> clips;
+    }
+
+    public sealed class ClipDTO
+    {
+        public string clip;
+        public double length;
+        public float frameRate;
+        public int samples;
+        public string animName;
+    }
+
+    [Serializable]
+    public class AnimLengthInfo
+    {
+        public string Clip;        // 원본 클립 이름
+        public string AnimName;    // Animator 상태/별칭(클라와 매칭)
+        public float Length;       // 초 단위
+        public float FrameRate;
+        public int Samples;
+    }
+    #endregion
 }
