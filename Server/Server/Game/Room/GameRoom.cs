@@ -10,6 +10,7 @@ using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
 using static Server.Data.DataUtils;
+using static Server.Game.GameObject;
 
 namespace Server.Game
 {
@@ -28,6 +29,8 @@ namespace Server.Game
 
         bool _teamToggle = false;
         bool _dummyAdded = false;
+
+        public int CurTick { get; set; }
 
         #region Phase, Time
 
@@ -64,6 +67,8 @@ namespace Server.Game
 
         public override void Update()
         {
+            CurTick = Environment.TickCount;
+
             foreach (Projectile projectile in _projectiles.Values)
             {
                 projectile.Update();
@@ -84,13 +89,19 @@ namespace Server.Game
                 player.SendVisibleObjsPkt(visibleObjs);
             }
 
+            foreach (Player player in _players.Values)
+                player.RemoveExpiredStatusEffects();
+
             List<Monster> monstersToUpdate = new List<Monster>(_monsters.Values);
             foreach (Monster monster in monstersToUpdate)
                 monster.Update();
 
+            foreach (var monster in monstersToUpdate)
+                monster.RemoveExpiredStatusEffects();
+
             Flush();
 
-            _collisionManager.CurTick = Environment.TickCount;
+            _collisionManager.CurTick = CurTick;
             _collisionManager.Flush();
             _collisionManager.CheckAllCollisions(_teams, _monsters, _projectiles);
             _collisionManager.Update();
@@ -522,6 +533,11 @@ namespace Server.Game
             clientSession.Send(spawnPacket);
 
             _dummyAdded = true;
+        }
+
+        public void AddStatusEffect(Creature creature, StatusEffect statusEffect)
+        {
+            creature.AddStatusEffect(statusEffect);
         }
     }
 }

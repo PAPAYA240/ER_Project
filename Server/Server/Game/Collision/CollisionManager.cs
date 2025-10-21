@@ -1,14 +1,15 @@
-﻿using Google.Protobuf.Protocol;
-using System.Numerics;
-using Server.Data;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using static Server.Data.DataUtils;
+using System.Linq;
+using System.Numerics;
+using Google.Protobuf.Collections;
+using Google.Protobuf.Protocol;
 using Lucene.Net.Index;
 using Microsoft.VisualBasic;
-using System.Linq;
-using Google.Protobuf.Collections;
+using Server.Data;
+using static Server.Data.DataUtils;
+using static Server.Game.GameObject;
 
 namespace Server.Game
 {
@@ -38,6 +39,8 @@ namespace Server.Game
 
     }
 
+    public enum Subject { Subject_None, Self, Ally, Enemy }
+
     class CollisionManager
     {
         object _lock = new object();
@@ -55,6 +58,9 @@ namespace Server.Game
 
         private InteractionManager _interactionManager = new InteractionManager();
 
+        Dictionary<CharacterType, Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>> _statusEffects // Buffs & Debuffs
+            = new Dictionary<CharacterType, Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>>();
+
         public int CurTick { get; set; }
 
         public void Init()
@@ -64,6 +70,7 @@ namespace Server.Game
             _hitboxChainDict.Add(CharacterType.Abigail, abigailChainDict);
 
             SetUpAllyHitSkills();
+            SetUpStatusEffects();
         }
 
         public void AddHitbox(Player player, CharacterType charType, KeyCode keyCode, Vector2 mousePos = new Vector2(), float chargeRatio = 0)
@@ -268,7 +275,10 @@ namespace Server.Game
                     }
 
                     if(hitPlayers.Count > 0)
+                    {
                         HandleDamage<Player>(hitbox, hitPlayers, damageDict);
+                        HandleStatusEffects<Player>(hitbox, hitPlayers);
+                    }
                 }
             }
         }
@@ -314,7 +324,7 @@ namespace Server.Game
             if (false == hitbox.Data.IsOneTimeUse) // 단일대상 히트박스가 아닌 경우
             {
                 foreach (T target in hitTargets)
-                    ApplyDamage(hitbox, target, damageDict);
+                    ApplyDamage(hitbox, target, damageDict);                 
             }
             else
             {
@@ -681,5 +691,82 @@ namespace Server.Game
                 }
             }
         }
+
+        #region StatusEffects(버프, 디버프, 방어막)
+
+        void SetUpStatusEffects() // 조건이 Hit인 효과들만 추려내기
+        {
+            foreach (var nestedKvp in DataManager.SkillDict)
+            {
+                foreach (var kvp in nestedKvp.Value)
+                {
+                    foreach(var levelKvp in kvp.Value.levels)
+                    {
+                        if (levelKvp.Value.effects == null)
+                            continue;
+
+                        foreach(EffectData effectData in levelKvp.Value.effects)
+                        {
+                            CharacterType charType = nestedKvp.Key;
+                            KeyCode keyCode = kvp.Key;
+                            int level = levelKvp.Key;
+
+                            if (effectData.condition == "Hit")
+                            {
+                                if (!_statusEffects.TryGetValue(charType, out var skillDict))
+                                    _statusEffects[charType] = skillDict = new Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>();
+
+                                if (!skillDict.TryGetValue(keyCode, out var levelDict))
+                                    skillDict[keyCode] = levelDict = new Dictionary<int, List<StatusEffect>>();
+
+                                if (!levelDict.TryGetValue(level, out var effects))
+                                    levelDict[level] = effects = new List<StatusEffect>();
+
+                                StatusEffect newEffect = new StatusEffect
+                                {
+                                    type = effectData.type,
+                                    stat = effectData.stat,
+                                    duration = effectData.duration,
+                                    value = effectData.value,
+                                    subject = Enum.TryParse(effectData.subject, true, out Subject temp) ? temp : Subject.Subject_None
+                                };
+
+                                effects.Add(newEffect);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        void HandleStatusEffects<T>(Hitbox hitbox, List<T> hitTargets)
+        {
+            if (!_statusEffects.TryGetValue(hitbox.CharType, out var nestedDict))
+                return;
+
+            if (!nestedDict.TryGetValue(hitbox.KeyCode, out var dict))
+                return;
+
+            if (!dict.TryGetValue(hitbox.Player.GetSkillLevel(hitbox.KeyCode), out var statusEffectList))
+                return;
+
+            foreach (var effect in statusEffectList)
+            {
+                switch (effect.subject)
+                {
+                    case Subject.Self:
+                        hitbox.Player.Room.Push(hitbox.Player.Room.AddStatusEffect, hitbox.Player, effect);
+                        break;
+                    case Subject.Ally: // 이건 아군대상 스킬에만 있을거같긴해서 생략
+                        break;
+                    case Subject.Enemy:
+                        foreach(var enemy in hitTargets.OfType<Creature>()) // Creature 일때만
+                            enemy.Room.Push(enemy.Room.AddStatusEffect, enemy, effect);
+                        break;
+                }
+            }
+        }
+
+        #endregion
     }
 }

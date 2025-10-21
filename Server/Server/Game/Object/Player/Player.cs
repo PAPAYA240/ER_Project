@@ -1,11 +1,13 @@
-﻿using Google.Protobuf.Protocol;
-using Server.Data;
-using ServerCore;
-using System;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using Google.Protobuf.Protocol;
+using Server.Data;
+using ServerCore;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -413,6 +415,11 @@ namespace Server.Game
             return _skills[keyCode];
         }
 
+        public int GetSkillLevel(KeyCode keyCode)
+        {
+            return _skills[keyCode].CurLevel;
+        }
+
         #endregion
 
         #region Item
@@ -725,6 +732,5 @@ namespace Server.Game
             return levelUp;
         }
         #endregion
-
     }
 }

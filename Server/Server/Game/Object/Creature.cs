@@ -1,5 +1,4 @@
-﻿using Google.Protobuf.Protocol;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -158,6 +157,7 @@ namespace Server.Game
             RotInfo.Qz = newRotation.Z;
             RotInfo.Qw = newRotation.W;
         }
+
+        #endregion
     }
-#endregion
 }

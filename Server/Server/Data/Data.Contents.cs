@@ -230,7 +230,7 @@ namespace Server.Data
 
     #region Effect
     [Serializable]
-    public class EffectData
+    public class EffectData // 버프 디버프 등의 상태효과
     {
         public enum EEffectTarget
         {
@@ -244,6 +244,11 @@ namespace Server.Data
         public float value;    // 수치 (%는 그냥 숫자로 저장)
         public float duration; // 지속시간
         public string condition; // 옵션 (예: "HP<50%")
+        public string subject; // 적용대상 Self / Ally / Enemy
+        public float coeff; // 스킬 계수  ex) (+스킬 증폭의 2%)
+
+        public float ratioPerTarget; // 대상 1명 추가당 증가량 (ex: 아비게일 W: 추가로 적중한 적 하나 당 보호막량 20% 증가)
+        public float maxRatio;       // 최대 증가량
 
         public string prefabName; // 프리팹 이름
         public float delayTime; // 이펙트 시작 시간

@@ -105,9 +105,9 @@ public class AbigailController : MyPlayerController
     #endregion
 
     #region SkillMesh
-    public override void CreateSkillMesh(KeyCode keyCode, float chargeRatio)
+    public override void CreateSkillMesh(KeyCode keyCode, float chargeRatio, Vector3 mousePos = new Vector3(), bool bProjectile = false)
     {
-        base.CreateSkillMesh(keyCode, chargeRatio);
+        base.CreateSkillMesh(keyCode, chargeRatio, mousePos, bProjectile);
 
         if(keyCode == KeyCode.Q)
             base.CreateSkillMesh(KeyCode.F1, 0);
