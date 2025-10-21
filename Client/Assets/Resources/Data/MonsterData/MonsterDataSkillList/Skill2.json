@@ -1,5 +1,3 @@
-
-// Skill01 Ready -> Skill01
 {
   "Name": "Root",
   "Type": "SequenceNode",
@@ -26,8 +24,14 @@
         {
           "Name": "Skill03_Effect",
           "Type": "PlayEffectNode"
+        },
+        {
+          "Name": "Skill_Material",
+          "Type": "SetMaterialNode",
+          "Properties": {
+            "strChangeMaterial": "materials/effect/auraMaterial"
+          }
         }
-
       ]
     }
   ]

@@ -50,20 +50,8 @@ public class MonsterController : CreatureController
     //private List<Vector3> trailPoints = new List<Vector3>();
     protected override void UpdateController()
     {
-       transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
+        transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
        transform.rotation = transform.rotation;
-
-        //trailPoints.Add(transform.position);
-        //for (int i = 0; i < trailPoints.Count - 1; i++)
-        //    Debug.DrawLine(trailPoints[i], trailPoints[i + 1], Color.yellow, 100f);
-
-        if (MonsterType.Omega == _monsterType || MonsterType.Alpha == _monsterType)
-        {
-            if (Skill == MonsterSkill.MsSkill2 && State == CreatureState.Skill)
-                monsterRenderer.material = skillMaterial;
-            else
-                monsterRenderer.material = originalMaterial;
-        }
     }
 
     public override void OnDamaged()

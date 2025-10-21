@@ -21,6 +21,7 @@ public class TheodoreController : MyPlayerController
 
         base.Init();
         _attackRange = 10;
+
     }
 
     #region Skill

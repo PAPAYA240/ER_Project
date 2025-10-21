@@ -22,6 +22,7 @@ namespace Server.Game
 
         public IMonsterState GetMovingState() { return new MovingState();  }
         public IMonsterState GetIdleState() { return new IdleState();  }
+        public IMonsterState GetDeadState() { return new IdleState(); }
 
         // 타겟을 찾은 경우
         public IMonsterState EvaluateTargetForNextState(Monster monster)
@@ -31,7 +32,7 @@ namespace Server.Game
                 // 근거리 몬스터
                 case MonsterType.Alpha:
                 case MonsterType.Omega:
-                    if (monster.IsSkillRange())
+                    if (monster.IsInSkillRange())
                     {
                         return GetSkillState(monster.Info.Monster.MonsterType);
                     }

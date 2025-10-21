@@ -21,6 +21,7 @@ namespace Server.Game
         protected virtual void IdleState() { }
 
         #region AI
+        public bool HasPath => _path != null && _path.Count > 0;
         // 1. 초반 경로 계산하는 부분
         // 움직이기 직전에 목표 위치를 전달해서 호출하면 됩니다.
         public void Get_CalculatePath(Vector3 targetPos) => CalculatePath(targetPos);
@@ -50,13 +51,7 @@ namespace Server.Game
             {
                 _pathIdx++;
                 if (_pathIdx >= _path.Count)
-                {
                     _path.Clear();
-
-                    // 도착 시 Idle 상태로 전환 
-                    // Monster의 경우는 FSM 상태를 Idle로 전환합니다
-                    IdleState();
-                }
             }
 
             FollowToTarget(nextWaypoint);
@@ -76,7 +71,7 @@ namespace Server.Game
         // 실제 이동을 담당하는 함수입니다.
         protected const float _findRange = 30.0f;
         private long _lastUpdateTime = 0;
-        private const float FIXED_MOVE_STEP = 0.8f;
+        private const float FIXED_MOVE_STEP = 0.7f;
         public void FollowToTarget(Vector3 targetPos)
         {
             Vector3 myPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
@@ -111,18 +106,8 @@ namespace Server.Game
             PosInfo.PosZ = newPos.Z;
 
             // =========== 회전 =========== 
-            Vector3 dirQ = new Vector3();
-            if (Target != null)
-            {
-                Vector3 PlayerPos = new Vector3(Target.PosInfo.PosX, Target.PosInfo.PosY, Target.PosInfo.PosZ);
-                float distanceToTarget = Vector3.Distance(myPos, targetPos);
-                if (distanceToTarget <= _findRange)
-                    dirQ = PlayerPos - myPos;
-            }
-            else
-            {
-                dirQ = targetPos - myPos;
-            }
+            Vector3 dirQ = targetPos - myPos;
+
             LookAtTarget(dirQ, elapsedTime);
         }
 

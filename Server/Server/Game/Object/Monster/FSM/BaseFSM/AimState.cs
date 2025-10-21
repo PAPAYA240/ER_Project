@@ -6,69 +6,78 @@ using System.Numerics;
 
 namespace Server.Game
 {
-    internal class AimState : IMonsterState
+    public class AimState : IMonsterState
     {
-        private MonsterSkillData skillData = null;
-
-        private long _skillEndTime = 0; 
-
-        private bool _isClientEndReceived = false; // 클라에게 종료 패킷을 받았는가?
-
-        private long _lastUpdateTime = 0;
-
-        // 타겟과 비교해서 다른 타겟을 쏘게 되면 Idle로 돌이키기 위한 정보.
-        Creature _player = null;
+        private MonsterSkillData _skillData = null;
+        private long _skillEndTime = 0;
+        private long _lastRotationUpdateTime = 0;
 
         public void Enter(Monster monster)
         {
-            skillData = monster.Get_DecideAndUseSkill();
-            if (skillData == null) return;
+            _skillData = monster.Get_DecideAndUseSkill();
+            if (_skillData == null)
+            {
+                monster.ChangeState(FSMManager.Instance.GetIdleState());
+                return;
+            }
 
-            _skillEndTime = Environment.TickCount64 + (long)(skillData.skillDuration * 1000f);
-            monster._delaySkillAnimationTimer = skillData.skillCoolTime;
-            monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
+            SetupSkill(monster);
 
-            _player = monster.Target;
+            monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), _skillData);
         }
 
         public void Execute(Monster monster)
         {
-            bool timeout = Environment.TickCount64 >= _skillEndTime;
+            if (ShouldTrackTarget(monster))
+                RotateTowardTarget(monster);
 
-            if (monster.Info.Monster.MonsterType == MonsterType.Drone)
-                LookAtTarget(monster);
-            if (monster.Info.Monster.MonsterType == MonsterType.Turret)
-                LookAtTarget(monster);
+            monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), _skillData);
 
-            monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), skillData);
-
-            if (timeout)
-                 monster.ChangeState(FSMManager.Instance.GetIdleState());
+            if (IsSkillFinished())
+                monster.ChangeState(FSMManager.Instance.GetIdleState());
         }
 
-        private void LookAtTarget(Monster monster)
-        {
-            Creature target = monster.Target;
-            if (target != null)
-            {
-                long tick = Environment.TickCount64;
-                double elapsedTime = (tick - _lastUpdateTime) / 1000.0;
-                _lastUpdateTime = tick;
-
-                Vector3 targetPos = new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ);
-                Vector3 monsterPos = new Vector3(monster.PosInfo.PosX, monster.PosInfo.PosY, monster.PosInfo.PosZ);
-                Vector3 dirQ = targetPos - monsterPos;
-                monster.LookAtTarget(dirQ, elapsedTime, false);
-            }
-        }
-        public void OnHit(Monster monster, Creature target)
-        {
-        }
+        public void OnHit(Monster monster, Creature target) { }
         public void Exit(Monster monster)
         {
             _skillEndTime = 0;
-            _lastUpdateTime = 0;
-            _isClientEndReceived = false;
+            _lastRotationUpdateTime = 0;
         }
+
+        #region Private Methods
+        private bool IsSkillFinished()
+        {
+            return Environment.TickCount64 >= _skillEndTime;
+        }
+        private void RotateTowardTarget(Monster monster)
+        {
+            if (monster.Target == null)
+                return;
+
+            long currentTick = Environment.TickCount64;
+            double elapsedTime = (currentTick - _lastRotationUpdateTime) / 1000.0;
+            _lastRotationUpdateTime = currentTick;
+
+            Vector3 targetPosition = monster.Target.PosInfo.GetVector3FromPosInfo();
+            Vector3 myPosition = monster.PosInfo.GetVector3FromPosInfo();
+            Vector3 direction = targetPosition - myPosition;
+
+            monster.LookAtTarget(direction, elapsedTime, false);
+        }
+        private bool ShouldTrackTarget(Monster monster)
+        {
+            MonsterType type = monster.Info.Monster.MonsterType;
+            return type == MonsterType.Drone || type == MonsterType.Turret;
+        }
+
+        private void SetupSkill(Monster monster)
+        {
+            // 스킬 지속 시간 설정
+            long durationMs = (long)(_skillData.skillDuration * 1000f);
+            _skillEndTime = Environment.TickCount64 + durationMs;
+
+            monster._delaySkillAnimationTimer = _skillData.skillCoolTime;
+        }
+        #endregion
     }
 }
