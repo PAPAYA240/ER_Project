@@ -64,7 +64,9 @@ namespace Server.Game
                 monster.PushState(CreatureState.Idle, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
             }
         }
-
+        public void OnHit(Monster monster, Creature target)
+        {
+        }
         public void Exit(Monster monster) 
         {
             _nextSearchTick = 0;

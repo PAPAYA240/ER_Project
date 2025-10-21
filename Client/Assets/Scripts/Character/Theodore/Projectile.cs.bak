@@ -46,10 +46,9 @@ public class Projectile : MonoBehaviour
             ownerController.LaunchProjectile(hitList);
 
             // 마크 활성화 시 구속 가능
-            //targetController.HasCrowdControl = true;
+            targetController.HasCrowdControl = true;
         }
     }
-
     public void Run(Vector3 startPos, Vector3 startforward)
     {
         gameObject.transform.position = startPos;

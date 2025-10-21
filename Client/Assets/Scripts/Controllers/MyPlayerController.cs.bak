@@ -179,7 +179,7 @@ public class MyPlayerController : PlayerController
         MakeInventory();
 
         _monsterMask = 1 << LayerMask.NameToLayer("Monster");
-        _playerMask = 1 << LayerMask.NameToLayer("Player");
+        _playerMask = 1 << LayerMask.NameToLayer("Fog");
         _myPlayerMask = 1 << LayerMask.NameToLayer("MyPlayer");
         gameObject.layer = LayerMask.NameToLayer("MyPlayer");
 
@@ -213,14 +213,6 @@ public class MyPlayerController : PlayerController
         _originSpeed = _agent.speed;
 
         _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHPColor();
-
-        // 전장의 안개 카메라 설정
-        GameObject fogCamGo = GameObject.Find("FogCamera");
-        if(null != fogCamGo)
-        {
-            string fogLayerName = $"FogTeam{ObjInfo.Player.Team}";
-            fogCamGo.GetComponent<Camera>().cullingMask |= (1 << LayerMask.NameToLayer(fogLayerName));
-        }
     }
     #endregion
 
@@ -1316,7 +1308,7 @@ public class MyPlayerController : PlayerController
     #region Effect
     protected GameObject FindEffect(string fxName)
     {
-        return Managers.FX.Effect.FindEffect(ObjInfo.ObjectId, fxName);
+        return Managers.FX.FindEffect(ObjInfo.ObjectId, fxName);
     }
             // 스킬 시전 이펙트 : TODO : 나중에 키에 따른 이펙트만 지워줄 것
     protected void RemoveAllEffect()
@@ -1325,11 +1317,11 @@ public class MyPlayerController : PlayerController
     }
     protected void RemoveEffect(string fxName)
     {
-        Managers.FX.Effect.RemoveEffect(ObjInfo.ObjectId, FindEffect(fxName));
+        Managers.FX.RemoveEffect(ObjInfo.ObjectId, FindEffect(fxName));
     }
     protected List<GameObject> PlayEffect(string fxName, Vector3 position = new Vector3(), Quaternion rot = new Quaternion())
     {
-        List<EffectData> effectList =Managers.Data.GetEffectsByPrefabName(fxName);
+        List<EffectData> effectList =Managers.FX.GetEffectsByPrefabName(fxName);
 
         return Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, transform, position, rot);
     }
@@ -1338,7 +1330,7 @@ public class MyPlayerController : PlayerController
         GameObject target = null, Transform targetTransform = null)
     {
         List<EffectData> effectList = 
-            Managers.Data.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
+            Managers.FX.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
 
         List<GameObject> EffectList = null;
 
@@ -1362,7 +1354,7 @@ public class MyPlayerController : PlayerController
 
     protected List<GameObject> PlayEffectAtPosition(CreatureState state, KeyCode key, Vector3 position, Quaternion rot, EffectType type = EffectType.Caster)
     {
-        List<EffectData> effectList = Managers.Data.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type); 
+        List<EffectData> effectList = Managers.FX.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type); 
 
         if (effectList == null || effectList.Count == 0) return null;
 

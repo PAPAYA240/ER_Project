@@ -223,8 +223,9 @@ message C_Interact {
 
 message S_Interact  {
     	int32 objectId = 1;
-    	int32 keyCode = 2;
-	int32 targetKeyCode = 3;
+	int32 targetId = 2;
+    	int32 keyCode = 3;
+	int32 targetKeyCode = 4;
 }
 
 message C_EnterGame {
@@ -276,8 +277,9 @@ message S_Drawmesh{
 	RotationInfo rotInfo = 2;
 	int32 objectId = 3;
 	SkillHitbox hitbox = 4;
-	  PositionInfo forward = 5;
-  PositionInfo right = 6;
+	PositionInfo forward = 5;
+  	PositionInfo right = 6;
+	float offsetRadius = 7;
 }
 message C_Skill{
 	ObjectInfo objectInfo = 1;

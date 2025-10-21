@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Numerics;
-using System.Text;
-using System.Xml.XPath;
 using Google.Protobuf.Protocol;
-using Lucene.Net.Messages;
-using Lucene.Net.Support;
-using Server.Game;
-using static Lucene.Net.Util.AttributeSource;
-using static Server.Data.DataUtils;
+using UnityEngine;
 
-namespace Server.Data
+namespace Data
 {
     #region Stat
     [Serializable]
@@ -25,30 +17,6 @@ namespace Server.Data
             foreach (var pair in stats)
             {
                 pair.Value.Hp = pair.Value.MaxHp;
-                dict.Add((CharacterType)Enum.Parse(typeof(CharacterType), pair.Key), pair.Value);
-            }
-            return dict;
-        }
-    }
-
-    public class ExpData : ILoader<int, int>
-    {
-        public Dictionary<int, int> exp = new Dictionary<int, int>();
-
-        public Dictionary<int, int> MakeDict()
-        {
-            return exp;
-        }
-    }
-
-    public class StatGrowthData : ILoader<CharacterType, StatInfo>
-    {
-        public Dictionary<string, StatInfo> growth = new Dictionary<string, StatInfo>();
-        public Dictionary<CharacterType, StatInfo> MakeDict()
-        {
-            Dictionary<CharacterType, StatInfo> dict = new Dictionary<CharacterType, StatInfo>();
-            foreach (var pair in growth)
-            {
                 dict.Add((CharacterType)Enum.Parse(typeof(CharacterType), pair.Key), pair.Value);
             }
             return dict;
@@ -73,15 +41,13 @@ namespace Server.Data
 
     public abstract class ItemInfoBase
     {
-        public int Id;      //식별 번호? UI에서의 숫자? 흠 이거랑 이름 둘 중 하나를 키값으로 딕셔너리를 만들까나.
+        public int Id;      //식별 번호? UI에서의 숫자?
         public string Name; //이름
         public ItemGrade Grade = ItemGrade.End;   //등급
         public string Description; //아이템 설명
-
-        public virtual void Use() { }
     }
 
-    //카메라 등의 아이템
+    //카메라
     public class ConsumableItemInfo : ItemInfoBase
     {
         public int Count = 0; //개수
@@ -93,23 +59,9 @@ namespace Server.Data
         public ItemStat ItemStat = new ItemStat();
     }
 
-    public class ItemSet : ILoader<CharacterType, List<List<int>>>
-    {
-        public Dictionary<string, List<List<int>>> characters = new Dictionary<string, List<List<int>>>();
-
-        public Dictionary<CharacterType, List<List<int>>> MakeDict()
-        {
-            Dictionary<CharacterType, List<List<int>>> dict = new Dictionary<CharacterType, List<List<int>>>();
-            foreach (var pair in characters)
-                dict.Add((CharacterType)Enum.Parse(typeof(CharacterType), pair.Key), pair.Value);
-            return dict;
-        }
-    }
-
     #endregion
 
     #region Skill
-
     [Serializable]
     public class GameData : ILoader<CharacterType, Dictionary<KeyCode, SkillData>>
     {
@@ -119,14 +71,15 @@ namespace Server.Data
         {
             var nestedDict = new Dictionary<CharacterType, Dictionary<KeyCode, SkillData>>();
 
-            foreach(var chars in characters)
+            foreach (var chars in characters)
             {
                 CharacterType chartype = (CharacterType)Enum.Parse(typeof(CharacterType), chars.Key);
 
-                var dict = new Dictionary<KeyCode, SkillData> ();
+                var dict = new Dictionary<KeyCode, SkillData>();
                 foreach (var skills in chars.Value)
                 {
                     KeyCode keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), skills.Key);
+
                     dict.Add(keyCode, skills.Value);
                 }
 
@@ -152,6 +105,7 @@ namespace Server.Data
         public Dictionary<string, List<string>> descriptionInfo;
         public Dictionary<string, List<string>> popupInfo;
     }
+
     [Serializable]
     public class Mechanics
     {
@@ -197,38 +151,23 @@ namespace Server.Data
         public int staminaCost;
         public List<EffectData> effects;
     }
+
+    public class ProjectileInfo
+    {
+        public string name;
+        public float speed;
+        public int range;
+        public string prefab;
+    }
     #endregion
 
     #region Hitbox
     [Serializable]
-    public class MonstHitboxData : ILoader<MonsterType, Dictionary<MonsterSkill, SkillHitbox>>
-    {
-        public Dictionary<string, Dictionary<string, SkillHitbox>> hitbox = new Dictionary<string, Dictionary<string, SkillHitbox>>();
-        public Dictionary<MonsterType, Dictionary<MonsterSkill, SkillHitbox>> MakeDict()
-        {
-            var nestedDict = new Dictionary<MonsterType, Dictionary<MonsterSkill, SkillHitbox>>();
-
-            foreach (var chars in hitbox)
-            {
-                MonsterType chartype = (MonsterType)Enum.Parse(typeof(MonsterType), chars.Key);
-                var dict = new Dictionary<MonsterSkill, SkillHitbox>();
-
-                foreach (var skills in chars.Value)
-                {
-                    MonsterSkill keyCode = (MonsterSkill)Enum.Parse(typeof(MonsterSkill), skills.Key);
-                    dict.Add(keyCode, skills.Value);
-                    skills.Value.SetDefaultsIfEmpty();
-                }
-                nestedDict.Add(chartype, dict);
-            }
-            return nestedDict;
-        }
-    }
-
-    [Serializable]
     public class HitboxData : ILoader<CharacterType, Dictionary<KeyCode, SkillHitbox>>
     {
+
         public Dictionary<string, Dictionary<string, SkillHitbox>> hitbox = new Dictionary<string, Dictionary<string, SkillHitbox>>();
+
         public Dictionary<CharacterType, Dictionary<KeyCode, SkillHitbox>> MakeDict()
         {
             var nestedDict = new Dictionary<CharacterType, Dictionary<KeyCode, SkillHitbox>>();
@@ -237,7 +176,6 @@ namespace Server.Data
             {
                 CharacterType chartype = (CharacterType)Enum.Parse(typeof(CharacterType), chars.Key);
                 var dict = new Dictionary<KeyCode, SkillHitbox>();
-
                 foreach (var skills in chars.Value)
                 {
                     KeyCode keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), skills.Key);
@@ -253,32 +191,54 @@ namespace Server.Data
     #endregion
 
     #region Effect
+
+    [Serializable]
+    public class SkillEffectList
+    {
+        public enum EffectType
+        {
+            Caster,     // 시전자 이펙트
+            HitTarget,  // 피격자 이펙트
+            Select      // 선택에 따른 이펙트
+        }
+        public List<EffectData> Caster { get; set; }  // 시전자 이펙트
+        public List<EffectData> HitTarget { get; set; } // 피격자 이펙트
+        public List<EffectData> Select { get; set; } // 선택에 따른 이펙트
+    }
+
     [Serializable]
     public class EffectData
     {
         public enum EEffectTarget
         {
-            Self,
-            Target,
-            Ground,
+            Self,       // 캐스터의 위치에 부착 (자식으로)
+            Relative,   // 캐스터의 회전을 고려한 상대적 위치
+            Target,     // 특정 타겟의 위치
+            Ground,     // 월드 좌표의 특정 위치
+            Shoot       // 발사체
         }
 
         public string type;    // Buff / Debuff / Burn 등
         public string stat;    // MoveSpeed / Defense / AttackSpeed 등
-        public float value;    // 수치 (%는 그냥 숫자로 저장)
+        public float value;    // 수치 (%는 그냥 숫자로 저장) 
         public float duration; // 지속시간
         public string condition; // 옵션 (예: "HP<50%")
 
-        public string prefabName; // 프리팹 이름
-        public float delayTime; // 이펙트 시작 시간
-        public Vector3 position;
+        public string attachBoneName; // 뼈대에 달고자 한다면 그 뼈의 이름
+        
+
+        // + 추가
+        public string prefabName;
+        public float delayTime;
+        public string skillType;
+        public Vector3 position; // 부모or 기본 포지션에 추가적으로 옮겨줄 위치
         public Quaternion rotation;
         public string sound;
         public EEffectTarget target; // 이펙트가 표시될 위치
 
         public EffectData(string name, EEffectTarget target, float duration, string sound, Vector3 position = default(Vector3), Quaternion rotation = default(Quaternion))
         {
-            this.prefabName = name;
+            //this.prefabName = name;
             this.target = target;
             this.duration = duration;
             this.sound = sound;
@@ -287,9 +247,70 @@ namespace Server.Data
         }
     }
 
+    [Serializable]
+    public class MonsterEffectDict : ILoader<MonsterSkill, List<EffectData>>
+    {
+        public List<EffectData> effectData = new List<EffectData>();
+
+        public Dictionary<MonsterSkill, List<EffectData>> MakeDict()
+        {
+            var dict = new Dictionary<MonsterSkill, List<EffectData>>();
+            foreach (EffectData data in effectData)
+            {
+                if (Enum.TryParse<MonsterSkill>(data.skillType, out MonsterSkill monsterSkill))
+                {
+                    if (dict.ContainsKey(monsterSkill))
+                        dict[monsterSkill].Add(data);
+                    else
+                        dict.Add(monsterSkill, new List<EffectData> { data });
+                }
+            }
+            return dict;
+        }
+    }
+
+    [Serializable]
+    public class PlayerEffectDict : ILoader<CharacterType, Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>>
+    {
+        public Dictionary<string, Dictionary<string, Dictionary<string, SkillEffectList>>> effects
+            = new Dictionary<string, Dictionary<string, Dictionary<string, SkillEffectList>>>();
+
+        public Dictionary<CharacterType, Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>> MakeDict()
+        {
+            var finalDict = new Dictionary<CharacterType, Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>>();
+
+            foreach (var charEntry in effects)
+            {
+                if (!Enum.TryParse(charEntry.Key, true, out CharacterType charType))
+                    continue;
+
+                var stateDict = new Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>();
+
+                foreach (var stateEntry in charEntry.Value)
+                {
+                    if (!Enum.TryParse(stateEntry.Key, true, out CreatureState creatureState))
+                        continue;
+
+                    var keyCodeDict = new Dictionary<KeyCode, SkillEffectList>();
+
+                    foreach (var skillEntry in stateEntry.Value)
+                    {
+                        if (!Enum.TryParse(skillEntry.Key, true, out KeyCode keyCode))
+                            continue;
+
+                        keyCodeDict.Add(keyCode, skillEntry.Value);
+                    }
+                    stateDict.Add(creatureState, keyCodeDict);
+                }
+                finalDict.Add(charType, stateDict);
+            }
+            return finalDict;
+        }
+    }
     #endregion
 
     #region Monster Skill
+
     [Serializable]
     public class MonsterData
     {
@@ -297,14 +318,6 @@ namespace Server.Data
         public string name;
         public StatInfo stat;
         public List<MonsterSkill> skills;
-    }
-
-    public class ProjectileInfo
-    {
-        public string name;
-        public float speed;
-        public int range;
-        public string prefab;
     }
 
     [Serializable]
@@ -324,7 +337,6 @@ namespace Server.Data
     {
         public int id;
         public string name;
-        public string SkillBehavior;
         public MonsterSkill skillType;
         public float skillDuration;
         public int damage;
@@ -344,100 +356,6 @@ namespace Server.Data
                 dict.Add(data.skillType, data);
             }
             return dict;
-        }
-    }
-    #endregion
-
-    #region StatGrowth
-
-    #endregion
-
-    #region Weapon
-    public class WeaponData : ILoader<Weapon, WeaponInfo>
-    {
-        public Dictionary<string, WeaponInfo> stats = new Dictionary<string, WeaponInfo>();
-
-        public Dictionary<Weapon, WeaponInfo> MakeDict()
-        {
-            Dictionary<Weapon, WeaponInfo> dict = new Dictionary<Weapon, WeaponInfo>();
-            foreach (var pair in stats)
-            {
-                dict.Add((Weapon)Enum.Parse(typeof(Weapon), pair.Key), pair.Value);
-            }
-            return dict;
-        }
-    }
-    #endregion
-
-    #region WeaponMastery
-    public class WeaponMasteryData : ILoader<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>
-    {
-        public Dictionary<string, Dictionary<string, WeaponMasteryInfo>> stats
-        = new Dictionary<string, Dictionary<string, WeaponMasteryInfo>>();
-        
-        public Dictionary<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>> MakeDict()
-        {
-            var nestedDict = new Dictionary<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>();
-            foreach(var stat in stats)
-            {
-                CharacterType charType = (CharacterType)Enum.Parse(typeof(CharacterType), stat.Key);
-                var newDict = new Dictionary<Weapon, WeaponMasteryInfo>();
-                
-                foreach (var dict in stat.Value)
-                {
-                    Weapon key = (Weapon)Enum.Parse(typeof(Weapon), dict.Key);
-                    newDict.Add(key, dict.Value);
-                }
-
-                nestedDict.Add(charType, newDict);
-            }
-
-            return nestedDict;
-        }
-    }
-    #endregion
-    //public class EnvObjectData
-    //{
-    //    public int id = 1;
-    //    public string name;
-    //    public int healAmount;
-    //    public int cooldown;
-    //}
-    #region Environment
-    public class EnvObjectData : ILoader<EnvType, EnvInfo>
-    {
-        public Dictionary<string, EnvInfo> stats = new Dictionary<string, EnvInfo>();
-        public Dictionary<EnvType, EnvInfo> MakeDict()
-        {
-            Dictionary<EnvType, EnvInfo> dict = new Dictionary<EnvType, EnvInfo>();
-
-            foreach (EnvInfo data in stats.Values)
-            {
-                dict.Add(data.EnvType, data);
-            }
-            return dict;
-        }
-    }
-    #endregion
-
-    #region System
-    public class PhaseData : ILoader<int, int>
-    {
-        public Dictionary<int, int> phase = new Dictionary<int, int>();
-
-        public Dictionary<int, int> MakeDict()
-        {
-            return phase;
-        }
-    }
-
-    public class RespawnData : ILoader<int, int>
-    {
-        public Dictionary<int, int> respawn = new Dictionary<int, int>();
-
-        public Dictionary<int, int> MakeDict()
-        {
-            return respawn;
         }
     }
     #endregion

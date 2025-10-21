@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Google.Protobuf.Protocol;
 using Server.Data;
+using static Server.Data.DataUtils;
 
 namespace Server.Game
 {
@@ -11,14 +12,6 @@ namespace Server.Game
         void Enter(Monster monster);
         void Execute(Monster monster);
         void Exit(Monster monster);
-        void OnHit(Monster monster, Creature target);
-    }
-    public interface ISkillBehavior
-    {
-        void OnStart(Monster caster, MonsterSkillData skillData);
-        void OnUpdate(Monster caster);
-        void OnHit(Monster caster, Creature target);
-        void OnEnd(Monster caster);
     }
 
     public class Monster : Creature
@@ -121,16 +114,11 @@ namespace Server.Game
             Room.Broadcast(diePacket);
         }
 
-        public void OnSkillHit(GameObject target)
-        {
-            if (target is Creature creatureTarget)
-                _currentState?.OnHit(this, creatureTarget);
-        }
-
         private void HandleAttacked(GameObject attacker)
         {
             if (attacker is Player attackerPlayer)
                  Target = attackerPlayer;
+
         }
 
         #region Helper Functions
@@ -186,22 +174,6 @@ namespace Server.Game
         private long GetCurrentTimeMs()
         {
             return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        }
-
-        public ISkillBehavior CreateSkillBehavior(string behaviorName)
-        {
-            const string BehaviorNamespace = "Server.Game";
-            string fullTypeName = $"{BehaviorNamespace}.{behaviorName}";
-
-            Type type = Type.GetType(fullTypeName);
-            if(behaviorName != null)
-                type = Type.GetType(fullTypeName);
-
-            if (type == null)
-                return null;
-
-            object instance = Activator.CreateInstance(type);
-            return instance as ISkillBehavior;
         }
         #endregion
 
