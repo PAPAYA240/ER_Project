@@ -5,9 +5,15 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
+using static Server.Data.DataUtils;
 
 public sealed class Skill_Blink : SkillHandlerBase
 {
+    public Skill_Blink()
+    {
+        _keyCode = KeyCode.F;
+    }
+
     public override void OnEnter(Player p, SkillContext ctx)
     {
         base.OnEnter(p, ctx);

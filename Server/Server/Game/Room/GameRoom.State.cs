@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Numerics;
+using static Lucene.Net.Index.SegmentReader;
 using static Lucene.Net.Util.AttributeSource;
 using static Server.Data.DataUtils;
 using static Server.Game.Player;
@@ -34,6 +35,9 @@ namespace Server.Game
             if (player == null)
                 return;
             if (player.IsDead)
+                return;
+
+            if (TryHandleMoveWithTokens(player, pkt))
                 return;
 
             // 스킬 중이면: 지금 당장 이동시키지 말고 '의도'로 저장
@@ -238,7 +242,8 @@ namespace Server.Game
             // 컨텍스트 구성(이동 입력을 스킬 입력으로 전환)
             var ctx = new SkillContext
             {
-                MousePos = new Vector2(req.TargetPos.PosX, req.TargetPos.PosZ), // 네 프로젝트에 맞게
+                Key = skill.GetKeyCode(),
+                MousePos = new Vector2(req.TargetPos.PosX, req.TargetPos.PosZ), 
             };
 
             // 서버 스펙 로딩

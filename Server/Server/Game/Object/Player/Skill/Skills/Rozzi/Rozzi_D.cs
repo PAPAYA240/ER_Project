@@ -5,13 +5,19 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
+using static Server.Data.DataUtils;
 
 public sealed class Rozzi_D : SkillHandlerBase
 {
+    public Rozzi_D()
+    {
+        _animName = "SKILL_D";
+        _keyCode = KeyCode.D;
+    }
+
     public override void OnEnter(Player p, SkillContext ctx)
     {
         base.OnEnter(p, ctx);
-        p.SendAnimPacket("SKILL_D", 0.05f);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

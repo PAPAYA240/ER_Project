@@ -1,8 +1,10 @@
-﻿using Server.Game;
+﻿using Google.Protobuf.Protocol;
+using Server.Game;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
+using static Server.Data.DataUtils;
 
 public struct SkillCollisionProposal
 {
@@ -35,4 +37,10 @@ public interface ISkillHandler
     void OnExit(Player p, SkillContext ctx);
 
     bool CanCast(Player p, SkillContext ctx);
+
+    #region Utils
+    float GetDuration(CharacterType type);
+
+    KeyCode GetKeyCode();
+    #endregion
 }

@@ -27,7 +27,7 @@ public class Player_SkillState : IPlayerState
         _tStart = DateTime.UtcNow;
         //_tHit = _tStart.AddSeconds(_spec.Windup);
         //_tEnd = _tHit.AddSeconds(_spec.Backswing);
-        _tEnd = _tStart.AddSeconds(1.0f);
+        _tEnd = _tStart.AddSeconds(_handler.GetDuration(player.Info.Player.CharType));
 
         _handler.OnEnter(player, _ctx);
     }
