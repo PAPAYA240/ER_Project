@@ -319,6 +319,7 @@ namespace Data
         public string name;
         public StatInfo stat;
         public List<MonsterSkill> skills;
+        public float appearTime;
     }
 
     [Serializable]

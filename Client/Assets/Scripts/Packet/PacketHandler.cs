@@ -224,6 +224,9 @@ class PacketHandler
                 KeyCode mkey = (KeyCode)interactPacket.KeyCode; // Hitbox 키코드
                 GameObject target = Managers.Object.FindById(interactPacket.TargetId); // 공격한 타겟
 
+                MonsterController mc = target.GetComponentInChildren<MonsterController>();
+                if(mc != null)
+                    mc.De();
                 creature.OnObjectCollision(target, mkey);
             }
         }

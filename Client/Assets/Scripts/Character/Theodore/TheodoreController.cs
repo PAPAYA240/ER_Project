@@ -194,8 +194,6 @@ public class TheodoreController : MyPlayerController
     
     public override void OnObjectCollision(GameObject target, KeyCode key)
     {
-        base.OnObjectCollision(target, key);
-
         CreatureController cc = target.GetComponentInChildren<CreatureController>();
         if (cc == null) return;
 
@@ -205,6 +203,7 @@ public class TheodoreController : MyPlayerController
         }
         else if (key == KeyCode.E)
         {
+            MonsterController mc = target.GetComponentInChildren<MonsterController>();
             int level = 1; // TODO : 예비 레벨
             float duration = DataManager.SkillDict[ObjInfo.Player.CharType][KeyCode.E].levels[level].effects[0].duration;
 

@@ -1,6 +1,8 @@
 ﻿using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections.Generic;
+
 
 #if UNITY_EDITOR
 using UnityEditor.Experimental.GraphView;
@@ -16,6 +18,7 @@ public abstract class AnimationControlNode : ActionNode, IStateChangeListener
     protected Animator _animator;
     protected MonsterController monsterController;
     protected NavMeshAgent _navMeshAgent;
+    protected string exitAnimName = "WAIT";
 
     protected bool Check(GameObject owner)
     {
@@ -35,6 +38,80 @@ public abstract class AnimationControlNode : ActionNode, IStateChangeListener
 
 }
 
+public class PlayAnimation : AnimationControlNode
+{
+    public string animName;
+    public List<string> chainAnimNames;
+    public float ratio = 0.1f;
+
+    private bool _hasStarted = false;
+    private int _currentChainIndex = 0;
+    private string _currentAnimName;
+
+    public override NodeStatus Execute(GameObject owner)
+    {
+        if (!Check(owner))
+            return NodeStatus.Failure;
+
+        if (monsterController.State == CreatureState.Idle)
+        {
+            ClearAnim();
+            return NodeStatus.Success;
+        }
+
+        if (!_hasStarted)
+        {
+            _currentAnimName = animName;
+            _currentChainIndex = 0;
+            _hasStarted = true;
+
+            Play(_currentAnimName);
+            return NodeStatus.Running;
+        }
+
+        if (monsterController._monsterType == MonsterType.Drone)
+            Debug.Log($"{monsterController.State}");
+
+        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.IsName(_currentAnimName))
+        {
+            if (stateInfo.normalizedTime >= 0.95f)
+            {
+                if (chainAnimNames == null)
+                    return NodeStatus.Running;
+
+                if (_currentChainIndex < chainAnimNames.Count)
+                {
+                    _currentAnimName = chainAnimNames[_currentChainIndex];
+                    _currentChainIndex++;
+
+                    Play(_currentAnimName);
+                    return NodeStatus.Running;
+                }
+            }
+        }
+        return NodeStatus.Running;
+    }
+
+    private void Play(string anim)
+     => _animator.CrossFadeInFixedTime(anim, ratio);
+
+    private void ClearAnim()
+    {
+        if (_animator == null) return;
+
+        _animator.CrossFadeInFixedTime(exitAnimName, ratio);
+        _currentAnimName = string.Empty;
+        _hasStarted = false;
+        _currentChainIndex = 0;
+    }
+    public override void HandleStateChange(CreatureState newState)
+    {
+        ClearAnim();
+    }
+}
+
+#region 조건 Anim
 // 애니메이션 재생 노드
 public class PlayAnimatorBoolNode : AnimationControlNode
 {
@@ -42,7 +119,7 @@ public class PlayAnimatorBoolNode : AnimationControlNode
     public string stateName;
     public override NodeStatus Execute(GameObject owner)
     {
-        if(Check(owner) == false)
+        if (Check(owner) == false)
             return NodeStatus.Failure;
 
         if (string.IsNullOrEmpty(paramName))
@@ -56,7 +133,7 @@ public class PlayAnimatorBoolNode : AnimationControlNode
             _animator.SetBool(paramName, false);
             return NodeStatus.Success;
         }
-       
+
         _animator.SetBool(paramName, true);
         return NodeStatus.Running;
     }
@@ -118,7 +195,7 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
     {
         if (Check(owner) == false)
             return NodeStatus.Failure;
-       
+
         if (_isSentEndPacket == false)
         {
             _isSentEndPacket = true;
@@ -129,10 +206,6 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
 
             return NodeStatus.Running;
         }
-
-        //if (_animator.GetCurrentAnimatorStateInfo(0).IsName(animationStateName) || _animator.IsInTransition(0))
-        //    return NodeStatus.Running;
-
         return NodeStatus.Running;
     }
 
@@ -151,3 +224,4 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
         }
     }
 }
+#endregion

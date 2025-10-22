@@ -47,23 +47,35 @@ public class MonsterController : CreatureController
         InitHpBar();
         Stat = Stat;
     }
-    //private List<Vector3> trailPoints = new List<Vector3>();
     protected override void UpdateController()
     {
+        if (MonsterType.Omega == _monsterType)
+            Debug.Log($"{transform.position}, {transform.localPosition}");
         transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
-       transform.rotation = transform.rotation;
+        transform.rotation = transform.rotation;
     }
-
+    public void De()
+    {
+        if (MonsterType.Omega == _monsterType)
+            Debug.Log($"Targeting Start : {transform.position}, {transform.localPosition}");
+    }
     public override void OnDamaged()
     {
     }
 
     public override void OnDead()
     {
-        // DEAD 주금
+        if (State != CreatureState.Dead)
+            State = CreatureState.Dead;
+        Hp = 0;
     }
 
     #region 패킷
+    public void OnDeadPacket(S_State packet)
+    {
+        _agent.ResetPath();
+        OnDead();
+    }
     public void OnIdlePacket(S_State packet)
     {
         if (_agent != null)
@@ -98,11 +110,10 @@ public class MonsterController : CreatureController
 
     public void OnRecvStatePacket(S_State packet)
     {
-        if(packet.MyState == CreatureState.Skill)
-            Debug.Log($" Monster 상태 : {packet.MyState}");
         State = packet.MyState;
         if(packet.TargetPosition != null)
             _targetPos = new Vector3(packet.TargetPosition.PosX, packet.TargetPosition.PosY, packet.TargetPosition.PosZ);
+        Debug.Log($"{State}");
 
         switch (State)
         {
@@ -116,6 +127,7 @@ public class MonsterController : CreatureController
                 OnSkillPacket(packet);
                 break;
             case CreatureState.Dead:
+                OnDeadPacket(packet);
                 break;
         }
     }

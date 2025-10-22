@@ -75,7 +75,7 @@ namespace Server.Game
         private void CalculateInitPath(Monster monster)
         {
             if (monster.ReturnToSpawn)
-                monster.Get_CalculatePath(monster.spawnPosition);
+                monster.Get_CalculatePath(monster._spawnPosition);
 
             else if (monster.Target is Creature target)
             {
@@ -128,7 +128,7 @@ namespace Server.Game
 
             if (monster.ReturnToSpawn)
             {
-                monster.Get_CalculatePath(monster.spawnPosition);
+                monster.Get_CalculatePath(monster._spawnPosition);
             }
             else if (monster.Target is Creature target)
             {

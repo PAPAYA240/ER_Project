@@ -1,4 +1,4 @@
-{
+  {
   "Name": "Root",
   "Type": "SequenceNode",
   "Children": [
@@ -15,10 +15,9 @@
       "Children": [
         {
           "Name": "Attack1",
-          "Type": "PlayAnimatorTriggerNode",
+          "Type": "PlayAnimation",
           "Properties": {
-            "triggerName": "tAttack01",
-            "animationStateName": "Monster_Alpha_atk01"
+            "animName": "ATTACK1"
           }
         },
         {

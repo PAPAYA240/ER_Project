@@ -3,11 +3,9 @@
   "Type": "SequenceNode",
   "Children": [
     {
-      // TODO : 곧 지울 예시 조건
-      "Name": "CheckWKey",
-      "Type": "IsKeyPressedNode",
+      "Name": "deadMonster",
+      "Type": "IsDead",
       "Properties": {
-        "skillId": "MsAttack2"
       }
     },
     {
@@ -15,15 +13,11 @@
       "Type": "ParallelNode",
       "Children": [
         {
-          "Name": "Attack2",
+          "Name": "Dead",
           "Type": "PlayAnimation",
           "Properties": {
-            "animName": "ATTACK2"
+            "animName": "DEAD"
           }
-        },
-        {
-          "Name": "Skill03_Effect",
-          "Type": "PlayEffectNode"
         }
       ]
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml.XPath;
 using Google.Protobuf.Protocol;
@@ -297,6 +298,7 @@ namespace Server.Data
         public string name;
         public StatInfo stat;
         public List<MonsterSkill> skills;
+        public float appearTime;
     }
 
     public class ProjectileInfo
@@ -308,14 +310,18 @@ namespace Server.Data
     }
 
     [Serializable]
-    public class MonsterDict : ILoader<string, MonsterData>
+    public class MonsterDict : ILoader<MonsterType, MonsterData>
     {
         public List<MonsterData> monsters = new List<MonsterData>();
-        public Dictionary<string, MonsterData> MakeDict()
+        public Dictionary<MonsterType, MonsterData> MakeDict()
         {
-            Dictionary<string, MonsterData> dict = new Dictionary<string, MonsterData>();
+            Dictionary<MonsterType, MonsterData> dict = new Dictionary<MonsterType, MonsterData>();
             foreach (MonsterData monster in monsters)
-                dict.Add(monster.name, monster);
+            {
+                MonsterType chartype = (MonsterType)Enum.Parse(typeof(MonsterType), monster.name);
+
+                dict.Add(chartype, monster); 
+            }
             return dict;
         }
     }

@@ -34,7 +34,6 @@ public class UI_TargetingMark : UI_Base
         }
 
         gameObject.SetActive(true);
-        Debug.Log($"Mark Show: {target.name}, Duration: {duration}초, Active: {gameObject.activeInHierarchy}");
 
         // 기존 코루틴들이 있으면 중지
         if (_lifetimeCoroutine != null)
@@ -80,8 +79,12 @@ public class UI_TargetingMark : UI_Base
     {
         while (gameObject.activeInHierarchy)
         {
-            transform.position = _target.transform.position + _offset;
-            yield return null;
+            MonsterController mc = _target.GetComponentInChildren<MonsterController>();
+            if(mc != null)
+                transform.position = mc.transform.position + _offset;
+            else
+                transform.position = transform.position + _offset;
+        yield return null;
         }
     }
 

@@ -23,6 +23,7 @@ namespace Server.Game
         public IMonsterState GetMovingState() { return new MovingState();  }
         public IMonsterState GetIdleState() { return new IdleState();  }
         public IMonsterState GetDeadState() { return new IdleState(); }
+        public IMonsterState GetAppearState() { return new AppearState(); }
 
         // 타겟을 찾은 경우
         public IMonsterState EvaluateTargetForNextState(Monster monster)

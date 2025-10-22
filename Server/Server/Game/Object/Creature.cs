@@ -6,15 +6,15 @@ namespace Server.Game
 {
     public class Creature : GameObject
     {
+        #region Astar Fields
         public Creature Target { get; set; }
-        public bool IsSkillAmplification { get; set; } = false;
 
         public List<Vector3> _path = new List<Vector3>();
         public int _pathIdx = 0;
+        #endregion 
+        public bool IsSkillAmplification { get; set; } = false;
 
-        protected virtual void IdleState() { }
-
-        #region AI
+        #region Astar
         public bool HasPath => _path != null && _path.Count > 0;
         // 1. 초반 경로 계산하는 부분
         // 움직이기 직전에 목표 위치를 전달해서 호출하면 됩니다.

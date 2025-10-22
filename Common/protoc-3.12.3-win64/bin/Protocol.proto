@@ -60,6 +60,7 @@ enum CreatureState{
   DEAD = 4;
   REST = 5;
   CHARGING = 6;
+  APPEAR = 7;
 }
 
 enum GameObjectType{

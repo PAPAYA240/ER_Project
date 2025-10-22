@@ -52,7 +52,7 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CAttackSkillTarget, MakePacket<C_AttackSkillTarget>);
 		_handler.Add((ushort)MsgId.CAttackSkillTarget, PacketHandler.C_AttackSkillTargetHandler);		
 		_onRecv.Add((ushort)MsgId.CTestDamage, MakePacket<C_TestDamage>);
-		_handler.Add((ushort)MsgId.CTestDamage, PacketHandler.C_TestDamageHandler);		
+		_handler.Add((ushort)MsgId.CTestDamage, PacketHandler.C_TestDamageHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

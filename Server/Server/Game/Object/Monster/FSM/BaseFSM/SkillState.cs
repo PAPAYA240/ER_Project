@@ -15,7 +15,7 @@ namespace Server.Game
 
         public void Enter(Monster monster)
         {
-            _skillData = monster.Get_DecideAndUseSkill();
+            _skillData = monster.CastRandomSkill();
             if (_skillData == null)
             {
                 monster.ChangeState(FSMManager.Instance.GetIdleState());
