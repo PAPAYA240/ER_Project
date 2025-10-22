@@ -8,6 +8,7 @@ using System.IO;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Numerics;
+using System.Linq;
 using static ISkillHandler;
 using static Lucene.Net.Index.SegmentReader;
 using static Lucene.Net.Util.AttributeSource;
@@ -53,8 +54,8 @@ namespace Server.Game
 
             _collisionManager.Init();
 
-            // NavMesh
-            //InitNavmeshPipeline();
+            // Skill Register
+            SkillRegistry.InitRegister();
         }
 
         public override void Update()
@@ -271,67 +272,6 @@ namespace Server.Game
             Broadcast(effect);
         }
 
-        public void HandleSkill(Player player, C_SkillInput skillPacket)
-        {
-            if (player == null)
-                return;
-
-            // 1) 스펙 로드
-            var key = (KeyCode)skillPacket.SkillKey;
-            SkillSpec spec = DataManager.SkillSpecDict[player.Info.Player.CharType][key];
-
-            // 2) 컨텍스트 구성(마우스 XZ/타겟)
-            var ctx = new SkillContext
-            {
-                MousePos = new Vector2(skillPacket.MouseX, skillPacket.MouseZ),
-                TargetId = 0, // 필요하면 패킷에 포함
-                Key = key,
-            };
-
-            // 3) 핸들러 결정
-            ISkillHandler handler = SkillRegistry.Resolve(player.Info.Player.CharType, key);
-
-            // 4) SkillState로 전환
-            player.ChangeState(new Player_SkillState(handler, spec, ctx));
-        }
-
-        public void HandleSkillCollision(Player player, C_SkillCollisionPropose skillPacket)
-        {
-            if (player == null)
-                return;
-
-            // 제안 변환
-            var prop = new SkillCollisionProposal
-            {
-                Seq = skillPacket.Seq,
-
-                EndBlocked = new Vector3(skillPacket.EndBlockedX, player.PosInfo.PosY, skillPacket.EndBlockedZ),
-                EndPass = new Vector3(skillPacket.EndPassX, player.PosInfo.PosY, skillPacket.EndPassZ),
-                BehindBlocked = new Vector3(skillPacket.BehindBlockedX, player.PosInfo.PosY, skillPacket.BehindBlockedZ),
-
-                CandidateTargetId = skillPacket.CandidateTargetId,
-                Speed = skillPacket.Speed
-            };
-
-            if (!(player.CurrentState is Player_SkillState skillState))
-            {
-                //if (!player.PendingProposal.Has || skillPacket.Seq > player.PendingProposal.Seq)
-                //{
-                    player.PendingProposal = new PendingSkillProposal
-                    {
-                        Has = true,
-                        SkillKey = skillPacket.SkillKey,
-                        Seq = skillPacket.Seq,
-                        Prop = prop
-                    };
-                //}
-                return;
-            }
-
-            // 스킬로 전달
-            skillState.Handler.OnPropose(player, prop);
-        }
-
         public void HandleAnim(Player player, C_Anim animPacket)
         {
             if (player == null)
@@ -445,7 +385,6 @@ namespace Server.Game
             return result;
         }
 
-
         void BroadcastVisibleObjs()
         {
             foreach (Player player in _players.Values)
@@ -531,25 +470,6 @@ namespace Server.Game
             clientSession.Send(spawnPacket);
 
             _dummyAdded = true;
-        }
-
-        public void InitNavmeshPipeline()
-        {
-            // 1) 클라에서 Export한 NavMesh JSON 불러오기        
-            NavmeshData nav = NavmeshImporter.LoadFromJson(_navmeshPath);
-
-            // 2) TriCache(전처리) 빌드
-            TriCache triCache = TriCacheBuilder.Build(nav);   // 아래 1-1 참고
-
-            // 3) Uniform Grid 가속구조 빌드
-            var accel = new UniformGridAccel(cell: 0.5f);     // 셀 크기 튜닝 포인트
-            accel.Build(triCache, nav.Min, nav.Max);
-
-            // 4) NavmeshService에 장착
-            NavmeshService.Instance.Init(triCache, accel);
-
-            // (선택) 버전 로그/검증
-            Console.WriteLine($"[Navmesh] loaded: {nav.Version}, tris={triCache.Tris.Length}");
         }
     }
 }

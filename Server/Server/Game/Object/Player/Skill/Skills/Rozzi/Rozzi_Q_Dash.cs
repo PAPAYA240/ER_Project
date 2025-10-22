@@ -7,17 +7,18 @@ using System.Numerics;
 using System.Text;
 using static Server.Data.DataUtils;
 
-public sealed class Rozzi_W : SkillHandlerBase
+public sealed class Rozzi_Q_Dash : SkillHandlerBase
 {
-    public Rozzi_W()
+    public Rozzi_Q_Dash()
     {
-        _animName = "SKILL_W";
-        _keyCode = KeyCode.W;
+        _animName = "SKILL_Q_Dash";
+        _keyCode = KeyCode.Q;
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
         base.OnEnter(p, ctx);
+        p.SendSkillConfirmPacket(ctx.Key, VariantKey.Followup);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -34,7 +35,7 @@ public sealed class Rozzi_W : SkillHandlerBase
             return;
 
         var from = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
-        var end = prop.EndPass;
+        var end = prop.EndBlocked;
 
         CommitMotionOnce(p, from, end);
 
@@ -51,7 +52,7 @@ public sealed class Rozzi_W : SkillHandlerBase
         _finalEnd = end;
 
         float dist = Vector3.Distance(from, end);
-        float speed = 4.0f;
+        float speed = /*spec.limits.speed*/4.0f;
         float duration = MathF.Max(0.05f, dist / speed);
 
         p.SendSkillMotion(

@@ -1,26 +1,33 @@
 ﻿using Google.Protobuf.Protocol;
+using Server.Data;
 using Server.Game;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using static ISkillHandler;
+using static Server.Data.DataUtils;
 
 public abstract class SkillHandlerBase : ISkillHandler
 {
-    public int                     LastSeq { get { return _lastSeq; } set { _lastSeq = value; } }
-    public SkillCollisionProposal  Latest { get { return _latest; } set { _latest = value; } }
+    public int                      LastSeq { get { return _lastSeq; } set { _lastSeq = value; } }
+    public SkillCollisionProposal   Latest { get { return _latest; } set { _latest = value; } }
 
     protected int _lastSeq;
     protected SkillCollisionProposal _latest;
     protected bool _committed;
     protected Vector3 _finalEnd;
+    protected string _animName;
+    protected KeyCode _keyCode;
 
-    public virtual void OnEnter(Player p, SkillSpec spec, SkillContext ctx)
+    public virtual void OnEnter(Player p, SkillContext ctx)
     {
         LastSeq = 0;
         Latest = default;
         _committed = false;
+
+        // 애니메이션 패킷 전송
+        p.SendAnimPacket(_animName, 0.05f);
 
         // 이동 잠금
         p.SendStopPacket(StopReason.StopMoveOnly); 
@@ -35,7 +42,7 @@ public abstract class SkillHandlerBase : ISkillHandler
         //_deadline = DateTime.UtcNow.AddMilliseconds(150); // 짧게만 기다림(네트워크 품질에 맞춰 조절)
     }
 
-    public virtual void OnExit(Player p, SkillSpec spec, SkillContext ctx)
+    public virtual void OnExit(Player p, SkillContext ctx)
     {
         // 최종 보정 1회
         p.PosInfo.PosX = _finalEnd.X;
@@ -45,12 +52,12 @@ public abstract class SkillHandlerBase : ISkillHandler
         p.Flags.IsInSkillMotion = false;
     }
 
-    public virtual void OnHit(Player p, SkillSpec spec, SkillContext ctx)
+    public virtual void OnHit(Player p, SkillContext ctx)
     {
         throw new NotImplementedException();
     }
 
-    public virtual void OnTick(Player p, SkillSpec spec, SkillContext ctx)
+    public virtual void OnTick(Player p, SkillContext ctx)
     {
         throw new NotImplementedException();
     }
@@ -67,7 +74,22 @@ public abstract class SkillHandlerBase : ISkillHandler
         Latest = prop;
     }
 
+    public virtual bool CanCast(Player p, SkillContext ctx)
+    {
+        return true;
+    }
+
     #region Utils
+    public float GetDuration(CharacterType charType)
+    {
+        return DataManager.AnimLengthInfoDict[charType][_animName].Length;
+    }
+
+    public KeyCode GetKeyCode()
+    {
+        return _keyCode;
+    }
+
     // Tick 등에서 소비(가져가면 플래그 리셋)
     protected bool TryConsumeLatest(out SkillCollisionProposal prop)
     {

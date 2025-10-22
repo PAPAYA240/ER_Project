@@ -28,6 +28,16 @@ public class SkillLimits
     public float speed;
 }
 
+[Serializable]
+public class SkillVariants
+{
+    // 없는 건 null 허용
+    public SkillSpec cast;
+    public SkillSpec followup;
+
+    public bool IsEmpty => cast == null && followup == null;
+}
+
 public sealed class MoveSpec
 {
     public float Distance = 0f;         // 대쉬 등

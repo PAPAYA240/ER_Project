@@ -109,30 +109,47 @@ namespace Server.Data
     }
 
     [Serializable]
-    public class SkillSpecData : ILoader<CharacterType, Dictionary<KeyCode, SkillSpec>>
+    public class SkillSpecData : ILoader<CharacterType, Dictionary<KeyCode, SkillVariants>>
     {
-        public Dictionary<string, Dictionary<string, SkillSpec>> characters = new Dictionary<string, Dictionary<string, SkillSpec>>();
+        public Dictionary<string, Dictionary<string, SkillVariantsWrapper>> characters =
+        new Dictionary<string, Dictionary<string, SkillVariantsWrapper>>();
 
-        public Dictionary<CharacterType, Dictionary<KeyCode, SkillSpec>> MakeDict()
+        [Serializable]
+        public class SkillVariantsWrapper
         {
-            var nestedDict = new Dictionary<CharacterType, Dictionary<KeyCode, SkillSpec>>();
+            public SkillVariants variants = new SkillVariants();
+        }
 
-            foreach (var chars in characters)
+        public Dictionary<CharacterType, Dictionary<KeyCode, SkillVariants>> MakeDict()
+        {
+            var result = new Dictionary<CharacterType, Dictionary<KeyCode, SkillVariants>>();
+
+            foreach (var ch in characters)
             {
-                CharacterType chartype = (CharacterType)Enum.Parse(typeof(CharacterType), chars.Key);
+                if (!Enum.TryParse(ch.Key, true, out CharacterType ctype))
+                    continue;
 
-                var dict = new Dictionary<KeyCode, SkillSpec>();
-                foreach (var skills in chars.Value)
+                var perChar = new Dictionary<KeyCode, SkillVariants>();
+
+                foreach (var sk in ch.Value)
                 {
-                    KeyCode keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), skills.Key);
+                    if (!Enum.TryParse(sk.Key, true, out KeyCode kcode))
+                        continue;
 
-                    dict.Add(keyCode, skills.Value);
+                    var wrap = sk.Value;
+                    var v = wrap?.variants ?? new SkillVariants();
+
+                    // 비워두면 “이 스킬은 서버 허가/충돌제안 흐름 없음”으로 간주
+                    // 필요하다면 아래처럼 아예 사전에 넣지 않는 것도 가능:
+                    if (v.IsEmpty) continue;
+
+                    perChar[kcode] = v;
                 }
 
-                nestedDict.Add(chartype, dict);
+                result[ctype] = perChar;
             }
 
-            return nestedDict;
+            return result;
         }
     }
 
@@ -410,6 +427,78 @@ namespace Server.Data
         {
             return respawn;
         }
+    }
+    #endregion
+
+    #region Animation
+    public sealed class AnimationInfosData : ILoader<CharacterType, Dictionary<string, AnimLengthInfo>>
+    {
+        public int version;
+        public List<CharacterDTO> characters;
+
+        public Dictionary<CharacterType, Dictionary<string, AnimLengthInfo>> MakeDict()
+        {
+            var result = new Dictionary<CharacterType, Dictionary<string, AnimLengthInfo>>();
+
+            if (characters == null)
+                return result;
+
+            foreach (var ch in characters)
+            {
+                if (!Enum.TryParse(ch.character, ignoreCase: true, out CharacterType ct))
+                    continue;
+
+                var map = new Dictionary<string, AnimLengthInfo>(StringComparer.OrdinalIgnoreCase); // key: animName
+
+                if (ch.clips != null)
+                {
+                    foreach (var c in ch.clips)
+                    {
+                        if (string.IsNullOrEmpty(c.animName))
+                            continue;
+
+                        map[c.animName] = new AnimLengthInfo
+                        {
+                            Clip = c.clip,
+                            AnimName = c.animName,
+                            Length = (float)c.length,
+                            FrameRate = c.frameRate,
+                            Samples = c.samples,
+                        };
+                    }
+                }
+
+                result[ct] = map;
+            }
+
+            return result;
+        }
+    }
+
+    public sealed class CharacterDTO
+    {
+        public string character;
+        public string controller;
+        public List<ClipDTO> clips;
+    }
+
+    public sealed class ClipDTO
+    {
+        public string clip;
+        public double length;
+        public float frameRate;
+        public int samples;
+        public string animName;
+    }
+
+    [Serializable]
+    public class AnimLengthInfo
+    {
+        public string Clip;        // 원본 클립 이름
+        public string AnimName;    // Animator 상태/별칭(클라와 매칭)
+        public float Length;       // 초 단위
+        public float FrameRate;
+        public int Samples;
     }
     #endregion
 }

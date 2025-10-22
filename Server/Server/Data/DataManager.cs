@@ -24,13 +24,15 @@ namespace Server.Data
         public static Dictionary<CharacterType, Dictionary<KeyCode, SkillHitbox>> SkillHitboxDict { get; private set; } =
             new Dictionary<CharacterType, Dictionary<KeyCode, SkillHitbox>>();
 
-        public static Dictionary<CharacterType, Dictionary<KeyCode, SkillSpec>> SkillSpecDict { get; private set; }
-            = new Dictionary<CharacterType, Dictionary<KeyCode, SkillSpec>>();
+        public static Dictionary<CharacterType, Dictionary<KeyCode, SkillVariants>> SkillSpecDict { get; private set; }
+            = new Dictionary<CharacterType, Dictionary<KeyCode, SkillVariants>>();
 
         public static Dictionary<Weapon, WeaponInfo> WeaponDict { get; private set; } = new Dictionary<Weapon, WeaponInfo>();
 
         public static Dictionary<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>> WeaponMasteryDict { get; private set; }
             = new Dictionary<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>();
+
+        public static Dictionary<CharacterType, Dictionary<string, AnimLengthInfo>> AnimLengthInfoDict { get; private set; } = new Dictionary<CharacterType, Dictionary<string, AnimLengthInfo>>();
 
         public static Dictionary<string, MonsterData> MonsterDict { get; private set; } = new Dictionary<string, MonsterData>();
         public static Dictionary<MonsterSkill, MonsterSkillData> MonsterSkillDict { get; private set; } = new Dictionary<MonsterSkill, MonsterSkillData>();
@@ -45,11 +47,12 @@ namespace Server.Data
             StatDict = LoadJson<Data.StatData, CharacterType, StatInfo>("StatData", "player").MakeDict();
             ExpDict = LoadJson<Data.ExpData, int, int>("ExpData", "player").MakeDict();
             SkillDict = LoadJson<Data.GameData, CharacterType, Dictionary<KeyCode, SkillData>>("newSkillData", "player").MakeDict();
-            SkillSpecDict = LoadJson<Data.SkillSpecData, CharacterType, Dictionary<KeyCode, SkillSpec>>("SkillSpecData", "player").MakeDict();
+            SkillSpecDict = LoadJson<Data.SkillSpecData, CharacterType, Dictionary<KeyCode, SkillVariants>>("SkillSpecData", "player").MakeDict();
             SkillHitboxDict = LoadJson<Data.HitboxData, CharacterType, Dictionary<KeyCode, SkillHitbox>>("HitboxData", "player").MakeDict();
             StatGrowthDict = LoadJson<Data.StatGrowthData, CharacterType, StatInfo>("StatGrowthData", "player").MakeDict();
             WeaponDict = LoadJson<Data.WeaponData, Weapon, WeaponInfo>("WeaponData", "player").MakeDict();
             WeaponMasteryDict = LoadJson<Data.WeaponMasteryData, CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>("WeaponMasteryData", "player").MakeDict();
+            AnimLengthInfoDict = LoadJson<Data.AnimationInfosData, CharacterType, Dictionary<string, AnimLengthInfo>>("AnimationInfos", "player").MakeDict();
 
             // For MonsterData
             MonsterDict = LoadJson<Data.MonsterDict, string, Data.MonsterData>("MonsterData/MonsterData", "monster").MakeDict();

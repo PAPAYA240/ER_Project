@@ -1,8 +1,10 @@
-﻿using Server.Game;
+﻿using Google.Protobuf.Protocol;
+using Server.Game;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
+using static Server.Data.DataUtils;
 
 public struct SkillCollisionProposal
 {
@@ -20,17 +22,25 @@ public struct SkillCollisionProposal
 public interface ISkillHandler
 {
     // 상태 진입
-    void OnEnter(Player p, SkillSpec spec, SkillContext ctx);
+    void OnEnter(Player p, SkillContext ctx);
 
     // 타격 타이밍(예: tHit)
-    void OnHit(Player p, SkillSpec spec, SkillContext ctx);
+    void OnHit(Player p, SkillContext ctx);
 
     // 매 틱(Streaming 필요 시만 Player_SkillState에서 호출)
-    void OnTick(Player p, SkillSpec spec, SkillContext ctx);
+    void OnTick(Player p, SkillContext ctx);
 
     // 클라에서 제안 패킷 도착 시 호출
     void OnPropose(Player p, in SkillCollisionProposal prop);
 
     // 상태 종료
-    void OnExit(Player p, SkillSpec spec, SkillContext ctx);
+    void OnExit(Player p, SkillContext ctx);
+
+    bool CanCast(Player p, SkillContext ctx);
+
+    #region Utils
+    float GetDuration(CharacterType type);
+
+    KeyCode GetKeyCode();
+    #endregion
 }

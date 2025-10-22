@@ -5,62 +5,48 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
+using static Server.Data.DataUtils;
 
 public sealed class Rozzi_Q : SkillHandlerBase
 {
-    public override void OnEnter(Player p, SkillSpec spec, SkillContext ctx)
+    public Rozzi_Q()
     {
-        base.OnEnter(p, spec, ctx);
-
-        p.SendAnimPacket("ROZZI_Q", 0.05f);         // 애니 브로드캐스트
-                                                    // TODO: 코스트/쿨타임 차감
+        _animName = "SKILL_Q";
+        _keyCode = KeyCode.Q;
     }
 
-    public override void OnHit(Player p, SkillSpec spec, SkillContext ctx)
+    public override void OnEnter(Player p, SkillContext ctx)
+    {
+        base.OnEnter(p, ctx);
+        // TODO: 코스트/쿨타임 차감
+
+        p.SendSkillConfirmPacket(ctx.Key, VariantKey.NoCollision);
+    }
+
+    public override void OnHit(Player p, SkillContext ctx)
     {
         return;
     }
 
-    public override void OnTick(Player p, SkillSpec spec, SkillContext ctx)
+    public override void OnTick(Player p, SkillContext ctx)
     {
-        if (_committed)
-            return;
-
-        if (!TryConsumeLatest(out var prop))
-            return;
-
-        var from = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
-        var end = prop.EndBlocked;
-
-        CommitMotionOnce(p, spec, from, end);
-
-        _committed = true;
+        return;
     }
 
-    public override void OnExit(Player p, SkillSpec spec, SkillContext ctx)
+    public override void OnExit(Player p, SkillContext ctx)
     {
-        base.OnExit(p, spec, ctx);
-    }
+        base.OnExit(p, ctx);
 
-    private void CommitMotionOnce(Player p, SkillSpec spec, Vector3 from, Vector3 end)
-    {
-        _finalEnd = end;
-
-        float dist = Vector3.Distance(from, end);
-        float speed = spec.limits.speed;
-        float duration = MathF.Max(0.05f, dist / speed);
-
-        p.SendSkillMotion(
-             type: SkillMotionType.Dash,
-             start: from,
-             end: _finalEnd,
-             duration: duration,
-             anim: ""/*spec.AnimName*/,
-             curveId: "EaseOutCubic",
-             serverCollision: true,
-             authoritativeEnd: true);
-
-        p.Flags.IsInSkillMotion = true;
+        p.Tokens.Add(new NextInputToken
+        {
+            Active = true,
+            RemainingUses = 1,
+            ExpireUtc = TimeUtil.UtcSec() + 3.0,
+            Priority = 10,
+            Trigger = InputKind.Move,
+            ReplacementSkillKey = "Rozzi_Q_Dash",
+            CancelOnUseSkill = true
+        });
     }
 }
 
