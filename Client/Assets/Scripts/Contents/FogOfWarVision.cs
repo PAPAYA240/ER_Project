@@ -6,9 +6,9 @@ using UnityEngine.AI;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class FogOfWarVision : MonoBehaviour
 {
-    public int _rayCount = 200;          // ���� ���� (360���� ���� ����)
-    public float _viewDistance = 12f;     // �þ� �Ÿ�
-    public LayerMask _obstacleMask;      // ��/��ֹ� ���̾�
+    public int _rayCount = 200;          // 레이 개수
+    public float _viewDistance = 12f;     // 시야 거리
+    public LayerMask _obstacleMask;      // 구조물 마스크
 
     Mesh _mesh;
     Vector3 _origin;
@@ -24,10 +24,10 @@ public class FogOfWarVision : MonoBehaviour
         _mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = _mesh;
         _origin = transform.position;
-        Material _mat = GetComponent<MeshRenderer>().material;
+        GetComponent<MeshRenderer>().material = Managers.Resource.Load<Material>("Material/FogMesh");
 
-        Color whiteTransparent = new Color(1f, 1f, 1f, 1f); 
-        _mat.color = whiteTransparent;
+        //Color whiteTransparent = new Color(1f, 1f, 1f, 1f); 
+        //_mat.color = whiteTransparent;
     }
     public void SetVisionVisible(bool isVisible)
     {
@@ -50,26 +50,24 @@ public class FogOfWarVision : MonoBehaviour
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
 
-        vertices.Add(Vector3.zero); // �߽���(�÷��̾� ��ġ)
+        vertices.Add(Vector3.zero); // 원점 추가
 
         for (int i = 0; i <= _rayCount; i++)
         {
             Vector3 dir = DirFromAngle(angle);
             Vector3 vertex;
 
-            // Raycast�� �þ� ���� üũ
-            //nMA.Raycast(/*����ġ, Ÿ����ġ,�ƿ� ��Ʈ, �׺�޽��� �� ������*/);
             if (NavMesh.Raycast(_origin, _origin + dir * _viewDistance, out NavMeshHit hit, NavMesh.AllAreas))
                 vertex = hit.position;
             else
                 vertex = _origin + dir * _viewDistance;
 
-            // ���� ��ǥ ��ȯ
+            // 레이캐스팅 후 나온 위치에 정점 추가
             vertices.Add(transform.InverseTransformPoint(vertex));
 
             if (i > 0)
             {
-                // �ﰢ��(�÷��̾�, ������, ������)
+                // 삼각형 추가
                 triangles.Add(0);
                 triangles.Add(i);
                 triangles.Add(i + 1);

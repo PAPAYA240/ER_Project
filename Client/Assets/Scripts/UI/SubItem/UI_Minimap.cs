@@ -33,7 +33,8 @@ public class UI_Minimap : UI_Base
         CharIcon_4,
         CharIcon_5,
         CharIcon_6,
-        CharIcon_7
+        CharIcon_7,
+        RawImage
     }
 
     int _charNum = 0;
@@ -62,8 +63,33 @@ public class UI_Minimap : UI_Base
         //GetImage((int)Images.Fog).material
 
         Image img = GetImage((int)Images.Fog);
-        Texture texture = GameObject.Find("FogCamera").GetComponent<FogCameraController>().FogTexture;
-        img.material.SetTexture("_VisionMask", texture);
+        GameObject cam = GameObject.Find("FogCamera");
+        if (null == cam)
+        {
+
+            Debug.Log("@Cam == null");
+            return; 
+        }
+
+        FogCameraController fcc = cam.GetComponent<FogCameraController>();
+        if (null == fcc)
+        {
+
+            Debug.Log("@fcc == null");
+            return;
+        }
+
+        Texture texture = fcc.FogTexture;
+        Material newMat = Material.Instantiate(img.material);
+
+        if(null != newMat)
+        {
+            Debug.Log("@Success to instantiate material");
+            img.material = newMat;
+            newMat.SetTexture("_VisionMask", texture);
+        }
+
+        GetObject((int)GameObjects.RawImage).GetComponent<RawImage>().texture = texture;
     }
 
     void Update()

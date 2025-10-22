@@ -43,6 +43,11 @@ public class FogCameraController : MonoBehaviour
 
     private void OnDestroy()
     {
-        FogTexture.Release();
+        if (FogTexture != null)
+        {
+            FogTexture.Release();
+            Destroy(FogTexture);
+            FogTexture = null;
+        }
     }
 }

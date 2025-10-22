@@ -82,9 +82,13 @@ public class ObjectManager
             pc.ManualInit();
 
             if (MyPlayer.ObjInfo.Player.Team != pc.ObjInfo.Player.Team)
+            {
                 go.gameObject.AddComponent<HighlightEffect>();
+                Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.EnemyPlayer, pc);
+            }
+            else
+                Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.TeamPlayer, pc);
 
-            Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.TeamPlayer, pc);
         }
     }
     private void AddMonster(ObjectInfo info)
