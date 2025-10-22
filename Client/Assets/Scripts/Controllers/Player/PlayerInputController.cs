@@ -51,6 +51,9 @@ public class PlayerInputController : MonoBehaviour
             if (!Input.GetMouseButton(1))
                 return null;
 
+            if (_skill.IsInSkillMotion)
+                return null;
+
             GameObject target = GetAttackableUnderCursor();
             if (target == null)
             {

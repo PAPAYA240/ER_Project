@@ -35,24 +35,6 @@ namespace Server.Game
             set { _isDeath = value; }
         }
 
-        public MoveIntent Intent { get; } = new MoveIntent();
-        public sealed class MoveIntent
-        {
-            public bool Has;
-            public C_Move Packet;
-
-            public void Set(C_Move packet) { Has = true; Packet = packet; }
-            public bool TryConsume(out C_Move packet)
-            {
-                if (Has)
-                { packet = Packet; Has = false; return true; }
-                packet = default;
-                return false;
-            }
-            public void Clear() { Has = false; }
-        }
-        public void EnqueueMove(C_Move packet) => Intent.Set(packet);
-
         public PendingSkillProposal PendingProposal;
         public struct PendingSkillProposal
         {
@@ -131,6 +113,8 @@ namespace Server.Game
             }
 
             //base.Update();
+            
+            TickTokens(); // 토큰 만료/갱신
             _stateMachine.Update(this);
             CheckUpdateStat();
         }

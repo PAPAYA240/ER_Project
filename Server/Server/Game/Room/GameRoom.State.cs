@@ -32,103 +32,85 @@ namespace Server.Game
         // 우클릭 유지로 들어온 이동 의도
         public void HandleSetMoveTarget(Player player, C_SetMoveTarget pkt)
         {
-            if (player == null)
-                return;
-            if (player.IsDead)
+            if (player == null || pkt == null)
                 return;
 
+            // 1) 타겟 검증 → 지형 이동 정규화
+            if (!pkt.IsGround)
+            {
+                GameObject tar = player.FindTarget(pkt.TargetId);
+                bool attackable = (tar != null) && IsEnemy(player, tar) && tar.State != CreatureState.Dead;
+                if (!attackable)
+                {
+                    pkt.IsGround = true;
+                    pkt.TargetId = 0;
+                    if (pkt.TargetPos == null)
+                    {
+                        pkt.TargetPos = new PositionInfo
+                        {
+                            PosX = player.PosInfo.PosX,
+                            PosY = player.PosInfo.PosY,
+                            PosZ = player.PosInfo.PosZ
+                        };
+                    }
+                }
+            }
+
+            // 2) 치환 토큰: post-move Enqueue + 스킬 캐스트되면 종료
             if (TryHandleMoveWithTokens(player, pkt))
                 return;
 
-            // 스킬 중이면: 지금 당장 이동시키지 말고 '의도'로 저장
-            if (player.State == CreatureState.Skill)
-            {
-                var move = new C_Move();
+            // 3) pkt → C_Move 정규화
+            var move = new C_Move();
 
-                if (pkt.IsGround)   // TEMP : C_Move
+            if (pkt.IsGround)
+            {
+                move.IsTargetOn = false;
+                move.TargetId = 0;
+                move.TargetPosition = pkt.TargetPos ?? new PositionInfo
                 {
-                    // 땅 지정 이동
-                    move = new C_Move
+                    PosX = player.PosInfo.PosX,
+                    PosY = player.PosInfo.PosY,
+                    PosZ = player.PosInfo.PosZ
+                };
+            }
+            else
+            {
+                move.IsTargetOn = true;
+                move.TargetId = pkt.TargetId;
+
+                var tar = player.FindTarget(pkt.TargetId);
+                if (tar != null)
+                {
+                    move.TargetPosition = new PositionInfo
                     {
-                        IsTargetOn = false,
-                        TargetId = 0,
-                        TargetPosition = pkt.TargetPos
+                        PosX = tar.PosInfo.PosX,
+                        PosY = tar.PosInfo.PosY,
+                        PosZ = tar.PosInfo.PosZ
                     };
                 }
                 else
                 {
-                    // 타겟팅 지정 이동(그 타겟만 고수)
-                    var target = player.FindTarget(pkt.TargetId);
-                    if (target == null)
-                        return;
-
-                    move = new C_Move
+                    // 안전 보강
+                    move.TargetPosition = new PositionInfo
                     {
-                        IsTargetOn = true,
-                        TargetId = pkt.TargetId,
-                        TargetPosition = new PositionInfo
-                        {
-                            PosX = target.PosInfo.PosX,
-                            PosY = target.PosInfo.PosY,
-                            PosZ = target.PosInfo.PosZ
-                        }
+                        PosX = player.PosInfo.PosX,
+                        PosY = player.PosInfo.PosY,
+                        PosZ = player.PosInfo.PosZ
                     };
                 }
+            }
 
-                player.EnqueueMove(move);
+            // 4) 이미 이동 중이면 상태 유지 + 목표지만 갱신
+            //    (상태 재전환/애니메이션 재생/경로 초기화 튐 방지)
+            if (player.CurrentState is IReceivesMoveCommand moving)
+            {
+                moving.OnMoveCommand(player, move);
                 return;
             }
 
-            if (pkt.IsGround)   // TEMP : C_Move
-            {
-                // 땅 지정 이동
-                var move = new C_Move
-                {
-                    IsTargetOn = false,
-                    TargetId = 0,
-                    TargetPosition = pkt.TargetPos
-                };
-
-                // 이미 이동 중이면 상태 유지 + 목표지만 갱신
-                if (player.CurrentState is IReceivesMoveCommand moving)
-                {
-                    moving.OnMoveCommand(player, move);
-                    return;
-                }
-
-                player.ChangeState(new Player_MovingState(move));
-            }
-            else
-            {
-                // 타겟팅 지정 이동(그 타겟만 고수)
-                var target = player.FindTarget(pkt.TargetId);
-                if (target == null)
-                {
-                    player.ChangeState(new Player_IdleState());
-                    return;
-                }
-
-                var move = new C_Move
-                {
-                    IsTargetOn = true,
-                    TargetId = pkt.TargetId,
-                    TargetPosition = new PositionInfo
-                    {
-                        PosX = target.PosInfo.PosX,
-                        PosY = target.PosInfo.PosY,
-                        PosZ = target.PosInfo.PosZ
-                    }
-                };
-
-                // 이미 이동 중이면 상태 유지 + 목표지만 갱신
-                if (player.CurrentState is IReceivesMoveCommand moving)
-                {
-                    moving.OnMoveCommand(player, move);
-                    return;
-                }
-
-                player.ChangeState(new Player_MovingState(move));
-            }
+            // 5) 그 외에는 새로 Moving으로 진입
+            player.ChangeState(new Player_MovingState(move));
         }
 
         public void HandleSkill(Player player, C_SkillInput skillPacket)
@@ -228,33 +210,39 @@ namespace Server.Game
         }
 
         bool TryHandleMoveWithTokens(Player p, C_SetMoveTarget req)
-        {
-            var tok = p.Tokens.Where(t => t.Active && t.Trigger == InputKind.Move)
-                              .OrderByDescending(t => t.Priority).FirstOrDefault();
+        {           
+            if (p == null || req == null)
+                return false;
+
+            // 1) 유효한 토큰 고르기 (만료/잔여수 포함)
+            var tok = p.Tokens
+                .Where(t => t.Active
+                            && t.Trigger == InputKind.Move
+                            && t.RemainingUses > 0
+                            && TimeUtil.UtcSec() <= t.ExpireUtc)
+                .OrderByDescending(t => t.Priority)
+                .FirstOrDefault();
+
             if (tok == null)
                 return false;
 
-            // 치환 스킬 생성
+            // 2) 치환 스킬 캐스트
             var skill = SkillRegistry.Create(tok.ReplacementSkillKey);
             if (skill == null)
                 return false;
 
-            // 컨텍스트 구성(이동 입력을 스킬 입력으로 전환)
             var ctx = new SkillContext
             {
                 Key = skill.GetKeyCode(),
-                MousePos = new Vector2(req.TargetPos.PosX, req.TargetPos.PosZ), 
+                MousePos = new Vector2(req.TargetPos.PosX, req.TargetPos.PosZ),
             };
-
-            // 서버 스펙 로딩
-            //var spec = ServerSkillSpecs.Get(p.Character, tok.ReplacementSkillKey);
-            //SkillSpec spec = DataManager.SkillSpecDict[p.Info.Player.CharType][key];
 
             if (!skill.CanCast(p, ctx))
                 return false;
 
-            // 일반 이동 로직은 건너뛰고 "스킬 캐스트"로 처리
             p.ChangeState(new Player_SkillState(skill, ctx));
+
+            // 3) 토큰 소모/비활성
             tok.RemainingUses--;
             if (tok.RemainingUses <= 0)
                 tok.Active = false;
@@ -293,7 +281,7 @@ namespace Server.Game
                 return false;
             if (other.State == CreatureState.Dead)
                 return false;
-            if (me.Team == other.Team)
+            if (other.ObjectType == GameObjectType.Player && me.Team == other.Team)
                 return false;   
 
             return true; 
