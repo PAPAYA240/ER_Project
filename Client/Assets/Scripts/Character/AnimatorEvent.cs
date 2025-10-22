@@ -26,12 +26,12 @@ public class AnimatorEvent : MonoBehaviour
         Debug.Log("(Animation Event)");
     }
 
-    public void OnAttackTiming()
+    public void OnProjectile()
     {
         if (_controller == null)
             return;
 
-        _controller.OnAttackTiming();
+        _controller.OnProjectile();
     }
 
     //public void OnAttackEnd()

@@ -3,30 +3,6 @@
   "Type": "SequenceNode",
   "Children": [
     {
-      "Name": "OnceOnlySpawn",
-      "Type": "SequenceNode",
-      "Children": [
-        {
-          "Name": "CheckIfSpawned",
-          "Type": "IsSpawnedCheckNode"
-        },
-        {
-          "Name": "SpawnActions",
-          "Type": "SequenceNode",
-          "Children": [
-            {
-              "Name": "PlayAnimatorBoolNode",
-              "Type": "PlayAnimatorBoolNode",
-              "Properties": {
-                "paramName": "bAppear",
-                "stateName": "Autobot_01_appear"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
       "Name": "AttackSequence",
       "Type": "SequenceNode",
       "Children": [

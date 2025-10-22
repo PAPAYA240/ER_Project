@@ -265,7 +265,6 @@ public class TheodoreController : MyPlayerController
 
         return Vector3.zero;
     }
-
     public override void OnAttackTiming()
     {
         // 평타
@@ -275,15 +274,15 @@ public class TheodoreController : MyPlayerController
             PlayEffectTransform(CreatureState.Skill, KeyCode.Z, EffectType.Caster, null, childTransform.transform);
         }
         // 스킬
-        else if (State == CreatureState.Skill)
-        {
-            switch (_keyCode)
-            {
-                case KeyCode.E:
-                    SpawnProjectile();
-                    return;
-            }
-        }
+        //else if (State == CreatureState.Skill)
+        //{
+        //    switch (_keyCode)
+        //    {
+        //        case KeyCode.E:
+        //            SpawnProjectile();
+        //            return;
+        //    }
+        //}
     }
     public override void PlayEffectFromServer(EffectInfo fxInfo)
     {

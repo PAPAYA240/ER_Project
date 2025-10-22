@@ -433,7 +433,7 @@ public class PlayerController : CreatureController
     #endregion
 
 
-    public void SpawnProjectile()
+    public void OnProjectile()
     {
         _projectile.SetActive(true);
 

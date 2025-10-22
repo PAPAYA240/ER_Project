@@ -84,6 +84,7 @@ public class UI_TargetingMark : UI_Base
                 transform.position = mc.transform.position + _offset;
             else
                 transform.position = transform.position + _offset;
+
         yield return null;
         }
     }
