@@ -225,8 +225,6 @@ class PacketHandler
                 GameObject target = Managers.Object.FindById(interactPacket.TargetId); // 공격한 타겟
 
                 MonsterController mc = target.GetComponentInChildren<MonsterController>();
-                if(mc != null)
-                    mc.De();
                 creature.OnObjectCollision(target, mkey);
             }
         }

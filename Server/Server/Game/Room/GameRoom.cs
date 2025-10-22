@@ -71,7 +71,6 @@ namespace Server.Game
             else
             {
                 // 지속 시간이 정의되지 않은 페이즈 (수동 전환 필요)
-                Console.WriteLine($"Error Occured : ChangePhase");
                 _phaseTransitionTimer?.Dispose(); // 혹시 모를 이전 타이머 정리
             }
 

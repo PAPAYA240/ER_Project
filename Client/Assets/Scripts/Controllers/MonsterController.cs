@@ -7,9 +7,6 @@ public class MonsterController : CreatureController
 {
     private System.Random _random = new System.Random();
     
-    // 패킷
-    private int _lastReceivedSequenceId = -1;
-
     // 몬스터 정보
     public MonsterSkill Skill { get;  set; }
     public MonsterType _monsterType;
@@ -49,15 +46,8 @@ public class MonsterController : CreatureController
     }
     protected override void UpdateController()
     {
-        if (MonsterType.Omega == _monsterType)
-            Debug.Log($"{transform.position}, {transform.localPosition}");
         transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
         transform.rotation = transform.rotation;
-    }
-    public void De()
-    {
-        if (MonsterType.Omega == _monsterType)
-            Debug.Log($"Targeting Start : {transform.position}, {transform.localPosition}");
     }
     public override void OnDamaged()
     {

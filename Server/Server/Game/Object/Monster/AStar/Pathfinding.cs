@@ -57,10 +57,7 @@ namespace Server.Game
 
             _navMeshData = NavMeshExportData.LoadFromJson(navMeshFilePath);
             if (_navMeshData == null)
-            {
-                Console.WriteLine("실패");
                 return;
-            }
 
             BuildTriangleGraph();
             Console.WriteLine($"NavMesh : {_triangleNodes.Count}");
