@@ -136,9 +136,7 @@ public class PlayerController : CreatureController
 
     public void ChangeState(S_PlayerState packet)
     {
-        Debug.Log($"Cur : {State}, Next : {packet.State}");
         State = packet.State;
-
     }
 
     #region Util
@@ -366,11 +364,11 @@ public class PlayerController : CreatureController
     #endregion
 
     #region State:Dead
-    public virtual void OnRespawn(S_Respawn respawnPacket)
-    {
-        Hp = respawnPacket.Hp;
-        Stamina = respawnPacket.Stamina;
-    }
+    //public virtual void OnRespawn(S_Respawn respawnPacket)
+    //{
+    //    //Hp = respawnPacket.Hp;
+    //    //Stamina = respawnPacket.Stamina;
+    //}
     #endregion
 
     public void SpawnProjectile()

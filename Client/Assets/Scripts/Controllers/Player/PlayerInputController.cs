@@ -114,7 +114,11 @@ public class PlayerInputController : MonoBehaviour
             if (!Input.GetMouseButtonDown(1))
                 return null;
 
-            return new C_Attack { TargetId = GetAttackableUnderCursorID() };
+            int id = GetAttackableUnderCursorID();
+            if (id == 0)
+                return null;
+
+            return new C_Attack { TargetId = id };
         }
 
         return null;

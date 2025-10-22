@@ -624,36 +624,36 @@ public class MyPlayerController_Prev : PlayerController
         ResetCharacterState();
     }
 
-    public override void OnRespawn(S_Respawn respawnPacket)
-    {
-        Vector3 pos = new Vector3
-        {
-            x = respawnPacket.PosInfo.PosX,
-            y = respawnPacket.PosInfo.PosY,
-            z = respawnPacket.PosInfo.PosZ
-        };
+    //public override void OnRespawn(S_Respawn respawnPacket)
+    //{
+    //    Vector3 pos = new Vector3
+    //    {
+    //        x = respawnPacket.PosInfo.PosX,
+    //        y = respawnPacket.PosInfo.PosY,
+    //        z = respawnPacket.PosInfo.PosZ
+    //    };
 
-        if (NavMesh.SamplePosition(pos, out NavMeshHit navHit, 1.0f, NavMesh.AllAreas))
-        {
-            pos = navHit.position;
-        }
+    //    if (NavMesh.SamplePosition(pos, out NavMeshHit navHit, 1.0f, NavMesh.AllAreas))
+    //    {
+    //        pos = navHit.position;
+    //    }
 
-        _agent.Warp(pos);
-        transform.position = pos;
-        transform.rotation = new Quaternion
-        {
-            x = respawnPacket.RotInfo.Qx,
-            y = respawnPacket.RotInfo.Qy,
-            z = respawnPacket.RotInfo.Qz,
-            w = respawnPacket.RotInfo.Qw
-        };
+    //    _agent.Warp(pos);
+    //    transform.position = pos;
+    //    transform.rotation = new Quaternion
+    //    {
+    //        x = respawnPacket.RotInfo.Qx,
+    //        y = respawnPacket.RotInfo.Qy,
+    //        z = respawnPacket.RotInfo.Qz,
+    //        w = respawnPacket.RotInfo.Qw
+    //    };
 
-        UpdateTransform(true);
+    //    UpdateTransform(true);
 
-        State = CreatureState.Idle;
-        Hp = respawnPacket.Hp;
-        Stamina = respawnPacket.Stamina;
-    }
+    //    State = CreatureState.Idle;
+    //    Hp = respawnPacket.Hp;
+    //    Stamina = respawnPacket.Stamina;
+    //}
 
     #endregion
 
