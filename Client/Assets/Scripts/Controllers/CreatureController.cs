@@ -4,19 +4,6 @@ using UnityEngine;
 
 public class CreatureController : BaseController
 {
-    #region CC기 
-    private bool _hasCrowdControl = false;
-    public bool HasCrowdControl
-    {
-        get { return _hasCrowdControl; }
-        set
-        {
-            _hasCrowdControl = value;
-        }
-    }
-
-    #endregion
-    protected UI_TargetingMark targetingMark = null;
     Define.Object _object = Define.Object.Unknown;
     public Define.Object ObjectType
     {
@@ -88,19 +75,6 @@ public class CreatureController : BaseController
 	protected override void Init()
     {
         SyncPos();
-
-        // TODO : 예비 UI
-        string path = "Prefabs/UI/Character/Theodore/FX_BI_Theodore_Skill03_Target_Mark";
-        Vector3 pos = transform.position + new Vector3(0f, 2.2f, 0f);
-        GameObject loadedPrefab = Resources.Load<GameObject>(path);
-        GameObject markInstance = Instantiate(
-               loadedPrefab,
-               pos,
-               Quaternion.identity 
-           );
-        markInstance.transform.SetParent(transform);
-        targetingMark = markInstance.gameObject.AddComponent<UI_TargetingMark>();
-
         base.Init();
     }
     public virtual void OnDamaged()
@@ -164,9 +138,13 @@ public class CreatureController : BaseController
         GameObject instance = Managers.Resource.Instantiate("Debug/SkillMesh");
 
         SkillMesh skillMesh = instance.GetComponent<SkillMesh>();
-        if (ObjInfo.Player == null) return;
+
+        int team = -1;
+        if (ObjInfo.Player != null)
+            team = ObjInfo.Player.Team;
+
         if (skillMesh != null)
-            skillMesh.OnDraw(hitbox, pos, forward, right, offsetRadius, ObjInfo.Player.Team);
+            skillMesh.OnDraw(hitbox, pos, forward, right, offsetRadius, team);
     }
 
 }

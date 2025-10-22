@@ -53,6 +53,10 @@ namespace Google.Protobuf.Protocol
 
     public sealed partial class RotationInfo
     {
+        public Quaternion GetQuatFromRotInfo()
+        {
+            return new Quaternion(Qx, Qy, Qz, Qw);
+        }
         public static Vector3 operator *(RotationInfo q, Vector3 v)
         {
             Vector3 u = new Vector3(q.Qx, q.Qy, q.Qz);

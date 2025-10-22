@@ -203,7 +203,7 @@ class PacketHandler
 
         pickScene.ChangeTraitImage(traitPacket.TraitType, traitPacket.PickIdx);
     }
-    
+
     public static void S_InteractHandler(PacketSession session, IMessage packet)
     {
         S_Interact interactPacket = packet as S_Interact;
@@ -447,8 +447,8 @@ class PacketHandler
         float offsetRadius = Packet.OffsetRadius;
 
         cc.OnDraw(Packet.Hitbox, pos, forward, right, offsetRadius);
-
     }
+
     public static void S_ChangeInventoryHandler(PacketSession session, IMessage packet)
     {
         S_ChangeInventory changeInventoryPacket = packet as S_ChangeInventory;

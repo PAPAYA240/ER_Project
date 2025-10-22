@@ -42,7 +42,7 @@ namespace Server.Game
 
         // Detection
         private const float SKILL_RANGE = 3.0f;
-        private const float ACTIVE_RANGE = 100f;
+        private const float ACTIVE_RANGE = 20f;
 
         // Events
         public Action<GameObject> OnAttacked;
@@ -65,12 +65,6 @@ namespace Server.Game
        
         public override void Update()
         {
-            if (IsStun && !(_currentState is IdleState))
-            {
-                ChangeState(new IdleState());
-                return;
-            }
-            
             if (_currentState != null)
                 _currentState?.Execute(this);
         }
@@ -79,7 +73,7 @@ namespace Server.Game
             _currentState?.Exit(this);
 
             State = DetermineMonsterState(newState);
-
+            Console.WriteLine($"State 변경 : {State}");
             _currentState = newState;
             _currentState?.Enter(this);
         }
@@ -203,21 +197,6 @@ namespace Server.Game
             return (Vector3.Distance(myPosition, spawnPosition) < 0.1f);
         }
 
-        // 활동 범위를 가지 않았는가?
-        public bool IsArrivalSpawn()
-        {
-            Vector3 monsterPos = new Vector3(this.PosInfo.PosX, this.PosInfo.PosY, this.PosInfo.PosZ);
-            float distanceToWaypoint = Vector3.Distance(monsterPos, spawnPosition);
-            if (distanceToWaypoint < 0.1f)
-                return true;
-            return false;
-        }
-
-        private long GetCurrentTimeMs()
-        {
-            return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        }
-
         public ISkillBehavior CreateSkillBehavior(string behaviorName)
         {
             const string BehaviorNamespace = "Server.Game";
@@ -238,21 +217,20 @@ namespace Server.Game
         #region 브로드캐스트
         public void PushState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null)
         {
+            Console.WriteLine($"PushState : {newState}, CurrentState : {State}");
              Room?.Push(() => BroadcastState(newState, posInfo, rotInfo, skillData));
         }
 
         private void BroadcastState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null)
         {
-            if (State != newState)
-                return;
-
+            Console.WriteLine($"Broadcast : {newState}, CurrentState : {State}");
             _sequenceId++;
 
             S_State statePacket = new S_State
             {
                 ObjectId = Id,
                 SequenceId = _sequenceId,
-                MyState = State,
+                MyState = newState,
                 PosInfo = posInfo,
                 RotInfo = rotInfo
             };

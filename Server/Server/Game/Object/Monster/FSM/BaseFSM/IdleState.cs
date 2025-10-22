@@ -49,7 +49,7 @@ namespace Server.Game
             }
             monster.ChangeState(FSMManager.Instance.GetSkillState(type));
             */
-            if (!monster.IsArrivalSpawn())
+            if (!monster.IsAtSpawn())
                 monster.ChangeState(FSMManager.Instance.GetMovingState());
         }
         public void OnHit(Monster monster, Creature target) { }

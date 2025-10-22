@@ -75,8 +75,6 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SChangeEquipItem, PacketHandler.S_ChangeEquipItemHandler);		
 		_onRecv.Add((ushort)MsgId.SChangeInventory, MakePacket<S_ChangeInventory>);
 		_handler.Add((ushort)MsgId.SChangeInventory, PacketHandler.S_ChangeInventoryHandler);		
-		_onRecv.Add((ushort)MsgId.SStun, MakePacket<S_Stun>);
-		_handler.Add((ushort)MsgId.SStun, PacketHandler.S_StunHandler);		
 		_onRecv.Add((ushort)MsgId.SCombatText, MakePacket<S_CombatText>);
 		_handler.Add((ushort)MsgId.SCombatText, PacketHandler.S_CombatTextHandler);		
 		_onRecv.Add((ushort)MsgId.SChangeKDA, MakePacket<S_ChangeKDA>);

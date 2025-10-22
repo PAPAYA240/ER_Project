@@ -1,4 +1,5 @@
-﻿using Google.Protobuf.Protocol;
+﻿using Data;
+using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -96,8 +97,6 @@ public class TheodoreController : MyPlayerController
 
             case KeyCode.R:
                 PlayAnimation("SKILL_R", 0.1f);
-                //if (_skillTarget != null && _skillTarget.GetComponent<CreatureController>().HasCrowdControl)
-                //    Bondage(_skillTarget);
                 break;
         }
     }
@@ -138,9 +137,6 @@ public class TheodoreController : MyPlayerController
             LookAtMouse();
             PlayAnimation("SKILL_Q", 0.1f);
             _eqipWeapon.GetComponent<WeaponController>().PlayAnimation("SKILL_Q", 0.1f);
-
-            //if (_skillTarget != null && _skillTarget.GetComponent<CreatureController>().HasCrowdControl)
-            //    Bondage(_skillTarget);
 
             PlayEffect("FX_SkillFire");
             return;
@@ -209,7 +205,10 @@ public class TheodoreController : MyPlayerController
         }
         else if (key == KeyCode.E)
         {
-            cc.HasCrowdControl = true;
+            int level = 1; // TODO : 예비 레벨
+            float duration = DataManager.SkillDict[ObjInfo.Player.CharType][KeyCode.E].levels[level].effects[0].duration;
+
+            Managers.FX.PlayStatusEffect(target, CharacterType.Theodore, duration);
         }
     }
 
@@ -243,25 +242,6 @@ public class TheodoreController : MyPlayerController
     #endregion
 
     #region 보조 함수
-    private void Bondage(GameObject target)
-    {
-        //CreatureController myTarget = target.GetComponent<CreatureController>();
-        //float duration = DataManager.SkillDict[ObjInfo.Player.CharType][_keyCode].levels[myTarget.Stat.Level].effects[0].duration;
-
-        //C_Stun stunPacket = new C_Stun()
-        //{
-        //    ObjectId = myTarget.ObjInfo.ObjectId,
-        //    IsStun = true,
-        //    Duration = duration,
-        //};
-        //Managers.Network.Send(stunPacket);
-
-        //target.GetComponent<CreatureController>().HasCrowdControl = false;
-
-        //PlayEffectTransform(CreatureState.Skill, KeyCode.Q, EffectType.HitTarget, _skillTarget);
-        //SendFXPacket(_keyCode);
-    }
-   
     private IEnumerator InputLockCancel()
     {
         yield return new WaitForSeconds(0.3f);

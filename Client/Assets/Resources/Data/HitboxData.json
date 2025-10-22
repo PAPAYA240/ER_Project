@@ -125,7 +125,12 @@
         "duration": 0.6,
         "maxRange": 5.5,
         "startFrame": 0,
-        "endFrame": 60
+        "endFrame": 60,
+        "interactions": {
+          "F1": {
+            "interaction": [ "Interaction" ]
+          }
+        }
       },
       "R": {
         "shape": "Ray",

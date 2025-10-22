@@ -98,10 +98,8 @@ public class MonsterController : CreatureController
 
     public void OnRecvStatePacket(S_State packet)
     {
-       //if (packet.SequenceId <= _lastReceivedSequenceId)
-       //    return;
-       //_lastReceivedSequenceId = packet.SequenceId;
-
+        if(packet.MyState == CreatureState.Skill)
+            Debug.Log($" Monster 상태 : {packet.MyState}");
         State = packet.MyState;
         if(packet.TargetPosition != null)
             _targetPos = new Vector3(packet.TargetPosition.PosX, packet.TargetPosition.PosY, packet.TargetPosition.PosZ);
@@ -138,7 +136,8 @@ public class MonsterController : CreatureController
         _agent = GetComponentInParent<NavMeshAgent>();
         if (_agent != null)
         {
-            _agent.updateRotation = false;
+            _agent.updatePosition = true;
+            _agent.updateRotation = true;
             SyncPos(true);
         }
 
@@ -159,7 +158,6 @@ public class MonsterController : CreatureController
     #endregion
 
     #region 체력바
-
     private void InitHpBar()
     {
         switch (_monsterType)

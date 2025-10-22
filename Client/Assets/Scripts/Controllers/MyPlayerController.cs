@@ -1398,7 +1398,7 @@ public class MyPlayerController : PlayerController
                         ConsumableItemInfo consumableItem = item as ConsumableItemInfo;
                         if (consumableItem == null)
                         {
-                            Debug.Log($"Error. [{GetType()}] in ChangeInventory, consumableItem == null");
+                            //Debug.Log($"Error. [{GetType()}] in ChangeInventory, consumableItem == null");
                             continue;
                         }
                         consumableItem.Count = change.Count;

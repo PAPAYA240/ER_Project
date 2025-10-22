@@ -1,19 +1,13 @@
-﻿using Google.Protobuf.Protocol;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
 
 namespace Server.Game
 {
-    // 1. 움직이기 전에 움직여야 하는 목표 지점을 Get_CalculatePath(TargetPos)로 타게팅
-    // 2. 실제로 움직이도록 하는 함수 Get_MoveAlongPath => 안의 FollowTarget, LookAtTarget( /* 로테이션 속도 조정 가능 */)
-
     public class Creature : GameObject
     {
         public Creature Target { get; set; }
         public bool IsSkillAmplification { get; set; } = false;
-
-        public bool IsStun { get; set; }
 
         public List<Vector3> _path = new List<Vector3>();
         public int _pathIdx = 0;
@@ -58,7 +52,7 @@ namespace Server.Game
         }
 
         // 나와 Target의 위치가 얼마만큼 가까워졌느냐 
-        float MOVE_STEP_INTERPOL = 3.0f;
+        protected const float MOVE_STEP_INTERPOL = 0.01f;
         private bool CheckArrival(Vector3 targetPos)
         {
             Vector3 myPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
@@ -144,9 +138,5 @@ namespace Server.Game
             RotInfo.Qw = newRotation.W;
         }
     }
-    #endregion
-
-    #region Damage
-
     #endregion
 }

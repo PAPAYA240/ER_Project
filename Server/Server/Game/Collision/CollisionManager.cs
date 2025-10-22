@@ -250,6 +250,10 @@ namespace Server.Game
                 if (hitbox.HitObjs.ContainsKey(targetKvp.Key) || true == hitbox.IsUsed)
                     continue;
 
+                // TODO - 지울 것
+                if (hitbox.Creature == target)
+                    return;
+
                 if (CheckCollision(hitbox, target))
                 {
                     hitTargets.Add(target);

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements;
+
 
 public class UI_TargetingMark : UI_Base
 {
-    private RectTransform uiElementRect;
     private GameObject _target;
-    private Canvas canvas;
+    private Camera _camera;
     private Coroutine _lifetimeCoroutine;
+    private Coroutine _updatePositionCoroutine;
     private Action _onComplete;
     private float _duration;
 
@@ -16,21 +16,37 @@ public class UI_TargetingMark : UI_Base
 
     public override void Init()
     {
-        gameObject.SetActive(false);
+        _camera = Camera.main;
+        if (_camera == null)
+            _camera = FindFirstObjectByType<Camera>();
     }
-
-    float _elapsedTime = 0;
-    Coroutine _co = null;
     public void Show(GameObject target, float duration, Action onComplete)
     {
         _target = target;
+        _duration = duration;
         _onComplete = onComplete;
-        gameObject.SetActive(true);
 
-        if (_lifetimeCoroutine != null)
+        if (_camera == null)
         {
-            StopCoroutine(_lifetimeCoroutine);
+            _camera = Camera.main;
+            if (_camera == null)
+                _camera = FindFirstObjectByType<Camera>();
         }
+
+        gameObject.SetActive(true);
+        Debug.Log($"Mark Show: {target.name}, Duration: {duration}초, Active: {gameObject.activeInHierarchy}");
+
+        // 기존 코루틴들이 있으면 중지
+        if (_lifetimeCoroutine != null)
+            StopCoroutine(_lifetimeCoroutine);
+
+        if (_updatePositionCoroutine != null)
+            StopCoroutine(_updatePositionCoroutine);
+
+        // 위치 업데이트 코루틴 시작
+        _updatePositionCoroutine = StartCoroutine(Co_UpdatePosition());
+
+        // 생명주기 코루틴 시작
         _lifetimeCoroutine = StartCoroutine(Co_Lifetime(duration));
     }
 
@@ -42,6 +58,12 @@ public class UI_TargetingMark : UI_Base
             _lifetimeCoroutine = null;
         }
 
+        if (_updatePositionCoroutine != null)
+        {
+            StopCoroutine(_updatePositionCoroutine);
+            _updatePositionCoroutine = null;
+        }
+
         Poolable poolable = GetComponent<Poolable>();
         if (poolable != null)
         {
@@ -50,15 +72,29 @@ public class UI_TargetingMark : UI_Base
         else
         {
             gameObject.SetActive(false);
+            Debug.Log($"Mark Hide");
+        }
+    }
+
+    private IEnumerator Co_UpdatePosition()
+    {
+        while (gameObject.activeInHierarchy)
+        {
+            transform.position = _target.transform.position + _offset;
+            yield return null;
         }
     }
 
     private IEnumerator Co_Lifetime(float duration)
     {
+        Debug.Log($"Mark 시간 시작: {duration}초");
         yield return new WaitForSeconds(duration);
+        Debug.Log($"Mark 시간 끝");
+
         _onComplete?.Invoke();
         _lifetimeCoroutine = null;
-    }
-    
 
+        // 자동으로 Hide 호출
+        Hide();
+    }
 }

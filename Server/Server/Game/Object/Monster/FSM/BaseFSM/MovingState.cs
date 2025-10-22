@@ -18,6 +18,7 @@ namespace Server.Game
             _nextCalcPathTick = Environment.TickCount64 + PATH_RECALC_INTERVAL_MS;
 
             CalculateInitPath(monster);
+            monster.PushState(CreatureState.Moving, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
         }
 
         public void Execute(Monster monster)
