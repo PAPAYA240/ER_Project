@@ -45,6 +45,9 @@ public class PlayerInputController : MonoBehaviour
         if (!Input.GetMouseButton(1))
             return null;
 
+        if (_skill.IsInSkillMotion)
+            return null;
+
         GameObject target = GetAttackableUnderCursor();
         if (target == null)
         {
@@ -94,6 +97,10 @@ public class PlayerInputController : MonoBehaviour
     public C_Attack GetAttackCommand()
     {
         if (!Input.GetMouseButtonDown(1))
+            return null;
+
+        int id = GetAttackableUnderCursorID();
+        if(id == 0)
             return null;
 
         return new C_Attack { TargetId = GetAttackableUnderCursorID() };

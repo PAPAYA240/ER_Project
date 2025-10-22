@@ -299,7 +299,7 @@ public class PlayerSkillController : MonoBehaviour
         var start = transform.position;
 
         Vector3 blocked;
-        Vector3 targetPos = GetTargetPos(3.0f);
+        Vector3 targetPos = GetTargetPos(spec.limits.baseMaxDist);
         blocked = GetReachablePosition(start, targetPos, out NavMeshHit navHit);
 
         Vector3 pass = GetTargetPos(3.0f);
@@ -309,7 +309,7 @@ public class PlayerSkillController : MonoBehaviour
 
     Vector3 ComputeEndPass(int skillKey, SkillSpec spec, float clickX, float clickZ)
     {
-        Vector3 targetPos = GetTargetPos(3.0f);
+        Vector3 targetPos = GetTargetPos(spec.limits.baseMaxDist);
 
         if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 1.0f, NavMesh.AllAreas))
         {

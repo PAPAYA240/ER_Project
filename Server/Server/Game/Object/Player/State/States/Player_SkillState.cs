@@ -37,20 +37,18 @@ public class Player_SkillState : IPlayerState
     public void Execute(Player player)
     {
         var now = DateTime.UtcNow;
+
         if (!_didHit && now >= _tHit)
-        { _handler.OnHit(player, _ctx); _didHit = true; }
+        {
+            _handler.OnHit(player, _ctx);
+            _didHit = true;
+        }
 
         _handler.OnTick(player, _ctx);
 
         if (_forceEnd || now >= _tEnd)
         {
-            IPlayerState next;
-            if (player.Intent.TryConsume(out var dest))
-                next = new Player_MovingState(dest);
-            else
-                next = new Player_IdleState();
-
-            player.ChangeState(next);
+            player.ChangeState(new Player_IdleState());
         }
     }
 
