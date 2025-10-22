@@ -296,4 +296,16 @@ class PacketHandler
 
         player.Room.Push(player.Room.HandleRest, player, req);
     }
+
+    // temp 임시 코드 나중에 수정
+    public static void C_DeathHandler(PacketSession session, IMessage packet)
+    {
+        var client = (ClientSession)session;
+        var player = client?.MyPlayer;
+        if (player?.Room == null)
+            return;
+        var req = (C_Death)packet;
+
+        player.Room.Push(player.Room.HandleDeath, player, req);
+    }
 }

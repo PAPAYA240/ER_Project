@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class PlayerViewController : MonoBehaviour
 {
@@ -103,9 +104,14 @@ public class PlayerViewController : MonoBehaviour
         //_animator.SetTrigger("Die");
     }
 
+    public S_Die GetRestCommand()
+    {
+        return new S_Die();
+    }
     public void OnRespawn(S_Respawn packet)
     {
         _agent.Warp(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+        _player.Hp = packet.Hp;
         _player.UpdateTransform(true);
         _syncing = false; // 리스폰 직후는 입력 올 때까지 동기화 중지
     }

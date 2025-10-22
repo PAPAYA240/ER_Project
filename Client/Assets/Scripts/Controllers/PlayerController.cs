@@ -366,7 +366,6 @@ public class PlayerController : CreatureController
     #region State:Dead
     public virtual void OnRespawn(S_Respawn respawnPacket)
     {
-        State = CreatureState.Idle;
         Hp = respawnPacket.Hp;
         Stamina = respawnPacket.Stamina;
     }

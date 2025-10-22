@@ -17,7 +17,7 @@ public class PlayerInputController : MonoBehaviour
     [SerializeField] PlayerSkillController _skill;
 
     [SerializeField] float _attackRange = 3.0f;  
-    [SerializeField] float _stopBuffer = 0.1f;
+    [SerializeField] float _stopBuffer = 1.5f;
 
     private Vector3 _lastCmdDest;
     private int _lastCmdTargetId;
@@ -27,6 +27,8 @@ public class PlayerInputController : MonoBehaviour
     [SerializeField] private LayerMask _groundMask;
     [SerializeField] private LayerMask _monsterMask;
     [SerializeField] private LayerMask _playerMask;
+
+    private bool isRest = false;
 
     private void Awake()
     {
@@ -42,61 +44,80 @@ public class PlayerInputController : MonoBehaviour
     // 우클릭 유지 중 이동 의도(타겟 이동 or 땅 이동)
     public C_SetMoveTarget GetSetMoveTarget()
     {
-        if (!Input.GetMouseButton(1))
-            return null;
+        Debug.Log(_player.State);
 
-        GameObject target = GetAttackableUnderCursor();
-        if (target == null)
+        if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving)
         {
-            // 땅 이동
-            if (!TryGetGroundDestination(out Vector3 final))
+            if (!Input.GetMouseButton(1))
                 return null;
 
-            // 중복 억제: 연속 같은 목적지면 전송 생략
-            if (!_lastCmdIsTarget &&
-                (final - _lastCmdDest).sqrMagnitude < _destEps * _destEps)
-                return null;
-
-            _lastCmdIsTarget = false;
-            _lastCmdDest = final;
-            _lastCmdTargetId = 0;
-
-            return new C_SetMoveTarget
+            GameObject target = GetAttackableUnderCursor();
+            if (target == null)
             {
-                IsGround = true,
-                TargetPos = new PositionInfo { PosX = final.x, PosY = final.y, PosZ = final.z }
-            };
+                // 땅 이동
+                if (!TryGetGroundDestination(out Vector3 final))
+                    return null;
+
+                // 중복 억제: 연속 같은 목적지면 전송 생략
+                if (!_lastCmdIsTarget &&
+                    (final - _lastCmdDest).sqrMagnitude < _destEps * _destEps)
+                    return null;
+
+                _lastCmdIsTarget = false;
+                _lastCmdDest = final;
+                _lastCmdTargetId = 0;
+
+                return new C_SetMoveTarget
+                {
+                    IsGround = true,
+                    TargetPos = new PositionInfo { PosX = final.x, PosY = final.y, PosZ = final.z }
+                };
+            }
+            else
+            {
+                // 타겟팅 이동
+                if (!TryGetTargetDestination(target, out Vector3 final, out int id))
+                    return null;
+
+                // 중복 억제: 같은 타겟이면 전송 생략
+                if (_lastCmdIsTarget && id == _lastCmdTargetId)
+                    return null;
+
+                _lastCmdIsTarget = true;
+                _lastCmdTargetId = id;
+                _lastCmdDest = final; // (정보 유지용)
+
+                return new C_SetMoveTarget
+                {
+                    IsGround = false,
+                    TargetId = id
+                    // TargetPos는 필요 없음(서버가 타겟 현재 위치로 갱신)
+                };
+            }
+        }
+        else if (_player.State == CreatureState.Rest)
+        {
+            _agent.isStopped = true;
+            return null;
         }
         else
         {
-            // 타겟팅 이동
-            if (!TryGetTargetDestination(target, out Vector3 final, out int id))
-                return null;
-
-            // 중복 억제: 같은 타겟이면 전송 생략
-            if (_lastCmdIsTarget && id == _lastCmdTargetId)
-                return null;
-
-            _lastCmdIsTarget = true;
-            _lastCmdTargetId = id;
-            _lastCmdDest = final; // (정보 유지용)
-
-            return new C_SetMoveTarget
-            {
-                IsGround = false,
-                TargetId = id
-                // TargetPos는 필요 없음(서버가 타겟 현재 위치로 갱신)
-            };
+            return null;
         }
     }
 
     // 우클릭 "타겟 공격" (클릭 순간 1회)
     public C_Attack GetAttackCommand()
     {
-        if (!Input.GetMouseButtonDown(1))
-            return null;
+        if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving)
+        {
+            if (!Input.GetMouseButtonDown(1))
+                return null;
 
-        return new C_Attack { TargetId = GetAttackableUnderCursorID() };
+            return new C_Attack { TargetId = GetAttackableUnderCursorID() };
+        }
+
+        return null;
     }
 
     // S키 : 공격, 이동 중지 -> Idle 상태 벗어나면 다시 자동 공격
@@ -132,10 +153,32 @@ public class PlayerInputController : MonoBehaviour
 
     public C_Rest GetRestCommand()
     {
-        if (Input.GetKeyDown(KeyCode.X))
+        if (isRest == false)
         {
-            return new C_Rest() { IsRest = true };
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                isRest = true;
+                return new C_Rest() { IsRest = true };
+            }
         }
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.X) || Input.GetMouseButtonDown(1))
+            {
+                isRest = false;
+                return new C_Rest() { IsRest = false };
+            }
+        }
+
+        return null;
+    }
+
+    // temp 임시 커맨드 나중에 삭제
+    public C_Death GetDieCommand()
+    {
+        if (Input.GetKeyDown(KeyCode.Z))
+            return new C_Death() { IsDeath = true };
+
         return null;
     }
 

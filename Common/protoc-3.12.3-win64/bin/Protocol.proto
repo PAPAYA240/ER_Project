@@ -53,6 +53,7 @@ enum MsgId {
   C_SKILL_INPUT = 45;
   C_SKILL_COLLISION_PROPOSE = 46;
   C_REST = 47;
+  C_DEATH = 48;
 }
 
 enum CreatureState{
@@ -219,6 +220,10 @@ enum ProposalMode {
   None = 0;
   SingleShot = 1; 
   Streaming = 2;
+}
+
+message C_Death {
+	bool isDeath = 1;
 }
 
 message C_Interact {

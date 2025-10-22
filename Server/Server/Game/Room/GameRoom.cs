@@ -366,7 +366,18 @@ namespace Server.Game
                 return;
 
             if (pkt.IsRest == true)
-                player.ChangeState(new Player_RestState());
+                player.ChangeState(new Player_RestState(pkt.IsRest));
+            else
+                player.ChangeState(new Player_RestState(pkt.IsRest));
+        }
+
+        public void HandleDeath(Player player, C_Death pkt)
+        {
+            if (player == null)
+                return;
+
+            player.Hp = 0;
+            player.IsDeath = true;
         }
 
         public Player FindPlayer(Func<GameObject, bool> condition)

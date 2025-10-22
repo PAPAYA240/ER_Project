@@ -62,7 +62,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CSkillCollisionPropose, MakePacket<C_SkillCollisionPropose>);
 		_handler.Add((ushort)MsgId.CSkillCollisionPropose, PacketHandler.C_SkillCollisionProposeHandler);		
 		_onRecv.Add((ushort)MsgId.CRest, MakePacket<C_Rest>);
-		_handler.Add((ushort)MsgId.CRest, PacketHandler.C_RestHandler);
+		_handler.Add((ushort)MsgId.CRest, PacketHandler.C_RestHandler);		
+		_onRecv.Add((ushort)MsgId.CDeath, MakePacket<C_Death>);
+		_handler.Add((ushort)MsgId.CDeath, PacketHandler.C_DeathHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

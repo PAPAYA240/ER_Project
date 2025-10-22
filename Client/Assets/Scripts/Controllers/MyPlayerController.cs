@@ -57,9 +57,15 @@ public class MyPlayerController : PlayerController
         if (skillCmd != null)
             Managers.Network.Send(skillCmd);
 
+        // 휴식(X)
         var restCmd = _input.GetRestCommand();
         if (restCmd != null)
             Managers.Network.Send(restCmd);
+
+        // temp 임시 코드 나중에 삭제
+        var deathCmd = _input.GetDieCommand();
+        if (deathCmd != null)
+            Managers.Network.Send(deathCmd);
 
         CheckUpdatedFlag();
     }

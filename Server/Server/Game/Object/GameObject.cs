@@ -191,7 +191,7 @@ namespace Server.Game
 
             S_Die diePacket = new S_Die();
             diePacket.ObjectId = Id;
-            diePacket.AttackerId = attacker.Id;
+            //diePacket.AttackerId = attacker.Id;
             Room.Broadcast(diePacket);
 
             GameRoom room = Room;

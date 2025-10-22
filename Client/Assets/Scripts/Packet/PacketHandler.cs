@@ -168,10 +168,10 @@ class PacketHandler
             cc.OnDead();
         }
 
-        if(Managers.Object.MyPlayer != null && Managers.Object.MyPlayer.Id == diePacket.ObjectId)
-        {
-            go.GetComponentInChildren<MyPlayerController>().PlayerInterface.OnDead(diePacket.RespawnTime);
-        }
+        //if (Managers.Object.MyPlayer != null && Managers.Object.MyPlayer.Id == diePacket.ObjectId)
+        //{
+        //    go.GetComponentInChildren<MyPlayerController>().PlayerInterface.OnDead(diePacket.RespawnTime);
+        //}
     }
 
     public static void S_CharacterHandler(PacketSession session, IMessage packet)
@@ -340,11 +340,10 @@ class PacketHandler
         if (go == null)
             return;
 
-        PlayerController pc = go.GetComponent<PlayerController>();
-        if (pc == null)
-            return;
-
-        pc.OnRespawn(respawnPacket);
+        if (Managers.Object.MyPlayer.Id == respawnPacket.ObjectId)
+        {
+            Managers.Object.MyPlayer.OnServerUpdate(respawnPacket);
+        }
     }
 
     public static void S_SkillLevelUpHandler(PacketSession session, IMessage packet)

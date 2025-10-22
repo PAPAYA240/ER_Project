@@ -27,6 +27,14 @@ namespace Server.Game
             public float SkillMotionEndTimeUtc; // utcSeconds
         }
 
+        // temp 임시 코드 나중에 삭제
+        bool _isDeath = false;
+        public bool IsDeath
+        {
+            get { return _isDeath; }
+            set { _isDeath = value; }
+        }
+
         public MoveIntent Intent { get; } = new MoveIntent();
         public sealed class MoveIntent
         {
@@ -116,6 +124,12 @@ namespace Server.Game
 
         public override void Update()
         {
+            if (IsDeath == true)
+            {
+                _isDeath = false;
+                _stateMachine.ChangeState(new Player_DeadState(), this);
+            }
+
             //base.Update();
             _stateMachine.Update(this);
             CheckUpdateStat();
