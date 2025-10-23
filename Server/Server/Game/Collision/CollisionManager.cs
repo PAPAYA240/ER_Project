@@ -119,7 +119,7 @@ namespace Server.Game
         public void CheckAllCollisions(
             Dictionary<int, Dictionary<int, Player>> teams,
             ConcurrentDictionary<int, Monster> monsters,
-            Dictionary<int, Projectile> projectiles)
+            ConcurrentDictionary<int, Projectile> projectiles)
         {
             Dictionary<int, Dictionary<int, float>> damageDict = new Dictionary<int, Dictionary<int, float>>();
 

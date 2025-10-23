@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -21,10 +22,21 @@ namespace Server.Game
 
         public bool IsSkillAmplification { get; set; } = false;
 
+        #region Projectile
+        public Projectile CreateProjectile()
+        {
+            Projectile projectile = ObjectManager.Instance.Add<Projectile>();
+            if (projectile == null)
+                return null;
 
+            projectile.Owner = this;
+            projectile.Info.PosInfo = PosInfo;
+            projectile.Info.RotInfo = RotInfo;
+            Room?.EnterGame(projectile);
 
-
-
+            return projectile;
+        }
+        #endregion
 
         #region Astar
         public bool HasPath => _path != null && _path.Count > 0;

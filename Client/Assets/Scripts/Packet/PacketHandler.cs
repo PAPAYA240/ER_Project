@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
-using Unity.Mathematics;
 using UnityEngine;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 class PacketHandler
 {
@@ -52,16 +47,21 @@ class PacketHandler
             return;
 
         CreatureController cc = go.GetComponentInChildren<CreatureController>();
-        if (cc == null)
-            return;
-
-        cc.PosInfo = movePacket.PosInfo;
-        cc.RotInfo = movePacket.RotInfo;
-
-        if (cc.ObjectType == Define.Object.OtherPlayer)
+        if (cc != null)
         {
-            cc.SyncPos(movePacket.IsWarp);
-        }      
+            cc.PosInfo = movePacket.PosInfo;
+            cc.RotInfo = movePacket.RotInfo;
+
+            if (cc.ObjectType == Define.Object.OtherPlayer)
+            {
+                cc.SyncPos(movePacket.IsWarp);
+            }
+        }
+
+        Projectile bc = go.GetComponentInChildren<Projectile>();
+        if (bc != null)
+            bc.MoveHandler(movePacket);
+
     }
      public static void S_StateHandler(PacketSession session, IMessage packet)
     {
@@ -431,6 +431,19 @@ class PacketHandler
 
         pc.EquipItem(changeEquipPacket.ItemId);
     }
+    public static void S_ProjectileHandler(PacketSession session, IMessage packet)
+    {
+        S_Projectile changeEquipPacket = packet as S_Projectile;
+
+        GameObject go = Managers.Object.FindById(changeEquipPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
+    }
+    
     public static void S_DrawmeshHandler(PacketSession session, IMessage packet)
     {
         S_Drawmesh Packet = packet as S_Drawmesh;

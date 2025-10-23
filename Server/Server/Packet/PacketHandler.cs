@@ -5,7 +5,9 @@ using Server.Data;
 using Server.Game;
 using ServerCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using static Server.Data.DataUtils;
 
 class PacketHandler
@@ -225,6 +227,21 @@ class PacketHandler
             return;
 
         room.Push(room.HandleAttackSkillTarget, player, atkSkillTargetPkt);
+    }
+
+     public static void C_ProjectileHandler(PacketSession session, IMessage packet)
+     {
+        ClientSession clientSession = session as ClientSession;
+        Player player = clientSession.MyPlayer;
+
+        Projectile projectile = player?.CreateProjectile();
+        if (projectile == null)
+            return;
+
+        // ✅ 방의 모든 플레이어에게 알려줌
+        S_Spawn spawnPacket = new S_Spawn();
+        spawnPacket.Objects.Add(projectile.Info);
+        player.Room?.Broadcast(spawnPacket);
     }
 
     public static void C_TestDamageHandler(PacketSession session, IMessage packet)

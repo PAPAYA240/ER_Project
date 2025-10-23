@@ -12,6 +12,12 @@ namespace Google.Protobuf.Protocol
         {
             return new Vector3(PosX, PosY, PosZ);
         }
+        public void SetPosInfoFromVector3(Vector3 pos)
+        {
+            PosX = pos.X;
+            PosY = pos.Y;
+            PosZ = pos.Z;
+        }
         public float Distance(PositionInfo other)
         {
             float dx = PosX - other.PosX;

@@ -50,6 +50,8 @@ enum MsgId {
   S_CHANGE_K_D_A = 42;
   S_SYNC_TIMER = 43;
   S_DRAWMESH = 44;
+  C_PROJECTILE = 45;
+  S_PROJECTILE = 46;
 }
 
 enum CreatureState{
@@ -235,7 +237,6 @@ message C_EnterGame {
 message S_EnterGame {
 	ObjectInfo player = 1;
 }
-
 message S_LeaveGame {
 
 }
@@ -435,6 +436,12 @@ message C_TestDamage{
 	int32 objectId = 1;
 }
 
+message C_Projectile{
+	int32 objectId = 1;
+}
+message S_Projectile{
+	int32 objectId = 1;
+}
 message S_CombatText{
 	int32 objectId = 1;
 	CombatTextType type = 2;

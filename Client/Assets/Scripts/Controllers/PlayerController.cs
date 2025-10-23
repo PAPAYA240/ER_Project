@@ -187,20 +187,6 @@ public class PlayerController : CreatureController
             {
                 Managers.Object.MyPlayer.OnSkillConfirmed(skillPacket);
             }
-
-            //StartCoroutine(CoStartSkill());
-            //Debug.Log("스킬 코루틴 시작");
-
-            //Vector3 MousePos = new Vector3();
-            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            //if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
-            //    MousePos = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-
-            //bool bProjectile = (DataManager.SkillDict[ObjInfo.Player.CharType][keyCode].type == "Projectile");
-            //if (skillPacket.SkillInfo.Amplification && bProjectile)
-            //    ChangeInfoSkillMesh(keyCode);
-            //else
-            //    CreateSkillMesh(keyCode, skillPacket.ChargeRatio, MousePos, bProjectile);
         }
     }
 
@@ -432,27 +418,5 @@ public class PlayerController : CreatureController
     }
     #endregion
 
-
-    public void OnProjectile()
-    {
-        _projectile.SetActive(true);
-
-        Projectile projectileScript = _projectile.GetComponent<Projectile>();
-
-        if (_equipTransform != null && projectileScript != null)
-            projectileScript.Run(_equipTransform.position, transform.forward);
-    }
-
-    public void LaunchProjectile(List<CreatureController> target)
-    {
-        //_currentTarget = target;
-        //// 스피드 감소, 시야 제공, 공격 시 => [스킬 피해 추가, 속박]
-        //// 30/60/90/120/150(+스킬 증폭의 65%)
-        //if (targetCreature != null)
-        //    StartCoroutine(AbilitySkillE(targetCreature));
-
-        // 공격을 받으면 데미지를 입혀야 함
-    }
-
-    public virtual void OnSkillAnimationEnd() { }
+    
 }

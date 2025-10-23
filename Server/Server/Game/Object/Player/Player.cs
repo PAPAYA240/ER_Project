@@ -13,13 +13,15 @@ namespace Server.Game
 {
     public class Player : Creature
     {
+        #region Player Info
         public ClientSession Session { get; set; }
 
         protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
-        Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
-        Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
-        ItemStat _totalItemStat = new ItemStat();
-        List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
+        private Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
+        private Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
+        private ItemStat _totalItemStat = new ItemStat();
+        private List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
+        #endregion
 
 
         #region Stat Property
@@ -412,8 +414,6 @@ namespace Server.Game
                 _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
             }
         }
-
-
 
         //TODO D랑 F는 어떻게 하지?
         public bool SkillLevelUp(KeyCode key)
@@ -823,6 +823,5 @@ namespace Server.Game
             return levelUp;
         }
         #endregion
-
     }
 }

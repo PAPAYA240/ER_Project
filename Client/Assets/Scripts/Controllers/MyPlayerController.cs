@@ -59,6 +59,9 @@ public class MyPlayerController : PlayerController
             // Dead -> 다른 상태 : agent 활성화
             if (State == CreatureState.Dead)
                 _agent.enabled = true;
+            
+            if(State == CreatureState.Skill && value == (CreatureState.Idle))
+                StartCoroutine(InputLockCancel());
 
             PosInfo.State = value;
             UpdateAnimation();
@@ -73,7 +76,8 @@ public class MyPlayerController : PlayerController
     protected KeyCode _keyCode = KeyCode.None;
     protected Dictionary<KeyCode, SkillBase> _skills = new Dictionary<KeyCode, SkillBase>();
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
-   
+
+
 
     class CoolTime
     {
@@ -818,6 +822,11 @@ public class MyPlayerController : PlayerController
     protected virtual void UpdateSkillKeyInput() { }
 
     protected bool _isInputLocked = false;
+    protected IEnumerator InputLockCancel()
+    {
+        yield return new WaitForSeconds(0.3f);
+        _isInputLocked = false;
+    }
     protected virtual void GetMouseInput(int mouseButton)
     {
         // 마우스 우클릭이 눌렸을 경우 유효한 곳이 클릭 되었다면 해당 위치를 목적지로 설정 -> Moving 상태로 변경

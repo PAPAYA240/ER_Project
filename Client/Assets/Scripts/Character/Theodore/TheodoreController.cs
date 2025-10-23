@@ -22,7 +22,6 @@ public class TheodoreController : MyPlayerController
 
         base.Init();
         _attackRange = 10;
-
     }
 
     #region Skill
@@ -48,6 +47,11 @@ public class TheodoreController : MyPlayerController
             State = CreatureState.Charging;
             StartCoroutine(ChargingSkill());
             return;
+        }
+        else if (key == KeyCode.E)
+        {
+            C_Projectile packet = new C_Projectile();
+            Managers.Network.Send(packet);
         }
 
         Action onConfirm = () => CallSkill(key);
@@ -224,10 +228,7 @@ public class TheodoreController : MyPlayerController
         IsKeyInput = false;
         StartCoroutine(InputLockCancel());
     }
-    public override void OnSkillAnimationEnd()
-    {
-        StartCoroutine(InputLockCancel());
-    }
+ 
     private void CancelSkill()
     {
         _indicator.DisableAllIndicators();
@@ -241,11 +242,7 @@ public class TheodoreController : MyPlayerController
     #endregion
 
     #region 보조 함수
-    private IEnumerator InputLockCancel()
-    {
-        yield return new WaitForSeconds(0.3f);
-        _isInputLocked = false;
-    }
+
     private Quaternion GetIndicatorRotation()
     {
         float playerYaw = transform.rotation.eulerAngles.y;
@@ -273,16 +270,6 @@ public class TheodoreController : MyPlayerController
             GameObject childTransform = Util.FindChildByName(_eqipWeapon.transform, "ShotPoint");
             PlayEffectTransform(CreatureState.Skill, KeyCode.Z, EffectType.Caster, null, childTransform.transform);
         }
-        // 스킬
-        //else if (State == CreatureState.Skill)
-        //{
-        //    switch (_keyCode)
-        //    {
-        //        case KeyCode.E:
-        //            SpawnProjectile();
-        //            return;
-        //    }
-        //}
     }
     public override void PlayEffectFromServer(EffectInfo fxInfo)
     {
@@ -296,23 +283,6 @@ public class TheodoreController : MyPlayerController
     {
        _equipTransform = Util.FindChildByName(transform, "Equip_L").transform;
         if (_equipTransform == null)
-            return false;
-
-        // 스파크 탄
-        _projectile = Managers.Resource.Instantiate($"Creature/Weapon/WP_Theodore_Skill03_LOD");
-        if (_projectile != null)
-        {
-            if (_equipTransform != null)
-            {
-                _projectile.transform.localPosition = _equipTransform.localPosition;
-                _projectile.transform.localRotation = Quaternion.identity;
-                _projectile.transform.localScale = Vector3.one;
-
-                Projectile sparkProjectile = _projectile.AddComponent<Projectile>();
-                sparkProjectile.Owner = this.gameObject;
-            }
-        }
-        else
             return false;
 
         // Skill Indicator UI

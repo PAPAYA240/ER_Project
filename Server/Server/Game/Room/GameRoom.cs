@@ -11,6 +11,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Threading;
+using System.Threading.Tasks;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -20,7 +21,7 @@ namespace Server.Game
         ConcurrentDictionary<int, Player> _players = new ConcurrentDictionary<int, Player>();
         ConcurrentDictionary<int, EnvironmentObject> _envs = new ConcurrentDictionary<int, EnvironmentObject>();
         ConcurrentDictionary<int, Monster> _monsters = new ConcurrentDictionary<int, Monster>();
-        Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
+        ConcurrentDictionary<int, Projectile> _projectiles = new ConcurrentDictionary<int, Projectile>();
 
 
         MonsterManager _monsterManager = new MonsterManager();
@@ -194,9 +195,9 @@ namespace Server.Game
             {
                 List<int> visibleObjs = new List<int>();
                 AddVisibleObjects(visibleObjs, _players, player);
-                visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
-                AddVisibleObjects(visibleObjs, _envs, player);
                 AddVisibleObjects(visibleObjs, _monsters, player);
+                AddVisibleObjects(visibleObjs, _projectiles, player);
+                AddVisibleObjects(visibleObjs, _envs, player);
                 player.SendVisibleObjsPkt(visibleObjs);
             }
 
@@ -210,7 +211,7 @@ namespace Server.Game
             BroadcastVisibleObjs();
             CheckLastPing();
         }
-
+       
         public void EnterGame(GameObject gameObject)
         {
             if (gameObject == null)
@@ -271,8 +272,6 @@ namespace Server.Game
             else if (type == GameObjectType.Monster)
             {
                 Monster monster = gameObject as Monster;
-                if (_monsters == null)
-                    _monsters = new ConcurrentDictionary<int, Monster>();
 
                 monster.Room = this;
                 _monsters.TryAdd(gameObject.Id, monster);
@@ -280,8 +279,9 @@ namespace Server.Game
             else if (type == GameObjectType.Projectile)
             {
                 Projectile projectile = gameObject as Projectile;
-                _projectiles.Add(gameObject.Id, projectile);
+                _projectiles.TryAdd(gameObject.Id, projectile);
                 projectile.Room = this;
+                return;
             }
             else if (type == GameObjectType.Environment)
             {
@@ -484,9 +484,15 @@ namespace Server.Game
             if (skills.TryGetValue((KeyCode)skillPacket.SkillInfo.KeyCode, out skillData) == false)
                 return;
 
+            // 프로젝타일
+            Projectile proj= FindProjectile(player);
+            if (proj != null)
+                proj.IsActive = true;
+
             _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode,
                 new Vector2(skillPacket.TargetPosX, skillPacket.TargetPosZ), skillPacket.ChargeRatio);
         }
+
         #endregion
         public void HandleAnim(Player player, C_Anim animPacket)
         {
@@ -514,6 +520,15 @@ namespace Server.Game
             player.SkillTarget.OnDamaged(player, damage);
         }
 
+        public Projectile FindProjectile(Creature owner)
+        {
+            foreach (Projectile projectile in _projectiles.Values)
+            {
+                if (projectile.Owner == owner)
+                    return projectile;
+            }
+            return null;
+        }
         public Player FindPlayer(Func<GameObject, bool> condition)
         {
             foreach(Player player in _players.Values)
@@ -586,8 +601,8 @@ namespace Server.Game
                 List<int> visibleObjs = new List<int>();
                 AddVisibleObjects(visibleObjs, _players, player);
                 AddVisibleObjects(visibleObjs, _monsters, player);
+                AddVisibleObjects(visibleObjs, _projectiles, player);
                 AddVisibleObjects(visibleObjs, _envs, player);
-                visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
                 player.SendVisibleObjsPkt(visibleObjs);
             }
         }
