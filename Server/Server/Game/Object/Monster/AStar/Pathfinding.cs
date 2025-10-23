@@ -8,14 +8,13 @@ using System.Linq;
 
 namespace Server.Game
 {
-    // 폴리곤 노드임
     public class Node : IComparable<Node>
     {
         public int TriangleIndex; 
-        public Vector3 Center;    // 삼각형의 중심점
-        public List<Node> Neighbors; // 인접한 삼각형 노드들
+        public Vector3 Center;  
+        public List<Node> Neighbors; 
 
-        public float G, H; // G 시작점- 나 사이 비용, H 목적지까지 예상 비용
+        public float G, H; 
         public float F => G + H;
         public Node Parent;
 
@@ -84,7 +83,7 @@ namespace Server.Game
                 _triangleNodes.Add(new Node(i, center));
             }
 
-            // 2. 인접한 삼각형 찾기 (간선 연결)
+            // 2. 인접한 삼각형 찾기 
             BuildNeighborGraph();
 
             // 3. 만약 아무것도 연결되지 않은 폴리곤 존재하면 호출될 것임
@@ -119,14 +118,10 @@ namespace Server.Game
                     Vector3 roundedV2 = new Vector3((float)Math.Round(v2.X, 4), (float)Math.Round(v2.Y, 4), (float)Math.Round(v2.Z, 4));
 
                     Tuple<Vector3, Vector3> edgeKey;
-                    if (roundedV1.X < roundedV2.X || (roundedV1.X == roundedV2.X && (roundedV1.Y < roundedV2.Y || (roundedV1.Y == roundedV2.Y && roundedV1.Z < roundedV2.Z))))
-                    {
+                    if (IsV1Smaller(roundedV1, roundedV2))
                         edgeKey = new Tuple<Vector3, Vector3>(roundedV1, roundedV2);
-                    }
                     else
-                    {
                         edgeKey = new Tuple<Vector3, Vector3>(roundedV2, roundedV1);
-                    }
 
                     if (edgeToNodeMap.ContainsKey(edgeKey))
                     {
@@ -141,6 +136,23 @@ namespace Server.Game
                     }
                 }
             }
+        }
+        private static bool IsV1Smaller(Vector3 v1, Vector3 v2)
+        {
+            // 1. X축이 다르면 X축으로 비교
+            if (v1.X != v2.X)
+            {
+                return v1.X < v2.X;
+            }
+
+            // 2. X축이 같으면 Y축으로 비교
+            if (v1.Y != v2.Y)
+            {
+                return v1.Y < v2.Y;
+            }
+
+            // 3. X, Y축이 같으면 Z축으로 비교
+            return v1.Z < v2.Z;
         }
         #endregion
 
@@ -165,8 +177,6 @@ namespace Server.Game
         {
             Node startNode = FindNearestNode(start);
             Node targetNode = FindNearestNode(end);
-            if (startNode == null || targetNode == null)
-                return null;
 
             foreach (var node in _triangleNodes)
                 node.Parent = null; 
@@ -186,7 +196,8 @@ namespace Server.Game
                 // 목표 지점과 같은가?
                 if (currentNode.Equals(targetNode))
                 {
-                    List<Vector3> rawPath = SmoothPath(RetracePath(startNode, currentNode), start, end);
+                    List<Node> path = RetracePath(startNode, currentNode);
+                    List<Vector3> rawPath = SmoothPath(path, start, end);
                     float epsilon = 20.0f; 
                     List<Vector3> finalPath = PathSimplifier.DouglasPeuckerSimplify(rawPath, epsilon);
                     return finalPath;
@@ -195,19 +206,14 @@ namespace Server.Game
                 // 현재 노드와 인접한 노드 탐색
                 foreach (var neighbor in currentNode.Neighbors)
                 {
-                    // 새로운 예상 비용 계산 : current Node + 현재 탐색 중인 Neighbor node 비용
                     float tentativeGScore = currentGScore + Vector3.Distance(currentNode.Center, neighbor.Center);
 
-                    // 이웃노드에 더 낮은 비용을 가지고 있다면 continue
-                    //: 휴리스틱까지 구해서 계산하는 거라서 최적 거리가 보장되어 있음
                     if (gScore.TryGetValue(neighbor, out float neighborGScore) && tentativeGScore >= neighborGScore)
                         continue;
 
-                    // 새로운 낮은 비용 갱신
                     neighbor.Parent = currentNode;
                     gScore[neighbor] = tentativeGScore;
 
-                    // 이웃 노드에서 목표노드까지의 휴리스틱 비용 계산 (직선 거리 비용 계산)
                     float hScore = Vector3.Distance(neighbor.Center, targetNode.Center);
                     float newFScore = tentativeGScore + hScore;
                     openSet.Push(neighbor, newFScore);
@@ -227,6 +233,7 @@ namespace Server.Game
                 path.Add(currentNode);
                 currentNode = currentNode.Parent;
             }
+            // TODO -  첫 위치는 이미 Parent에 있는데 왜? 굳이?
             path.Add(startNode);
             path.Reverse();
 

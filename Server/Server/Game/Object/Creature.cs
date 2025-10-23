@@ -9,33 +9,39 @@ namespace Server.Game
         #region Astar Fields
         public Creature Target { get; set; }
 
+        protected const float DIST_TO_TARGET = 0.01f;
+        private const float MOVE_STEP = 0.7f;
+
         public List<Vector3> _path = new List<Vector3>();
         public int _pathIdx = 0;
+
+        private long _lastUpdateTime = 0;
+
         #endregion 
+
         public bool IsSkillAmplification { get; set; } = false;
+
+
+
+
+
 
         #region Astar
         public bool HasPath => _path != null && _path.Count > 0;
-        // 1. 초반 경로 계산하는 부분
-        // 움직이기 직전에 목표 위치를 전달해서 호출하면 됩니다.
-        public void Get_CalculatePath(Vector3 targetPos) => CalculatePath(targetPos);
-        private void CalculatePath(Vector3 targetPos)
+        public void SearchPath(Vector3 targetPos)
         {
-            Vector3 startPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
+            Vector3 startPos = PosInfo.GetVector3FromPosInfo();
             _path = Pathfinding.FindPath(startPos, targetPos);
             _pathIdx = 0;
 
             if (_path != null && _path.Count > 0)
             {
-                // 첫 웨이포인트가 현재 위치와 멀면 현재 위치도 경로에 넣어 자연스럽게 이동
                 if (Vector3.Distance(_path[0], startPos) > 0.1f)
                     _path.Insert(0, startPos);
             }
         }
 
-        // 2. 실제 이동 로직을 담당합니다. 움직이는 구간에 업데이트 호출하면 됩니다.
-        public void Get_MoveAlongPath() => MoveAlongPath();
-        private void MoveAlongPath()
+        public void MoveAlongPath()
         {
             if (_path == null || _path.Count == 0)
                 return;
@@ -43,6 +49,8 @@ namespace Server.Game
             Vector3 nextWaypoint = _path[_pathIdx];
             if (CheckArrival(nextWaypoint))
             {
+                // TODO
+                // 마지막 path 때만 CheckArrival을 0,01로 하고 평균은 0.3정도 해도 괜찮지 않을까?
                 _pathIdx++;
                 if (_pathIdx >= _path.Count)
                     _path.Clear();
@@ -51,25 +59,16 @@ namespace Server.Game
             FollowToTarget(nextWaypoint);
         }
 
-        // 나와 Target의 위치가 얼마만큼 가까워졌느냐 
-        protected const float MOVE_STEP_INTERPOL = 0.01f;
         private bool CheckArrival(Vector3 targetPos)
         {
-            Vector3 myPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-            float distanceToWaypoint = Vector3.Distance(myPos, targetPos);
+            Vector3 myPosition = PosInfo.GetVector3FromPosInfo();
 
-            return distanceToWaypoint < MOVE_STEP_INTERPOL;
+            return Vector3.Distance(myPosition, targetPos) < DIST_TO_TARGET;
         }
-
-
-        // 실제 이동을 담당하는 함수입니다.
-        protected const float _findRange = 30.0f;
-        private long _lastUpdateTime = 0;
-        private const float FIXED_MOVE_STEP = 0.7f;
         public void FollowToTarget(Vector3 targetPos)
         {
-            Vector3 myPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-            Vector3 dir = targetPos - myPos;
+            Vector3 myPosition = PosInfo.GetVector3FromPosInfo();
+            Vector3 dir = targetPos - myPosition;
             float distanceSq = dir.LengthSquared();
 
             if (distanceSq < 0.0001f)
@@ -80,32 +79,30 @@ namespace Server.Game
                 return;
             }
 
-            // 첫 프레임에는 이동하지 않고 시간만 초기화
-            long tick = Environment.TickCount64;
-            if (_lastUpdateTime == 0)
-                _lastUpdateTime = tick;
-
-            // =========== 경과 시간 계산 =========== 
-            double elapsedTime = (tick - _lastUpdateTime) / 1000.0;
-            _lastUpdateTime = tick;
-
+            // =========== 이동 =========== 
             float distance = (float)Math.Sqrt(distanceSq);
-            float moveStep = Math.Min(FIXED_MOVE_STEP, distance);
+            float moveStep = Math.Min(MOVE_STEP, distance);
 
             Vector3 dirNorm = dir / distance;
-            Vector3 newPos = myPos + dirNorm * moveStep;
+            Vector3 newPos = myPosition + dirNorm * moveStep;
 
             PosInfo.PosX = newPos.X;
             PosInfo.PosY = newPos.Y;
             PosInfo.PosZ = newPos.Z;
 
             // =========== 회전 =========== 
-            Vector3 dirQ = targetPos - myPos;
+            Vector3 dirQ = targetPos - myPosition;
+
+            // =========== 경과 시간 계산 =========== 
+            long tick = Environment.TickCount64;
+            if (_lastUpdateTime == 0)
+                _lastUpdateTime = tick;
+            double elapsedTime = (tick - _lastUpdateTime) / 1000.0;
+            _lastUpdateTime = tick;
 
             LookAtTarget(dirQ, elapsedTime);
         }
 
-        // 이건 회전만 담당합니다. (거리, 시간, 보간 여부, 회전 속도....)
         public void LookAtTarget(Vector3 dirQ, double elapsedTime, bool isSlerp = true, float rotationSpeed = 2.0f)
         {
             // 방향 벡터가 너무 작으면 회전하지 않음
@@ -120,10 +117,10 @@ namespace Server.Game
             float angleRad = (float)Math.Atan2(flatDir.X, flatDir.Z);
             Quaternion targetRotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angleRad);
 
+            // TODO - 회전 보간을 여기서 할 필요가 있나?
             Quaternion newRotation;
             if (isSlerp)
             {
-                // 부드러운 회전 보간
                 float t = (float)Math.Clamp(rotationSpeed * elapsedTime, 0f, 1f);
                 Quaternion currentRotation = new Quaternion(RotInfo.Qx, RotInfo.Qy, RotInfo.Qz, RotInfo.Qw);
                 newRotation = Quaternion.Slerp(currentRotation, targetRotation, t);
@@ -131,7 +128,6 @@ namespace Server.Game
             else
                 newRotation = targetRotation;
 
-            // 몬스터의 회전 정보 업데이트
             RotInfo.Qx = newRotation.X;
             RotInfo.Qy = newRotation.Y;
             RotInfo.Qz = newRotation.Z;

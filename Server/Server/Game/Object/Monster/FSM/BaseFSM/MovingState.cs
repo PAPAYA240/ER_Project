@@ -75,12 +75,12 @@ namespace Server.Game
         private void CalculateInitPath(Monster monster)
         {
             if (monster.ReturnToSpawn)
-                monster.Get_CalculatePath(monster._spawnPosition);
+                monster.SearchPath(monster._spawnPosition);
 
             else if (monster.Target is Creature target)
             {
                 Vector3 targetPos = target.PosInfo.GetVector3FromPosInfo();
-                monster.Get_CalculatePath(targetPos);
+                monster.SearchPath(targetPos);
             }
         }
         private void CheckReturnToSpawn(Monster monster)
@@ -115,7 +115,7 @@ namespace Server.Game
 
             if (monster._path != null && monster._path.Count > 0)
             {
-                monster.Get_MoveAlongPath();
+                monster.MoveAlongPath();
                 return true;
             }
             return false;
@@ -128,13 +128,13 @@ namespace Server.Game
 
             if (monster.ReturnToSpawn)
             {
-                monster.Get_CalculatePath(monster._spawnPosition);
+                monster.SearchPath(monster._spawnPosition);
             }
             else if (monster.Target is Creature target)
             {
                 // 타겟 위치로 경로 재계산
                 Vector3 targetPos = target.PosInfo.GetVector3FromPosInfo();
-                monster.Get_CalculatePath(targetPos);
+                monster.SearchPath(targetPos);
             }
         }
         #endregion

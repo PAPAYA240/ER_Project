@@ -17,7 +17,7 @@ namespace Server.Game
 {
     public class GameRoom : Room
     {
-        Dictionary<int, Player> _players = new Dictionary<int, Player>();
+        ConcurrentDictionary<int, Player> _players = new ConcurrentDictionary<int, Player>();
         ConcurrentDictionary<int, EnvironmentObject> _envs = new ConcurrentDictionary<int, EnvironmentObject>();
         ConcurrentDictionary<int, Monster> _monsters = new ConcurrentDictionary<int, Monster>();
         Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
@@ -182,20 +182,23 @@ namespace Server.Game
             {
                 player.Update();
             }
+            foreach (Monster monster in _monsters.Values)
+            {
+                monster.Update();
 
+                //List<Monster> monstersToUpdate = new List<Monster>(_monsters.Values);
+                //foreach (Monster monster in monstersToUpdate)
+                //    monster.Update();
+            }
             foreach (Player player in _players.Values)
             {
                 List<int> visibleObjs = new List<int>();
-                visibleObjs.AddRange(GetObjectsInRange(_players, player));
+                AddVisibleObjects(visibleObjs, _players, player);
                 visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
                 AddVisibleObjects(visibleObjs, _envs, player);
                 AddVisibleObjects(visibleObjs, _monsters, player);
                 player.SendVisibleObjsPkt(visibleObjs);
             }
-
-            List<Monster> monstersToUpdate = new List<Monster>(_monsters.Values);
-            foreach (Monster monster in monstersToUpdate)
-                monster.Update();
 
             Flush();
 
@@ -217,7 +220,7 @@ namespace Server.Game
             if (type == GameObjectType.Player)
             {
                 Player player = gameObject as Player;
-                _players.Add(gameObject.Id, player);
+                _players.TryAdd(gameObject.Id, player);
                 player.Init();
                 player.Info.Player.Team = AssignTeam();
                 player.Info.Player.Weapon = FindWeapon(player.Info.Player.CharType);
@@ -581,7 +584,7 @@ namespace Server.Game
             foreach (Player player in _players.Values)
             {
                 List<int> visibleObjs = new List<int>();
-                visibleObjs.AddRange(GetObjectsInRange(_players, player));
+                AddVisibleObjects(visibleObjs, _players, player);
                 AddVisibleObjects(visibleObjs, _monsters, player);
                 AddVisibleObjects(visibleObjs, _envs, player);
                 visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
@@ -642,7 +645,7 @@ namespace Server.Game
                     dummyPlayer.Hp = dummyPlayer.MaxHp;
                     dummyPlayer.Stamina = dummyPlayer.MaxStamina;
                     dummyPlayer.Session = clientSession;
-                    _players.Add(dummyPlayer.Id, dummyPlayer);
+                    _players.TryAdd(dummyPlayer.Id, dummyPlayer);
                     dummyPlayer.Info.Player.Team = AssignTeam();
 
                     if (!_teams.TryGetValue(dummyPlayer.Info.Player.Team, out var teamPlayers))
