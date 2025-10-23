@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
 using Server.Data;
 using Server.Game;
 using System;
@@ -82,6 +83,9 @@ public abstract class SkillHandlerBase : ISkillHandler
     #region Utils
     public float GetDuration(CharacterType charType)
     {
+        if (_animName == null)
+            return 0.01f;
+
         return DataManager.AnimLengthInfoDict[charType][_animName].Length;
     }
 

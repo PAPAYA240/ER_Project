@@ -11,9 +11,9 @@ public class PlayerStateMachine
     public void ChangeState(IPlayerState newState, Player player)
     {
         // 같은 상태로의 중복 전환 방지
-        if (_currentState != null && newState != null &&
-        _currentState.GetType() == newState.GetType())           
-            return;
+        //if (_currentState != null && newState != null &&
+        //_currentState.GetType() == newState.GetType())           
+        //    return;
 
         _currentState?.Exit(player);
         _currentState = newState;

@@ -44,7 +44,7 @@ public class PlayerInputController : MonoBehaviour
     // 우클릭 유지 중 이동 의도(타겟 이동 or 땅 이동)
     public C_SetMoveTarget GetSetMoveTarget()
     {
-        Debug.Log(_player.State);
+        //Debug.Log(_player.State);
 
         if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving)
         {

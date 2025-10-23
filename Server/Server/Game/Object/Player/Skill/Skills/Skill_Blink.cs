@@ -16,7 +16,19 @@ public sealed class Skill_Blink : SkillHandlerBase
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
-        base.OnEnter(p, ctx);
+        LastSeq = 0;
+        Latest = default;
+        _committed = false;
+
+        // 이동 잠금
+        p.SendStopPacket(StopReason.StopMoveOnly);
+
+        // 대기 중이던 제안이 있으면 즉시 소비(레이스 방지)
+        if (p.PendingProposal.Has)
+        {
+            OnPropose(p, in p.PendingProposal.Prop);
+            p.PendingProposal = default;
+        }
 
         p.SendSkillConfirmPacket(ctx.Key, VariantKey.Cast);
     }
@@ -52,7 +64,7 @@ public sealed class Skill_Blink : SkillHandlerBase
         _finalEnd = end;
 
         float dist = Vector3.Distance(from, end);
-        float duration = 0;
+        float duration = 0.1f;
 
         p.SendSkillMotion(
              type: SkillMotionType.Blink,

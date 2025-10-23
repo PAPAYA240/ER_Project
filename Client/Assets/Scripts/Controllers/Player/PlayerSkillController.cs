@@ -183,13 +183,15 @@ public class PlayerSkillController : MonoBehaviour
             packet.EndBlockedX = endBlocked.x;
             packet.EndBlockedZ = endBlocked.z;
 
-            Debug.Log($"X : {endBlocked.x}, Z : {endBlocked.z}");
+            Debug.Log($"EndBlocked => X : {endBlocked.x}, Z : {endBlocked.z}");
         }
         if(_curSkill.needs.endPass)
         {
             Vector3 endPass = ComputeEndPass(skillKey, spec, clickX, clickZ);
             packet.EndPassX = endPass.x;
             packet.EndPassZ = endPass.z;
+
+            Debug.Log($"EndPass => X : {endPass.x}, Z : {endPass.z}");
         }
         if(_curSkill.needs.behindBlocked)
         {

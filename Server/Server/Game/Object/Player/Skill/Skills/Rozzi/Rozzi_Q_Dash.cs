@@ -11,7 +11,7 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
 {
     public Rozzi_Q_Dash()
     {
-        _animName = "SKILL_Q_Dash";
+        _animName = "SKILL_Q_DASH";
         _keyCode = KeyCode.Q;
     }
 
