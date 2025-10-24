@@ -51,7 +51,7 @@ namespace Server.Game
             Vector3 forwardVector = Info.RotInfo.Forward();
             Vector3 moveDistance = forwardVector * _speed * (float)deltaTimeSeconds;
 
-            Vector3 myCurPosition = Info.PosInfo.GetVector3FromPosInfo();
+            Vector3 myCurPosition = Info.PosInfo.ToVector();
             Vector3 newPosition = myCurPosition + moveDistance;
 
             Info.PosInfo.SetPosInfoFromVector3(newPosition);

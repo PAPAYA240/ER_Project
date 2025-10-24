@@ -1,6 +1,8 @@
 ﻿using Google.Protobuf.Protocol;
+using Nito.Collections;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace Server.Game
@@ -13,7 +15,7 @@ namespace Server.Game
         protected const float DIST_TO_TARGET = 0.01f;
         private const float MOVE_STEP = 0.7f;
 
-        public List<Vector3> _path = new List<Vector3>();
+        public Deque<Node> _path = new Deque<Node>();
         public int _pathIdx = 0;
 
         private long _lastUpdateTime = 0;
@@ -21,6 +23,7 @@ namespace Server.Game
         #endregion 
 
         public bool IsSkillAmplification { get; set; } = false;
+
 
         #region Projectile
         public Projectile CreateProjectile()
@@ -40,17 +43,20 @@ namespace Server.Game
 
         #region Astar
         public bool HasPath => _path != null && _path.Count > 0;
-        public void SearchPath(Vector3 targetPos)
+        public PathState SearchPath(Vector3 targetPos)
         {
-            Vector3 startPos = PosInfo.GetVector3FromPosInfo();
-            _path = Pathfinding.FindPath(startPos, targetPos);
+            Vector3 startPos = PosInfo.ToVector();
+            _path.Clear();
+
+            PathState result = (PathState)(Room?.PathFind.FindPath(startPos, targetPos, ref _path));
             _pathIdx = 0;
 
-            if (_path != null && _path.Count > 0)
-            {
-                if (Vector3.Distance(_path[0], startPos) > 0.1f)
-                    _path.Insert(0, startPos);
-            }
+            return result;
+            //    if (_path != null && _path.Count > 0)
+            //{
+            //    if (Vector3.Distance(_path[0], startPos) > 0.1f)
+            //        _path.Insert(0, startPos);
+            //}
         }
 
         public void MoveAlongPath()
@@ -58,28 +64,33 @@ namespace Server.Game
             if (_path == null || _path.Count == 0)
                 return;
 
-            Vector3 nextWaypoint = _path[_pathIdx];
-            if (CheckArrival(nextWaypoint))
+            Node nextNode = _path[_pathIdx];
+            Vector3 nextWaypoint = nextNode.Center;
+            if (CheckArrival(nextWaypoint, (_pathIdx >= _path.Count)))
             {
-                // TODO
-                // 마지막 path 때만 CheckArrival을 0,01로 하고 평균은 0.3정도 해도 괜찮지 않을까?
                 _pathIdx++;
-                if (_pathIdx >= _path.Count)
+                if (_pathIdx >= _path.Count )
+                {
                     _path.Clear();
+                    _pathIdx = 0;
+                    return;
+                }
             }
 
             FollowToTarget(nextWaypoint);
         }
 
-        private bool CheckArrival(Vector3 targetPos)
+        protected const float SKILL_RANGE = 0.01f;
+        private bool CheckArrival(Vector3 targetPos, bool bLastPath)
         {
-            Vector3 myPosition = PosInfo.GetVector3FromPosInfo();
+            Vector3 myPosition = PosInfo.ToVector();
 
+            float dist = (bLastPath) ? SKILL_RANGE : DIST_TO_TARGET;
             return Vector3.Distance(myPosition, targetPos) < DIST_TO_TARGET;
         }
         public void FollowToTarget(Vector3 targetPos)
         {
-            Vector3 myPosition = PosInfo.GetVector3FromPosInfo();
+            Vector3 myPosition = PosInfo.ToVector();
             Vector3 dir = targetPos - myPosition;
             float distanceSq = dir.LengthSquared();
 
@@ -91,7 +102,7 @@ namespace Server.Game
                 return;
             }
 
-            // =========== 이동 =========== 
+            //// =========== 이동 =========== 
             float distance = (float)Math.Sqrt(distanceSq);
             float moveStep = Math.Min(MOVE_STEP, distance);
 

@@ -58,8 +58,8 @@ namespace Server.Game
             double elapsedTime = (currentTick - _lastRotationUpdateTime) / 1000.0;
             _lastRotationUpdateTime = currentTick;
 
-            Vector3 targetPosition = monster.Target.PosInfo.GetVector3FromPosInfo();
-            Vector3 myPosition = monster.PosInfo.GetVector3FromPosInfo();
+            Vector3 targetPosition = monster.Target.PosInfo.ToVector();
+            Vector3 myPosition = monster.PosInfo.ToVector();
             Vector3 direction = targetPosition - myPosition;
 
             monster.LookAtTarget(direction, elapsedTime, false);

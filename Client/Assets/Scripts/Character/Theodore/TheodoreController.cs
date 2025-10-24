@@ -146,6 +146,7 @@ public class TheodoreController : MyPlayerController
             return;
         }
 
+        CancelSkill();
         _ratioSkillDuration = 0f;
     }
     #endregion

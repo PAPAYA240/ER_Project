@@ -2,7 +2,6 @@
 using Server.Data;
 using System;
 using System.Numerics;
-using System.Threading;
 
 namespace Server.Game
 {
@@ -38,7 +37,10 @@ namespace Server.Game
             if (IsSkillFinished())
             {
                 _behavior?.OnEnd(monster);
-                monster.ChangeState(FSMManager.Instance.GetIdleState());
+                if (monster.IsInSkillRange())
+                    monster.ChangeState(FSMManager.Instance.GetSkillState(monster.Info.Monster.MonsterType));
+                else
+                    monster.ChangeState(FSMManager.Instance.GetIdleState());
             }
         }
         public void OnHit(Monster monster, Creature target)
@@ -81,8 +83,8 @@ namespace Server.Game
             double elapsedTime = (currentTick - _lastUpdateTime) / 1000.0;
             _lastUpdateTime = currentTick;
 
-            Vector3 targetPosition = monster.Target.PosInfo.GetVector3FromPosInfo();
-            Vector3 myPosition = monster.PosInfo.GetVector3FromPosInfo();
+            Vector3 targetPosition = monster.Target.PosInfo.ToVector();
+            Vector3 myPosition = monster.PosInfo.ToVector();
             Vector3 direction = targetPosition - myPosition;
 
             monster.LookAtTarget(direction, elapsedTime, false);

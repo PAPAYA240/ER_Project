@@ -12,6 +12,7 @@ using System.Net.Sockets;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using static Lucene.Net.Index.ByteBlockPool;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -151,11 +152,10 @@ namespace Server.Game
         }
          public CollisionManager CollManager { get { return _collisionManager; } private set { } }
 
+        public PathfindInstance PathFind { get; set; }
         public void Init(int mapId)
         {
-            // Spawn NavMesh
-            Pathfinding.Initialize();
-
+            PathFind = new PathfindInstance(0);
             // Spawn Monster
             _monsterManager.Init(this);
              
@@ -489,6 +489,7 @@ namespace Server.Game
             if (proj != null)
                 proj.IsActive = true;
 
+            if(skill.)
             _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode,
                 new Vector2(skillPacket.TargetPosX, skillPacket.TargetPosZ), skillPacket.ChargeRatio);
         }

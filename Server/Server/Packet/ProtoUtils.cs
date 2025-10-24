@@ -8,7 +8,7 @@ namespace Google.Protobuf.Protocol
 {
     public sealed partial class PositionInfo
     {
-        public Vector3 GetVector3FromPosInfo()
+        public Vector3 ToVector()
         {
             return new Vector3(PosX, PosY, PosZ);
         }

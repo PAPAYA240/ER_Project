@@ -7,7 +7,7 @@ namespace Server.Game
     public class MovingState : IMonsterState
     {
         private const int MOVE_INTERVAL_MS = 100;
-        private const int PATH_RECALC_INTERVAL_MS = 1000;
+        private const int PATH_RECALC_INTERVAL_MS = 2000;
 
         private long _nextCalcPathTick = 0;
         private long _nextMoveTick = 0;
@@ -79,7 +79,7 @@ namespace Server.Game
 
             else if (monster.Target is Creature target)
             {
-                Vector3 targetPos = target.PosInfo.GetVector3FromPosInfo();
+                Vector3 targetPos = target.PosInfo.ToVector();
                 monster.SearchPath(targetPos);
             }
         }
@@ -122,19 +122,23 @@ namespace Server.Game
         }
         private void RecalculatePath(Monster monster)
         {
-            if (Environment.TickCount64 < _nextCalcPathTick)
-                return;
-            _nextCalcPathTick = Environment.TickCount64 + PATH_RECALC_INTERVAL_MS;
+            if (monster.Target != null)
+            {
+                Vector3 currentTargetPos = new Vector3(
+                    monster.Target.PosInfo.PosX,
+                    monster.Target.PosInfo.PosY,
+                    monster.Target.PosInfo.PosZ
+                );
 
-            if (monster.ReturnToSpawn)
-            {
-                monster.SearchPath(monster._spawnPosition);
-            }
-            else if (monster.Target is Creature target)
-            {
-                // 타겟 위치로 경로 재계산
-                Vector3 targetPos = target.PosInfo.GetVector3FromPosInfo();
-                monster.SearchPath(targetPos);
+                if (monster._lastTargetPos != Vector3.Zero)
+                {
+                    float movedDistance = Vector3.Distance(monster._lastTargetPos, currentTargetPos);
+                    if (movedDistance < 3f) // 3m 이하로 움직였으면 재계산 안 함
+                        return;
+                }
+
+                monster._lastTargetPos = currentTargetPos;
+                monster.SearchPath(currentTargetPos);
             }
         }
         #endregion

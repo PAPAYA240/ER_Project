@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Xml;
 using Google.Protobuf.Protocol;
 using Server.Data;
-using static Server.Game.Player;
 
 namespace Server.Game
 {
@@ -40,9 +38,9 @@ namespace Server.Game
         // Position
         public Vector3 _spawnPosition = new Vector3();
         public bool ReturnToSpawn { get; set; }
+        public Vector3 _lastTargetPos = new Vector3();
 
         // Detection
-        private const float SKILL_RANGE = 2.0f;
         private const float ACTIVE_RANGE = 20f;
 
         // Events
@@ -164,20 +162,20 @@ namespace Server.Game
             if (Target == null)
                 return false;
 
-            Vector3 myPosition = PosInfo.GetVector3FromPosInfo();
-            Vector3 targetPosition = Target.PosInfo.GetVector3FromPosInfo();
-            return Vector3.Distance(myPosition, targetPosition) <= SKILL_RANGE;
+            Vector3 myPosition = PosInfo.ToVector();
+            Vector3 targetPosition = Target.PosInfo.ToVector();
+            return Vector3.Distance(myPosition, targetPosition) <= DIST_TO_TARGET;
         }
 
         public bool IsReturnSpawn()
         {
-            Vector3 monsterPosition = PosInfo.GetVector3FromPosInfo();
+            Vector3 monsterPosition = PosInfo.ToVector();
             return Vector3.Distance(monsterPosition, _spawnPosition) >= ACTIVE_RANGE;
         }
 
         public bool IsAtSpawn()
         {
-            var myPosition = PosInfo.GetVector3FromPosInfo();
+            var myPosition = PosInfo.ToVector();
             return (Vector3.Distance(myPosition, _spawnPosition) < 0.1f);
         }
         #endregion

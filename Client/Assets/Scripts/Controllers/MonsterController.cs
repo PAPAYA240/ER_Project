@@ -2,6 +2,7 @@ using Google.Protobuf.Protocol;
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEditor.PlayerSettings;
 
 public class MonsterController : CreatureController
 {
@@ -42,6 +43,7 @@ public class MonsterController : CreatureController
             return;
 
         InitHpBar();
+        
         Stat = Stat;
     }
     protected override void UpdateController()
@@ -69,7 +71,7 @@ public class MonsterController : CreatureController
     public void OnIdlePacket(S_State packet)
     {
         if (_agent != null)
-            _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+            _agent.SetDestination(packet.PosInfo.ToVector());
 
         _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
 
@@ -81,7 +83,7 @@ public class MonsterController : CreatureController
     public void OnMovePacket(S_State packet)
     {
         if (_agent != null)
-            _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+             _agent.SetDestination(packet.PosInfo.ToVector());
 
         _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
@@ -93,7 +95,7 @@ public class MonsterController : CreatureController
         if (_agent != null)
         {
             _agent.ResetPath();
-            _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+           _agent.SetDestination(packet.PosInfo.ToVector());
         }
         _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
