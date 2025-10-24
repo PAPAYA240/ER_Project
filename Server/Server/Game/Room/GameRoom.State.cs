@@ -38,7 +38,6 @@ namespace Server.Game
             if (player.CurrentState is Player_SkillState skillState)
             {
                 player.EnqueueMove(pkt);
-                Console.WriteLine($"HandleSetMoveTarget, Enqueue / x - {pkt.TargetPos.PosX}, z - {pkt.TargetPos.PosZ}");
                 return;
             }
 
