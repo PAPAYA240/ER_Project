@@ -82,8 +82,6 @@ public class Player_DeadState : IPlayerState
 
         respawnPacket.Hp = player.Hp = player.MaxHp;
         respawnPacket.Stamina = player.Stamina = player.MaxStamina;
-        // temp
-        Console.WriteLine(respawnPacket.PosInfo);
         player.SendDeadPacket(respawnPacket);
 
         player.ChangeState(new Player_IdleState());
