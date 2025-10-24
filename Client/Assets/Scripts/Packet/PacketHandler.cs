@@ -71,6 +71,17 @@ class PacketHandler
         }     
     }
 
+    public static void S_SetMoveTargetHandler(PacketSession session, IMessage packet)
+    {
+        S_SetMoveTarget targetPacket = packet as S_SetMoveTarget;
+        ServerSession serverSession = session as ServerSession;
+
+        if (Managers.Object.MyPlayer.Id == targetPacket.Id)
+        {
+            Managers.Object.MyPlayer.OnServerUpdate(targetPacket);
+        }
+    }
+
     public static void S_StateHandler(PacketSession session, IMessage packet)
     {
         S_State skillPacket = packet as S_State;

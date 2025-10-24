@@ -101,8 +101,8 @@ public class PlayerInputController : MonoBehaviour
                 return new C_SetMoveTarget
                 {
                     IsGround = false,
-                    TargetId = id
-                    // TargetPos는 필요 없음(서버가 타겟 현재 위치로 갱신)
+                    TargetId = id,
+                    TargetPos = final,
                 };
             }
         //}
