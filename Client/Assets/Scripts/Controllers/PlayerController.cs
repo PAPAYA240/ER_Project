@@ -131,7 +131,6 @@ public class PlayerController : CreatureController
     public void OnStop(S_Stop packet)
     {
         _agent.isStopped = true;
-        Debug.Log("Stop : OnStop");
         _agent.ResetPath();
     }
 

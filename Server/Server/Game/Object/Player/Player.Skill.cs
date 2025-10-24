@@ -94,7 +94,6 @@ namespace Server.Game
             if (tok.RemainingUses <= 0)
                 tok.Active = false;
 
-
             Console.WriteLine("Token Uses");
             return true;
         }

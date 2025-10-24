@@ -101,7 +101,6 @@ public class PlayerViewController : MonoBehaviour
             TargetPos = packet.TargetPos,
         };
         ApplyLocalSetMoveTarget(cmd, true);
-        Debug.Log($"TargetPos : x - {packet.TargetPos.PosX}, z - {packet.TargetPos.PosZ}");
     }
 
     public void OnAnim(S_Anim packet)
@@ -148,7 +147,6 @@ public class PlayerViewController : MonoBehaviour
             _skill.StopSkillMotion();
 
         // 추적 코루틴 정리
-        Debug.Log("StopFollowTarget : ApplyLocalSetMoveTarget");
         StopFollowTarget();
 
         _agent.enabled = true;
@@ -164,13 +162,7 @@ public class PlayerViewController : MonoBehaviour
                 final = navHit.position;
 
             _agent.isStopped = false;
-
-            if(final != _agent.destination)
-            {
-                Debug.Log($"Change Destination : Cur - {_agent.destination}, Next - {final}");
-            }
-            bool isSet = _agent.SetDestination(final);
-            Debug.Log($"Set Destination : Cur - {_agent.destination}, Next - {final}");
+            _agent.SetDestination(final);
         }
         else
         {
@@ -204,8 +196,6 @@ public class PlayerViewController : MonoBehaviour
             case StopReason.StopAll:
             case StopReason.StopMoveOnly:
                 _agent.isStopped = true;
-                Debug.Log("Stop : ApplyStop");
-                Debug.Log("StopFollowTarget : ApplyStop");
                 StopFollowTarget(); // 추적 종료(서버 사인에 의해)
                 _agent.ResetPath();
                 break;
@@ -240,7 +230,6 @@ public class PlayerViewController : MonoBehaviour
         if (targetView == null)
         {
             // 타겟이 사라졌으면 추적 종료
-            Debug.Log("StopFollowTarget : UpdateFollowDestinationOnce");
             StopFollowTarget();
             return;
         }
@@ -259,7 +248,6 @@ public class PlayerViewController : MonoBehaviour
         { StopCoroutine(_coFollow); _coFollow = null; }
 
         _agent.isStopped = true;
-        Debug.Log("Stop : StopFollowTarget");
         _agent.ResetPath();
     }
     #endregion

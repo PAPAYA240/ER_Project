@@ -133,7 +133,6 @@ public class PlayerSkillController : MonoBehaviour
 
         // 추적 연출 중엔 Agent가 좌표를 끌어올리지 못하게
         _agent.isStopped = true;
-        Debug.Log("Stop : Co_StreamPropose");
         _agent.updatePosition = false;
         _agent.updateRotation = false;
 
@@ -243,7 +242,6 @@ public class PlayerSkillController : MonoBehaviour
         if (!_agent.enabled)
             _agent.enabled = true;
         _agent.isStopped = true;
-        Debug.Log("Stop : Co_PlaySkillMotion");
         _agent.updatePosition = false;
         _agent.updateRotation = false;
         _agent.ResetPath();
@@ -307,8 +305,6 @@ public class PlayerSkillController : MonoBehaviour
         _motionCo = null;
 
         _player.UpdateTransform();
-
-        Debug.Log("CoSkillMotion End");
     }
 
     private float ApplyCurve(float u, string id)

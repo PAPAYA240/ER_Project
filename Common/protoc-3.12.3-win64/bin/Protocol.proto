@@ -47,14 +47,13 @@ enum MsgId {
   C_SET_MOVE_TARGET = 39;
   C_STOP = 40;
   S_STOP = 41;
-  S_SET_MOVE_TARGET = 42;
+  S_MOVE_SYNC = 42;
   S_SKILL_CONFIRM = 43;
   S_SKILL_MOTION = 44;
   C_SKILL_INPUT = 45;
   C_SKILL_COLLISION_PROPOSE = 46;
   C_REST = 47;
   C_DEATH = 48;
-  S_MOVE_SYNC = 49;
 }
 
 enum CreatureState{
@@ -597,13 +596,6 @@ message C_Stop {
 message S_Stop {
 	int32 id = 1;
 	StopReason reason = 2;
-}
-
-message S_SetMoveTarget {
-	int32 id = 1;
-	bool isGround   = 2;			// true=땅 이동, false=타겟 추격 이동
-	int32 targetId  = 3;			// isGround=false 때 사용
-	PositionInfo targetPos = 4;		// isGround=true 때 사용(땅 목적지)
 }
 
 message S_SkillConfirm {

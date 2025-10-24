@@ -47,7 +47,6 @@ public class PlayerInputController : MonoBehaviour
         if (_player.State == CreatureState.Rest)
         {
             _agent.isStopped = true;
-            Debug.Log("Stop : Rest");
             return null;
         }
         //else
