@@ -54,6 +54,7 @@ enum MsgId {
   C_SKILL_COLLISION_PROPOSE = 46;
   C_REST = 47;
   C_DEATH = 48;
+  S_MOVE_SYNC = 49;
 }
 
 enum CreatureState{
@@ -658,4 +659,9 @@ message C_SkillCollisionPropose {
 
 message C_Rest {
   bool isRest = 1;
+}
+
+message S_MoveSync {
+  int32 objectId = 1;
+  PositionInfo targetPos = 2;
 }

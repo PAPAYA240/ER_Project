@@ -13,8 +13,7 @@ public class PlayerInputController : MonoBehaviour
 {
     private MyPlayerController _player;    
     private NavMeshAgent _agent;
-
-    [SerializeField] PlayerSkillController _skill;
+    private PlayerSkillController _skill;
 
     [SerializeField] float _attackRange = 3.0f;  
     [SerializeField] float _stopBuffer = 1.5f;
@@ -45,14 +44,24 @@ public class PlayerInputController : MonoBehaviour
     public C_SetMoveTarget GetSetMoveTarget()
     {
         //Debug.Log(_player.State);
-
-        if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving)
+        if (_player.State == CreatureState.Rest)
         {
-            if (!Input.GetMouseButton(1))
+            _agent.isStopped = true;
+            Debug.Log("Stop : Rest");
+            return null;
+        }
+        //else
+        //{
+        //    return null;
+        //}
+
+        //if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving)
+        //{
+        if (!Input.GetMouseButton(1))
                 return null;
 
-            if (_skill.IsInSkillMotion)
-                return null;
+            //if (_skill.IsInSkillMotion)
+            //    return null;
 
             GameObject target = GetAttackableUnderCursor();
             if (target == null)
@@ -97,16 +106,10 @@ public class PlayerInputController : MonoBehaviour
                     // TargetPos는 필요 없음(서버가 타겟 현재 위치로 갱신)
                 };
             }
-        }
-        else if (_player.State == CreatureState.Rest)
-        {
-            _agent.isStopped = true;
-            return null;
-        }
-        else
-        {
-            return null;
-        }
+        //}
+        //else 
+        
+        
     }
 
     // 우클릭 "타겟 공격" (클릭 순간 1회)

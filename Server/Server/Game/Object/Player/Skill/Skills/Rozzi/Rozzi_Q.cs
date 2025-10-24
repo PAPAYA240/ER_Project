@@ -11,6 +11,7 @@ public sealed class Rozzi_Q : SkillHandlerBase
 {
     public Rozzi_Q()
     {
+        _characterType = CharacterType.Rozzi;
         _animName = "SKILL_Q";
         _keyCode = KeyCode.Q;
     }
@@ -28,14 +29,12 @@ public sealed class Rozzi_Q : SkillHandlerBase
         return;
     }
 
+    // TEMP
+    bool isCommited = false;
     public override void OnTick(Player p, SkillContext ctx)
     {
-        return;
-    }
-
-    public override void OnExit(Player p, SkillContext ctx)
-    {
-        base.OnExit(p, ctx);
+        if (isCommited)
+            return;
 
         p.Tokens.Add(new NextInputToken
         {
@@ -47,6 +46,15 @@ public sealed class Rozzi_Q : SkillHandlerBase
             ReplacementSkillKey = "Rozzi_Q_Dash",
             CancelOnUseSkill = true
         });
+
+        isCommited = true;  
+
+        return;
+    }
+
+    public override void OnExit(Player p, SkillContext ctx)
+    {
+        base.OnExit(p, ctx);       
     }
 }
 

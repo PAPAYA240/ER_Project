@@ -396,6 +396,16 @@ namespace Server.Game
             };
             Room.Push(Room.Broadcast, packet);
         }
+
+        public void SendMoveSyncPacket(PositionInfo targetPos)
+        {
+            S_MoveSync packet = new S_MoveSync
+            {
+                ObjectId = Id,
+                TargetPos = targetPos,
+            };
+            Room.Push(Room.Broadcast, packet);
+        }
         #endregion
     }
 }

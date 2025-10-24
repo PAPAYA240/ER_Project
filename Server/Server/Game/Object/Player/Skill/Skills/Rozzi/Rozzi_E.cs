@@ -11,6 +11,7 @@ public sealed class Rozzi_E : SkillHandlerBase
 {
     public Rozzi_E()
     {
+        _characterType = CharacterType.Rozzi;
         _animName = "SKILL_E";
         _keyCode = KeyCode.E;
     }

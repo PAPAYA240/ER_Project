@@ -78,7 +78,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SSkillConfirm, MakePacket<S_SkillConfirm>);
 		_handler.Add((ushort)MsgId.SSkillConfirm, PacketHandler.S_SkillConfirmHandler);		
 		_onRecv.Add((ushort)MsgId.SSkillMotion, MakePacket<S_SkillMotion>);
-		_handler.Add((ushort)MsgId.SSkillMotion, PacketHandler.S_SkillMotionHandler);
+		_handler.Add((ushort)MsgId.SSkillMotion, PacketHandler.S_SkillMotionHandler);		
+		_onRecv.Add((ushort)MsgId.SMoveSync, MakePacket<S_MoveSync>);
+		_handler.Add((ushort)MsgId.SMoveSync, PacketHandler.S_MoveSyncHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

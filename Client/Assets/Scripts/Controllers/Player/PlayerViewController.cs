@@ -13,6 +13,7 @@ public class PlayerViewController : MonoBehaviour
     private NavMeshAgent _agent;
     private Animator _animator;
     private MyPlayerController _player;
+    private PlayerSkillController _skill;
 
     private bool _syncing;
     //private bool _sentArriveSnapshot;
@@ -37,14 +38,13 @@ public class PlayerViewController : MonoBehaviour
         _agent = GetComponentInChildren<NavMeshAgent>();
         _animator = GetComponentInChildren<Animator>();
         _player = GetComponentInChildren<MyPlayerController>();
+        _skill = GetComponentInChildren<PlayerSkillController>();
     }
 
     private void Update()
     {
         if (!_syncing || _agent == null || _player == null)
             return;
-
-        _player.UpdateTransform();
 
         //Vector3 pos = _player.transform.position;
         //Quaternion rot = _player.transform.rotation;
@@ -59,6 +59,8 @@ public class PlayerViewController : MonoBehaviour
         //    _player.UpdateTransform();
         //}
 
+        _player.UpdateTransform();
+
         if (_player.State == CreatureState.Attack)
         {
             var targetView = Managers.Object.FindById(_targetId);
@@ -69,7 +71,7 @@ public class PlayerViewController : MonoBehaviour
                 UpdateTarget(pos);
             }
         }
-        else
+        else if(_player.State == CreatureState.Moving)
         {
             _player.UpdateTransform();
         }
@@ -89,6 +91,17 @@ public class PlayerViewController : MonoBehaviour
         //        _player.UpdateTransform(true);
         //    }
         //}
+    }
+
+    public void OnMoveSync(S_MoveSync packet)
+    {
+        C_SetMoveTarget cmd = new C_SetMoveTarget()
+        {
+            IsGround = true,
+            TargetPos = packet.TargetPos,
+        };
+        ApplyLocalSetMoveTarget(cmd, true);
+        Debug.Log($"TargetPos : x - {packet.TargetPos.PosX}, z - {packet.TargetPos.PosZ}");
     }
 
     public void OnAnim(S_Anim packet)
@@ -124,13 +137,24 @@ public class PlayerViewController : MonoBehaviour
     }
 
     #region Moving
-    public void ApplyLocalSetMoveTarget(C_SetMoveTarget cmd, float attackRange = 3.0f)
+    public void ApplyLocalSetMoveTarget(C_SetMoveTarget cmd, bool isServerSync = false, float attackRange = 3.0f)
     {
         if (_agent == null)
             return;
 
+        if (_player.State == CreatureState.Skill && !isServerSync)
+            return;
+        else
+            _skill.StopSkillMotion();
+
         // 추적 코루틴 정리
+        Debug.Log("StopFollowTarget : ApplyLocalSetMoveTarget");
         StopFollowTarget();
+
+        _agent.enabled = true;
+        _agent.updatePosition = true;     // ★ 추가
+        _agent.updateRotation = true;     // ★ 추가
+        _agent.isStopped = false;
 
         if (cmd.IsGround)
         {
@@ -140,7 +164,13 @@ public class PlayerViewController : MonoBehaviour
                 final = navHit.position;
 
             _agent.isStopped = false;
-            _agent.SetDestination(final);
+
+            if(final != _agent.destination)
+            {
+                Debug.Log($"Change Destination : Cur - {_agent.destination}, Next - {final}");
+            }
+            bool isSet = _agent.SetDestination(final);
+            Debug.Log($"Set Destination : Cur - {_agent.destination}, Next - {final}");
         }
         else
         {
@@ -174,6 +204,8 @@ public class PlayerViewController : MonoBehaviour
             case StopReason.StopAll:
             case StopReason.StopMoveOnly:
                 _agent.isStopped = true;
+                Debug.Log("Stop : ApplyStop");
+                Debug.Log("StopFollowTarget : ApplyStop");
                 StopFollowTarget(); // 추적 종료(서버 사인에 의해)
                 _agent.ResetPath();
                 break;
@@ -208,6 +240,7 @@ public class PlayerViewController : MonoBehaviour
         if (targetView == null)
         {
             // 타겟이 사라졌으면 추적 종료
+            Debug.Log("StopFollowTarget : UpdateFollowDestinationOnce");
             StopFollowTarget();
             return;
         }
@@ -226,6 +259,7 @@ public class PlayerViewController : MonoBehaviour
         { StopCoroutine(_coFollow); _coFollow = null; }
 
         _agent.isStopped = true;
+        Debug.Log("Stop : StopFollowTarget");
         _agent.ResetPath();
     }
     #endregion

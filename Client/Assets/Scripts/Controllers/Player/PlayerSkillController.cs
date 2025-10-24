@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Android;
 using UnityEngine.InputSystem;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class PlayerSkillController : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class PlayerSkillController : MonoBehaviour
     Vector3 mousePos;
 
     // TEMP
+    Vector3 _endPosition;
 
     private void Awake()
     {
@@ -131,6 +133,7 @@ public class PlayerSkillController : MonoBehaviour
 
         // 추적 연출 중엔 Agent가 좌표를 끌어올리지 못하게
         _agent.isStopped = true;
+        Debug.Log("Stop : Co_StreamPropose");
         _agent.updatePosition = false;
         _agent.updateRotation = false;
 
@@ -215,6 +218,22 @@ public class PlayerSkillController : MonoBehaviour
         _motionCo = StartCoroutine(Co_PlaySkillMotion(type, start, end, duration, anim, curveId, authoritativeEnd));
     }
 
+    public void StopSkillMotion()
+    {
+        if (_motionCo != null)
+            StopCoroutine(_motionCo);
+
+        //_agent.Warp(_endPosition);
+        _agent.updatePosition = true;
+        _agent.updateRotation = true;
+        _agent.isStopped = false;
+
+        _isSkillMotion = false;
+        _motionCo = null;
+
+        //_player.UpdateTransform();
+    }
+
     private IEnumerator Co_PlaySkillMotion(SkillMotionType type, Vector3 start, Vector3 end,
                                            float duration, string anim, string curveId, bool authoritativeEnd)
     {
@@ -224,9 +243,16 @@ public class PlayerSkillController : MonoBehaviour
         if (!_agent.enabled)
             _agent.enabled = true;
         _agent.isStopped = true;
+        Debug.Log("Stop : Co_PlaySkillMotion");
         _agent.updatePosition = false;
         _agent.updateRotation = false;
         _agent.ResetPath();
+
+        // NavMesh 위로 수정
+        if (NavMesh.SamplePosition(start, out var startHit, 2.0f, NavMesh.AllAreas))
+            start = startHit.position;
+        if (NavMesh.SamplePosition(end, out var endHit, 2.0f, NavMesh.AllAreas))
+            _endPosition = end = endHit.position;
 
         // 시작점 동기화
         _agent.nextPosition = start;
@@ -281,6 +307,8 @@ public class PlayerSkillController : MonoBehaviour
         _motionCo = null;
 
         _player.UpdateTransform();
+
+        Debug.Log("CoSkillMotion End");
     }
 
     private float ApplyCurve(float u, string id)

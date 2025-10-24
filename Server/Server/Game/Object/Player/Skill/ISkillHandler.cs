@@ -39,7 +39,7 @@ public interface ISkillHandler
     bool CanCast(Player p, SkillContext ctx);
 
     #region Utils
-    float GetDuration(CharacterType type);
+    float GetDuration();
 
     KeyCode GetKeyCode();
     #endregion

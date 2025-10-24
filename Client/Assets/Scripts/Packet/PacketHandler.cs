@@ -436,4 +436,18 @@ class PacketHandler
             Managers.Object.MyPlayer.OnServerUpdate(motionPacket);
         }
     }
+
+    public static void S_MoveSyncHandler(PacketSession session, IMessage packet)
+    {
+        S_MoveSync syncPacket = packet as S_MoveSync;
+
+        GameObject go = Managers.Object.FindById(syncPacket.ObjectId);
+        if (go == null)
+            return;
+
+        if (Managers.Object.MyPlayer.Id == syncPacket.ObjectId)
+        {
+            Managers.Object.MyPlayer.OnServerUpdate(syncPacket);
+        }
+    }
 }
