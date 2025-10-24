@@ -43,24 +43,10 @@ public class PlayerInputController : MonoBehaviour
     // 우클릭 유지 중 이동 의도(타겟 이동 or 땅 이동)
     public C_SetMoveTarget GetSetMoveTarget()
     {
-        //Debug.Log(_player.State);
-        if (_player.State == CreatureState.Rest)
+        if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving || _player.State == CreatureState.Attack || _player.State == CreatureState.Skill)
         {
-            _agent.isStopped = true;
-            return null;
-        }
-        //else
-        //{
-        //    return null;
-        //}
-
-        //if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving)
-        //{
-        if (!Input.GetMouseButton(1))
+            if (!Input.GetMouseButton(1))
                 return null;
-
-            //if (_skill.IsInSkillMotion)
-            //    return null;
 
             GameObject target = GetAttackableUnderCursor();
             if (target == null)
@@ -105,10 +91,19 @@ public class PlayerInputController : MonoBehaviour
                     // TargetPos는 필요 없음(서버가 타겟 현재 위치로 갱신)
                 };
             }
-        //}
-        //else 
-        
-        
+        }
+        else if (_player.State == CreatureState.Rest)
+        {
+            _agent.isStopped = true;
+            return null;
+        }
+        else
+        {
+            return null;
+        }
+
+
+
     }
 
     // 우클릭 "타겟 공격" (클릭 순간 1회)
