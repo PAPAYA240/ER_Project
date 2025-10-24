@@ -349,18 +349,6 @@ namespace Server.Game
             //Console.WriteLine($"Char : {Info.Player.CharType} / x : {posInfo.PosX}, z : {posInfo.PosZ}");
         }
 
-        public void SendSetMoveTarget(bool isGround, int targetId, PositionInfo posOpt = null)
-        {
-            S_SetMoveTarget packet = new S_SetMoveTarget
-            {
-                Id = Id,
-                IsGround = isGround,
-                TargetId = isGround ? 0 : targetId,
-                TargetPos = isGround && posOpt != null ? new PositionInfo(posOpt) : null
-            };
-            Room.Push(Room.Broadcast, packet);
-        }
-
         public void SendSkillMotion(SkillMotionType type, Vector3 start, Vector3 end,
                             float duration, string anim, string curveId,
                             bool serverCollision, bool authoritativeEnd)
@@ -399,6 +387,16 @@ namespace Server.Game
 
         public void SendDeadPacket(S_Respawn packet)
         {
+            Room.Push(Room.Broadcast, packet);
+        }
+
+        public void SendMoveSyncPacket(PositionInfo targetPos)
+        {
+            S_MoveSync packet = new S_MoveSync
+            {
+                ObjectId = Id,
+                TargetPos = targetPos,
+            };
             Room.Push(Room.Broadcast, packet);
         }
         #endregion

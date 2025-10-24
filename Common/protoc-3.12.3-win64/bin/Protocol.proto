@@ -47,7 +47,7 @@ enum MsgId {
   C_SET_MOVE_TARGET = 39;
   C_STOP = 40;
   S_STOP = 41;
-  S_SET_MOVE_TARGET = 42;
+  S_MOVE_SYNC = 42;
   S_SKILL_CONFIRM = 43;
   S_SKILL_MOTION = 44;
   C_SKILL_INPUT = 45;
@@ -598,13 +598,6 @@ message S_Stop {
 	StopReason reason = 2;
 }
 
-message S_SetMoveTarget {
-	int32 id = 1;
-	bool isGround   = 2;			// true=땅 이동, false=타겟 추격 이동
-	int32 targetId  = 3;			// isGround=false 때 사용
-	PositionInfo targetPos = 4;		// isGround=true 때 사용(땅 목적지)
-}
-
 message S_SkillConfirm {
   int32 objectId = 1;			
   int32 skillKey = 2;			
@@ -658,4 +651,9 @@ message C_SkillCollisionPropose {
 
 message C_Rest {
   bool isRest = 1;
+}
+
+message S_MoveSync {
+  int32 objectId = 1;
+  PositionInfo targetPos = 2;
 }

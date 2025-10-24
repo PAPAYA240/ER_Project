@@ -144,6 +144,7 @@ public class PlayerController : CreatureController
 
     public void ChangeState(S_PlayerState packet)
     {
+        Debug.Log($"Cur : {State}, Next : {packet.State}");
         State = packet.State;
     }
 

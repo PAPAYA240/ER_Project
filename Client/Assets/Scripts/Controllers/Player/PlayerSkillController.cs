@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Android;
 using UnityEngine.InputSystem;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class PlayerSkillController : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class PlayerSkillController : MonoBehaviour
     Vector3 mousePos;
 
     // TEMP
+    Vector3 _endPosition;
 
     private void Awake()
     {
@@ -183,13 +185,15 @@ public class PlayerSkillController : MonoBehaviour
             packet.EndBlockedX = endBlocked.x;
             packet.EndBlockedZ = endBlocked.z;
 
-            Debug.Log($"X : {endBlocked.x}, Z : {endBlocked.z}");
+            Debug.Log($"EndBlocked => X : {endBlocked.x}, Z : {endBlocked.z}");
         }
         if(_curSkill.needs.endPass)
         {
             Vector3 endPass = ComputeEndPass(skillKey, spec, clickX, clickZ);
             packet.EndPassX = endPass.x;
             packet.EndPassZ = endPass.z;
+
+            Debug.Log($"EndPass => X : {endPass.x}, Z : {endPass.z}");
         }
         if(_curSkill.needs.behindBlocked)
         {
@@ -213,6 +217,22 @@ public class PlayerSkillController : MonoBehaviour
         _motionCo = StartCoroutine(Co_PlaySkillMotion(type, start, end, duration, anim, curveId, authoritativeEnd));
     }
 
+    public void StopSkillMotion()
+    {
+        if (_motionCo != null)
+            StopCoroutine(_motionCo);
+
+        //_agent.Warp(_endPosition);
+        _agent.updatePosition = true;
+        _agent.updateRotation = true;
+        _agent.isStopped = false;
+
+        _isSkillMotion = false;
+        _motionCo = null;
+
+        //_player.UpdateTransform();
+    }
+
     private IEnumerator Co_PlaySkillMotion(SkillMotionType type, Vector3 start, Vector3 end,
                                            float duration, string anim, string curveId, bool authoritativeEnd)
     {
@@ -225,6 +245,12 @@ public class PlayerSkillController : MonoBehaviour
         _agent.updatePosition = false;
         _agent.updateRotation = false;
         _agent.ResetPath();
+
+        // NavMesh 위로 수정
+        if (NavMesh.SamplePosition(start, out var startHit, 2.0f, NavMesh.AllAreas))
+            start = startHit.position;
+        if (NavMesh.SamplePosition(end, out var endHit, 2.0f, NavMesh.AllAreas))
+            _endPosition = end = endHit.position;
 
         // 시작점 동기화
         _agent.nextPosition = start;

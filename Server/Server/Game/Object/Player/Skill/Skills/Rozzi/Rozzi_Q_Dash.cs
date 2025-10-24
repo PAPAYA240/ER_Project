@@ -11,7 +11,8 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
 {
     public Rozzi_Q_Dash()
     {
-        _animName = "SKILL_Q_Dash";
+        _characterType = CharacterType.Rozzi;
+        _animName = "SKILL_Q_DASH";
         _keyCode = KeyCode.Q;
     }
 
@@ -52,8 +53,8 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
         _finalEnd = end;
 
         float dist = Vector3.Distance(from, end);
-        float speed = /*spec.limits.speed*/4.0f;
-        float duration = MathF.Max(0.05f, dist / speed);
+        //float speed = /*spec.limits.speed*/ /*dist / GetDuration()*/ 4.0f;
+        float duration = MathF.Max(0.05f, GetDuration() /*dist / speed*/);
 
         p.SendSkillMotion(
              type: SkillMotionType.Dash,

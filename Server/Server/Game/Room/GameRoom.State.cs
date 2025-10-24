@@ -35,6 +35,13 @@ namespace Server.Game
             if (player == null || pkt == null)
                 return;
 
+            if (player.CurrentState is Player_SkillState skillState)
+            {
+                player.EnqueueMove(pkt);
+                Console.WriteLine($"HandleSetMoveTarget, Enqueue / x - {pkt.TargetPos.PosX}, z - {pkt.TargetPos.PosZ}");
+                return;
+            }
+
             // 1) 타겟 검증 → 지형 이동 정규화
             if (!pkt.IsGround)
             {
@@ -57,7 +64,7 @@ namespace Server.Game
             }
 
             // 2) 치환 토큰: post-move Enqueue + 스킬 캐스트되면 종료
-            if (TryHandleMoveWithTokens(player, pkt))
+            if (player.TryHandleMoveWithTokens(pkt))
                 return;
 
             // 3) pkt → C_Move 정규화
@@ -103,14 +110,16 @@ namespace Server.Game
 
             // 4) 이미 이동 중이면 상태 유지 + 목표지만 갱신
             //    (상태 재전환/애니메이션 재생/경로 초기화 튐 방지)
-            if (player.CurrentState is IReceivesMoveCommand moving)
+            if (player.CurrentState is IReceivesMoveCommand moving && player.State == CreatureState.Moving)
             {
                 moving.OnMoveCommand(player, move);
+                Console.WriteLine($"HandleSetMoveTarget, OnMoveCommand / x - {move.TargetPosition.PosX}, z - {move.TargetPosition.PosZ}, State - {player.State}");
                 return;
             }
 
             // 5) 그 외에는 새로 Moving으로 진입
             player.ChangeState(new Player_MovingState(move));
+            Console.WriteLine($"HandleSetMoveTarget, ChangeState / x - {move.TargetPosition.PosX}, z - {move.TargetPosition.PosZ}");
         }
 
         public void HandleSkill(Player player, C_SkillInput skillPacket)
@@ -160,23 +169,24 @@ namespace Server.Game
                 //Speed = skillPacket.Speed
             };
 
-            if (!(player.CurrentState is Player_SkillState skillState))
-            {
-                if (!player.PendingProposal.Has || skillPacket.Seq > player.PendingProposal.Seq)
-                {
-                    player.PendingProposal = new PendingSkillProposal
-                    {
-                        Has = true,
-                        SkillKey = skillPacket.SkillKey,
-                        Seq = skillPacket.Seq,
-                        Prop = prop
-                    };
-                }
-                return;
-            }
+            //if (!(player.CurrentState is Player_SkillState skillState))
+            //{
+            //    if (!player.PendingProposal.Has || skillPacket.Seq > player.PendingProposal.Seq)
+            //    {
+            //        player.PendingProposal = new PendingSkillProposal
+            //        {
+            //            Has = true,
+            //            SkillKey = skillPacket.SkillKey,
+            //            Seq = skillPacket.Seq,
+            //            Prop = prop
+            //        };
+            //    }
+            //    return;
+            //}
 
             // 스킬로 전달
-            skillState.Handler.OnPropose(player, prop);
+            if (player.CurrentState is Player_SkillState skillState)
+                skillState.Handler.OnPropose(player, prop);
         }
 
         // S/H
@@ -209,46 +219,46 @@ namespace Server.Game
             }
         }
 
-        bool TryHandleMoveWithTokens(Player p, C_SetMoveTarget req)
-        {           
-            if (p == null || req == null)
-                return false;
+        //bool TryHandleMoveWithTokens(Player p, C_SetMoveTarget req)
+        //{           
+        //    if (p == null || req == null)
+        //        return false;
 
-            // 1) 유효한 토큰 고르기 (만료/잔여수 포함)
-            var tok = p.Tokens
-                .Where(t => t.Active
-                            && t.Trigger == InputKind.Move
-                            && t.RemainingUses > 0
-                            && TimeUtil.UtcSec() <= t.ExpireUtc)
-                .OrderByDescending(t => t.Priority)
-                .FirstOrDefault();
+        //    // 1) 유효한 토큰 고르기 (만료/잔여수 포함)
+        //    var tok = p.Tokens
+        //        .Where(t => t.Active
+        //                    && t.Trigger == InputKind.Move
+        //                    && t.RemainingUses > 0
+        //                    && TimeUtil.UtcSec() <= t.ExpireUtc)
+        //        .OrderByDescending(t => t.Priority)
+        //        .FirstOrDefault();
 
-            if (tok == null)
-                return false;
+        //    if (tok == null)
+        //        return false;
 
-            // 2) 치환 스킬 캐스트
-            var skill = SkillRegistry.Create(tok.ReplacementSkillKey);
-            if (skill == null)
-                return false;
+        //    // 2) 치환 스킬 캐스트
+        //    var skill = SkillRegistry.Create(tok.ReplacementSkillKey);
+        //    if (skill == null)
+        //        return false;
 
-            var ctx = new SkillContext
-            {
-                Key = skill.GetKeyCode(),
-                MousePos = new Vector2(req.TargetPos.PosX, req.TargetPos.PosZ),
-            };
+        //    var ctx = new SkillContext
+        //    {
+        //        Key = skill.GetKeyCode(),
+        //        MousePos = new Vector2(req.TargetPos.PosX, req.TargetPos.PosZ),
+        //    };
 
-            if (!skill.CanCast(p, ctx))
-                return false;
+        //    if (!skill.CanCast(p, ctx))
+        //        return false;
 
-            p.ChangeState(new Player_SkillState(skill, ctx));
+        //    p.ChangeState(new Player_SkillState(skill, ctx));
 
-            // 3) 토큰 소모/비활성
-            tok.RemainingUses--;
-            if (tok.RemainingUses <= 0)
-                tok.Active = false;
+        //    // 3) 토큰 소모/비활성
+        //    tok.RemainingUses--;
+        //    if (tok.RemainingUses <= 0)
+        //        tok.Active = false;
 
-            return true;
-        }
+        //    return true;
+        //}
 
         #region Utils
         public GameObject FindNearestEnemy(Player me, int range)

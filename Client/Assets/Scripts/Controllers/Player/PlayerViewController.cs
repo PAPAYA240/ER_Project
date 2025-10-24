@@ -13,6 +13,7 @@ public class PlayerViewController : MonoBehaviour
     private NavMeshAgent _agent;
     private Animator _animator;
     private MyPlayerController _player;
+    private PlayerSkillController _skill;
 
     private bool _syncing;
     //private bool _sentArriveSnapshot;
@@ -37,8 +38,7 @@ public class PlayerViewController : MonoBehaviour
         _agent = GetComponentInChildren<NavMeshAgent>();
         _animator = GetComponentInChildren<Animator>();
         _player = GetComponentInChildren<MyPlayerController>();
-
-        _player.UpdateTransform();
+        _skill = GetComponentInChildren<PlayerSkillController>();
     }
 
     private void Update()
@@ -58,6 +58,8 @@ public class PlayerViewController : MonoBehaviour
 
         //    _player.UpdateTransform();
         //}
+
+        _player.UpdateTransform();
 
         if (_player.State == CreatureState.Attack)
         {
@@ -89,6 +91,16 @@ public class PlayerViewController : MonoBehaviour
         //        _player.UpdateTransform(true);
         //    }
         //}
+    }
+
+    public void OnMoveSync(S_MoveSync packet)
+    {
+        C_SetMoveTarget cmd = new C_SetMoveTarget()
+        {
+            IsGround = true,
+            TargetPos = packet.TargetPos,
+        };
+        ApplyLocalSetMoveTarget(cmd, true);
     }
 
     public void OnAnim(S_Anim packet)
@@ -125,13 +137,23 @@ public class PlayerViewController : MonoBehaviour
     }
 
     #region Moving
-    public void ApplyLocalSetMoveTarget(C_SetMoveTarget cmd, float attackRange = 3.0f)
+    public void ApplyLocalSetMoveTarget(C_SetMoveTarget cmd, bool isServerSync = false, float attackRange = 3.0f)
     {
         if (_agent == null)
             return;
 
+        if (_player.State == CreatureState.Skill && !isServerSync)
+            return;
+        else
+            _skill.StopSkillMotion();
+
         // 추적 코루틴 정리
         StopFollowTarget();
+
+        _agent.enabled = true;
+        _agent.updatePosition = true;     // ★ 추가
+        _agent.updateRotation = true;     // ★ 추가
+        _agent.isStopped = false;
 
         if (cmd.IsGround)
         {

@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
 using Server.Data;
 using Server.Game;
 using System;
@@ -17,6 +18,8 @@ public abstract class SkillHandlerBase : ISkillHandler
     protected SkillCollisionProposal _latest;
     protected bool _committed;
     protected Vector3 _finalEnd;
+
+    protected CharacterType _characterType;
     protected string _animName;
     protected KeyCode _keyCode;
 
@@ -33,11 +36,11 @@ public abstract class SkillHandlerBase : ISkillHandler
         p.SendStopPacket(StopReason.StopMoveOnly); 
 
         // 대기 중이던 제안이 있으면 즉시 소비(레이스 방지)
-        if (p.PendingProposal.Has)
-        {
-            OnPropose(p, in p.PendingProposal.Prop);
-            p.PendingProposal = default;
-        }
+        //if (p.PendingProposal.Has)
+        //{
+        //    OnPropose(p, in p.PendingProposal.Prop);
+        //    p.PendingProposal = default;
+        //}
 
         //_deadline = DateTime.UtcNow.AddMilliseconds(150); // 짧게만 기다림(네트워크 품질에 맞춰 조절)
     }
@@ -80,9 +83,12 @@ public abstract class SkillHandlerBase : ISkillHandler
     }
 
     #region Utils
-    public float GetDuration(CharacterType charType)
+    public float GetDuration()
     {
-        return DataManager.AnimLengthInfoDict[charType][_animName].Length;
+        if (_animName == null)
+            return 0.01f;
+
+        return DataManager.AnimLengthInfoDict[_characterType][_animName].Length;
     }
 
     public KeyCode GetKeyCode()

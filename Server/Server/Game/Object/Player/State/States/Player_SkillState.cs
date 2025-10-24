@@ -27,7 +27,7 @@ public class Player_SkillState : IPlayerState
         _tStart = DateTime.UtcNow;
         //_tHit = _tStart.AddSeconds(_spec.Windup);
         //_tEnd = _tHit.AddSeconds(_spec.Backswing);
-        _tEnd = _tStart.AddSeconds(_handler.GetDuration(player.Info.Player.CharType));
+        _tEnd = _tStart.AddSeconds(_handler.GetDuration());
 
         _handler.OnEnter(player, _ctx);
     }
@@ -48,7 +48,26 @@ public class Player_SkillState : IPlayerState
 
         if (_forceEnd || now >= _tEnd)
         {
-            player.ChangeState(new Player_IdleState());
+            IPlayerState next;
+            if (player.Intent.TryConsume(out var dest))
+            {
+                if (player.TryHandleMoveWithTokens(dest))
+                    return;
+
+                C_Move cmd = new C_Move()
+                {
+                    IsTargetOn = !dest.IsGround,
+                    TargetId = dest.TargetId,
+                    TargetPosition = dest.TargetPos,
+                };
+                next = new Player_MovingState(cmd);
+                Console.WriteLine($"SkillState/ x - {dest.TargetPos.PosX}, z - {dest.TargetPos.PosZ}");
+                player.SendMoveSyncPacket(dest.TargetPos);
+            }
+            else
+                next = new Player_IdleState();
+
+            player.ChangeState(next);
         }
     }
 

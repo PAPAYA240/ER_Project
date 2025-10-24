@@ -73,20 +73,11 @@ public class MyPlayerController : PlayerController
     // 서버 응답 전달
     //public void OnServerUpdate(S_Idle packet) => _view.OnIdle(packet);
     public void OnServerUpdate(S_Move packet) => _view.OnMove(packet);
+    public void OnServerUpdate(S_MoveSync packet) => _view.OnMoveSync(packet);
     public void OnServerUpdate(S_Anim packet) => _view.OnAnim(packet);
     public void OnServerUpdate(S_ChangeHp packet) => _view.OnHpChanged(packet);
     public void OnServerUpdate(S_Die packet) => _view.OnDead(packet);
     public void OnServerUpdate(S_Respawn packet) => _view.OnRespawn(packet);
-    public void OnServerUpdate(S_SetMoveTarget packet)
-    {
-        // 서버가 내려준 의도 그대로 로컬 네비 실행
-        _view.ApplyLocalSetMoveTarget(new C_SetMoveTarget
-        {
-            IsGround = packet.IsGround,
-            TargetId = packet.TargetId,
-            TargetPos = packet.TargetPos != null ? new PositionInfo(packet.TargetPos) : null
-        });
-    }
     public void OnServerUpdate(S_Stop packet) => _view.OnStop(packet);
 
     public void OnServerUpdate(S_SkillMotion packet) => _skill.OnSkill(packet);
