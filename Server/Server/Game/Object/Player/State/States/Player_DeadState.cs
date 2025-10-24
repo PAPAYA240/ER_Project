@@ -38,8 +38,8 @@ public class Player_DeadState : IPlayerState
         diePacket.ObjectId = player.Id;
         //diePacket.AttackerId = attacker.Id;
 
-        _ = CoRespawnTime(player, 5f);
         diePacket.RespawnTime = DataManager.RespawnDict[player.Stat.Level];
+        _ = CoRespawnTime(player, diePacket.RespawnTime);
 
         player.Room.Broadcast(diePacket);
     }
@@ -60,13 +60,13 @@ public class Player_DeadState : IPlayerState
         respawnPacket.ObjectId = player.Id;
         if (true == respawnAtZero)
         {
-            respawnPacket.PosInfo = player.Info.PosInfo = new PositionInfo
+            player.Info.PosInfo = respawnPacket.PosInfo = new PositionInfo
             {
                 PosX = 0,
                 PosY = 0,
                 PosZ = 0
             };
-            respawnPacket.RotInfo = player.Info.RotInfo = new RotationInfo
+            player.Info.RotInfo = respawnPacket.RotInfo = new RotationInfo
             {
                 Qx = 0,
                 Qy = 0,
@@ -82,7 +82,9 @@ public class Player_DeadState : IPlayerState
 
         respawnPacket.Hp = player.Hp = player.MaxHp;
         respawnPacket.Stamina = player.Stamina = player.MaxStamina;
-        player.Session.Send(respawnPacket);
+        // temp
+        Console.WriteLine(respawnPacket.PosInfo);
+        player.SendDeadPacket(respawnPacket);
 
         player.ChangeState(new Player_IdleState());
     }

@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class PlayerViewController : MonoBehaviour
 {
@@ -38,14 +37,14 @@ public class PlayerViewController : MonoBehaviour
         _agent = GetComponentInChildren<NavMeshAgent>();
         _animator = GetComponentInChildren<Animator>();
         _player = GetComponentInChildren<MyPlayerController>();
+
+        _player.UpdateTransform();
     }
 
     private void Update()
     {
         if (!_syncing || _agent == null || _player == null)
             return;
-
-        _player.UpdateTransform();
 
         //Vector3 pos = _player.transform.position;
         //Quaternion rot = _player.transform.rotation;
@@ -70,7 +69,7 @@ public class PlayerViewController : MonoBehaviour
                 UpdateTarget(pos);
             }
         }
-        else
+        else if (_player.State == CreatureState.Moving || _player.State == CreatureState.Idle)
         {
             _player.UpdateTransform();
         }
@@ -111,6 +110,7 @@ public class PlayerViewController : MonoBehaviour
     {
         return new S_Die();
     }
+
     public void OnRespawn(S_Respawn packet)
     {
         _agent.Warp(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));

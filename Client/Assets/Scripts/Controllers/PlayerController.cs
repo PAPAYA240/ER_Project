@@ -1,15 +1,16 @@
-﻿using System;
+﻿using Data;
+using Google.Protobuf.Protocol;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Data;
-using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Windows;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
 using static Define;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class PlayerController : CreatureController
 {
@@ -132,6 +133,13 @@ public class PlayerController : CreatureController
     {
         _agent.isStopped = true;
         _agent.ResetPath();
+    }
+
+    public void OnRespawn(S_Respawn packet)
+    {
+        _agent.Warp(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+        _serverPos = packet.PosInfo.ToVector();
+        Hp = packet.Hp;
     }
 
     public void ChangeState(S_PlayerState packet)

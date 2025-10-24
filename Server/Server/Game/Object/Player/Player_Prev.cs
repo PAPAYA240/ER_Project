@@ -162,13 +162,13 @@ namespace Server.Game
             diePacket.AttackerId = attacker.Id;
             if(Stat.Level == 1)
             {
-                _ = CoRespawnTime(diePacket.RespawnTime, false);
                 diePacket.RespawnTime = 0;
+                _ = CoRespawnTime(diePacket.RespawnTime, false);
             }
             else
             {
-                _ = CoRespawnTime(diePacket.RespawnTime);
                 diePacket.RespawnTime = DataManager.RespawnDict[Stat.Level];
+                _ = CoRespawnTime(diePacket.RespawnTime);
             }
 
             Room.Broadcast(diePacket);

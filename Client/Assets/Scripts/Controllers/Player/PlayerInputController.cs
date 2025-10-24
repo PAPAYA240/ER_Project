@@ -44,9 +44,10 @@ public class PlayerInputController : MonoBehaviour
     // 우클릭 유지 중 이동 의도(타겟 이동 or 땅 이동)
     public C_SetMoveTarget GetSetMoveTarget()
     {
-        Debug.Log(_player.State);
+        // temp
+        //Debug.Log(_player.State);
 
-        if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving)
+        if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving || _player.State == CreatureState.Attack)
         {
             if (!Input.GetMouseButton(1))
                 return null;
@@ -112,7 +113,7 @@ public class PlayerInputController : MonoBehaviour
     // 우클릭 "타겟 공격" (클릭 순간 1회)
     public C_Attack GetAttackCommand()
     {
-        if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving)
+        if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving || _player.State == CreatureState.Attack)
         {
             if (!Input.GetMouseButtonDown(1))
                 return null;
@@ -120,6 +121,9 @@ public class PlayerInputController : MonoBehaviour
             int id = GetAttackableUnderCursorID();
             if (id == 0)
                 return null;
+
+            // temp
+            Debug.Log(id);
 
             return new C_Attack { TargetId = id };
         }

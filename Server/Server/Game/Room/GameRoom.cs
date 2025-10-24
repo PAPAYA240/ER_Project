@@ -305,10 +305,7 @@ namespace Server.Game
             if (player.IsDead)
                 return;
 
-            if (pkt.IsRest == true)
-                player.ChangeState(new Player_RestState(pkt.IsRest));
-            else
-                player.ChangeState(new Player_RestState(pkt.IsRest));
+            player.ChangeState(new Player_RestState(pkt.IsRest));
         }
 
         public void HandleDeath(Player player, C_Death pkt)

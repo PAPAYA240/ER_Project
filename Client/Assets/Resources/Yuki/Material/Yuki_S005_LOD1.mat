@@ -39,13 +39,14 @@ Material:
   - _SET_SYSTEMSHADOWSTOBASE_ON
   - _USE_1STAS2ND_ON
   - _USE_BASEAS1ST_ON
-  m_LightmapFlags: 1
+  m_LightmapFlags: 7
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap:
     RenderType: Opaque
-  disabledShaderPasses: []
+  disabledShaderPasses:
+  - MOTIONVECTORS
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -153,6 +154,7 @@ Material:
     - _1st_ShadeColor_Step: 0.68
     - _2nd_ShadeColor_Feather: 0.0001
     - _2nd_ShadeColor_Step: 0
+    - _AddPrecomputedVelocity: 0
     - _AddValOffset: 0
     - _Add_Antipodean_RimLight: 0
     - _AlphaClip: 0
@@ -285,6 +287,7 @@ Material:
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _ViewShift: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!114 &7126159677591132864
 MonoBehaviour:
   m_ObjectHideFlags: 11
@@ -297,4 +300,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 7
+  version: 10

@@ -341,8 +341,12 @@ class PacketHandler
             return;
 
         if (Managers.Object.MyPlayer.Id == respawnPacket.ObjectId)
-        {
             Managers.Object.MyPlayer.OnServerUpdate(respawnPacket);
+        else
+        {
+            PlayerController pc = go.GetComponentInChildren<PlayerController>();
+            if (pc != null)
+                pc.OnRespawn(respawnPacket);
         }
     }
 
