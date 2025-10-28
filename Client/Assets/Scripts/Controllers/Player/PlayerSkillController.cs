@@ -18,6 +18,16 @@ public class PlayerSkillController : MonoBehaviour
     private NavMeshAgent _agent;
 
     private Dictionary<KeyCode, SkillVariants> _skillSpecs = new Dictionary<KeyCode, SkillVariants>();
+    protected Dictionary<KeyCode, SkillBase> _skills = new Dictionary<KeyCode, SkillBase>();
+    public Dictionary<KeyCode, SkillBase> SkillDict { get { return _skills; } }
+
+    Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
+    public Dictionary<KeyCode, CoolTime> CoolDownDict {  get { return _coolDownDict; } }
+    public class CoolTime
+    {
+        public bool isCoolDown;
+        public float coolTime;
+    }
 
     private Coroutine _motionCo;
     private bool _isSkillMotion;
@@ -41,9 +51,11 @@ public class PlayerSkillController : MonoBehaviour
         _agent = GetComponentInChildren<NavMeshAgent>();
     }
 
-    private void Start()
+    public void Init()
     {
         MakeSkillSpecDict();
+        MakeSkillDict();
+        MakeCoolDownDict();
     }
 
     public C_SkillInput TryCast(int skillKey, int targetId, Vector3 clickWorld)
@@ -158,7 +170,6 @@ public class PlayerSkillController : MonoBehaviour
         _streamCo = null;
     }
 
-    #region Util
     private SkillSpec GetSkillSpec(KeyCode key, VariantKey variants)
     {
         if(variants == VariantKey.NoCollision)
@@ -319,6 +330,7 @@ public class PlayerSkillController : MonoBehaviour
         }
     }
 
+    #region Util
     // --- 후보 계산 유틸 (NavMesh 사용) ---
     Vector3 ComputeEndBlocked(int skillKey, SkillSpec spec, float clickX, float clickZ) 
     {
@@ -399,7 +411,9 @@ public class PlayerSkillController : MonoBehaviour
         if (step > 0)
             transform.position += dir.normalized * step;
     }
+    #endregion
 
+    #region Dictionary
     private void MakeSkillSpecDict()
     {
         Dictionary<KeyCode, Data.SkillVariants> skills = DataManager.SkillSpecDict[_player.ObjInfo.Player.CharType];
@@ -409,6 +423,26 @@ public class PlayerSkillController : MonoBehaviour
             SkillVariants skill = new SkillVariants();
             skill = data.Value;
             _skillSpecs.Add(data.Key, skill);
+        }
+    }
+
+    protected void MakeSkillDict()
+    {
+        Dictionary<KeyCode, Data.SkillData> skills = DataManager.SkillDict[_player.ObjInfo.Player.CharType];
+
+        foreach (var data in skills)
+        {
+            SkillBase skill = new SkillBase();
+            skill.SkillData = data.Value;
+            _skills.Add(data.Key, skill);
+        }
+    }
+
+    private void MakeCoolDownDict()
+    {
+        foreach (var skill in _skills)
+        {
+            _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
         }
     }
     #endregion

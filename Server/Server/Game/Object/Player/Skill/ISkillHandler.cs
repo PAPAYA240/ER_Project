@@ -38,6 +38,9 @@ public interface ISkillHandler
 
     bool CanCast(Player p, SkillContext ctx);
 
+    bool CanMoveDuringCast { get; }
+    float MoveSpeedMultiplier { get; }
+
     #region Utils
     float GetDuration();
 

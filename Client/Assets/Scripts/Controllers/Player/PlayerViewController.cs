@@ -100,7 +100,7 @@ public class PlayerViewController : MonoBehaviour
             IsGround = true,
             TargetPos = packet.TargetPos,
         };
-        ApplyLocalSetMoveTarget(cmd, true);
+        ApplyLocalSetMoveTarget(cmd, true, packet.Speed);
     }
 
     public void OnAnim(S_Anim packet)
@@ -137,7 +137,7 @@ public class PlayerViewController : MonoBehaviour
     }
 
     #region Moving
-    public void ApplyLocalSetMoveTarget(C_SetMoveTarget cmd, bool isServerSync = false, float attackRange = 3.0f)
+    public void ApplyLocalSetMoveTarget(C_SetMoveTarget cmd, bool isServerSync = false, float speed = 1.0f, float attackRange = 3.0f)
     {
         if (_agent == null)
             return;
@@ -147,8 +147,13 @@ public class PlayerViewController : MonoBehaviour
         else
             _skill.StopSkillMotion();
 
-        // 추적 코루틴 정리
-        StopFollowTarget();
+        if(isServerSync)
+            _agent.speed = _player.Speed * speed;
+        else
+            _agent.speed = _player.Speed;
+
+            // 추적 코루틴 정리
+            StopFollowTarget();
 
         _agent.enabled = true;
         _agent.updatePosition = true;     

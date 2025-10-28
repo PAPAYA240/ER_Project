@@ -9,6 +9,9 @@ using static Server.Data.DataUtils;
 
 public sealed class Rozzi_D : SkillHandlerBase
 {
+    public override bool CanMoveDuringCast => true;
+    public override float MoveSpeedMultiplier => 1.2f;
+
     public Rozzi_D()
     {
         _characterType = CharacterType.Rozzi;

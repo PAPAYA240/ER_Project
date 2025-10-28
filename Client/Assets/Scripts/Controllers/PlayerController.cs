@@ -31,6 +31,7 @@ public class PlayerController : CreatureController
 
     // NameTag
     protected UI_PlayerNameTag _nameTag;
+    public UI_PlayerNameTag NameTag { get { return _nameTag; } }
 
     // 장착 아이템
     Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();

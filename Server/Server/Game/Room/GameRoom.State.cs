@@ -35,12 +35,6 @@ namespace Server.Game
             if (player == null || pkt == null)
                 return;
 
-            if (player.CurrentState is Player_SkillState skillState)
-            {
-                player.EnqueueMove(pkt);
-                return;
-            }
-
             // 1) 타겟 검증 → 지형 이동 정규화
             if (!pkt.IsGround)
             {
@@ -109,7 +103,7 @@ namespace Server.Game
 
             // 4) 이미 이동 중이면 상태 유지 + 목표지만 갱신
             //    (상태 재전환/애니메이션 재생/경로 초기화 튐 방지)
-            if (player.CurrentState is IReceivesMoveCommand moving && player.State == CreatureState.Moving)
+            if (player.CurrentState is IReceivesMoveCommand moving)
             {
                 moving.OnMoveCommand(player, move);
                 return;

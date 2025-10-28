@@ -15,12 +15,14 @@ public class MyPlayerController : PlayerController
     private PlayerInputController _input;
     private PlayerViewController _view;
     private PlayerSkillController _skill;
+    private PlayerUIController _UI;
 
     private void Awake()
     {
         _input = gameObject.GetOrAddComponent<PlayerInputController>();      
         _view = gameObject.GetOrAddComponent<PlayerViewController>();
         _skill = gameObject.GetOrAddComponent<PlayerSkillController>();
+        _UI = gameObject.GetOrAddComponent<PlayerUIController>();
     }
 
     protected override void Init()
@@ -28,6 +30,8 @@ public class MyPlayerController : PlayerController
         base.Init();
         ObjectType = Define.Object.MyPlayer;
         Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
+        _skill.Init();
+        _UI.Init();
     }
 
     private void Update()
@@ -117,6 +121,13 @@ public class MyPlayerController : PlayerController
         Managers.Network.Send(packet);
     }
 
+    protected override void UpdateHp() { base.UpdateHp(); _UI.UpdateHp(); }
+    protected override void UpdateMaxHp() { base.UpdateMaxHp(); _UI.UpdateHp(); }
+    protected override void UpdateStamina() { base.UpdateStamina(); _UI.UpdateStamina(); }
+    protected override void UpdateMaxStamina() { base.UpdateMaxStamina(); _UI.UpdateMaxStamina(); }
+    public void UpdateLevel() { _UI.UpdateLevel(); }
+    public void UpdateCool() { _UI.UpdateCool(); }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     protected KeyCode _keyCode = KeyCode.None;
@@ -140,6 +151,5 @@ public class MyPlayerController : PlayerController
     protected Vector3 GetReachablePosition(Vector3 startPos, Vector3 targetPos, out NavMeshHit navHit) { navHit = new NavMeshHit();  return Vector3.zero;  }
     protected Vector3 GetCursorPos() { return Vector3.zero; }
     protected float GetCurrentAnimClipLength() { return 0f; }
-    public void UpdateLevel() { }
     public UI_PlayerInterface PlayerInterface { get; protected set; }
 }

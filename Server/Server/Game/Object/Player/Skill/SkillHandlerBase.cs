@@ -11,6 +11,9 @@ using static Server.Data.DataUtils;
 
 public abstract class SkillHandlerBase : ISkillHandler
 {
+    public virtual bool CanMoveDuringCast => false;
+    public virtual float MoveSpeedMultiplier => 1.0f;
+
     public int                      LastSeq { get { return _lastSeq; } set { _lastSeq = value; } }
     public SkillCollisionProposal   Latest { get { return _latest; } set { _latest = value; } }
 
@@ -33,7 +36,12 @@ public abstract class SkillHandlerBase : ISkillHandler
         p.SendAnimPacket(_animName, 0.05f);
 
         // 이동 잠금
-        p.SendStopPacket(StopReason.StopMoveOnly); 
+        if (CanMoveDuringCast == false)
+        {
+            // 이동 금지 스킬이면 강제 정지
+            p.SendStopPacket(StopReason.StopMoveOnly);
+        }
+
 
         // 대기 중이던 제안이 있으면 즉시 소비(레이스 방지)
         //if (p.PendingProposal.Has)

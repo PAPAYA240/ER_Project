@@ -664,4 +664,5 @@ message C_Rest {
 message S_MoveSync {
   int32 objectId = 1;
   PositionInfo targetPos = 2;
+  float speed = 3;
 }

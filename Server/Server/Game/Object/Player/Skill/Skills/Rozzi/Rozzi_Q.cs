@@ -36,6 +36,17 @@ public sealed class Rozzi_Q : SkillHandlerBase
         if (isCommited)
             return;
 
+        
+
+        isCommited = true;  
+
+        return;
+    }
+
+    public override void OnExit(Player p, SkillContext ctx)
+    {
+        base.OnExit(p, ctx);
+
         p.Tokens.Add(new NextInputToken
         {
             Active = true,
@@ -46,15 +57,6 @@ public sealed class Rozzi_Q : SkillHandlerBase
             ReplacementSkillKey = "Rozzi_Q_Dash",
             CancelOnUseSkill = true
         });
-
-        isCommited = true;  
-
-        return;
-    }
-
-    public override void OnExit(Player p, SkillContext ctx)
-    {
-        base.OnExit(p, ctx);       
     }
 }
 
