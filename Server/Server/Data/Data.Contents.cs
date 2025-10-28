@@ -410,14 +410,15 @@ namespace Server.Data
     //    public int cooldown;
     //}
     #region Environment
+    [System.Serializable]
     public class EnvObjectData : ILoader<EnvType, EnvInfo>
     {
-        public Dictionary<string, EnvInfo> stats = new Dictionary<string, EnvInfo>();
+        public List<EnvInfo> envs = new List<EnvInfo>();
+
         public Dictionary<EnvType, EnvInfo> MakeDict()
         {
             Dictionary<EnvType, EnvInfo> dict = new Dictionary<EnvType, EnvInfo>();
-
-            foreach (EnvInfo data in stats.Values)
+            foreach (EnvInfo data in envs)
             {
                 dict.Add(data.EnvType, data);
             }

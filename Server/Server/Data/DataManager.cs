@@ -33,7 +33,7 @@ namespace Server.Data
 
         public static Dictionary<MonsterType, MonsterData> MonsterDict { get; private set; } = new Dictionary<MonsterType, MonsterData>();
         public static Dictionary<MonsterSkill, MonsterSkillData> MonsterSkillDict { get; private set; } = new Dictionary<MonsterSkill, MonsterSkillData>();
-        public static Dictionary<EnvType, EnvInfo> EnvironmentObjDict { get; private set; } = new Dictionary<EnvType, EnvInfo>();
+        public static Dictionary<EnvType, EnvInfo> EnvDict { get; private set; } = new Dictionary<EnvType, EnvInfo>();
 
         public static Dictionary<int, int> PhaseDict { get; private set; } = new Dictionary<int, int>();
         public static Dictionary<int, int> RespawnDict { get; private set; } = new Dictionary<int, int>();
@@ -59,7 +59,7 @@ namespace Server.Data
             MonstSkillHitboxDict = LoadJson<Data.MonstHitboxData, MonsterType, Dictionary<MonsterSkill, SkillHitbox>>("MonsterData/HitboxData", "monster").MakeDict();
 
             // For EnvironmentData
-            EnvironmentObjDict = LoadJson<Data.EnvObjectData, EnvType, EnvInfo>("Env/EnvData", "monster").MakeDict();
+            EnvDict = LoadJson<Data.EnvObjectData, EnvType, EnvInfo>("Env/EnvData", "monster").MakeDict();
 
             // For Item
             JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };

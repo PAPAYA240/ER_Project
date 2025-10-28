@@ -7,6 +7,7 @@ using System.Numerics;
 
 namespace Server.Game
 {
+    #region Data
     public class LoadEnvData
     {
         public EnvType envType;
@@ -43,20 +44,40 @@ namespace Server.Game
                 cleanedList.EnvObjects.Add(new LoadEnvData
                 {
                     envType = monsterTypeName,
+                    posInfo = rawData.posInfo,
+                    rotInfo = rawData.rotInfo
                 });
             }
             return cleanedList;
         }
     }
 
-    public class EnvManager
+    #endregion
+
+    public class EnvironmentManager
     {
         GameRoom _room;
+        private static EnvironmentManager _instance;
+        public static EnvironmentManager Instance => _instance;
+
         public void Init(GameRoom room)
         {
             _room = room;
             EnvDataProcessor processor = new EnvDataProcessor();
             SpawnObjectFromJson(processor.ProcessAndGetJson());
+        }
+
+        public void GiveRewardToPlayer(int playerId, EnvType envType)
+        {
+            // 플레이어에게 보상 지급
+            switch (envType)
+            {
+                case EnvType.HillPack:
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         public void SpawnObjectFromJson(RawEnvList envList)

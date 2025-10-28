@@ -1,18 +1,13 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
-using ServerCore;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
 using System.Numerics;
 using System.Threading;
-using System.Threading.Tasks;
-using static Lucene.Net.Index.ByteBlockPool;
+using System;
+
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -24,10 +19,9 @@ namespace Server.Game
         ConcurrentDictionary<int, Monster> _monsters = new ConcurrentDictionary<int, Monster>();
         ConcurrentDictionary<int, Projectile> _projectiles = new ConcurrentDictionary<int, Projectile>();
 
-
         MonsterManager _monsterManager = new MonsterManager();
         CollisionManager _collisionManager = new CollisionManager();
-        EnvManager _envManager = new EnvManager();
+        EnvironmentManager _envManager = new EnvironmentManager();
 
         Dictionary<int, Dictionary<int, Player>> _teams = new Dictionary<int, Dictionary<int, Player>>();
         Dictionary<CharacterType, SkillHandler> _skillHandlers = new Dictionary<CharacterType, SkillHandler>();
@@ -35,8 +29,19 @@ namespace Server.Game
         bool _teamToggle = false;
         bool _dummyAdded = false;
 
+        public EnvironmentManager GetEnvManager {
+            get 
+            {
+                return _envManager;
+            }
+            private set
+            {
+                _envManager = value;
+            }
+        }
+
         #region Phase, Time
-        
+
         public TimeSpan TimeStamp { get { return _timeStampStopwatch.Elapsed; } }
 
         //private DateTime _timeStamp; // 게임이 시작된 시간
@@ -174,11 +179,7 @@ namespace Server.Game
 
         public override void Update()
         {
-            foreach (Projectile projectile in _projectiles.Values)
-            {
-                projectile.Update();
-            }
-
+        
             foreach (Player player in _players.Values)
             {
                 player.Update();
@@ -186,11 +187,16 @@ namespace Server.Game
             foreach (Monster monster in _monsters.Values)
             {
                 monster.Update();
-
-                //List<Monster> monstersToUpdate = new List<Monster>(_monsters.Values);
-                //foreach (Monster monster in monstersToUpdate)
-                //    monster.Update();
             }
+            foreach (EnvironmentObject env in _envs.Values)
+            {
+                env.Update();
+            }
+            foreach (Projectile projectile in _projectiles.Values)
+            {
+                projectile.Update();
+            }
+
             foreach (Player player in _players.Values)
             {
                 List<int> visibleObjs = new List<int>();
@@ -279,15 +285,13 @@ namespace Server.Game
             else if (type == GameObjectType.Projectile)
             {
                 Projectile projectile = gameObject as Projectile;
-                _projectiles.TryAdd(gameObject.Id, projectile);
                 projectile.Room = this;
+                _projectiles.TryAdd(gameObject.Id, projectile);
                 return;
             }
             else if (type == GameObjectType.Environment)
             {
                 EnvironmentObject env = gameObject as EnvironmentObject;
-                if (env == null)
-                    _envs = new ConcurrentDictionary<int, EnvironmentObject>();
 
                 env.Room = this;
                 _envs.TryAdd(gameObject.Id, env);
@@ -358,43 +362,7 @@ namespace Server.Game
             }
         }
 
-        public void HandleMove(Player player, C_Move movePacket)
-        {
-            if (player == null)
-                return;
-
-            // todo : 검증
-
-            // 일단 서버에서 좌표 이동
-            player.Info.PosInfo.PosX = movePacket.PosInfo.PosX;
-            player.Info.PosInfo.PosY = movePacket.PosInfo.PosY;
-            player.Info.PosInfo.PosZ = movePacket.PosInfo.PosZ;
-            player.Info.RotInfo.Qx = movePacket.RotInfo.Qx;
-            player.Info.RotInfo.Qy = movePacket.RotInfo.Qy;
-            player.Info.RotInfo.Qz = movePacket.RotInfo.Qz;
-            player.Info.RotInfo.Qw = movePacket.RotInfo.Qw;
-
-            // 다른 플레이어한테도 알려준다
-            S_Move resMovePacket = new S_Move();
-            resMovePacket.ObjectId = player.Info.ObjectId;
-            resMovePacket.PosInfo = movePacket.PosInfo;
-            resMovePacket.RotInfo = movePacket.RotInfo;
-            resMovePacket.IsWarp = movePacket.IsWarp;
-            Broadcast(resMovePacket);
-        }
-
-        public void HandleVF(Player player, C_Fx skillPacket)
-        {
-            if (player == null)
-                return;
-
-            S_Fx effect = new S_Fx() {
-                ObjectId = player.Info.ObjectId,
-                FxInfo = skillPacket.FxInfo,
-            };
-            Broadcast(effect);
-        }
-
+        #region Handler
         #region Handler Skill
         public void HandleSkill(Player player, C_Skill skillPacket)
         {
@@ -489,12 +457,49 @@ namespace Server.Game
             if (proj != null)
                 proj.IsActive = true;
 
-            if(skill.)
             _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode,
                 new Vector2(skillPacket.TargetPosX, skillPacket.TargetPosZ), skillPacket.ChargeRatio);
         }
 
         #endregion
+        public void HandleMove(Player player, C_Move movePacket)
+        {
+            if (player == null)
+                return;
+
+            // todo : 검증
+
+            // 일단 서버에서 좌표 이동
+            player.Info.PosInfo.PosX = movePacket.PosInfo.PosX;
+            player.Info.PosInfo.PosY = movePacket.PosInfo.PosY;
+            player.Info.PosInfo.PosZ = movePacket.PosInfo.PosZ;
+            player.Info.RotInfo.Qx = movePacket.RotInfo.Qx;
+            player.Info.RotInfo.Qy = movePacket.RotInfo.Qy;
+            player.Info.RotInfo.Qz = movePacket.RotInfo.Qz;
+            player.Info.RotInfo.Qw = movePacket.RotInfo.Qw;
+
+            // 다른 플레이어한테도 알려준다
+            S_Move resMovePacket = new S_Move();
+            resMovePacket.ObjectId = player.Info.ObjectId;
+            resMovePacket.PosInfo = movePacket.PosInfo;
+            resMovePacket.RotInfo = movePacket.RotInfo;
+            resMovePacket.IsWarp = movePacket.IsWarp;
+            Broadcast(resMovePacket);
+        }
+
+        public void HandleVF(Player player, C_Fx skillPacket)
+        {
+            if (player == null)
+                return;
+
+            S_Fx effect = new S_Fx()
+            {
+                ObjectId = player.Info.ObjectId,
+                FxInfo = skillPacket.FxInfo,
+            };
+            Broadcast(effect);
+        }
+
         public void HandleAnim(Player player, C_Anim animPacket)
         {
             if (player == null)
@@ -521,25 +526,7 @@ namespace Server.Game
             player.SkillTarget.OnDamaged(player, damage);
         }
 
-        public Projectile FindProjectile(Creature owner)
-        {
-            foreach (Projectile projectile in _projectiles.Values)
-            {
-                if (projectile.Owner == owner)
-                    return projectile;
-            }
-            return null;
-        }
-        public Player FindPlayer(Func<GameObject, bool> condition)
-        {
-            foreach(Player player in _players.Values)
-            {
-                if(condition.Invoke(player))
-                    return player;
-            }
-            return null;
-        }
-
+        #endregion
         public void Broadcast(IMessage packet)
         {
             foreach (Player p in _players.Values)
@@ -682,6 +669,7 @@ namespace Server.Game
             _dummyAdded = true;
         }
 
+        #region Search
         private Weapon FindWeapon(CharacterType type)
         {
             switch (type)
@@ -700,5 +688,25 @@ namespace Server.Game
 
             return Weapon.Pistol;
         }
+        public Projectile FindProjectile(Creature owner)
+        {
+            foreach (Projectile projectile in _projectiles.Values)
+            {
+                if (projectile.Owner == owner)
+                    return projectile;
+            }
+            return null;
+        }
+        public Player FindPlayer(Func<GameObject, bool> condition)
+        {
+            foreach (Player player in _players.Values)
+            {
+                if (condition.Invoke(player))
+                    return player;
+            }
+            return null;
+        }
+      
+        #endregion
     }
 }

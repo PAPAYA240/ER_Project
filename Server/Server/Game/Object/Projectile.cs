@@ -33,8 +33,10 @@ namespace Server.Game
             if (bMove)
             {
                 if (Deactivation())
+                {
                     Room.LeaveGame(Id);
-
+                    return;
+                }
                 Moving();
             }
         }

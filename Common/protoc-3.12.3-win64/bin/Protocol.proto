@@ -52,6 +52,8 @@ enum MsgId {
   S_DRAWMESH = 44;
   C_PROJECTILE = 45;
   S_PROJECTILE = 46;
+  C_ENV_REQUEST = 47;
+  S_ENV_REQUEST = 48;
 }
 
 enum CreatureState{
@@ -75,10 +77,11 @@ enum GameObjectType{
 
 enum EnvType{
    ENV_NONE = 0;
-   HILL_OBJ = 1;
+   HILL_PACK = 1;
    DEVICE_SPAWNPOINT = 2;
    ACCBOUNDARY_SPAWNPOINT = 3;
    BARRIER_SPAWNPOINT = 4;
+   TURBINE = 5;
 }
    
 enum SkillType{
@@ -458,6 +461,17 @@ message S_SyncTimer{
 	int64 phaseEndTime = 3;
 }
 
+message C_EnvRequest{
+	int32 objectId = 1;
+	EnvType envType = 2;
+}
+
+message S_EnvRequest{
+	int32 objectId = 1;
+	EnvType envType = 2;
+}
+
+
 message PositionInfo{
 	CreatureState state = 1;
 	float posX = 2;
@@ -501,8 +515,18 @@ message MonsterInfo {
 }
 
 message EnvInfo{
-	EnvType envType = 1;
-	string interactionStrategy = 2;	
+    EnvType envType = 1;
+    string prefabPath = 2;
+    float collectRadius = 3;
+    float respawnTime= 4; 
+    bool isRespawnable= 5;
+    string rewardType= 6; 
+    int32 rewardId= 7;
+    int32 rewardAmount= 8;
+    
+    float floatSpeed= 9;
+    float floatHeight= 10;
+    float rotationSpeed= 11;
 }
 
 message ObjectInfo{

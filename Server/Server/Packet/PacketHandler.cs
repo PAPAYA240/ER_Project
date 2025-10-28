@@ -235,13 +235,30 @@ class PacketHandler
         Player player = clientSession.MyPlayer;
 
         Projectile projectile = player?.CreateProjectile();
-        if (projectile == null)
+     }
+
+    public static void C_EnvRequestHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_EnvRequest envPacket = packet as C_EnvRequest;
+
+        if (!DataManager.EnvDict.TryGetValue(envPacket.EnvType, out EnvInfo envData))
             return;
 
-        // ✅ 방의 모든 플레이어에게 알려줌
-        S_Spawn spawnPacket = new S_Spawn();
-        spawnPacket.Objects.Add(projectile.Info);
-        player.Room?.Broadcast(spawnPacket);
+        Player player = clientSession.MyPlayer;
+        GameRoom room = player?.Room;
+
+        if (room == null)
+            return;
+        // 보상
+        room.GetEnvManager?.GiveRewardToPlayer(envPacket.ObjectId, envPacket.EnvType);
+     
+        S_EnvRequest sendPacket = new S_EnvRequest()
+        {
+            ObjectId = envPacket.ObjectId,
+            EnvType = envPacket.EnvType,
+        };
+        room.Push(room.Broadcast, sendPacket);
     }
 
     public static void C_TestDamageHandler(PacketSession session, IMessage packet)

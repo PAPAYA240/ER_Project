@@ -14,7 +14,6 @@ public class ObjectManager
 {
 	public MyPlayerController MyPlayer { get; set; }
 	private Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
-
     public Define.Character Character { get; set; } = Define.Character.Rozzi;
 
     #region Type ID

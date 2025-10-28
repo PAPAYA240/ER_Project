@@ -444,6 +444,20 @@ class PacketHandler
             return;
     }
     
+    public static void S_EnvRequestHandler(PacketSession session, IMessage packet)
+    {
+        S_EnvRequest revPacket = packet as S_EnvRequest;
+
+        GameObject go = Managers.Object.FindById(revPacket.ObjectId);
+        if (go == null)
+            return;
+
+        EnvController ec = go.GetComponent<EnvController>();
+        if (ec == null)
+            return;
+
+        ec.OnInteractionAuthorized();
+    }
     public static void S_DrawmeshHandler(PacketSession session, IMessage packet)
     {
         S_Drawmesh Packet = packet as S_Drawmesh;

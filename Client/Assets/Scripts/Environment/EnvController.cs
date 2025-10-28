@@ -1,42 +1,51 @@
 using Google.Protobuf.Protocol;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-public interface IEnvironmentInteraction
-{
-    void Interact(EnvController controller);
-}
 
 public class EnvController : BaseController
 {
-    private long _nextUseTime = 0;
-    public EnvType _envType;
-    protected Animator animator;
+    [SerializeField] public EnvType _envType;
 
-    private IEnvironmentInteraction _interactionStrategy;
-    protected virtual void Awake()
+    protected Animator animator;
+    protected bool _isActive = false;
+
+    protected override void Init()
     {
+        base.Init();
         animator = GetComponent<Animator>();
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
     }
-
+    public void InitializeFromServer(EnvInfo data)
+    {
+    }
     void Update()
     {
     }
 
-    public void SetNextUseTime(long time)
+    protected void OnTriggerEnter(Collider other)
     {
-        _nextUseTime = time;
+        //if (_isActive == false)
+        //    return;
+
+        //if (other.gameObject.layer == LayerMask.NameToLayer("MyPlayer"))
+        //    RequestCollect();
     }
 
-    void OnTriggerEnter(Collider other)
+    void RequestCollect()
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        // 서버에 수집 요청 전송
+        C_EnvRequest request = new C_EnvRequest
         {
-            transform.parent.gameObject.SetActive(false);
-            Debug.Log("충돌");
-        }
+            ObjectId = Id,
+            EnvType = _envType,
+        };
+        Managers.Network.Send(request);
     }
+
+    public void OnInteractionAuthorized()
+    {
+        TryHandleInteraction();
+    }
+
+    protected virtual void TryHandleInteraction() { }
 }

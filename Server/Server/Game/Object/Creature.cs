@@ -37,6 +37,10 @@ namespace Server.Game
             projectile.Info.RotInfo = RotInfo;
             Room?.EnterGame(projectile);
 
+            S_Spawn spawnPacket = new S_Spawn();
+            spawnPacket.Objects.Add(projectile.Info);
+            Room?.Broadcast(spawnPacket);
+
             return projectile;
         }
         #endregion

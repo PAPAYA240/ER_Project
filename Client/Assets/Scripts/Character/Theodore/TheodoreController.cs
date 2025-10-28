@@ -136,13 +136,15 @@ public class TheodoreController : MyPlayerController
 
         if (_isUseSkill)
         {
+            LookAtMouse();
+
             State = CreatureState.Skill;
             _agent.ResetPath();
-            LookAtMouse();
+
             PlayAnimation("SKILL_Q", 0.1f);
             _eqipWeapon.GetComponent<WeaponController>().PlayAnimation("SKILL_Q", 0.1f);
-
             PlayEffect("FX_SkillFire");
+
             return;
         }
 

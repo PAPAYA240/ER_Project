@@ -84,7 +84,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SDrawmesh, MakePacket<S_Drawmesh>);
 		_handler.Add((ushort)MsgId.SDrawmesh, PacketHandler.S_DrawmeshHandler);		
 		_onRecv.Add((ushort)MsgId.SProjectile, MakePacket<S_Projectile>);
-		_handler.Add((ushort)MsgId.SProjectile, PacketHandler.S_ProjectileHandler);
+		_handler.Add((ushort)MsgId.SProjectile, PacketHandler.S_ProjectileHandler);		
+		_onRecv.Add((ushort)MsgId.SEnvRequest, MakePacket<S_EnvRequest>);
+		_handler.Add((ushort)MsgId.SEnvRequest, PacketHandler.S_EnvRequestHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

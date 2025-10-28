@@ -6,12 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.EnhancedTouch;
 using static Data.SkillEffectList;
 using static UI_PlayerInterface;
 using static UI_SkillBase;
-using static UnityEngine.GraphicsBuffer;
 
 public class MyPlayerController : PlayerController
 {

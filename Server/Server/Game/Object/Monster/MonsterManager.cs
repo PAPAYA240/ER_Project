@@ -61,11 +61,9 @@ namespace Server.Game
             // MonsterData Load
             MonsterDataProcessor processor = new MonsterDataProcessor();
             SpawnMonstersFromJson(processor.ProcessAndGetJson());
+        }
 
-
-}
-
-public void Add(int monsterCnt, MonsterType type = MonsterType.MonsterNone)
+        public void Add(int monsterCnt, MonsterType type = MonsterType.MonsterNone)
         {
             if (type == MonsterType.MonsterNone)
                 return;
