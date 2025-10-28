@@ -61,7 +61,6 @@ public class Player_SkillState : IPlayerState
                     TargetPosition = dest.TargetPos,
                 };
                 next = new Player_MovingState(cmd);
-                Console.WriteLine($"SkillState/ x - {dest.TargetPos.PosX}, z - {dest.TargetPos.PosZ}");
                 player.SendMoveSyncPacket(dest.TargetPos);
             }
             else

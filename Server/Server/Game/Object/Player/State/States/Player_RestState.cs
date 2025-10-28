@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
+using Server.Data;
 using Server.Game;
 using System;
 using System.Collections.Generic;
@@ -23,12 +24,14 @@ public class Player_RestState : IPlayerState
 
         _startTime = DateTime.UtcNow;
 
+        string animName;
         if (_isRest == true)
-            player.SendAnimPacket("REST_START", 0.1f);
+            animName = "REST_START";
         else
-        {
-            player.SendAnimPacket("REST_END", 0.1f);
-        }
+            animName = "REST_END";
+
+        player.SendAnimPacket(animName, 0.1f);
+        _duration = DataManager.AnimLengthInfoDict[player.Info.Player.CharType][animName].Length;
     }
 
     public void Execute(Player player)

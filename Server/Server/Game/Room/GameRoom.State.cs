@@ -112,13 +112,11 @@ namespace Server.Game
             if (player.CurrentState is IReceivesMoveCommand moving && player.State == CreatureState.Moving)
             {
                 moving.OnMoveCommand(player, move);
-                Console.WriteLine($"HandleSetMoveTarget, OnMoveCommand / x - {move.TargetPosition.PosX}, z - {move.TargetPosition.PosZ}, State - {player.State}");
                 return;
             }
 
             // 5) 그 외에는 새로 Moving으로 진입
             player.ChangeState(new Player_MovingState(move));
-            Console.WriteLine($"HandleSetMoveTarget, ChangeState / x - {move.TargetPosition.PosX}, z - {move.TargetPosition.PosZ}");
         }
 
         public void HandleSkill(Player player, C_SkillInput skillPacket)
@@ -217,47 +215,6 @@ namespace Server.Game
                     break;
             }
         }
-
-        //bool TryHandleMoveWithTokens(Player p, C_SetMoveTarget req)
-        //{           
-        //    if (p == null || req == null)
-        //        return false;
-
-        //    // 1) 유효한 토큰 고르기 (만료/잔여수 포함)
-        //    var tok = p.Tokens
-        //        .Where(t => t.Active
-        //                    && t.Trigger == InputKind.Move
-        //                    && t.RemainingUses > 0
-        //                    && TimeUtil.UtcSec() <= t.ExpireUtc)
-        //        .OrderByDescending(t => t.Priority)
-        //        .FirstOrDefault();
-
-        //    if (tok == null)
-        //        return false;
-
-        //    // 2) 치환 스킬 캐스트
-        //    var skill = SkillRegistry.Create(tok.ReplacementSkillKey);
-        //    if (skill == null)
-        //        return false;
-
-        //    var ctx = new SkillContext
-        //    {
-        //        Key = skill.GetKeyCode(),
-        //        MousePos = new Vector2(req.TargetPos.PosX, req.TargetPos.PosZ),
-        //    };
-
-        //    if (!skill.CanCast(p, ctx))
-        //        return false;
-
-        //    p.ChangeState(new Player_SkillState(skill, ctx));
-
-        //    // 3) 토큰 소모/비활성
-        //    tok.RemainingUses--;
-        //    if (tok.RemainingUses <= 0)
-        //        tok.Active = false;
-
-        //    return true;
-        //}
 
         #region Utils
         public GameObject FindNearestEnemy(Player me, int range)

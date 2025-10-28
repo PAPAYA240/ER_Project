@@ -151,8 +151,8 @@ public class PlayerViewController : MonoBehaviour
         StopFollowTarget();
 
         _agent.enabled = true;
-        _agent.updatePosition = true;     // ★ 추가
-        _agent.updateRotation = true;     // ★ 추가
+        _agent.updatePosition = true;     
+        _agent.updateRotation = true;     
         _agent.isStopped = false;
 
         if (cmd.IsGround)

@@ -205,7 +205,7 @@ public class Player_AttackState : IPlayerState
         p.SendAnimPacket(animName, 0.05f);
 
         // 필요 시 바라보기 보정
-        p.FaceToTarget(_targetId);
+        //p.FaceToTarget(_targetId);
     }
 
     // 데미지 적용 훅(프로젝트 룰에 맞게 연결)
