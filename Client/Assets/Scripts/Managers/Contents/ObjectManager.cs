@@ -99,6 +99,7 @@ public class ObjectManager
         mc.ObjInfo = info;
         mc.Id = info.ObjectId;
         mc.PosInfo = info.PosInfo;
+        mc.RotInfo = info.RotInfo;
         mc.Stat = info.StatInfo;
         mc.Hp = info.StatInfo.MaxHp;
         mc._monsterType = info.Monster.MonsterType;
@@ -129,6 +130,7 @@ public class ObjectManager
         ec.Id = info.ObjectId;
         ec.PosInfo = info.PosInfo;
         ec.Stat = info.StatInfo;
+
         if (Enum.TryParse(info.Name, out EnvType envEnum))
             ec._envType = envEnum;
         ec.SyncPos();

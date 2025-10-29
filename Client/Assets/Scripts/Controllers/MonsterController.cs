@@ -17,7 +17,7 @@ public class MonsterController : CreatureController
     public Vector3 _targetPos { get; private set; }
 
     // 애니메이션 끝났을 때 호출
-    public Action<CreatureState> OnStateChanged; 
+    public Action<CreatureState, bool> OnStateChanged; 
 
     // TODO : 임시 변수, 나중에 블랙 보드 만들면 없앨 부분
     public bool isSpawned = false;
@@ -48,7 +48,6 @@ public class MonsterController : CreatureController
     protected override void UpdateController()
     {
         transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
-        transform.rotation = transform.rotation;
     }
     public override void OnDamaged()
     {
@@ -72,11 +71,12 @@ public class MonsterController : CreatureController
         if (_agent != null)
             _agent.SetDestination(packet.PosInfo.ToVector());
 
-        _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
+        if (packet.RotInfo != null)
+            _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
 
         Skill = MonsterSkill.MsNone;
 
-        OnStateChanged?.Invoke(State);
+        OnStateChanged?.Invoke(State, true);
     }
 
     public void OnMovePacket(S_State packet)
@@ -84,7 +84,8 @@ public class MonsterController : CreatureController
         if (_agent != null)
              _agent.SetDestination(packet.PosInfo.ToVector());
 
-        _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
+        if(packet.RotInfo != null)
+            _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
 
     public void OnSkillPacket(S_State packet)
@@ -96,15 +97,17 @@ public class MonsterController : CreatureController
             _agent.ResetPath();
            _agent.SetDestination(packet.PosInfo.ToVector());
         }
-        _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
+
+        if(packet.RotInfo != null)
+            _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
+        OnStateChanged?.Invoke(State, false);
     }
 
     public void OnRecvStatePacket(S_State packet)
     {
         State = packet.MyState;
-        if(packet.TargetPosition != null)
-            _targetPos = new Vector3(packet.TargetPosition.PosX, packet.TargetPosition.PosY, packet.TargetPosition.PosZ);
-        Debug.Log($"{State}");
+        if (packet.TargetPosition != null)
+            _targetPos = packet.TargetPosition.ToVector();
 
         switch (State)
         {
@@ -134,8 +137,6 @@ public class MonsterController : CreatureController
 
     private bool Add_Component()
     {
-        if(_monsterType == MonsterType.Turret)
-            _agent = GetComponentInParent<NavMeshAgent>();
         _agent = GetComponentInParent<NavMeshAgent>();
         if (_agent != null)
         {
@@ -147,7 +148,8 @@ public class MonsterController : CreatureController
         monsterRenderer = this.GetComponentInChildren<Renderer>();
         if (monsterRenderer == null)
             return false;
-        
+
+        _nextRotation = transform.rotation;
         originalMaterial = monsterRenderer.material;
         skillMaterial = Resources.Load<Material>("materials/effect/auraMaterial");
         gameObject.AddComponent<HighlightEffect>();

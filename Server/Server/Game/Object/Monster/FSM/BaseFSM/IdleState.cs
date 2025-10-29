@@ -1,6 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
 using System;
-using System.Numerics;
 
 namespace Server.Game
 {
@@ -8,7 +7,6 @@ namespace Server.Game
     {
         private const int SEARCH_INTERVAL_MS = 1000;
         private long _nextSearchTick = 0;
-
         private float _delayTimer = 0;
 
         public void Enter(Monster monster)
@@ -37,18 +35,6 @@ namespace Server.Game
         }
         private void ExecuteIdle(Monster monster)
         {
-            /*
-             *  MonsterType type = monster.Info.Monster.MonsterType;
-            switch (type)
-            {
-                case MonsterType.Alpha:
-                case MonsterType.Omega:
-                    if (!monster.IsInSkillRange())
-                        monster.ChangeState(FSMManager.Instance.GetMovingState());
-                    return;
-            }
-            monster.ChangeState(FSMManager.Instance.GetSkillState(type));
-            */
             if (!monster.IsAtSpawn())
                 monster.ChangeState(FSMManager.Instance.GetMovingState());
         }

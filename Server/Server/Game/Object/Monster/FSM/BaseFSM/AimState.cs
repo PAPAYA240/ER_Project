@@ -1,5 +1,4 @@
-﻿
-using Google.Protobuf.Protocol;
+﻿using Google.Protobuf.Protocol;
 using Server.Data;
 using System;
 using System.Numerics;
@@ -23,18 +22,21 @@ namespace Server.Game
 
             SetupSkill(monster);
 
+            RotateTowardTarget(monster);
+
             monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), _skillData);
         }
 
         public void Execute(Monster monster)
         {
-            if (ShouldTrackTarget(monster))
-                RotateTowardTarget(monster);
-
-            monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), _skillData);
-
             if (IsSkillFinished())
-                monster.ChangeState(FSMManager.Instance.GetIdleState());
+            {
+                if (monster.IsInSkillRange())
+                    monster.ChangeState(FSMManager.Instance.EvaluateTargetForNextState(monster));
+                else
+                    monster.ChangeState(FSMManager.Instance.GetIdleState());
+                Console.WriteLine("AIM");
+            }
         }
 
         public void OnHit(Monster monster, Creature target) { }
@@ -63,11 +65,6 @@ namespace Server.Game
             Vector3 direction = targetPosition - myPosition;
 
             monster.LookAtTarget(direction, elapsedTime, false);
-        }
-        private bool ShouldTrackTarget(Monster monster)
-        {
-            MonsterType type = monster.Info.Monster.MonsterType;
-            return type == MonsterType.Drone || type == MonsterType.Turret;
         }
 
         private void SetupSkill(Monster monster)

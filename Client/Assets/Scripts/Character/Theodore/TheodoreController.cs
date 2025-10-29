@@ -122,7 +122,6 @@ public class TheodoreController : MyPlayerController
         {
             _elapsedTime += Time.deltaTime;
             _ratioSkillDuration = _elapsedTime / _effectDuration;
-            //_skillTarget = TryGetAttackableObject();
             yield return null;
         }
 
