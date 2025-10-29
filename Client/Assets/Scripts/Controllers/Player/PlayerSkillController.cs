@@ -344,8 +344,11 @@ public class PlayerSkillController : MonoBehaviour
         if(_agent != null)
             _agent.enabled = false;
 
-        transform.position = end;
-        Debug.Log($"end : {end}, Pos : {transform.position}");
+        // NavMesh 위로 수정
+        if (NavMesh.SamplePosition(end, out var endHit, 2.0f, NavMesh.AllAreas))
+            _endPosition = endHit.position;
+
+        transform.position = _endPosition;
         _player.UpdateTransform();
 
         _agent.enabled = true;
