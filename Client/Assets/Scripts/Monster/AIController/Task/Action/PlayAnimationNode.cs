@@ -10,7 +10,7 @@ using UnityEditor.Experimental.GraphView;
 
 public interface IStateChangeListener
 {
-    void HandleStateChange(CreatureState newState);
+    void HandleStateChange(CreatureState newState, bool isClear = true);
 }
 
 public abstract class AnimationControlNode : ActionNode, IStateChangeListener
@@ -34,7 +34,7 @@ public abstract class AnimationControlNode : ActionNode, IStateChangeListener
 
         return (monsterController != null && _animator != null);
     }
-    public abstract void HandleStateChange(CreatureState newState);
+    public abstract void HandleStateChange(CreatureState newState, bool isClear = true);
 
 }
 
@@ -69,9 +69,6 @@ public class PlayAnimation : AnimationControlNode
             return NodeStatus.Running;
         }
 
-        if (monsterController._monsterType == MonsterType.Drone)
-            Debug.Log($"{monsterController.State}");
-
         AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName(_currentAnimName))
         {
@@ -95,7 +92,12 @@ public class PlayAnimation : AnimationControlNode
 
     private void Play(string anim)
      => _animator.CrossFadeInFixedTime(anim, ratio);
-
+    public void Reset()
+    {
+        _currentAnimName = string.Empty;
+        _hasStarted = false;
+        _currentChainIndex = 0;
+    }
     private void ClearAnim()
     {
         if (_animator == null) return;
@@ -105,9 +107,10 @@ public class PlayAnimation : AnimationControlNode
         _hasStarted = false;
         _currentChainIndex = 0;
     }
-    public override void HandleStateChange(CreatureState newState)
+    public override void HandleStateChange(CreatureState newState, bool isClear = true)
     {
-        ClearAnim();
+        if(isClear)
+            ClearAnim();
     }
 }
 
@@ -138,7 +141,7 @@ public class PlayAnimatorBoolNode : AnimationControlNode
         return NodeStatus.Running;
     }
 
-    public override void HandleStateChange(CreatureState newState)
+    public override void HandleStateChange(CreatureState newState, bool isClear = true)
     {
     }
 }
@@ -176,7 +179,7 @@ public class PlayAnimatorFloatNode : AnimationControlNode
 
         return NodeStatus.Running;
     }
-    public override void HandleStateChange(CreatureState newState) { }
+    public override void HandleStateChange(CreatureState newState, bool isClear = true) { }
 }
 
 // 스킬 사용 중에 사용될 애니메이션 노드
@@ -209,7 +212,7 @@ public class PlayAnimatorTriggerNode : AnimationControlNode
         return NodeStatus.Running;
     }
 
-    public override void HandleStateChange(CreatureState newState)
+    public override void HandleStateChange(CreatureState newState, bool isClear = true)
     {
         if (_animator == null)
             return;

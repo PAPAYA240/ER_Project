@@ -112,7 +112,7 @@ namespace Google.Protobuf.Protocol {
             "bWF4SHAYBCABKAISDwoHaHBSZWdlbhgFIAEoAhIPCgdiYXJyaWVyGAYgASgC",
             "Eg8KB3N0YW1pbmEYByABKAISEgoKbWF4U3RhbWluYRgIIAEoAhIUCgxzdGFt",
             "aW5hUmVnZW4YCSABKAISEwoLYXR0YWNrU3BlZWQYCiABKAISEQoJbW92ZVNw",
-            "ZWVkGAsgASgCEgsKA2V4cBgMIAEoBRINCgVsZXZlbBgNIAEoBRIMCgRoaWxs",
+            "ZWVkGAsgASgCEgsKA2V4cBgMIAEoBRINCgVsZXZlbBgNIAEoBRIMCgRoZWFs",
             "GA4gASgFInwKClBsYXllckluZm8SKQoIY2hhclR5cGUYASABKA4yFy5Qcm90",
             "b2NvbC5DaGFyYWN0ZXJUeXBlEhMKC3NraWxsUG9pbnRzGAIgASgFEgwKBHRl",
             "YW0YAyABKAUSIAoGd2VhcG9uGAQgASgOMhAuUHJvdG9jb2wuV2VhcG9uIjkK",
@@ -195,7 +195,7 @@ namespace Google.Protobuf.Protocol {
             "QVJHSU5HEAYSCgoGQVBQRUFSEAcqVAoOR2FtZU9iamVjdFR5cGUSCAoETk9O",
             "RRAAEgoKBlBMQVlFUhABEgsKB01PTlNURVIQAhIOCgpQUk9KRUNUSUxFEAMS",
             "DwoLRU5WSVJPTk1FTlQQBCp+CgdFbnZUeXBlEgwKCEVOVl9OT05FEAASDQoJ",
-            "SElMTF9QQUNLEAESFQoRREVWSUNFX1NQQVdOUE9JTlQQAhIaChZBQ0NCT1VO",
+            "SEVBTF9QQUNLEAESFQoRREVWSUNFX1NQQVdOUE9JTlQQAhIaChZBQ0NCT1VO",
             "REFSWV9TUEFXTlBPSU5UEAMSFgoSQkFSUklFUl9TUEFXTlBPSU5UEAQSCwoH",
             "VFVSQklORRAFKnUKCVNraWxsVHlwZRIOCgpTS0lMTF9OT05FEAASDgoKU0tJ",
             "TExfQVVUTxABEhQKEFNLSUxMX1BST0pFQ1RJTEUQAhIQCgxTS0lMTF9TVEFU",
@@ -289,7 +289,7 @@ namespace Google.Protobuf.Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_EnvRequest), global::Google.Protobuf.Protocol.S_EnvRequest.Parser, new[]{ "ObjectId", "EnvType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.PositionInfo), global::Google.Protobuf.Protocol.PositionInfo.Parser, new[]{ "State", "PosX", "PosY", "PosZ" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.RotationInfo), global::Google.Protobuf.Protocol.RotationInfo.Parser, new[]{ "Qx", "Qy", "Qz", "Qw" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.StatInfo), global::Google.Protobuf.Protocol.StatInfo.Parser, new[]{ "Attack", "Defense", "Hp", "MaxHp", "HpRegen", "Barrier", "Stamina", "MaxStamina", "StaminaRegen", "AttackSpeed", "MoveSpeed", "Exp", "Level", "Hill" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.StatInfo), global::Google.Protobuf.Protocol.StatInfo.Parser, new[]{ "Attack", "Defense", "Hp", "MaxHp", "HpRegen", "Barrier", "Stamina", "MaxStamina", "StaminaRegen", "AttackSpeed", "MoveSpeed", "Exp", "Level", "Heal" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.PlayerInfo), global::Google.Protobuf.Protocol.PlayerInfo.Parser, new[]{ "CharType", "SkillPoints", "Team", "Weapon" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.MonsterInfo), global::Google.Protobuf.Protocol.MonsterInfo.Parser, new[]{ "MonsterType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.EnvInfo), global::Google.Protobuf.Protocol.EnvInfo.Parser, new[]{ "EnvType", "PrefabPath", "CollectRadius", "RespawnTime", "IsRespawnable", "RewardType", "RewardId", "RewardAmount", "FloatSpeed", "FloatHeight", "RotationSpeed" }, null, null, null, null),
@@ -386,7 +386,7 @@ namespace Google.Protobuf.Protocol {
 
   public enum EnvType {
     [pbr::OriginalName("ENV_NONE")] EnvNone = 0,
-    [pbr::OriginalName("HILL_PACK")] HillPack = 1,
+    [pbr::OriginalName("HEAL_PACK")] HealPack = 1,
     [pbr::OriginalName("DEVICE_SPAWNPOINT")] DeviceSpawnpoint = 2,
     [pbr::OriginalName("ACCBOUNDARY_SPAWNPOINT")] AccboundarySpawnpoint = 3,
     [pbr::OriginalName("BARRIER_SPAWNPOINT")] BarrierSpawnpoint = 4,
@@ -8984,7 +8984,7 @@ namespace Google.Protobuf.Protocol {
       moveSpeed_ = other.moveSpeed_;
       exp_ = other.exp_;
       level_ = other.level_;
-      hill_ = other.hill_;
+      heal_ = other.heal_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -9136,14 +9136,14 @@ namespace Google.Protobuf.Protocol {
       }
     }
 
-    /// <summary>Field number for the "hill" field.</summary>
-    public const int HillFieldNumber = 14;
-    private int hill_;
+    /// <summary>Field number for the "heal" field.</summary>
+    public const int HealFieldNumber = 14;
+    private int heal_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Hill {
-      get { return hill_; }
+    public int Heal {
+      get { return heal_; }
       set {
-        hill_ = value;
+        heal_ = value;
       }
     }
 
@@ -9173,7 +9173,7 @@ namespace Google.Protobuf.Protocol {
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(MoveSpeed, other.MoveSpeed)) return false;
       if (Exp != other.Exp) return false;
       if (Level != other.Level) return false;
-      if (Hill != other.Hill) return false;
+      if (Heal != other.Heal) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -9193,7 +9193,7 @@ namespace Google.Protobuf.Protocol {
       if (MoveSpeed != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(MoveSpeed);
       if (Exp != 0) hash ^= Exp.GetHashCode();
       if (Level != 0) hash ^= Level.GetHashCode();
-      if (Hill != 0) hash ^= Hill.GetHashCode();
+      if (Heal != 0) hash ^= Heal.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -9259,9 +9259,9 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(104);
         output.WriteInt32(Level);
       }
-      if (Hill != 0) {
+      if (Heal != 0) {
         output.WriteRawTag(112);
-        output.WriteInt32(Hill);
+        output.WriteInt32(Heal);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -9310,8 +9310,8 @@ namespace Google.Protobuf.Protocol {
       if (Level != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Level);
       }
-      if (Hill != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Hill);
+      if (Heal != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Heal);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -9363,8 +9363,8 @@ namespace Google.Protobuf.Protocol {
       if (other.Level != 0) {
         Level = other.Level;
       }
-      if (other.Hill != 0) {
-        Hill = other.Hill;
+      if (other.Heal != 0) {
+        Heal = other.Heal;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -9430,7 +9430,7 @@ namespace Google.Protobuf.Protocol {
             break;
           }
           case 112: {
-            Hill = input.ReadInt32();
+            Heal = input.ReadInt32();
             break;
           }
         }

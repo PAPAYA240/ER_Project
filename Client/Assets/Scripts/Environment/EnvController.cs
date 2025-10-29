@@ -5,35 +5,57 @@ public class EnvController : BaseController
 {
     [SerializeField] public EnvType _envType;
 
+    // Components
     protected Animator animator;
+
+    // State
     protected bool _isActive = false;
+    protected bool _isCollecting = false;
+
+    // Network
+    private int _lastRequestObjectId = -1;
 
     protected override void Init()
     {
         base.Init();
-        animator = GetComponent<Animator>();
-        if (animator == null)
-            animator = GetComponentInChildren<Animator>();
+        animator = GetComponent<Animator>() ?? GetComponentInChildren<Animator>();
     }
-    public void InitializeFromServer(EnvInfo data)
-    {
-    }
-    void Update()
-    {
-    }
+
+
+    #region Interaction
 
     protected void OnTriggerEnter(Collider other)
     {
-        //if (_isActive == false)
-        //    return;
+        if (!IsValidTrigger(other))
+            return;
 
-        //if (other.gameObject.layer == LayerMask.NameToLayer("MyPlayer"))
-        //    RequestCollect();
+        _isCollecting = true;
+        TryHandleInteraction();
+        RequestCollect();
     }
 
-    void RequestCollect()
+    private bool IsValidTrigger(Collider other)
     {
-        // 서버에 수집 요청 전송
+        if (other.gameObject.layer != LayerMask.NameToLayer("MyPlayer"))
+            return false;
+        if (!_isActive || _isCollecting)
+            return false;
+        return true;
+    }
+
+    protected virtual void TryHandleInteraction()
+    {
+        _isCollecting = false;
+    }
+
+    #endregion
+
+    #region Network
+
+    private void RequestCollect()
+    {
+        _lastRequestObjectId = Id;
+
         C_EnvRequest request = new C_EnvRequest
         {
             ObjectId = Id,
@@ -44,8 +66,13 @@ public class EnvController : BaseController
 
     public void OnInteractionAuthorized()
     {
+        if (_lastRequestObjectId == Id)
+        {
+            _lastRequestObjectId = -1;
+            return;
+        }
         TryHandleInteraction();
     }
 
-    protected virtual void TryHandleInteraction() { }
+    #endregion
 }

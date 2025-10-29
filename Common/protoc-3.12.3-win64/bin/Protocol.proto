@@ -77,7 +77,7 @@ enum GameObjectType{
 
 enum EnvType{
    ENV_NONE = 0;
-   HILL_PACK = 1;
+   HEAL_PACK = 1;
    DEVICE_SPAWNPOINT = 2;
    ACCBOUNDARY_SPAWNPOINT = 3;
    BARRIER_SPAWNPOINT = 4;
@@ -500,7 +500,7 @@ message StatInfo{
 	float moveSpeed = 11;
 	int32 exp = 12;
 	int32 level = 13;
-	int32 hill = 14;
+	int32 heal = 14;
 }
 
 message PlayerInfo {

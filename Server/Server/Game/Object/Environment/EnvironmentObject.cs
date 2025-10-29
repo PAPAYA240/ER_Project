@@ -21,7 +21,7 @@ namespace Server.Game
             // 오브젝트 타입에 따라 다른 전략을 할당
             switch (envType)
             {
-                case EnvType.HillPack:
+                case EnvType.HealPack:
                     _interactionStrategy = new InteractableObject();
                     break;
             }
