@@ -160,7 +160,6 @@ namespace Server.Game
 
         #endregion
     }
-    #endregion
 
     #region Damage
 

@@ -120,7 +120,6 @@ public class MyPlayerController : PlayerController
     protected GameObjectType _targetType;
     protected Vector3 _finalPos;
 
-    protected List<int> SkillTargetId { get; set; }
 
     protected float _ratioSkillDuration = 0f;
 
@@ -173,7 +172,6 @@ public class MyPlayerController : PlayerController
         layerName = _animator.GetLayerName(0);
         //Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
 
-        ObjectType = Define.Object.MyPlayer;
         MakeSkillDict();
         MakeCoolDownDict();
         MakeInventory();
@@ -992,9 +990,7 @@ public class MyPlayerController : PlayerController
                 return;
 
             // 패킷 보내기
-            SendSkillPacket(_keyCode);
-
-            Debug.Log($"스킬 사용! : {_keyCode}");         
+            SendSkillPacket(_keyCode);    
         }
     }
 
@@ -1064,7 +1060,7 @@ public class MyPlayerController : PlayerController
 
         _coolDownDict[key].isCoolDown = false;
         _coolDownDict[key].coolTime = 0.0f;
-    }
+    }   
 
     protected void MakeSkillDict()
     {
@@ -1536,7 +1532,7 @@ public class MyPlayerController : PlayerController
                 Amplification = isAmplification,
                 AmplifiKeyCode = (int)tKey,
             },
-            TargetPosX = mousePos.x, TargetPosZ = mousePos.z,
+            MousePosX = mousePos.x, MousePosZ = mousePos.z,
             ChargeRatio = _ratioSkillDuration,
         };
 

@@ -36,7 +36,6 @@ public class MonsterController : CreatureController
 	{
         base.Init();
 
-        ObjectType = Define.Object.Monster;
         int monsterLayer = LayerMask.NameToLayer("Monster");
         SetLayerRecursively(this.gameObject, monsterLayer);
 

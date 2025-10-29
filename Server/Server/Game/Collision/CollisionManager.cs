@@ -46,7 +46,7 @@ namespace Server.Game
         public bool IsInteracted = true;
         public float OffsetRadius = 0;
 
-        public long DrawMeshDelayTimer { get; set; } = 0;
+        //public long DrawMeshDelayTimer { get; set; } = 0;
         public Vector2 Forward { get; set; }
         public Vector2 Right { get; set; }
         #endregion
@@ -86,7 +86,7 @@ namespace Server.Game
             SetUpStatusEffects();
         }
 
-        public Hitbox AddHitbox(Creature player, CharacterType charType, KeyCode keyCode, Vector2 mousePos = new Vector2(), float chargeRatio = 0)
+        public Hitbox AddHitbox(Creature player, CharacterType charType, KeyCode keyCode, Vector2 targetPos = new Vector2(), float chargeRatio = 0)
         {
             Hitbox hitbox = null;
             lock (_lock)
@@ -118,7 +118,7 @@ namespace Server.Game
             if(_hitboxChainDict.TryGetValue(charType, out Dictionary<KeyCode, KeyCode> chainDict))
             {
                 if (chainDict.TryGetValue(keyCode, out KeyCode value))
-                    AddHitbox(player, charType, value, mousePos, chargeRatio);
+                    AddHitbox(player, charType, value, targetPos, chargeRatio);
             }
             return hitbox;
         }
@@ -268,7 +268,10 @@ namespace Server.Game
 
                     HandleCollision<T>(hitbox, targets, hitTargets, damageDict);
                     if (hitTargets.Count > 0)
+                    {
                         HandleDamage<T>(hitbox, hitTargets, damageDict);
+                        HandleStatusEffects<T>(hitbox, hitTargets);
+                    }
                 }
             }
         }
@@ -330,12 +333,6 @@ namespace Server.Game
             if (!System.Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
                 return false;
 
-            if (Environment.TickCount64 > hitbox.DrawMeshDelayTimer)
-            {
-                SendDrawMesh(hitbox);
-                hitbox.DrawMeshDelayTimer = Environment.TickCount64 + 100;
-            }
-
             switch (shape)
             {
                 case SkillShape.Circle:
@@ -344,18 +341,24 @@ namespace Server.Game
                         float dz = go.PosInfo.PosZ - hitbox.PosZ;
                         float distanceSq = dx * dx + dz * dz;
 
-                        float radius = hitbox.Data.Radius + hitbox.OffsetRadius;
-                        return distanceSq <= hitbox.Data.Radius * radius * radius;
+                        float hitboxRadius = hitbox.Data.Radius + hitbox.OffsetRadius;
+                        float totalRadius = hitboxRadius + go.Radius;
+
+                        return distanceSq <= totalRadius * totalRadius;
                     }
                 case SkillShape.Rectangle:
                     {
                         Vector2 center = hitbox.MousePos;
 
-                        Vector2 forward = Vector2.Normalize(new Vector2(center.X - hitbox.Creature.PosInfo.PosX, center.Y - hitbox.Creature.PosInfo.PosZ));
+                        Vector2 forward = Vector2.Normalize(new Vector2(
+                            center.X - hitbox.Creature.PosInfo.PosX,
+                            center.Y - hitbox.Creature.PosInfo.PosZ));
 
                         Vector2 right = new Vector2(-forward.Y, forward.X);
 
-                        Vector2 toTarget = new Vector2(go.PosInfo.PosX - center.X, go.PosInfo.PosZ - center.Y);
+                        Vector2 toTarget = new Vector2(
+                            go.PosInfo.PosX - center.X,
+                            go.PosInfo.PosZ - center.Y);
 
                         float projForward = Vector2.Dot(toTarget, forward);
                         float projRight = Vector2.Dot(toTarget, right);
@@ -363,16 +366,26 @@ namespace Server.Game
                         float halfHeight = hitbox.Data.Height * 0.5f;
                         float halfWidth = hitbox.Data.Width * 0.5f;
 
-                        return MathF.Abs(projForward) <= halfHeight &&
-                               MathF.Abs(projRight) <= halfWidth;
+                        // 사각형 내부의 최근접점 찾기
+                        float clampedForward = MathF.Max(-halfHeight, MathF.Min(projForward, halfHeight));
+                        float clampedRight = MathF.Max(-halfWidth, MathF.Min(projRight, halfWidth));
+
+                        // 최근접점에서 원 중심까지 거리 제곱 계산
+                        float deltaForward = projForward - clampedForward;
+                        float deltaRight = projRight - clampedRight;
+
+                        float distSq = deltaForward * deltaForward + deltaRight * deltaRight;
+
+                        // 거리 <= 반지름이면 충돌
+                        return distSq <= go.Radius * go.Radius;
                     }
                 case SkillShape.Point:
                     {
                         Vector2 center = hitbox.MousePos;
                         Vector2 playerPos = new Vector2(hitbox.Creature.PosInfo.PosX, hitbox.Creature.PosInfo.PosZ);
                         Vector2 forward = Vector2.Normalize(center - playerPos);
-
                         Vector2 right = new Vector2(-forward.Y, forward.X);
+
                         Vector2 toTarget = new Vector2(go.PosInfo.PosX - center.X, go.PosInfo.PosZ - center.Y);
 
                         float projForward = Vector2.Dot(toTarget, forward);
@@ -381,7 +394,15 @@ namespace Server.Game
                         float halfHeight = hitbox.Data.Height * 0.5f;
                         float halfWidth = hitbox.Data.Width * 0.5f;
 
-                        return MathF.Abs(projForward) <= halfHeight && MathF.Abs(projRight) <= halfWidth;
+                        float clampedForward = MathF.Max(-halfHeight, MathF.Min(projForward, halfHeight));
+                        float clampedRight = MathF.Max(-halfWidth, MathF.Min(projRight, halfWidth));
+
+                        float deltaForward = projForward - clampedForward;
+                        float deltaRight = projRight - clampedRight;
+
+                        float distSq = deltaForward * deltaForward + deltaRight * deltaRight;
+
+                        return distSq <= go.Radius * go.Radius;
                     }
 
                 case SkillShape.Ray:
@@ -394,30 +415,56 @@ namespace Server.Game
                         float projForward = Vector2.Dot(toTarget, forward);
                         float projRight = Vector2.Dot(toTarget, right);
 
-                        if (!System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
+                        if (!Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
                             return false;
 
                         float range = hitbox.Data.MaxRange;
                         if (type == SkillType.SkillTrack)
                             range = hitbox.Data.MinRange + (hitbox.Data.MaxRange - hitbox.Data.MinRange) * hitbox.ChargeRatio;
 
-                        return projForward >= 0 && projForward <= range && MathF.Abs(projRight) <= hitbox.Data.Width * 0.5f;
+                        float halfWidth = hitbox.Data.Width * 0.5f;
+
+                        float clampedForward = MathF.Max(0f, MathF.Min(projForward, range));
+                        float clampedRight = MathF.Max(-halfWidth, MathF.Min(projRight, halfWidth));
+
+                        float deltaForward = projForward - clampedForward;
+                        float deltaRight = projRight - clampedRight;
+                        float distSq = deltaForward * deltaForward + deltaRight * deltaRight;
+
+                        return distSq <= go.Radius * go.Radius;
                     }
                 case SkillShape.Sector:
                     {
                         Vector2 center = new Vector2(hitbox.PosX, hitbox.PosZ);
                         Vector2 toTarget = new Vector2(go.PosInfo.PosX - center.X, go.PosInfo.PosZ - center.Y);
 
-                        if (toTarget.LengthSquared() > hitbox.Data.Radius * hitbox.Data.Radius)
+                        float dist = toTarget.Length();
+                        if (dist > hitbox.Data.Radius + go.Radius)
                             return false;
 
+                        if (dist <= go.Radius)
+                            return true;
+
                         Vector2 mouseDir = Vector2.Normalize(new Vector2(hitbox.MousePos.X - center.X, hitbox.MousePos.Y - center.Y));
-                        Vector2 targetDir = Vector2.Normalize(toTarget);
+                        Vector2 targetDir = toTarget / dist;
 
                         float dot = Math.Clamp(Vector2.Dot(mouseDir, targetDir), -1f, 1f);
-                        float angleDeg = MathF.Acos(dot) * (180f / MathF.PI);
+                        float angleRad = MathF.Acos(dot);
 
-                        return angleDeg <= hitbox.Data.Angle * 0.5f;
+                        float halfAngleRad = (hitbox.Data.Angle * 0.5f) * (MathF.PI / 180f);
+                        if (angleRad <= halfAngleRad)
+                            return true;
+
+                        float sin = MathF.Sin(halfAngleRad);
+                        float cos = MathF.Cos(halfAngleRad);
+
+                        Vector2 leftDir = new Vector2(mouseDir.X * cos - mouseDir.Y * sin, mouseDir.X * sin + mouseDir.Y * cos);
+                        Vector2 rightDir = new Vector2(mouseDir.X * cos + mouseDir.Y * sin, -mouseDir.X * sin + mouseDir.Y * cos);
+
+                        float leftDist = MathF.Abs(toTarget.X * leftDir.Y - toTarget.Y * leftDir.X);
+                        float rightDist = MathF.Abs(toTarget.X * rightDir.Y - toTarget.Y * rightDir.X);
+
+                        return (leftDist <= go.Radius || rightDist <= go.Radius);
                     }
             }
             return false;
@@ -567,7 +614,8 @@ namespace Server.Game
 
                 if (CheckCollision(hitbox, target))
                 {
-                    Skill skill = hitbox.Player.GetSkill(hitbox.KeyCode);
+                    Player skillOwner = hitbox.Creature as Player;
+                    Skill skill = skillOwner.GetSkill(hitbox.KeyCode);
                     SkillLevel skillLevel = skill.SkillData.levels[skill.CurLevel];
                     if (skillLevel.effects.Count == 0)
                         continue;
@@ -584,7 +632,6 @@ namespace Server.Game
         }
 
         #region StatusEffects(버프, 디버프, 방어막)
-
         void SetUpStatusEffects() // 조건이 Hit인 효과들만 추려내기
         {
             foreach (var nestedKvp in DataManager.SkillDict)
@@ -619,7 +666,10 @@ namespace Server.Game
                                     stat = effectData.stat,
                                     duration = effectData.duration,
                                     value = effectData.value,
-                                    subject = Enum.TryParse(effectData.subject, true, out Subject temp) ? temp : Subject.Subject_None
+                                    subject = Enum.TryParse(effectData.subject, true, out Subject temp) ? temp : Subject.Subject_None,
+                                    coeff = effectData.coeff,
+                                    ratioPerTarget = effectData.ratioPerTarget,
+                                    maxRatio = effectData.maxRatio
                                 };
 
                                 effects.Add(newEffect);
@@ -632,21 +682,28 @@ namespace Server.Game
 
         void HandleStatusEffects<T>(Hitbox hitbox, List<T> hitTargets)
         {
+            if (!(hitbox.Creature is Player))
+                return;
+
             if (!_statusEffects.TryGetValue(hitbox.CharType, out var nestedDict))
                 return;
 
             if (!nestedDict.TryGetValue(hitbox.KeyCode, out var dict))
                 return;
 
-            if (!dict.TryGetValue(hitbox.Player.GetSkillLevel(hitbox.KeyCode), out var statusEffectList))
+            Player player = hitbox.Creature as Player;
+
+            if (!dict.TryGetValue(player.GetSkillLevel(hitbox.KeyCode), out var statusEffectList))
                 return;
 
             foreach (var effect in statusEffectList)
             {
+                effect.targetCnt = hitTargets.Count;
+
                 switch (effect.subject)
                 {
                     case Subject.Self:
-                        hitbox.Player.Room.Push(hitbox.Player.Room.AddStatusEffect, hitbox.Player, effect);
+                        player.Room.Push(player.Room.AddStatusEffect, player, effect);
                         break;
                     case Subject.Ally: // 이건 아군대상 스킬에만 있을거같긴해서 생략
                         break;
@@ -657,7 +714,6 @@ namespace Server.Game
                 }
             }
         }
-
         #endregion
 
         #region 추가
@@ -923,42 +979,42 @@ namespace Server.Game
             _interactionManager.HandleInteraction(hitbox, target);
         }
 
-        public void SendDrawMesh(Hitbox hitbox)
-        {
-            Vector2 playerPos2D = new Vector2(hitbox.Creature.PosInfo.PosX, hitbox.Creature.PosInfo.PosZ);
+        //public void SendDrawMesh(Hitbox hitbox)
+        //{
+        //    Vector2 playerPos2D = new Vector2(hitbox.Creature.PosInfo.PosX, hitbox.Creature.PosInfo.PosZ);
 
-            S_Drawmesh pkt = new S_Drawmesh
-            {
-                ObjectId = hitbox.Creature.Id,
-                OffsetRadius = hitbox.OffsetRadius,
-                PosInfo = new PositionInfo
-                {
-                    PosX = hitbox.PosX,
-                    PosY = 0,
-                    PosZ = hitbox.PosZ
-                },
+        //    S_Drawmesh pkt = new S_Drawmesh
+        //    {
+        //        ObjectId = hitbox.Creature.Id,
+        //        OffsetRadius = hitbox.OffsetRadius,
+        //        PosInfo = new PositionInfo
+        //        {
+        //            PosX = hitbox.PosX,
+        //            PosY = 0,
+        //            PosZ = hitbox.PosZ
+        //        },
 
-                RotInfo = hitbox.Rot,
+        //        RotInfo = hitbox.Rot,
 
-                Hitbox = hitbox.Data,
+        //        Hitbox = hitbox.Data,
 
-                Forward = new PositionInfo
-                {
-                    PosX = hitbox.Forward.X,
-                    PosY = 0,
-                    PosZ = hitbox.Forward.Y
-                },
+        //        Forward = new PositionInfo
+        //        {
+        //            PosX = hitbox.Forward.X,
+        //            PosY = 0,
+        //            PosZ = hitbox.Forward.Y
+        //        },
 
-                Right = new PositionInfo
-                {
-                    PosX = hitbox.Right.X,
-                    PosY = 0,
-                    PosZ = hitbox.Right.Y
-                }
-            };
+        //        Right = new PositionInfo
+        //        {
+        //            PosX = hitbox.Right.X,
+        //            PosY = 0,
+        //            PosZ = hitbox.Right.Y
+        //        }
+        //    };
 
-            hitbox.Creature.Room.Broadcast(pkt);
-        }
+        //    hitbox.Creature.Room.Broadcast(pkt);
+        //}
         #endregion
     }
 }

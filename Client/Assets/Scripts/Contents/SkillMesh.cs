@@ -35,6 +35,7 @@ public class SkillMesh : MonoBehaviour
 
         StartCoroutine(AutoDestroy(startTime, endTime, team));
     }
+
     private void CreateVisual(SkillShape shape, int team)
     {
         if (visualObject != null)
@@ -177,8 +178,8 @@ public class SkillMesh : MonoBehaviour
     {
         yield return new WaitForSeconds(startTime);
 
-       // if (Enum.TryParse<SkillShape>(_hitbox.Shape, out SkillShape shape))
-       //     CreateVisual(shape, team);
+        if (Enum.TryParse<SkillShape>(_hitbox.Shape, out SkillShape shape))
+            CreateVisual(shape, team);
 
         float duration = endTime - startTime;
         if (duration > 0f)
@@ -192,14 +193,14 @@ public class SkillMesh : MonoBehaviour
 
 
     #region 추가
-    public void OnDraw(SkillHitbox hitbox, Vector3 pos, Vector3 forward, Vector3 right, float offsetRadius, int team)
-    {
-        _pos = pos;
-        _forward = forward;
-        _right = right;
-        _offsetRadius = offsetRadius;
-        SetHitbox(hitbox, team);
-    }
+    //public void OnDraw(SkillHitbox hitbox, Vector3 pos, Vector3 forward, Vector3 right, float offsetRadius, int team)
+    //{
+    //    _pos = pos;
+    //    _forward = forward;
+    //    _right = right;
+    //    _offsetRadius = offsetRadius;
+    //    SetHitbox(hitbox, team);
+    //}
 
     public void SetHitbox(SkillHitbox hitbox, int team, float chargeRatio = 1f)
     {

@@ -2016,12 +2016,6 @@
                 "subject": "Enemy"
               },
               {
-                "type": "VisionShare",
-                "duration": 5,
-                "condition": "Hit",
-                "subject": "Ally"
-              },
-              {
                 "type": "CDR",
                 "value": 2,
                 "condition": "Hit",
@@ -2041,19 +2035,15 @@
                 "duration": 2.5,
                 "condition": "Hit",
                 "subject": "Self",
-                "coeff": 30
+                "coeff": 30,
+                "ratioPerTarget": 20,
+                "maxRatio": 40
               },
               {
                 "type": "Coord",
                 "duration": 5,
                 "condition": "Hit",
                 "subject": "Enemy"
-              },
-              {
-                "type": "VisionShare",
-                "duration": 5,
-                "condition": "Hit",
-                "subject": "Ally"
               },
               {
                 "type": "CDR",
@@ -2075,19 +2065,15 @@
                 "duration": 2.5,
                 "condition": "Hit",
                 "subject": "Self",
-                "coeff": 30
+                "coeff": 30,
+                "ratioPerTarget": 20,
+                "maxRatio": 40
               },
               {
                 "type": "Coord",
                 "duration": 5,
                 "condition": "Hit",
                 "subject": "Enemy"
-              },
-              {
-                "type": "VisionShare",
-                "duration": 5,
-                "condition": "Hit",
-                "subject": "Ally"
               },
               {
                 "type": "CDR",
@@ -2109,19 +2095,15 @@
                 "duration": 2.5,
                 "condition": "Hit",
                 "subject": "Self",
-                "coeff": 30
+                "coeff": 30,
+                "ratioPerTarget": 20,
+                "maxRatio": 40
               },
               {
                 "type": "Coord",
                 "duration": 5,
                 "condition": "Hit",
                 "subject": "Enemy"
-              },
-              {
-                "type": "VisionShare",
-                "duration": 5,
-                "condition": "Hit",
-                "subject": "Ally"
               },
               {
                 "type": "CDR",
@@ -2143,19 +2125,15 @@
                 "duration": 2.5,
                 "condition": "Hit",
                 "subject": "Self",
-                "coeff": 30
+                "coeff": 30,
+                "ratioPerTarget": 20,
+                "maxRatio": 40
               },
               {
                 "type": "Coord",
                 "duration": 5,
                 "condition": "Hit",
                 "subject": "Enemy"
-              },
-              {
-                "type": "VisionShare",
-                "duration": 5,
-                "condition": "Hit",
-                "subject": "Ally"
               },
               {
                 "type": "CDR",
@@ -2204,7 +2182,7 @@
         "levels": {
           "1": {
             "damage": 80,
-            "cooldown": 1,
+            "cooldown": 2,
             "staminaCost": 20,
             "effects": [
               {

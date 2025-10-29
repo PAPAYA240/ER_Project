@@ -1,11 +1,12 @@
-﻿using Google.Protobuf;
+﻿using System;
+using System.Linq;
+using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server;
 using Server.Data;
 using Server.Game;
 using ServerCore;
-using System;
-using System.Linq;
+using static System.Net.Mime.MediaTypeNames;
 using static Server.Data.DataUtils;
 
 class PacketHandler
@@ -212,10 +213,10 @@ class PacketHandler
         player.State = statePacket.State;
     }
 
-    public static void C_AttackSkillTargetHandler(PacketSession session, IMessage packet)
+    public static void C_TargetingSkillHandler(PacketSession session, IMessage packet)
     {
         ClientSession clientSession = session as ClientSession;
-        C_AttackSkillTarget atkSkillTargetPkt = packet as C_AttackSkillTarget;
+        C_TargetingSkill targetingSkillPkt = packet as C_TargetingSkill;
         Player player = clientSession.MyPlayer;
         if (player == null)
             return;
@@ -223,8 +224,8 @@ class PacketHandler
         GameRoom room = player.Room;
         if (room == null)
             return;
-
-        room.Push(room.HandleAttackSkillTarget, player, atkSkillTargetPkt);
+        //Console.WriteLine($"AttackerId: {targetingSkillPkt.ObjectId}");
+        room.Push(room.HandleAttackSkillTarget, player, targetingSkillPkt);
     }
 
     public static void C_TestDamageHandler(PacketSession session, IMessage packet)

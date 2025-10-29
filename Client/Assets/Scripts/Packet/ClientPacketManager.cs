@@ -84,7 +84,11 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SSyncTimer, MakePacket<S_SyncTimer>);
 		_handler.Add((ushort)MsgId.SSyncTimer, PacketHandler.S_SyncTimerHandler);		
 		_onRecv.Add((ushort)MsgId.SDrawmesh, MakePacket<S_Drawmesh>);
-		_handler.Add((ushort)MsgId.SDrawmesh, PacketHandler.S_DrawmeshHandler);
+		_handler.Add((ushort)MsgId.SDrawmesh, PacketHandler.S_DrawmeshHandler);		
+		_onRecv.Add((ushort)MsgId.SAddAbigailCoord, MakePacket<S_AddAbigailCoord>);
+		_handler.Add((ushort)MsgId.SAddAbigailCoord, PacketHandler.S_AddAbigailCoordHandler);		
+		_onRecv.Add((ushort)MsgId.SRemoveAbigailCoord, MakePacket<S_RemoveAbigailCoord>);
+		_handler.Add((ushort)MsgId.SRemoveAbigailCoord, PacketHandler.S_RemoveAbigailCoordHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

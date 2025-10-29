@@ -49,7 +49,7 @@ namespace Server.Game
                 return;
 
             Hitbox createHitbox = _collisionManager.AddHitbox(player, player.Info.Player.CharType, (KeyCode)skillPacket.SkillInfo.AmplifiKeyCode,
-           new Vector2(targetHitbox.PosX, targetHitbox.PosZ), skillPacket.ChargeRatio, false);
+           new Vector2(targetHitbox.PosX, targetHitbox.PosZ), skillPacket.ChargeRatio);
 
             createHitbox.trackingHitbox = targetHitbox;
             createHitbox.MousePos = targetHitbox.MousePos;

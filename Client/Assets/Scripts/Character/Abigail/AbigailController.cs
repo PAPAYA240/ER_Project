@@ -39,8 +39,6 @@ public class AbigailController : MyPlayerController
                 _skillTarget = target;
                 SetSkillInput(KeyCode.E);
                 _warpPos = mousePos;
-                CreatureController cc = _skillTarget.GetComponentInChildren<CreatureController>();
-                SkillTargetId.Add(cc.Id);
             }
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))
@@ -77,9 +75,14 @@ public class AbigailController : MyPlayerController
             transform.position = _warpPos;
             _agent.Warp(_warpPos);
             UpdateTransform(true);
+            
+            CreatureController cc = _skillTarget.GetComponentInChildren<CreatureController>();
 
-            C_AttackSkillTarget atkSkillTargetPkt = new C_AttackSkillTarget();
-            Managers.Network.Send(atkSkillTargetPkt);
+            C_TargetingSkill targetingSkillPkt = new C_TargetingSkill();
+            targetingSkillPkt.ObjectId = Id;
+            targetingSkillPkt.KeyCode = skillPacket.SkillInfo.KeyCode;
+            targetingSkillPkt.TargetId = cc.Id;
+            Managers.Network.Send(targetingSkillPkt);
         }
     }
 

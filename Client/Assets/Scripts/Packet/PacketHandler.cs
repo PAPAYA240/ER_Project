@@ -58,10 +58,7 @@ class PacketHandler
         cc.PosInfo = movePacket.PosInfo;
         cc.RotInfo = movePacket.RotInfo;
 
-        if (cc.ObjectType == Define.Object.OtherPlayer)
-        {
-            cc.SyncPos(movePacket.IsWarp);
-        }      
+        cc.SyncPos(movePacket.IsWarp);    
     }
      public static void S_StateHandler(PacketSession session, IMessage packet)
     {
@@ -96,7 +93,6 @@ class PacketHandler
             if (objectType == GameObjectType.Player)
             {
                 cc.UseSkill(skillPacket);
-                Debug.Log("스킬 패킷 받기");
             }
         }
     }
@@ -112,7 +108,7 @@ class PacketHandler
         PlayerController pc = go.GetComponent<PlayerController>();
         if (pc != null)
         {
-            if (pc.ObjectType == Define.Object.OtherPlayer)
+            if (pc.Id != Managers.Object.MyPlayer.Id)
                 pc.PlayAnimFromServer(animPacket.AnimInfo);
         }
     }
@@ -355,7 +351,7 @@ class PacketHandler
         PlayerController pc = go.GetComponent<PlayerController>();
         if (pc != null)
         {
-            if (pc.ObjectType == Define.Object.OtherPlayer)
+            if (pc.Id != Managers.Object.MyPlayer.Id)
                 pc.PlayEffectFromServer(effectPacket.FxInfo);
         }
     }
@@ -432,21 +428,21 @@ class PacketHandler
     }
     public static void S_DrawmeshHandler(PacketSession session, IMessage packet)
     {
-        S_Drawmesh Packet = packet as S_Drawmesh;
+        //S_Drawmesh Packet = packet as S_Drawmesh;
 
-        GameObject go = Managers.Object.FindById(Packet.ObjectId);
-        if (go == null)
-            return;
+        //GameObject go = Managers.Object.FindById(Packet.ObjectId);
+        //if (go == null)
+        //    return;
 
-        CreatureController cc= go.GetComponentInChildren<CreatureController>();
-        if (cc == null) return;
+        //CreatureController cc= go.GetComponentInChildren<CreatureController>();
+        //if (cc == null) return;
 
-        Vector3 pos = new Vector3(Packet.PosInfo.PosX, Packet.PosInfo.PosY, Packet.PosInfo.PosZ);
-        Vector3 forward = new Vector3(Packet.Forward.PosX, Packet.Forward.PosY, Packet.Forward.PosZ);
-        Vector3 right = new Vector3(Packet.Right.PosX, Packet.Right.PosY, Packet.Right.PosZ);
-        float offsetRadius = Packet.OffsetRadius;
+        //Vector3 pos = new Vector3(Packet.PosInfo.PosX, Packet.PosInfo.PosY, Packet.PosInfo.PosZ);
+        //Vector3 forward = new Vector3(Packet.Forward.PosX, Packet.Forward.PosY, Packet.Forward.PosZ);
+        //Vector3 right = new Vector3(Packet.Right.PosX, Packet.Right.PosY, Packet.Right.PosZ);
+        //float offsetRadius = Packet.OffsetRadius;
 
-        cc.OnDraw(Packet.Hitbox, pos, forward, right, offsetRadius);
+        //cc.OnDraw(Packet.Hitbox, pos, forward, right, offsetRadius);
 
     }
     public static void S_ChangeInventoryHandler(PacketSession session, IMessage packet)
@@ -528,6 +524,36 @@ class PacketHandler
         {
             Managers.Object.MyPlayer.SetTimer(syncTimerPacket.Phase, clientLocalTargetRealtimeSinceStartupEnd);
         }
+    }
+
+    public static void S_AddAbigailCoordHandler(PacketSession session, IMessage packet)
+    {
+        S_AddAbigailCoord addAbigailCoordPkt = packet as S_AddAbigailCoord;
+
+        GameObject go = Managers.Object.FindById(addAbigailCoordPkt.ObjectId);
+        if (go == null)
+            return;
+
+        AbigailCoord abigailCoord = go.GetComponentInChildren<AbigailCoord>();
+        if (abigailCoord == null)
+            return;
+ 
+        abigailCoord.ActivateAbigailCoord(addAbigailCoordPkt.Duration);
+    }
+
+    public static void S_RemoveAbigailCoordHandler(PacketSession session, IMessage packet)
+    {
+        S_RemoveAbigailCoord addAbigailCoordPkt = packet as S_RemoveAbigailCoord;
+
+        GameObject go = Managers.Object.FindById(addAbigailCoordPkt.ObjectId);
+        if (go == null)
+            return;
+
+        AbigailCoord abigailCoord = go.GetComponentInChildren<AbigailCoord>();
+        if (abigailCoord == null)
+            return;
+
+        abigailCoord.DeactivateAbigailCoord();
     }
 
     static float GetCurrentEstimatedOneWayLatency()

@@ -41,7 +41,7 @@ enum MsgId {
   S_SKILL_LEVEL_UP = 33;
   C_PLAYER_STATE = 34;
   S_CHANGE_STAT = 35;
-  C_ATTACK_SKILL_TARGET = 36;
+  C_TARGETING_SKILL = 36;
   S_CHANGE_ITEM_STAT = 37;
   S_CHANGE_EQUIP_ITEM = 38;
   S_CHANGE_INVENTORY = 39;
@@ -52,6 +52,8 @@ enum MsgId {
   S_CHANGE_K_D_A = 44;
   S_SYNC_TIMER = 45;
   S_DRAWMESH = 46;
+  S_ADD_ABIGAIL_COORD = 47;
+  S_REMOVE_ABIGAIL_COORD = 48;
 }
 
 enum CreatureState{
@@ -74,7 +76,7 @@ enum GameObjectType{
 
 enum EnvType{
    ENV_NONE = 0;
-   HILL_OBJ = 1;
+   HEAL_OBJ = 1;
    DEVICE_SPAWNPOINT = 2;
    ACCBOUNDARY_SPAWNPOINT = 3;
    BARRIER_SPAWNPOINT = 4;
@@ -285,8 +287,8 @@ message C_Skill{
 	ObjectInfo objectInfo = 1;
 	SkillInfo skillInfo = 2;
 	repeated int32 targetsId = 3; 
-	float targetPosX = 4;
-	float targetPosZ = 5;
+	float mousePosX = 4;
+	float mousePosZ = 5;
 	float chargeRatio = 6;
 }
 
@@ -296,6 +298,8 @@ message S_Skill{
 	SkillInfo skillInfo = 3;
 	CostInfo costInfo = 4;
  	float chargeRatio = 5;
+	float mousePosX = 6;
+	float mousePosZ = 7;
 }
 
 message C_SkillLevelUp{
@@ -464,6 +468,21 @@ message S_SyncTimer{
 	int64 phaseEndTime = 3;
 }
 
+message C_TargetingSkill{
+	int32 objectId = 1;
+	int32 keyCode = 2;
+	int32 targetId = 3;
+}
+
+message S_AddAbigailCoord{
+	int32 objectId = 1;
+	float duration = 2;
+}
+
+message S_RemoveAbigailCoord{
+	int32 objectId = 1;
+}
+
 message PositionInfo{
 	CreatureState state = 1;
 	float posX = 2;
@@ -492,7 +511,7 @@ message StatInfo{
 	float moveSpeed = 11;
 	int32 exp = 12;
 	int32 level = 13;
-	int32 hill = 14;
+	int32 heal = 14;
 }
 
 message PlayerInfo {
@@ -631,8 +650,4 @@ message KDAInfo{
 	int32 kill = 2;
 	int32 death = 3;
 	int32 asist = 4;
-}
-
-message C_AttackSkillTarget{
-	bool attack = 1;
 }

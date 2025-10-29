@@ -137,6 +137,7 @@ public class BaseController : MonoBehaviour
 
     protected Animator _animator;
     protected NavMeshAgent _agent;  // Player
+    protected GameObject _coordPrefab; // 아비게일 표식
 
     public virtual CreatureState State
     {
@@ -171,6 +172,13 @@ public class BaseController : MonoBehaviour
         _animator = GetComponentInChildren<Animator>();
 
         UpdateAnimation();
+
+        //_coordPrefab = Managers.Resource.Instantiate($"UI/Character/Abigail/AbigailCoord");
+        //_coordPrefab.transform.SetParent(gameObject.transform);
+        ////_coordPrefab.SetActive(false);
+        //AbigailCoord abigailCoord = _coordPrefab.GetComponentInChildren<AbigailCoord>();
+        //if( abigailCoord != null)
+        //    abigailCoord.SetTarget(gameObject);
     }
 
     protected virtual void UpdateController()

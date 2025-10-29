@@ -76,7 +76,6 @@ public class PlayerController : CreatureController
     {
         base.Init();
 
-        ObjectType = Define.Object.OtherPlayer;
         this.gameObject.layer = LayerMask.NameToLayer("Player");
 
         // Fog
@@ -169,38 +168,26 @@ public class PlayerController : CreatureController
     #region Skill
     public override void UseSkill(S_Skill skillPacket)
     {
-        Debug.Log("스킬 패킷 받기");
-
         // 서버에서 스킬 사용을 허락받으면
         if (skillPacket.CanUse)
         {
-            if(skillPacket.SkillInfo.Amplification)
-                State = CreatureState.Skill;
+            IsKeyInput = true;
             State = CreatureState.Skill;
 
             KeyCode keyCode =
-                (skillPacket.SkillInfo.Amplification)? (KeyCode)skillPacket.SkillInfo.AmplifiKeyCode : (KeyCode)skillPacket.SkillInfo.KeyCode;
+                (skillPacket.SkillInfo.Amplification) ? (KeyCode)skillPacket.SkillInfo.AmplifiKeyCode : (KeyCode)skillPacket.SkillInfo.KeyCode;
 
             ExecuteSkill(keyCode);
 
-            if (Define.Object.MyPlayer == ObjectType && !skillPacket.SkillInfo.Amplification)
-            {
+            if (skillPacket.ObjectId == Managers.Object.MyPlayer.Id && !skillPacket.SkillInfo.Amplification)
                 Managers.Object.MyPlayer.OnSkillConfirmed(skillPacket);
-            }
 
-            //StartCoroutine(CoStartSkill());
-            //Debug.Log("스킬 코루틴 시작");
-
-            //Vector3 MousePos = new Vector3();
-            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            //if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
-            //    MousePos = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-
-            //bool bProjectile = (DataManager.SkillDict[ObjInfo.Player.CharType][keyCode].type == "Projectile");
-            //if (skillPacket.SkillInfo.Amplification && bProjectile)
-            //    ChangeInfoSkillMesh(keyCode);
-            //else
-            //    CreateSkillMesh(keyCode, skillPacket.ChargeRatio, MousePos, bProjectile);
+            Vector3 mousePos = new Vector3(skillPacket.MousePosX, 0, skillPacket.MousePosZ);
+            bool bProjectile = (DataManager.SkillDict[ObjInfo.Player.CharType][keyCode].type == "Projectile");
+            if (skillPacket.SkillInfo.Amplification && bProjectile)
+                ChangeInfoSkillMesh(keyCode);
+            else
+                CreateSkillMesh(keyCode, skillPacket.ChargeRatio, mousePos, bProjectile);
         }
     }
 

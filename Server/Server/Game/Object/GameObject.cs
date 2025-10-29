@@ -110,6 +110,7 @@ namespace Server.Game
         public float Barrier
         {
             get { return Stat.Barrier; }
+            set { Stat.Barrier = Math.Max(value, 0); }
         }
 
         public virtual float StaminaRegen
@@ -156,6 +157,14 @@ namespace Server.Game
         {
             get { return PosInfo.State; }
             set { PosInfo.State = value; }
+        }
+
+        float _radius = 0.55f;
+
+        public virtual float Radius // 피격 반경
+        {
+            get => _radius;
+            set => _radius = value;
         }
 
         public virtual void Update()
@@ -305,12 +314,12 @@ namespace Server.Game
             room.EnterGame(this);
         }
 
+        #region StatusEffect(버프, 디버프), Barrier(방어막) 관련
+
         object _lock = new object();
 
         HashSet<StatusEffect> _statusEffects = new HashSet<StatusEffect>(); // Buffs & Debuffs
-        List<StatusEffect> _barriers = new List<StatusEffect>(); // 방어막 전용
-
-        #region StatusEffect(버프, 디버프), Barrier(방어막) 관련
+        protected List<StatusEffect> _barriers = new List<StatusEffect>(); // 방어막 전용
 
         public class StatusEffect
         {
@@ -320,6 +329,12 @@ namespace Server.Game
             public float duration; // 지속시간
             public int startTick; // 시작시간
             public Subject subject; // 적용대상
+
+            public float coeff; // 스킬 계수  ex) (+스킬 증폭의 2%)
+            public float ratioPerTarget; // 대상 1명 추가당 증가량 (ex: 아비게일 W: 추가로 적중한 적 하나 당 보호막량 20% 증가)
+            public float maxRatio;       // 최대 증가량
+
+            public int targetCnt; // 적중한 대상 갯수
         }
 
         public void AddStatusEffect(StatusEffect statusEffect)
@@ -334,7 +349,49 @@ namespace Server.Game
                     UpdateBarrier();
                 }                    
                 else
+                {
                     _statusEffects.Add(statusEffect);
+
+                    if (statusEffect.type == "Coord")
+                    {
+                        S_AddAbigailCoord addAbigailCoordPkt = new S_AddAbigailCoord();
+                        addAbigailCoordPkt.ObjectId = Id;
+                        addAbigailCoordPkt.Duration = statusEffect.duration;
+                        Room.Broadcast(addAbigailCoordPkt);
+
+                        // 시야 제공 (용수야 도와줘)
+                    }
+                }                    
+            }
+        }
+
+        public void RemoveStatusEffects(string type, string stat = null) // 해당 종류의 상태효과 모두 제거
+        {
+            lock (_lock)
+            {
+                _statusEffects.RemoveWhere(se =>
+                    se.type == type &&
+                    se.stat == stat);
+            }
+        }
+
+        public void RemoveFirstStatusEffect(string type, string stat = null) // 해당 종류의 상태효과 중 가장 먼저 삽입된 원소 제거
+        {
+            lock (_lock)
+            {
+                StatusEffect earliest = null;
+
+                foreach (var se in _statusEffects)
+                {
+                    if (se.type == type && se.stat == stat)
+                    {
+                        if (earliest == null || se.startTick < earliest.startTick)
+                            earliest = se;
+                    }
+                }
+
+                if (earliest != null)
+                    _statusEffects.Remove(earliest);
             }
         }
 
@@ -370,11 +427,11 @@ namespace Server.Game
                 foreach (var e in expired)
                     _statusEffects.Remove(e);
 
-                if (expiredBarriers.Count > 0)
-                    _barrierUpdateRequired = true;
-
                 foreach (var s in expiredBarriers)
                     _barriers.Remove(s);
+
+                if (expiredBarriers.Count > 0)
+                    UpdateBarrier();
             }
         }
 
@@ -423,9 +480,21 @@ namespace Server.Game
             }
         }
 
-        public void UpdateBarrier()
+        public virtual void UpdateBarrier()
         {
+            float barrier = 0;
 
+            foreach (var b in _barriers)
+                barrier += b.value;
+
+            Barrier = barrier;
+
+            S_ChangeHp changePacket = new S_ChangeHp();
+            changePacket.ObjectId = Id;
+            changePacket.Hp = Hp;
+            changePacket.Barrier = Barrier;
+            Console.WriteLine($"Barrier: {barrier}");
+            Room.Push(Room.Broadcast, changePacket);
         }
 
         #endregion

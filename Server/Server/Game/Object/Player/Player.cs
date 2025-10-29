@@ -830,5 +830,31 @@ namespace Server.Game
             return levelUp;
         }
         #endregion
+
+        #region StatusEffect(버프, 디버프), Barrier(방어막) 관련
+        public override void UpdateBarrier()
+        {
+            float barrier = 0;
+
+            foreach (var b in _barriers)
+            {
+                float ratio = Math.Min(b.ratioPerTarget * b.targetCnt, b.maxRatio);
+                barrier += (b.value + (b.coeff * SkillAmplification * 0.01f)) * (1f + ratio * 0.01f);
+                //Console.WriteLine($"coeff: {b.coeff}");
+                //Console.WriteLine($"SkillAmplification: {SkillAmplification}");
+                //Console.WriteLine($"b.targetCnt: {b.targetCnt}");
+                //Console.WriteLine($"ratio: {ratio}");
+            }
+                
+            Barrier = barrier;
+
+            S_ChangeHp changePacket = new S_ChangeHp();
+            changePacket.ObjectId = Id;
+            changePacket.Hp = Hp;
+            changePacket.Barrier = Barrier;
+            //Console.WriteLine($"Barrier: {barrier}");
+            Room.Push(Room.Broadcast, changePacket);
+        }
+        #endregion
     }
 }

@@ -1,8 +1,4 @@
-﻿using Google.Protobuf;
-using Google.Protobuf.Protocol;
-using Server.Data;
-using ServerCore;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,6 +7,11 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Threading;
+using Google.Protobuf;
+using Google.Protobuf.Protocol;
+using Server.Data;
+using ServerCore;
+using static Google.Protobuf.WellKnownTypes.Field.Types;
 using static Server.Data.DataUtils;
 using static Server.Game.GameObject;
 
@@ -496,9 +497,10 @@ namespace Server.Game
                 return;
 
             _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode,
-                new Vector2(skillPacket.TargetPosX, skillPacket.TargetPosZ), skillPacket.ChargeRatio);
+                new Vector2(skillPacket.MousePosX, skillPacket.MousePosZ), skillPacket.ChargeRatio);
         }
         #endregion
+
         public void HandleAnim(Player player, C_Anim animPacket)
         {
             if (player == null)
@@ -510,19 +512,37 @@ namespace Server.Game
             Broadcast(anim);           
         }
 
-        public void HandleAttackSkillTarget(Player player, C_AttackSkillTarget attackSkillTarget)
+        public void HandleAttackSkillTarget(Player player, C_TargetingSkill targetingSkill)
         {
-            if (player == null || player.SkillTarget == null)
+            if (player == null)
                 return;
 
             float damage = 0f;
 
-            if(player.SkillTarget.ObjectType == GameObjectType.Player)
-                damage = _collisionManager.CalcDamage(player, player.SkillTarget as Player, player.UsedTargetingSkill);
-            else
-                damage = _collisionManager.CalcDamage(player, player.SkillTarget.Stat, player.UsedTargetingSkill);   
+            GameObject target = ObjectManager.Instance.Find(targetingSkill.TargetId);
 
-            player.SkillTarget.OnDamaged(player, damage);
+            if (target.ObjectType == GameObjectType.Player)
+                damage = _collisionManager.CalcDamage(player, target as Player, (KeyCode)targetingSkill.KeyCode);
+            else
+                damage = _collisionManager.CalcDamage(player, target.Stat, (KeyCode)targetingSkill.KeyCode);
+
+            //if (target is Player)
+            //    Console.WriteLine($"Attacker:{player.Info.Player.CharType}_{player.Id}, Target:{target.Info.Player.CharType}_{target.Id}, Damage:{damage}");
+            //else
+            //    Console.WriteLine($"Attacker:{player.Info.Player.CharType}_{player.Id}, Target:Env_{target.Id}, Damage:{damage}");
+
+            if(player.Info.Player.CharType == CharacterType.Abigail && (KeyCode)targetingSkill.KeyCode == KeyCode.E)
+            {
+                S_RemoveAbigailCoord removeAbigailCoordPkt = new S_RemoveAbigailCoord();
+                removeAbigailCoordPkt.ObjectId = target.Id;
+                player.Room.Broadcast(removeAbigailCoordPkt);
+
+                player.RemoveStatusEffects("Coord");
+
+                // 시야 제공 제거 (용수야 도와줘)
+            }
+
+            target.OnDamaged(player, damage);
         }
 
         public Player FindPlayer(Func<GameObject, bool> condition)
