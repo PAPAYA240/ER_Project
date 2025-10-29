@@ -17,10 +17,9 @@
         "Children": [
           {
             "Name": "Skill03_Animation",
-            "Type": "PlayAnimatorTriggerNode",
+            "Type": "PlayAnimation",
             "Properties": {
-              "triggerName": "tSkill03",
-              "animationStateName": "Autobot_01_skill03"
+              "animName": "SKILL3"
             }
           },
           {

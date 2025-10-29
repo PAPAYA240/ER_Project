@@ -1,5 +1,3 @@
-
-// Skill01 Ready -> Skill01
 {
   "Name": "Root",
   "Type": "SequenceNode",
@@ -17,12 +15,14 @@
       "Children": [
         {
           "Name": "Skill02",
-          "Type": "PlayAnimatorTriggerNode",
+          "Type": "PlayAnimation",
           "Properties": {
-            "triggerName": "tSkill02",
-            "animationStateName": "Autobot_01_skill02_end",
-            "boolName": "bSkill02",
-            "bLoop": true
+            "animName": "SKILL2",
+            "chainAnimNames": [
+              "SKILL1_ATTACK",
+              "SKILL2_LOOP",
+              "SKILL2_END"
+            ]
           }
         },
         {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml.XPath;
 using Google.Protobuf.Protocol;
@@ -254,7 +255,7 @@ namespace Server.Data
 
     #region Effect
     [Serializable]
-    public class EffectData
+    public class EffectData // 버프 디버프 등의 상태효과
     {
         public enum EEffectTarget
         {
@@ -268,6 +269,11 @@ namespace Server.Data
         public float value;    // 수치 (%는 그냥 숫자로 저장)
         public float duration; // 지속시간
         public string condition; // 옵션 (예: "HP<50%")
+        public string subject; // 적용대상 Self / Ally / Enemy
+        public float coeff; // 스킬 계수  ex) (+스킬 증폭의 2%)
+
+        public float ratioPerTarget; // 대상 1명 추가당 증가량 (ex: 아비게일 W: 추가로 적중한 적 하나 당 보호막량 20% 증가)
+        public float maxRatio;       // 최대 증가량
 
         public string prefabName; // 프리팹 이름
         public float delayTime; // 이펙트 시작 시간
@@ -297,6 +303,7 @@ namespace Server.Data
         public string name;
         public StatInfo stat;
         public List<MonsterSkill> skills;
+        public float appearTime;
     }
 
     public class ProjectileInfo
@@ -308,14 +315,18 @@ namespace Server.Data
     }
 
     [Serializable]
-    public class MonsterDict : ILoader<string, MonsterData>
+    public class MonsterDict : ILoader<MonsterType, MonsterData>
     {
         public List<MonsterData> monsters = new List<MonsterData>();
-        public Dictionary<string, MonsterData> MakeDict()
+        public Dictionary<MonsterType, MonsterData> MakeDict()
         {
-            Dictionary<string, MonsterData> dict = new Dictionary<string, MonsterData>();
+            Dictionary<MonsterType, MonsterData> dict = new Dictionary<MonsterType, MonsterData>();
             foreach (MonsterData monster in monsters)
-                dict.Add(monster.name, monster);
+            {
+                MonsterType chartype = (MonsterType)Enum.Parse(typeof(MonsterType), monster.name);
+
+                dict.Add(chartype, monster); 
+            }
             return dict;
         }
     }
@@ -404,14 +415,15 @@ namespace Server.Data
     //    public int cooldown;
     //}
     #region Environment
+    [System.Serializable]
     public class EnvObjectData : ILoader<EnvType, EnvInfo>
     {
-        public Dictionary<string, EnvInfo> stats = new Dictionary<string, EnvInfo>();
+        public List<EnvInfo> envs = new List<EnvInfo>();
+
         public Dictionary<EnvType, EnvInfo> MakeDict()
         {
             Dictionary<EnvType, EnvInfo> dict = new Dictionary<EnvType, EnvInfo>();
-
-            foreach (EnvInfo data in stats.Values)
+            foreach (EnvInfo data in envs)
             {
                 dict.Add(data.EnvType, data);
             }

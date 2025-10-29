@@ -17,12 +17,6 @@ public class CreatureController : BaseController
 
     #endregion
     protected UI_TargetingMark targetingMark = null;
-    Define.Object _object = Define.Object.Unknown;
-    public Define.Object ObjectType
-    {
-        get { return _object; }
-        set { _object = value; }
-    }
 
     public override StatInfo Stat
     {
@@ -122,19 +116,6 @@ public class CreatureController : BaseController
 	protected override void Init()
     {
         SyncPos();
-
-        // TODO : 예비 UI
-        string path = "Prefabs/UI/Character/Theodore/FX_BI_Theodore_Skill03_Target_Mark";
-        Vector3 pos = transform.position + new Vector3(0f, 2.2f, 0f);
-        GameObject loadedPrefab = Resources.Load<GameObject>(path);
-        GameObject markInstance = Instantiate(
-               loadedPrefab,
-               pos,
-               Quaternion.identity 
-           );
-        markInstance.transform.SetParent(transform);
-        targetingMark = markInstance.gameObject.AddComponent<UI_TargetingMark>();
-
         base.Init();
     }
     public virtual void OnDamaged()
@@ -183,7 +164,7 @@ public class CreatureController : BaseController
             return false;
 
         // 같은 팀일 때
-        if (cc.ObjectType == Define.Object.OtherPlayer && cc.ObjInfo.Player.Team == ObjInfo.Player.Team)
+        if (cc.ObjInfo.Player.Team == ObjInfo.Player.Team)
             return false;
 
         // 대상이 죽었을 때 || 무적 상태일 때 || 시야 밖일 때(부시) 등등
@@ -193,14 +174,5 @@ public class CreatureController : BaseController
         return true;
     }
 
-    public void OnDraw(SkillHitbox hitbox, Vector3 pos, Vector3 forward, Vector3 right, float offsetRadius = 0.0f)
-    {
-        GameObject instance = Managers.Resource.Instantiate("Debug/SkillMesh");
-
-        SkillMesh skillMesh = instance.GetComponent<SkillMesh>();
-        if (ObjInfo.Player == null) return;
-        if (skillMesh != null)
-            skillMesh.OnDraw(hitbox, pos, forward, right, offsetRadius, ObjInfo.Player.Team);
-    }
 
 }

@@ -57,7 +57,8 @@
               {
                 "type": "CDR",
                 "value": 40,
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Q"
               }
             ]
           },
@@ -72,8 +73,9 @@
               },
               {
                 "type": "CDR",
-                "value": 40,
-                "condition": "Hit"
+                "value": 2,
+                "condition": "Hit",
+                "subject": "Q"
               }
             ]
           },
@@ -88,8 +90,9 @@
               },
               {
                 "type": "CDR",
-                "value": 40,
-                "condition": "Hit"
+                "value": 2,
+                "condition": "Hit",
+                "subject": "Q"
               }
             ]
           },
@@ -104,8 +107,9 @@
               },
               {
                 "type": "CDR",
-                "value": 40,
-                "condition": "Hit"
+                "value": 2,
+                "condition": "Hit",
+                "subject": "Q"
               }
             ]
           },
@@ -120,8 +124,9 @@
               },
               {
                 "type": "CDR",
-                "value": 40,
-                "condition": "Hit"
+                "value": 2,
+                "condition": "Hit",
+                "subject": "Q"
               }
             ]
           }
@@ -176,12 +181,15 @@
               {
                 "type": "Buff",
                 "stat": "speed",
-                "value": 120
+                "value": 120,
+                "duration": 0.4,
+                "subject": "Self"
               },
               {
                 "type": "CDR",
-                "value": 40,
-                "condition": "Hit"
+                "value": 2,
+                "condition": "Hit",
+                "subject": "W"
               }
             ]
           },
@@ -211,8 +219,9 @@
               },
               {
                 "type": "CDR",
-                "value": 40,
-                "condition": "Hit"
+                "value": 2,
+                "condition": "Hit",
+                "subject": "W"
               }
             ]
           },
@@ -238,12 +247,15 @@
               {
                 "type": "Buff",
                 "stat": "speed",
-                "value": 120
+                "value": 120,
+                "duration": 0.4,
+                "subject": "Self"
               },
               {
                 "type": "CDR",
-                "value": 40,
-                "condition": "Hit"
+                "value": 2,
+                "condition": "Hit",
+                "subject": "W"
               }
             ]
           },
@@ -269,12 +281,15 @@
               {
                 "type": "Buff",
                 "stat": "speed",
-                "value": 120
+                "value": 120,
+                "duration": 0.4,
+                "subject": "Self"
               },
               {
                 "type": "CDR",
-                "value": 40,
-                "condition": "Hit"
+                "value": 2,
+                "condition": "Hit",
+                "subject": "W"
               }
             ]
           },
@@ -300,12 +315,15 @@
               {
                 "type": "Buff",
                 "stat": "speed",
-                "value": 120
+                "value": 120,
+                "duration": 0.4,
+                "subject": "Self"
               },
               {
                 "type": "CDR",
-                "value": 40,
-                "condition": "Hit"
+                "value": 2,
+                "condition": "Hit",
+                "subject": "W"
               }
             ]
           }
@@ -1058,7 +1076,7 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "100"
+          "apRatio": 70
         },
         "levels": {
           "1": {
@@ -1067,76 +1085,62 @@
             "staminaCost": 40,
             "effects": [
               {
-                "type": "Dash",
-                "condition": "Hit"
-              },
-              {
-                "type": "CDR",
+                "type": "Heal",
+                "condition": "AllyHit",
                 "value": 40,
-                "condition": "Hit"
+                "apRatio": 20
               }
             ]
           },
           "2": {
             "damage": 90,
+            "cooldown": 3,
             "staminaCost": 45,
             "effects": [
               {
-                "type": "Dash",
-                "condition": "Hit"
-              },
-              {
-                "type": "CDR",
-                "value": 40,
-                "condition": "Hit"
+                "type": "Heal",
+                "condition": "AllyHit",
+                "value": 65,
+                "apRatio": 20
               }
             ]
           },
           "3": {
-            "damage": 130,
-            "cooldown": 5,
+            "damage": 135,
+            "cooldown": 3,
             "staminaCost": 50,
             "effects": [
               {
-                "type": "Dash",
-                "condition": "Hit"
-              },
-              {
-                "type": "CDR",
-                "value": 40,
-                "condition": "Hit"
+                "type": "Heal",
+                "condition": "AllyHit",
+                "value": 90,
+                "apRatio": 20
               }
             ]
           },
           "4": {
             "damage": 170,
-            "cooldown": 5,
+            "cooldown": 3,
             "staminaCost": 55,
             "effects": [
               {
-                "type": "Dash",
-                "condition": "Hit"
-              },
-              {
-                "type": "CDR",
-                "value": 40,
-                "condition": "Hit"
+                "type": "Heal",
+                "condition": "AllyHit",
+                "value": 115,
+                "apRatio": 20
               }
             ]
           },
           "5": {
             "damage": 210,
-            "cooldown": 5,
+            "cooldown": 3,
             "staminaCost": 60,
             "effects": [
               {
-                "type": "Dash",
-                "condition": "Hit"
-              },
-              {
-                "type": "CDR",
-                "value": 40,
-                "condition": "Hit"
+                "type": "Heal",
+                "condition": "AllyHit",
+                "value": 140,
+                "apRatio": 20
               }
             ]
           }
@@ -1379,7 +1383,7 @@
         },
         "levels": {
           "1": {
-            "damage": 1000,
+            "damage": 30,
             "cooldown": 1,
             "staminaCost": 60,
             "effects": [
@@ -1393,7 +1397,7 @@
             ]
           },
           "2": {
-            "damage": 50,
+            "damage": 60,
             "cooldown": 1,
             "staminaCost": 70,
             "effects": [
@@ -1407,7 +1411,7 @@
             ]
           },
           "3": {
-            "damage": 70,
+            "damage": 90,
             "cooldown": 1,
             "staminaCost": 80,
             "effects": [
@@ -1421,7 +1425,7 @@
             ]
           },
           "4": {
-            "damage": 90,
+            "damage": 120,
             "cooldown": 1,
             "staminaCost": 90,
             "effects": [
@@ -1435,8 +1439,8 @@
             ]
           },
           "5": {
-            "damage": 110,
-            "cooldown": 14,
+            "damage": 150,
+            "cooldown": 1,
             "staminaCost": 100,
             "effects": [
               {
@@ -1668,7 +1672,9 @@
                 "type": "Debuff",
                 "stat": "Defense",
                 "value": -5,
-                "condition": "Hit"
+                "condition": "Hit",
+                "duration": 4,
+                "subject": "Enemy"
               }
             ]
           },
@@ -1680,7 +1686,9 @@
                 "type": "Debuff",
                 "stat": "Defense",
                 "value": -10,
-                "condition": "Hit"
+                "condition": "Hit",
+                "duration": 4,
+                "subject": "Enemy"
               }
             ]
           },
@@ -1692,7 +1700,9 @@
                 "type": "Debuff",
                 "stat": "Defense",
                 "value": -15,
-                "condition": "Hit"
+                "condition": "Hit",
+                "duration": 4,
+                "subject": "Enemy"
               }
             ]
           }
@@ -1739,7 +1749,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
-                "duration": 0.5
+                "duration": 0.5,
+                "subject": "Self"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -1752,7 +1769,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
-                "duration": 0.5
+                "duration": 0.5,
+                "subject": "Self"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -1765,7 +1789,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
-                "duration": 0.5
+                "duration": 0.5,
+                "subject": "Self"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -1778,7 +1809,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
-                "duration": 0.5
+                "duration": 0.5,
+                "subject": "Self"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -1791,7 +1829,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
-                "duration": 0.5
+                "duration": 0.5,
+                "subject": "Self"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           }
@@ -1840,7 +1885,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
-                "duration": 0.5
+                "duration": 0.5,
+                "subject": "Self"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -1853,7 +1905,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
-                "duration": 0.5
+                "duration": 0.5,
+                "subject": "Self"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -1866,7 +1925,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
-                "duration": 0.5
+                "duration": 0.5,
+                "subject": "Self"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -1879,7 +1945,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
-                "duration": 0.5
+                "duration": 0.5,
+                "subject": "Self"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -1892,7 +1965,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
-                "duration": 0.5
+                "duration": 0.5,
+                "subject": "Self"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           }
@@ -1920,18 +2000,26 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "shield",
+                "stat": "barrier",
                 "value": 50,
                 "duration": 2.5,
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Self",
+                "coeff": 30,
+                "ratioPerTarget": 20,
+                "maxRatio": 40
               },
               {
                 "type": "Coord",
-                "condition": "Hit"
+                "duration": 5,
+                "condition": "Hit",
+                "subject": "Enemy"
               },
               {
-                "type": "VisionShare",
-                "condition": "Hit"
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -1942,18 +2030,26 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "shield",
+                "stat": "barrier",
                 "value": 75,
                 "duration": 2.5,
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Self",
+                "coeff": 30,
+                "ratioPerTarget": 20,
+                "maxRatio": 40
               },
               {
                 "type": "Coord",
-                "condition": "Hit"
+                "duration": 5,
+                "condition": "Hit",
+                "subject": "Enemy"
               },
               {
-                "type": "VisionShare",
-                "condition": "Hit"
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -1964,18 +2060,26 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "shield",
+                "stat": "barrier",
                 "value": 100,
                 "duration": 2.5,
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Self",
+                "coeff": 30,
+                "ratioPerTarget": 20,
+                "maxRatio": 40
               },
               {
                 "type": "Coord",
-                "condition": "Hit"
+                "duration": 5,
+                "condition": "Hit",
+                "subject": "Enemy"
               },
               {
-                "type": "VisionShare",
-                "condition": "Hit"
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -1986,18 +2090,26 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "shield",
+                "stat": "barrier",
                 "value": 125,
                 "duration": 2.5,
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Self",
+                "coeff": 30,
+                "ratioPerTarget": 20,
+                "maxRatio": 40
               },
               {
                 "type": "Coord",
-                "condition": "Hit"
+                "duration": 5,
+                "condition": "Hit",
+                "subject": "Enemy"
               },
               {
-                "type": "VisionShare",
-                "condition": "Hit"
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -2008,18 +2120,26 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "shield",
+                "stat": "barrier",
                 "value": 150,
                 "duration": 2.5,
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Self",
+                "coeff": 30,
+                "ratioPerTarget": 20,
+                "maxRatio": 40
               },
               {
                 "type": "Coord",
-                "condition": "Hit"
+                "duration": 5,
+                "condition": "Hit",
+                "subject": "Enemy"
               },
               {
-                "type": "VisionShare",
-                "condition": "Hit"
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           }
@@ -2062,17 +2182,25 @@
         "levels": {
           "1": {
             "damage": 80,
-            "cooldown": 1,
+            "cooldown": 2,
             "staminaCost": 20,
             "effects": [
               {
                 "type": "Warp",
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Self"
               },
               {
                 "type": "CDR",
                 "value": 100,
-                "condition": "Coord"
+                "condition": "Coord",
+                "subject": "W"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -2083,12 +2211,20 @@
             "effects": [
               {
                 "type": "Warp",
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Self"
               },
               {
                 "type": "CDR",
                 "value": 100,
-                "condition": "Coord"
+                "condition": "Coord",
+                "subject": "W"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -2099,12 +2235,20 @@
             "effects": [
               {
                 "type": "Warp",
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Self"
               },
               {
                 "type": "CDR",
                 "value": 100,
-                "condition": "Coord"
+                "condition": "Coord",
+                "subject": "W"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -2115,12 +2259,20 @@
             "effects": [
               {
                 "type": "Warp",
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Self"
               },
               {
                 "type": "CDR",
                 "value": 100,
-                "condition": "Coord"
+                "condition": "Coord",
+                "subject": "W"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -2131,12 +2283,20 @@
             "effects": [
               {
                 "type": "Warp",
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Self"
               },
               {
                 "type": "CDR",
                 "value": 100,
-                "condition": "Coord"
+                "condition": "Coord",
+                "subject": "W"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           }
@@ -2176,24 +2336,34 @@
             "effects": [
               {
                 "type": "Untargetable",
-                "duration": 0.7
+                "duration": 0.7,
+                "subject": "Self"
               },
               {
                 "type": "Debuff",
                 "stat": "moveSpeed",
                 "value": -99,
                 "duration": 0.2,
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Enemy"
               },
               {
                 "type": "Coord",
                 "duration": 5,
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Enemy"
               },
               {
                 "type": "VisionShare",
                 "duration": 5,
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Ally"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -2204,24 +2374,34 @@
             "effects": [
               {
                 "type": "Untargetable",
-                "duration": 0.7
+                "duration": 0.7,
+                "subject": "Self"
               },
               {
                 "type": "Debuff",
                 "stat": "moveSpeed",
                 "value": -99,
                 "duration": 0.2,
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Enemy"
               },
               {
                 "type": "Coord",
                 "duration": 5,
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Enemy"
               },
               {
                 "type": "VisionShare",
                 "duration": 5,
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Ally"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           },
@@ -2232,24 +2412,34 @@
             "effects": [
               {
                 "type": "Untargetable",
-                "duration": 0.7
+                "duration": 0.7,
+                "subject": "Self"
               },
               {
                 "type": "Debuff",
                 "stat": "moveSpeed",
                 "value": -99,
                 "duration": 0.2,
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Enemy"
               },
               {
                 "type": "Coord",
                 "duration": 5,
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Enemy"
               },
               {
                 "type": "VisionShare",
                 "duration": 5,
-                "condition": "Hit"
+                "condition": "Hit",
+                "subject": "Ally"
+              },
+              {
+                "type": "CDR",
+                "value": 2,
+                "condition": "Hit",
+                "subject": "T"
               }
             ]
           }

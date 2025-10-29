@@ -75,16 +75,20 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SChangeEquipItem, PacketHandler.S_ChangeEquipItemHandler);		
 		_onRecv.Add((ushort)MsgId.SChangeInventory, MakePacket<S_ChangeInventory>);
 		_handler.Add((ushort)MsgId.SChangeInventory, PacketHandler.S_ChangeInventoryHandler);		
-		_onRecv.Add((ushort)MsgId.SStun, MakePacket<S_Stun>);
-		_handler.Add((ushort)MsgId.SStun, PacketHandler.S_StunHandler);		
 		_onRecv.Add((ushort)MsgId.SCombatText, MakePacket<S_CombatText>);
 		_handler.Add((ushort)MsgId.SCombatText, PacketHandler.S_CombatTextHandler);		
 		_onRecv.Add((ushort)MsgId.SChangeKDA, MakePacket<S_ChangeKDA>);
 		_handler.Add((ushort)MsgId.SChangeKDA, PacketHandler.S_ChangeKDAHandler);		
 		_onRecv.Add((ushort)MsgId.SSyncTimer, MakePacket<S_SyncTimer>);
 		_handler.Add((ushort)MsgId.SSyncTimer, PacketHandler.S_SyncTimerHandler);		
-		_onRecv.Add((ushort)MsgId.SDrawmesh, MakePacket<S_Drawmesh>);
-		_handler.Add((ushort)MsgId.SDrawmesh, PacketHandler.S_DrawmeshHandler);
+		_onRecv.Add((ushort)MsgId.SProjectile, MakePacket<S_Projectile>);
+		_handler.Add((ushort)MsgId.SProjectile, PacketHandler.S_ProjectileHandler);		
+		_onRecv.Add((ushort)MsgId.SEnvRequest, MakePacket<S_EnvRequest>);
+		_handler.Add((ushort)MsgId.SEnvRequest, PacketHandler.S_EnvRequestHandler);		
+		_onRecv.Add((ushort)MsgId.SAddAbigailCoord, MakePacket<S_AddAbigailCoord>);
+		_handler.Add((ushort)MsgId.SAddAbigailCoord, PacketHandler.S_AddAbigailCoordHandler);		
+		_onRecv.Add((ushort)MsgId.SRemoveAbigailCoord, MakePacket<S_RemoveAbigailCoord>);
+		_handler.Add((ushort)MsgId.SRemoveAbigailCoord, PacketHandler.S_RemoveAbigailCoordHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

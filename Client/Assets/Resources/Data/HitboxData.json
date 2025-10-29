@@ -92,11 +92,10 @@
       "Q": {
         "shape": "Ray",
         "type": "SkillStatic",
-        "width": 2,
-        "height": 8,
         "startFrame": 9,
         "endFrame": 24,
         "charge": true,
+        "width": 2.8,
         "minRange": 6,
         "maxRange": 11
       },
@@ -125,7 +124,12 @@
         "duration": 0.6,
         "maxRange": 5.5,
         "startFrame": 0,
-        "endFrame": 60
+        "endFrame": 60,
+        "interactions": {
+          "F1": {
+            "interaction": [ "Interaction" ]
+          }
+        }
       },
       "R": {
         "shape": "Ray",

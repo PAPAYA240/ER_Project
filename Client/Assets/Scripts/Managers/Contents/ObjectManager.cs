@@ -14,7 +14,6 @@ public class ObjectManager
 {
 	public MyPlayerController MyPlayer { get; set; }
 	private Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
-
     public Define.Character Character { get; set; } = Define.Character.Rozzi;
 
     #region Type ID
@@ -51,7 +50,6 @@ public class ObjectManager
                 break;
         }
     }
-
     private void AddPlayer(ObjectInfo info, bool myPlayer)
     {
         if (myPlayer)
@@ -107,14 +105,16 @@ public class ObjectManager
     }
     private void AddProjectile(ObjectInfo info)
     {
-        //GameObject go = Managers.Resource.Instantiate("Creature/Arrow");
-        //go.name = "Arrow";
-        //_objects.Add(info.ObjectId, go);
-
-        //ArrowController ac = go.GetComponent<ArrowController>();
-        //ac.PosInfo = info.PosInfo;
-        //ac.Stat = info.StatInfo;
-        //ac.SyncPos();
+        if (_objects.ContainsKey(info.ObjectId))
+            return;
+        GameObject go = Managers.Resource.Instantiate($"Creature/Weapon/Projectile");
+        go.name = $"Projectile";
+     
+        _objects.Add(info.ObjectId, go);
+        Projectile pc = go.GetComponent<Projectile>();
+        pc.PosInfo = info.PosInfo;
+        pc.Stat = info.StatInfo;
+        pc.SyncPos();
     }
     private void AddEnvironment(ObjectInfo info)
     {

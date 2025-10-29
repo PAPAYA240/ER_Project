@@ -104,28 +104,63 @@ public class EnvInfoComponent : MonoBehaviour
 }
 public class EnvSaverEditor : MonoBehaviour
 {
+    const string _envhillpath = "Assets/Resources/GameObject/SpawnPoint/SupportPackSpawnPoints.prefab";
+    const string _Turbinepath = "Assets/Resources/GameObject/SpawnPoint/TurbineSpawnPoints.prefab";
+
     [MenuItem("Tools/Save EnvObject Data")]
-    public static void SaveMonsterSaveData()
+    public static void SaveEnvSaveData()
     {
-        EnvController[] monstersInScene = FindObjectsOfType<EnvController>();
+        GameObject HillSpawnPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(_envhillpath);
+        if (HillSpawnPrefab == null)
+        {
+            Debug.LogError("Error: SupportPack 프리팹을 찾을 수 없습니다. 경로를 확인하세요: " + _envhillpath);
+            return;
+        }
+
+        HillSpawnPrefab.transform.position = Vector3.zero;
+        HillSpawnPrefab.transform.rotation = Quaternion.identity;
 
         EnvList envList = new EnvList();
         envList.EnvObjects = new List<EnvSaveData>();
 
-        foreach (EnvController envInfo in monstersInScene)
+        foreach (Transform envInfo in HillSpawnPrefab.transform)
         {
             Vector3 pos = envInfo.transform.position;
             Quaternion rot = envInfo.transform.rotation;
 
-            EnvSaveData data = new EnvSaveData(envInfo._envType, pos, rot);
+            EnvSaveData data = new EnvSaveData(EnvType.HealPack, pos, rot);
             envList.EnvObjects.Add(data);
         }
 
-        string jsonData = JsonUtility.ToJson(envList, true); 
+        GameObject TurbineSpawnPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(_Turbinepath);
+
+        if (TurbineSpawnPrefab == null)
+        {
+            Debug.LogError("Error: Turbine 프리팹을 찾을 수 없습니다. 경로를 확인하세요: " + _Turbinepath);
+        }
+        else
+        {
+            TurbineSpawnPrefab.transform.position = Vector3.zero;
+            TurbineSpawnPrefab.transform.rotation = Quaternion.identity;
+
+            foreach (Transform envInfo in TurbineSpawnPrefab.transform)
+            {
+                Vector3 pos = envInfo.transform.position;
+                Quaternion rot = envInfo.transform.rotation;
+
+                EnvSaveData data = new EnvSaveData(EnvType.Turbine, pos, rot);
+                envList.EnvObjects.Add(data);
+            }
+        }
+
+        string jsonData = JsonUtility.ToJson(envList, true);
 
         string path = Application.dataPath + "/Resources/Data/Env/SpawnEnvData.json";
         File.WriteAllText(path, jsonData);
-        Debug.Log("환경 데이터가 " + path + " 경로에 성공적으로 저장되었습니다.");
+
+        AssetDatabase.Refresh();
+
+        Debug.Log($"**환경 데이터** ({envList.EnvObjects.Count}개 객체)가 **{path}** 경로에 성공적으로 저장되었습니다.");
     }
 }
 

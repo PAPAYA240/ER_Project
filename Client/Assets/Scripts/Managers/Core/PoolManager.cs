@@ -59,6 +59,9 @@ public class PoolManager
             else
                 poolable = Create();
 
+            if (poolable == null)
+                return null;
+
             poolable.gameObject.SetActive(true);
 
 

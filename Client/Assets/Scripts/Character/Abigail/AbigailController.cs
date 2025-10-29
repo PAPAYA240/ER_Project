@@ -39,8 +39,6 @@ public class AbigailController : MyPlayerController
                 _skillTarget = target;
                 SetSkillInput(KeyCode.E);
                 _warpPos = mousePos;
-                CreatureController cc = _skillTarget.GetComponentInChildren<CreatureController>();
-                SkillTargetId.Add(cc.Id);
             }
         }
         else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))
@@ -77,9 +75,14 @@ public class AbigailController : MyPlayerController
             transform.position = _warpPos;
             _agent.Warp(_warpPos);
             UpdateTransform(true);
+            
+            CreatureController cc = _skillTarget.GetComponentInChildren<CreatureController>();
 
-            C_AttackSkillTarget atkSkillTargetPkt = new C_AttackSkillTarget();
-            Managers.Network.Send(atkSkillTargetPkt);
+            C_TargetingSkill targetingSkillPkt = new C_TargetingSkill();
+            targetingSkillPkt.ObjectId = Id;
+            targetingSkillPkt.KeyCode = skillPacket.SkillInfo.KeyCode;
+            targetingSkillPkt.TargetId = cc.Id;
+            Managers.Network.Send(targetingSkillPkt);
         }
     }
 
@@ -101,6 +104,16 @@ public class AbigailController : MyPlayerController
     protected override void Skill_R()
     {
         PlayAnimation("SKILL_R", 0.1f);
+    }
+    #endregion
+
+    #region SkillMesh
+    public override void CreateSkillMesh(KeyCode keyCode, float chargeRatio, Vector3 mousePos = new Vector3(), bool bProjectile = false)
+    {
+        base.CreateSkillMesh(keyCode, chargeRatio, mousePos, bProjectile);
+
+        if(keyCode == KeyCode.Q)
+            base.CreateSkillMesh(KeyCode.F1, 0);
     }
     #endregion
 }

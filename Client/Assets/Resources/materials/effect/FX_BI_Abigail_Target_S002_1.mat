@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FX_BI_Abigail_Target_S002_1
+  m_Shader: {fileID: 4800000, guid: 246770aea9423174a9a1a2637704e18d, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _ASSIGNDISSOLVEUV_DISSOLVEUV_USED
+  - _ASSIGNNOISEUV_NOISEUV_USED
+  - _DISSOLVEALPHA_BASEREDXDISSOLVE
+  - _ISNOISECOMPLEX_COMPLEX
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties:
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+      _MainTex:
+        m_Texture: {fileID: 2800000, guid: 827f81c6eec667f4ba1280af0ee0615d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+      _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: {}
+    m_Floats:
+      _AssignDissolveUV: 0
+      _AssignNoiseUV: 0
+      _Cull: 0
+      _DestBlend: 10
+      _DissolveAlpha: 1
+      _DissolveSmoothRange: 0.2
+      _Glow: 2
+      _IsDissolve: 0
+      _IsNoise: 0
+      _IsNoiseComplex: 1
+      _IsPolar: 0
+      _MainAlpha_To_R: 1
+      _MainColor_To_Alpha_Amount: 0
+      _MulAlpha: 1
+      _MulVal_Color: 1
+      _MulVal_Noise: 0.05
+      _MulVal_alpha: 2
+      _MulVal_rgb: 4
+      _Noise: 0.1
+      _NoiseScale_1: 1
+      _NoiseScale_2: 2
+      _Rotate: 0
+      _SrcBlend: 5
+      _ZTest: 4
+      _ZTestMode: 2
+      _ZWrite: 0
+    m_Colors:
+      _Color: {r: 1, g: 1, b: 1, a: 1}
+      _MainTexUV_TilingSpeed: {r: 1, g: 1, b: 0, a: 0}
+      _MaskScrollSpeed: {r: 0, g: 0, b: 0, a: 0}
+      _MaskUV_Tiling: {r: 1, g: 1, b: 0, a: 0}
+      _Noise01UV_TilingSpeed: {r: 0, g: 0, b: 0, a: 0}
+      _Noise02UV_TilingSpeed: {r: 0, g: 0, b: 0, a: 0}
+      _NoiseScrollSpeed_1: {r: -1, g: -1, b: 0, a: 0}
+      _NoiseScrollSpeed_2: {r: 1, g: 1, b: 0, a: 0}
+  m_BuildTextureStacks: []

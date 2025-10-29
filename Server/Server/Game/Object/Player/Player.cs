@@ -1,25 +1,29 @@
-﻿using Google.Protobuf.Protocol;
-using Server.Data;
-using ServerCore;
-using System;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Protobuf.Protocol;
+using Server.Data;
+using ServerCore;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
 {
     public class Player : Creature
     {
+        #region Player Info
         public ClientSession Session { get; set; }
 
         protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
-        Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
-        Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
-        ItemStat _totalItemStat = new ItemStat();
-        List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
+        private Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
+        private Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
+        private ItemStat _totalItemStat = new ItemStat();
+        private List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
+        #endregion
 
 
         #region Stat Property
@@ -438,8 +442,6 @@ namespace Server.Game
             }
         }
 
-
-
         //TODO D랑 F는 어떻게 하지?
         public bool SkillLevelUp(KeyCode key)
         {
@@ -534,6 +536,11 @@ namespace Server.Game
         public Skill GetSkill(KeyCode keyCode)
         {
             return _skills[keyCode];
+        }
+
+        public int GetSkillLevel(KeyCode keyCode)
+        {
+            return _skills[keyCode].CurLevel;
         }
 
         #endregion
@@ -892,5 +899,30 @@ namespace Server.Game
         }
         #endregion
 
+        #region StatusEffect(버프, 디버프), Barrier(방어막) 관련
+        public override void UpdateBarrier()
+        {
+            float barrier = 0;
+
+            foreach (var b in _barriers)
+            {
+                float ratio = Math.Min(b.ratioPerTarget * b.targetCnt, b.maxRatio);
+                barrier += (b.value + (b.coeff * SkillAmplification * 0.01f)) * (1f + ratio * 0.01f);
+                //Console.WriteLine($"coeff: {b.coeff}");
+                //Console.WriteLine($"SkillAmplification: {SkillAmplification}");
+                //Console.WriteLine($"b.targetCnt: {b.targetCnt}");
+                //Console.WriteLine($"ratio: {ratio}");
+            }
+                
+            Barrier = barrier;
+
+            S_ChangeHp changePacket = new S_ChangeHp();
+            changePacket.ObjectId = Id;
+            changePacket.Hp = Hp;
+            changePacket.Barrier = Barrier;
+            //Console.WriteLine($"Barrier: {barrier}");
+            Room.Push(Room.Broadcast, changePacket);
+        }
+        #endregion
     }
 }

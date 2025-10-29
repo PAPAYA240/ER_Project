@@ -6,12 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.EnhancedTouch;
 using static Data.SkillEffectList;
 using static UI_PlayerInterface;
 using static UI_SkillBase;
-using static UnityEngine.GraphicsBuffer;
 
 public class MyPlayerController : PlayerController
 {
@@ -59,6 +56,9 @@ public class MyPlayerController : PlayerController
             // Dead -> 다른 상태 : agent 활성화
             if (State == CreatureState.Dead)
                 _agent.enabled = true;
+            
+            if(State == CreatureState.Skill && value == (CreatureState.Idle))
+                StartCoroutine(InputLockCancel());
 
             PosInfo.State = value;
             UpdateAnimation();
@@ -73,7 +73,8 @@ public class MyPlayerController : PlayerController
     protected KeyCode _keyCode = KeyCode.None;
     protected Dictionary<KeyCode, SkillBase> _skills = new Dictionary<KeyCode, SkillBase>();
     Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
-   
+
+
 
     class CoolTime
     {
@@ -120,7 +121,6 @@ public class MyPlayerController : PlayerController
     protected GameObjectType _targetType;
     protected Vector3 _finalPos;
 
-    protected List<int> SkillTargetId { get; set; }
 
     protected float _ratioSkillDuration = 0f;
 
@@ -173,7 +173,6 @@ public class MyPlayerController : PlayerController
         layerName = _animator.GetLayerName(0);
         //Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
 
-        ObjectType = Define.Object.MyPlayer;
         MakeSkillDict();
         MakeCoolDownDict();
         MakeInventory();
@@ -818,6 +817,11 @@ public class MyPlayerController : PlayerController
     protected virtual void UpdateSkillKeyInput() { }
 
     protected bool _isInputLocked = false;
+    protected IEnumerator InputLockCancel()
+    {
+        yield return new WaitForSeconds(0.3f);
+        _isInputLocked = false;
+    }
     protected virtual void GetMouseInput(int mouseButton)
     {
         // 마우스 우클릭이 눌렸을 경우 유효한 곳이 클릭 되었다면 해당 위치를 목적지로 설정 -> Moving 상태로 변경
@@ -992,9 +996,7 @@ public class MyPlayerController : PlayerController
                 return;
 
             // 패킷 보내기
-            SendSkillPacket(_keyCode);
-
-            Debug.Log($"스킬 사용! : {_keyCode}");         
+            SendSkillPacket(_keyCode);    
         }
     }
 
@@ -1064,7 +1066,7 @@ public class MyPlayerController : PlayerController
 
         _coolDownDict[key].isCoolDown = false;
         _coolDownDict[key].coolTime = 0.0f;
-    }
+    }   
 
     protected void MakeSkillDict()
     {
@@ -1405,7 +1407,7 @@ public class MyPlayerController : PlayerController
                         ConsumableItemInfo consumableItem = item as ConsumableItemInfo;
                         if (consumableItem == null)
                         {
-                            Debug.Log($"Error. [{GetType()}] in ChangeInventory, consumableItem == null");
+                            //Debug.Log($"Error. [{GetType()}] in ChangeInventory, consumableItem == null");
                             continue;
                         }
                         consumableItem.Count = change.Count;
@@ -1551,7 +1553,7 @@ public class MyPlayerController : PlayerController
                 Amplification = isAmplification,
                 AmplifiKeyCode = (int)tKey,
             },
-            TargetPosX = mousePos.x, TargetPosZ = mousePos.z,
+            MousePosX = mousePos.x, MousePosZ = mousePos.z,
             ChargeRatio = _ratioSkillDuration,
         };
 

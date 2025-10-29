@@ -19,14 +19,6 @@ public class Define
         Game,
     }
 
-    public enum Object
-    {
-        Unknown,
-        MyPlayer,
-        OtherPlayer,
-        Monster,
-    }
-
     public enum Sound
     {
         Bgm,
