@@ -32,7 +32,7 @@ public class PlayEffectNode : ActionNode, IStateChangeListener
          return NodeStatus.Success;
     }
 
-    public void HandleStateChange(CreatureState newState)
+    public void HandleStateChange(CreatureState newState, bool isClear = true)
     {
     }
 }

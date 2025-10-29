@@ -17,6 +17,7 @@ public class PlayerController : CreatureController
     int _atkCount = 1;
     int _maxAtkCount = 2;
 
+    protected bool _isSkillDebug = true;
     // NameTag
     protected UI_PlayerNameTag _nameTag;
 
@@ -271,6 +272,9 @@ public class PlayerController : CreatureController
 
             if (skillPacket.ObjectId == Managers.Object.MyPlayer.Id && !skillPacket.SkillInfo.Amplification)
                 Managers.Object.MyPlayer.OnSkillConfirmed(skillPacket);
+
+            if (!_isSkillDebug)
+                return;
 
             Vector3 mousePos = new Vector3(skillPacket.MousePosX, 0, skillPacket.MousePosZ);
             bool bProjectile = (DataManager.SkillDict[ObjInfo.Player.CharType][keyCode].type == "Projectile");

@@ -317,6 +317,7 @@ namespace Data
     {
         public int id;
         public string name;
+        public string attackType;
         public StatInfo stat;
         public List<MonsterSkill> skills;
         public float appearTime;

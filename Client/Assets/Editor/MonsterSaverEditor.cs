@@ -104,26 +104,26 @@ public class EnvInfoComponent : MonoBehaviour
 }
 public class EnvSaverEditor : MonoBehaviour
 {
-    const string _envhillpath = "Assets/Resources/GameObject/SpawnPoint/SupportPackSpawnPoints.prefab";
+    const string _envHealpath = "Assets/Resources/GameObject/SpawnPoint/SupportPackSpawnPoints.prefab";
     const string _Turbinepath = "Assets/Resources/GameObject/SpawnPoint/TurbineSpawnPoints.prefab";
 
     [MenuItem("Tools/Save EnvObject Data")]
     public static void SaveEnvSaveData()
     {
-        GameObject HillSpawnPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(_envhillpath);
-        if (HillSpawnPrefab == null)
+        GameObject HealSpawnPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(_envHealpath);
+        if (HealSpawnPrefab == null)
         {
-            Debug.LogError("Error: SupportPack 프리팹을 찾을 수 없습니다. 경로를 확인하세요: " + _envhillpath);
+            Debug.LogError("Error: SupportPack 프리팹을 찾을 수 없습니다. 경로를 확인하세요: " + _envHealpath);
             return;
         }
 
-        HillSpawnPrefab.transform.position = Vector3.zero;
-        HillSpawnPrefab.transform.rotation = Quaternion.identity;
+        HealSpawnPrefab.transform.position = Vector3.zero;
+        HealSpawnPrefab.transform.rotation = Quaternion.identity;
 
         EnvList envList = new EnvList();
         envList.EnvObjects = new List<EnvSaveData>();
 
-        foreach (Transform envInfo in HillSpawnPrefab.transform)
+        foreach (Transform envInfo in HealSpawnPrefab.transform)
         {
             Vector3 pos = envInfo.transform.position;
             Quaternion rot = envInfo.transform.rotation;
