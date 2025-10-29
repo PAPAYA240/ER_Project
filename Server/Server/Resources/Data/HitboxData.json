@@ -4,21 +4,24 @@
       "Q": {
         "shape": "Circle",
         "type": "SkillTrack",
-        "radius": 3,
-        "duration": 0.6
+        "startFrame": 0,
+        "endFrame": 7,
+        "radius": 3
       },
       "F1": {
         "shape": "Circle",
         "type": "SkillTrack",
-        "radius": 3,
-        "duration": 0.4
+        "startFrame": 10,
+        "endFrame": 16,
+        "radius": 3
       },
       "W": {
         "shape": "Sector",
         "type": "SkillStatic",
+        "startFrame": 8,
+        "endFrame": 20,
         "radius": 5.75,
-        "angle": 60,
-        "duration": 0.5
+        "angle": 60
       },
       "E": {
         "type": "SkillStatic",
@@ -27,8 +30,9 @@
       "R": {
         "shape": "Circle",
         "type": "SkillTrack",
-        "radius": 3.5,
-        "duration": 0.81
+        "startFrame": 20,
+        "endFrame": 50,
+        "radius": 3.5
       }
     },
     "Hyunwoo": {
@@ -59,15 +63,17 @@
       "Q": {
         "shape": "Ray",
         "type": "SkillStatic",
+        "startFrame": 5,
+        "endFrame": 14,
         "width": 1,
-        "duration": 0.4,
         "maxRange": 5.5
       },
       "W": {
         "shape": "Circle",
         "type": "SkillTrack",
-        "radius": 3,
-        "duration": 0.6
+        "startFrame": 9,
+        "endFrame": 20,
+        "radius": 3
       },
       "E": {
         "type": "SkillStatic",
@@ -76,7 +82,7 @@
       "R": {
         "shape": "Circle",
         "type": "SkillProjectile",
-        "radius": 1,
+        "radius": 0.3,
         "speed": 4,
         "duration": 0.6,
         "maxRange": 5.5
@@ -86,28 +92,55 @@
       "Q": {
         "shape": "Ray",
         "type": "SkillStatic",
+        "startFrame": 9,
+        "endFrame": 24,
         "charge": true,
         "width": 2.8,
         "minRange": 6,
         "maxRange": 11
       },
       "W": {
-        "shape": "Rectangle",
-        "type": "SkillStatic",
+        "shape": "Point",
+        "type": "SkillPoint",
         "width": 5,
         "height": 1,
-        "maxRange": 5.5
+        "maxRange": 5.5,
+        "startFrame": 0,
+        "endFrame": 200,
+        "interactions": {
+          "Q": {
+            "interaction": [ "Attack" ]
+          },
+          "E": {
+            "interaction": [ "Attack" ]
+          }
+        }
       },
       "E": {
         "shape": "Circle",
         "type": "SkillProjectile",
-        "maxRange": 6.5
+        "radius": 0.4,
+        "speed": 4,
+        "duration": 0.6,
+        "maxRange": 5.5,
+        "startFrame": 0,
+        "endFrame": 60,
+        "interactions": {
+          "F1": {
+            "interaction": [ "Interaction" ]
+          }
+        }
       },
       "R": {
-        "shape": "Rectangle",
-        "type": "SkillProjectile",
+        "shape": "Ray",
+        "type": "SkillStatic",
         "width": 5,
-        "height": 18
+        "height": 20,
+        "startFrame": 10,
+        "endFrame": 150,
+        "charge": true,
+        "minRange": 5,
+        "maxRange": 30
       }
     },
     "Yuki": {
@@ -118,14 +151,20 @@
         "type": "SkillStatic"
       },
       "E": {
-        "type": "Skill_Track"
+        "shape": "Circle",
+        "type": "SkillTrack",
+        "radius": 2,
+        "startFrame": 0,
+        "endFrame": 20,
+        "isOneTimeUse": true
       },
       "R": {
         "shape": "Sector",
         "type": "SkillStatic",
+        "startFrame": 50,
+        "endFrame": 90,
         "radius": 5,
-        "angle": 180,
-        "duration": 2.5
+        "angle": 180
       }
     }
   }

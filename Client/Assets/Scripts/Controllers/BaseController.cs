@@ -24,7 +24,7 @@ public class BaseController : MonoBehaviour
         }
     }
 
-    public float Speed
+    public virtual float Speed
     {
         get { return Stat.MoveSpeed * _speedCoeff; }
         set { Stat.MoveSpeed = value; }
@@ -137,6 +137,7 @@ public class BaseController : MonoBehaviour
 
     protected Animator _animator;
     protected NavMeshAgent _agent;  // Player
+    protected GameObject _coordPrefab; // 아비게일 표식
 
     public virtual CreatureState State
     {
@@ -170,9 +171,14 @@ public class BaseController : MonoBehaviour
     {
         _animator = GetComponentInChildren<Animator>();
 
-        SyncPos();
-
         UpdateAnimation();
+
+        //_coordPrefab = Managers.Resource.Instantiate($"UI/Character/Abigail/AbigailCoord");
+        //_coordPrefab.transform.SetParent(gameObject.transform);
+        ////_coordPrefab.SetActive(false);
+        //AbigailCoord abigailCoord = _coordPrefab.GetComponentInChildren<AbigailCoord>();
+        //if( abigailCoord != null)
+        //    abigailCoord.SetTarget(gameObject);
     }
 
     protected virtual void UpdateController()
@@ -188,6 +194,9 @@ public class BaseController : MonoBehaviour
             case CreatureState.Attack:
                 UpdateAttack();
                 break;
+            case CreatureState.Charging:
+                UpdateCharging();
+                break;
             case CreatureState.Skill:
                 UpdateSkill();
                 break;
@@ -200,20 +209,7 @@ public class BaseController : MonoBehaviour
         }
     }
 
-    // 뼈 찾는 함수
-    public Transform FindInDescendants(Transform parent, string name)
-    {
-        if (parent.name == name)
-            return parent;
-
-        foreach (Transform child in parent)
-        {
-            Transform result = FindInDescendants(child, name);
-            if (result != null)
-                return result;
-        }
-        return null;
-    }
+   
     protected virtual void UpdateIdle()
     {
     }
@@ -232,6 +228,9 @@ public class BaseController : MonoBehaviour
 
     }
 
+    protected virtual void UpdateCharging()
+    {
+    }
     protected virtual void UpdateSkill()
     {
 

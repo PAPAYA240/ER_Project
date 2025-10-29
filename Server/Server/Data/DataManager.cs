@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Google.Protobuf.Protocol;
 using static Server.Data.DataUtils;
 
@@ -27,6 +26,8 @@ namespace Server.Data
         public static Dictionary<CharacterType, Dictionary<KeyCode, SkillVariants>> SkillSpecDict { get; private set; }
             = new Dictionary<CharacterType, Dictionary<KeyCode, SkillVariants>>();
 
+        public static Dictionary<MonsterType, Dictionary<MonsterSkill, SkillHitbox>> MonstSkillHitboxDict { get; private set; } =
+            new Dictionary<MonsterType, Dictionary<MonsterSkill, SkillHitbox>>();
         public static Dictionary<Weapon, WeaponInfo> WeaponDict { get; private set; } = new Dictionary<Weapon, WeaponInfo>();
 
         public static Dictionary<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>> WeaponMasteryDict { get; private set; }
@@ -35,11 +36,16 @@ namespace Server.Data
         public static Dictionary<CharacterType, Dictionary<string, AnimLengthInfo>> AnimLengthInfoDict { get; private set; } = new Dictionary<CharacterType, Dictionary<string, AnimLengthInfo>>();
 
         public static Dictionary<string, MonsterData> MonsterDict { get; private set; } = new Dictionary<string, MonsterData>();
+        public static Dictionary<MonsterType, MonsterData> MonsterDict { get; private set; } = new Dictionary<MonsterType, MonsterData>();
         public static Dictionary<MonsterSkill, MonsterSkillData> MonsterSkillDict { get; private set; } = new Dictionary<MonsterSkill, MonsterSkillData>();
-        public static Dictionary<EnvType, EnvInfo> EnvironmentObjDict { get; private set; } = new Dictionary<EnvType, EnvInfo>();
+        public static Dictionary<EnvType, EnvInfo> EnvDict { get; private set; } = new Dictionary<EnvType, EnvInfo>();
 
         public static Dictionary<int, int> PhaseDict { get; private set; } = new Dictionary<int, int>();
         public static Dictionary<int, int> RespawnDict { get; private set; } = new Dictionary<int, int>();
+
+        public static Dictionary<int, ItemInfoBase> ItemDict { get; private set; } = new Dictionary<int, ItemInfoBase>();
+       
+        public static Dictionary<CharacterType, List<List<int>>> ItemSetDict { get; private set; } = new Dictionary<CharacterType, List<List<int>>>();
 
         public static void LoadData()
         {
@@ -53,13 +59,20 @@ namespace Server.Data
             WeaponDict = LoadJson<Data.WeaponData, Weapon, WeaponInfo>("WeaponData", "player").MakeDict();
             WeaponMasteryDict = LoadJson<Data.WeaponMasteryData, CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>("WeaponMasteryData", "player").MakeDict();
             AnimLengthInfoDict = LoadJson<Data.AnimationInfosData, CharacterType, Dictionary<string, AnimLengthInfo>>("AnimationInfos", "player").MakeDict();
+            SkillHitboxDict = LoadJson<Data.HitboxData, CharacterType, Dictionary<KeyCode, SkillHitbox>>("HitboxData", "player").MakeDict();
 
             // For MonsterData
-            MonsterDict = LoadJson<Data.MonsterDict, string, Data.MonsterData>("MonsterData/MonsterData", "monster").MakeDict();
+            MonsterDict = LoadJson<Data.MonsterDict, MonsterType, Data.MonsterData>("MonsterData/MonsterData", "monster").MakeDict();
             MonsterSkillDict = LoadJson<Data.MonsterSkillDict, MonsterSkill, Data.MonsterSkillData>("MonsterData/MonsterSkillData", "monster").MakeDict();
+            MonstSkillHitboxDict = LoadJson<Data.MonstHitboxData, MonsterType, Dictionary<MonsterSkill, SkillHitbox>>("MonsterData/HitboxData", "monster").MakeDict();
 
             // For EnvironmentData
-            EnvironmentObjDict = LoadJson<Data.EnvObjectData, EnvType, EnvInfo>("Env/EnvData", "monster").MakeDict();
+            EnvDict = LoadJson<Data.EnvObjectData, EnvType, EnvInfo>("Env/EnvData", "monster").MakeDict();
+
+            // For Item
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+            ItemDict = LoadJson<Data.ItemDict, int, ItemInfoBase>("ItemData", "player", settings).MakeDict();
+            ItemSetDict = LoadJson<Data.ItemSet, CharacterType, List<List<int>>>("ItemSetData", "player").MakeDict();
 
             // For System
             PhaseDict = LoadJson<Data.PhaseData, int, int>("PhaseData", "player").MakeDict();
@@ -70,6 +83,13 @@ namespace Server.Data
         {
             string text = File.ReadAllText($"{ConfigManager.Config.dataPaths[key]}/{path}.json");
             return Newtonsoft.Json.JsonConvert.DeserializeObject<Loader>(text);
+        }
+
+        // 역직렬화 세팅 설정
+        static Loader LoadJson<Loader, Key, Value>(string path, string key, JsonSerializerSettings settings) where Loader : ILoader<Key, Value>
+        {
+            string text = File.ReadAllText($"{ConfigManager.Config.dataPaths[key]}/{path}.json");
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Loader>(text, settings);
         }
     }
 }

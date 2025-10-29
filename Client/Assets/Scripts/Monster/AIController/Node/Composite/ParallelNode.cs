@@ -1,9 +1,7 @@
 ﻿using Google.Protobuf.Protocol;
 using System.Collections.Generic;
 using UnityEngine;
-#if UNITY_EDITOR
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
-#endif
+
 
 public class ParallelNode : CompositeNode, IStateChangeListener
 {
@@ -39,10 +37,21 @@ public class ParallelNode : CompositeNode, IStateChangeListener
         for (int i = 0; i < children.Count; i++)
             _childStates[i] = NodeStatus.Running;
     }
-
-    public void HandleStateChange(CreatureState newState)
+    private void ResetChildren()
     {
-        _finished = true;
+        foreach (var child in children)
+        {
+            if (child is PlayAnimation playAnim)
+                playAnim.Reset();
+            // 다른 타입의 노드들도 필요하면 추가
+        }
+    }
+    public void HandleStateChange(CreatureState newState, bool isClear = true)
+    {
+        if (isClear)
+            _finished = true;
+        else
+            ResetChildren();
         ResetNode();
     }
 }

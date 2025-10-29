@@ -1,44 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
+using Google.Protobuf.Protocol;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public class Projectile : BaseController
 {
+    public GameObject Owner { get; set; } = null;
+
     private Vector3 _lastForward;
-
-    void Start()
+    private float _elapsedTime = 0f;
+    private void Awake()
     {
-        gameObject.SetActive(false);
+        gameObject?.SetActive(false);
     }
-    IEnumerator CoThrow()
+    public void MoveHandler(S_Move movePacket)
     {
-        float elapsedTime = 0f;
-        float duration = 3.0f;
-        float speed = 10f;
+        gameObject?.SetActive(true);
+        PosInfo = movePacket.PosInfo;
+        RotInfo = movePacket.RotInfo;
+        SyncPos(movePacket.IsWarp);
 
-        Vector3 startPosition = gameObject.transform.position;
-        while (elapsedTime < duration)
-        {
-            gameObject.transform.position += _lastForward * speed * Time.deltaTime;
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        gameObject.SetActive(false);
+        _elapsedTime += Time.deltaTime;
+        if(_elapsedTime >= 2.0f)
+            Destroy(gameObject);
     }
+
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Monster") 
-            || other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        // 스크린 활용 시 모든 몬스터와 플레이어도 맞게 할 수 있음
+        if (other.gameObject.layer == LayerMask.NameToLayer("Monster"))
         {
-            gameObject.SetActive(false);
+            Destroy(gameObject);
         }
     }
-    public void Run(Vector3 startPos, Vector3 startforward)
-    {
-        gameObject.transform.position = startPos;
-        _lastForward = startforward;
-
-        StartCoroutine(CoThrow());
-    }
-
 }

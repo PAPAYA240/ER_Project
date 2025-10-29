@@ -1,42 +1,78 @@
 using Google.Protobuf.Protocol;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-public interface IEnvironmentInteraction
-{
-    void Interact(EnvController controller);
-}
 
 public class EnvController : BaseController
 {
-    private long _nextUseTime = 0;
-    public EnvType _envType;
+    [SerializeField] public EnvType _envType;
+
+    // Components
     protected Animator animator;
 
-    private IEnvironmentInteraction _interactionStrategy;
-    protected virtual void Awake()
+    // State
+    protected bool _isActive = false;
+    protected bool _isCollecting = false;
+
+    // Network
+    private int _lastRequestObjectId = -1;
+
+    protected override void Init()
     {
-        animator = GetComponent<Animator>();
-        if (animator == null)
-            animator = GetComponentInChildren<Animator>();
+        base.Init();
+        animator = GetComponent<Animator>() ?? GetComponentInChildren<Animator>();
     }
 
-    void Update()
+
+    #region Interaction
+
+    protected void OnTriggerEnter(Collider other)
     {
+        if (!IsValidTrigger(other))
+            return;
+
+        _isCollecting = true;
+        TryHandleInteraction();
+        RequestCollect();
     }
 
-    public void SetNextUseTime(long time)
+    private bool IsValidTrigger(Collider other)
     {
-        _nextUseTime = time;
+        if (other.gameObject.layer != LayerMask.NameToLayer("MyPlayer"))
+            return false;
+        if (!_isActive || _isCollecting)
+            return false;
+        return true;
     }
 
-    void OnTriggerEnter(Collider other)
+    protected virtual void TryHandleInteraction()
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        _isCollecting = false;
+    }
+
+    #endregion
+
+    #region Network
+
+    private void RequestCollect()
+    {
+        _lastRequestObjectId = Id;
+
+        C_EnvRequest request = new C_EnvRequest
         {
-            transform.parent.gameObject.SetActive(false);
-            Debug.Log("충돌");
-        }
+            ObjectId = Id,
+            EnvType = _envType,
+        };
+        Managers.Network.Send(request);
     }
+
+    public void OnInteractionAuthorized()
+    {
+        if (_lastRequestObjectId == Id)
+        {
+            _lastRequestObjectId = -1;
+            return;
+        }
+        TryHandleInteraction();
+    }
+
+    #endregion
 }

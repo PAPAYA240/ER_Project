@@ -2640,10 +2640,14 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 417b40c246758c54093ca3f7f12088ad, type: 2}
+  - {fileID: 2100000, guid: 45b1debccca648646ba343a48135c3b6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5881,6 +5885,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4154708383810356}
   - component: {fileID: 95463497737407046}
+  - component: {fileID: 8935172091006219477}
   m_Layer: 0
   m_Name: Theodore_S000_LOD1
   m_TagString: Untagged
@@ -5907,7 +5912,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
 --- !u!95 &95463497737407046
 Animator:
-  serializedVersion: 5
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5921,11 +5926,25 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8935172091006219477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861146027263588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38bbf0c8ec18e0747b035ba9e225aad8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _controller: {fileID: 0}
 --- !u!1 &1864065493563847
 GameObject:
   m_ObjectHideFlags: 0

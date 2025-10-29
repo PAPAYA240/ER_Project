@@ -46,4 +46,13 @@ namespace Google.Protobuf.Protocol
             return new PositionInfo(vec);
         }
     }
+
+    public sealed partial class SkillHitbox
+    {
+        public void SetDefaultsIfEmpty()
+        {
+            if (Fps == 0)
+                Fps = 30;
+        }
+    }
 }

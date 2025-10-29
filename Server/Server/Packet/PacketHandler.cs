@@ -1,10 +1,13 @@
-﻿using Google.Protobuf;
+﻿using System;
+using System.Linq;
+using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server;
 using Server.Data;
 using Server.Game;
 using ServerCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using static Server.Data.DataUtils;
@@ -268,6 +271,64 @@ class PacketHandler
             return;
 
         room.Push(room.HandleSkill, player, skillPacket);
+    }
+
+    public static void C_TargetingSkillHandler(PacketSession session, IMessage packet)
+    {
+        C_SkillCollisionPropose skillPacket = packet as C_SkillCollisionPropose;
+        ClientSession clientSession = session as ClientSession;
+        C_TargetingSkill targetingSkillPkt = packet as C_TargetingSkill;
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+        //Console.WriteLine($"AttackerId: {targetingSkillPkt.ObjectId}");
+        room.Push(room.HandleAttackSkillTarget, player, targetingSkillPkt);
+    }
+
+     public static void C_ProjectileHandler(PacketSession session, IMessage packet)
+     {
+        ClientSession clientSession = session as ClientSession;
+        Player player = clientSession.MyPlayer;
+
+        Projectile projectile = player?.CreateProjectile();
+     }
+
+    public static void C_EnvRequestHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_EnvRequest envPacket = packet as C_EnvRequest;
+
+        if (!DataManager.EnvDict.TryGetValue(envPacket.EnvType, out EnvInfo envData))
+            return;
+
+        Player player = clientSession.MyPlayer;
+        GameRoom room = player?.Room;
+
+        if (room == null)
+            return;
+        // 보상
+        room.GetEnvManager?.GiveRewardToPlayer(envPacket.ObjectId, envPacket.EnvType);
+     
+        S_EnvRequest sendPacket = new S_EnvRequest()
+        {
+            ObjectId = envPacket.ObjectId,
+            EnvType = envPacket.EnvType,
+        };
+        room.Push(room.Broadcast, sendPacket);
+    }
+
+    public static void C_TestDamageHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_TestDamage damagePacket = packet as C_TestDamage;
+
+        // 검증 필요하면 추가하기..
+        Player player = clientSession.MyPlayer;
+        player.OnDamaged(player, 500);
     }
 
     public static void C_SkillCollisionProposeHandler(PacketSession session, IMessage packet)

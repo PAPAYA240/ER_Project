@@ -14,7 +14,6 @@ public class ObjectManager
 {
 	public MyPlayerController MyPlayer { get; set; }
 	private Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
-
     public Define.Character Character { get; set; } = Define.Character.Rozzi;
 
     #region Type ID
@@ -51,7 +50,6 @@ public class ObjectManager
                 break;
         }
     }
-
     private void AddPlayer(ObjectInfo info, bool myPlayer)
     {
         if (myPlayer)
@@ -75,12 +73,20 @@ public class ObjectManager
             _objects.Add(info.ObjectId, go);
 
             PlayerController pc = go.GetComponent<PlayerController>();
+
             pc.ObjInfo = info;
             pc.Id = info.ObjectId;
             pc.SyncPos();
             pc.ManualInit();
-           
-            Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.TeamPlayer, pc);
+
+            if (MyPlayer.ObjInfo.Player.Team != pc.ObjInfo.Player.Team)
+            {
+                go.gameObject.AddComponent<HighlightEffect>();
+                Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.EnemyPlayer, pc);
+            }
+            else
+                Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.TeamPlayer, pc);
+
         }
     }
     private void AddMonster(ObjectInfo info)
@@ -93,20 +99,23 @@ public class ObjectManager
         mc.ObjInfo = info;
         mc.Id = info.ObjectId;
         mc.PosInfo = info.PosInfo;
+        mc.RotInfo = info.RotInfo;
         mc.Stat = info.StatInfo;
         mc.Hp = info.StatInfo.MaxHp;
         mc._monsterType = info.Monster.MonsterType;
     }
     private void AddProjectile(ObjectInfo info)
     {
-        //GameObject go = Managers.Resource.Instantiate("Creature/Arrow");
-        //go.name = "Arrow";
-        //_objects.Add(info.ObjectId, go);
-
-        //ArrowController ac = go.GetComponent<ArrowController>();
-        //ac.PosInfo = info.PosInfo;
-        //ac.Stat = info.StatInfo;
-        //ac.SyncPos();
+        if (_objects.ContainsKey(info.ObjectId))
+            return;
+        GameObject go = Managers.Resource.Instantiate($"Creature/Weapon/Projectile");
+        go.name = $"Projectile";
+     
+        _objects.Add(info.ObjectId, go);
+        Projectile pc = go.GetComponent<Projectile>();
+        pc.PosInfo = info.PosInfo;
+        pc.Stat = info.StatInfo;
+        pc.SyncPos();
     }
     private void AddEnvironment(ObjectInfo info)
     {
@@ -121,6 +130,7 @@ public class ObjectManager
         ec.Id = info.ObjectId;
         ec.PosInfo = info.PosInfo;
         ec.Stat = info.StatInfo;
+
         if (Enum.TryParse(info.Name, out EnvType envEnum))
             ec._envType = envEnum;
         ec.SyncPos();

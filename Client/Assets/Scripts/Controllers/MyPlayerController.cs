@@ -4,8 +4,10 @@ using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using static Data.SkillEffectList;
 using static UI_PlayerInterface;
 using static UI_SkillBase;
 using static UnityEngine.GraphicsBuffer;
@@ -33,6 +35,16 @@ public class MyPlayerController : PlayerController
         Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
         _skill.Init();
         _UI.Init();
+
+        _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHPColor();
+
+        // 전장의 안개 카메라 설정
+        GameObject fogCamGo = GameObject.Find("FogCamera");
+        if (null != fogCamGo)
+        {
+            string fogLayerName = $"FogTeam{ObjInfo.Player.Team}";
+            fogCamGo.GetComponent<Camera>().cullingMask |= (1 << LayerMask.NameToLayer(fogLayerName));
+        }
     }
 
     private void Update()
@@ -78,6 +90,23 @@ public class MyPlayerController : PlayerController
         CheckUpdatedFlag();
     }
 
+    protected override void UpdateCharging()
+    {
+        if (_agent == null)
+            return;
+
+        if (_agent.remainingDistance <= _agent.stoppingDistance)
+        {
+            if (_moveKeyPressed)
+                PlayAnimation("CHARGING", 0.1f);
+
+            _agent.speed = _originSpeed;
+            _moveKeyPressed = false;
+        }
+        UpdateTransform();
+    }
+
+
     // 서버 응답 전달
     //public void OnServerUpdate(S_Idle packet) => _view.OnIdle(packet);
     public void OnServerUpdate(S_Move packet) => _view.OnMove(packet);
@@ -92,20 +121,288 @@ public class MyPlayerController : PlayerController
         _view.ApplyLocalSetMoveTarget(new C_SetMoveTarget
         {
             IsGround = packet.IsGround,
-            TargetId = packet.TargetId,
-            TargetPos = packet.TargetPos != null ? new PositionInfo(packet.TargetPos) : null
-        });
-    }
-    public void OnServerUpdate(S_Stop packet) => _view.OnStop(packet);
+            {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+        }
+}
 
     public void OnServerUpdate(S_SkillMotion packet) => _skill.OnSkill(packet);
     public void OnServerUpdate(S_SkillConfirm packet) => _skill.OnSkillConfirm(packet);
+    }  
 
-    public void UpdateTransform(bool isWarp = false)
+
+
+public void SetTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)
+{
+    _playerHUD.SetTimer(phase, clientLocalTargetRealtimeSinceStartupEnd);
+}
+
+public override void SetKDA(int kill, int death, int asist)
+{
+    base.SetKDA(kill, death, asist);
+    _playerHUD.SetKDA(kill, death, asist);
+}
+
+public void NotifyKill(PlayerController attPc, PlayerController diePc)
+{
+    _playerHUD.NotifyKill(attPc, diePc);
+}
+
+public override void EquipItem(int itemId)
+{
+    base.EquipItem(itemId);
+    PlayerInterface.Equip(DataManager.ItemDict[itemId] as EquipItemInfo);
+}
+
+#endregion
+
+#region Effect
+protected GameObject FindEffect(string fxName)
+{
+    return Managers.FX.Effect.FindEffect(ObjInfo.ObjectId, fxName);
+}
+// 스킬 시전 이펙트 : TODO : 나중에 키에 따른 이펙트만 지워줄 것
+protected void RemoveAllEffect()
+{
+    Managers.FX.RemoveAllEffect(ObjInfo.ObjectId);
+}
+protected void RemoveEffect(string fxName)
+{
+    Managers.FX.Effect.RemoveEffect(ObjInfo.ObjectId, FindEffect(fxName));
+}
+protected List<GameObject> PlayEffect(string fxName, Vector3 position = new Vector3(), Quaternion rot = new Quaternion())
+{
+    List<EffectData> effectList = Managers.Data.GetEffectsByPrefabName(fxName);
+
+    return Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, transform, position, rot);
+}
+
+protected override List<GameObject> PlayEffectTransform(CreatureState state, KeyCode key, EffectType type = EffectType.Caster,
+    GameObject target = null, Transform targetTransform = null)
+{
+    List<EffectData> effectList =
+        Managers.Data.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
+
+    List<GameObject> EffectList = null;
+
+    // 타겟의 이펙트
+    if (type == EffectType.HitTarget && target != null)
+    {
+        EffectList = (targetTransform != null) ?
+         Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, targetTransform)
+         : Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, target.transform);
+    }
+    // 나의 이펙트
+    else if (type == EffectType.Caster)
+    {
+        EffectList = (targetTransform != null) ?
+        Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, targetTransform)
+        : Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, this.transform);
+    }
+
+    return EffectList;
+}
+
+protected List<GameObject> PlayEffectAtPosition(CreatureState state, KeyCode key, Vector3 position, Quaternion rot, EffectType type = EffectType.Caster)
+{
+    List<EffectData> effectList = Managers.Data.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
+
+    if (effectList == null || effectList.Count == 0)
+        return null;
+
+    List<GameObject> EffectList = Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, this.transform, position, rot);
+
+    return EffectList;
+}
+#endregion
+
+#region Inventory, EquipItem
+
+public void ChangeInventory(S_ChangeInventory packet)
+{
+    foreach (var change in packet.Changes)
+    {
+        //빈칸 처리
+        if (change.ItemId == 0)
+        {
+            //TODO UI 작업
+            _inventory[change.InventoryIndex] = null;
+        }
+        else
+        {
+            if (DataManager.ItemDict.TryGetValue(change.ItemId, out ItemInfoBase item))
+            {
+                if (change.Count == 0)
+                {
+                    // 장비 아이템
+                    _inventory[change.InventoryIndex] = item;
+                }
+                else
+                {
+                    // 소모 아이템
+                    ConsumableItemInfo consumableItem = item as ConsumableItemInfo;
+                    if (consumableItem == null)
+                    {
+                        //Debug.Log($"Error. [{GetType()}] in ChangeInventory, consumableItem == null");
+                        continue;
+                    }
+                    consumableItem.Count = change.Count;
+
+                    _inventory[change.InventoryIndex] = consumableItem;
+                }
+            }
+            else
+            {
+                //유효하지 않은 아이템 아이디.
+            }
+        }
+    }
+}
+
+public override void UpdateItemStat(ItemStat stat)
+{
+    base.UpdateItemStat(stat);
+
+    // 스탯 UI 업데이트
+}
+#region Util
+protected void UpdateTransform(bool isWarp = false)
     {
         CellPos = transform.position;
         RotInfo = transform.rotation;
         _updated = true;
+        _isWarp = isWarp;
+    }
+
+    protected void SetMovementState()
+    {
+        if (_moveKeyPressed)
+            State = CreatureState.Moving;
+        else
+            State = CreatureState.Idle;
+    }
+
+    protected float GetCurrentAnimClipLength()
+    {
+        if (!_animator.IsInTransition(0))
+            return _animator.GetCurrentAnimatorStateInfo(0).length;
+        else
+            return _animator.GetNextAnimatorStateInfo(0).length;
+
+        //AnimatorClipInfo[] clipInfos = _animator.GetCurrentAnimatorClipInfo(0);
+        //if (clipInfos.Length > 0)
+        //    return clipInfos[0].clip.length;
+
+        //return 0.0f;
+    }
+
+    protected virtual void ResetCharacterState()
+    {
+        // Input
+        _moveKeyPressed = false;
+        _isStop = false;
+
+        // State : Skill
+        _isUseSkill = false;
+        _keyCode = KeyCode.None;
+
+        foreach (var skill in _coolDownDict)
+        {
+            skill.Value.isCoolDown = false;
+            skill.Value.coolTime = 0;
+        }
+
+        // State : Moving
+        ResetCoroutine(_coLookAtTarget);
+
+        // State : Attack
+        _isAttackLoop = false;
+        _attackIndex = 0;
+        ResetTarget();
+        ResetCoroutine(_attackRoutine);
+
+        // State : Rest
+        _isResting = false;
+        ResetCoroutine(_coRest);
+
+        // TODO : 필요한가
+        // NavMeshAgent
+        _agent.enabled = false;
+    }
+
+    protected void ResetCoroutine(Coroutine coroutine)
+    {
+        if(coroutine != null)
+        {
+            StopCoroutine(coroutine);
+            coroutine = null;
+        }
+    }
+
+    protected Vector3 GetCursorPos()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            return new Vector3(hit.point.x, 0, hit.point.z); // 충돌 지점이 곧 월드 좌표
+        }
+        return new Vector3(-1, -1, -1);
+    }
+    #endregion
+
+    #region Packet
+    private void SendSkillPacket(KeyCode key)
+    {
+        int targetId = -1;
+        if (Target && _targetType == GameObjectType.Monster)
+        {         
+            MonsterController monster = Target.GetComponentInChildren<MonsterController>();
+            if (monster)
+            {
+                targetId = monster.ObjInfo.ObjectId;
+            }
+        }
+        else
+        {
+            targetId = SkillTargetId;
+            SkillTargetId = -1;
+        }
+
+        Vector3 mousePos = GetTargetPos(1000);
+        C_Skill skillPacket = new C_Skill()
+        {
+            ObjectInfo = ObjInfo,
+            SkillInfo = new SkillInfo() { KeyCode = (int)key },
+            TargetId = targetId,
+            MousePosX = mousePos.x, MousePosZ = mousePos.z
+        };
+        Managers.Network.Send(skillPacket);
+        Debug.Log("스킬 패킷 보내기");
+    }
+
+    protected void SendFXPacket(KeyCode key)
+    {
+        C_Fx fxPacket = new C_Fx();
+
+        fxPacket.FxInfo = new EffectInfo() { KeyCode = (int)_keyCode };
+
+        Managers.Network.Send(fxPacket);
+    }
+
+    private void SendAnimPacket(string name, float ratio)
+    {
+        C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { Name = name, Ratio = ratio } };
+        Managers.Network.Send(animPacket);
+    }
+
+    private void SendStatePacket()
+    {
+        C_PlayerState statePacket = new C_PlayerState();
+        statePacket.State = State;
+        Managers.Network.Send(statePacket);
     }
 
     protected override void CheckUpdatedFlag()

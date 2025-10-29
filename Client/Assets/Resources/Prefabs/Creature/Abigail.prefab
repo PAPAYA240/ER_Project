@@ -1219,7 +1219,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1872682378519393342}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 0.3
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -1231,7 +1231,7 @@ NavMeshAgent:
   m_Height: 2
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 0
 --- !u!114 &-8679626558034318606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1678,6 +1678,7 @@ SkinnedMeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: d8bcd992711336f4b958f4b186c497ac, type: 2}
+  - {fileID: 2100000, guid: 45b1debccca648646ba343a48135c3b6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2559,6 +2560,7 @@ SkinnedMeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: d8bcd992711336f4b958f4b186c497ac, type: 2}
+  - {fileID: 2100000, guid: 45b1debccca648646ba343a48135c3b6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

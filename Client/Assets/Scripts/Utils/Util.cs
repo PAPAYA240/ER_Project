@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class Util
 {
-    public static Transform FindChildByName(Transform parent, string childName)
+    public static GameObject FindChildByName(Transform parent, string childName)
     {
         foreach (Transform child in parent)
         {
             if (child.name == childName)
-                return child;
+            {
+                return child.gameObject;
+            }
 
-            Transform found = FindChildByName(child, childName);
+            GameObject found = FindChildByName(child, childName);
+
             if (found != null)
                 return found;
         }

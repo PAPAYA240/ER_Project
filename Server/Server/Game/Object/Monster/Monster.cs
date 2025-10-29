@@ -11,198 +11,220 @@ namespace Server.Game
         void Enter(Monster monster);
         void Execute(Monster monster);
         void Exit(Monster monster);
+        void OnHit(Monster monster, Creature target);
+    }
+    public interface ISkillBehavior
+    {
+        void OnStart(Monster caster, MonsterSkillData skillData);
+        void OnUpdate(Monster caster);
+        void OnHit(Monster caster, Creature target);
+        void OnEnd(Monster caster);
     }
 
     public class Monster : Creature
     {
-        // 패킷
+        #region Fields
+        // State
+        private IMonsterState _currentState;
+
+        // Packet
         private int _sequenceId = 0;
 
-        // Monster 정보
-        List<MonsterSkill> _skills = new List<MonsterSkill>();  // 사용 가능한 스킬 목록
-        public MonsterSkill CurrentSkill { get; private set; } // 현재 사용 중인 스킬
-        private IMonsterState _currentState;
-        public Vector3 spawnPosition = new Vector3();
-
-        // 탐지 정보
-        private const float _skillRange = 3.0f;
-
-        // TODO : 감마 총알 예시
+        // Skills
+        List<MonsterSkill> _skills = new List<MonsterSkill>();
+        public MonsterSkill CurrentSkill { get; private set; }
         public float _delaySkillAnimationTimer = 0;
 
-        public Monster() => ObjectType = GameObjectType.Monster;
+        // Position
+        public Vector3 _spawnPosition = new Vector3();
+        public bool ReturnToSpawn { get; set; }
+        public Vector3 _lastTargetPos = new Vector3();
 
-        public void Init(string name)
+        // Detection
+        private const float ACTIVE_RANGE = 20f;
+
+        // Events
+        public Action<GameObject> OnAttacked;
+
+        #endregion
+
+        public Monster()
         {
-            if (!Add_MonsterData(name))
+            ObjectType = GameObjectType.Monster;
+        }
+        public void Init(MonsterType type)
+        {
+            if (!LoadMonsterData(type))
                 return;
 
-            ChangeState(new IdleState());
-        }
-       
-        public void ChangeState(IMonsterState newState)
-        {
-            if (_currentState != null)
-                _currentState.Exit(this);
+            if (DataManager.MonsterDict[type].attackType == "long")
+                DIST_TO_TARGET = 5.0f;
+            else
+                DIST_TO_TARGET = 0.5f;
 
-            _currentState = newState;
-            if (_currentState != null)
-                _currentState.Enter(this);
+            OnAttacked += HandlerRegisterTarget;
+            ChangeState(FSMManager.Instance.GetIdleState());
         }
-
         public override void Update()
         {
-            if(_currentState != null)
-                _currentState?.Execute(this);
-        }
-        protected override void IdleState()
-        {
-             ChangeState(new IdleState());
+            //if(!_bAppear && Room.TimeStamp.TotalSeconds > 15.0f)
+            //{
+            //    _bAppear = true;
+            //    ChangeState(FSMManager.Instance.GetAppearState()); 
+            //}
+
+            _currentState?.Execute(this);
         }
 
-        // 스킬 선택
-        public MonsterSkillData Get_DecideAndUseSkill()
+        #region State
+        public void ChangeState(IMonsterState newState)
         {
-            return DecideAndUseSkill();
+            _currentState?.Exit(this);
+
+            State = DetermineMonsterState(newState);
+
+            _currentState = newState;
+            _currentState?.Enter(this);
         }
-        protected MonsterSkillData DecideAndUseSkill()
+        private CreatureState DetermineMonsterState(IMonsterState state)
+        {
+            if (state is IdleState)
+                return CreatureState.Idle;
+            else if (state is MovingState)
+                return CreatureState.Moving;
+            else if (state is SkillState || state is AimState)
+                return CreatureState.Skill;
+            else if (state is DeadState)
+                return CreatureState.Dead;
+            else if (state is AppearState)
+                return CreatureState.Appear;
+
+            return CreatureState.Idle;
+        }
+        public override void OnDead(GameObject attacker)
+        {
+            if (Room == null)
+                return;
+
+            State = CreatureState.Dead;
+            ChangeState(new DeadState());
+        }
+        #endregion
+
+        #region Hit
+        public void OnHit(Creature creature)
+        {
+            OnAttacked?.Invoke(creature);
+        }
+        private void HandlerRegisterTarget(GameObject attacker)
+        {
+            if (attacker is Player attackerPlayer)
+                Target = attackerPlayer;
+        }
+        public void OnTargetHit(GameObject target)
+        {
+            if (target is Creature creatureTarget)
+                _currentState?.OnHit(this, creatureTarget);
+        }
+        #endregion
+
+        #region Skill
+        public MonsterSkillData CastRandomSkill()
         {
             int skillIdx = new Random().Next(0, _skills.Count);
             MonsterSkill skillName = _skills[skillIdx];
 
             if (DataManager.MonsterSkillDict.TryGetValue(skillName, out MonsterSkillData skillData) == false)
-            {
-                Console.WriteLine($"--> 사용할 스킬 ID({skillName})가 데이터에 없습니다.");
                 return null;
-            }
 
-            Target.Room.Push(OnDamaged, this, skillData.damage + Attack);
+            //Target?.Room?.Push(OnDamaged, this, skillData.damage + Attack, false);
             return skillData;
         }
-
-        protected virtual void UpdateDead()
+        public void CreateHitbox(MonsterSkill skilltype)
         {
-            // TODO: 몬스터 사망 시 처리
-            State =CreatureState.Dead;
+            Room?.CollisionManager?.AddHitbox(this, skilltype);
         }
-
-        #region Helper Functions
-
-        public bool IsFindTargetRange()
+        public ISkillBehavior CreateSkillBehavior(string behaviorName)
         {
-            if (Target == null)
-                return false;
+            const string BehaviorNamespace = "Server.Game";
+            string fullTypeName = $"{BehaviorNamespace}.{behaviorName}";
 
-            Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-            Vector3 targetPos = new Vector3(Target.PosInfo.PosX, Target.PosInfo.PosY, Target.PosInfo.PosZ);
-            float distanceToTarget = Vector3.Distance(monsterPos, targetPos);
+            Type type = Type.GetType(fullTypeName);
+            if (behaviorName != null)
+                type = Type.GetType(fullTypeName);
 
-            return distanceToTarget <= _findRange;
-        }
-        public bool IsSkillRange() => IsPlayerInSkillRange();
-        private bool IsPlayerInSkillRange()
-        {
-            if (Target == null)
-                return false;
+            if (type == null)
+                return null;
 
-            Vector3 monsterPos = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-            Vector3 targetPos = new Vector3(Target.PosInfo.PosX, Target.PosInfo.PosY, Target.PosInfo.PosZ);
-            float distanceToTarget = Vector3.Distance(monsterPos, targetPos);
-
-            return distanceToTarget <= _skillRange;
-        }
-
-        const float _activeRange = 30f;
-        // 다시 스폰 장소로 돌아가는가? 
-        public bool IsReturnSpawn()
-        {
-            Vector3 monsterPos = new Vector3(this.PosInfo.PosX, this.PosInfo.PosY, this.PosInfo.PosZ);
-            float dist = Vector3.Distance(monsterPos, spawnPosition);
-            if (_activeRange <= dist)
-            {
-                Console.WriteLine("ReturnSpawn");
-                return true;
-            }
-            return false;
-        }
-
-        // 활동 범위를 가지 않았는가?
-        public bool IsArrivalSpawn()
-        {
-            Vector3 monsterPos = new Vector3(this.PosInfo.PosX, this.PosInfo.PosY, this.PosInfo.PosZ);
-            float distanceToWaypoint = Vector3.Distance(monsterPos, spawnPosition);
-            if (distanceToWaypoint < 0.1f)
-                return true;
-            return false;
-        }
-
-        public Creature FindTarget(Monster monster)
-        {
-            // 플레이어 판단
-            monster.Target = monster.Room.FindPlayer(p =>
-            {
-                Vector3 playerPos = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
-                Vector3 monsterPos = new Vector3(monster.PosInfo.PosX, monster.PosInfo.PosY, monster.PosInfo.PosZ);
-
-                Creature target = p as Creature;
-                Creature targetMonster = target.Target;
-                if (targetMonster == this)
-                    return true;
-                else
-                    return false;
-            });
-            return monster.Target;
-        }
-
-        private long GetCurrentTimeMs()
-        {
-            return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            object instance = Activator.CreateInstance(type);
+            return instance as ISkillBehavior;
         }
         #endregion
 
-        #region 브로드캐스트
+        #region 범위 검색
+        public bool IsInSkillRange()
+        {
+            if (Target == null)
+                return false;
+
+            Vector3 myPosition = PosInfo.ToVector();
+            Vector3 targetPosition = Target.PosInfo.ToVector();
+            return Vector3.Distance(myPosition, targetPosition) <= DIST_TO_TARGET;
+        }
+
+        public bool IsReturnSpawn()
+        {
+            Vector3 monsterPosition = PosInfo.ToVector();
+            return Vector3.Distance(monsterPosition, _spawnPosition) >= ACTIVE_RANGE;
+        }
+
+        public bool IsAtSpawn()
+        {
+            var myPosition = PosInfo.ToVector();
+            return (Vector3.Distance(myPosition, _spawnPosition) < 0.1f);
+        }
+        #endregion
+
+        #region 패킷 전달
         public void PushState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null)
         {
-            if(Room != null)
-                Room.Push(() => BroadcastState(newState, posInfo, rotInfo, skillData));
+             Room?.Push(() => BroadcastState(newState, posInfo, rotInfo, skillData));
         }
 
         private void BroadcastState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null)
         {
             _sequenceId++;
-            State = newState;
-
-            S_State statePacket = new S_State();
-            statePacket.ObjectId = Id;
-            statePacket.SequenceId = _sequenceId;
-
-            statePacket.MyState = newState;
+            S_State statePacket = new S_State
+            {
+                ObjectId = Id,
+                SequenceId = _sequenceId,
+                MyState = newState,
+                PosInfo = posInfo,
+                RotInfo = rotInfo
+            };
 
             if (Target != null)
                 statePacket.TargetPosition = Target.PosInfo;
+
             if (skillData != null)
             {
                 statePacket.Skilltype = skillData.skillType;
                 CurrentSkill = skillData.skillType;
             }
 
-            statePacket.PosInfo = posInfo;
-            statePacket.RotInfo = rotInfo;
-
-            if (Room != null)
-                Room.Broadcast(statePacket);
+            Room?.Broadcast(statePacket);
         }
+    
         #endregion
 
-        #region 컴포넌트
-        private bool Add_MonsterData(string name)
+        #region 초기화
+        private bool LoadMonsterData(MonsterType type)
         {
-            if (DataManager.MonsterDict.TryGetValue(name, out MonsterData monsterData))
+            if (DataManager.MonsterDict.TryGetValue(type, out MonsterData monsterData))
             {
                 Stat.MergeFrom(monsterData.stat);
                 Hp = MaxHp;
-                State = CreatureState.Idle;
-                spawnPosition = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
+                _spawnPosition = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
 
                 if (monsterData.skills != null)
                     _skills.AddRange(monsterData.skills);

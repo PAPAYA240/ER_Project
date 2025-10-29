@@ -41,6 +41,21 @@ enum MsgId {
   S_SKILL_LEVEL_UP = 33;
   S_PLAYER_STATE = 34;
   S_CHANGE_STAT = 35;
+  C_TARGETING_SKILL = 36;
+  S_CHANGE_ITEM_STAT = 37;
+  S_CHANGE_EQUIP_ITEM = 38;
+  S_CHANGE_INVENTORY = 39;
+  C_TEST_DAMAGE = 40;
+  S_COMBAT_TEXT = 41;
+  S_CHANGE_K_D_A = 42;
+  S_SYNC_TIMER = 43;
+
+  C_PROJECTILE = 44;
+  S_PROJECTILE = 45;
+  C_ENV_REQUEST = 46;
+  S_ENV_REQUEST = 47;
+  S_ADD_ABIGAIL_COORD = 48;
+  S_REMOVE_ABIGAIL_COORD = 49;
   C_ATTACK_SKILL_TARGET = 36;
   C_MOVE_SYNC = 37;
   C_ATTACK = 38;
@@ -64,6 +79,8 @@ enum CreatureState{
   SKILL = 3;
   DEAD = 4;
   REST = 5;
+  CHARGING = 6;
+  APPEAR = 7;
 }
 
 enum GameObjectType{
@@ -76,10 +93,11 @@ enum GameObjectType{
 
 enum EnvType{
    ENV_NONE = 0;
-   HILL_OBJ = 1;
+   HEAL_PACK = 1;
    DEVICE_SPAWNPOINT = 2;
    ACCBOUNDARY_SPAWNPOINT = 3;
    BARRIER_SPAWNPOINT = 4;
+   TURBINE = 5;
 }
    
 enum SkillType{
@@ -88,6 +106,7 @@ enum SkillType{
 	SKILL_PROJECTILE = 2;
 	SKILL_STATIC = 3;
 	SKILL_TRACK = 4;
+	SKILL_POINT = 5;
 }
 
 enum MonsterSkill{
@@ -130,7 +149,7 @@ enum MonsterType {
    	ALPHA = 1;
    	OMEGA = 2;
 	DRONE = 3;
-        GAMMA = 4;
+    GAMMA = 4;
 	TURRET = 5;
 }
 
@@ -167,6 +186,7 @@ enum SkillShape{
 	RAY = 2;
 	RECTANGLE = 3;
 	SECTOR = 4;
+	POINT = 5;
 }
 
 enum TraitType{
@@ -234,13 +254,25 @@ enum VariantKey {
   Followup = 2; 
 }
 
+enum CombatTextType{
+	AD = 0;
+	AP = 1;
+	TRUE = 2;
+	HP_RECOVERY = 3;
+	STAMINA_RECOVERY = 4;
+	BARRIER = 5;
+	END = 6;
+}
+
 message C_Interact {
-    int32 objectId = 1;
+    	int32 objectId = 1;
 }
 
 message S_Interact  {
-    int32 objectId = 1;
-    int64 nextUseTime = 2;
+    	int32 objectId = 1;
+	int32 targetId = 2;
+    	int32 keyCode = 3;
+	int32 targetKeyCode = 4;
 }
 
 message C_EnterGame {
@@ -251,7 +283,6 @@ message C_EnterGame {
 message S_EnterGame {
 	ObjectInfo player = 1;
 }
-
 message S_LeaveGame {
 
 }
@@ -290,9 +321,10 @@ message S_Move{
 message C_Skill{
 	ObjectInfo objectInfo = 1;
 	SkillInfo skillInfo = 2;
-	int32 targetId = 3;
+	repeated int32 targetsId = 3; 
 	float mousePosX = 4;
 	float mousePosZ = 5;
+	float chargeRatio = 6;
 }
 
 message S_Skill{
@@ -300,6 +332,9 @@ message S_Skill{
 	int32 objectId = 2;
 	SkillInfo skillInfo = 3;
 	CostInfo costInfo = 4;
+ 	float chargeRatio = 5;
+	float mousePosX = 6;
+	float mousePosZ = 7;
 }
 
 message C_SkillLevelUp{
@@ -429,6 +464,72 @@ message C_MoveSync{
 	bool isSkillMotion = 4;
 }
 
+message S_ChangeItemStat{
+	int32 objectId = 1;
+	ItemStat itemStat = 2;
+}
+
+message S_ChangeEquipItem{
+	int32 objectId = 1;
+	int32 itemId = 2;
+}
+
+message S_ChangeInventory{
+	repeated ChangeInventoryInfo changes = 1;
+}
+
+message C_TestDamage{
+	int32 objectId = 1;
+}
+
+message C_Projectile{
+	int32 objectId = 1;
+}
+message S_Projectile{
+	int32 objectId = 1;
+}
+message S_CombatText{
+	int32 objectId = 1;
+	CombatTextType type = 2;
+	float value = 3;
+}
+
+message S_ChangeKDA{
+	repeated KDAInfo KDAs = 1;
+}
+
+message S_SyncTimer{
+	int32 phase = 1;
+	int64 currentTimestamp = 2;
+	int64 phaseEndTime = 3;
+}
+
+message C_EnvRequest{
+	int32 objectId = 1;
+	EnvType envType = 2;
+}
+
+message S_EnvRequest{
+	int32 objectId = 1;
+	EnvType envType = 2;
+}
+
+message C_TargetingSkill{
+	int32 objectId = 1;
+	int32 keyCode = 2;
+	int32 targetId = 3;
+}
+
+message S_AddAbigailCoord{
+	int32 objectId = 1;
+	int32 attackerTeam = 2;
+	float duration = 3;
+}
+
+message S_RemoveAbigailCoord{
+	int32 objectId = 1;
+}
+
 message PositionInfo{
 	CreatureState state = 1;
 	float posX = 2;
@@ -457,13 +558,14 @@ message StatInfo{
 	float moveSpeed = 11;
 	int32 exp = 12;
 	int32 level = 13;
-	int32 hill = 14;
+	int32 heal = 14;
 }
 
 message PlayerInfo {
     CharacterType charType = 1;
     int32 skillPoints = 2;
     int32 team = 3;
+	Weapon weapon = 4;
 }
 
 message MonsterInfo {
@@ -471,8 +573,18 @@ message MonsterInfo {
 }
 
 message EnvInfo{
-	EnvType envType = 1;
-	string interactionStrategy = 2;	
+    EnvType envType = 1;
+    string prefabPath = 2;
+    float collectRadius = 3;
+    float respawnTime= 4; 
+    bool isRespawnable= 5;
+    string rewardType= 6; 
+    int32 rewardId= 7;
+    int32 rewardAmount= 8;
+    
+    float floatSpeed= 9;
+    float floatHeight= 10;
+    float rotationSpeed= 11;
 }
 
 message ObjectInfo{
@@ -486,7 +598,7 @@ message ObjectInfo{
         PlayerInfo player = 6;
         MonsterInfo monster = 7;
         EnvInfo env = 8;
-    }
+    	}
 }
 
 message PickScenePlayerInfo{
@@ -522,24 +634,31 @@ message SkillInfo{
 	int32 keyCode = 2;
 	float coolTime = 3;
 	int32 targetId = 4;
+	bool amplification = 5;
+	int32 amplifiKeyCode = 6;
 }
 
+message InteractionList {
+    repeated string interaction = 1; 
+}
 message SkillHitbox{
 	string shape = 1;
 	string type = 2;
-	bool charge = 3;
-	float lookOffset = 4;
-	float rightOffset = 5;
-	float dirX = 6;
-	float dirY = 7;
-	float radius = 8;
-	float angle = 9;
-	float width = 10;
-	float height = 11;
-	float duration = 12;
+	int32 startFrame = 3;
+	int32 endFrame = 4;
+	int32 fps = 5;
+	bool charge = 6;
+	float lookOffset = 7;
+	float rightOffset = 8;
+	float radius = 9;
+	float angle = 10;
+	float width = 11;
+	float height = 12;
 	float speed = 13;
 	float minRange = 14;
 	float maxRange = 15;
+	bool isOneTimeUse = 16;
+	map<string, InteractionList> interactions = 17;
 }
 
 message CostInfo{
@@ -557,7 +676,7 @@ message ItemStat{
     float PercentageSkillAmplification = 7;  //퍼센트 스킬 증폭
     float SkillAcceleration = 8;             //스킬 가속
     float FixedDefensePenetration = 9;       //고정 방어 관통
-    float PercentageDefensePenetration = 10;  //퍼센트 방어 관통 ex) 20퍼센트면 20
+    float PercentageDefensePenetration = 10;  //퍼센트 방어 관통 
     float FixedSpeed = 11;                    //고정 이동 속도
     float PercentageSpeed = 12;               //퍼센트 이동 속도
     float MaxHp = 13;                         //최대 체력
@@ -667,4 +786,16 @@ message S_MoveSync {
   int32 objectId = 1;
   PositionInfo targetPos = 2;
   float speed = 3;
+}
+message ChangeInventoryInfo{
+	int32 itemId = 1;
+	int32 inventoryIndex = 2;
+	int32 count = 3;
+}
+
+message KDAInfo{
+	int32 objectId = 1;
+	int32 kill = 2;
+	int32 death = 3;
+	int32 asist = 4;
 }

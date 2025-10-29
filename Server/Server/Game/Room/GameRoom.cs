@@ -4,9 +4,7 @@ using Server.Data;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
+using System.Diagnostics;
 using System.Numerics;
 using System.Linq;
 using static ISkillHandler;
@@ -19,38 +17,185 @@ namespace Server.Game
 {
     public partial class GameRoom : Room
     {
-        Dictionary<int, Player> _players = new Dictionary<int, Player>();
+        ConcurrentDictionary<int, Player> _players = new ConcurrentDictionary<int, Player>();
         ConcurrentDictionary<int, EnvironmentObject> _envs = new ConcurrentDictionary<int, EnvironmentObject>();
         ConcurrentDictionary<int, Monster> _monsters = new ConcurrentDictionary<int, Monster>();
-        Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
+        ConcurrentDictionary<int, Projectile> _projectiles = new ConcurrentDictionary<int, Projectile>();
 
         MonsterManager _monsterManager = new MonsterManager();
         CollisionManager _collisionManager = new CollisionManager();
-        EnvManager _envManager = new EnvManager();
+        EnvironmentManager _envManager = new EnvironmentManager();
 
         Dictionary<int, Dictionary<int, Player>> _teams = new Dictionary<int, Dictionary<int, Player>>();
+        Dictionary<CharacterType, SkillHandler> _skillHandlers = new Dictionary<CharacterType, SkillHandler>();
 
         string _navmeshPath = "../../../Resources/Data/NavmeshData.json"; // 배포 경로
 
         bool _teamToggle = false;
         bool _dummyAdded = true;    // TEMP : Dummy
 
+        public EnvironmentManager GetEnvManager {
+            get 
+            {
+                return _envManager;
+            }
+            private set
+            {
+                _envManager = value;
+            }
+        }
+
+        public int CurTick { get; set; }
+
+        #region Phase, Time
+
+        public TimeSpan TimeStamp { get { return _timeStampStopwatch.Elapsed; } }
+
+        //private DateTime _timeStamp; // 게임이 시작된 시간
+        private Stopwatch _timeStampStopwatch; // 게임 시작부터 얼마나 시간이 흘렀는지 측정하는 스톱워치
+
+        //private DateTime _phaseStartTime; // 현재 페이즈가 시작된 시간
+        private Stopwatch _phaseStopwatch; // 현재 페이즈가 얼마나 진행되었는가를 측정하는 스톱워치
+        private Timer _phaseTransitionTimer; // 페이즈 전환을 예약하는 타이머
+        private Timer _syncTimer; // 일정 주기마다 싱크 타이머를 호출하는 타이머
+        public int CurPhase { get; private set; } = 5;
+
+        public void ChangePhase(int newPhase)
+        {
+            if (CurPhase == newPhase) 
+                return; 
+
+            CurPhase = newPhase;
+            //_phaseStartTime = DateTime.UtcNow; // 페이즈 시작 시간 기록 
+
+            _phaseStopwatch.Restart(); // 페이즈 경과 시간 측정 시작/재시작
+
+            // 현재 페이즈의 지속 시간을 가져옴
+            int duration;
+            if (DataManager.PhaseDict.TryGetValue(newPhase, out duration))
+            {
+                // 다음 페이즈 전환을 위한 타이머 설정
+                // 이전 타이머가 있으면 Dispose 후 새로 생성
+
+                TimeSpan newPhaseDuration = TimeSpan.FromSeconds(duration);
+
+                _phaseTransitionTimer?.Dispose();
+                _phaseTransitionTimer = new Timer(OnPhaseTimerElapsed, null, (int)newPhaseDuration.TotalMilliseconds, Timeout.Infinite); // 한 번만 실행되도록 설정
+            }
+            else
+            {
+                // 지속 시간이 정의되지 않은 페이즈 (수동 전환 필요)
+                _phaseTransitionTimer?.Dispose(); // 혹시 모를 이전 타이머 정리
+            }
+
+            // 클라이언트들에게 페이즈 변경 사실을 통보 (네트워크 전송)
+            SyncTimer();
+
+            Console.WriteLine($"Phase Change : {CurPhase}");
+
+            // 특별한 페이즈에 대한 추가 로직
+            switch (newPhase)
+            {
+                case 0:
+                    // 게임 시작 시 필요한 초기화 (예: 맵 생성, 플레이어 스폰)
+                    break;
+                case 1:
+                    {
+                        foreach (var p in _players)
+                            Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
+                    }
+                    break;
+                case 2:
+                    {
+                        foreach (var p in _players)
+                            Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
+                    }
+                    break;
+                case 3:
+                    {
+                        foreach (var p in _players)
+                            Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
+                    }
+                    break;
+                case 4:
+                    break;
+            }
+        }
+
+        public void SyncTimer(object state = null)
+        {
+            S_SyncTimer syncTimerPacket = new S_SyncTimer();
+
+            syncTimerPacket.Phase = CurPhase;
+            syncTimerPacket.CurrentTimestamp = System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(); 
+            syncTimerPacket.PhaseEndTime = CalculatePhaseServerEndTime(CurPhase); 
+
+            Push(Broadcast, syncTimerPacket);
+        }
+
+        private long CalculatePhaseServerEndTime(int phase)
+        {
+            return System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + (long)GetRemainingPhaseTime().TotalMilliseconds;
+        }
+
+
+        public TimeSpan GetRemainingPhaseTime()
+        {
+            // 페이즈 지속 시간이 정의되지 않았다면 남은 시간 없음으로 처리
+            if (!DataManager.PhaseDict.TryGetValue(CurPhase, out int totalDuration))
+            {
+                return TimeSpan.Zero;
+            }
+
+            // 스톱워치로 측정한 경과 시간
+            TimeSpan elapsedTime = _phaseStopwatch.Elapsed;
+            TimeSpan remainingTime = TimeSpan.FromSeconds(totalDuration) - elapsedTime;
+
+            return remainingTime.TotalSeconds > 0 ? remainingTime : TimeSpan.Zero;
+        }
+
+        private void OnPhaseTimerElapsed(object state)
+        {
+            int nextPhase = CurPhase + 1;
+            if (nextPhase != 5)
+            {
+                ChangePhase(nextPhase);
+            }
+            else
+            {
+                //모든 페이즈 종료
+                _phaseTransitionTimer?.Dispose();
+                _phaseStopwatch.Stop();
+            }
+        }
+
+        public CollisionManager CollisionManager { get { return _collisionManager; } private set { } }
+        #endregion
+
         public bool TryGetMonster(int objectId, out Monster monster)
         {
             return _monsters.TryGetValue(objectId, out monster);
         }
+         public CollisionManager CollManager { get { return _collisionManager; } private set { } }
 
+        public PathfindInstance PathFind { get; set; }
         public void Init(int mapId)
         {
-            // Spawn NavMesh
-            Pathfinding.Initialize();
-
+            PathFind = new PathfindInstance(0);
             // Spawn Monster
             _monsterManager.Init(this);
-            //_monsterManager.Add(1, MonsterType.Gamma);
-
+             
             // Spawn Env
             _envManager.Init(this);
+
+            // Timer
+            _timeStampStopwatch = new Stopwatch(); 
+            _timeStampStopwatch.Restart(); // 게임 시간 측정 시작.
+            _phaseStopwatch = new Stopwatch();
+            ChangePhase(0);
+            _syncTimer = new Timer(SyncTimer, null, TimeSpan.Zero, TimeSpan.FromSeconds(5)); //주기적으로 동기화
+
+            _skillHandlers[CharacterType.Theodore] = new TheodoreSkillHandler();
 
             _collisionManager.Init();
 
@@ -62,6 +207,8 @@ namespace Server.Game
         {
             TimeUtil.Update();
 
+            CurTick = Environment.TickCount;
+
             foreach (Projectile projectile in _projectiles.Values)
             {
                 projectile.Update();
@@ -71,30 +218,42 @@ namespace Server.Game
             {
                 player.Update();
             }
+            foreach (Monster monster in _monsters.Values)
+            {
+                monster.Update();
+            }
+            foreach (EnvironmentObject env in _envs.Values)
+            {
+                env.Update();
+            }
 
             foreach (Player player in _players.Values)
             {
                 List<int> visibleObjs = new List<int>();
-                visibleObjs.AddRange(GetObjectsInRange(_players, player));
-                visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
-                AddVisibleObjects(visibleObjs, _envs, player);
+                AddVisibleObjects(visibleObjs, _players, player);
                 AddVisibleObjects(visibleObjs, _monsters, player);
+                AddVisibleObjects(visibleObjs, _projectiles, player);
+                AddVisibleObjects(visibleObjs, _envs, player);
                 player.SendVisibleObjsPkt(visibleObjs);
             }
 
-            List<Monster> monstersToUpdate = new List<Monster>(_monsters.Values);
-            foreach (Monster monster in monstersToUpdate)
-                monster.Update();
+            foreach (Player player in _players.Values)
+                player.RemoveExpiredStatusEffects();
+
+            foreach (var monster in _monsters.Values)
+                monster.RemoveExpiredStatusEffects();
 
             Flush();
 
-            _collisionManager.Update();
+            _collisionManager.CurTick = CurTick;
+            _collisionManager.Flush();
             _collisionManager.CheckAllCollisions(_teams, _monsters, _projectiles);
-
+            _collisionManager.Update();
+            
             BroadcastVisibleObjs();
             CheckLastPing();
         }
-
+       
         public void EnterGame(GameObject gameObject)
         {
             if (gameObject == null)
@@ -106,6 +265,7 @@ namespace Server.Game
                 Player player = gameObject as Player;
                 _players.Add(gameObject.Id, player);
                 player.Info.Player.Team = AssignTeam();
+                player.Info.Player.Weapon = FindWeapon(player.Info.Player.CharType);
 
                 if (!_teams.TryGetValue(player.Info.Player.Team, out var teamPlayers))
                 {
@@ -149,13 +309,18 @@ namespace Server.Game
                     int levelUpCnt = player.CheckLevelUp();
                     if (levelUpCnt > 0)
                         BroadcastLevelUp(player.Id, levelUpCnt, player.Info.Player.CharType);
+
+                    // 페이즈에 해당하는 아이템 장착
+                    if (CurPhase > 0)
+                        player.EquipItemSet(player.Info.Player.CharType, CurPhase - 1);
+
+                    // 시간 동기화
+                    SyncTimer();
                 }
             }
             else if (type == GameObjectType.Monster)
             {
                 Monster monster = gameObject as Monster;
-                if (_monsters == null)
-                    _monsters = new ConcurrentDictionary<int, Monster>();
 
                 monster.Room = this;
                 _monsters.TryAdd(gameObject.Id, monster);
@@ -163,14 +328,13 @@ namespace Server.Game
             else if (type == GameObjectType.Projectile)
             {
                 Projectile projectile = gameObject as Projectile;
-                _projectiles.Add(gameObject.Id, projectile);
                 projectile.Room = this;
+                _projectiles.TryAdd(gameObject.Id, projectile);
+                return;
             }
             else if (type == GameObjectType.Environment)
             {
                 EnvironmentObject env = gameObject as EnvironmentObject;
-                if (env == null)
-                    _envs = new ConcurrentDictionary<int, EnvironmentObject>();
 
                 env.Room = this;
                 _envs.TryAdd(gameObject.Id, env);
@@ -239,6 +403,188 @@ namespace Server.Game
             }
         }
 
+        #region Handler
+        #region Handler Skill
+        public void HandleSkill(Player player, C_Skill skillPacket)
+        {
+            if (player == null)
+                return;
+
+            if (skillPacket.SkillInfo.Amplification)
+            {
+                HandleAmplificationSkill(player, skillPacket);
+            }
+            else
+            {
+                HandleNormalSkill(player, skillPacket);
+            }
+        }
+
+        private void HandleAmplificationSkill(Player player, C_Skill skillPacket)
+        {
+            ObjectInfo info = player.Info;
+
+            info.PosInfo.State = CreatureState.Skill;
+            S_Skill skillPacketToSend = new S_Skill()
+            {
+                CanUse = true,
+                ObjectId = player.Info.ObjectId,
+                SkillInfo = skillPacket.SkillInfo
+            };
+            Broadcast(skillPacketToSend);
+
+            if (_skillHandlers.TryGetValue(player.Info.Player.CharType, out var handler))
+                handler.CanUse(player, skillPacketToSend);
+        }
+
+        private void HandleNormalSkill(Player player, C_Skill skillPacket)
+        {
+            if (player == null) return;
+
+            ObjectInfo info = player.Info;
+            S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
+            KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
+
+            skill.ChargeRatio = skillPacket.ChargeRatio;
+
+            if (!player.CanUseSkill(keyCode))
+            {
+                skill.CanUse = false;
+                player.Session.Send(skill);
+                return;
+            }
+            else
+                player.CommitSkillUsage(keyCode);
+
+            foreach (int targetid in skillPacket.TargetsId)
+            {
+                if (TryGetMonster(targetid, out Monster target))
+                {
+                    player.Target = target;
+                    player.SkillTarget = target;
+                    player.UsedTargetingSkill = keyCode;
+
+                }
+                else if (_players.TryGetValue(targetid, out Player skillTarget))
+                {
+                    player.SkillTarget = skillTarget;
+                    player.UsedTargetingSkill = keyCode;
+                }
+            }
+
+            info.PosInfo.State = CreatureState.Skill;
+            skill.CanUse = true;
+            skill.ObjectId = info.ObjectId;
+            skill.SkillInfo = new SkillInfo
+            {
+                SkillId = skillPacket.SkillInfo.SkillId,
+                KeyCode = skillPacket.SkillInfo.KeyCode,
+            };
+            skill.CostInfo = new CostInfo
+            {
+                CoolTime = player.GetCoolTime(keyCode),
+                Stamina = player.Stamina,
+            };
+            Broadcast(skill);
+
+            //float damage = 0f;
+
+            //if(player.SkillTarget.ObjectType == GameObjectType.Player)
+            //    damage = _collisionManager.CalcDamage(player, player.SkillTarget as Player, player.UsedTargetingSkill);
+            //else
+            //    damage = _collisionManager.CalcDamage(player, player.SkillTarget.Stat, player.UsedTargetingSkill);   
+
+            // 프로젝타일
+            Projectile proj= FindProjectile(player);
+            if (proj != null)
+                proj.IsActive = true;
+
+            _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode,
+                new Vector2(skillPacket.MousePosX, skillPacket.MousePosZ), skillPacket.ChargeRatio);
+        }
+
+        #endregion
+        public void HandleMove(Player player, C_Move movePacket)
+        {
+            if (player == null)
+                return;
+
+            // todo : 검증
+
+            // 일단 서버에서 좌표 이동
+            player.Info.PosInfo.PosX = movePacket.PosInfo.PosX;
+            player.Info.PosInfo.PosY = movePacket.PosInfo.PosY;
+            player.Info.PosInfo.PosZ = movePacket.PosInfo.PosZ;
+            player.Info.RotInfo.Qx = movePacket.RotInfo.Qx;
+            player.Info.RotInfo.Qy = movePacket.RotInfo.Qy;
+            player.Info.RotInfo.Qz = movePacket.RotInfo.Qz;
+            player.Info.RotInfo.Qw = movePacket.RotInfo.Qw;
+
+            // 다른 플레이어한테도 알려준다
+            S_Move resMovePacket = new S_Move();
+            resMovePacket.ObjectId = player.Info.ObjectId;
+            resMovePacket.PosInfo = movePacket.PosInfo;
+            resMovePacket.RotInfo = movePacket.RotInfo;
+            resMovePacket.IsWarp = movePacket.IsWarp;
+            Broadcast(resMovePacket);
+        }
+
+        public void HandleVF(Player player, C_Fx skillPacket)
+        {
+            if (player == null)
+                return;
+
+            S_Fx effect = new S_Fx()
+            {
+                ObjectId = player.Info.ObjectId,
+                FxInfo = skillPacket.FxInfo,
+            };
+            Broadcast(effect);
+        }
+
+        public void HandleRest(Player player, C_Rest pkt)
+        {
+            if (player == null)
+                return;
+            if (player.IsDead)
+                return;
+
+            player.ChangeState(new Player_RestState(pkt.IsRest));
+        }
+
+        public void HandleAttackSkillTarget(Player player, C_TargetingSkill targetingSkill)
+        {
+            if (player == null)
+                return;
+
+            float damage = 0f;
+
+            GameObject target = ObjectManager.Instance.Find(targetingSkill.TargetId);
+
+            if (target.ObjectType == GameObjectType.Player)
+                damage = _collisionManager.CalcDamage(player, target as Player, (KeyCode)targetingSkill.KeyCode);
+            else
+                damage = _collisionManager.CalcDamage(player, target.Stat, (KeyCode)targetingSkill.KeyCode);
+
+            //if (target is Player)
+            //    Console.WriteLine($"Attacker:{player.Info.Player.CharType}_{player.Id}, Target:{target.Info.Player.CharType}_{target.Id}, Damage:{damage}");
+            //else
+            //    Console.WriteLine($"Attacker:{player.Info.Player.CharType}_{player.Id}, Target:Env_{target.Id}, Damage:{damage}");
+
+            if(player.Info.Player.CharType == CharacterType.Abigail && (KeyCode)targetingSkill.KeyCode == KeyCode.E)
+            {
+                S_RemoveAbigailCoord removeAbigailCoordPkt = new S_RemoveAbigailCoord();
+                removeAbigailCoordPkt.ObjectId = target.Id;
+                player.Room.Broadcast(removeAbigailCoordPkt);
+
+                player.RemoveStatusEffects("Coord");
+
+                // 시야 제공 제거 (용수야 도와줘)
+            }
+
+            target.OnDamaged(player, damage);
+        }
+
         public void HandleMoveSync(Player player, C_MoveSync movePacket)
         {
             if (player == null)
@@ -252,7 +598,7 @@ namespace Server.Game
             //    // 가벼운 보정 1회
             //    player.SendMovePacket(new PositionInfo { PosX = player.PosInfo.PosX, PosY = player.PosInfo.PosY, PosZ = player.PosInfo.PosZ },
             //                         new RotationInfo(player.RotInfo));
-                
+
             //    return;
             //}
 
@@ -267,7 +613,8 @@ namespace Server.Game
             if (player == null)
                 return;
 
-            S_Fx effect = new S_Fx() {
+            S_Fx effect = new S_Fx()
+            {
                 ObjectId = player.Info.ObjectId,
                 FxInfo = skillPacket.FxInfo,
             };
@@ -282,7 +629,7 @@ namespace Server.Game
             S_Anim anim = new S_Anim() { AnimInfo = new AnimInfo() };
             anim.ObjectId = player.Id;
             anim.AnimInfo = animPacket.AnimInfo;
-            Broadcast(anim);           
+            Broadcast(anim);
         }
 
         public void HandleAttackSkillTarget(Player player, C_AttackSkillTarget attackSkillTarget)
@@ -319,16 +666,7 @@ namespace Server.Game
             player.IsDeath = true;
         }
 
-        public Player FindPlayer(Func<GameObject, bool> condition)
-        {
-            foreach(Player player in _players.Values)
-            {
-                if(condition.Invoke(player))
-                    return player;
-            }
-            return null;
-        }
-
+        #endregion
         public void Broadcast(IMessage packet)
         {
             foreach (Player p in _players.Values)
@@ -389,10 +727,10 @@ namespace Server.Game
             foreach (Player player in _players.Values)
             {
                 List<int> visibleObjs = new List<int>();
-                visibleObjs.AddRange(GetObjectsInRange(_players, player));
+                AddVisibleObjects(visibleObjs, _players, player);
                 AddVisibleObjects(visibleObjs, _monsters, player);
+                AddVisibleObjects(visibleObjs, _projectiles, player);
                 AddVisibleObjects(visibleObjs, _envs, player);
-                visibleObjs.AddRange(GetObjectsInRange(_projectiles, player));
                 player.SendVisibleObjsPkt(visibleObjs);
             }
         }
@@ -450,7 +788,7 @@ namespace Server.Game
                     dummyPlayer.Hp = dummyPlayer.MaxHp;
                     dummyPlayer.Stamina = dummyPlayer.MaxStamina;
                     dummyPlayer.Session = clientSession;
-                    _players.Add(dummyPlayer.Id, dummyPlayer);
+                    _players.TryAdd(dummyPlayer.Id, dummyPlayer);
                     dummyPlayer.Info.Player.Team = AssignTeam();
 
                     if (!_teams.TryGetValue(dummyPlayer.Info.Player.Team, out var teamPlayers))
@@ -469,6 +807,51 @@ namespace Server.Game
             clientSession.Send(spawnPacket);
 
             _dummyAdded = true;
+        }
+
+        #region Search
+        private Weapon FindWeapon(CharacterType type)
+        {
+            switch (type)
+            {
+                case CharacterType.Rozzi:
+                    return Weapon.Pistol;
+                case CharacterType.Yuki:
+                    return Weapon.TwoHandSword;
+                case CharacterType.Abigail:
+                    return Weapon.Axe;
+                case CharacterType.Theodore:
+                    return Weapon.SniperRifle;
+                case CharacterType.Hyunwoo:
+                    return Weapon.Glove;
+            }
+
+            return Weapon.Pistol;
+        }
+        public Projectile FindProjectile(Creature owner)
+        {
+            foreach (Projectile projectile in _projectiles.Values)
+            {
+                if (projectile.Owner == owner)
+                    return projectile;
+            }
+            return null;
+        }
+        public Player FindPlayer(Func<GameObject, bool> condition)
+        {
+            foreach (Player player in _players.Values)
+            {
+                if (condition.Invoke(player))
+                    return player;
+            }
+            return null;
+        }
+      
+        #endregion
+
+        public void AddStatusEffect(Creature creature, StatusEffect statusEffect)
+        {
+            creature.AddStatusEffect(statusEffect);
         }
     }
 }

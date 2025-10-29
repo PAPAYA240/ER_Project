@@ -2,11 +2,22 @@
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Google.Protobuf.Protocol
 {
     public sealed partial class PositionInfo
     {
+        public Vector3 ToVector()
+        {
+            return new Vector3(PosX, PosY, PosZ);
+        }
+        public void SetPosInfoFromVector3(Vector3 pos)
+        {
+            PosX = pos.X;
+            PosY = pos.Y;
+            PosZ = pos.Z;
+        }
         public float Distance(PositionInfo other)
         {
             float dx = PosX - other.PosX;
@@ -56,6 +67,10 @@ namespace Google.Protobuf.Protocol
 
     public sealed partial class RotationInfo
     {
+        public Quaternion GetQuatFromRotInfo()
+        {
+            return new Quaternion(Qx, Qy, Qz, Qw);
+        }
         public static Vector3 operator *(RotationInfo q, Vector3 v)
         {
             Vector3 u = new Vector3(q.Qx, q.Qy, q.Qz);
@@ -70,5 +85,52 @@ namespace Google.Protobuf.Protocol
         public Vector3 Right() => this * new Vector3(1, 0, 0);
         public Vector3 Back() => -Forward();
         public Vector3 Left() => -Right();
+    }
+
+    public partial class ItemStat
+    {
+        public static ItemStat operator +(ItemStat a, ItemStat b)
+        {
+            // 새로운 ItemStat 객체를 생성하여 두 객체의 값을 합산
+            return new ItemStat
+            {
+                AttackDamage = a.AttackDamage + b.AttackDamage,
+                AttackSpeed = a.AttackSpeed + b.AttackSpeed,
+                CriticalRatio = a.CriticalRatio + b.CriticalRatio,
+                CriticalDamage = a.CriticalDamage + b.CriticalDamage,
+                AttackRange = a.AttackRange + b.AttackRange,
+                FixedSkillAmplification = a.FixedSkillAmplification + b.FixedSkillAmplification,
+                PercentageSkillAmplification = a.PercentageSkillAmplification + b.PercentageSkillAmplification,
+                SkillAcceleration = a.SkillAcceleration + b.SkillAcceleration,
+                FixedDefensePenetration = a.FixedDefensePenetration + b.FixedDefensePenetration,
+                PercentageDefensePenetration = a.PercentageDefensePenetration + b.PercentageDefensePenetration,
+                FixedSpeed = a.FixedSpeed + b.FixedSpeed,
+                PercentageSpeed = a.PercentageSpeed + b.PercentageSpeed,
+                MaxHp = a.MaxHp + b.MaxHp,
+                HpRegen = a.HpRegen + b.HpRegen,
+                MaxStamina = a.MaxStamina + b.MaxStamina,
+                StaminaRegen = a.StaminaRegen + b.StaminaRegen,
+                Defense = a.Defense + b.Defense,
+                LifeSteal = a.LifeSteal + b.LifeSteal,
+                Omnivamp = a.Omnivamp + b.Omnivamp,
+                HealingPower = a.HealingPower + b.HealingPower,
+                SlowResistance = a.SlowResistance + b.SlowResistance,
+                CCResistance = a.CCResistance + b.CCResistance,
+                AdaptiveStat = a.AdaptiveStat + b.AdaptiveStat,
+                Vision = a.Vision + b.Vision,
+                AttackDamagePerLevel = a.AttackDamagePerLevel + b.AttackDamagePerLevel,
+                SkillAmplificationPerLevel = a.SkillAmplificationPerLevel + b.SkillAmplificationPerLevel,
+                MaxHpPerLevel = a.MaxHpPerLevel + b.MaxHpPerLevel,
+            };
+        }
+    }
+
+    public sealed partial class SkillHitbox
+    {
+        public void SetDefaultsIfEmpty()
+        {
+            if (Fps == 0)
+                Fps = 30;
+        }
     }
 }

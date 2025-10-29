@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
@@ -115,7 +112,6 @@ class PacketHandler
             if (objectType == GameObjectType.Player)
             {
                 cc.UseSkill(skillPacket);
-                Debug.Log("스킬 패킷 받기");
             }
         }
     }
@@ -131,7 +127,7 @@ class PacketHandler
         PlayerController pc = go.GetComponent<PlayerController>();
         if (pc != null)
         {
-            //if (pc.ObjectType == Define.Object.OtherPlayer)
+            if (pc.Id != Managers.Object.MyPlayer.Id)
                 pc.PlayAnimFromServer(animPacket.AnimInfo);
         }
     }
@@ -150,6 +146,11 @@ class PacketHandler
         {
             cc.Hp = changePacket.Hp;
             cc.Barrier = changePacket.Barrier;
+
+            //foreach(var v in changePacket.Damages)
+            //{
+            //    Managers.CombatText.SetCombatText(CombatTextManager.TextType.AdDamage, v.Damage, cc.transform.position);
+            //}
         }
     }
 
@@ -168,10 +169,29 @@ class PacketHandler
             cc.OnDead();
         }
 
-        //if (Managers.Object.MyPlayer != null && Managers.Object.MyPlayer.Id == diePacket.ObjectId)
-        //{
-        //    go.GetComponentInChildren<MyPlayerController>().PlayerInterface.OnDead(diePacket.RespawnTime);
-        //}
+        if (Managers.Object.MyPlayer != null)
+        {
+            if(Managers.Object.MyPlayer.Id == diePacket.ObjectId)
+            {
+                go.GetComponentInChildren<MyPlayerController>().PlayerInterface.OnDead(diePacket.RespawnTime);
+            }
+            
+            // 죽은 플레이어
+            PlayerController pc = cc as PlayerController;
+            if (pc == null)
+                return;
+
+            // 공격 플레이어
+            GameObject attackerGo = Managers.Object.FindById(diePacket.AttackerId);
+            if (attackerGo == null) 
+                return;
+
+            PlayerController attPc = attackerGo.GetComponentInChildren<PlayerController>();
+            if (attPc == null) 
+                return;
+
+            Managers.Object.MyPlayer.NotifyKill(attPc, pc); 
+        }
     }
 
     public static void S_CharacterHandler(PacketSession session, IMessage packet)
@@ -198,10 +218,41 @@ class PacketHandler
 
         pickScene.ChangeTraitImage(traitPacket.TraitType, traitPacket.PickIdx);
     }
-    
+
     public static void S_InteractHandler(PacketSession session, IMessage packet)
     {
-        
+        S_Interact interactPacket = packet as S_Interact;
+
+        GameObject go = Managers.Object.FindById(interactPacket.ObjectId);
+        if (go == null) return;
+
+        CreatureController creature = go.GetComponentInChildren<CreatureController>();
+        if (creature == null) return;
+
+        GameObjectType objectType = ObjectManager.GetObjectTypeById(creature.Id);
+
+        // 오브젝트 충돌
+        if ((KeyCode)interactPacket.TargetKeyCode == KeyCode.F1)
+        {
+            if (objectType == GameObjectType.Player)
+            {
+                KeyCode mkey = (KeyCode)interactPacket.KeyCode; // Hitbox 키코드
+                GameObject target = Managers.Object.FindById(interactPacket.TargetId); // 공격한 타겟
+
+                MonsterController mc = target.GetComponentInChildren<MonsterController>();
+                creature.OnObjectCollision(target, mkey);
+            }
+        }
+        // Hitbox 충돌
+        else
+        {
+            if (objectType == GameObjectType.Player)
+            {
+                KeyCode mkey = (KeyCode)interactPacket.KeyCode;
+                KeyCode tKey = (KeyCode)interactPacket.TargetKeyCode;
+                creature.OnHitboxCollision(mkey, tKey);
+            }
+        }
     }
 
     public static void S_WeaponHandler(PacketSession session, IMessage packet)
@@ -295,7 +346,6 @@ class PacketHandler
 
         cc.Stat.Level += levelUpPkt.LevelUpCnt;
 
-        //사실 이때 적용되야되는데?
         cc.ChangeStat(levelUpPkt.StatGrowth);
 
         //아래는 레벨이 제대로 표시되게 하는 코드
@@ -303,9 +353,10 @@ class PacketHandler
         MyPlayerController mpc = go.GetComponent<MyPlayerController>();
         if (null != mpc)
         {
-            //mpc.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
-            //mpc.UpdateLevel();
-            //return;
+            mpc.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
+            mpc.UpdateLevel();
+            mpc.PlayerInterface.UpdateStat();
+            return;
         }
 
         //다른 플레이어면 위에서 안걸리고 내려와서 여기 걸림. 몬스터도 레벨업 하나?
@@ -327,7 +378,7 @@ class PacketHandler
         PlayerController pc = go.GetComponent<PlayerController>();
         if (pc != null)
         {
-            if (pc.ObjectType == Define.Object.OtherPlayer)
+            if (pc.Id != Managers.Object.MyPlayer.Id)
                 pc.PlayEffectFromServer(effectPacket.FxInfo);
         }
     }
@@ -454,5 +505,182 @@ class PacketHandler
         {
             Managers.Object.MyPlayer.OnServerUpdate(syncPacket);
         }
+    }
+
+    public static void S_ChangeItemStatHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeItemStat changeItemStatPacket = packet as S_ChangeItemStat;
+
+        GameObject go = Managers.Object.FindById(changeItemStatPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.UpdateItemStat(changeItemStatPacket.ItemStat);
+
+        if(pc is MyPlayerController mpc)
+        {
+            mpc.PlayerInterface.UpdateStat();
+        }
+    }
+
+    public static void S_ChangeEquipItemHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeEquipItem changeEquipPacket = packet as S_ChangeEquipItem;
+
+        GameObject go = Managers.Object.FindById(changeEquipPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.EquipItem(changeEquipPacket.ItemId);
+    }
+    public static void S_ProjectileHandler(PacketSession session, IMessage packet)
+    {
+        S_Projectile changeEquipPacket = packet as S_Projectile;
+
+        GameObject go = Managers.Object.FindById(changeEquipPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
+    }
+    
+    public static void S_EnvRequestHandler(PacketSession session, IMessage packet)
+    {
+        S_EnvRequest revPacket = packet as S_EnvRequest;
+
+        GameObject go = Managers.Object.FindById(revPacket.ObjectId);
+        if (go == null)
+            return;
+
+        EnvController ec = go.GetComponent<EnvController>();
+        if (ec == null)
+            return;
+        ec.OnInteractionAuthorized();
+    }
+    
+    public static void S_ChangeInventoryHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeInventory changeInventoryPacket = packet as S_ChangeInventory;
+
+        MyPlayerController mpc = Managers.Object.MyPlayer;
+        if (mpc == null) 
+            return;
+
+        mpc.ChangeInventory(changeInventoryPacket);
+    }
+
+    public static void S_StunHandler(PacketSession session, IMessage packet)
+    {
+        //S_Stun stunPacket = packet as S_Stun;
+        //GameObject go = Managers.Object.FindById(stunPacket.ObjectId);
+        //if (go == null)
+        //    return;
+
+        //CreatureController cc = go.GetComponentInChildren<CreatureController>();
+        //if (cc != null)
+        //{
+        //    if (stunPacket.IsStun)
+        //        cc.ApplyStun(stunPacket.Duration);
+        //}
+    }
+
+    public static void S_CombatTextHandler(PacketSession session, IMessage packet)
+    {
+        S_CombatText textPacket = packet as S_CombatText;
+
+        GameObject go = Managers.Object.FindById(textPacket.ObjectId);
+        if (go == null)
+            return;
+
+        Managers.CombatText.SetCombatText(textPacket.Type, textPacket.Value, go.transform.position);
+    }
+
+    public static void S_ChangeKDAHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeKDA KDAPacket = packet as S_ChangeKDA;
+
+        foreach(KDAInfo info in KDAPacket.KDAs)
+        {
+            GameObject go = Managers.Object.FindById(info.ObjectId);
+            if (go != null)
+            {
+                PlayerController pc = go.GetComponentInChildren<PlayerController>();
+                if (pc != null)
+                {
+                    pc.SetKDA(info.Kill, info.Death, info.Asist);
+                    //Debug.Log($"{pc.Id} {pc.name} K: {pc.KillAmount} D: {pc.DeathAmount} A: {pc.AsistAmount}");
+                }
+            }               
+        }
+    }
+
+    public static void S_SyncTimerHandler(PacketSession session, IMessage packet)
+    {
+        S_SyncTimer syncTimerPacket = packet as S_SyncTimer;
+
+
+        float clientPacketReceiveTime = Time.realtimeSinceStartup; // 패킷을 받은 로컬 시간 (Unity)
+
+        float oneWayLatencySeconds = GetCurrentEstimatedOneWayLatency(); 
+
+        long compensatedServerCurrentTimeMs = syncTimerPacket.CurrentTimestamp + (long)(oneWayLatencySeconds * 1000);
+        long compensatedPhaseServerEndTimeMs = syncTimerPacket.PhaseEndTime + (long)(oneWayLatencySeconds * 1000);
+
+        // 서버가 생각하는 남은 시간 (밀리초)
+        long estimatedServerRemainingDurationMs = compensatedPhaseServerEndTimeMs - compensatedServerCurrentTimeMs;
+
+        // 클라이언트의 Time.realtimeSinceStartup을 기준으로 타이머가 끝날 최종 목표 시간
+        float clientLocalTargetRealtimeSinceStartupEnd = clientPacketReceiveTime + (estimatedServerRemainingDurationMs / 1000f);
+
+
+        if(Managers.Object.MyPlayer != null)
+        {
+            Managers.Object.MyPlayer.SetTimer(syncTimerPacket.Phase, clientLocalTargetRealtimeSinceStartupEnd);
+        }
+    }
+
+    public static void S_AddAbigailCoordHandler(PacketSession session, IMessage packet)
+    {
+        S_AddAbigailCoord addAbigailCoordPkt = packet as S_AddAbigailCoord;
+
+        GameObject go = Managers.Object.FindById(addAbigailCoordPkt.ObjectId);
+        if (go == null)
+            return;
+
+        AbigailCoord abigailCoord = go.GetComponentInChildren<AbigailCoord>();
+        if (abigailCoord == null)
+            return;
+
+        abigailCoord.ActivateAbigailCoord(addAbigailCoordPkt.Duration, addAbigailCoordPkt.AttackerTeam);
+    }
+
+    public static void S_RemoveAbigailCoordHandler(PacketSession session, IMessage packet)
+    {
+        S_RemoveAbigailCoord addAbigailCoordPkt = packet as S_RemoveAbigailCoord;
+
+        GameObject go = Managers.Object.FindById(addAbigailCoordPkt.ObjectId);
+        if (go == null)
+            return;
+
+        AbigailCoord abigailCoord = go.GetComponentInChildren<AbigailCoord>();
+        if (abigailCoord == null)
+            return;
+
+        abigailCoord.DeactivateAbigailCoord();
+    }
+
+    static float GetCurrentEstimatedOneWayLatency()
+    {
+        return 0.05f;
     }
 }

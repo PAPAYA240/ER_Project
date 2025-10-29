@@ -3,6 +3,8 @@
     {
       "id": 1,
       "name": "Alpha",
+      "appearTime": 6,
+      "attackType": "short",
       "stat": {
         "level": 1,
         "maxHp": 1500,
@@ -19,9 +21,11 @@
     {
       "id": 2,
       "name": "Omega",
+      "attackType": "short",
+      "appearTime": 6,
       "stat": {
         "level": 1,
-        "maxHp": 1500,
+        "maxHp": 500,
         "attack": 15,
         "speed": 5.0
       },
@@ -35,6 +39,8 @@
     {
       "id": 3,
       "name": "Drone",
+      "attackType": "long",
+      "appearTime": 1,
       "stat": {
         "level": 1,
         "maxHp": 200,
@@ -48,6 +54,7 @@
     {
       "id": 4,
       "name": "Gamma",
+      "attackType": "long",
       "stat": {
         "level": 1,
         "maxHp": 2000,
@@ -64,6 +71,7 @@
     {
       "id": 4,
       "name": "Turret",
+      "attackType": "long",
       "stat": {
         "level": 1,
         "maxHp": 1000,

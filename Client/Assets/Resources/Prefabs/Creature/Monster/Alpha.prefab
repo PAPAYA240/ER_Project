@@ -792,10 +792,14 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 5d16ab96e3dc1094bbde667ff8e1b64d, type: 2}
+  - {fileID: 2100000, guid: 45b1debccca648646ba343a48135c3b6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1010,6 +1014,9 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1770,7 +1777,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
 --- !u!95 &5997729353811902858
 Animator:
-  serializedVersion: 5
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1784,6 +1791,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -1801,9 +1809,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8aaf8e885585ec34ca0cd6eb6ac2e534, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterType: 1
+  _monsterType: 0
+  _rotationSpeed: 10
   isSpawned: 0
-  rotationInterpolationSpeed: 10
 --- !u!114 &8824076158832758506
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,0 +1,888 @@
+{
+  "items": [
+    {
+      "$type": "Data.ConsumableItemInfo, Assembly-CSharp",
+      "Id": 502212,
+      "Name": "망원 카메라",
+      "Grade": "Uncommon",
+      "Description": "주변 반경 13m의 시야를 확인할 수 있는 망원 카메라.",
+      "Count": 2
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 102407,
+      "Name": "엑스칼리버",
+      "Grade": "Epic",
+      "Description": "요정의 나라 아발론에서 만들어진 명검이다.\n아서 왕은 호수의 미녀 요정에게 이 검을 받아 왕자 모드레드와 최후의 전투를 벌인다.",
+      "Type": "Weapon",
+      "ItemStat": {
+        "AttackDamage": 55,
+        "MaxHp": 200,
+        "HpRegen": 0.75,
+        "AttackSpeed": 0.2
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 102412,
+      "Name": "빛의 검",
+      "Grade": "Legendary",
+      "Description": "사용자의 의지를 빛의 칼날로 바꾸어주는 검.\n공격력을 1,000쯤은 올려줄 것 같은 느낌이 든다.",
+      "Type": "Weapon",
+      "ItemStat": {
+        "AttackDamage": 69,
+        "AttackSpeed": 0.38,
+        "Vision": 1
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 102501,
+      "Name": "다인슬라이프",
+      "Grade": "Mythic",
+      "Description": "한 번 칼집에서 빠져나오면 피를 보기 전까지는 갈무리 할 수 없다는 마검으로\n 덴마크 왕 희그니가 소유했다.",
+      "Type": "Weapon",
+      "ItemStat": {
+        "AttackDamage": 27,
+        "AdaptiveStat": 58,
+        "AttackSpeed": 0.3,
+        "SkillAcceleration": 15,
+        "PercentageDefensePenetration": 0.1
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 105405,
+      "Name": "빔 엑스",
+      "Grade": "Epic",
+      "Description": "구석기 시대부터 쓰인 유서깊은 도끼가 최첨단 기술과 만나 탄생한 걸작.",
+      "Type": "Weapon",
+      "ItemStat": {
+        "AttackDamage": 44,
+        "FixedSkillAmplification": 64,
+        "SkillAcceleration": 10
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 105501,
+      "Name": "낙원의 낫",
+      "Grade": "Legendary",
+      "Description": "도망쳐 도착한 곳에 낙원이란 있을 수 없는 법.",
+      "Type": "Weapon",
+      "ItemStat": {
+        "AttackDamage": 55,
+        "FixedSkillAmplification": 84,
+        "SkillAcceleration": 15,
+        "AttackRange": 0.3
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 105502,
+      "Name": "진홍빛 낫",
+      "Grade": "Mythic",
+      "Description": "루비 색의 날카로운 칼날로 잔혹하게 베어내어, 온 사방을 진홍빛으로 물들였다.",
+      "Type": "Weapon",
+      "ItemStat": {
+        "AttackDamage": 50,
+        "AdaptiveStat": 59,
+        "AttackSpeed": 0.3,
+        "SkillAcceleration": 15,
+        "PercentageDefensePenetration": 0.1
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 110405,
+      "Name": "단영촌천투",
+      "Grade": "Epic",
+      "Description": "진정한 파이터는 도구따윈 쓰지 않지!",
+      "Type": "Weapon",
+      "ItemStat": {
+        "AttackDamage": 64,
+        "Defense": 6,
+        "StaminaRegen": 0.5,
+        "AttackSpeed": 0.3
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 110412,
+      "Name": "천잠장갑",
+      "Grade": "Legendary",
+      "Description": "영기를 가진 산누에나방의 누에에서 뽑아낸 실로 만든 장갑.\n인간의 힘으로 끊어낼 수 없다고 한다.",
+      "Type": "Weapon",
+      "ItemStat": {
+        "AttackDamage": 75,
+        "AttackSpeed": 0.2,
+        "PercentageSpeed": 0.02
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 110503,
+      "Name": "블러디 핸즈",
+      "Grade": "Mythic",
+      "Description": "터져나오는 힘을 억누르기 위해 제작된 특수 글러브.\n사용하는 대가로 계속해서 피를 바쳐야만 한다.",
+      "Type": "Weapon",
+      "ItemStat": {
+        "AttackDamage": 38,
+        "AdaptiveStat": 57,
+        "AttackSpeed": 0.3,
+        "SkillAcceleration": 15,
+        "PercentageDefensePenetration": 0.1
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 116405,
+      "Name": "일렉트론 블라스터",
+      "Grade": "Epic",
+      "Description": "우주 건너편에서 사용되는 광선총으로\n광선검보다는 못하지만 강력한 위력을 발휘한다.",
+      "Type": "Weapon",
+      "ItemStat": {
+        "AttackDamage": 75,
+        "AttackSpeed": 0.4
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 116501,
+      "Name": "악켈테",
+      "Grade": "Legendary",
+      "Description": "키르기스스탄의 영웅 마나스의 총. 총구가 다마스커스강으로 만들어졌으며,\n죽음을 탄환으로 쏜다고 전해진다.",
+      "Type": "Weapon",
+      "ItemStat": {
+        "AttackDamage": 85,
+        "AttackSpeed": 0.5,
+        "PercentageSpeed": 0.03
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 116503,
+      "Name": "하이 눈",
+      "Grade": "Mythic",
+      "Description": "평화로운 사회는 누군가의 희생으로 만들어진다는 것을 잊지 마라.",
+      "Type": "Weapon",
+      "ItemStat": {
+        "AttackDamage": 31,
+        "AdaptiveStat": 58,
+        "AttackSpeed": 0.3,
+        "SkillAcceleration": 15,
+        "PercentageDefensePenetration": 0.1
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 118407,
+      "Name": "가우스 라이플",
+      "Grade": "Epic",
+      "Description": "드디어, 올 것이 왔군.",
+      "Type": "Weapon",
+      "ItemStat": {
+        "AttackDamage": 40,
+        "FixedSkillAmplification": 72,
+        "AttackSpeed": 0.3,
+        "Vision": 1
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 118505,
+      "Name": "데드 아이",
+      "Grade": "Legendary",
+      "Description": "먹잇감을 노리는 눈에서 죽음이 어른거리는구나.",
+      "Type": "Weapon",
+      "ItemStat": {
+        "AttackDamage": 47,
+        "FixedSkillAmplification": 92,
+        "AttackSpeed": 0.3,
+        "Vision": 1.5
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 118701,
+      "Name": "위도우 메이커",
+      "Grade": "Mythic",
+      "Description": "높은 살상력으로 적군의 배우자를 과부로 만들어 과부 제조기라는 이름을 가진 총.\n일말의 희망도 없는 이 전장에선 결코 마지막 발걸음이 집으로 향하지 못한다.",
+      "Type": "Weapon",
+      "ItemStat": {
+        "AttackDamage": 28,
+        "AdaptiveStat": 59,
+        "AttackSpeed": 0.3,
+        "Vision": 1.5,
+        "SkillAcceleration": 15,
+        "PercentageDefensePenetration": 0.1
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 201405,
+      "Name": "오토바이 헬멧",
+      "Grade": "Epic",
+      "Description": "오토바이를 탈 때는 헬멧을 꼭 착용합시다.",
+      "Type": "Head",
+      "ItemStat": {
+        "FixedSkillAmplification": 55,
+        "AttackSpeed": 0.3,
+        "SkillAcceleration": 10
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 201406,
+      "Name": "전술-OPS 헬멧",
+      "Grade": "Epic",
+      "Description": "특수부대에서 사용되는 침투 및 전술용 헬멧.\n작전 내용이나 현재 상황 등을 실시간으로 보고받을 수 있다.",
+      "Type": "Head",
+      "ItemStat": {
+        "MaxHp": 120,
+        "AttackSpeed": 0.3,
+        "SkillAcceleration": 15
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 201407,
+      "Name": "기사단장의 투구",
+      "Grade": "Epic",
+      "Description": "전쟁이 시작되고, 고결한 기사는 자신이 지켜야 할 것을 위해 선봉에 섰다. 그의 머리 위로 승리의 축복이 내려앉는다.",
+      "Type": "Head",
+      "ItemStat": {
+        "Defense": 12,
+        "MaxHp": 100,
+        "MaxStamina": 200,
+        "SkillAcceleration": 15
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 201414,
+      "Name": "다이아뎀",
+      "Grade": "Epic",
+      "Description": "호화로운 장식이 달린 왕관.\n고대 오리엔트 제국의 왕관으로 알려져 있다.",
+      "Type": "Head",
+      "ItemStat": {
+        "AttackDamage": 25,
+        "MaxHp": 100,
+        "SkillAcceleration": 15,
+        "FixedDefensePenetration": 7
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 201420,
+      "Name": "마녀 모자",
+      "Grade": "Epic",
+      "Description": "보라색 맛 났어!",
+      "Type": "Head",
+      "ItemStat": {
+        "FixedSkillAmplification": 63,
+        "SkillAcceleration": 10
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 201505,
+      "Name": "레이싱 헬멧",
+      "Grade": "Legendary",
+      "Description": "카본 재질의 풀페이스 헬멧으로 안면 방호 능력은 탁월하나,\n맞춤형 수제 제작이라 머리가 큰 사람은 쓰지 못한다는 단점이 있다.",
+      "Type": "Head",
+      "ItemStat": {
+        "FixedSkillAmplification": 72,
+        "AttackSpeed": 0.35,
+        "SkillAcceleration": 10
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 201520,
+      "Name": "사이버 스토커",
+      "Grade": "Legendary",
+      "Description": "아니, 내가 네 아버지다.",
+      "Type": "Head",
+      "ItemStat": {
+        "FixedSkillAmplification": 82,
+        "MaxStamina": 400,
+        "PercentageSpeed": 0.03,
+        "SkillAcceleration": 15
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 201524,
+      "Name": "바니햇",
+      "Grade": "Legendary",
+      "Description": "모자를 흔들면, 비둘기!",
+      "Type": "Head",
+      "ItemStat": {
+        "Defense": 14,
+        "MaxHpPerLevel": 22,
+        "SkillAcceleration": 20
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 201525,
+      "Name": "레가투스",
+      "Grade": "Legendary",
+      "Description": "레가티오넴 레눈티아레.",
+      "Type": "Head",
+      "ItemStat": {
+        "AttackDamage": 30,
+        "AttackSpeed": 0.35,
+        "CriticalRatio": 0.35
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 201528,
+      "Name": "발할라의 투구",
+      "Grade": "Mythic",
+      "Description": "베헬라아아아! 아 이게 아닌가?",
+      "Type": "Head",
+      "ItemStat": {
+        "Defense": 20,
+        "MaxHpPerLevel": 25,
+        "SkillAcceleration": 10
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 201703,
+      "Name": "핏빛 왕관",
+      "Grade": "Mythic",
+      "Description": "왕관을 쓰려는 자, 그 무게를 견뎌라.",
+      "Type": "Head",
+      "ItemStat": {
+        "AdaptiveStat": 50,
+        "AttackSpeed": 0.4,
+        "PercentageSpeed": 0.04
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 201704,
+      "Name": "변검",
+      "Grade": "Mythic",
+      "Description": "변검은 중국 쓰촨성 지방의 전통극인 천극에 등장하는 가면술이다.\n순식간에 작은 동작으로 얼굴의 가면을 바꾸는 장면이 흡사 마술처럼 보인다.",
+      "Type": "Head",
+      "ItemStat": {
+        "Defense": 10,
+        "AdaptiveStat": 45,
+        "MaxStamina": 400,
+        "PercentageSpeed": 0.03,
+        "SkillAcceleration": 20,
+        "FixedDefensePenetration": 10
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 202408,
+      "Name": "성기사의 갑옷",
+      "Grade": "Epic",
+      "Description": "이걸 착용하면 언데드에 특화된 방어력을 얻을 수 있다.\n물론 이 세계에는 언데드 따위는 없다.",
+      "Type": "Body",
+      "ItemStat": {
+        "Defense": 35,
+        "HpRegen": 1,
+        "MaxHpPerLevel": 18
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 202412,
+      "Name": "지휘관의 갑옷",
+      "Grade": "Epic",
+      "Description": "선두에 서서 병사들을 통솔해야 하는 기사가 입었던 갑옷이니\n일반 갑옷보다 튼튼할 것이다.",
+      "Type": "Body",
+      "ItemStat": {
+        "Defense": 25,
+        "FixedSkillAmplification": 26,
+        "SkillAmplificationPerLevel": 5
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 202418,
+      "Name": "턱시도",
+      "Grade": "Epic",
+      "Description": "서양식 정장 중에서도 고급 예복이다.\n소유하기 보다는 대체로 대여하는 편이다.",
+      "Type": "Body",
+      "ItemStat": {
+        "AttackDamagePerLevel": 3,
+        "Defense": 12,
+        "AttackSpeed": 0.15,
+        "CriticalRatio": 0.24
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 202420,
+      "Name": "창파오",
+      "Grade": "Epic",
+      "Description": "유목 기마민족의 전통복장. 앞트임이 없어 보온과 방풍에 매우 적합하며,\n옆이 트여있어 말을 타기 편하다.",
+      "Type": "Body",
+      "ItemStat": {
+        "AttackDamage": 3,
+        "AttackDamagePerLevel": 3,
+        "Defense": 15,
+        "StaminaRegen": 1.5,
+        "AttackSpeed": 0.38
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 202503,
+      "Name": "성법의",
+      "Grade": "Legendary",
+      "Description": "진정한 권위는 봉사임을 잊지 말라.",
+      "Type": "Body",
+      "ItemStat": {
+        "Defense": 30,
+        "FixedSkillAmplification": 30,
+        "SkillAmplificationPerLevel": 5,
+        "PercentageSkillAmplification": 0.25
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 202510,
+      "Name": "고스트",
+      "Grade": "Legendary",
+      "Description": "보이는 것 뿐만 아니라 청각, 후각까지 속이는 만능 슈트.\n촉각은 가릴 수 없으니 싫은 사람이 있다면 한 대 세게 쥐어박아 주자.",
+      "Type": "Body",
+      "ItemStat": {
+        "AttackDamage": 12,
+        "AttackDamagePerLevel": 3,
+        "Defense": 18,
+        "CriticalRatio": 0.33
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 202515,
+      "Name": "택티컬 아머",
+      "Grade": "Legendary",
+      "Description": "신체 보호 기능이 뛰어난 전술용 조끼.\n주로 본대의 앞에서 정찰 및 진격을 담당하는 전위대가 착용한다.",
+      "Type": "Body",
+      "ItemStat": {
+        "AttackDamage": 18,
+        "AttackDamagePerLevel": 3,
+        "Defense": 23,
+        "FixedDefensePenetration": 12
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 202518,
+      "Name": "레버넌트",
+      "Grade": "Legendary",
+      "Description": "비로소, 나는 죽음마저 초월하였다.",
+      "Type": "Body",
+      "ItemStat": {
+        "Defense": 30,
+        "SkillAmplificationPerLevel": 5,
+        "MaxHp": 200
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 202601,
+      "Name": "배틀 슈트",
+      "Grade": "Legendary",
+      "Description": "미래형 전투슈트.\n내피와 외피 사이의 공기층 덕분에 체온 유지에 뛰어나며, 방탄 소재를 덧대 방어력도 우수하다.\n다만 더운 지역에서 입었다간 적을 만나기도 전에 탈진으로 죽을 것 같다...",
+      "Type": "Body",
+      "ItemStat": {
+        "Defense": 35,
+        "MaxHpPerLevel": 20,
+        "SkillAcceleration": 15
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 202527,
+      "Name": "흑염룡의 갑주",
+      "Grade": "Mythic",
+      "Description": "이 옷은, 이유가 있어 벗을 수 없다. 흑염룡이 날뛰고 있어서 말이지.",
+      "Type": "Body",
+      "ItemStat": {
+        "Defense": 45,
+        "MaxHpPerLevel": 30,
+        "SkillAcceleration": 10
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 202623,
+      "Name": "비키니",
+      "Grade": "Mythic",
+      "Description": "상하가 분리된 형태의 얇은 수영복.\n천이 얇고 배가 훤히 드러나기 때문에 계속 배에 힘을 주고 있어야 한다.\n남자도 착용 가능하며, 이 경우 여러가지 의미로 강력한 효능을 발휘한다.",
+      "Type": "Body",
+      "ItemStat": {
+        "Defense": 25,
+        "FixedSkillAmplification": 35,
+        "SkillAmplificationPerLevel": 5,
+        "Omnivamp": 0.1
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 202624,
+      "Name": "버건디 47",
+      "Grade": "Mythic",
+      "Description": "와인색의 고급스러운 정장.\n놀라운 기능은 옷에 피가 묻어도 티가 나지 않는다는 것.",
+      "Type": "Body",
+      "ItemStat": {
+        "AttackDamage": 20,
+        "AttackDamagePerLevel": 3,
+        "Defense": 10,
+        "AttackSpeed": 0.2,
+        "Omnivamp": 0.1
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 203405,
+      "Name": "바이탈 센서",
+      "Grade": "Epic",
+      "Description": "전방에 생체신호 감지!",
+      "Type": "Arm",
+      "ItemStat": {
+        "AttackSpeed": 0.33,
+        "CriticalRatio": 0.26
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 205304,
+      "Name": "궁기병의 화살통",
+      "Grade": "Epic",
+      "Description": "냉병기의 시대, 전쟁에서 가장 파괴적인 병종은 기동력과 우월한 사거리를 갖춘 유목 기병이었다.",
+      "Type": "Arm",
+      "ItemStat": {
+        "AttackDamage": 25,
+        "AttackSpeed": 0.3,
+        "PercentageSpeed": 0.02
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 203506,
+      "Name": "스포츠 시계",
+      "Grade": "Epic",
+      "Description": "스포츠 시계 주제에 스켈레톤 디자인을 차용함.\n물론 운동을 위한 기능이라곤 쥐꼬리만큼도 없음.\n컨셉에 매몰된 멍청한 괴작.",
+      "Type": "Arm",
+      "ItemStat": {
+        "FixedSkillAmplification": 32,
+        "AttackSpeed": 0.3
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 203403,
+      "Name": "드라우프니르",
+      "Grade": "Epic",
+      "Description": "북유럽 신화에 나오는 주신 오딘이 소유하고 있는 마법의 황금 팔찌.\n증식이라는 특별한 힘을 가지고 있다.",
+      "Type": "Arm",
+      "ItemStat": {
+        "FixedSkillAmplification": 72,
+        "MaxStamina": 300
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 203412,
+      "Name": "플라즈마 아크",
+      "Grade": "Epic",
+      "Description": "최고의 공격은 방어라는 말이 있죠.",
+      "Type": "Arm",
+      "ItemStat": {
+        "AttackDamage": 22,
+        "Defense": 10,
+        "AttackSpeed": 0.25
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 203502,
+      "Name": "레이더",
+      "Grade": "Legendary",
+      "Description": "팔에 장착하면 모든 참가자들의 위치를 파악할 수 있다.",
+      "Type": "Arm",
+      "ItemStat": {
+        "AttackDamage": 10,
+        "AttackSpeed": 0.42,
+        "CriticalRatio": 0.35
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 203503,
+      "Name": "오토-암즈",
+      "Grade": "Legendary",
+      "Description": "팔 움직이기 귀찮으시죠? 이제 오토-암즈가 해결해드립니다!",
+      "Type": "Arm",
+      "ItemStat": {
+        "AttackDamage": 45,
+        "Defense": 25,
+        "CCResistance": 0.3
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 203413,
+      "Name": "텔루리안 타임피스",
+      "Grade": "Legendary",
+      "Description": "차세대 시계는 우주적인 스케일일 것이다.",
+      "Type": "Arm",
+      "ItemStat": {
+        "FixedSkillAmplification": 64,
+        "AttackSpeed": 0.42
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 203510,
+      "Name": "용의 비늘",
+      "Grade": "Legendary",
+      "Description": "단단한 강철을 깎아서 용의 비늘처럼 만들어낸 견고한 어깨 보호구.\n찔릴 틈이 없이 빼곡하게 엮여있다.",
+      "Type": "Arm",
+      "ItemStat": {
+        "FixedSkillAmplification": 88,
+        "PercentageDefensePenetration": 0.15
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 203404,
+      "Name": "미스릴 방패",
+      "Grade": "Legendary",
+      "Description": "미스릴로 만든 방패.\n가볍지만 그 강도는 상상을 초월한다.",
+      "Type": "Arm",
+      "ItemStat": {
+        "Defense": 14,
+        "MaxHpPerLevel": 18,
+        "AttackSpeed": 0.3,
+        "SkillAcceleration": 15
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 203509,
+      "Name": "혈사조",
+      "Grade": "Mythic",
+      "Description": "구음진경에 기록된 무공인 구음신조가 잘못 해석되어 만들어진 악랄한 무공.",
+      "Type": "Arm",
+      "ItemStat": {
+        "AttackDamage": 30,
+        "AttackSpeed": 0.3,
+        "PercentageDefensePenetration": 0.2
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 203705,
+      "Name": "네크로노미콘",
+      "Grade": "Mythic",
+      "Description": "영원히 누워있을 뿐 죽어있는 것이 아니며, 기묘한 영겁 속에서는 죽음마저도 죽으리라.",
+      "Type": "Arm",
+      "ItemStat": {
+        "FixedSkillAmplification": 95,
+        "PercentageDefensePenetration": 0.15
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 204412,
+      "Name": "타키온 브레이스",
+      "Grade": "Epic",
+      "Description": "기동성과 보호 능력을 모두 갖춘 미래형 동력 외골격.\n조금 익숙해지면 승차감(?)이 탁월하다고 한다.",
+      "Type": "Leg",
+      "ItemStat": {
+        "Defense": 8,
+        "FixedSpeed": 0.22,
+        "SkillAcceleration": 10
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 204417,
+      "Name": "카우보이 부츠",
+      "Grade": "Epic",
+      "Description": "말을 제대로 키워본 적 있는가?",
+      "Type": "Leg",
+      "ItemStat": {
+        "AttackDamage": 20,
+        "StaminaRegen": 0.5,
+        "FixedSpeed": 0.22,
+        "SkillAcceleration": 10
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 204411,
+      "Name": "클링온 부츠",
+      "Grade": "Epic",
+      "Description": "부츠의 코에 뾰족한 못을 달다니, 이건 분명 평범한 지구인의 아이디어가 아닐 것이다.",
+      "Type": "Leg",
+      "ItemStat": {
+        "HpRegen": 0.25,
+        "AttackSpeed": 0.25,
+        "FixedSpeed": 0.22
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 204419,
+      "Name": "델타 레드",
+      "Grade": "Epic",
+      "Description": "빠르게 이동 가능할 것만 같다.",
+      "Type": "Leg",
+      "ItemStat": {
+        "FixedSkillAmplification": 17,
+        "FixedSpeed": 0.22,
+        "SkillAcceleration": 10
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 204402,
+      "Name": "경량화 부츠",
+      "Grade": "Epic",
+      "Description": "깃털처럼 가볍다! 걸을 때 무게감이 느껴지지 않아 반쯤 떠서 걷는 것 같다.",
+      "Type": "Leg",
+      "ItemStat": {
+        "HpRegen": 0.25,
+        "AttackSpeed": 0.38,
+        "FixedSpeed": 0.22
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 204418,
+      "Name": "글레디에이터",
+      "Grade": "Epic",
+      "Description": "황제 폐하 만세, 곧 죽을 자들이 인사 올립니다.﻿",
+      "Type": "Leg",
+      "ItemStat": {
+        "AttackSpeed": 0.14,
+        "FixedSpeed": 0.22,
+        "CriticalRatio": 0.25
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 204509,
+      "Name": "레이싱 부츠",
+      "Grade": "Legendary",
+      "Description": "F1 컵의 우승을 노려보자.﻿",
+      "Type": "Leg",
+      "ItemStat": {
+        "AttackSpeed": 0.24,
+        "FixedSpeed": 0.25,
+        "CriticalRatio": 0.33
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 204506,
+      "Name": "와일드 워커",
+      "Grade": "Legendary",
+      "Description": "험한 산길도 두렵지 않아!﻿",
+      "Type": "Leg",
+      "ItemStat": {
+        "Defense": 11,
+        "HpRegen": 1,
+        "FixedSpeed": 0.25,
+        "SkillAcceleration": 15
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 204405,
+      "Name": "킬힐",
+      "Grade": "Legendary",
+      "Description": "이 신발로 머리를 내려쳤다가 두개골이 깨진 사례도 있다.\n말 그대로 킬힐.﻿",
+      "Type": "Leg",
+      "ItemStat": {
+        "FixedSkillAmplification": 60,
+        "PercentageSkillAmplification": 0.05,
+        "FixedSpeed": 0.25
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 204410,
+      "Name": "글레이셜 슈즈",
+      "Grade": "Legendary",
+      "Description": "아무리 차갑다 한들 발걸음마저 얼어붙게 만들진 못할 것이다.﻿",
+      "Type": "Leg",
+      "ItemStat": {
+        "FixedSkillAmplification": 32,
+        "StaminaRegen": 2,
+        "FixedSpeed": 0.25,
+        "SkillAcceleration": 15
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 204407,
+      "Name": "미스릴 부츠",
+      "Grade": "Legendary",
+      "Description": "강철보다 강한 미스릴로 만든 부츠로 높은 방어도을 자랑한다.",
+      "Type": "Leg",
+      "ItemStat": {
+        "Defense": 15,
+        "AttackSpeed": 0.42,
+        "FixedSpeed": 0.25,
+        "SlowResistance": 0.25
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 204510,
+      "Name": "엘디안 부츠",
+      "Grade": "Mythic",
+      "Description": "그날, 인류는 떠올렸다.\n놈들에게 지배당해 왔던 공포를...",
+      "Type": "Leg",
+      "ItemStat": {
+        "AttackDamage": 20,
+        "AttackSpeed": 0.3,
+        "FixedSpeed": 0.27,
+        "CriticalRatio": 0.35
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 204701,
+      "Name": "분홍신",
+      "Grade": "Mythic",
+      "Description": "함께 추시겠어요?",
+      "Type": "Leg",
+      "ItemStat": {
+        "AdaptiveStat": 25,
+        "AttackSpeed": 0.32,
+        "FixedSpeed": 0.27,
+        "Omnivamp": 0.1
+      }
+    },
+    {
+      "$type": "Data.EquipItemInfo, Assembly-CSharp",
+      "Id": 204413,
+      "Name": "탭루트",
+      "Grade": "Mythic",
+      "Description": "내 이름은 탭댄스가 아니라 탭루트야.",
+      "Type": "Leg",
+      "ItemStat": {
+        "Defense": 12,
+        "MaxHp": 200,
+        "FixedSpeed": 0.27,
+        "SkillAcceleration": 20
+      }
+    }
+  ]
+}

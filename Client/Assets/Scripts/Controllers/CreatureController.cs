@@ -1,14 +1,22 @@
 ﻿using Google.Protobuf.Protocol;
+using System.Collections;
 using UnityEngine;
 
 public class CreatureController : BaseController
 {
-    Define.Object _object = Define.Object.Unknown;
-    public Define.Object ObjectType
+    #region CC기 
+    private bool _hasCrowdControl = false;
+    public bool HasCrowdControl
     {
-        get { return _object; }
-        set { _object = value; }
+        get { return _hasCrowdControl; }
+        set
+        {
+            _hasCrowdControl = value;
+        }
     }
+
+    #endregion
+    protected UI_TargetingMark targetingMark = null;
 
     public override StatInfo Stat
     {
@@ -46,6 +54,40 @@ public class CreatureController : BaseController
         set { base.MaxStamina = value; UpdateMaxStamina(); }
     }
 
+    public virtual float HpRegen
+    {
+        get { return Stat.HpRegen; }
+        set { Stat.HpRegen = Mathf.Max(value, 0); }
+    }
+
+    public virtual float StaminaRegen
+    {
+        get { return Stat.StaminaRegen; }
+        set { Stat.StaminaRegen = Mathf.Max(value, 0); }
+    }
+
+    public virtual float Attack
+    {
+        get { return Stat.Attack; }
+        set { Stat.Attack = Mathf.Max(value, 0); }
+    }
+
+    public virtual float FixedDefensePenetration
+    {
+        get { return 0f; }
+    }
+
+    public virtual float PercentageDefensePenetration
+    {
+        get { return 0f; }
+    }
+
+    public virtual float Defense
+    {
+        get { return Stat.Defense; }
+        set { Stat.Defense = Mathf.Max(value, 0); }
+    }
+
     virtual protected void UpdateHp()
     {
 
@@ -73,7 +115,8 @@ public class CreatureController : BaseController
 
 	protected override void Init()
     {
-		base.Init();
+        SyncPos();
+        base.Init();
     }
     public virtual void OnDamaged()
     {
@@ -93,6 +136,8 @@ public class CreatureController : BaseController
 
     public virtual void UseSkill(S_Skill skillPacket) {}
 
+    public virtual void OnHitboxCollision(KeyCode kc, KeyCode tkc) { }
+    public virtual void OnObjectCollision(GameObject obj, KeyCode key) { Debug.Log("타게팅!"); }
     public void ChangeStat(StatInfo growth)
     {
         Stat.Attack += growth.Attack;
@@ -119,7 +164,7 @@ public class CreatureController : BaseController
             return false;
 
         // 같은 팀일 때
-        if (cc.ObjectType == Define.Object.OtherPlayer && cc.ObjInfo.Player.Team == ObjInfo.Player.Team)
+        if (cc.ObjInfo.Player?.Team == ObjInfo.Player?.Team)
             return false;
 
         // 대상이 죽었을 때 || 무적 상태일 때 || 시야 밖일 때(부시) 등등
@@ -128,4 +173,6 @@ public class CreatureController : BaseController
 
         return true;
     }
+
+
 }

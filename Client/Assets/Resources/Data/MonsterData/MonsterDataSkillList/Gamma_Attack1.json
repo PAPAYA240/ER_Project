@@ -3,46 +3,21 @@
   "Type": "SequenceNode",
   "Children": [
     {
-      "Name": "OnceOnlySpawn",
-      "Type": "SequenceNode",
-      "Children": [
-        {
-          "Name": "CheckIfSpawned",
-          "Type": "IsSpawnedCheckNode"
-        },
-        {
-          "Name": "SpawnActions",
-          "Type": "SequenceNode",
-          "Children": [
-            {
-              "Name": "PlayAnimatorBoolNode",
-              "Type": "PlayAnimatorBoolNode",
-              "Properties": {
-                "paramName": "bAppear",
-                "stateName": "Autobot_01_appear"
-              }
-            }
-          ]
-        }
-      ]
+      "Name": "CheckQKey",
+      "Type": "IsKeyPressedNode",
+      "Properties": {
+        "skillId": "MsGammaAttack1"
+      }
     },
     {
-      "Name": "AttackSequence",
-      "Type": "SequenceNode",
+      "Name": "ParallelNodeRoot",
+      "Type": "ParallelNode",
       "Children": [
         {
-          "Name": "GammaAttack1",
-          "Type": "IsKeyPressedNode",
+          "Name": "Attack1",
+          "Type": "PlayAnimation",
           "Properties": {
-            "skillId": "MsGammaAttack1"
-          }
-        },
-        {
-          "Name": "GammaAttack1",
-          "Type": "PlayAnimatorTriggerNode",
-          "Properties": {
-            "triggerName": "tAttack01",
-            "animationStateName": "Autobot_01_atk01"
+            "animName": "ATTACK1"
           }
         }
       ]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Google.Protobuf.Protocol;
 using UnityEngine;
@@ -25,6 +26,20 @@ namespace Data
     #endregion
 
     #region Item
+
+    [Serializable]
+    public class ItemDict : ILoader<int, ItemInfoBase>
+    {
+        public List<ItemInfoBase> items = new List<ItemInfoBase>();
+        public Dictionary<int, ItemInfoBase> MakeDict()
+        {
+            Dictionary<int, ItemInfoBase> dict = new Dictionary<int, ItemInfoBase>();
+            foreach (ItemInfoBase item in items)
+                dict.Add(item.Id, item);
+            return dict;
+        }
+    }
+
     public abstract class ItemInfoBase
     {
         public int Id;      //식별 번호? UI에서의 숫자?
@@ -244,6 +259,7 @@ namespace Data
                 {
                     KeyCode keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), skills.Key);
                     dict.Add(keyCode, skills.Value);
+                    skills.Value.SetDefaultsIfEmpty();
                 }
                 nestedDict.Add(chartype, dict);
             }
@@ -254,6 +270,20 @@ namespace Data
     #endregion
 
     #region Effect
+
+    [Serializable]
+    public class SkillEffectList
+    {
+        public enum EffectType
+        {
+            Caster,     // 시전자 이펙트
+            HitTarget,  // 피격자 이펙트
+            Select      // 선택에 따른 이펙트
+        }
+        public List<EffectData> Caster { get; set; }  // 시전자 이펙트
+        public List<EffectData> HitTarget { get; set; } // 피격자 이펙트
+        public List<EffectData> Select { get; set; } // 선택에 따른 이펙트
+    }
 
     [Serializable]
     public class EffectData
@@ -272,6 +302,9 @@ namespace Data
         public float value;    // 수치 (%는 그냥 숫자로 저장) 
         public float duration; // 지속시간
         public string condition; // 옵션 (예: "HP<50%")
+
+        public string attachBoneName; // 뼈대에 달고자 한다면 그 뼈의 이름
+        
 
         // + 추가
         public string prefabName;
@@ -316,28 +349,41 @@ namespace Data
     }
 
     [Serializable]
-    public class PlayerEffectDict : ILoader<CharacterType, Dictionary<KeyCode, List<EffectData>>>
+    public class PlayerEffectDict : ILoader<CharacterType, Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>>
     {
-        public Dictionary<string, Dictionary<string, List<EffectData>>> effects
-            = new Dictionary<string, Dictionary<string, List<EffectData>>>();
+        public Dictionary<string, Dictionary<string, Dictionary<string, SkillEffectList>>> effects
+            = new Dictionary<string, Dictionary<string, Dictionary<string, SkillEffectList>>>();
 
-        public Dictionary<CharacterType, Dictionary<KeyCode, List<EffectData>>> MakeDict()
+        public Dictionary<CharacterType, Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>> MakeDict()
         {
-            var nestedDict = new Dictionary<CharacterType, Dictionary<KeyCode, List<EffectData>>>();
+            var finalDict = new Dictionary<CharacterType, Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>>();
 
-            foreach (var chars in effects)
+            foreach (var charEntry in effects)
             {
-                CharacterType charType = (CharacterType)Enum.Parse(typeof(CharacterType), chars.Key);
-                var skillDict = new Dictionary<KeyCode, List<EffectData>>();
+                if (!Enum.TryParse(charEntry.Key, true, out CharacterType charType))
+                    continue;
 
-                foreach (var skills in chars.Value)
+                var stateDict = new Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>();
+
+                foreach (var stateEntry in charEntry.Value)
                 {
-                    KeyCode keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), skills.Key);
-                    skillDict.Add(keyCode, skills.Value);
+                    if (!Enum.TryParse(stateEntry.Key, true, out CreatureState creatureState))
+                        continue;
+
+                    var keyCodeDict = new Dictionary<KeyCode, SkillEffectList>();
+
+                    foreach (var skillEntry in stateEntry.Value)
+                    {
+                        if (!Enum.TryParse(skillEntry.Key, true, out KeyCode keyCode))
+                            continue;
+
+                        keyCodeDict.Add(keyCode, skillEntry.Value);
+                    }
+                    stateDict.Add(creatureState, keyCodeDict);
                 }
-                nestedDict.Add(charType, skillDict);
+                finalDict.Add(charType, stateDict);
             }
-            return nestedDict;
+            return finalDict;
         }
     }
     #endregion
@@ -349,8 +395,10 @@ namespace Data
     {
         public int id;
         public string name;
+        public string attackType;
         public StatInfo stat;
         public List<MonsterSkill> skills;
+        public float appearTime;
     }
 
     [Serializable]
@@ -391,6 +439,5 @@ namespace Data
             return dict;
         }
     }
-
     #endregion
 }
