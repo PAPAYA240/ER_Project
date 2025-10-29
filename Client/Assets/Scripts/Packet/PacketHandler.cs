@@ -333,6 +333,7 @@ class PacketHandler
         {
             mpc.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
             mpc.UpdateLevel();
+            mpc.PlayerInterface.UpdateStat();
             return;
         }
 
@@ -414,6 +415,11 @@ class PacketHandler
             return;
 
         pc.UpdateItemStat(changeItemStatPacket.ItemStat);
+
+        if(pc is MyPlayerController mpc)
+        {
+            mpc.PlayerInterface.UpdateStat();
+        }
     }
 
     public static void S_ChangeEquipItemHandler(PacketSession session, IMessage packet)

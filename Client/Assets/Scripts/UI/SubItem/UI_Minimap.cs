@@ -33,8 +33,7 @@ public class UI_Minimap : UI_Base
         CharIcon_4,
         CharIcon_5,
         CharIcon_6,
-        CharIcon_7,
-        RawImage
+        CharIcon_7
     }
 
     int _charNum = 0;
@@ -88,8 +87,6 @@ public class UI_Minimap : UI_Base
             img.material = newMat;
             newMat.SetTexture("_VisionMask", texture);
         }
-
-        GetObject((int)GameObjects.RawImage).GetComponent<RawImage>().texture = texture;
     }
 
     void Update()

@@ -78,6 +78,8 @@ namespace Server.Game
             // 클라이언트들에게 페이즈 변경 사실을 통보 (네트워크 전송)
             SyncTimer();
 
+            Console.WriteLine($"Phase Change : {CurPhase}");
+
             // 특별한 페이즈에 대한 추가 로직
             switch (newPhase)
             {
@@ -85,10 +87,22 @@ namespace Server.Game
                     // 게임 시작 시 필요한 초기화 (예: 맵 생성, 플레이어 스폰)
                     break;
                 case 1:
+                    {
+                        foreach (var p in _players)
+                            Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
+                    }
                     break;
                 case 2:
+                    {
+                        foreach (var p in _players)
+                            Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
+                    }
                     break;
                 case 3:
+                    {
+                        foreach (var p in _players)
+                            Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
+                    }
                     break;
                 case 4:
                     break;
@@ -264,6 +278,13 @@ namespace Server.Game
                     int levelUpCnt = player.CheckLevelUp();
                     if (levelUpCnt > 0)
                         BroadcastLevelUp(player.Id, levelUpCnt, player.Info.Player.CharType);
+
+                    // 페이즈에 해당하는 아이템 장착
+                    if (CurPhase > 0)
+                        player.EquipItemSet(player.Info.Player.CharType, CurPhase - 1);
+
+                    // 시간 동기화
+                    SyncTimer();
                 }
             }
             else if (type == GameObjectType.Monster)
@@ -301,8 +322,6 @@ namespace Server.Game
                         p.Session.Send(spawnPacket);
                 }
             }
-
-            SyncTimer();
         }
 
         public void LeaveGame(int objectId)

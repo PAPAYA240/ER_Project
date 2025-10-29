@@ -24,7 +24,7 @@ public class BaseController : MonoBehaviour
         }
     }
 
-    public float Speed
+    public virtual float Speed
     {
         get { return Stat.MoveSpeed * _speedCoeff; }
         set { Stat.MoveSpeed = value; }

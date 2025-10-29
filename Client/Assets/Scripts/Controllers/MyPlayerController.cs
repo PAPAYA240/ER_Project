@@ -153,7 +153,7 @@ public class MyPlayerController : PlayerController
         get
         {
             float baseSpeed = Stat.AttackSpeed + MyWeapon.AttackSpeed;
-            float multiplier = 1 + WeaponMasteryAS + ItemAttackSpeed;
+            float multiplier = 1 + WeaponMasteryAS + ItemStat.AttackSpeed;//+ ItemAttackSpeed;
             return baseSpeed * multiplier;
         }
     }
@@ -1311,6 +1311,12 @@ public class MyPlayerController : PlayerController
         _playerHUD.NotifyKill(attPc, diePc);
     }
 
+    public override void EquipItem(int itemId)
+    {
+        base.EquipItem(itemId);
+        PlayerInterface.Equip(DataManager.ItemDict[itemId] as EquipItemInfo);
+    }
+
     #endregion
 
     #region Effect
@@ -1371,7 +1377,8 @@ public class MyPlayerController : PlayerController
         return EffectList;
     }
     #endregion
-    #region Inventory
+
+    #region Inventory, EquipItem
 
     public void ChangeInventory(S_ChangeInventory packet)
     {
@@ -1413,6 +1420,14 @@ public class MyPlayerController : PlayerController
             }
         }
     }
+
+    public override void UpdateItemStat(ItemStat stat)
+    {
+        base.UpdateItemStat(stat);
+
+        // 스탯 UI 업데이트
+    }
+
     #endregion
 
     #region Util

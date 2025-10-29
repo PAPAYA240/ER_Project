@@ -25,7 +25,7 @@ namespace Server.Game
         #region Stat Property
         public override float Attack 
         {
-            get { return base.Attack + _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level; }
+            get { return base.Attack + _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat; }
             set { base.Attack = value; }
         }
 
@@ -33,6 +33,12 @@ namespace Server.Game
         {
             get { return base.Defense + _totalItemStat.Defense; }
             set { base.Defense = value; }
+        }
+
+        public override float Speed 
+        {
+            get { return (base.Speed + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
+            set { base.Speed = value; }
         }
 
         public override float MaxHp 
@@ -49,7 +55,7 @@ namespace Server.Game
 
         public override float HpRegen
         {
-            get { return base.HpRegen + _totalItemStat.HpRegen; }
+            get { return base.HpRegen * (1 + _totalItemStat.HpRegen); }
             set { Stat.HpRegen = Math.Max(value, 0); }
         }
 
@@ -67,18 +73,37 @@ namespace Server.Game
 
         public override float StaminaRegen
         {
-            get { return base.StaminaRegen + _totalItemStat.StaminaRegen; }
+            get { return base.StaminaRegen * (1 + _totalItemStat.StaminaRegen); }
             set { Stat.StaminaRegen = Math.Max(value, 0); } 
         }
 
         public float SkillAmplification
         {
-            get { return (_totalItemStat.FixedSkillAmplification + _totalItemStat.SkillAmplificationPerLevel * Stat.Level) 
-                    * _totalItemStat.PercentageSkillAmplification; }
+            get { return (_totalItemStat.FixedSkillAmplification + _totalItemStat.SkillAmplificationPerLevel * Stat.Level + AdaptiveStat) 
+                    * (1 + _totalItemStat.PercentageSkillAmplification); }
         }
 
         public override float FixedDefensePenetration { get { return _totalItemStat.FixedDefensePenetration; } }
         public override float PercentageDefensePenetration { get { return _totalItemStat.PercentageDefensePenetration; } }
+
+        public float AdaptiveStat 
+        { 
+            get 
+            {
+                if (_totalItemStat.AdaptiveStat == 0)
+                    return 0;
+
+                float att, skillamp;
+                att = _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level;
+                skillamp = (_totalItemStat.FixedSkillAmplification + _totalItemStat.SkillAmplificationPerLevel * Stat.Level)
+                    * (1 + _totalItemStat.PercentageSkillAmplification);
+
+                if (att * 2 > skillamp)
+                    return _totalItemStat.AdaptiveStat;
+                else
+                    return _totalItemStat.AdaptiveStat * 2; 
+            } 
+        }
 
         #endregion
 
@@ -666,6 +691,45 @@ namespace Server.Game
             UpdateItemStat();
         }
 
+        public void EquipItemSet(CharacterType type, int phase)
+        {
+            // 해당 페이즈에 장착할 아이템 세트의 아이디 리스트를 가져옴.
+            List<int> itemIdList = DataManager.ItemSetDict[type][phase];
+
+            foreach (int itemId in itemIdList)
+            {
+                EquipItemInfo item = DataManager.ItemDict[itemId] as EquipItemInfo;
+
+                _equipItemSlot[item.Type] = item;
+
+                S_ChangeEquipItem changeEquipItemPacket = new S_ChangeEquipItem();
+                changeEquipItemPacket.ObjectId = Id;
+                changeEquipItemPacket.ItemId = itemId;
+
+                // 이미 푸쉬되어서 온 상황. 푸쉬된 함수안에 있거나 이 함수를 푸쉬해서 사용.
+                GameRoom room = Room;
+                room.Broadcast(changeEquipItemPacket);
+            }
+
+            UpdateItemStat();
+
+            Console.WriteLine($"{Info.Player.CharType} Eqiup done!");
+        }
+
+        // 아이템 버리는 함수
+        public void DiscardItem()
+        {
+
+        }
+
+        // 인벤토리 내의 아이템을 아이디로 찾는 함수
+        public ItemInfoBase FindItemInInventory()
+        {
+
+
+            return null;
+        }
+
         // 인벤토리 스왑(아이템 위치 바꾸기) 
         public void SwapInventory(int firstIndex, int secondIndex)
         {
@@ -724,24 +788,28 @@ namespace Server.Game
         // 업데이트 아이템 스탯
         private void UpdateItemStat()
         {
-            _totalItemStat = new ItemStat();
-
-            foreach(var itemKvp in _equipItemSlot)
+            lock (this)
             {
-                if (itemKvp.Value == null)
-                    continue;
+                _totalItemStat = new ItemStat();
 
-                _totalItemStat += itemKvp.Value.ItemStat;
+                foreach (var itemKvp in _equipItemSlot)
+                {
+                    if (itemKvp.Value == null)
+                        continue;
+
+                    _totalItemStat += itemKvp.Value.ItemStat;
+                }
+
+                S_ChangeItemStat packet = new S_ChangeItemStat();
+                packet.ObjectId = Id;
+                packet.ItemStat = _totalItemStat;
+
+                GameRoom room = Room;
+
+                if (room != null)
+                    //room.Push(room.Broadcast, packet);
+                    room.Broadcast(packet);
             }
-
-            S_ChangeItemStat packet = new S_ChangeItemStat();
-            packet.ObjectId = Id;
-            packet.ItemStat = _totalItemStat;
-
-            GameRoom room = Room;
-
-            if (room != null)
-                room.Push(room.Broadcast, packet);
         }
 
         #endregion

@@ -60,6 +60,40 @@ public class CreatureController : BaseController
         set { base.MaxStamina = value; UpdateMaxStamina(); }
     }
 
+    public virtual float HpRegen
+    {
+        get { return Stat.HpRegen; }
+        set { Stat.HpRegen = Mathf.Max(value, 0); }
+    }
+
+    public virtual float StaminaRegen
+    {
+        get { return Stat.StaminaRegen; }
+        set { Stat.StaminaRegen = Mathf.Max(value, 0); }
+    }
+
+    public virtual float Attack
+    {
+        get { return Stat.Attack; }
+        set { Stat.Attack = Mathf.Max(value, 0); }
+    }
+
+    public virtual float FixedDefensePenetration
+    {
+        get { return 0f; }
+    }
+
+    public virtual float PercentageDefensePenetration
+    {
+        get { return 0f; }
+    }
+
+    public virtual float Defense
+    {
+        get { return Stat.Defense; }
+        set { Stat.Defense = Mathf.Max(value, 0); }
+    }
+
     virtual protected void UpdateHp()
     {
 

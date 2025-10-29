@@ -22,8 +22,98 @@ public class PlayerController : CreatureController
 
     // 장착 아이템
     Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
-    public ItemStat ItemStat { get; private set; }
+    public ItemStat ItemStat { get; private set; } = new ItemStat();
     protected GameObject _eqipWeapon = null;
+
+    #region Property
+    public override float Attack
+    {
+        get { return base.Attack + ItemStat.AttackDamage + ItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat; }
+        set { base.Attack = value; }
+    }
+
+    public override float Defense
+    {
+        get { return base.Defense + ItemStat.Defense; }
+        set { base.Defense = value; }
+    }
+
+    public float CriticalRatio { get { return Mathf.Min(ItemStat.CriticalRatio, 1f); } }
+
+    public override float Hp
+    {
+        get { return base.Hp; }
+        set { Stat.Hp = Math.Clamp(value, 0, MaxHp); UpdateHp(); }
+    }
+
+    public override float MaxHp
+    {
+        get { return base.MaxHp + ItemStat.MaxHp + ItemStat.MaxHpPerLevel * Stat.Level; }
+        set { base.MaxHp = value; }
+    }
+
+    public override float HpRegen
+    {
+        get { return base.HpRegen * (1 + ItemStat.HpRegen); }
+        set { Stat.HpRegen = Math.Max(value, 0); }
+    }
+
+    public override float MaxStamina
+    {
+        get { return base.MaxStamina + ItemStat.MaxStamina; }
+        set { base.MaxStamina = value; }
+    }
+
+    public override float Stamina
+    {
+        get { return base.Stamina; }
+        set { Stat.Stamina = Math.Clamp(value, 0, MaxStamina); UpdateStamina(); }
+    }
+
+    public override float StaminaRegen
+    {
+        get { return base.StaminaRegen * (1 + ItemStat.StaminaRegen); }
+        set { Stat.StaminaRegen = Math.Max(value, 0); }
+    }
+
+    public float SkillAmplification
+    {
+        get
+        {
+            return (ItemStat.FixedSkillAmplification + ItemStat.SkillAmplificationPerLevel * Stat.Level + AdaptiveStat)
+                * (1 + ItemStat.PercentageSkillAmplification);
+        }
+    }
+
+    public override float Speed
+    {
+        get { return (Stat.MoveSpeed + ItemStat.FixedSpeed) * (1 + ItemStat.PercentageSpeed) * 1.7f; }
+        set { Stat.MoveSpeed = value; }
+    }
+
+    public override float FixedDefensePenetration { get { return ItemStat.FixedDefensePenetration; } }
+    public override float PercentageDefensePenetration { get { return ItemStat.PercentageDefensePenetration; } }
+
+    public float AdaptiveStat
+    {
+        get
+        {
+            if (ItemStat.AdaptiveStat == 0)
+                return 0;
+
+            float att, skillamp;
+            att = ItemStat.AttackDamage + ItemStat.AttackDamagePerLevel * Stat.Level;
+            skillamp = (ItemStat.FixedSkillAmplification + ItemStat.SkillAmplificationPerLevel * Stat.Level)
+                * (1 + ItemStat.PercentageSkillAmplification);
+
+            if (att * 2 > skillamp)
+                return ItemStat.AdaptiveStat;
+            else
+                return ItemStat.AdaptiveStat * 2;
+        }
+    }
+
+    #endregion
 
     // 레이어
     protected string layerName;
@@ -395,12 +485,17 @@ public class PlayerController : CreatureController
     public virtual void UpdateItemStat(ItemStat stat)
     {
         ItemStat = stat;
+        UpdateHp();
+        UpdateMaxHp();
+        UpdateStamina();
+        UpdateMaxStamina();
     }
 
     public virtual void EquipItem(int itemId)
     {
         //TODO 아이템 도감에서 아이템을 가져와서 처리(+UI도)
-        
+        EquipItemInfo item = DataManager.ItemDict[itemId] as EquipItemInfo;
+        _equipItemSlot[item.Type] = item;
     }
 
     #endregion
