@@ -127,8 +127,7 @@ class PacketHandler
         PlayerController pc = go.GetComponent<PlayerController>();
         if (pc != null)
         {
-            if (pc.Id != Managers.Object.MyPlayer.Id)
-                pc.PlayAnimFromServer(animPacket.AnimInfo);
+            pc.PlayAnimFromServer(animPacket.AnimInfo);
         }
     }
     
