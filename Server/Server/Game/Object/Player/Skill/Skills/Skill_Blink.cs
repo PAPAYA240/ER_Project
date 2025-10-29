@@ -30,7 +30,7 @@ public sealed class Skill_Blink : SkillHandlerBase
         //    p.PendingProposal = default;
         //}
 
-        p.SendSkillConfirmPacket(ctx.Key, VariantKey.Cast);
+        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Cast);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

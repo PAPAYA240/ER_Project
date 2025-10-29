@@ -16,6 +16,7 @@ public class MyPlayerController : PlayerController
     private PlayerViewController _view;
     private PlayerSkillController _skill;
     private PlayerUIController _UI;
+    public PlayerUIController UI {  get { return _UI; } }
 
     private void Awake()
     {
@@ -41,7 +42,7 @@ public class MyPlayerController : PlayerController
         if (stopCmd != null)
             Managers.Network.Send(stopCmd);
 
-        // 2) 우클릭 "타겟 공격" 의도
+        // 2) 우클릭 : 타겟 공격 의도
         var atkCmd = _input.GetAttackCommand();
         if (atkCmd != null)
         {
@@ -57,6 +58,7 @@ public class MyPlayerController : PlayerController
             Managers.Network.Send(setMove);
         }
 
+        // 스킬
         var skillCmd = _input.GetSkillCommand();
         if (skillCmd != null)
             Managers.Network.Send(skillCmd);

@@ -252,27 +252,6 @@ public class PlayerController : CreatureController
     {
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
     }
-
-    public void PlayAnimFromServer(S_PlayerState packet)
-    {
-        switch (packet.State)
-        {
-            case CreatureState.Idle:
-                _animator.CrossFadeInFixedTime("WAIT", 0.1f);
-                break;
-            case CreatureState.Moving:
-                _animator.CrossFadeInFixedTime("RUN", 0.1f);
-                break;
-            case CreatureState.Attack:
-
-                break;
-            case CreatureState.Skill:
-                break;
-            case CreatureState.Dead:
-                break;
-        }      
-    }
-
     #endregion
 
     #region SkillMesh

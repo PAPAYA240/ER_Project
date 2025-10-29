@@ -356,7 +356,7 @@ class PacketHandler
 
         KeyCode key = (KeyCode)skillLevelUpPacket.KeyCode;
 
-        Managers.Object.MyPlayer.PlayerInterface.SpecificSkillLevelUp(key);
+        Managers.Object.MyPlayer.UI.PlayerInterface.SpecificSkillLevelUp(key);
     }
 
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
@@ -415,15 +415,16 @@ class PacketHandler
 
     public static void S_SkillConfirmHandler(PacketSession session, IMessage packet)
     {
-        S_SkillConfirm followPacket = packet as S_SkillConfirm;
+        S_SkillConfirm confirmPacket = packet as S_SkillConfirm;
 
-        GameObject go = Managers.Object.FindById(followPacket.ObjectId);
+        GameObject go = Managers.Object.FindById(confirmPacket.ObjectId);
         if (go == null)
             return;
 
-        if (Managers.Object.MyPlayer.Id == followPacket.ObjectId)
+        if (Managers.Object.MyPlayer.Id == confirmPacket.ObjectId)
         {
-            Managers.Object.MyPlayer.OnServerUpdate(followPacket);
+            if(true == confirmPacket.CanUse)
+                Managers.Object.MyPlayer.OnServerUpdate(confirmPacket);
         }
     }
 

@@ -60,6 +60,32 @@ public class PlayerUIController : MonoBehaviour
         MakeInventory();
     }
 
+    public void Update()
+    {
+        UpdateCool();
+    }
+
+    private UI_PlayerInterface.GameObjects KeyToUIEnum(KeyCode key)
+    {
+        switch (key)
+        {
+            case KeyCode.Q:
+                return UI_PlayerInterface.GameObjects.QSkill;
+            case KeyCode.W:
+                return UI_PlayerInterface.GameObjects.WSkill;
+            case KeyCode.E:
+                return UI_PlayerInterface.GameObjects.ESkill;
+            case KeyCode.R:
+                return UI_PlayerInterface.GameObjects.RSkill;
+            case KeyCode.D:
+                return UI_PlayerInterface.GameObjects.DSkill;
+            case KeyCode.F:
+                return UI_PlayerInterface.GameObjects.FSkill;
+        }
+
+        return UI_PlayerInterface.GameObjects.TSkill;
+    }
+
     private string CharTypeToCharCode(CharacterType type)
     {
         string result = "";
@@ -112,6 +138,35 @@ public class PlayerUIController : MonoBehaviour
         return result;
     }
 
+    private void SetMaxCoolDownUI(UI_PlayerInterface.GameObjects skillEnum, float value)
+    {
+        PlayerInterface.SetSkillMaxCool(skillEnum, value);
+    }
+
+    private void UpdateSkillMaxCool()
+    {
+        // TODO 현재 스킬레벨에 따른 쿨타임과 아이템으로 인한 스킬 가속을 적용하여 UI에 반영
+        // 일단 스킬 가속에 대한 계산이 어떻게 되는지 알아야하고, 스킬들이 레벨마다 어떤 쿨타임을 가질지 데이터(Json)를 만들어줘야함.
+
+        //temp 나중에 스탯에서 가져오든가 해야될듯
+        SkillBase QSkill = FindSkill(KeyCode.Q);
+        SkillBase WSkill = FindSkill(KeyCode.W);
+        SkillBase ESkill = FindSkill(KeyCode.E);
+        SkillBase RSkill = FindSkill(KeyCode.R);
+
+        float skillAcc = 0.0f;
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, CalculateMaxCool(QSkill.CurLevelCooldown, skillAcc));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.WSkill, CalculateMaxCool(WSkill.CurLevelCooldown, skillAcc));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, CalculateMaxCool(ESkill.CurLevelCooldown, skillAcc));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(RSkill.CurLevelCooldown, skillAcc));
+    }
+
+    private float CalculateMaxCool(float cooldown, float skillAcc)
+    {
+        // 최종 쿨타임 = 기본 쿨타임 × (100 / (100 + 스킬가속))
+        return cooldown * (100f / (100f + skillAcc));
+    }
+
     protected void OnCharSkillLevelUp(SkillEnum skill)
     {
         //For QWERT
@@ -144,17 +199,6 @@ public class PlayerUIController : MonoBehaviour
                 SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(TSkill.CurLevelCooldown, skillAcc));
                 break;
         }
-    }
-
-    private void SetMaxCoolDownUI(UI_PlayerInterface.GameObjects skillEnum, float value)
-    {
-        PlayerInterface.SetSkillMaxCool(skillEnum, value);
-    }
-
-    private float CalculateMaxCool(float cooldown, float skillAcc)
-    {
-        // 최종 쿨타임 = 기본 쿨타임 × (100 / (100 + 스킬가속))
-        return cooldown * (100f / (100f + skillAcc));
     }
 
     #region Update
@@ -224,6 +268,7 @@ public class PlayerUIController : MonoBehaviour
     }
     #endregion
 
+    #region Utils
     protected SkillBase FindSkill(KeyCode keyCode)
     {
         SkillBase skillBase = null;
@@ -236,5 +281,6 @@ public class PlayerUIController : MonoBehaviour
 
         return skillBase;
     }
+    #endregion
 }
 

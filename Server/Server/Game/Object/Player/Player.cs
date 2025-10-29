@@ -18,6 +18,7 @@ namespace Server.Game
     {
         public ClientSession Session { get; set; }
 
+        // Skill
         public PlayerFlags Flags { get; } = new PlayerFlags();
         public class PlayerFlags
         {
@@ -25,14 +26,6 @@ namespace Server.Game
             public Vector3 SkillMotionStart;
             public Vector3 SkillMotionEnd;
             public float SkillMotionEndTimeUtc; // utcSeconds
-        }
-
-        // temp 임시 코드 나중에 삭제
-        bool _isDeath = false;
-        public bool IsDeath
-        {
-            get { return _isDeath; }
-            set { _isDeath = value; }
         }
 
         public PendingSkillProposal PendingProposal;
@@ -44,14 +37,70 @@ namespace Server.Game
             public bool Has;
         }
 
-        #region Stat Property
+        protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
+        Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
+        class CoolTime
+        {
+            public bool isCoolDown;     // 쿨타임이 돌고 있는지 (false : 사용 가능)
+            public float coolTime;      // 남은 쿨타임
+        }
+
+        // temp 임시 코드 나중에 삭제
+        bool _isDeath = false;
+        public bool IsDeath
+        {
+            get { return _isDeath; }
+            set { _isDeath = value; }
+        }
+
+        // Inventory
+        Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
         ItemStat _totalItemStat = new ItemStat();
+        List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
+        static int MaxInventorySlot = 10;
+
+        #region Stat Property
+        public override float Attack
+        {
+            get { return base.Attack + _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level; }
+            set { base.Attack = value; }
+        }
+
+        public override float Defense
+        {
+            get { return base.Defense + _totalItemStat.Defense; }
+            set { base.Defense = value; }
+        }
+
+        public override float MaxHp
+        {
+            get { return base.MaxHp + _totalItemStat.MaxHp + _totalItemStat.MaxHpPerLevel * Stat.Level; }
+            set { base.MaxHp = value; }
+        }
+
+        public override float Hp
+        {
+            get { return base.Hp; }
+            set { Stat.Hp = Math.Clamp(value, 0, MaxHp); }
+        }
+
+        public override float MaxStamina
+        {
+            get { return base.MaxStamina + _totalItemStat.MaxStamina; }
+            set { base.MaxStamina = value; }
+        }
+
+        public override float Stamina
+        {
+            get { return base.Stamina; }
+            set { Stat.Stamina = Math.Clamp(value, 0, MaxStamina); }
+        }
+
         public float SkillAmplification
         {
             get { return (_totalItemStat.FixedSkillAmplification + _totalItemStat.SkillAmplificationPerLevel * Stat.Level) 
                     * _totalItemStat.PercentageSkillAmplification; }
         }
-
         public override float FixedDefensePenetration { get { return _totalItemStat.FixedDefensePenetration; } }
         public override float PercentageDefensePenetration { get { return _totalItemStat.PercentageDefensePenetration; } }
         #endregion
@@ -68,7 +117,6 @@ namespace Server.Game
         // StatRegenerator
         public bool _isUpdatedStat = false;
         private StatRegenerator _statRegenerator;
-
         public override CreatureState State
         {
             get { return PosInfo.State; }
@@ -76,11 +124,6 @@ namespace Server.Game
             {
                 if (PosInfo.State == value)
                     return;
-
-                //S_PlayerState packet = new S_PlayerState();
-                //packet.ObjectId = Id;
-                //packet.State = value;
-                //SendStatePacket(packet);
 
                 PosInfo.State = value;
             }
@@ -101,7 +144,8 @@ namespace Server.Game
         {
             StartRegen();
             _stateMachine.ChangeState(new Player_IdleState(), this);
-            //InitAboutItem();
+            MakeDict();
+            InitAboutItem();
         }
 
         public override void Update()
@@ -168,7 +212,35 @@ namespace Server.Game
         #endregion
 
         #region Skill
-        protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
+        private void MakeSkillDict()
+        {
+            // 본인 캐릭터의 스킬 정보만 추출
+            Dictionary<KeyCode, SkillData> skills = DataManager.SkillDict[Info.Player.CharType];
+            foreach (var skillData in skills)
+            {
+                Skill skill = new Skill();
+                skill.SkillData = skillData.Value;
+
+                _skills.Add(skillData.Key, skill);
+            }
+
+            _skills[KeyCode.T].CurLevel = 1;
+        }
+
+        private void MakeCoolDownDict()
+        {
+            foreach (var skill in _skills)
+            {
+                _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
+            }
+        }
+
+        private void MakeDict()
+        {
+            MakeSkillDict();
+            MakeCoolDownDict();
+        }
+
         public bool SkillLevelUp(KeyCode key)
         {
             bool result = false;
@@ -253,11 +325,36 @@ namespace Server.Game
 
             return result;
         }
+
         public Skill GetSkill(KeyCode keyCode)
         {
             return _skills[keyCode];
         }
         #endregion 
+
+        #region Item
+        private void MakeItemSlot()
+        {
+            for (int i = 0; i < (int)EquipItemType.End; ++i)
+            {
+                _equipItemSlot.Add((EquipItemType)i, new EquipItemInfo());
+            }
+        }
+
+        private void MakeInventory()
+        {
+            for (int i = 0; i < MaxInventorySlot; ++i)
+            {
+                _inventory.Add(null); //비어 있는 인벤토리를 생성
+            }
+        }
+
+        public void InitAboutItem()
+        {
+            MakeItemSlot();
+            MakeInventory();
+        }
+        #endregion
 
         #region Level
         public int CheckLevelUp()
@@ -384,13 +481,15 @@ namespace Server.Game
             Room.Broadcast(pkt);
         }
 
-        public void SendSkillConfirmPacket(KeyCode keyCode, VariantKey variants)
+        public void SendSkillConfirmPacket(bool canUse, KeyCode keyCode = KeyCode.None, VariantKey variants = default)
         {
             S_SkillConfirm packet = new S_SkillConfirm
             {
                 ObjectId = Id,
+                CanUse = canUse,
                 SkillKey = (int)keyCode,
                 Variants = variants,
+                CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina },
                 //InstanceId = ,
                 //TargetId = , 
             };

@@ -19,6 +19,8 @@ public sealed class Rozzi_R : SkillHandlerBase
     public override void OnEnter(Player p, SkillContext ctx)
     {
         base.OnEnter(p, ctx);
+
+        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

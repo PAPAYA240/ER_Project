@@ -44,7 +44,7 @@ public class UI_PlayerInterface : UI_Base
 
     public Action<SkillEnum> OnCharSkillLevelUpAction = null;
 
-    int _remainSkillPoint = 0; //이건 QWERT에만 적용되야함.
+    int _remainSkillPoint = 10; //이건 QWERT에만 적용되야함.
     
     bool _isDead = false;
     float _respawnCool = 0.0f;

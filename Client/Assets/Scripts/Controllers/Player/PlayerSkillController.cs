@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Android;
 using UnityEngine.InputSystem;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class PlayerSkillController : MonoBehaviour
@@ -64,15 +65,32 @@ public class PlayerSkillController : MonoBehaviour
         _targetId = targetId;
         mousePos = clickWorld;
 
-        //SendSkillCollisionPacket();
-
-        return new C_SkillInput
+        if (_coolDownDict.ContainsKey(_key))
         {
-            SkillKey = skillKey,
-            TargetId = targetId,
-            MouseX = clickWorld.x,
-            MouseZ = clickWorld.z
-        };
+            // 스킬을 사용하고 있는 상태가 아닐 때
+            if (_player.State == CreatureState.Skill)
+                return null;
+
+            // 쿨타임이 끝났을 때
+            if (_coolDownDict[_key].isCoolDown)
+                return null;
+
+            // 스태미나가 충분할 때
+            if (_player.Stamina < FindSkill(_key).CurLevelStamina)
+                return null;
+
+            // 패킷 보내기
+            Debug.Log($"스킬 사용! : {_key}");
+            return new C_SkillInput
+            {
+                SkillKey = skillKey,
+                TargetId = targetId,
+                MouseX = clickWorld.x,
+                MouseZ = clickWorld.z
+            };
+        }
+        else
+            return null;
     }
 
     public void OnSkill(S_SkillMotion packet)
@@ -88,37 +106,26 @@ public class PlayerSkillController : MonoBehaviour
     public void OnSkillConfirm(S_SkillConfirm packet)
     {
         _curSkill = GetSkillSpec((KeyCode)packet.SkillKey, packet.Variants);
-        if(_curSkill != null )
+        if (_curSkill != null)
         {
             SendSkillCollisionPacket();
         }
-        
 
-        //_currentInstanceId = m.instanceId;
-        //if (!SkillSpecCache.TryGet(m.skillKey, out var spec))
-        //    return;
-        //if (spec.proposalMode != ProposalMode.SingleShot)
-        //    return;
+        KeyCode key = (KeyCode)packet.SkillKey;
 
+        Debug.Log($"Key : {key}, CoolTime : {packet.CostInfo.CoolTime}, Stamina : {packet.CostInfo.Stamina}");
+
+        // 쿨타임 코루틴 시작
+        StartCoroutine(CoInputCooltime(key, packet.CostInfo.CoolTime));
+
+        // 스태미너 연동
+        _player.Stamina = packet.CostInfo.Stamina;
+
+        // 스킬 실행 UI 연동
+        //PlayerInterface.UseSkill(KeyToUIEnum(key));
+
+        CreateSkillMesh(key);
     }
- 
-    public void OnS_SkillMotion(S_SkillMotion s)
-    {
-        //if (s.instanceId != _currentInstanceId)
-        //    return;
-        //if (_streamCo != null)
-        //{ StopCoroutine(_streamCo); _streamCo = null; }
-        //GetComponent<PlayerViewController>().PlaySkillMotion(s); // 코루틴 → 끝에 Agent.Warp
-    }
-
-    //public void OnS_SkillEnd(S_SkillEnd e)
-    //{
-    //    if (e.instanceId != _currentInstanceId)
-    //        return;
-    //    if (_streamCo != null)
-    //    { StopCoroutine(_streamCo); _streamCo = null; }
-    //    // 취소/정리
-    //}
 
     private void SendSkillCollisionPacket()
     {
@@ -331,7 +338,6 @@ public class PlayerSkillController : MonoBehaviour
     }
 
     #region Util
-    // --- 후보 계산 유틸 (NavMesh 사용) ---
     Vector3 ComputeEndBlocked(int skillKey, SkillSpec spec, float clickX, float clickZ) 
     {
         var start = transform.position;
@@ -410,6 +416,54 @@ public class PlayerSkillController : MonoBehaviour
             step = dir.magnitude;
         if (step > 0)
             transform.position += dir.normalized * step;
+    }
+
+    public void CreateSkillMesh(KeyCode keyCode)
+    {
+        SkillHitbox skillHitbox = DataManager.SkillHitboxDict[_player.ObjInfo.Player.CharType][keyCode];
+        GameObject go = Managers.Resource.Instantiate("Debug/SkillMesh", gameObject.transform);
+        SkillMesh sm = go.GetComponent<SkillMesh>();
+        if (sm == null)
+            return;
+        sm.Init(skillHitbox, gameObject.transform, _player.ObjInfo.Player.Team);
+    }
+    #endregion
+
+    #region Skill Cost
+    protected SkillBase FindSkill(KeyCode keyCode)
+    {
+        SkillBase skillBase = null;
+
+        if (!_skills.TryGetValue(keyCode, out skillBase))
+        {
+            Debug.Log($"Skill을 찾을 수 없음 : {keyCode}");
+            return null;
+        }
+
+        return skillBase;
+    }
+
+    IEnumerator CoInputCooltime(KeyCode key, float time)
+    {
+        if (time <= 0.0f)
+        {
+            _coolDownDict[key].isCoolDown = false;
+            _coolDownDict[key].coolTime = 0.0f;
+            yield break;
+        }
+
+        _coolDownDict[key].isCoolDown = true;
+
+        float elapsed = 0f;
+        while (elapsed < time)
+        {
+            elapsed += Time.deltaTime;
+            _coolDownDict[key].coolTime = time - elapsed;
+            yield return null;
+        }
+
+        _coolDownDict[key].isCoolDown = false;
+        _coolDownDict[key].coolTime = 0.0f;
     }
     #endregion
 

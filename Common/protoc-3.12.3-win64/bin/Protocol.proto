@@ -608,10 +608,11 @@ message S_SetMoveTarget {
 
 message S_SkillConfirm {
   int32 objectId = 1;			
-  int32 skillKey = 2;			
-  int32 instanceId = 3;
-  int32 targetId = 4;
-  VariantKey variants = 5;
+  bool canUse = 2;
+  int32 skillKey = 3;			
+  CostInfo costInfo = 4;
+  int32 targetId = 5;
+  VariantKey variants = 6;
 }
 
 message S_SkillMotion {

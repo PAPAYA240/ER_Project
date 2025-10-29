@@ -21,7 +21,7 @@ public sealed class Rozzi_Q : SkillHandlerBase
         base.OnEnter(p, ctx);
         // TODO: 코스트/쿨타임 차감
 
-        p.SendSkillConfirmPacket(ctx.Key, VariantKey.NoCollision);
+        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
