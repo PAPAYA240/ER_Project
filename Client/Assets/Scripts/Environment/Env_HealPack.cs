@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Env_HillPack : EnvController
+public class Env_HealPack : EnvController
 
 {
 

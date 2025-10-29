@@ -72,7 +72,7 @@ namespace Server.Game
             // 플레이어에게 보상 지급
             switch (envType)
             {
-                case EnvType.HillPack:
+                case EnvType.HealPack:
                     break;
 
                 default:

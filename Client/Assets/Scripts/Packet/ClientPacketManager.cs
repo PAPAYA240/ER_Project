@@ -81,13 +81,10 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SChangeKDA, PacketHandler.S_ChangeKDAHandler);		
 		_onRecv.Add((ushort)MsgId.SSyncTimer, MakePacket<S_SyncTimer>);
 		_handler.Add((ushort)MsgId.SSyncTimer, PacketHandler.S_SyncTimerHandler);		
-		_onRecv.Add((ushort)MsgId.SDrawmesh, MakePacket<S_Drawmesh>);
-		_handler.Add((ushort)MsgId.SDrawmesh, PacketHandler.S_DrawmeshHandler);		
 		_onRecv.Add((ushort)MsgId.SProjectile, MakePacket<S_Projectile>);
 		_handler.Add((ushort)MsgId.SProjectile, PacketHandler.S_ProjectileHandler);		
 		_onRecv.Add((ushort)MsgId.SEnvRequest, MakePacket<S_EnvRequest>);
-		_handler.Add((ushort)MsgId.SEnvRequest, PacketHandler.S_EnvRequestHandler);
-		_handler.Add((ushort)MsgId.SDrawmesh, PacketHandler.S_DrawmeshHandler);		
+		_handler.Add((ushort)MsgId.SEnvRequest, PacketHandler.S_EnvRequestHandler);		
 		_onRecv.Add((ushort)MsgId.SAddAbigailCoord, MakePacket<S_AddAbigailCoord>);
 		_handler.Add((ushort)MsgId.SAddAbigailCoord, PacketHandler.S_AddAbigailCoordHandler);		
 		_onRecv.Add((ushort)MsgId.SRemoveAbigailCoord, MakePacket<S_RemoveAbigailCoord>);

@@ -218,7 +218,7 @@ namespace Server.Game
             foreach (Player player in _players.Values)
                 player.RemoveExpiredStatusEffects();
 
-            foreach (var monster in monstersToUpdate)
+            foreach (var monster in _monsters.Values)
                 monster.RemoveExpiredStatusEffects();
 
             Flush();
