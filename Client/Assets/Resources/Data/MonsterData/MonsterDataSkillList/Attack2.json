@@ -16,10 +16,9 @@
       "Children": [
         {
           "Name": "Attack2",
-          "Type": "PlayAnimatorTriggerNode",
+          "Type": "PlayAnimation",
           "Properties": {
-            "triggerName": "tAttack02",
-            "animationStateName": "Monster_Alpha_atk02"
+            "animName": "ATTACK2"
           }
         },
         {

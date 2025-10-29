@@ -19,19 +19,11 @@ public class AnimatorEvent : MonoBehaviour
         if (_controller == null)
             return;
 
-        _controller.OnSkillAnimationEnd();
+        //_controller.OnSkillAnimationEnd();
 
         _controller.State = CreatureState.Idle;
         _controller.IsKeyInput = false;
         Debug.Log("(Animation Event)");
-    }
-
-    public void OnAttackTiming()
-    {
-        if (_controller == null)
-            return;
-
-        _controller.OnAttackTiming();
     }
 
     //public void OnAttackEnd()

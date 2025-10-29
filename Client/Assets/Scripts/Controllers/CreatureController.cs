@@ -82,19 +82,6 @@ public class CreatureController : BaseController
 	protected override void Init()
     {
         SyncPos();
-
-        // TODO : 예비 UI
-        string path = "Prefabs/UI/Character/Theodore/FX_BI_Theodore_Skill03_Target_Mark";
-        Vector3 pos = transform.position + new Vector3(0f, 2.2f, 0f);
-        GameObject loadedPrefab = Resources.Load<GameObject>(path);
-        GameObject markInstance = Instantiate(
-               loadedPrefab,
-               pos,
-               Quaternion.identity 
-           );
-        markInstance.transform.SetParent(transform);
-        targetingMark = markInstance.gameObject.AddComponent<UI_TargetingMark>();
-
         base.Init();
     }
     public virtual void OnDamaged()
@@ -153,14 +140,5 @@ public class CreatureController : BaseController
         return true;
     }
 
-    //public void OnDraw(SkillHitbox hitbox, Vector3 pos, Vector3 forward, Vector3 right, float offsetRadius = 0.0f)
-    //{
-    //    GameObject instance = Managers.Resource.Instantiate("Debug/SkillMesh");
-
-    //    SkillMesh skillMesh = instance.GetComponent<SkillMesh>();
-    //    if (ObjInfo.Player == null) return;
-    //    if (skillMesh != null)
-    //        skillMesh.OnDraw(hitbox, pos, forward, right, offsetRadius, ObjInfo.Player.Team);
-    //}
 
 }

@@ -198,7 +198,7 @@ namespace Server.Game
 
         public virtual void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false)
         {
-            if (Room == null || State == CreatureState.Dead)
+            if (Room == null || State == CreatureState.Dead || State == CreatureState.Appear)
                 return;
 
             if (isTrueDamage)

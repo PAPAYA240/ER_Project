@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
-using Unity.Mathematics;
 using UnityEngine;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 class PacketHandler
 {
@@ -52,13 +47,18 @@ class PacketHandler
             return;
 
         CreatureController cc = go.GetComponentInChildren<CreatureController>();
-        if (cc == null)
-            return;
+        if (cc != null)
+        {
+            cc.PosInfo = movePacket.PosInfo;
+            cc.RotInfo = movePacket.RotInfo;
 
-        cc.PosInfo = movePacket.PosInfo;
-        cc.RotInfo = movePacket.RotInfo;
+            cc.SyncPos(movePacket.IsWarp);
+        }
 
-        cc.SyncPos(movePacket.IsWarp);    
+        Projectile bc = go.GetComponentInChildren<Projectile>();
+        if (bc != null)
+            bc.MoveHandler(movePacket);
+
     }
      public static void S_StateHandler(PacketSession session, IMessage packet)
     {
@@ -199,7 +199,7 @@ class PacketHandler
 
         pickScene.ChangeTraitImage(traitPacket.TraitType, traitPacket.PickIdx);
     }
-    
+
     public static void S_InteractHandler(PacketSession session, IMessage packet)
     {
         S_Interact interactPacket = packet as S_Interact;
@@ -220,6 +220,7 @@ class PacketHandler
                 KeyCode mkey = (KeyCode)interactPacket.KeyCode; // Hitbox 키코드
                 GameObject target = Managers.Object.FindById(interactPacket.TargetId); // 공격한 타겟
 
+                MonsterController mc = target.GetComponentInChildren<MonsterController>();
                 creature.OnObjectCollision(target, mkey);
             }
         }
@@ -426,25 +427,34 @@ class PacketHandler
 
         pc.EquipItem(changeEquipPacket.ItemId);
     }
-    public static void S_DrawmeshHandler(PacketSession session, IMessage packet)
+    public static void S_ProjectileHandler(PacketSession session, IMessage packet)
     {
-        //S_Drawmesh Packet = packet as S_Drawmesh;
+        S_Projectile changeEquipPacket = packet as S_Projectile;
 
-        //GameObject go = Managers.Object.FindById(Packet.ObjectId);
-        //if (go == null)
-        //    return;
+        GameObject go = Managers.Object.FindById(changeEquipPacket.ObjectId);
+        if (go == null)
+            return;
 
-        //CreatureController cc= go.GetComponentInChildren<CreatureController>();
-        //if (cc == null) return;
-
-        //Vector3 pos = new Vector3(Packet.PosInfo.PosX, Packet.PosInfo.PosY, Packet.PosInfo.PosZ);
-        //Vector3 forward = new Vector3(Packet.Forward.PosX, Packet.Forward.PosY, Packet.Forward.PosZ);
-        //Vector3 right = new Vector3(Packet.Right.PosX, Packet.Right.PosY, Packet.Right.PosZ);
-        //float offsetRadius = Packet.OffsetRadius;
-
-        //cc.OnDraw(Packet.Hitbox, pos, forward, right, offsetRadius);
-
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
     }
+    
+    public static void S_EnvRequestHandler(PacketSession session, IMessage packet)
+    {
+        S_EnvRequest revPacket = packet as S_EnvRequest;
+
+        GameObject go = Managers.Object.FindById(revPacket.ObjectId);
+        if (go == null)
+            return;
+
+        EnvController ec = go.GetComponent<EnvController>();
+        if (ec == null)
+            return;
+
+        ec.OnInteractionAuthorized();
+    }
+    
     public static void S_ChangeInventoryHandler(PacketSession session, IMessage packet)
     {
         S_ChangeInventory changeInventoryPacket = packet as S_ChangeInventory;

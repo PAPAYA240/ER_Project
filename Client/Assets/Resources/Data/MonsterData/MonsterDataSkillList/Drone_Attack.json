@@ -15,10 +15,9 @@
           "Children": [
             {
               "Name": "DroneAttack1",
-              "Type": "PlayAnimatorTriggerNode",
+              "Type": "PlayAnimation",
               "Properties": {
-                "triggerName": "tAttack01",
-                "animationStateName": "AttackDrone_01_atk01"
+                "animName": "ATTACK"
               }
             },
             {

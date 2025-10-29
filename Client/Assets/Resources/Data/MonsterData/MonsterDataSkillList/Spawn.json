@@ -1,0 +1,24 @@
+{
+  "Name": "Root",
+  "Type": "SequenceNode",
+  "Children": [
+    {
+      "Name": "SpawnState",
+      "Type": "CheckSpawnCondition"
+    },
+    {
+      "Name": "ParallelNodeRoot",
+      "Type": "ParallelNode",
+      "Children": [
+        {
+          "Name": "Appear",
+          "Type": "PlayAnimation",
+          "Properties": {
+            "animName": "APPEAR"
+          }
+        }
+      ]
+    }
+  ]
+}
+

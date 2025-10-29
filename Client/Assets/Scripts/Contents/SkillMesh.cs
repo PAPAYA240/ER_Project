@@ -6,6 +6,7 @@ using UnityEngine;
 using static UnityEditor.PlayerSettings;
 #endif
 
+
 public class SkillMesh : MonoBehaviour
 {
     public SkillHitbox _hitbox = new SkillHitbox();
@@ -281,7 +282,7 @@ public class SkillMesh : MonoBehaviour
         lr.SetPosition(1, start + halfWidth);
         lr.SetPosition(2, end + halfWidth);
         lr.SetPosition(3, end - halfWidth);
-        lr.SetPosition(4, start - halfWidth); 
+        lr.SetPosition(4, start - halfWidth);
     }
 
     void DebugCircle(LineRenderer lr, float radius, int segments)
@@ -315,7 +316,7 @@ public class SkillMesh : MonoBehaviour
         int segments = 20;
         lr.positionCount = segments + 3;
 
-        lr.SetPosition(0, Vector3.zero); 
+        lr.SetPosition(0, Vector3.zero);
 
         float startAngle = -angleDegrees / 2f;
         float step = angleDegrees / segments;

@@ -8,6 +8,16 @@ namespace Google.Protobuf.Protocol
 {
     public sealed partial class PositionInfo
     {
+        public Vector3 ToVector()
+        {
+            return new Vector3(PosX, PosY, PosZ);
+        }
+        public void SetPosInfoFromVector3(Vector3 pos)
+        {
+            PosX = pos.X;
+            PosY = pos.Y;
+            PosZ = pos.Z;
+        }
         public float Distance(PositionInfo other)
         {
             float dx = PosX - other.PosX;
@@ -49,6 +59,10 @@ namespace Google.Protobuf.Protocol
 
     public sealed partial class RotationInfo
     {
+        public Quaternion GetQuatFromRotInfo()
+        {
+            return new Quaternion(Qx, Qy, Qz, Qw);
+        }
         public static Vector3 operator *(RotationInfo q, Vector3 v)
         {
             Vector3 u = new Vector3(q.Qx, q.Qy, q.Qz);

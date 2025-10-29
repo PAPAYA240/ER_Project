@@ -16,11 +16,13 @@
       "Type": "ParallelNode",
       "Children": [
         {
-          "Name": "Skill01",
-          "Type": "PlayAnimatorTriggerNode",
+          "Name": "SKILL1",
+          "Type": "PlayAnimation",
           "Properties": {
-            "triggerName": "tSkill01",
-            "animationStateName": "Monster_Alpha_skill01_atk"
+            "animName": "SKILL1",
+            "chainAnimNames": [
+              "SKILL1_ATTACK"
+            ]
           }
         },
         {

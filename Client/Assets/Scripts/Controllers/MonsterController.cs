@@ -2,14 +2,12 @@ using Google.Protobuf.Protocol;
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEditor.PlayerSettings;
 
 public class MonsterController : CreatureController
 {
     private System.Random _random = new System.Random();
     
-    // 패킷
-    private int _lastReceivedSequenceId = -1;
-
     // 몬스터 정보
     public MonsterSkill Skill { get;  set; }
     public MonsterType _monsterType;
@@ -44,41 +42,35 @@ public class MonsterController : CreatureController
             return;
 
         InitHpBar();
+        
         Stat = Stat;
     }
-    //private List<Vector3> trailPoints = new List<Vector3>();
     protected override void UpdateController()
     {
-       transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
-       transform.rotation = transform.rotation;
-
-        //trailPoints.Add(transform.position);
-        //for (int i = 0; i < trailPoints.Count - 1; i++)
-        //    Debug.DrawLine(trailPoints[i], trailPoints[i + 1], Color.yellow, 100f);
-
-        if (MonsterType.Omega == _monsterType || MonsterType.Alpha == _monsterType)
-        {
-            if (Skill == MonsterSkill.MsSkill2 && State == CreatureState.Skill)
-                monsterRenderer.material = skillMaterial;
-            else
-                monsterRenderer.material = originalMaterial;
-        }
+        transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
+        transform.rotation = transform.rotation;
     }
-
     public override void OnDamaged()
     {
     }
 
     public override void OnDead()
     {
-        // DEAD 주금
+        if (State != CreatureState.Dead)
+            State = CreatureState.Dead;
+        Hp = 0;
     }
 
     #region 패킷
+    public void OnDeadPacket(S_State packet)
+    {
+        _agent.ResetPath();
+        OnDead();
+    }
     public void OnIdlePacket(S_State packet)
     {
         if (_agent != null)
-            _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+            _agent.SetDestination(packet.PosInfo.ToVector());
 
         _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
 
@@ -90,7 +82,7 @@ public class MonsterController : CreatureController
     public void OnMovePacket(S_State packet)
     {
         if (_agent != null)
-            _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+             _agent.SetDestination(packet.PosInfo.ToVector());
 
         _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
@@ -102,20 +94,17 @@ public class MonsterController : CreatureController
         if (_agent != null)
         {
             _agent.ResetPath();
-            _agent.SetDestination(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+           _agent.SetDestination(packet.PosInfo.ToVector());
         }
         _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
 
     public void OnRecvStatePacket(S_State packet)
     {
-       //if (packet.SequenceId <= _lastReceivedSequenceId)
-       //    return;
-       //_lastReceivedSequenceId = packet.SequenceId;
-
         State = packet.MyState;
         if(packet.TargetPosition != null)
             _targetPos = new Vector3(packet.TargetPosition.PosX, packet.TargetPosition.PosY, packet.TargetPosition.PosZ);
+        Debug.Log($"{State}");
 
         switch (State)
         {
@@ -129,6 +118,7 @@ public class MonsterController : CreatureController
                 OnSkillPacket(packet);
                 break;
             case CreatureState.Dead:
+                OnDeadPacket(packet);
                 break;
         }
     }
@@ -149,7 +139,8 @@ public class MonsterController : CreatureController
         _agent = GetComponentInParent<NavMeshAgent>();
         if (_agent != null)
         {
-            _agent.updateRotation = false;
+            _agent.updatePosition = true;
+            _agent.updateRotation = true;
             SyncPos(true);
         }
 
@@ -170,7 +161,6 @@ public class MonsterController : CreatureController
     #endregion
 
     #region 체력바
-
     private void InitHpBar()
     {
         switch (_monsterType)

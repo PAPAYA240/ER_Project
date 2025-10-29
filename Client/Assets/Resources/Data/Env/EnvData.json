@@ -1,69 +1,17 @@
 {
-  "objects": [
+  "envs": [
     {
-      "id": 1,
-      "stat": {
-        "level": 1,
-        "maxHp": 100,
-        "attack": 10,
-        "speed": 5.0,
-        "hill": 10.0
-      },
-      "env": {
-        "envType": "HillObj"
-      }
-    },
-    {
-      "id": 2,
-      "stat": {
-        "level": 1,
-        "maxHp": 100,
-        "attack": 10,
-        "speed": 5.0,
-        "hill": 10.0
-      },
-      "env": {
-        "envType": "DeviceSpawnpoint"
-      }
-    },
-    {
-      "id": 3,
-      "stat": {
-        "level": 1,
-        "maxHp": 100,
-        "attack": 10,
-        "speed": 5.0,
-        "hill": 10.0
-      },
-      "env": {
-        "envType": "Turret"
-      }
-    },
-    {
-      "id": 4,
-      "stat": {
-        "level": 1,
-        "maxHp": 100,
-        "attack": 10,
-        "speed": 5.0,
-        "hill": 10.0
-      },
-      "env": {
-        "envType": "AccboundarySpawnpoint"
-      }
-    },
-    {
-      "id": 5,
-      "stat": {
-        "level": 1,
-        "maxHp": 100,
-        "attack": 10,
-        "speed": 5.0,
-        "hill": 10.0
-      },
-      "env": {
-        "envType": "BarrierSpawnpoint"
-      }
+      "envType": "HillPack",
+      "prefabPath": "Prefabs/Environment/HillPack",
+      "collectRadius": 2.0,
+      "respawnTime": 30000,
+      "isRespawnable": true,
+      "rewardType": "Item",
+      "rewardId": 1001,
+      "rewardAmount": 1,
+      "floatSpeed": 1.0,
+      "floatHeight": 0.3,
+      "rotationSpeed": 50.0
     }
   ]
 }

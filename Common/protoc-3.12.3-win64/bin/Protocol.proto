@@ -46,14 +46,16 @@ enum MsgId {
   S_CHANGE_EQUIP_ITEM = 38;
   S_CHANGE_INVENTORY = 39;
   C_TEST_DAMAGE = 40;
-  C_STUN = 41;
-  S_STUN = 42;
-  S_COMBAT_TEXT = 43;
-  S_CHANGE_K_D_A = 44;
-  S_SYNC_TIMER = 45;
-  S_DRAWMESH = 46;
-  S_ADD_ABIGAIL_COORD = 47;
-  S_REMOVE_ABIGAIL_COORD = 48;
+  S_COMBAT_TEXT = 41;
+  S_CHANGE_K_D_A = 42;
+  S_SYNC_TIMER = 43;
+
+  C_PROJECTILE = 44;
+  S_PROJECTILE = 45;
+  C_ENV_REQUEST = 46;
+  S_ENV_REQUEST = 47;
+  S_ADD_ABIGAIL_COORD = 48;
+  S_REMOVE_ABIGAIL_COORD = 49;
 }
 
 enum CreatureState{
@@ -64,6 +66,7 @@ enum CreatureState{
   DEAD = 4;
   REST = 5;
   CHARGING = 6;
+  APPEAR = 7;
 }
 
 enum GameObjectType{
@@ -76,10 +79,11 @@ enum GameObjectType{
 
 enum EnvType{
    ENV_NONE = 0;
-   HEAL_OBJ = 1;
+   HEAL_PACK = 1;
    DEVICE_SPAWNPOINT = 2;
    ACCBOUNDARY_SPAWNPOINT = 3;
    BARRIER_SPAWNPOINT = 4;
+   TURBINE = 5;
 }
    
 enum SkillType{
@@ -238,7 +242,6 @@ message C_EnterGame {
 message S_EnterGame {
 	ObjectInfo player = 1;
 }
-
 message S_LeaveGame {
 
 }
@@ -440,18 +443,12 @@ message C_TestDamage{
 	int32 objectId = 1;
 }
 
-message C_Stun{
+message C_Projectile{
 	int32 objectId = 1;
-	bool isStun = 2;
-	float duration = 3;
 }
-
-message S_Stun{
+message S_Projectile{
 	int32 objectId = 1;
-	bool isStun = 2;
-	float duration = 3;
 }
-
 message S_CombatText{
 	int32 objectId = 1;
 	CombatTextType type = 2;
@@ -466,6 +463,16 @@ message S_SyncTimer{
 	int32 phase = 1;
 	int64 currentTimestamp = 2;
 	int64 phaseEndTime = 3;
+}
+
+message C_EnvRequest{
+	int32 objectId = 1;
+	EnvType envType = 2;
+}
+
+message S_EnvRequest{
+	int32 objectId = 1;
+	EnvType envType = 2;
 }
 
 message C_TargetingSkill{
@@ -526,8 +533,18 @@ message MonsterInfo {
 }
 
 message EnvInfo{
-	EnvType envType = 1;
-	string interactionStrategy = 2;	
+    EnvType envType = 1;
+    string prefabPath = 2;
+    float collectRadius = 3;
+    float respawnTime= 4; 
+    bool isRespawnable= 5;
+    string rewardType= 6; 
+    int32 rewardId= 7;
+    int32 rewardAmount= 8;
+    
+    float floatSpeed= 9;
+    float floatHeight= 10;
+    float rotationSpeed= 11;
 }
 
 message ObjectInfo{
@@ -541,7 +558,7 @@ message ObjectInfo{
         PlayerInfo player = 6;
         MonsterInfo monster = 7;
         EnvInfo env = 8;
-    }
+    	}
 }
 
 message PickScenePlayerInfo{

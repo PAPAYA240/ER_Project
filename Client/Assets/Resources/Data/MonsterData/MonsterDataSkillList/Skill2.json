@@ -1,5 +1,3 @@
-
-// Skill01 Ready -> Skill01
 {
   "Name": "Root",
   "Type": "SequenceNode",
@@ -16,18 +14,24 @@
       "Type": "ParallelNode",
       "Children": [
         {
-          "Name": "Skill02",
-          "Type": "PlayAnimatorTriggerNode",
+          "Name": "SKILL1",
+          "Type": "PlayAnimation",
           "Properties": {
-            "triggerName": "tSkill02",
-            "animationStateName": "Monster_Alpha_skill02",
+            "animName": "SKILL2"
+
           }
         },
         {
           "Name": "Skill03_Effect",
           "Type": "PlayEffectNode"
+        },
+        {
+          "Name": "Skill_Material",
+          "Type": "SetMaterialNode",
+          "Properties": {
+            "strChangeMaterial": "materials/effect/auraMaterial"
+          }
         }
-
       ]
     }
   ]

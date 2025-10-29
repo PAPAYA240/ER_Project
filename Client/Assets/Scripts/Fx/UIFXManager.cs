@@ -33,10 +33,11 @@ public class UIFXManager : MonoBehaviour
         StopStatusEffect(target, effectName);
 
         Poolable poolable = _pool.Pop(prefab, target.transform);
+        if (poolable == null)
+            return;
         GameObject fxObject = poolable.gameObject;
 
         UI_TargetingMark mark = fxObject.GetOrAddComponent<UI_TargetingMark>();
-
         if (!currentlyPlayingMarks.ContainsKey(target.GetInstanceID()))
         {
             currentlyPlayingMarks[target.GetInstanceID()] = new List<GameObject>();
@@ -47,7 +48,7 @@ public class UIFXManager : MonoBehaviour
             if (currentlyPlayingMarks.ContainsKey(target.GetInstanceID()))
             {
                 currentlyPlayingMarks[target.GetInstanceID()].Remove(fxObject);
-                _pool.Push(poolable); 
+                _pool.Push(poolable);
             }
         });
     }

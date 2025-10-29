@@ -143,7 +143,7 @@ namespace Server.Game
         public void CheckAllCollisions(
             Dictionary<int, Dictionary<int, Player>> teams,
             ConcurrentDictionary<int, Monster> monsters,
-            Dictionary<int, Projectile> projectiles)
+            ConcurrentDictionary<int, Projectile> projectiles)
         {
             Dictionary<int, Dictionary<int, float>> damageDict = new Dictionary<int, Dictionary<int, float>>();
 
@@ -479,7 +479,7 @@ namespace Server.Game
             else if (target is Monster)
             {
                 Monster monster = target as Monster;
-                monster.OnAttacked?.Invoke(hitbox.Creature); // 몬스터가 타격받았는가?
+                monster.OnHit(hitbox.Creature);
                 Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Creature.Id}, Target:{target.Info.Monster.MonsterType}_{target.Id}, Damage:{dmg}");
             }
             else

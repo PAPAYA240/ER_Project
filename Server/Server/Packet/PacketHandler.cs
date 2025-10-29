@@ -6,7 +6,10 @@ using Server;
 using Server.Data;
 using Server.Game;
 using ServerCore;
-using static System.Net.Mime.MediaTypeNames;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
 using static Server.Data.DataUtils;
 
 class PacketHandler
@@ -228,6 +231,38 @@ class PacketHandler
         room.Push(room.HandleAttackSkillTarget, player, targetingSkillPkt);
     }
 
+     public static void C_ProjectileHandler(PacketSession session, IMessage packet)
+     {
+        ClientSession clientSession = session as ClientSession;
+        Player player = clientSession.MyPlayer;
+
+        Projectile projectile = player?.CreateProjectile();
+     }
+
+    public static void C_EnvRequestHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_EnvRequest envPacket = packet as C_EnvRequest;
+
+        if (!DataManager.EnvDict.TryGetValue(envPacket.EnvType, out EnvInfo envData))
+            return;
+
+        Player player = clientSession.MyPlayer;
+        GameRoom room = player?.Room;
+
+        if (room == null)
+            return;
+        // 보상
+        room.GetEnvManager?.GiveRewardToPlayer(envPacket.ObjectId, envPacket.EnvType);
+     
+        S_EnvRequest sendPacket = new S_EnvRequest()
+        {
+            ObjectId = envPacket.ObjectId,
+            EnvType = envPacket.EnvType,
+        };
+        room.Push(room.Broadcast, sendPacket);
+    }
+
     public static void C_TestDamageHandler(PacketSession session, IMessage packet)
     {
         ClientSession clientSession = session as ClientSession;
@@ -236,31 +271,5 @@ class PacketHandler
         // 검증 필요하면 추가하기..
         Player player = clientSession.MyPlayer;
         player.OnDamaged(player, 500);
-    }
-
-    public static void C_StunHandler(PacketSession session, IMessage packet)
-    {
-        ClientSession clientSession = session as ClientSession;
-        C_Stun stunPacket = packet as C_Stun;
-
-        GameRoom room = clientSession.MyPlayer.Room;
-        if (room == null)
-            return;
-
-        room.Push(() =>
-        {
-            Creature stunTarget = ObjectManager.Instance.Find(stunPacket.ObjectId) as Creature;
-            if (stunTarget == null)
-                return;
-
-            stunTarget.IsStun = stunPacket.IsStun;
-
-            S_Stun resPacket = new S_Stun();
-            resPacket.ObjectId = stunTarget.Id;
-            resPacket.IsStun = stunTarget.IsStun;
-            resPacket.Duration = stunPacket.Duration;
-
-            room.Broadcast(resPacket);
-        });
     }
 }
