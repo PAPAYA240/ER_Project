@@ -21,7 +21,9 @@ public class TheodoreController : MyPlayerController
         if (!Equip_Weapon()) return;
 
         base.Init();
+
         _attackRange = 10;
+        _isSkillDebug = false;
     }
 
     #region Skill
@@ -120,7 +122,7 @@ public class TheodoreController : MyPlayerController
         {
             _elapsedTime += Time.deltaTime;
             _ratioSkillDuration = _elapsedTime / _effectDuration;
-            _skillTarget = TryGetAttackableObject();
+            //_skillTarget = TryGetAttackableObject();
             yield return null;
         }
 
