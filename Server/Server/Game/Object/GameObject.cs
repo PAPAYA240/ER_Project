@@ -335,6 +335,8 @@ namespace Server.Game
             public float maxRatio;       // 최대 증가량
 
             public int targetCnt; // 적중한 대상 갯수
+
+            public Creature attacker; // 시전자
         }
 
         public void AddStatusEffect(StatusEffect statusEffect)
@@ -356,6 +358,7 @@ namespace Server.Game
                     {
                         S_AddAbigailCoord addAbigailCoordPkt = new S_AddAbigailCoord();
                         addAbigailCoordPkt.ObjectId = Id;
+                        addAbigailCoordPkt.AttackerTeam = statusEffect.attacker.Info.Player.Team;
                         addAbigailCoordPkt.Duration = statusEffect.duration;
                         Room.Broadcast(addAbigailCoordPkt);
 

@@ -26,6 +26,7 @@ public class FogCameraController : MonoBehaviour
         FogTexture.useMipMap = false;
         FogTexture.wrapMode = TextureWrapMode.Clamp;
         FogTexture.filterMode = FilterMode.Bilinear;
+        FogTexture.depthStencilFormat = UnityEngine.Experimental.Rendering.GraphicsFormat.D24_UNorm_S8_UInt;
 
         // RenderTexture를 생성 및 사용할 준비 완료
         FogTexture.Create();

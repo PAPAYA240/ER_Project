@@ -699,6 +699,7 @@ namespace Server.Game
             foreach (var effect in statusEffectList)
             {
                 effect.targetCnt = hitTargets.Count;
+                effect.attacker = hitbox.Creature;
 
                 switch (effect.subject)
                 {

@@ -1,33 +1,29 @@
 Shader "Unlit/FogShader"
 {
-    // --------------- (A) Properties: ��Ƽ���� �ν����Ϳ� ����� ������ ---------------
     Properties
     {
-        _VisionMask ("Vision Mask (R8)", 2D) = "white" {}   // R8 �þ� ����ũ �ؽ�ó
+        _VisionMask ("Vision Mask (R8)", 2D) = "white" {}   
 
-        // --- ���⿡ Stencil ���� Properties�� �߰��մϴ� ---
-        _StencilComp ("Stencil Comparison", Float) = 8       // UnityEngine.Rendering.CompareFunction.Always
+        _StencilComp ("Stencil Comparison", Float) = 8       
         _Stencil ("Stencil ID", Float) = 0
-        _StencilOp ("Stencil Operation", Float) = 0          // UnityEngine.Rendering.StencilOp.Keep
+        _StencilOp ("Stencil Operation", Float) = 0          
         _StencilWriteMask ("Stencil Write Mask", Float) = 255
         _StencilReadMask ("Stencil Read Mask", Float) = 255
-        _ColorMask ("Color Mask", Float) = 15 // R, G, B, A
-        // --------------------------------------------------
+        _ColorMask ("Color Mask", Float) = 15 
     }
 
-    // --------------- (B) SubShader: ���̴��� �ٽ� ������ ���� ---------------
+    
     SubShader
     {
         Tags { "RenderType"="Transparent" "Queue"="Transparent" "IgnoreProjector"="True" "PreviewType"="Plane" } // ���� ������Ʈ���� ���
-        LOD 100 // Level of Detail (LOD) - �ּ����� ǰ�� ����
+        LOD 100 
 
-        // --- (C) Blend: ����� ��� ��� ���� ---
-        Blend SrcAlpha OneMinusSrcAlpha // Source Alpha (���� �ȼ��� ����)�� (1-Source Alpha)�� �̿��� �����
+        Blend SrcAlpha OneMinusSrcAlpha 
 
-        // --------------- (D) Pass: ���� �������� �� �� �����ϴ� �κ� ---------------
+        
         Pass
         {
-             // --- ���⿡ Stencil ����� �߰��մϴ� ---
+            
             Stencil
             {
                 Ref [_Stencil]
@@ -36,45 +32,39 @@ Shader "Unlit/FogShader"
                 ReadMask [_StencilReadMask]
                 WriteMask [_StencilWriteMask]
             }
-            // ------------------------------------
+          
 
-            CGPROGRAM // CG/HLSL �ڵ� ����
-            #pragma vertex vert // 'vert' �Լ��� ���� ���̴��� ��� ����
-            #pragma fragment frag // 'frag' �Լ��� �����׸�Ʈ ���̴��� ��� ����
-            #include "UnityCG.cginc" // ����Ƽ ���� ���̴� ��ƿ��Ƽ �Լ� ���� (���� ����, ��� ��ȯ ��)
+            CGPROGRAM 
+            #pragma vertex vert 
+            #pragma fragment frag 
+            #include "UnityCG.cginc" 
 
-            // --- (E) ������ ����ü: ���̴� �Լ� ���� �����͸� ���� ---
-            struct appdata // AppData: CPU(���ø����̼�)���� GPU(���̴�)�� �Ѱ��ִ� ���� ������
+           
+            struct appdata 
             {
-                float4 vertex : POSITION; // ������ ��ġ (��ü ���� ����)
-                float2 uv : TEXCOORD0;    // UV ��ǥ (�ؽ�ó ���ο�)
+                float4 vertex : POSITION; 
+                float2 uv : TEXCOORD0;    
             };
 
-            struct v2f // VertexToFragment: ���� ���̴����� �����׸�Ʈ ���̴��� �Ѱ��ִ� ������
+            struct v2f 
             {
-                float2 uv : TEXCOORD0;    // UV ��ǥ
-                float4 vertex : SV_POSITION; // Ŭ�� ����(ȭ��) ���� ���� ��ġ
+                float2 uv : TEXCOORD0;    
+                float4 vertex : SV_POSITION; 
             };
 
-            // --- (F) Properties�� ����� �������� CGPROGRAM �ȿ��� ����ϱ� ���� ���� ---
-            //sampler2D _BaseMap;        // _BaseMap �ؽ�ó ����
-            //float4 _BaseMap_ST;        // _BaseMap�� ������/������ ���� ( tilingOffset )
-            sampler2D _VisionMask;     // _VisionMask �ؽ�ó ����
-            float4 _VisionMask_ST;     // _VisionMask�� ������/������ ����
 
-            // --- (G) Vertex Shader: ����(Vertex)�� ���� ---
-            v2f vert (appdata v) // appdata (CPU->GPU)�� �޾� v2f (Vertex->Fragment)�� ��ȯ
+            sampler2D _VisionMask;     
+            float4 _VisionMask_ST;     
+
+            v2f vert (appdata v) 
             {
                 v2f o;
-                // ���� ��ġ�� ���� ���� -> �� ���� -> Ŭ�� �������� ��ȯ
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                // �ؽ�ó UV ��ǥ�� tiling/offset ����
                 o.uv = TRANSFORM_TEX(v.uv, _VisionMask); 
                 return o;
             }
 
-            // --- (H) Fragment Shader: �ȼ�(Fragment)�� ���� ---
-            fixed4 frag (v2f i) : SV_Target // v2f (Vertex->Fragment)�� �޾� fixed4 (RGBA ����) ��ȯ
+            fixed4 frag (v2f i) : SV_Target 
             {
 
                 //_CropUV_StartX ("Crop UV Start X", Float) = 0.0513
@@ -85,24 +75,18 @@ Shader "Unlit/FogShader"
                     i.uv.y < 0.1016 || i.uv.y > 0.8984)
                     discard;
 
-                // �⺻ �̴ϸ� �ؽ�ó���� ���� ���ø� (i.uv ��ǥ ���)
                 fixed4 baseColor = fixed4(0, 0, 0, 0.5);
-                // R8 �þ� ����ũ �ؽ�ó���� �� ���ø� �� ������ ä��(R)�� ������
-                // R8�� R ä�ο��� �ǹ� �ִ� ���� �����ϹǷ� .r�� ����
+
                 fixed visionValue = tex2D(_VisionMask, i.uv).r;
 
-                // �þ� ����ũ ���� �̿��Ͽ� �⺻ ������ ����(�����)�� ����
-                //baseColor.a *= visionValue; // visionValue�� 0�̸� ���� ����, 1�̸� ���� ������
-
-                // �Ǵ�, Ư�� �Ӱ�ġ ���ϸ� ������ �����ϰ� ó�� (�̴ϸ��� '�������� ����' �κ�)
-                if (visionValue > 0.1) // visionValue�� 0.1���� ������
+                if (visionValue > 0.1) 
                 {
-                    discard; // �ش� �ȼ��� ���������� ���� (��, ���� ����)
+                    discard; 
                 }
 
-                return baseColor; // ���������� ���� RGBA ���� ��ȯ
+                return baseColor; 
             }
-            ENDCG // CG/HLSL �ڵ� ��
+            ENDCG 
         }
     }
 }

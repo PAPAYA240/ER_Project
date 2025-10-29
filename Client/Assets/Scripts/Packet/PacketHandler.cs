@@ -553,8 +553,8 @@ class PacketHandler
         AbigailCoord abigailCoord = go.GetComponentInChildren<AbigailCoord>();
         if (abigailCoord == null)
             return;
- 
-        abigailCoord.ActivateAbigailCoord(addAbigailCoordPkt.Duration);
+
+        abigailCoord.ActivateAbigailCoord(addAbigailCoordPkt.Duration, addAbigailCoordPkt.AttackerTeam);
     }
 
     public static void S_RemoveAbigailCoordHandler(PacketSession session, IMessage packet)

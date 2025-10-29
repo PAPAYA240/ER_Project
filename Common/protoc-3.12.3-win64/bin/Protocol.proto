@@ -474,7 +474,8 @@ message C_TargetingSkill{
 
 message S_AddAbigailCoord{
 	int32 objectId = 1;
-	float duration = 2;
+	int32 attackerTeam = 2;
+	float duration = 3;
 }
 
 message S_RemoveAbigailCoord{
