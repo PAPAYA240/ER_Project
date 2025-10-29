@@ -58,21 +58,28 @@ public class Player_DeadState : IPlayerState
 
         S_Respawn respawnPacket = new S_Respawn();
         respawnPacket.ObjectId = player.Id;
+
+        respawnPacket.Hp = player.Hp = player.MaxHp;
+        respawnPacket.Stamina = player.Stamina = player.MaxStamina;
+
         if (true == respawnAtZero)
         {
-            player.Info.PosInfo = respawnPacket.PosInfo = new PositionInfo
+            respawnPacket.PosInfo = new PositionInfo
             {
                 PosX = 0,
                 PosY = 0,
                 PosZ = 0
             };
-            player.Info.RotInfo = respawnPacket.RotInfo = new RotationInfo
+            respawnPacket.RotInfo = new RotationInfo
             {
                 Qx = 0,
                 Qy = 0,
                 Qz = 0,
                 Qw = 1
             };
+
+            player.Info.PosInfo = new PositionInfo(respawnPacket.PosInfo);
+            player.Info.RotInfo = new RotationInfo(respawnPacket.RotInfo);
         }
         else
         {
@@ -80,8 +87,6 @@ public class Player_DeadState : IPlayerState
             respawnPacket.RotInfo = player.Info.RotInfo;
         }
 
-        respawnPacket.Hp = player.Hp = player.MaxHp;
-        respawnPacket.Stamina = player.Stamina = player.MaxStamina;
         player.SendDeadPacket(respawnPacket);
 
         player.ChangeState(new Player_IdleState());

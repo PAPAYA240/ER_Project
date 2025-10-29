@@ -170,11 +170,11 @@ class PacketHandler
 
         if (Managers.Object.MyPlayer != null)
         {
-            if(Managers.Object.MyPlayer.Id == diePacket.ObjectId)
+            if (Managers.Object.MyPlayer.Id == diePacket.ObjectId)
             {
-                go.GetComponentInChildren<MyPlayerController>().PlayerInterface.OnDead(diePacket.RespawnTime);
+                go.GetComponentInChildren<MyPlayerController>().UI.PlayerInterface.OnDead(diePacket.RespawnTime);
             }
-            
+
             // 죽은 플레이어
             PlayerController pc = cc as PlayerController;
             if (pc == null)
@@ -182,14 +182,14 @@ class PacketHandler
 
             // 공격 플레이어
             GameObject attackerGo = Managers.Object.FindById(diePacket.AttackerId);
-            if (attackerGo == null) 
+            if (attackerGo == null)
                 return;
 
             PlayerController attPc = attackerGo.GetComponentInChildren<PlayerController>();
-            if (attPc == null) 
+            if (attPc == null)
                 return;
 
-            Managers.Object.MyPlayer.NotifyKill(attPc, pc); 
+            Managers.Object.MyPlayer.NotifyKill(attPc, pc);
         }
     }
 
