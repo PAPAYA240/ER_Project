@@ -32,7 +32,7 @@ public class SetMaterialNode : ActionNode, IStateChangeListener
         return NodeStatus.Success;
     }
 
-    public void HandleStateChange(CreatureState newState)
+    public void HandleStateChange(CreatureState newState, bool isClear = true)
     {
         if (monsterRenderer == null || originalMaterial == null)
             return;

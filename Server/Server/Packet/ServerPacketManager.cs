@@ -47,8 +47,6 @@ class PacketManager
 		_handler.Add((ushort)MsgId.CInteract, PacketHandler.C_InteractHandler);		
 		_onRecv.Add((ushort)MsgId.CSkillLevelUp, MakePacket<C_SkillLevelUp>);
 		_handler.Add((ushort)MsgId.CSkillLevelUp, PacketHandler.C_SkillLevelUpHandler);		
-		_onRecv.Add((ushort)MsgId.CPlayerState, MakePacket<C_PlayerState>);
-		_handler.Add((ushort)MsgId.CPlayerState, PacketHandler.C_PlayerStateHandler);		
 		_onRecv.Add((ushort)MsgId.CTargetingSkill, MakePacket<C_TargetingSkill>);
 		_handler.Add((ushort)MsgId.CTargetingSkill, PacketHandler.C_TargetingSkillHandler);		
 		_onRecv.Add((ushort)MsgId.CTestDamage, MakePacket<C_TestDamage>);
@@ -56,7 +54,23 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CProjectile, MakePacket<C_Projectile>);
 		_handler.Add((ushort)MsgId.CProjectile, PacketHandler.C_ProjectileHandler);		
 		_onRecv.Add((ushort)MsgId.CEnvRequest, MakePacket<C_EnvRequest>);
-		_handler.Add((ushort)MsgId.CEnvRequest, PacketHandler.C_EnvRequestHandler);
+		_handler.Add((ushort)MsgId.CEnvRequest, PacketHandler.C_EnvRequestHandler);		
+		_onRecv.Add((ushort)MsgId.CMoveSync, MakePacket<C_MoveSync>);
+		_handler.Add((ushort)MsgId.CMoveSync, PacketHandler.C_MoveSyncHandler);		
+		_onRecv.Add((ushort)MsgId.CAttack, MakePacket<C_Attack>);
+		_handler.Add((ushort)MsgId.CAttack, PacketHandler.C_AttackHandler);		
+		_onRecv.Add((ushort)MsgId.CSetMoveTarget, MakePacket<C_SetMoveTarget>);
+		_handler.Add((ushort)MsgId.CSetMoveTarget, PacketHandler.C_SetMoveTargetHandler);		
+		_onRecv.Add((ushort)MsgId.CStop, MakePacket<C_Stop>);
+		_handler.Add((ushort)MsgId.CStop, PacketHandler.C_StopHandler);		
+		_onRecv.Add((ushort)MsgId.CSkillInput, MakePacket<C_SkillInput>);
+		_handler.Add((ushort)MsgId.CSkillInput, PacketHandler.C_SkillInputHandler);		
+		_onRecv.Add((ushort)MsgId.CSkillCollisionPropose, MakePacket<C_SkillCollisionPropose>);
+		_handler.Add((ushort)MsgId.CSkillCollisionPropose, PacketHandler.C_SkillCollisionProposeHandler);		
+		_onRecv.Add((ushort)MsgId.CRest, MakePacket<C_Rest>);
+		_handler.Add((ushort)MsgId.CRest, PacketHandler.C_RestHandler);		
+		_onRecv.Add((ushort)MsgId.CDeath, MakePacket<C_Death>);
+		_handler.Add((ushort)MsgId.CDeath, PacketHandler.C_DeathHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

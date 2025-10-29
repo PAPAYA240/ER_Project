@@ -1,42 +1,84 @@
-Ôªøusing System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Numerics;
-using System.Threading;
-using System.Threading.Tasks;
+using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
 using ServerCore;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net.Sockets;
+using System.Numerics;
+using System.Threading;
+using System.Threading.Tasks;
+using static ISkill;
 using static Server.Data.DataUtils;
+using static Server.Game.GameRoom;
 
 namespace Server.Game
 {
-    public class Player : Creature
+    public partial class Player : Creature
     {
         #region Player Info
         public ClientSession Session { get; set; }
 
-        protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
-        private Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
-        private Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
-        private ItemStat _totalItemStat = new ItemStat();
-        private List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
-        #endregion
+        // Skill
+        public PlayerFlags Flags { get; } = new PlayerFlags();
+        public class PlayerFlags
+        {
+            public bool IsInSkillMotion;
+            public Vector3 SkillMotionStart;
+            public Vector3 SkillMotionEnd;
+            public float SkillMotionEndTimeUtc; // utcSeconds
+        }
 
+        public PendingSkillProposal PendingProposal;
+        public struct PendingSkillProposal
+        {
+            public int SkillKey;
+            public int Seq;
+            public SkillCollisionProposal Prop;
+            public bool Has;
+        }
+
+        protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
+        Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
+        class CoolTime
+        {
+            public bool isCoolDown;     // ƒ≈∏¿”¿Ã µπ∞Ì ¿÷¥¬¡ˆ (false : ªÁøÎ ∞°¥…)
+            public float coolTime;      // ≥≤¿∫ ƒ≈∏¿”
+        }
+
+        // temp ¿”Ω√ ƒ⁄µÂ ≥™¡ﬂø° ªË¡¶
+        bool _isDeath = false;
+        public bool IsDeath
+        {
+            get { return _isDeath; }
+            set { _isDeath = value; }
+        }
+
+        // Inventory
+        Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
+        ItemStat _totalItemStat = new ItemStat();
+        List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
+        static int MaxInventorySlot = 10;
 
         #region Stat Property
-        public override float Attack 
+        public override float Attack
         {
-            get { return base.Attack + _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level; }
+            get { return base.Attack + _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat; }
             set { base.Attack = value; }
         }
 
-        public override float Defense 
+        public override float Defense
         {
             get { return base.Defense + _totalItemStat.Defense; }
             set { base.Defense = value; }
+        }
+
+        public override float Speed 
+        {
+            get { return (base.Speed + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
+            set { base.Speed = value; }
         }
 
         public override float MaxHp 
@@ -45,7 +87,7 @@ namespace Server.Game
             set { base.MaxHp = value; }
         }
 
-        public override float Hp 
+        public override float Hp
         {
             get { return base.Hp; }
             set { Stat.Hp = Math.Clamp(value, 0, MaxHp); }
@@ -53,7 +95,7 @@ namespace Server.Game
 
         public override float HpRegen
         {
-            get { return base.HpRegen + _totalItemStat.HpRegen; }
+            get { return base.HpRegen * (1 + _totalItemStat.HpRegen); }
             set { Stat.HpRegen = Math.Max(value, 0); }
         }
 
@@ -66,39 +108,67 @@ namespace Server.Game
         public override float Stamina
         {
             get { return base.Stamina; }
-            set { Stat.Stamina = Math.Clamp(value, 0, MaxStamina); } 
+            set { Stat.Stamina = Math.Clamp(value, 0, MaxStamina); }
         }
 
         public override float StaminaRegen
         {
-            get { return base.StaminaRegen + _totalItemStat.StaminaRegen; }
+            get { return base.StaminaRegen * (1 + _totalItemStat.StaminaRegen); }
             set { Stat.StaminaRegen = Math.Max(value, 0); } 
         }
 
         public float SkillAmplification
         {
-            get { return (_totalItemStat.FixedSkillAmplification + _totalItemStat.SkillAmplificationPerLevel * Stat.Level) 
-                    * _totalItemStat.PercentageSkillAmplification; }
+            get { return (_totalItemStat.FixedSkillAmplification + _totalItemStat.SkillAmplificationPerLevel * Stat.Level + AdaptiveStat) 
+                    * (1 + _totalItemStat.PercentageSkillAmplification); }
         }
-
         public override float FixedDefensePenetration { get { return _totalItemStat.FixedDefensePenetration; } }
         public override float PercentageDefensePenetration { get { return _totalItemStat.PercentageDefensePenetration; } }
 
+        public float AdaptiveStat 
+        { 
+            get 
+            {
+                if (_totalItemStat.AdaptiveStat == 0)
+                    return 0;
+
+                float att, skillamp;
+                att = _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level;
+                skillamp = (_totalItemStat.FixedSkillAmplification + _totalItemStat.SkillAmplificationPerLevel * Stat.Level)
+                    * (1 + _totalItemStat.PercentageSkillAmplification);
+
+                if (att * 2 > skillamp)
+                    return _totalItemStat.AdaptiveStat;
+                else
+                    return _totalItemStat.AdaptiveStat * 2; 
+            } 
+        }
+
         #endregion
 
-        class CoolTime
+        // StateMachine
+        private PlayerStateMachine _stateMachine;
+        private IPlayerState _currentState;
+        public IPlayerState CurrentState
         {
-            public bool isCoolDown;     // Ïø®ÌÉÄÏûÑÏù¥ ÎèåÍ≥† ÏûàÎäîÏßÄ (false : ÏÇ¨Ïö© Í∞ÄÎä•)
-            public float coolTime;      // ÎÇ®ÏùÄ Ïø®ÌÉÄÏûÑ
+            get { return _currentState; }
+            set { _currentState = value; }
         }
 
         // StatRegenerator
         public bool _isUpdatedStat = false;
         private StatRegenerator _statRegenerator;
-        private long _lastUpdateTick;
+        public override CreatureState State
+        {
+            get { return PosInfo.State; }
+            set 
+            {
+                if (PosInfo.State == value)
+                    return;
 
-        //Inventory
-        static int MaxInventorySlot = 10;
+                PosInfo.State = value;
+            }
+        }
 
         #region KDA
         //KDA
@@ -146,15 +216,15 @@ namespace Server.Game
 
             UpdateDamageRecords();
 
-            // Ï£ΩÍ∏∞ Ï†ÑÏóê Ï∂îÍ∞ÄÌïòÎ†§Í≥† ÏàúÏÑúÎ•º Ïù¥Î†áÍ≤å Ìï®.
-            if (_damageRecords.TryGetValue(attacker.Id, out DamageRecord damageRecord)) // Ïù¥ÎØ∏ Ìï¥Îãπ ÌîåÎ†àÏù¥Ïñ¥ÏóêÍ≤å Îç∞ÎØ∏ÏßÄÎ•º ÏûÖÏóàÎã§Î©¥ ÏãúÍ∞ÑÏùÑ ÏµúÏã†Ìôî.
+            // ¡◊±‚ ¿¸ø° √ﬂ∞°«œ∑¡∞Ì º¯º≠∏¶ ¿Ã∑∏∞‘ «‘.
+            if (_damageRecords.TryGetValue(attacker.Id, out DamageRecord damageRecord)) // ¿ÃπÃ «ÿ¥Á «√∑π¿ÃæÓø°∞‘ µ•πÃ¡ˆ∏¶ ¿‘æ˙¥Ÿ∏È Ω√∞£¿ª √÷Ω≈»≠.
             {
                 damageRecord.Damage += damage;
                 damageRecord.TimeStamp = Room.TimeStamp;
             }
             else
             {
-                _damageRecords.Add(attacker.Id, new DamageRecord(attacker.Id, damage, Room.TimeStamp)); // ÌîºÌï¥Î•º ÏûÖÏùÄ Ï†ÅÏù¥ ÏóÜÎã§Î©¥ ÏÉàÎ°ú Ï∂îÍ∞Ä.
+                _damageRecords.Add(attacker.Id, new DamageRecord(attacker.Id, damage, Room.TimeStamp)); // «««ÿ∏¶ ¿‘¿∫ ¿˚¿Ã æ¯¥Ÿ∏È ªı∑Œ √ﬂ∞°.
             }
 
             base.OnDamaged(attacker, damage, isTrueDamage);
@@ -169,31 +239,31 @@ namespace Server.Game
             _statRegenerator = new StatRegenerator(this, intervalMs: 1000);
             _statRegenerator.AddEffect(new BaseRegenEffect());
             _statRegenerator.AddEffect(new RestRegenEffect());
+
+            _stateMachine = new PlayerStateMachine();           
         }
 
-        public GameObject SkillTarget { get; set; }
-        public KeyCode UsedTargetingSkill { get; set; }
-
-        #region Init
         public void Init()
         {
-            MakeDict();
-
-            _lastUpdateTick = Environment.TickCount64;
             StartRegen();
-
+            _stateMachine.ChangeState(new Player_IdleState(), this);
+            MakeDict();
             InitAboutItem();
         }
 
-        public void OnDestroy()
+        public override void Update()
         {
-            StopRegen();
-        }
+            if (IsDeath == true)
+            {
+                _isDeath = false;
+                _stateMachine.ChangeState(new Player_DeadState(), this);
+            }
 
-        public void MakeDict()
-        {
-            MakeSkillDict();
-            MakeCoolDownDict();
+            //base.Update();
+            
+            TickTokens(); // ≈‰≈´ ∏∏∑·/∞ªΩ≈
+            _stateMachine.Update(this);
+            CheckUpdateStat();
         }
 
         public void InitAboutItem()
@@ -202,55 +272,38 @@ namespace Server.Game
             MakeInventory();
         }
         #endregion
-
-        #region Update
-        public override void Update()
-        {
-            UpdateStatRegenerator();
-        }
-        #endregion
-
         #region State : Dead
+        public void OnDestroy()
+        {
+            StopRegen();
+        }
+
         public override void OnDead(GameObject attacker)
         {
+            // øÎºˆæﬂ µµøÕ¡‡
+
             if (Room == null)
                 return;
 
             PosInfo.State = CreatureState.Dead;
-
-            S_Die diePacket = new S_Die();
-            diePacket.ObjectId = Id;
-            diePacket.AttackerId = attacker.Id;
-            if(Stat.Level == 1)
-            {
-                diePacket.RespawnTime = 0;
-                _ = CoRespawnTime(diePacket.RespawnTime, false);
-            }
-            else
-            {
-                diePacket.RespawnTime = DataManager.RespawnDict[Stat.Level];
-                _ = CoRespawnTime(diePacket.RespawnTime);
-            }
-
-            Room.Broadcast(diePacket);
             
-            // KDA Î≥ÄÌôî Ìå®ÌÇ∑
+            // KDA ∫Ø»≠ ∆–≈∂
             S_ChangeKDA KdaPacket = new S_ChangeKDA();
 
-            // Îç∞Ïä§ Ï¶ùÍ∞Ä
+            // µ•Ω∫ ¡ı∞°
             {
                 ++DeathAmount;
                 KdaPacket.KDAs.Add(new KDAInfo { ObjectId = Id, Kill = KillAmount, Death = DeathAmount, Asist = AsistAmount });
             }
             
-            // ÌÇ¨ Ï¶ùÍ∞Ä
+            // ≈≥ ¡ı∞°
             if(attacker is Player attackPlayer)
             {
                 ++attackPlayer.KillAmount;
                 KdaPacket.KDAs.Add(new KDAInfo { ObjectId = attackPlayer.Id, Kill = attackPlayer.KillAmount, Death = attackPlayer.DeathAmount, Asist = attackPlayer.AsistAmount });
             }
 
-            // Ïñ¥Ïãú Ï¶ùÍ∞Ä
+            // æÓΩ√ ¡ı∞°
             {
                 foreach(DamageRecord record in _damageRecords.Values)
                 {
@@ -270,32 +323,23 @@ namespace Server.Game
         }
         #endregion
 
+        #region State
+        public void ChangeState(IPlayerState newState)
+        {
+            _stateMachine.ChangeState(newState, this);
+        }
+        #endregion
+
         #region Stat
         public void StartRegen() => _statRegenerator.Start();
         public void StopRegen() => _statRegenerator.Stop();
 
-        private void UpdateStatRegenerator()
-        {
-            long now = Environment.TickCount64;
-            int deltaMs = 0;
-            long diff = now - _lastUpdateTick;
-            if (diff < 0)
-                diff = 0;
-            if (diff > int.MaxValue)
-                diff = int.MaxValue;
-            deltaMs = (int)diff;
-            _lastUpdateTick = now;
-
-            _statRegenerator.Update(deltaMs);
-            CheckUpdateStat();
-        }
-
         public bool CanRegenerate()
         {
-            if(State == CreatureState.Dead)
+            if (State == CreatureState.Dead)
                 return false;
 
-            if(Hp == MaxHp && Stamina == MaxStamina)
+            if (Hp == MaxHp && Stamina == MaxStamina)
                 return false;
 
             return true;
@@ -326,77 +370,9 @@ namespace Server.Game
         #endregion
 
         #region Skill
-        public bool CanUseSkill(KeyCode keyCode)
-        {
-            if (_skills[keyCode].CurLevel == 0)
-                return false;
-
-            // Ïø®ÌÉÄÏûÑ Ï≤¥ÌÅ¨
-            if (!CheckCoolTime(keyCode))
-                return false;
-
-            // Ïä§ÌÖåÎØ∏ÎÇò Ï≤¥ÌÅ¨
-            if (!CheckStamina(keyCode))
-                return false;
-
-            return true;
-        }
-
-        // Ï≤¥ÌÅ¨ ÎÅùÎÇòÎ©¥ Îç∞Ïù¥ÌÑ∞ Î≥ÄÍ≤Ω
-        public void CommitSkillUsage(KeyCode keyCode)
-        {
-            // Ïø®ÌÉÄÏûÑ Ïû¨Í∏∞ ÏãúÏûë
-            _ = CoInputCooltime(keyCode, FindSkill(keyCode).CurLevelCooldown);
-
-            // Ïä§ÌÖåÎØ∏ÎÇò Í∞êÏÜå
-            Stamina -= FindSkill(keyCode).CurLevelStamina;
-        }
-
-        public float GetCoolTime(KeyCode key)
-        {
-            return _coolDownDict[key].coolTime;
-        }
-
-        private bool CheckCoolTime(KeyCode key)
-        {
-            if (!_coolDownDict[key].isCoolDown)
-                return true;
-
-            return false;
-        }
-
-        private bool CheckStamina(KeyCode key)
-        {
-            if(Stamina < FindSkill(key).CurLevelStamina)
-                return false;
-
-            return true;
-        }
-
-        private async Task CoInputCooltime(KeyCode key, float time)
-        {
-            _coolDownDict[key].isCoolDown = true;
-
-            var sw = Stopwatch.StartNew();
-
-            while (sw.Elapsed.TotalSeconds < time)
-            {
-                _coolDownDict[key].coolTime = (float)(time - sw.Elapsed.TotalSeconds);
-                await Task.Delay(10); // 0.01Ï¥àÎßàÎã§ ÎÇ®ÏùÄ Ïø®ÌÉÄÏûÑ Í∞±Ïã†
-            }
-
-            _coolDownDict[key].isCoolDown = false;
-            _coolDownDict[key].coolTime = 0.0f;
-        }
-
-        private Skill FindSkill(KeyCode key)
-        {
-            return _skills[key];
-        }
-
         private void MakeSkillDict()
         {
-            // Î≥∏Ïù∏ Ï∫êÎ¶≠ÌÑ∞Ïùò Ïä§ÌÇ¨ Ï†ïÎ≥¥Îßå Ï∂îÏ∂ú
+            // ∫ª¿Œ ƒ≥∏Ø≈Õ¿« Ω∫≈≥ ¡§∫∏∏∏ √ﬂ√‚
             Dictionary<KeyCode, SkillData> skills = DataManager.SkillDict[Info.Player.CharType];
             foreach (var skillData in skills)
             {
@@ -417,7 +393,12 @@ namespace Server.Game
             }
         }
 
-        //TODO DÎûë FÎäî Ïñ¥ÎñªÍ≤å ÌïòÏßÄ?
+        private void MakeDict()
+        {
+            MakeSkillDict();
+            MakeCoolDownDict();
+        }
+
         public bool SkillLevelUp(KeyCode key)
         {
             bool result = false;
@@ -428,27 +409,27 @@ namespace Server.Game
                 case KeyCode.W:
                 case KeyCode.E:
                     {
-                        if(_skills[key].CurLevel == 0 && Info.StatInfo.Level >= 1)
+                        if (_skills[key].CurLevel == 0 && Info.StatInfo.Level >= 1)
                         {
                             _skills[key].CurLevel++;
                             result = true;
                         }
-                        else if(_skills[key].CurLevel == 1 && Info.StatInfo.Level >= 3)
+                        else if (_skills[key].CurLevel == 1 && Info.StatInfo.Level >= 3)
                         {
                             _skills[key].CurLevel++;
                             result = true;
                         }
-                        else if(_skills[key].CurLevel == 2 && Info.StatInfo.Level >= 5)
+                        else if (_skills[key].CurLevel == 2 && Info.StatInfo.Level >= 5)
                         {
                             _skills[key].CurLevel++;
                             result = true;
                         }
-                        else if(_skills[key].CurLevel == 3 && Info.StatInfo.Level >= 7)
+                        else if (_skills[key].CurLevel == 3 && Info.StatInfo.Level >= 7)
                         {
                             _skills[key].CurLevel++;
                             result = true;
                         }
-                        else if(_skills[key].CurLevel == 4 && Info.StatInfo.Level >= 9)
+                        else if (_skills[key].CurLevel == 4 && Info.StatInfo.Level >= 9)
                         {
                             _skills[key].CurLevel++;
                             result = true;
@@ -503,11 +484,6 @@ namespace Server.Game
             return result;
         }
 
-        public float GetSkillDamage(KeyCode keyCode)
-        {
-            return _skills[keyCode].GetSkillDamage();
-        }
-
         public Skill GetSkill(KeyCode keyCode)
         {
             return _skills[keyCode];
@@ -532,16 +508,16 @@ namespace Server.Game
 
         private void MakeInventory()
         {
-            for(int i = 0; i < MaxInventorySlot; ++i)
+            for (int i = 0; i < MaxInventorySlot; ++i)
             {
-                _inventory.Add(null); //ÎπÑÏñ¥ ÏûàÎäî Ïù∏Î≤§ÌÜ†Î¶¨Î•º ÏÉùÏÑ±
+                _inventory.Add(null); //∫ÒæÓ ¿÷¥¬ ¿Œ∫•≈‰∏Æ∏¶ ª˝º∫
             }
         }
 
-        // ÏïÑÏù¥ÌÖú ÌöçÎìù Ìï®Ïàò
+        // æ∆¿Ã≈€ »πµÊ «‘ºˆ
         public bool AcquireItem(ItemInfoBase item)
         {
-            // _inventory Î¶¨Ïä§Ìä∏ÏóêÏÑú null Í∞íÏù¥ ÏûàÎäî Ï≤´ Î≤àÏß∏ Ïù∏Îç±Ïä§Î•º Î∞òÌôòÌï¥Ï§å.
+            // _inventory ∏ÆΩ∫∆Æø°º≠ null ∞™¿Ã ¿÷¥¬ √π π¯¬∞ ¿Œµ¶Ω∫∏¶ π›»Ø«ÿ¡‹.
             int firstEmptySlotIndex = _inventory.IndexOf(null);
 
             switch (item)
@@ -553,7 +529,7 @@ namespace Server.Game
                         GameRoom room = Room;
                         ClientSession session = Session;
 
-                        // Ïù¥ÎØ∏ ÏûàÎäî ÏÜåÎ™®ÌíàÏù¥ÎùºÎ©¥
+                        // ¿ÃπÃ ¿÷¥¬ º“∏«∞¿Ã∂Û∏È
                         for (int i = 0; i < MaxInventorySlot; ++i)
                         {
                             if (_inventory[i] != null && _inventory[i] is ConsumableItemInfo itemInfo && _inventory[i].Id == consumableItem.Id)
@@ -569,7 +545,7 @@ namespace Server.Game
                             }
                         }
 
-                        // ÏÉàÎ°úÏö¥ ÏÜåÎ™®ÌíàÏù∏Îç∞ Ïù∏Î≤§ÌÜ†Î¶¨Í∞Ä ÍΩâ Ï∞∏.
+                        // ªı∑ŒøÓ º“∏«∞¿Œµ• ¿Œ∫•≈‰∏Æ∞° ≤À ¬¸.
                         if (firstEmptySlotIndex == -1)
                             return false;
 
@@ -584,13 +560,13 @@ namespace Server.Game
                     }
                 case EquipItemInfo equipItem:
                     {
-                        // Ïù∏Î≤§ÌÜ†Î¶¨Í∞Ä ÍΩâ Ï∞∏.
+                        // ¿Œ∫•≈‰∏Æ∞° ≤À ¬¸.
                         if (firstEmptySlotIndex == -1)
                             return false;
 
                         _inventory[firstEmptySlotIndex] = equipItem;
 
-                        // ÌöçÎìùÌïú Ïû•ÎπÑÏùò Ïπ∏Ïù¥ ÎπÑÏñ¥ ÏûàÏúºÎ©¥ Î∞îÎ°ú Ïû•Ï∞© ÎòêÎäî ÏñªÏùÄ Ïû•ÎπÑÏùò Îì±Í∏âÏù¥ ÎÜíÏúºÎ©¥ ÏûêÎèô ÍµêÏ≤¥
+                        // »πµÊ«— ¿Â∫Ò¿« ƒ≠¿Ã ∫ÒæÓ ¿÷¿∏∏È πŸ∑Œ ¿Â¬¯ ∂«¥¬ æÚ¿∫ ¿Â∫Ò¿« µÓ±ﬁ¿Ã ≥Ù¿∏∏È ¿⁄µø ±≥√º
                         if (_equipItemSlot[equipItem.Type] == null || _equipItemSlot[equipItem.Type].Grade < equipItem.Grade)
                             EquipItem(equipItem, firstEmptySlotIndex);
                         else
@@ -614,7 +590,7 @@ namespace Server.Game
             return false;
         }
 
-        // ÏïÑÏù¥ÌÖú ÏÇ¨Ïö© Ìï®Ïàò(Ïû•Ï∞©, ÏÑ§Ïπò), Î™á Î≤àÏß∏ Ïù∏Î≤§Ïóê ÏûàÎäî ÏïÑÏù¥ÌÖúÏùÑ ÏÇ¨Ïö©ÌïòÍ≤†Îã§.
+        // æ∆¿Ã≈€ ªÁøÎ «‘ºˆ(¿Â¬¯, º≥ƒ°), ∏Ó π¯¬∞ ¿Œ∫•ø° ¿÷¥¬ æ∆¿Ã≈€¿ª ªÁøÎ«œ∞⁄¥Ÿ.
         public void UseItem(int index)
         {
             if (null == _inventory[index])
@@ -636,7 +612,7 @@ namespace Server.Game
             }
         }
 
-        // Ïû•ÎπÑ ÏïÑÏù¥ÌÖú Ïû•Ï∞© Ìï®Ïàò
+        // ¿Â∫Ò æ∆¿Ã≈€ ¿Â¬¯ «‘ºˆ
         private void EquipItem(EquipItemInfo item, int inventoryIndex)
         {
             S_ChangeInventory changeInventoryPacket = new S_ChangeInventory();
@@ -673,10 +649,49 @@ namespace Server.Game
             UpdateItemStat();
         }
 
-        // Ïù∏Î≤§ÌÜ†Î¶¨ Ïä§Ïôë(ÏïÑÏù¥ÌÖú ÏúÑÏπò Î∞îÍæ∏Í∏∞) 
+        public void EquipItemSet(CharacterType type, int phase)
+        {
+            // «ÿ¥Á ∆‰¿Ã¡Óø° ¿Â¬¯«“ æ∆¿Ã≈€ ºº∆Æ¿« æ∆¿Ãµ ∏ÆΩ∫∆Æ∏¶ ∞°¡Æø».
+            List<int> itemIdList = DataManager.ItemSetDict[type][phase];
+
+            foreach (int itemId in itemIdList)
+            {
+                EquipItemInfo item = DataManager.ItemDict[itemId] as EquipItemInfo;
+
+                _equipItemSlot[item.Type] = item;
+
+                S_ChangeEquipItem changeEquipItemPacket = new S_ChangeEquipItem();
+                changeEquipItemPacket.ObjectId = Id;
+                changeEquipItemPacket.ItemId = itemId;
+
+                // ¿ÃπÃ «™Ω¨µ«æÓº≠ ø¬ ªÛ»≤. «™Ω¨µ» «‘ºˆæ»ø° ¿÷∞≈≥™ ¿Ã «‘ºˆ∏¶ «™Ω¨«ÿº≠ ªÁøÎ.
+                GameRoom room = Room;
+                room.Broadcast(changeEquipItemPacket);
+            }
+
+            UpdateItemStat();
+
+            Console.WriteLine($"{Info.Player.CharType} Eqiup done!");
+        }
+
+        // æ∆¿Ã≈€ πˆ∏Æ¥¬ «‘ºˆ
+        public void DiscardItem()
+        {
+
+        }
+
+        // ¿Œ∫•≈‰∏Æ ≥ª¿« æ∆¿Ã≈€¿ª æ∆¿Ãµ∑Œ √£¥¬ «‘ºˆ
+        public ItemInfoBase FindItemInInventory()
+        {
+
+
+            return null;
+        }
+
+        // ¿Œ∫•≈‰∏Æ Ω∫ø“(æ∆¿Ã≈€ ¿ßƒ° πŸ≤Ÿ±‚) 
         public void SwapInventory(int firstIndex, int secondIndex)
         {
-            // 1. Ïú†Ìö®ÏÑ± Í≤ÄÏÇ¨ (Ïù∏Îç±Ïä§ Î≤îÏúÑ Î∞è ÎèôÏùº Ïù∏Îç±Ïä§ Ïä§Ïôë Î∞©ÏßÄ)
+            // 1. ¿Ø»øº∫ ∞ÀªÁ (¿Œµ¶Ω∫ π¸¿ß π◊ µø¿œ ¿Œµ¶Ω∫ Ω∫ø“ πÊ¡ˆ)
             if (firstIndex < 0 || firstIndex >= _inventory.Count ||
                 secondIndex < 0 || secondIndex >= _inventory.Count ||
                 firstIndex == secondIndex)
@@ -699,7 +714,7 @@ namespace Server.Game
                     packet.Changes.Add(new ChangeInventoryInfo { ItemId = _inventory[firstIndex].Id, InventoryIndex = firstIndex });
                 }
             }
-            else //ÎπàÏπ∏ Ï≤òÎ¶¨
+            else //∫Ûƒ≠ √≥∏Æ
             {
                 packet.Changes.Add(new ChangeInventoryInfo { ItemId = 0, InventoryIndex = firstIndex });
             }
@@ -715,7 +730,7 @@ namespace Server.Game
                     packet.Changes.Add(new ChangeInventoryInfo { ItemId = _inventory[secondIndex].Id, InventoryIndex = secondIndex });
                 }
             }
-            else //ÎπàÏπ∏ Ï≤òÎ¶¨
+            else //∫Ûƒ≠ √≥∏Æ
             {
                 packet.Changes.Add(new ChangeInventoryInfo { ItemId = 0, InventoryIndex = secondIndex });
 
@@ -728,89 +743,33 @@ namespace Server.Game
                 room.Push(session.Send, packet);
         }
 
-        // ÏóÖÎç∞Ïù¥Ìä∏ ÏïÑÏù¥ÌÖú Ïä§ÌÉØ
+        // æ˜µ•¿Ã∆Æ æ∆¿Ã≈€ Ω∫≈»
         private void UpdateItemStat()
         {
-            _totalItemStat = new ItemStat();
-
-            foreach(var itemKvp in _equipItemSlot)
+            lock (this)
             {
-                if (itemKvp.Value == null)
-                    continue;
+                _totalItemStat = new ItemStat();
 
-                _totalItemStat += itemKvp.Value.ItemStat;
-            }
-
-            S_ChangeItemStat packet = new S_ChangeItemStat();
-            packet.ObjectId = Id;
-            packet.ItemStat = _totalItemStat;
-
-            GameRoom room = Room;
-
-            if (room != null)
-                room.Push(room.Broadcast, packet);
-        }
-
-        #endregion
-
-        #region Respawn
-        private async Task CoRespawnTime(float respawnTime, bool respawnAtZero = true)
-        {
-            var sw = Stopwatch.StartNew();
-
-            while (sw.Elapsed.TotalSeconds < respawnTime)
-            {
-                await Task.Delay(10); // 0.01Ï¥àÎßàÎã§ ÎÇ®ÏùÄ Ïø®ÌÉÄÏûÑ Í∞±Ïã†
-            }
-
-            if (Room == null)
-                return;
-
-            S_Respawn respawnPacket = new S_Respawn();
-            respawnPacket.ObjectId = Id;
-            if(true == respawnAtZero)
-            {
-                respawnPacket.PosInfo = Info.PosInfo = new PositionInfo
+                foreach (var itemKvp in _equipItemSlot)
                 {
-                    PosX = 0,
-                    PosY = 0,
-                    PosZ = 0
-                };
-                respawnPacket.RotInfo = Info.RotInfo = new RotationInfo
-                {
-                    Qx = 0,
-                    Qy = 0,
-                    Qz = 0,
-                    Qw = 1
-                };
+                    if (itemKvp.Value == null)
+                        continue;
+
+                    _totalItemStat += itemKvp.Value.ItemStat;
+                }
+
+                S_ChangeItemStat packet = new S_ChangeItemStat();
+                packet.ObjectId = Id;
+                packet.ItemStat = _totalItemStat;
+
+                GameRoom room = Room;
+
+                if (room != null)
+                    //room.Push(room.Broadcast, packet);
+                    room.Broadcast(packet);
             }
-            else
-            {
-                respawnPacket.PosInfo = Info.PosInfo;
-                respawnPacket.RotInfo = Info.RotInfo;
-            }
-
-            respawnPacket.Hp = Hp = MaxHp;
-            respawnPacket.Stamina = Stamina = MaxStamina;
-            Session.Send(respawnPacket);
-
-            State = CreatureState.Idle;
-        }
-        #endregion
-
-        #region Packet
-        public void SendSkillPkt()
-        {
-
         }
 
-        public void SendVisibleObjsPkt(List<int> Ids)
-        {
-            S_VisibleObjects visibleObjsPkt = new S_VisibleObjects();
-            visibleObjsPkt.ObjectId = Id;
-            visibleObjsPkt.VisibleObjectIds.AddRange(Ids);
-            Session.Send(visibleObjsPkt);
-        }
         #endregion
 
         #region Level
@@ -831,7 +790,146 @@ namespace Server.Game
         }
         #endregion
 
-        #region StatusEffect(Î≤ÑÌîÑ, ÎîîÎ≤ÑÌîÑ), Barrier(Î∞©Ïñ¥Îßâ) Í¥ÄÎ†®
+        #region Util
+        public bool CanAttack()
+        {
+            if (State == CreatureState.Dead)
+                return false;
+
+            return true;
+        }
+
+        public GameObject FindTarget(int targetId)
+        {
+            return ObjectManager.Instance.Find(targetId);
+        }
+        #endregion
+
+        #region Packet
+        public void SendVisibleObjsPkt(List<int> Ids)
+        {
+            S_VisibleObjects visibleObjsPkt = new S_VisibleObjects();
+            visibleObjsPkt.ObjectId = Id;
+            visibleObjsPkt.VisibleObjectIds.AddRange(Ids);
+            Session.Send(visibleObjsPkt);
+        }
+
+        public void SendStatePacket()
+        {
+            S_PlayerState packet = new S_PlayerState()
+            {
+                ObjectId = Id,
+                State = State,
+            };
+            Room.Push(Room.Broadcast, packet);
+        }
+
+        public void SendStopPacket(StopReason reason)
+        {
+            S_Stop packet = new S_Stop()
+            {
+                Id = Id,
+                Reason = reason,
+            };
+            Room.Push(Room.Broadcast, packet);
+        }
+
+        public void SendAnimPacket(string animName, float ratio)
+        {
+            S_Anim packet = new S_Anim()
+            { 
+                ObjectId = Id,
+                AnimInfo = new AnimInfo()
+                {
+                    Name = animName,
+                    Ratio = ratio
+                }
+            };
+            Room.Push(Room.Broadcast, packet);
+        }
+
+        public void SendMovePacket(PositionInfo posInfo, RotationInfo rotInfo)
+        {
+            S_Move packet = new S_Move()
+            {
+                ObjectId = Id,
+                PosInfo = posInfo,
+                RotInfo = rotInfo
+            };
+
+            Room.Push(Room.Broadcast, packet);
+
+            //Console.WriteLine($"Char : {Info.Player.CharType} / x : {posInfo.PosX}, z : {posInfo.PosZ}");
+        }
+
+        public void SendSetMoveTarget(bool isGround, int targetId, PositionInfo posOpt = null)
+        {
+            S_SetMoveTarget packet = new S_SetMoveTarget
+            {
+                Id = Id,
+                IsGround = isGround,
+                TargetId = isGround ? 0 : targetId,
+                TargetPos = isGround && posOpt != null ? new PositionInfo(posOpt) : null
+            };
+            Room.Push(Room.Broadcast, packet);
+        }
+
+        public void SendSkillMotion(SkillMotionType type, Vector3 start, Vector3 end,
+                            float duration = 0f, string anim = default, string curveId = default,
+                            bool serverCollision = false, bool authoritativeEnd = true)
+        {
+            S_SkillMotion pkt = new S_SkillMotion
+            {
+                ObjectId = Id,
+                Type = type,
+                StartX = start.X,
+                StartY = start.Y,
+                StartZ = start.Z,
+                EndX = end.X,
+                EndY = end.Y,
+                EndZ = end.Z,
+                Duration = duration,
+                Anim = anim ?? "",
+                CurveId = curveId ?? "",
+                ServerCollision = serverCollision,
+                AuthoritativeEnd = authoritativeEnd
+            };
+            Room.Broadcast(pkt);
+        }
+
+        public void SendSkillConfirmPacket(bool canUse, KeyCode keyCode = KeyCode.None, VariantKey variants = default)
+        {
+            S_SkillConfirm packet = new S_SkillConfirm
+            {
+                ObjectId = Id,
+                CanUse = canUse,
+                SkillKey = (int)keyCode,
+                Variants = variants,
+                CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina },
+                //InstanceId = ,
+                //TargetId = , 
+            };
+            Room.Push(Room.Broadcast, packet);
+        }
+
+        public void SendDeadPacket(S_Respawn packet)
+        {
+            Room.Push(Room.Broadcast, packet);
+        }
+
+        public void SendMoveSyncPacket(PositionInfo targetPos, float speed = 1.0f)
+        {
+            S_MoveSync packet = new S_MoveSync
+            {
+                ObjectId = Id,
+                TargetPos = targetPos,
+                Speed = speed,
+            };
+            Room.Push(Room.Broadcast, packet);
+        }
+        #endregion
+
+        #region StatusEffect(πˆ«¡, µπˆ«¡), Barrier(πÊæÓ∏∑) ∞¸∑√
         public override void UpdateBarrier()
         {
             float barrier = 0;

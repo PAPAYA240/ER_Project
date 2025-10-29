@@ -1,15 +1,17 @@
-﻿using System;
+﻿using Data;
+using Google.Protobuf.Protocol;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Data;
-using Google.Protobuf.Protocol;
-using Google.Protobuf.WellKnownTypes;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UIElements;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
+using UnityEngine.Windows;
 using static Data.SkillEffectList;
-using static UnityEngine.Rendering.DebugUI;
+using static Define;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class PlayerController : CreatureController
 {
@@ -17,13 +19,116 @@ public class PlayerController : CreatureController
     int _atkCount = 1;
     int _maxAtkCount = 2;
 
+    // SyncPos
+    float _minDist = 3f;
+    float _syncSpeed = 20f;
+    Vector3 _serverPos;
+
+    // MoveSync
+    private float minDiff = 0.2f;
+
+    // Fog
+    private FogOfWarVision _fogOfWarVision;
+
+    protected bool _isSkillDebug = true;
     // NameTag
     protected UI_PlayerNameTag _nameTag;
+    public UI_PlayerNameTag NameTag { get { return _nameTag; } }
 
     // 장착 아이템
     Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
-    public ItemStat ItemStat { get; private set; }
+    public ItemStat ItemStat { get; private set; } = new ItemStat();
     protected GameObject _eqipWeapon = null;
+
+    #region Property
+    public override float Attack
+    {
+        get { return base.Attack + ItemStat.AttackDamage + ItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat; }
+        set { base.Attack = value; }
+    }
+
+    public override float Defense
+    {
+        get { return base.Defense + ItemStat.Defense; }
+        set { base.Defense = value; }
+    }
+
+    public float CriticalRatio { get { return Mathf.Min(ItemStat.CriticalRatio, 1f); } }
+
+    public override float Hp
+    {
+        get { return base.Hp; }
+        set { Stat.Hp = Math.Clamp(value, 0, MaxHp); UpdateHp(); }
+    }
+
+    public override float MaxHp
+    {
+        get { return base.MaxHp + ItemStat.MaxHp + ItemStat.MaxHpPerLevel * Stat.Level; }
+        set { base.MaxHp = value; }
+    }
+
+    public override float HpRegen
+    {
+        get { return base.HpRegen * (1 + ItemStat.HpRegen); }
+        set { Stat.HpRegen = Math.Max(value, 0); }
+    }
+
+    public override float MaxStamina
+    {
+        get { return base.MaxStamina + ItemStat.MaxStamina; }
+        set { base.MaxStamina = value; }
+    }
+
+    public override float Stamina
+    {
+        get { return base.Stamina; }
+        set { Stat.Stamina = Math.Clamp(value, 0, MaxStamina); UpdateStamina(); }
+    }
+
+    public override float StaminaRegen
+    {
+        get { return base.StaminaRegen * (1 + ItemStat.StaminaRegen); }
+        set { Stat.StaminaRegen = Math.Max(value, 0); }
+    }
+
+    public float SkillAmplification
+    {
+        get
+        {
+            return (ItemStat.FixedSkillAmplification + ItemStat.SkillAmplificationPerLevel * Stat.Level + AdaptiveStat)
+                * (1 + ItemStat.PercentageSkillAmplification);
+        }
+    }
+
+    public override float Speed
+    {
+        get { return (Stat.MoveSpeed + ItemStat.FixedSpeed) * (1 + ItemStat.PercentageSpeed) * 1.7f; }
+        set { Stat.MoveSpeed = value; }
+    }
+
+    public override float FixedDefensePenetration { get { return ItemStat.FixedDefensePenetration; } }
+    public override float PercentageDefensePenetration { get { return ItemStat.PercentageDefensePenetration; } }
+
+    public float AdaptiveStat
+    {
+        get
+        {
+            if (ItemStat.AdaptiveStat == 0)
+                return 0;
+
+            float att, skillamp;
+            att = ItemStat.AttackDamage + ItemStat.AttackDamagePerLevel * Stat.Level;
+            skillamp = (ItemStat.FixedSkillAmplification + ItemStat.SkillAmplificationPerLevel * Stat.Level)
+                * (1 + ItemStat.PercentageSkillAmplification);
+
+            if (att * 2 > skillamp)
+                return ItemStat.AdaptiveStat;
+            else
+                return ItemStat.AdaptiveStat * 2;
+        }
+    }
+
+    #endregion
 
     // 레이어
     protected string layerName;
@@ -149,6 +254,15 @@ public class PlayerController : CreatureController
     protected override void UpdateController()
     {
         base.UpdateController();
+
+        //if (ObjectType == Define.Object.OtherPlayer)
+        //{
+        //    float dist = Vector3.Distance(transform.position, _serverPos);
+        //    if (dist > _minDist)
+        //        _agent.Warp(_serverPos);
+        //    else
+        //        transform.position = Vector3.Lerp(transform.position, _serverPos, Time.deltaTime * _syncSpeed);
+        //}
     }
 
     protected virtual void CheckUpdatedFlag() { }
@@ -156,6 +270,25 @@ public class PlayerController : CreatureController
     public override void OnDamaged()
     {
         Debug.Log("Player HIT !");
+    }
+
+    public void OnStop(S_Stop packet)
+    {
+        _agent.isStopped = true;
+        _agent.ResetPath();
+    }
+
+    public void OnRespawn(S_Respawn packet)
+    {
+        _agent.Warp(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+        _serverPos = packet.PosInfo.ToVector();
+        Hp = packet.Hp;
+    }
+
+    public void ChangeState(S_PlayerState packet)
+    {
+        Debug.Log($"Cur : {State}, Next : {packet.State}");
+        State = packet.State;
     }
 
     #region Util
@@ -171,23 +304,26 @@ public class PlayerController : CreatureController
         // 서버에서 스킬 사용을 허락받으면
         if (skillPacket.CanUse)
         {
-            IsKeyInput = true;
-            State = CreatureState.Skill;
+            //IsKeyInput = true;
+            //State = CreatureState.Skill;
 
-            KeyCode keyCode =
-                (skillPacket.SkillInfo.Amplification) ? (KeyCode)skillPacket.SkillInfo.AmplifiKeyCode : (KeyCode)skillPacket.SkillInfo.KeyCode;
+            //KeyCode keyCode =
+            //    (skillPacket.SkillInfo.Amplification) ? (KeyCode)skillPacket.SkillInfo.AmplifiKeyCode : (KeyCode)skillPacket.SkillInfo.KeyCode;
 
-            ExecuteSkill(keyCode);
+            //ExecuteSkill(keyCode);
 
-            if (skillPacket.ObjectId == Managers.Object.MyPlayer.Id && !skillPacket.SkillInfo.Amplification)
-                Managers.Object.MyPlayer.OnSkillConfirmed(skillPacket);
+            //if (skillPacket.ObjectId == Managers.Object.MyPlayer.Id && !skillPacket.SkillInfo.Amplification)
+            //    Managers.Object.MyPlayer.OnSkillConfirmed(skillPacket);
 
-            Vector3 mousePos = new Vector3(skillPacket.MousePosX, 0, skillPacket.MousePosZ);
-            bool bProjectile = (DataManager.SkillDict[ObjInfo.Player.CharType][keyCode].type == "Projectile");
-            if (skillPacket.SkillInfo.Amplification && bProjectile)
-                ChangeInfoSkillMesh(keyCode);
-            else
-                CreateSkillMesh(keyCode, skillPacket.ChargeRatio, mousePos, bProjectile);
+            //if (!_isSkillDebug)
+            //    return;
+
+            //Vector3 mousePos = new Vector3(skillPacket.MousePosX, 0, skillPacket.MousePosZ);
+            //bool bProjectile = (DataManager.SkillDict[ObjInfo.Player.CharType][keyCode].type == "Projectile");
+            //if (skillPacket.SkillInfo.Amplification && bProjectile)
+            //    ChangeInfoSkillMesh(keyCode);
+            //else
+            //    CreateSkillMesh(keyCode, skillPacket.ChargeRatio, mousePos, bProjectile);
         }
     }
 
@@ -262,7 +398,6 @@ public class PlayerController : CreatureController
     {
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
     }
-
     #endregion
 
     Dictionary<KeyCode, SkillMesh> msDict = new Dictionary<KeyCode, SkillMesh>();
@@ -382,12 +517,17 @@ public class PlayerController : CreatureController
     public virtual void UpdateItemStat(ItemStat stat)
     {
         ItemStat = stat;
+        UpdateHp();
+        UpdateMaxHp();
+        UpdateStamina();
+        UpdateMaxStamina();
     }
 
     public virtual void EquipItem(int itemId)
     {
         //TODO 아이템 도감에서 아이템을 가져와서 처리(+UI도)
-        
+        EquipItemInfo item = DataManager.ItemDict[itemId] as EquipItemInfo;
+        _equipItemSlot[item.Type] = item;
     }
 
     #endregion
@@ -411,13 +551,24 @@ public class PlayerController : CreatureController
     #endregion
 
     #region State:Dead
-    public virtual void OnRespawn(S_Respawn respawnPacket)
-    {
-        State = CreatureState.Idle;
-        Hp = respawnPacket.Hp;
-        Stamina = respawnPacket.Stamina;
-    }
+    //public virtual void OnRespawn(S_Respawn respawnPacket)
+    //{
+    //    //Hp = respawnPacket.Hp;
+    //    //Stamina = respawnPacket.Stamina;
+    //}
     #endregion
 
-    
+    public void SyncPosFromServer(S_Move movePacket)
+    {
+        _agent.isStopped = false;
+
+        _serverPos = new Vector3
+        {
+            x = movePacket.PosInfo.PosX,
+            y = movePacket.PosInfo.PosY,
+            z = movePacket.PosInfo.PosZ
+        };
+
+        transform.rotation = movePacket.RotInfo;
+    }
 }

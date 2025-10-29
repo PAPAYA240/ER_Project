@@ -39,7 +39,7 @@ enum MsgId {
   S_RESPAWN = 31;
   C_SKILL_LEVEL_UP = 32;
   S_SKILL_LEVEL_UP = 33;
-  C_PLAYER_STATE = 34;
+  S_PLAYER_STATE = 34;
   S_CHANGE_STAT = 35;
   C_TARGETING_SKILL = 36;
   S_CHANGE_ITEM_STAT = 37;
@@ -56,11 +56,25 @@ enum MsgId {
   S_ENV_REQUEST = 47;
   S_ADD_ABIGAIL_COORD = 48;
   S_REMOVE_ABIGAIL_COORD = 49;
+  S_MOVE_SYNC = 50;
+  C_MOVE_SYNC = 51;
+  C_ATTACK = 52;
+  C_SET_MOVE_TARGET = 53;
+  C_STOP = 54;
+  S_STOP = 55;
+  S_SET_MOVE_TARGET = 56;
+  S_SKILL_CONFIRM = 57;
+  S_SKILL_MOTION = 58;
+  C_SKILL_INPUT = 59;
+  C_SKILL_COLLISION_PROPOSE = 60;
+  C_REST = 61;
+  C_DEATH = 62;
 
-  S_OCCUPY_BEACON = 50;
-  S_CHANGE_BEACON_TIME = 51;
-  S_CHANGE_SCORE = 52;
-  S_GAME_OVER = 53;
+
+  S_OCCUPY_BEACON = 63;
+  S_CHANGE_BEACON_TIME = 64;
+  S_CHANGE_SCORE = 65;
+  S_GAME_OVER = 66;
 }
 
 enum CreatureState{
@@ -218,6 +232,33 @@ enum ItemGrade{
 	ITEM_GRADE_END = 6;
 }
 
+enum StopReason {
+  STOP_ALL = 0;           // S: 이동/공격 전부 중지 → Idle
+  STOP_MOVE_ONLY = 1;     // H: 이동만 중지(추격 금지)
+}
+
+enum SkillMotionType {
+  Dash = 0;     
+  Blink = 1;    
+  Follow = 2;
+}
+
+enum ProposalMode { 
+  None = 0;
+  SingleShot = 1; 
+  Streaming = 2;
+}
+
+message C_Death {
+	bool isDeath = 1;
+}
+
+enum VariantKey { 
+  NoCollision = 0;
+  Cast = 1; 
+  Followup = 2; 
+}
+
 enum CombatTextType{
 	AD = 0;
 	AP = 1;
@@ -270,9 +311,9 @@ message S_Despawn{
 }
 
 message C_Move{
-  PositionInfo posInfo = 1;
-  RotationInfo rotInfo = 2;
-  bool isWarp = 3;
+  bool isTargetOn = 1;
+  int32 targetId = 2;
+  PositionInfo targetPosition = 3;
 }
 
 message S_Move{
@@ -409,7 +450,7 @@ message S_Respawn{
 	float stamina = 5;
 }
 
-message C_PlayerState{
+message S_PlayerState{
 	int32 objectId = 1;
 	CreatureState state = 2;
 }
@@ -419,6 +460,13 @@ message S_ChangeStat{
 	float hp = 2;
 	float stamina = 3;
 	float barrier = 4;
+}
+
+message C_MoveSync{
+	int32 objectId = 1;
+	PositionInfo posInfo = 2;
+	RotationInfo rotInfo = 3;
+	bool isSkillMotion = 4;
 }
 
 message S_ChangeItemStat{
@@ -479,7 +527,8 @@ message C_TargetingSkill{
 
 message S_AddAbigailCoord{
 	int32 objectId = 1;
-	float duration = 2;
+	int32 attackerTeam = 2;
+	float duration = 3;
 }
 
 message S_RemoveAbigailCoord{
@@ -670,6 +719,93 @@ message ItemStat{
     float MaxHpPerLevel = 27;                 //레벨 당 최대 체력
 }
 
+message C_Attack {					// 우클릭 타겟 공격
+	int32 targetId = 1;
+}
+
+message C_SetMoveTarget {			// 우클릭 결과 : 타겟 이동 or 땅 이동
+	bool isGround = 1;				// true = 땅, false = 타겟
+	int32 targetId = 2;				// isGround = false인 경우 유효
+	PositionInfo targetPos = 3;		// isGround = true인 경우 유효
+}
+
+message C_Stop {
+	StopReason reason = 1;
+}
+
+message S_Stop {
+	int32 id = 1;
+	StopReason reason = 2;
+}
+
+message S_SetMoveTarget {
+	int32 id = 1;
+	bool isGround   = 2;			// true=땅 이동, false=타겟 추격 이동
+	int32 targetId  = 3;			// isGround=false 때 사용
+	PositionInfo targetPos = 4;		// isGround=true 때 사용(땅 목적지)
+}
+
+message S_SkillConfirm {
+  int32 objectId = 1;			
+  bool canUse = 2;
+  int32 skillKey = 3;			
+  CostInfo costInfo = 4;
+  int32 targetId = 5;
+  VariantKey variants = 6;
+}
+
+message S_SkillMotion {
+  int32  objectId   = 1;
+  SkillMotionType type = 2;
+  float  startX     = 3;
+  float  startY     = 4;
+  float  startZ     = 5;
+  float  endX       = 6;
+  float  endY       = 7;
+  float  endZ       = 8;
+  float  duration   = 9;			// 초; 0이면 즉시(블링크)
+  string anim       = 10;			// 옵션
+  string curveId    = 11;			// 클라 보간커브 선택(옵션)
+  bool   serverCollision = 12;		// 서버가 충돌 반영해 준 결과임
+  bool   authoritativeEnd = 13;		// 끝난 시점에 서버 좌표가 권위
+  repeated float keyframes = 14;	// [x0,y0,z0,t0, x1,y1,z1,t1, ...] (옵션)
+}
+
+message C_SkillInput { 
+  int32 skillKey = 1;
+  int32 targetId = 2; 
+  float mouseX = 3;
+  float mouseZ = 4; 
+}
+
+message C_SkillCollisionPropose {
+  int32  skillKey = 1;
+  int32  seq = 2;              // Streaming일 때만 증가 (서버는 최신만 사용)
+  ProposalMode  mode = 3;             // SingleShot or Streaming
+
+  // 후보 지점 2가지
+  float endBlockedX = 4;  // 벽 앞(Agent.Raycast hit - skin)
+  float endBlockedZ = 5; 
+  float endPassX = 6;   
+  float endPassZ = 7;    // 통과 가정 목표(타겟 쪽)
+  float behindBlockedX = 8;
+  float behindBlockedZ = 9;
+
+  int32 candidateTargetId = 10;
+  //float speed = 11;
+  // 검증 힌트(서버는 자체 스펙으로 재검증)
+  //float  radius, maxDistance, speed;
+}
+
+message C_Rest {
+  bool isRest = 1;
+}
+
+message S_MoveSync {
+  int32 objectId = 1;
+  PositionInfo targetPos = 2;
+  float speed = 3;
+}
 message ChangeInventoryInfo{
 	int32 itemId = 1;
 	int32 inventoryIndex = 2;

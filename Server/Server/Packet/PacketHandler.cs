@@ -6,9 +6,7 @@ using Server;
 using Server.Data;
 using Server.Game;
 using ServerCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using static Server.Data.DataUtils;
 
@@ -51,26 +49,13 @@ class PacketHandler
     }
 
     public static void C_MoveHandler(PacketSession session, IMessage packet)
-	{
-		C_Move movePacket = packet as C_Move;
-		ClientSession clientSession = session as ClientSession;
+    {
+        // TEMP
+    }
 
-        //Console.WriteLine($"C_Move ({movePacket.PosInfo.PosX}, {movePacket.PosInfo.PosY}, {movePacket.PosInfo.PosZ})");
-
-		Player player = clientSession.MyPlayer;
-        if (player == null)
-			return;
-
-		GameRoom room = player.Room;
-		if (room == null)
-			return;
-
-		room.Push(room.HandleMove, player, movePacket);
-	}
-
-	public static void C_SkillHandler(PacketSession session, IMessage packet)
-	{
-        C_Skill skillPacket = packet as C_Skill;
+    public static void C_MoveSyncHandler(PacketSession session, IMessage packet)
+    {
+        C_MoveSync movePacket = packet as C_MoveSync;
         ClientSession clientSession = session as ClientSession;
 
         Player player = clientSession.MyPlayer;
@@ -81,7 +66,23 @@ class PacketHandler
         if (room == null)
             return;
 
-		room.Push(room.HandleSkill, player, skillPacket);
+        room.Push(room.HandleMoveSync, player, movePacket);
+    }
+
+    public static void C_SkillHandler(PacketSession session, IMessage packet)
+	{
+  //      C_Skill skillPacket = packet as C_Skill;
+  //      ClientSession clientSession = session as ClientSession;
+
+  //      Player player = clientSession.MyPlayer;
+  //      if (player == null)
+  //          return;
+
+  //      GameRoom room = player.Room;
+  //      if (room == null)
+  //          return;
+
+		//room.Push(room.HandleSkill, player, skillPacket);
     }
 
     public static void C_AnimHandler(PacketSession session, IMessage packet)
@@ -206,18 +207,58 @@ class PacketHandler
         }
     }
 
-    public static void C_PlayerStateHandler(PacketSession session, IMessage packet)
+    public static void C_AttackHandler(PacketSession session, IMessage packet)
     {
-        ClientSession clientSession = session as ClientSession;
-        C_PlayerState statePacket = packet as C_PlayerState;
+        var client = (ClientSession)session;
+        var player = client?.MyPlayer;
+        if (player?.Room == null)
+            return;
+        var req = (C_Attack)packet;
 
-        // 검증 필요하면 추가하기..
+        player.Room.Push(player.Room.HandleAttack, player, req);
+    }
+
+    public static void C_SetMoveTargetHandler(PacketSession session, IMessage packet)
+    {
+        var client = (ClientSession)session;
+        var player = client?.MyPlayer;
+        if (player?.Room == null)
+            return;
+        var req = (C_SetMoveTarget)packet;
+
+        player.Room.Push(player.Room.HandleSetMoveTarget, player, req);
+    }
+
+    public static void C_StopHandler(PacketSession session, IMessage packet)
+    {
+        var client = (ClientSession)session;
+        var player = client?.MyPlayer;
+        if (player?.Room == null)
+            return;
+        var req = (C_Stop)packet;
+
+        player.Room.Push(player.Room.HandleStop, player, req);
+    }
+
+    public static void C_SkillInputHandler(PacketSession session, IMessage packet)
+    {
+        C_SkillInput skillPacket = packet as C_SkillInput;
+        ClientSession clientSession = session as ClientSession;
+
         Player player = clientSession.MyPlayer;
-        player.State = statePacket.State;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleSkill, player, skillPacket);
     }
 
     public static void C_TargetingSkillHandler(PacketSession session, IMessage packet)
     {
+        C_SkillCollisionPropose skillPacket = packet as C_SkillCollisionPropose;
         ClientSession clientSession = session as ClientSession;
         C_TargetingSkill targetingSkillPkt = packet as C_TargetingSkill;
         Player player = clientSession.MyPlayer;
@@ -271,5 +312,44 @@ class PacketHandler
         // 검증 필요하면 추가하기..
         Player player = clientSession.MyPlayer;
         player.OnDamaged(player, 500);
+    }
+
+    public static void C_SkillCollisionProposeHandler(PacketSession session, IMessage packet)
+    {
+        C_SkillCollisionPropose skillPacket = packet as C_SkillCollisionPropose;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleSkillCollision, player, skillPacket);
+    }
+
+    public static void C_RestHandler(PacketSession session, IMessage packet)
+    {
+        var client = (ClientSession)session;
+        var player = client?.MyPlayer;
+        if (player?.Room == null)
+            return;
+        var req = (C_Rest)packet;
+
+        player.Room.Push(player.Room.HandleRest, player, req);
+    }
+
+    // temp 임시 코드 나중에 수정
+    public static void C_DeathHandler(PacketSession session, IMessage packet)
+    {
+        var client = (ClientSession)session;
+        var player = client?.MyPlayer;
+        if (player?.Room == null)
+            return;
+        var req = (C_Death)packet;
+
+        player.Room.Push(player.Room.HandleDeath, player, req);
     }
 }

@@ -62,6 +62,7 @@ public class UI_HpBarTick : UI_Base
     public void SetBarrier(float barrier)
     {
         _barrier = barrier;
+        GenerateTick();
         UpdateFillAmount();
     }
 
@@ -132,14 +133,16 @@ public class UI_HpBarTick : UI_Base
         float barWidth = _hpBarRectTransform.rect.width;
         float barHeight = _hpBarRectTransform.rect.height;
 
+        float maxValue = _maxHp + _barrier;
+
         //딱 떨어지면 마지막 눈금을 표시 안하기 위해 -1
-        int numTicks = (int)((_maxHp - 1) / TickInterval); 
+        int numTicks = (int)((maxValue - 1) / TickInterval); 
 
         for(int i = 1; i <= numTicks; ++i)
         {
             float tickValue = i * TickInterval;
 
-            float ratio = (float)tickValue / _maxHp;
+            float ratio = (float)tickValue / maxValue;
 
             float x = -(barWidth * 0.5f) + (barWidth * ratio);
 

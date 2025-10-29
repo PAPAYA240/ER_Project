@@ -12,7 +12,7 @@ namespace Server.Game
         #region Astar Fields
         public Creature Target { get; set; }
 
-        protected const float DIST_TO_TARGET = 0.01f;
+        protected float DIST_TO_TARGET = 0.01f;
         private const float MOVE_STEP = 0.7f;
 
         public Deque<Node> _path = new Deque<Node>();

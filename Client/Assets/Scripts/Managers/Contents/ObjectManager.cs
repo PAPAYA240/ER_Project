@@ -80,9 +80,13 @@ public class ObjectManager
             pc.ManualInit();
 
             if (MyPlayer.ObjInfo.Player.Team != pc.ObjInfo.Player.Team)
+            {
                 go.gameObject.AddComponent<HighlightEffect>();
+                Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.EnemyPlayer, pc);
+            }
+            else
+                Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.TeamPlayer, pc);
 
-            Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.TeamPlayer, pc);
         }
     }
     private void AddMonster(ObjectInfo info)
@@ -95,6 +99,7 @@ public class ObjectManager
         mc.ObjInfo = info;
         mc.Id = info.ObjectId;
         mc.PosInfo = info.PosInfo;
+        mc.RotInfo = info.RotInfo;
         mc.Stat = info.StatInfo;
         mc.Hp = info.StatInfo.MaxHp;
         mc._monsterType = info.Monster.MonsterType;
@@ -125,6 +130,7 @@ public class ObjectManager
         ec.Id = info.ObjectId;
         ec.PosInfo = info.PosInfo;
         ec.Stat = info.StatInfo;
+
         if (Enum.TryParse(info.Name, out EnvType envEnum))
             ec._envType = envEnum;
         ec.SyncPos();
@@ -138,7 +144,7 @@ public class ObjectManager
         if (MyPlayer == null)
             return;
 
-        HashSet<int> hash = MyPlayer.VisibleObjectIds;
+        HashSet<int> hash = MyPlayer.View.VisibleObjectIds;
 
         foreach (var keyValue in _objects)
         {

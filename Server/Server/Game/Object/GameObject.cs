@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Numerics;
 using Google.Protobuf.Protocol;
 using Lucene.Net.Store;
 using ServerCore;
@@ -153,7 +154,7 @@ namespace Server.Game
             set { Stat.Defense = Math.Max(value, 0); }
         }
 
-        public CreatureState State
+        public virtual CreatureState State
         {
             get { return PosInfo.State; }
             set { PosInfo.State = value; }
@@ -167,28 +168,21 @@ namespace Server.Game
             set => _radius = value;
         }
 
-        public virtual void Update()
+        public Vector3 Position
         {
-            UpdateController();
+            get { return new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ); }
+            set { PosInfo.PosX = value.X; PosInfo.PosY = value.Y; PosInfo.PosZ = value.Z; }
         }
 
-        protected virtual void UpdateController()
+        public int Team
         {
-            //switch (State)
-            //{
-            //    case CreatureState.Idle:
-            //        break;
-            //    case CreatureState.Moving:
-            //        break;
-            //    case CreatureState.Attack:
-            //        break;
-            //    case CreatureState.Skill:
-            //        break;
-            //    case CreatureState.Dead:
-            //        break;
-            //    case CreatureState.Rest:
-            //        break;
-            //}
+            get { return Info.Player.Team; }
+            set { Info.Player.Team = value; }
+        }
+
+        public virtual void Update()
+        {
+            
         }
 
         public virtual void OnInteract(S_Interact packet)
@@ -294,7 +288,7 @@ namespace Server.Game
 
             S_Die diePacket = new S_Die();
             diePacket.ObjectId = Id;
-            diePacket.AttackerId = attacker.Id;
+            //diePacket.AttackerId = attacker.Id;
             Room.Broadcast(diePacket);
 
             GameRoom room = Room;
@@ -335,6 +329,8 @@ namespace Server.Game
             public float maxRatio;       // 최대 증가량
 
             public int targetCnt; // 적중한 대상 갯수
+
+            public Creature attacker; // 시전자
         }
 
         public void AddStatusEffect(StatusEffect statusEffect)
@@ -356,6 +352,7 @@ namespace Server.Game
                     {
                         S_AddAbigailCoord addAbigailCoordPkt = new S_AddAbigailCoord();
                         addAbigailCoordPkt.ObjectId = Id;
+                        addAbigailCoordPkt.AttackerTeam = statusEffect.attacker.Info.Player.Team;
                         addAbigailCoordPkt.Duration = statusEffect.duration;
                         Room.Broadcast(addAbigailCoordPkt);
 

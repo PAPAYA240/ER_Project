@@ -92,6 +92,52 @@ namespace Data
     }
 
     [Serializable]
+    public class SkillSpecData : ILoader<CharacterType, Dictionary<KeyCode, SkillVariants>>
+    {
+        public Dictionary<string, Dictionary<string, SkillVariantsWrapper>> characters =
+        new Dictionary<string, Dictionary<string, SkillVariantsWrapper>>();
+
+        [Serializable]
+        public class SkillVariantsWrapper
+        {
+            public SkillVariants variants = new SkillVariants();
+        }
+
+        public Dictionary<CharacterType, Dictionary<KeyCode, SkillVariants>> MakeDict()
+        {
+            var result = new Dictionary<CharacterType, Dictionary<KeyCode, SkillVariants>>();
+
+            foreach (var ch in characters)
+            {
+                if (!Enum.TryParse(ch.Key, true, out CharacterType ctype))
+                    continue;
+
+                var perChar = new Dictionary<KeyCode, SkillVariants>();
+
+                foreach (var sk in ch.Value)
+                {
+                    if (!Enum.TryParse(sk.Key, true, out KeyCode kcode))
+                        continue;
+
+                    var wrap = sk.Value;
+                    var v = wrap?.variants ?? new SkillVariants();
+
+                    // 비워두면 “이 스킬은 서버 허가/충돌제안 흐름 없음”으로 간주
+                    // 필요하다면 아래처럼 아예 사전에 넣지 않는 것도 가능:
+                    if (v.IsEmpty)
+                        continue;
+
+                    perChar[kcode] = v;
+                }
+
+                result[ctype] = perChar;
+            }
+
+            return result;
+        }
+    }
+
+    [Serializable]
     public class SkillData
     {
         public string id;
@@ -105,6 +151,38 @@ namespace Data
         public Dictionary<int, SkillLevel> levels;
         public Dictionary<string, List<string>> descriptionInfo;
         public Dictionary<string, List<string>> popupInfo;
+    }
+
+    public class SkillSpec
+    {
+        public ProposalMode proposalMode;
+
+        public SkillNeed needs;
+        public SkillLimits limits;        
+    }
+
+    public class SkillNeed
+    {
+        public bool endBlocked;
+        public bool endPass;
+        public bool behindBlocked;
+        public bool candidateTargetId;
+    }
+
+    public class SkillLimits
+    {
+        public float baseMaxDist;
+        public float extraMaxBehind;
+        //public float speed;
+    }
+
+    public class SkillVariants
+    {
+        // 없는 건 null 허용
+        public SkillSpec cast;
+        public SkillSpec followup;
+
+        public bool IsEmpty => cast == null && followup == null;
     }
 
     [Serializable]
@@ -159,7 +237,7 @@ namespace Data
         public float speed;
         public int range;
         public string prefab;
-    }
+    }  
     #endregion
 
     #region Hitbox
@@ -317,6 +395,7 @@ namespace Data
     {
         public int id;
         public string name;
+        public string attackType;
         public StatInfo stat;
         public List<MonsterSkill> skills;
         public float appearTime;

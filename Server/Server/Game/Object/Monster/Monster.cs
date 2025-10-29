@@ -57,6 +57,11 @@ namespace Server.Game
             if (!LoadMonsterData(type))
                 return;
 
+            if (DataManager.MonsterDict[type].attackType == "long")
+                DIST_TO_TARGET = 5.0f;
+            else
+                DIST_TO_TARGET = 0.5f;
+
             OnAttacked += HandlerRegisterTarget;
             ChangeState(FSMManager.Instance.GetIdleState());
         }

@@ -34,10 +34,36 @@
         "shape": "Circle",
         "type": "SkillTrack",
         "radius": 2,
-        "lookOffset" : 3,
+        "lookOffset": 3,
         "startFrame": 10,
         "endFrame": 50,
         "isOneTimeUse": true
+      }
+    },
+    "Gamma": {
+      "MsGammaSkill1": {
+        "shape": "Ray",
+        "type": "SkillStatic",
+        "radius": 2,
+        "lookOffset": 3,
+        "startFrame": 10,
+        "endFrame": 50
+      },
+      "MsGammaSkill2": {
+        "shape": "Ray",
+        "type": "SkillStatic",
+        "radius": 2,
+        "lookOffset": 3,
+        "startFrame": 10,
+        "endFrame": 50
+      },
+      "MsGammaSkill3": {
+        "shape": "Circle",
+        "type": "SkillStatic",
+        "radius": 2,
+        "lookOffset": 3,
+        "startFrame": 10,
+        "endFrame": 50
       }
     }
   }

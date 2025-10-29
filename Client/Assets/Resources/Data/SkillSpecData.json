@@ -1,0 +1,260 @@
+{
+  "characters": {
+    "Rozzi": {
+      "Q": {
+        "variants": {
+          "followup": {
+            "proposalMode": "SingleShot",
+            "needs": {
+              "endBlocked": true,
+              "endPass": false,
+              "behindBlocked": false,
+              "candidateTargetId": false
+            },
+            "limits": {
+              "baseMaxDist": 3.0,
+              "extraMaxBehind": 0.0,
+              "speed": 4.0
+            }
+          }
+        }
+      },
+      "W": {
+        "variants": {
+        }
+      },
+      "E": {
+        "variants": {
+          "cast": {
+            "proposalMode": "Streaming",
+            "needs": {
+              "endBlocked": false,
+              "endPass": false,
+              "behindBlocked": true,
+              "candidateTargetId": true
+            },
+            "limits": {
+              "baseMaxDist": 3.0,
+              "extraMaxBehind": 2.0,
+              "speed": 4.0
+            }
+          }
+        }
+      },
+      "R": {
+        "variants": {
+        }
+      },
+      "D": {
+        "variants": {
+        }
+      },
+      "F": {
+        "variants": {
+          "cast": {
+            "proposalMode": "SingleShot",
+            "needs": {
+              "endBlocked": false,
+              "endPass": true,
+              "behindBlocked": false,
+              "candidateTargetId": false
+            },
+            "limits": {
+              "baseMaxDist": 3.0,
+              "extraMaxBehind": 0.0,
+              "speed": 0.0
+            }
+          }
+        }
+      }
+    },
+    "Yuki": {
+      "Q": {
+        "variants": {
+        }
+      },
+      "W": {
+        "variants": {
+        }
+      },
+      "E": {
+        "variants": {
+          "cast": {
+            "proposalMode": "Streaming",
+            "needs": {
+              "endBlocked": false,
+              "endPass": false,
+              "behindBlocked": true,
+              "candidateTargetId": true
+            },
+            "limits": {
+              "baseMaxDist": 3.0,
+              "extraMaxBehind": 0.5,
+              "speed": 18.0
+            }
+          }
+        }
+      },
+      "R": {
+        "variants": {
+        }
+      },
+      "D": {
+        "variants": {
+          "cast": {
+            "proposalMode": "SingleShot",
+            "needs": {
+              "endBlocked": true,
+              "endPass": false,
+              "behindBlocked": false,
+              "candidateTargetId": false
+            },
+            "limits": {
+              "baseMaxDist": 3.0,
+              "extraMaxBehind": 0.0,
+              "speed": 18.0
+            }
+          }
+        }
+      },
+      "F": {
+        "variants": {
+        }
+      }
+    },
+    "Theodore": {
+      "Q": {
+        "variants": {
+        }
+      },
+      "W": {
+        "variants": {
+        }
+      },
+      "E": {
+        "variants": {
+        }
+      },
+      "R": {
+        "variants": {
+        }
+      },
+      "D": {
+        "variants": {
+        }
+      },
+      "F": {
+        "variants": {
+          "cast": {
+            "proposalMode": "SingleShot",
+            "needs": {
+              "endBlocked": false,
+              "endPass": true,
+              "behindBlocked": false,
+              "candidateTargetId": false
+            },
+            "limits": {
+              "baseMaxDist": 3.0,
+              "extraMaxBehind": 0.0,
+              "speed": 0.0
+            }
+          }
+        }
+      }
+    },
+    "Abigail": {
+      "Q": {
+        "variants": {
+        }
+      },
+      "W": {
+        "variants": {
+        }
+      },
+      "E": {
+        "variants": {
+          "cast": {
+            "proposalMode": "SingleShot",
+            "needs": {
+              "endBlocked": false,
+              "endPass": true,
+              "behindBlocked": false,
+              "candidateTargetId": true
+            },
+            "limits": {
+              "baseMaxDist": 3.0,
+              "extraMaxBehind": 0.0,
+              "speed": 18.0
+            }
+          }
+        }
+      },
+      "R": {
+        "variants": {
+        }
+      },
+      "D": {
+        "variants": {
+          "cast": {
+            "proposalMode": "SingleShot",
+            "needs": {
+              "endBlocked": true,
+              "endPass": false,
+              "behindBlocked": false,
+              "candidateTargetId": false
+            },
+            "limits": {
+              "baseMaxDist": 2.0,
+              "extraMaxBehind": 0.0,
+              "speed": 18.0
+            }
+          }
+        }
+      },
+      "F": {
+        "variants": {
+        }
+      }
+    },
+    "Hyunwoo": {
+      "Q": {
+        "variants": {
+        }
+      },
+      "W": {
+        "variants": {
+        }
+      },
+      "E": {
+        "variants": {
+          "cast": {
+            "proposalMode": "SingleShot",
+            "needs": {
+              "endBlocked": true,
+              "endPass": false,
+              "behindBlocked": false,
+              "candidateTargetId": false
+            },
+            "limits": {
+              "baseMaxDist": 3.0,
+              "extraMaxBehind": 0.0,
+              "speed": 18.0
+            }
+          }
+        }
+      },
+      "R": {
+        "variants": {
+        }
+      },
+      "D": {
+        "variants": {
+        }
+      },
+      "F": {
+        "variants": {
+        }
+      }
+    }
+  }
+}

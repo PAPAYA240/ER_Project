@@ -3,6 +3,7 @@ using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Threading;
 using TMPro;
@@ -35,7 +36,8 @@ public class UI_PlayerInterface : UI_Base
         LevelAndExp,
         Credit,
         Equipment,
-        Inventory
+        Inventory,
+        Stat
     }
 
     //TODO 디파인으로 각 요소들을 관리?
@@ -48,7 +50,7 @@ public class UI_PlayerInterface : UI_Base
     public Dictionary<KeyCode, bool> IsActiveKey { get; set; } = new Dictionary<KeyCode, bool>();
     public Action<SkillEnum> OnCharSkillLevelUpAction = null;
 
-    int _remainSkillPoint = 0; //이건 QWERT에만 적용되야함.
+    int _remainSkillPoint = 10; //이건 QWERT에만 적용되야함.
     
     bool _isDead = false;
     float _respawnCool = 0.0f;
@@ -87,16 +89,19 @@ public class UI_PlayerInterface : UI_Base
         GetObject((int)GameObjects.TSkill).GetComponent<UI_SkillBase>().OnLevelUp += OnCharSkillLevelUp;
         GetObject((int)GameObjects.FSkill).GetComponent<UI_SkillBase>().OnLevelUp += OnTacticalSkillLevelUp;
 
+        //Stat
+        UpdateStat();
+
         //temp
         OnLevelUp(1);
         SpecificSkillLevelUp(GameObjects.FSkill);
 
         //equip
-        Equip(DataManager.ItemDict[116405] as EquipItemInfo);
-        Equip(DataManager.ItemDict[201414] as EquipItemInfo);
-        Equip(DataManager.ItemDict[202418] as EquipItemInfo);
-        Equip(DataManager.ItemDict[203405] as EquipItemInfo);
-        Equip(DataManager.ItemDict[204418] as EquipItemInfo);
+        //Equip(DataManager.ItemDict[116405] as EquipItemInfo);
+        //Equip(DataManager.ItemDict[201414] as EquipItemInfo);
+        //Equip(DataManager.ItemDict[202418] as EquipItemInfo);
+        //Equip(DataManager.ItemDict[203405] as EquipItemInfo);
+        //Equip(DataManager.ItemDict[204418] as EquipItemInfo);
 
     }
     private void Start()
@@ -467,5 +472,35 @@ public class UI_PlayerInterface : UI_Base
     {
 
     }
+
+    #region Stat
+
+    public void UpdateStat()
+    {
+        UI_Stat stat = GetObject((int)GameObjects.Stat).GetComponent<UI_Stat>();
+        if (null == stat) return;
+
+        MyPlayerController mpc = Managers.Object.MyPlayer;
+
+        //Basic
+        stat.SetText(UI_Stat.Texts.AttackText, mpc.Attack.ToString("F0"));
+        stat.SetText(UI_Stat.Texts.AttackAmpText, "0"); // TODO 무기에서 가져와야할듯?
+        stat.SetText(UI_Stat.Texts.AttackSpeedText, mpc.AttackSpeed.ToString("F2"));
+        stat.SetText(UI_Stat.Texts.CriticalRatioText, (mpc.CriticalRatio * 100f).ToString("F0") + "%");
+        stat.SetText(UI_Stat.Texts.SkillAmpText, mpc.SkillAmplification.ToString("F0"));
+        stat.SetText(UI_Stat.Texts.DefenseText, mpc.Defense.ToString("F0"));
+        stat.SetText(UI_Stat.Texts.SkillAccText, mpc.ItemStat.SkillAcceleration.ToString("F0"));
+        stat.SetText(UI_Stat.Texts.SpeedText, mpc.Speed.ToString("F2"));
+        //Extra
+        stat.SetText(UI_Stat.Texts.HpText, (mpc.ItemStat.MaxHp + mpc.ItemStat.MaxHpPerLevel * mpc.Stat.Level).ToString("F0"));
+        stat.SetText(UI_Stat.Texts.StaminaText, mpc.ItemStat.MaxStamina.ToString("F0"));
+        stat.SetText(UI_Stat.Texts.VisionText, mpc.ItemStat.Vision.ToString("F2")); // TODO
+        stat.SetText(UI_Stat.Texts.AttackRangeText, mpc.ItemStat.AttackRange.ToString("F2")); //TODO
+        stat.SetText(UI_Stat.Texts.CCResistanceText, (mpc.ItemStat.CCResistance * 100).ToString("F0") + "%");
+        stat.SetText(UI_Stat.Texts.PenetrationText, $"{mpc.FixedDefensePenetration.ToString("F0")} | {(mpc.PercentageDefensePenetration * 100).ToString("F0")}%");
+        stat.SetText(UI_Stat.Texts.LifeStealText,$"{mpc.ItemStat.LifeSteal.ToString("F0")}% | {mpc.ItemStat.Omnivamp.ToString("F0")}%");
+    }
+
+    #endregion
 
 }

@@ -3,6 +3,7 @@ using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
 using UnityEngine;
+using static UI_PlayerInterface;
 
 class PacketHandler
 {
@@ -44,23 +45,41 @@ class PacketHandler
             return;
 
         if (Managers.Object.MyPlayer.Id == movePacket.ObjectId)
-            return;
-
-        CreatureController cc = go.GetComponentInChildren<CreatureController>();
-        if (cc != null)
         {
-            cc.PosInfo = movePacket.PosInfo;
-            cc.RotInfo = movePacket.RotInfo;
-
-            cc.SyncPos(movePacket.IsWarp);
+            Managers.Object.MyPlayer.OnServerUpdate(movePacket);
         }
+        else
+        {
+            PlayerController pc = go.GetComponentInChildren<PlayerController>();
+            if (pc == null)
+                return;
 
-        Projectile bc = go.GetComponentInChildren<Projectile>();
-        if (bc != null)
-            bc.MoveHandler(movePacket);
-
+            if (pc.State == CreatureState.Moving)
+            {
+                pc.SyncPosFromServer(movePacket);
+            }
+            else
+            {
+                pc.transform.position = movePacket.PosInfo.ToVector();
+                pc.transform.rotation = movePacket.RotInfo;
+                pc.PosInfo = movePacket.PosInfo;
+                pc.RotInfo = movePacket.RotInfo;
+            }
+        }     
     }
-     public static void S_StateHandler(PacketSession session, IMessage packet)
+
+    public static void S_SetMoveTargetHandler(PacketSession session, IMessage packet)
+    {
+        S_SetMoveTarget targetPacket = packet as S_SetMoveTarget;
+        ServerSession serverSession = session as ServerSession;
+
+        if (Managers.Object.MyPlayer.Id == targetPacket.Id)
+        {
+            Managers.Object.MyPlayer.OnServerUpdate(targetPacket);
+        }
+    }
+
+    public static void S_StateHandler(PacketSession session, IMessage packet)
     {
         S_State skillPacket = packet as S_State;
         if (skillPacket == null)
@@ -108,8 +127,7 @@ class PacketHandler
         PlayerController pc = go.GetComponent<PlayerController>();
         if (pc != null)
         {
-            if (pc.Id != Managers.Object.MyPlayer.Id)
-                pc.PlayAnimFromServer(animPacket.AnimInfo);
+            pc.PlayAnimFromServer(animPacket.AnimInfo);
         }
     }
     
@@ -302,9 +320,15 @@ class PacketHandler
         if(mpc == null) 
             return;
 
-        mpc.VisibleObjectIds.Clear(); // 나중에 렌더링 하고나서 바로 Clear하는게 나을듯?
-        mpc.VisibleObjectIds = visibleObjectsPkt.VisibleObjectIds.ToHashSet();
+        mpc.View.VisibleObjectIds.Clear(); // 나중에 렌더링 하고나서 바로 Clear하는게 나을듯?
+        mpc.View.VisibleObjectIds = visibleObjectsPkt.VisibleObjectIds.ToHashSet();
         Managers.Object.SetObjectVisible();
+
+        // TEMP
+        PlayerViewController pvc = go.GetComponent<PlayerViewController>();
+        if (pvc == null) return;
+        pvc.VisibleObjectIds.Clear();
+        pvc.VisibleObjectIds = visibleObjectsPkt.VisibleObjectIds.ToHashSet();
     }
 
     public static void S_LevelUpHandler(PacketSession session, IMessage packet)
@@ -330,6 +354,7 @@ class PacketHandler
         {
             mpc.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
             mpc.UpdateLevel();
+            mpc.PlayerInterface.UpdateStat();
             return;
         }
 
@@ -365,11 +390,14 @@ class PacketHandler
         if (go == null)
             return;
 
-        PlayerController pc = go.GetComponent<PlayerController>();
-        if (pc == null)
-            return;
-
-        pc.OnRespawn(respawnPacket);
+        if (Managers.Object.MyPlayer.Id == respawnPacket.ObjectId)
+            Managers.Object.MyPlayer.OnServerUpdate(respawnPacket);
+        else
+        {
+            PlayerController pc = go.GetComponentInChildren<PlayerController>();
+            if (pc != null)
+                pc.OnRespawn(respawnPacket);
+        }
     }
 
     public static void S_SkillLevelUpHandler(PacketSession session, IMessage packet)
@@ -378,7 +406,7 @@ class PacketHandler
 
         KeyCode key = (KeyCode)skillLevelUpPacket.KeyCode;
 
-        Managers.Object.MyPlayer.PlayerInterface.SpecificSkillLevelUp(key);
+        Managers.Object.MyPlayer.UI.PlayerInterface.SpecificSkillLevelUp(key);
     }
 
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
@@ -398,6 +426,86 @@ class PacketHandler
         pc.Stamina = statPacket.Stamina;
     }
 
+    public static void S_PlayerStateHandler(PacketSession session, IMessage packet)
+    {
+        S_PlayerState statePacket = packet as S_PlayerState;
+
+        GameObject go = Managers.Object.FindById(statePacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.ChangeState(statePacket);
+    }
+
+    public static void S_StopHandler(PacketSession session, IMessage packet)
+    {
+        S_Stop stopPacket = packet as S_Stop;
+
+        GameObject go = Managers.Object.FindById(stopPacket.Id);
+        if (go == null)
+            return;
+
+        if (Managers.Object.MyPlayer.Id == stopPacket.Id)
+        {
+            Managers.Object.MyPlayer.OnServerUpdate(stopPacket);
+        }
+        else
+        {
+            PlayerController pc = go.GetComponentInChildren<PlayerController>();
+            if (pc == null)
+                return;
+
+            pc.OnStop(stopPacket);
+        }
+    }
+
+    public static void S_SkillConfirmHandler(PacketSession session, IMessage packet)
+    {
+        S_SkillConfirm confirmPacket = packet as S_SkillConfirm;
+
+        GameObject go = Managers.Object.FindById(confirmPacket.ObjectId);
+        if (go == null)
+            return;
+
+        if (Managers.Object.MyPlayer.Id == confirmPacket.ObjectId)
+        {
+            if(true == confirmPacket.CanUse)
+                Managers.Object.MyPlayer.OnServerUpdate(confirmPacket);
+        }
+    }
+
+    public static void S_SkillMotionHandler(PacketSession session, IMessage packet)
+    {
+        S_SkillMotion motionPacket = packet as S_SkillMotion;
+
+        GameObject go = Managers.Object.FindById(motionPacket.ObjectId);
+        if (go == null)
+            return;
+
+        if (Managers.Object.MyPlayer.Id == motionPacket.ObjectId)
+        {
+            Managers.Object.MyPlayer.OnServerUpdate(motionPacket);
+        }
+    }
+
+    public static void S_MoveSyncHandler(PacketSession session, IMessage packet)
+    {
+        S_MoveSync syncPacket = packet as S_MoveSync;
+
+        GameObject go = Managers.Object.FindById(syncPacket.ObjectId);
+        if (go == null)
+            return;
+
+        if (Managers.Object.MyPlayer.Id == syncPacket.ObjectId)
+        {
+            Managers.Object.MyPlayer.OnServerUpdate(syncPacket);
+        }
+    }
+
     public static void S_ChangeItemStatHandler(PacketSession session, IMessage packet)
     {
         S_ChangeItemStat changeItemStatPacket = packet as S_ChangeItemStat;
@@ -411,6 +519,11 @@ class PacketHandler
             return;
 
         pc.UpdateItemStat(changeItemStatPacket.ItemStat);
+
+        if(pc is MyPlayerController mpc)
+        {
+            mpc.PlayerInterface.UpdateStat();
+        }
     }
 
     public static void S_ChangeEquipItemHandler(PacketSession session, IMessage packet)
@@ -451,7 +564,6 @@ class PacketHandler
         EnvController ec = go.GetComponent<EnvController>();
         if (ec == null)
             return;
-
         ec.OnInteractionAuthorized();
     }
     
@@ -547,8 +659,8 @@ class PacketHandler
         AbigailCoord abigailCoord = go.GetComponentInChildren<AbigailCoord>();
         if (abigailCoord == null)
             return;
- 
-        abigailCoord.ActivateAbigailCoord(addAbigailCoordPkt.Duration);
+
+        abigailCoord.ActivateAbigailCoord(addAbigailCoordPkt.Duration, addAbigailCoordPkt.AttackerTeam);
     }
 
     public static void S_RemoveAbigailCoordHandler(PacketSession session, IMessage packet)

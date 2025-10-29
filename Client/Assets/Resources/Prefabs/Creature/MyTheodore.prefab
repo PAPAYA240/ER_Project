@@ -5376,7 +5376,7 @@ GameObject:
   - component: {fileID: 4417835337642425}
   - component: {fileID: 136305000347277930}
   - component: {fileID: 168382339782936418}
-  - component: {fileID: 8655817700275235679}
+  - component: {fileID: 5622191535596995323}
   m_Layer: 0
   m_Name: MyTheodore
   m_TagString: Untagged
@@ -5445,7 +5445,7 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 0
---- !u!114 &8655817700275235679
+--- !u!114 &5622191535596995323
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5454,7 +5454,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1792981127976458}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 190d873dd16e58e4fb2b00beed6fcdf5, type: 3}
+  m_Script: {fileID: 11500000, guid: 5d07a4ac14489814e9692da7473da8c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1799350042935927
@@ -5944,7 +5944,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38bbf0c8ec18e0747b035ba9e225aad8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _controller: {fileID: 8655817700275235679}
+  _controller: {fileID: 0}
 --- !u!1 &1864065493563847
 GameObject:
   m_ObjectHideFlags: 0
