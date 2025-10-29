@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 
-public class Player_AttackState : IPlayerState
+public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 {
     // ===== 튜닝 파라미터(테이블화 가능) =====
     public const float DefaultAttackRange = 3.0f;   // MyPlayerController 기본값 매칭
@@ -98,7 +98,7 @@ public class Player_AttackState : IPlayerState
 
         var now = DateTime.UtcNow;
 
-        // ===== 스윙 진행 중 =====
+        // ===== 공격 진행 중 =====
         if (_swingActive)
         {
             if (!_damageApplied && now >= _hitMomentUtc)
@@ -120,7 +120,7 @@ public class Player_AttackState : IPlayerState
                 _nextAttackReadyUtc = now.AddSeconds(ReattackGapSeconds);
                 _comboResetDeadlineUtc = now.AddSeconds(ComboResetSeconds);
 
-                // 스윙 종료 후에만 타겟 변경 반영
+                // 공격 종료 후에만 타겟 변경 반영
                 if (_pendingTargetId.HasValue)
                 {
                     _targetId = _pendingTargetId.Value;
@@ -130,7 +130,7 @@ public class Player_AttackState : IPlayerState
             return; // 스윙 중에는 추가 개시 없음
         }
 
-        // ===== 스윙 중이 아님 =====
+        // ===== 공격 중이 아님 =====
 
         // 콤보 리셋
         if (_comboResetDeadlineUtc != default && now >= _comboResetDeadlineUtc)
@@ -215,6 +215,13 @@ public class Player_AttackState : IPlayerState
 
         // TODO: 실제 데미지 계산/적용 로직에 연결
         // 예) target.OnDamaged(p, 10f);
+    }
+
+    public bool IsSwingActive() { return _swingActive; }
+
+    public void SetPendingTarget(int targetId)
+    {
+        _pendingTargetId = targetId;
     }
 }
 

@@ -26,6 +26,16 @@ namespace Server.Game
             if (player.IsDead)
                 return;
 
+            if (player.CurrentState is IReceivesAttackCommand swing && player.State == CreatureState.Attack)
+            {
+                // 이미 공격 중인 상태라면, 애니메이션 끝난 뒤 변경되도록 보류
+                if (swing.IsSwingActive())
+                {
+                    swing.SetPendingTarget(pkt.TargetId);
+                    return;
+                }
+            }
+
             player.ChangeState(new Player_AttackState(pkt.TargetId, chaseAllowed: true));
         }
 

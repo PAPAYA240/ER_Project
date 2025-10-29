@@ -15,3 +15,10 @@ public interface IReceivesMoveCommand
 {
     void OnMoveCommand(Player player, C_Move cmd);
 }
+
+public interface IReceivesAttackCommand
+{
+    public bool IsSwingActive();
+
+    public void SetPendingTarget(int targetId);
+}
