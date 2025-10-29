@@ -46,16 +46,18 @@ public class MyPlayerController : PlayerController
         var atkCmd = _input.GetAttackCommand();
         if (atkCmd != null)
         {
-            _view.DeliveryTargetId(atkCmd.TargetId);
-            Managers.Network.Send(atkCmd);
+            _view.RotateAttack(atkCmd);
+            //Managers.Network.Send(atkCmd);
         }
-
-        // 3) 우클릭 유지: 타겟 이동 or 땅 이동
-        var setMove = _input.GetSetMoveTarget();
-        if (setMove != null)
+        else
         {
-            _view.ApplyLocalSetMoveTarget(setMove);
-            Managers.Network.Send(setMove);
+            // 3) 우클릭 유지: 타겟 이동 or 땅 이동
+            var setMove = _input.GetSetMoveTarget();
+            if (setMove != null)
+            {
+                _view.ApplyLocalSetMoveTarget(setMove);
+                Managers.Network.Send(setMove);
+            }
         }
 
         // 스킬
