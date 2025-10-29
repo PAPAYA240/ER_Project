@@ -137,7 +137,7 @@ namespace Server.Game
         }
         public void CreateHitbox(MonsterSkill skilltype)
         {
-            Room?.CollisionManager?.AddHitbox(this, skilltype);
+            Room?.CollManager?.AddHitbox(this, skilltype);
         }
         public ISkillBehavior CreateSkillBehavior(string behaviorName)
         {

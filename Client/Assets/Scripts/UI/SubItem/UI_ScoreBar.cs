@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class UI_ScoreBar : UI_Base
 {
     enum Texts { ScoreText }
-    enum GameObjects { Guage }
+    enum GameObjects { Gauge }
 
     int _curScore;
     int _maxScore;
@@ -45,6 +45,6 @@ public class UI_ScoreBar : UI_Base
 
     void UpdateFillAmount()
     {
-        GetObject((int)GameObjects.Guage).GetComponent<RawImage>().material.SetFloat("_Fill", _curScore / (float)_maxScore);
+        GetObject((int)GameObjects.Gauge).GetComponent<RawImage>().material.SetFloat("_Fill", _curScore / (float)_maxScore);
     }
 }

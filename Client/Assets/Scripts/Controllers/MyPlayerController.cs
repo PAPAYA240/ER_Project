@@ -536,10 +536,10 @@ public class MyPlayerController : PlayerController
         foreach (RaycastHit hit in hits)
         {
             GameObject hitObject = hit.collider.gameObject;
-            CreatureController cc = hitObject.GetComponent<CreatureController>();
-
+            
             if (IsAttackable(hitObject))
             {
+                CreatureController cc = hitObject.GetComponentInChildren<CreatureController>();
                 hitList.Add(hitObject);
                 if (_targetType == GameObjectType.None)
                     _targetType = ObjectManager.GetObjectTypeById(cc.ObjInfo.ObjectId);
@@ -557,10 +557,11 @@ public class MyPlayerController : PlayerController
         if (Physics.SphereCast(ray, radius, out RaycastHit sphereHit, 1000.0f, _monsterMask | _playerMask))
         {
             GameObject hitObject = sphereHit.collider.gameObject;
-            CreatureController cc = hitObject.GetComponent<CreatureController>();
+
             if (IsAttackable(hitObject))
             {
-                //Target = gameObject = hitObject;
+                CreatureController cc = hitObject.GetComponentInChildren<CreatureController>();
+                Target = gameObject = hitObject;
                 gameObject = hitObject;
                 _targetType = ObjectManager.GetObjectTypeById(cc.ObjInfo.ObjectId);
             }

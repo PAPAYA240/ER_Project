@@ -28,7 +28,15 @@ public class AbigailController : MyPlayerController
             if (Vector2.Distance(new Vector2(mousePos.x, mousePos.z), new Vector2(CellPos.x, CellPos.z)) > _warpRange)
                 return;
 
-            GameObject target = TryGetAttackableObject(_warpRadius);
+            List<GameObject> hitList = TryGetAttackableObjectList(_warpRadius);
+            GameObject target = null;
+            foreach(GameObject go in hitList)
+            {
+                if (go == this) continue;
+                target = go;
+                break;
+            }
+
             if (target == null)
                 return;
 

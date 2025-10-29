@@ -566,6 +566,34 @@ class PacketHandler
         abigailCoord.DeactivateAbigailCoord();
     }
 
+    public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)
+    {
+        S_OccupyBeacon occupyBeaconPkt = packet as S_OccupyBeacon;
+
+
+    }
+
+    public static void S_ChangeBeaconTimeHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeBeaconTime changeBeaconTimePkt = packet as S_ChangeBeaconTime;
+
+
+    }
+
+    public static void S_ChangeScoreHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeScore changeScorePkt = packet as S_ChangeScore;
+
+
+    }
+
+    public static void S_GameOverHandler(PacketSession session, IMessage packet)
+    {
+        S_GameOver gameOverPkt = packet as S_GameOver;
+
+
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;

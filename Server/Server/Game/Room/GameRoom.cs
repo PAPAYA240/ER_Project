@@ -31,16 +31,7 @@ namespace Server.Game
         bool _teamToggle = false;
         bool _dummyAdded = false;
 
-        public EnvironmentManager GetEnvManager {
-            get 
-            {
-                return _envManager;
-            }
-            private set
-            {
-                _envManager = value;
-            }
-        }
+        public EnvironmentManager GetEnvManager { get { return _envManager; } private set { _envManager = value; } }
 
         public int CurTick { get; set; }
 
@@ -151,17 +142,18 @@ namespace Server.Game
                 _phaseStopwatch.Stop();
             }
         }
-
-        public CollisionManager CollisionManager { get { return _collisionManager; } private set { } }
         #endregion
 
         public bool TryGetMonster(int objectId, out Monster monster)
         {
             return _monsters.TryGetValue(objectId, out monster);
         }
-         public CollisionManager CollManager { get { return _collisionManager; } private set { } }
+        public CollisionManager CollManager { get { return _collisionManager; } private set { } }
 
         public PathfindInstance PathFind { get; set; }
+
+
+
         public void Init(int mapId)
         {
             PathFind = new PathfindInstance(0);
