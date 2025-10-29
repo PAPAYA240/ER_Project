@@ -47,7 +47,7 @@ public class PlayerInputController : MonoBehaviour
     {
         if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving || _player.State == CreatureState.Attack || _player.State == CreatureState.Skill)
         {
-            if (!Input.GetMouseButtonDown(1))
+            if (!Input.GetMouseButton(1))
                 return null;
 
             GameObject target = GetAttackableUnderCursor();
