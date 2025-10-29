@@ -21,7 +21,7 @@ namespace Server.Game
 
         MonsterManager _monsterManager = new MonsterManager();
         CollisionManager _collisionManager = new CollisionManager();
-        EnvManager _envManager = new EnvManager();
+        //EnvManager _envManager = new EnvManager();
 
         Dictionary<int, Dictionary<int, Player>> _teams = new Dictionary<int, Dictionary<int, Player>>();
 
@@ -36,7 +36,7 @@ namespace Server.Game
         public void Init(int mapId)
         {
             // Spawn NavMesh
-            Pathfinding.Initialize();
+            //Pathfinding.Initialize();
 
             // Spawn Monster
             //_monsterManager.Init(this);
@@ -77,7 +77,7 @@ namespace Server.Game
             Flush();
 
             _collisionManager.Update();
-            _collisionManager.CheckAllCollisions(_teams, _monsters, _projectiles);
+            //_collisionManager.CheckAllCollisions(_teams, _monsters, _projectiles);
 
             BroadcastVisibleObjs();
             CheckLastPing();
@@ -334,21 +334,6 @@ namespace Server.Game
             anim.ObjectId = player.Id;
             anim.AnimInfo = animPacket.AnimInfo;
             Broadcast(anim);           
-        }
-
-        public void HandleAttackSkillTarget(Player player, C_AttackSkillTarget attackSkillTarget)
-        {
-            //if (player == null || player.SkillTarget == null)
-            //    return;
-
-            //float damage = 0f;
-
-            //if(player.SkillTarget.ObjectType == GameObjectType.Player)
-            //    damage = _collisionManager.CalcDamage(player, player.SkillTarget as Player, player.UsedTargetingSkill);
-            //else
-            //    damage = _collisionManager.CalcDamage(player, player.SkillTarget.Stat, player.UsedTargetingSkill);   
-
-            //player.SkillTarget.OnDamaged(player, damage);
         }
 
         public Player FindPlayer(Func<GameObject, bool> condition)

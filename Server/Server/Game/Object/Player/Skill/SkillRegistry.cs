@@ -6,9 +6,9 @@ using static Server.Data.DataUtils;
 
 public static class SkillRegistry
 {
-    private static readonly Dictionary<string, Func<ISkillHandler>> _map = new Dictionary<string, Func<ISkillHandler>>();
+    private static readonly Dictionary<string, Func<ISkill>> _map = new Dictionary<string, Func<ISkill>>();
 
-    public static ISkillHandler Resolve(CharacterType character, KeyCode key/*, SkillSpec spec*/)
+    public static ISkill Resolve(CharacterType character, KeyCode key/*, SkillSpec spec*/)
     {
         // 캐릭터/키별 매핑
         if (character == CharacterType.Rozzi)
@@ -66,9 +66,9 @@ public static class SkillRegistry
         SkillRegistry.Register<Rozzi_Q_Dash>("Rozzi_Q_Dash");
     }
 
-    public static void Register<T>(string key) where T : ISkillHandler, new()
+    public static void Register<T>(string key) where T : ISkill, new()
         => _map[key] = () => new T();
 
-    public static ISkillHandler Create(string key)
+    public static ISkill Create(string key)
         => _map.TryGetValue(key, out var f) ? f() : null;
 }

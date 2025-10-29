@@ -6,9 +6,7 @@ using Server;
 using Server.Data;
 using Server.Game;
 using ServerCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using static Server.Data.DataUtils;
 
@@ -207,21 +205,6 @@ class PacketHandler
         {
             room.Push(room.SkillLevelUp, player.Id, skillInfoChangePacket.KeyCode);
         }
-    }
-
-    public static void C_AttackSkillTargetHandler(PacketSession session, IMessage packet)
-    {
-        ClientSession clientSession = session as ClientSession;
-        C_AttackSkillTarget atkSkillTargetPkt = packet as C_AttackSkillTarget;
-        Player player = clientSession.MyPlayer;
-        if (player == null)
-            return;
-
-        GameRoom room = player.Room;
-        if (room == null)
-            return;
-
-        room.Push(room.HandleAttackSkillTarget, player, atkSkillTargetPkt);
     }
 
     public static void C_AttackHandler(PacketSession session, IMessage packet)

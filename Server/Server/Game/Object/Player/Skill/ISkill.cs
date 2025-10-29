@@ -19,7 +19,7 @@ public struct SkillCollisionProposal
                                             //public float Radius, MaxDistance;     // 힌트(서버 스펙으로 재검증)
 }
 
-public interface ISkillHandler
+public interface ISkill
 {
     // 상태 진입
     void OnEnter(Player p, SkillContext ctx);
@@ -47,3 +47,4 @@ public interface ISkillHandler
     KeyCode GetKeyCode();
     #endregion
 }
+

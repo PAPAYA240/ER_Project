@@ -35,7 +35,6 @@ namespace Server.Data
 
         public static Dictionary<CharacterType, Dictionary<string, AnimLengthInfo>> AnimLengthInfoDict { get; private set; } = new Dictionary<CharacterType, Dictionary<string, AnimLengthInfo>>();
 
-        public static Dictionary<string, MonsterData> MonsterDict { get; private set; } = new Dictionary<string, MonsterData>();
         public static Dictionary<MonsterType, MonsterData> MonsterDict { get; private set; } = new Dictionary<MonsterType, MonsterData>();
         public static Dictionary<MonsterSkill, MonsterSkillData> MonsterSkillDict { get; private set; } = new Dictionary<MonsterSkill, MonsterSkillData>();
         public static Dictionary<EnvType, EnvInfo> EnvDict { get; private set; } = new Dictionary<EnvType, EnvInfo>();
@@ -59,7 +58,6 @@ namespace Server.Data
             WeaponDict = LoadJson<Data.WeaponData, Weapon, WeaponInfo>("WeaponData", "player").MakeDict();
             WeaponMasteryDict = LoadJson<Data.WeaponMasteryData, CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>("WeaponMasteryData", "player").MakeDict();
             AnimLengthInfoDict = LoadJson<Data.AnimationInfosData, CharacterType, Dictionary<string, AnimLengthInfo>>("AnimationInfos", "player").MakeDict();
-            SkillHitboxDict = LoadJson<Data.HitboxData, CharacterType, Dictionary<KeyCode, SkillHitbox>>("HitboxData", "player").MakeDict();
 
             // For MonsterData
             MonsterDict = LoadJson<Data.MonsterDict, MonsterType, Data.MonsterData>("MonsterData/MonsterData", "monster").MakeDict();

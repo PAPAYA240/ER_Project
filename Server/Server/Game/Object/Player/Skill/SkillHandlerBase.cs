@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
-using static ISkillHandler;
+using static ISkill;
 using static Server.Data.DataUtils;
 
-public abstract class SkillHandlerBase : ISkillHandler
+public abstract class SkillHandlerBase : ISkill
 {
     public virtual bool CanMoveDuringCast => false;
     public virtual float MoveSpeedMultiplier => 1.0f;

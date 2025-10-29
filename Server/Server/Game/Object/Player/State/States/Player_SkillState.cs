@@ -7,14 +7,14 @@ using System.Text;
 
 public class Player_SkillState : IPlayerState, IReceivesMoveCommand
 {
-    private readonly ISkillHandler _handler;
-    public ISkillHandler Handler {  get { return _handler; } }
+    private readonly ISkill _handler;
+    public ISkill Handler {  get { return _handler; } }
     private readonly SkillContext _ctx;
 
     private DateTime _tStart, _tHit, _tEnd;
     private bool _didHit, _forceEnd;
 
-    public Player_SkillState(ISkillHandler handler, SkillContext ctx)
+    public Player_SkillState(ISkill handler, SkillContext ctx)
     {
         _handler = handler;
         _ctx = ctx;

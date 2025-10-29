@@ -56,20 +56,20 @@ enum MsgId {
   S_ENV_REQUEST = 47;
   S_ADD_ABIGAIL_COORD = 48;
   S_REMOVE_ABIGAIL_COORD = 49;
-  C_ATTACK_SKILL_TARGET = 36;
-  C_MOVE_SYNC = 37;
-  C_ATTACK = 38;
-  C_SET_MOVE_TARGET = 39;
-  C_STOP = 40;
-  S_STOP = 41;
-  S_SET_MOVE_TARGET = 42;
-  S_SKILL_CONFIRM = 43;
-  S_SKILL_MOTION = 44;
-  C_SKILL_INPUT = 45;
-  C_SKILL_COLLISION_PROPOSE = 46;
-  C_REST = 47;
-  C_DEATH = 48;
-  S_MOVE_SYNC = 49;
+  S_MOVE_SYNC = 50;
+  C_MOVE_SYNC = 51;
+  C_ATTACK = 52;
+  C_SET_MOVE_TARGET = 53;
+  C_STOP = 54;
+  S_STOP = 55;
+  S_SET_MOVE_TARGET = 56;
+  S_SKILL_CONFIRM = 57;
+  S_SKILL_MOTION = 58;
+  C_SKILL_INPUT = 59;
+  C_SKILL_COLLISION_PROPOSE = 60;
+  C_REST = 61;
+  C_DEATH = 62;
+
 }
 
 enum CreatureState{
@@ -694,10 +694,6 @@ message ItemStat{
     float AttackDamagePerLevel = 25;          //레벨 당 공격력
     float SkillAmplificationPerLevel = 26;    //레벨 당 스킬 증폭
     float MaxHpPerLevel = 27;                 //레벨 당 최대 체력
-}
-
-message C_AttackSkillTarget{
-	bool attack = 1;
 }
 
 message C_Attack {					// 우클릭 타겟 공격

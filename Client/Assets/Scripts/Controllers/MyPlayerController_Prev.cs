@@ -162,7 +162,7 @@ public class MyPlayerController_Prev : PlayerController
         layerName = _animator.GetLayerName(0);
         //Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
 
-        ObjectType = Define.Object.MyPlayer;
+        //ObjectType = Define.Object.MyPlayer;
         MakeSkillDict();
         MakeCoolDownDict();
         MakeInventory();
@@ -1292,7 +1292,7 @@ public class MyPlayerController_Prev : PlayerController
         {
             ObjectInfo = ObjInfo,
             SkillInfo = new SkillInfo() { KeyCode = (int)key },
-            TargetId = targetId,
+            //TargetId = targetId,
             MousePosX = mousePos.x, MousePosZ = mousePos.z
         };
         Managers.Network.Send(skillPacket);

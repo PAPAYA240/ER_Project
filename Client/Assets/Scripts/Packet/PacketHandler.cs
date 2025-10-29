@@ -321,8 +321,8 @@ class PacketHandler
         if(mpc == null) 
             return;
 
-        mpc.VisibleObjectIds.Clear(); // 나중에 렌더링 하고나서 바로 Clear하는게 나을듯?
-        mpc.VisibleObjectIds = visibleObjectsPkt.VisibleObjectIds.ToHashSet();
+        mpc.View.VisibleObjectIds.Clear(); // 나중에 렌더링 하고나서 바로 Clear하는게 나을듯?
+        mpc.View.VisibleObjectIds = visibleObjectsPkt.VisibleObjectIds.ToHashSet();
         Managers.Object.SetObjectVisible();
 
         // TEMP

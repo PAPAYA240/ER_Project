@@ -10,7 +10,7 @@ using System.Net.Sockets;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using static ISkillHandler;
+using static ISkill;
 using static Server.Data.DataUtils;
 using static Server.Game.GameRoom;
 
@@ -280,14 +280,12 @@ namespace Server.Game
 
         public override void OnDead(GameObject attacker)
         {
+            // 용수야 도와줘
+
             if (Room == null)
                 return;
 
             PosInfo.State = CreatureState.Dead;
-
-
-
-            Room.Broadcast(diePacket);
             
             // KDA 변화 패킷
             S_ChangeKDA KdaPacket = new S_ChangeKDA();
@@ -323,6 +321,8 @@ namespace Server.Game
 
             Room.Broadcast(KdaPacket);
         }
+        #endregion
+
         #region State
         public void ChangeState(IPlayerState newState)
         {
@@ -333,22 +333,6 @@ namespace Server.Game
         #region Stat
         public void StartRegen() => _statRegenerator.Start();
         public void StopRegen() => _statRegenerator.Stop();
-
-        private void UpdateStatRegenerator()
-        {
-            long now = Environment.TickCount64;
-            int deltaMs = 0;
-            long diff = now - _lastUpdateTick;
-            if (diff < 0)
-                diff = 0;
-            if (diff > int.MaxValue)
-                diff = int.MaxValue;
-            deltaMs = (int)diff;
-            _lastUpdateTick = now;
-
-            _statRegenerator.Update(deltaMs);
-            CheckUpdateStat();
-        }
 
         public bool CanRegenerate()
         {
@@ -911,18 +895,6 @@ namespace Server.Game
                 AuthoritativeEnd = authoritativeEnd
             };
             Room.Broadcast(pkt);
-        #region Packet
-        public void SendSkillPkt()
-        {
-
-        }
-
-        public void SendVisibleObjsPkt(List<int> Ids)
-        {
-            S_VisibleObjects visibleObjsPkt = new S_VisibleObjects();
-            visibleObjsPkt.ObjectId = Id;
-            visibleObjsPkt.VisibleObjectIds.AddRange(Ids);
-            Session.Send(visibleObjsPkt);
         }
 
         public void SendSkillConfirmPacket(bool canUse, KeyCode keyCode = KeyCode.None, VariantKey variants = default)

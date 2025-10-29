@@ -55,8 +55,6 @@ class PacketManager
 		_handler.Add((ushort)MsgId.CProjectile, PacketHandler.C_ProjectileHandler);		
 		_onRecv.Add((ushort)MsgId.CEnvRequest, MakePacket<C_EnvRequest>);
 		_handler.Add((ushort)MsgId.CEnvRequest, PacketHandler.C_EnvRequestHandler);		
-		_onRecv.Add((ushort)MsgId.CAttackSkillTarget, MakePacket<C_AttackSkillTarget>);
-		_handler.Add((ushort)MsgId.CAttackSkillTarget, PacketHandler.C_AttackSkillTargetHandler);		
 		_onRecv.Add((ushort)MsgId.CMoveSync, MakePacket<C_MoveSync>);
 		_handler.Add((ushort)MsgId.CMoveSync, PacketHandler.C_MoveSyncHandler);		
 		_onRecv.Add((ushort)MsgId.CAttack, MakePacket<C_Attack>);

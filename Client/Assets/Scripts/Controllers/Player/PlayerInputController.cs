@@ -305,7 +305,7 @@ public class PlayerInputController : MonoBehaviour
         if (targetObject == null)
             return false;
 
-        CreatureController cc = targetObject.GetComponent<CreatureController>();
+        CreatureController cc = targetObject.GetComponentInChildren<CreatureController>();
         if (cc == null)
             return false;
 
@@ -314,7 +314,7 @@ public class PlayerInputController : MonoBehaviour
             return false;
 
         // 같은 팀일 때
-        if (cc.ObjectType == Define.Object.OtherPlayer && cc.ObjInfo.Player.Team == _player.ObjInfo.Player.Team)
+        if (cc.ObjInfo.Player != null && cc.ObjInfo.Player.Team == _player.ObjInfo.Player.Team)
             return false;
 
         // 대상이 죽었을 때 || 무적 상태일 때 || 시야 밖일 때(부시) 등등

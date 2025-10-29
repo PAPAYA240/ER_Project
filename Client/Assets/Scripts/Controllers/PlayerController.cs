@@ -8,6 +8,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Windows;
+using static Data.SkillEffectList;
 using static Define;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using static UnityEditor.Experimental.GraphView.GraphView;
@@ -254,14 +255,14 @@ public class PlayerController : CreatureController
     {
         base.UpdateController();
 
-        if (ObjectType == Define.Object.OtherPlayer)
-        {
-            float dist = Vector3.Distance(transform.position, _serverPos);
-            if (dist > _minDist)
-                _agent.Warp(_serverPos);
-            else
-                transform.position = Vector3.Lerp(transform.position, _serverPos, Time.deltaTime * _syncSpeed);
-        }
+        //if (ObjectType == Define.Object.OtherPlayer)
+        //{
+        //    float dist = Vector3.Distance(transform.position, _serverPos);
+        //    if (dist > _minDist)
+        //        _agent.Warp(_serverPos);
+        //    else
+        //        transform.position = Vector3.Lerp(transform.position, _serverPos, Time.deltaTime * _syncSpeed);
+        //}
     }
 
     protected virtual void CheckUpdatedFlag() { }
@@ -303,26 +304,26 @@ public class PlayerController : CreatureController
         // 서버에서 스킬 사용을 허락받으면
         if (skillPacket.CanUse)
         {
-            IsKeyInput = true;
-            State = CreatureState.Skill;
+            //IsKeyInput = true;
+            //State = CreatureState.Skill;
 
-            KeyCode keyCode =
-                (skillPacket.SkillInfo.Amplification) ? (KeyCode)skillPacket.SkillInfo.AmplifiKeyCode : (KeyCode)skillPacket.SkillInfo.KeyCode;
+            //KeyCode keyCode =
+            //    (skillPacket.SkillInfo.Amplification) ? (KeyCode)skillPacket.SkillInfo.AmplifiKeyCode : (KeyCode)skillPacket.SkillInfo.KeyCode;
 
-            ExecuteSkill(keyCode);
+            //ExecuteSkill(keyCode);
 
-            if (skillPacket.ObjectId == Managers.Object.MyPlayer.Id && !skillPacket.SkillInfo.Amplification)
-                Managers.Object.MyPlayer.OnSkillConfirmed(skillPacket);
+            //if (skillPacket.ObjectId == Managers.Object.MyPlayer.Id && !skillPacket.SkillInfo.Amplification)
+            //    Managers.Object.MyPlayer.OnSkillConfirmed(skillPacket);
 
-            if (!_isSkillDebug)
-                return;
+            //if (!_isSkillDebug)
+            //    return;
 
-            Vector3 mousePos = new Vector3(skillPacket.MousePosX, 0, skillPacket.MousePosZ);
-            bool bProjectile = (DataManager.SkillDict[ObjInfo.Player.CharType][keyCode].type == "Projectile");
-            if (skillPacket.SkillInfo.Amplification && bProjectile)
-                ChangeInfoSkillMesh(keyCode);
-            else
-                CreateSkillMesh(keyCode, skillPacket.ChargeRatio, mousePos, bProjectile);
+            //Vector3 mousePos = new Vector3(skillPacket.MousePosX, 0, skillPacket.MousePosZ);
+            //bool bProjectile = (DataManager.SkillDict[ObjInfo.Player.CharType][keyCode].type == "Projectile");
+            //if (skillPacket.SkillInfo.Amplification && bProjectile)
+            //    ChangeInfoSkillMesh(keyCode);
+            //else
+            //    CreateSkillMesh(keyCode, skillPacket.ChargeRatio, mousePos, bProjectile);
         }
     }
 
@@ -556,16 +557,6 @@ public class PlayerController : CreatureController
     //    //Stamina = respawnPacket.Stamina;
     //}
     #endregion
-
-    public void SpawnProjectile()
-    {
-        _projectile.SetActive(true);
-
-        Projectile projectileScript = _projectile.GetComponent<Projectile>();
-
-        if (_equipTransform != null && projectileScript != null)
-            projectileScript.Run(_equipTransform.position, transform.forward);
-    }
 
     public void SyncPosFromServer(S_Move movePacket)
     {

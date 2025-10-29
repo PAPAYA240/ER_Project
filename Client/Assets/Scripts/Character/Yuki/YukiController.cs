@@ -15,145 +15,145 @@ public class YukiController : MyPlayerController
 
     private bool isDashing = false;
 
-    protected override void Init()
-    {
-        base.Init();
-        _attackRange = 1.5f;
-    }
+    //protected override void Init()
+    //{
+    //    base.Init();
+    //    _attackRange = 1.5f;
+    //}
 
-    protected override void UpdateSkillKeyInput()
-    {
-        if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))
-        {
-            _isUseSkill = true;
-            _keyCode = KeyCode.Q;
-        }
-        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.W))
-        {
-            _isUseSkill = true;
-            _keyCode = KeyCode.W;
-        }
-        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
-        {
-            _isUseSkill = true;
-            _keyCode = KeyCode.E;
-        }
-        else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))
-        {
-            _isUseSkill = true;
-            _keyCode = KeyCode.R;
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
+    //protected override void UpdateSkillKeyInput()
+    //{
+    //    if (IsKeyInput == false && Input.GetKeyDown(KeyCode.Q))
+    //    {
+    //        _isUseSkill = true;
+    //        _keyCode = KeyCode.Q;
+    //    }
+    //    else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.W))
+    //    {
+    //        _isUseSkill = true;
+    //        _keyCode = KeyCode.W;
+    //    }
+    //    else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.E))
+    //    {
+    //        _isUseSkill = true;
+    //        _keyCode = KeyCode.E;
+    //    }
+    //    else if (IsKeyInput == false && Input.GetKeyDown(KeyCode.R))
+    //    {
+    //        _isUseSkill = true;
+    //        _keyCode = KeyCode.R;
+    //    }
+    //    else if (Input.GetKeyDown(KeyCode.D))
+    //    {
 
-        }
-    }
+    //    }
+    //}
 
-    public override void OnSkillConfirmed(S_Skill skillPacket)
-    {
-        base.OnSkillConfirmed(skillPacket);
+    //public override void OnSkillConfirmed(S_Skill skillPacket)
+    //{
+    //    base.OnSkillConfirmed(skillPacket);
 
-        if ((KeyCode)skillPacket.SkillInfo.KeyCode == KeyCode.R)
-        {
-            LookAtMouse();
-        }
-    }
+    //    if ((KeyCode)skillPacket.SkillInfo.KeyCode == KeyCode.R)
+    //    {
+    //        LookAtMouse();
+    //    }
+    //}
 
-    protected override void Skill_Q()
-    {
-        PlayAnimation("SKILL_Q", 0.1f);
-    }
+    //protected override void Skill_Q()
+    //{
+    //    PlayAnimation("SKILL_Q", 0.1f);
+    //}
 
-    protected override void Skill_W()
-    {
-        PlayAnimation("SKILL_W", 0.1f);
-    }
+    //protected override void Skill_W()
+    //{
+    //    PlayAnimation("SKILL_W", 0.1f);
+    //}
 
-    protected override void Skill_E()
-    {
-        PlayAnimation("SKILL_E", 0.1f);
+    //protected override void Skill_E()
+    //{
+    //    PlayAnimation("SKILL_E", 0.1f);
 
-        Dash();
-    }
+    //    Dash();
+    //}
 
-    protected override void Skill_R()
-    {
-        PlayAnimation("SKILL_R", 0.1f);
-    }
+    //protected override void Skill_R()
+    //{
+    //    PlayAnimation("SKILL_R", 0.1f);
+    //}
 
-    #region Skill : E
-    void Dash()
-    {
-        Vector3 mousePos = Input.mousePosition;
-        mousePos.z = Camera.main.transform.position.y;
-        Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(mousePos);
+    //#region Skill : E
+    //void Dash()
+    //{
+    //    Vector3 mousePos = Input.mousePosition;
+    //    mousePos.z = Camera.main.transform.position.y;
+    //    Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(mousePos);
 
-        Vector3 direction = (mouseWorld - transform.position);
-        direction.y = 0f;
-        direction.Normalize();
+    //    Vector3 direction = (mouseWorld - transform.position);
+    //    direction.y = 0f;
+    //    direction.Normalize();
 
-        if (direction.sqrMagnitude > 0.001f)
-        {
-            transform.rotation = Quaternion.LookRotation(direction);
-        }
-        UpdateTransform();
-        StartCoroutine(DashCoroutine(direction));
-    }
+    //    if (direction.sqrMagnitude > 0.001f)
+    //    {
+    //        transform.rotation = Quaternion.LookRotation(direction);
+    //    }
+    //    UpdateTransform();
+    //    StartCoroutine(DashCoroutine(direction));
+    //}
 
-    private IEnumerator DashCoroutine(Vector3 direction)
-    {
-        isDashing = true;
-        _agent.enabled = false;
+    //private IEnumerator DashCoroutine(Vector3 direction)
+    //{
+    //    isDashing = true;
+    //    _agent.enabled = false;
 
-        Vector3 startPos = transform.position;
-        Vector3 rawEndPos = startPos + direction * dashDistance;
-        Vector3 endPos = rawEndPos;
+    //    Vector3 startPos = transform.position;
+    //    Vector3 rawEndPos = startPos + direction * dashDistance;
+    //    Vector3 endPos = rawEndPos;
 
-        // Collider 있는 벽 체크
-        if (CheckWall(startPos, rawEndPos, out Vector3 stopPos))
-        {
-            endPos = stopPos;
-        }
-        else
-        {
-            if (NavMesh.SamplePosition(rawEndPos, out NavMeshHit hit, 0.5f, NavMesh.AllAreas))
-                endPos = hit.position;
-            else
-                endPos = startPos;
-        }
+    //    // Collider 있는 벽 체크
+    //    if (CheckWall(startPos, rawEndPos, out Vector3 stopPos))
+    //    {
+    //        endPos = stopPos;
+    //    }
+    //    else
+    //    {
+    //        if (NavMesh.SamplePosition(rawEndPos, out NavMeshHit hit, 0.5f, NavMesh.AllAreas))
+    //            endPos = hit.position;
+    //        else
+    //            endPos = startPos;
+    //    }
 
-        // 실제 대시 이동
-        float elapsed = 0f;
-        while (elapsed < dashDuration)
-        {
-            transform.position = Vector3.Lerp(startPos, endPos, elapsed / dashDuration);
-            elapsed += Time.deltaTime;
-            UpdateTransform();
-            yield return null;
-        }
+    //    // 실제 대시 이동
+    //    float elapsed = 0f;
+    //    while (elapsed < dashDuration)
+    //    {
+    //        transform.position = Vector3.Lerp(startPos, endPos, elapsed / dashDuration);
+    //        elapsed += Time.deltaTime;
+    //        UpdateTransform();
+    //        yield return null;
+    //    }
 
-        transform.position = endPos;
-        _agent.enabled = true;
-        isDashing = false;
-        UpdateTransform();
-    }
+    //    transform.position = endPos;
+    //    _agent.enabled = true;
+    //    isDashing = false;
+    //    UpdateTransform();
+    //}
 
-    // Collider 있는 벽 체크
-    private bool CheckWall(Vector3 start, Vector3 end, out Vector3 stopPos)
-    {
-        Vector3 dir = (end - start).normalized;
-        float dist = Vector3.Distance(start, end);
+    //// Collider 있는 벽 체크
+    //private bool CheckWall(Vector3 start, Vector3 end, out Vector3 stopPos)
+    //{
+    //    Vector3 dir = (end - start).normalized;
+    //    float dist = Vector3.Distance(start, end);
 
-        int dashWallMask = LayerMask.GetMask("Wall");
+    //    int dashWallMask = LayerMask.GetMask("Wall");
 
-        if (Physics.Raycast(start, dir, out RaycastHit hit, dist, dashWallMask))
-        {
-            stopPos = hit.point;
-            return true;
-        }
+    //    if (Physics.Raycast(start, dir, out RaycastHit hit, dist, dashWallMask))
+    //    {
+    //        stopPos = hit.point;
+    //        return true;
+    //    }
 
-        stopPos = end;
-        return false;
-    }
-    #endregion
+    //    stopPos = end;
+    //    return false;
+    //}
+    //#endregion
 }

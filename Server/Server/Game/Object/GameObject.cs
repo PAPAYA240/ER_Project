@@ -168,7 +168,6 @@ namespace Server.Game
             set => _radius = value;
         }
 
-        public virtual void Update()
         public Vector3 Position
         {
             get { return new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ); }
@@ -183,7 +182,7 @@ namespace Server.Game
 
         public virtual void Update()
         {
-
+            
         }
 
         public virtual void OnInteract(S_Interact packet)

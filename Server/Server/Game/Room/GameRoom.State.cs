@@ -13,6 +13,7 @@ using static Lucene.Net.Index.SegmentReader;
 using static Lucene.Net.Util.AttributeSource;
 using static Server.Data.DataUtils;
 using static Server.Game.Player;
+using Server.Game;
 
 namespace Server.Game
 {
@@ -147,7 +148,7 @@ namespace Server.Game
             };
 
             // 4) 핸들러 결정
-            ISkillHandler handler = SkillRegistry.Resolve(player.Info.Player.CharType, key);
+            ISkill handler = SkillRegistry.Resolve(player.Info.Player.CharType, key);
 
             // 5) 스킬이 사용 가능한 상탠지 확인
             if (!handler.CanCast(player, ctx))
@@ -238,8 +239,9 @@ namespace Server.Game
             if (me == null)
                 return null;
 
+            // 정현 오빠 도와줘
             List<int> visibleObjs = new List<int>();
-            visibleObjs.AddRange(GetObjectsInRange(_players, me, range));
+            //visibleObjs.AddRange(GetObjectsInRange(_players, me, range));
 
             float bestDistSq = range * range;
             GameObject best = null;

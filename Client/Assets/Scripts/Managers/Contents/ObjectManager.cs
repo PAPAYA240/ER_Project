@@ -144,7 +144,7 @@ public class ObjectManager
         if (MyPlayer == null)
             return;
 
-        HashSet<int> hash = MyPlayer.VisibleObjectIds;
+        HashSet<int> hash = MyPlayer.View.VisibleObjectIds;
 
         foreach (var keyValue in _objects)
         {

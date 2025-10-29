@@ -7,11 +7,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using System.Linq;
-using static ISkillHandler;
+using static ISkill;
 using static Lucene.Net.Index.SegmentReader;
 using static Lucene.Net.Util.AttributeSource;
 using static Server.Data.DataUtils;
 using static Server.Game.Player;
+using System.Threading;
+using static Server.Game.GameObject;
 
 namespace Server.Game
 {
@@ -263,7 +265,7 @@ namespace Server.Game
             if (type == GameObjectType.Player)
             {
                 Player player = gameObject as Player;
-                _players.Add(gameObject.Id, player);
+                _players.TryAdd(gameObject.Id, player);
                 player.Info.Player.Team = AssignTeam();
                 player.Info.Player.Weapon = FindWeapon(player.Info.Player.CharType);
 
@@ -439,6 +441,7 @@ namespace Server.Game
 
         private void HandleNormalSkill(Player player, C_Skill skillPacket)
         {
+            // 나영아 도와줘
             if (player == null) return;
 
             ObjectInfo info = player.Info;
@@ -456,21 +459,21 @@ namespace Server.Game
             else
                 player.CommitSkillUsage(keyCode);
 
-            foreach (int targetid in skillPacket.TargetsId)
-            {
-                if (TryGetMonster(targetid, out Monster target))
-                {
-                    player.Target = target;
-                    player.SkillTarget = target;
-                    player.UsedTargetingSkill = keyCode;
+            //foreach (int targetid in skillPacket.TargetsId)
+            //{
+            //    if (TryGetMonster(targetid, out Monster target))
+            //    {
+            //        player.Target = target;
+            //        player.SkillTarget = target;
+            //        player.UsedTargetingSkill = keyCode;
 
-                }
-                else if (_players.TryGetValue(targetid, out Player skillTarget))
-                {
-                    player.SkillTarget = skillTarget;
-                    player.UsedTargetingSkill = keyCode;
-                }
-            }
+            //    }
+            //    else if (_players.TryGetValue(targetid, out Player skillTarget))
+            //    {
+            //        player.SkillTarget = skillTarget;
+            //        player.UsedTargetingSkill = keyCode;
+            //    }
+            //}
 
             info.PosInfo.State = CreatureState.Skill;
             skill.CanUse = true;
@@ -504,30 +507,6 @@ namespace Server.Game
         }
 
         #endregion
-        public void HandleMove(Player player, C_Move movePacket)
-        {
-            if (player == null)
-                return;
-
-            // todo : 검증
-
-            // 일단 서버에서 좌표 이동
-            player.Info.PosInfo.PosX = movePacket.PosInfo.PosX;
-            player.Info.PosInfo.PosY = movePacket.PosInfo.PosY;
-            player.Info.PosInfo.PosZ = movePacket.PosInfo.PosZ;
-            player.Info.RotInfo.Qx = movePacket.RotInfo.Qx;
-            player.Info.RotInfo.Qy = movePacket.RotInfo.Qy;
-            player.Info.RotInfo.Qz = movePacket.RotInfo.Qz;
-            player.Info.RotInfo.Qw = movePacket.RotInfo.Qw;
-
-            // 다른 플레이어한테도 알려준다
-            S_Move resMovePacket = new S_Move();
-            resMovePacket.ObjectId = player.Info.ObjectId;
-            resMovePacket.PosInfo = movePacket.PosInfo;
-            resMovePacket.RotInfo = movePacket.RotInfo;
-            resMovePacket.IsWarp = movePacket.IsWarp;
-            Broadcast(resMovePacket);
-        }
 
         public void HandleVF(Player player, C_Fx skillPacket)
         {
@@ -540,16 +519,6 @@ namespace Server.Game
                 FxInfo = skillPacket.FxInfo,
             };
             Broadcast(effect);
-        }
-
-        public void HandleRest(Player player, C_Rest pkt)
-        {
-            if (player == null)
-                return;
-            if (player.IsDead)
-                return;
-
-            player.ChangeState(new Player_RestState(pkt.IsRest));
         }
 
         public void HandleAttackSkillTarget(Player player, C_TargetingSkill targetingSkill)
@@ -608,19 +577,6 @@ namespace Server.Game
             player.SendMovePacket(new PositionInfo(player.PosInfo), new RotationInfo(player.RotInfo));
         }
 
-        public void HandleVF(Player player, C_Fx skillPacket)
-        {
-            if (player == null)
-                return;
-
-            S_Fx effect = new S_Fx()
-            {
-                ObjectId = player.Info.ObjectId,
-                FxInfo = skillPacket.FxInfo,
-            };
-            Broadcast(effect);
-        }
-
         public void HandleAnim(Player player, C_Anim animPacket)
         {
             if (player == null)
@@ -630,21 +586,6 @@ namespace Server.Game
             anim.ObjectId = player.Id;
             anim.AnimInfo = animPacket.AnimInfo;
             Broadcast(anim);
-        }
-
-        public void HandleAttackSkillTarget(Player player, C_AttackSkillTarget attackSkillTarget)
-        {
-            //if (player == null || player.SkillTarget == null)
-            //    return;
-
-            //float damage = 0f;
-
-            //if(player.SkillTarget.ObjectType == GameObjectType.Player)
-            //    damage = _collisionManager.CalcDamage(player, player.SkillTarget as Player, player.UsedTargetingSkill);
-            //else
-            //    damage = _collisionManager.CalcDamage(player, player.SkillTarget.Stat, player.UsedTargetingSkill);   
-
-            //player.SkillTarget.OnDamaged(player, damage);
         }
 
         public void HandleRest(Player player, C_Rest pkt)
