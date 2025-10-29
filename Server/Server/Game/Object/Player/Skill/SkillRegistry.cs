@@ -20,9 +20,47 @@ public static class SkillRegistry
             if (key == KeyCode.D) return new Rozzi_D();
             if (key == KeyCode.F) return new Skill_Blink();
         }
+        else if (character == CharacterType.Yuki)
+        {
+            //if (key == KeyCode.Q) return new Yuki_Q();
+            //if (key == KeyCode.W) return new Yuki_W();
+            //if (key == KeyCode.E) return new Yuki_E();
+            //if (key == KeyCode.R) return new Yuki_R();
+            //if (key == KeyCode.D) return new Yuki_D();
+            //if (key == KeyCode.F) return new Skill_();
+        }
+        else if (character == CharacterType.Abigail)
+        {
+            //if (key == KeyCode.Q) return new Abigail_Q();
+            //if (key == KeyCode.W) return new Abigail_W();
+            //if (key == KeyCode.E) return new Abigail_E();
+            //if (key == KeyCode.R) return new Abigail_R();
+            //if (key == KeyCode.D) return new Abigail_D();
+            //if (key == KeyCode.F) return new Skill_();
+        }
+        else if (character == CharacterType.Theodore)
+        {
+            //if (key == KeyCode.Q) return new Theodore_Q();
+            //if (key == KeyCode.W) return new Theodore_W();
+            //if (key == KeyCode.E) return new Theodore_E();
+            //if (key == KeyCode.R) return new Theodore_R();
+            //if (key == KeyCode.D) return new Theodore_D();
+            //if (key == KeyCode.F) return new Skill_();
+        }
+        else if (character == CharacterType.Hyunwoo)
+        {
+            //if (key == KeyCode.Q) return new Hyunwoo_Q();
+            //if (key == KeyCode.W) return new Hyunwoo_W();
+            //if (key == KeyCode.E) return new Hyunwoo_E();
+            //if (key == KeyCode.R) return new Hyunwoo_R();
+            //if (key == KeyCode.D) return new Hyunwoo_D();
+            //if (key == KeyCode.F) return new Skill_();
+        }
+
         return null;
     }
 
+    // 다른 명령을 대체할 스킬 등록
     public static void InitRegister()
     {
         SkillRegistry.Register<Rozzi_Q_Dash>("Rozzi_Q_Dash");

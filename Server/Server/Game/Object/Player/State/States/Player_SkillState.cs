@@ -2,6 +2,7 @@
 using Server.Game;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 public class Player_SkillState : IPlayerState, IReceivesMoveCommand
@@ -25,8 +26,6 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand
         player.SendStatePacket();
 
         _tStart = DateTime.UtcNow;
-        //_tHit = _tStart.AddSeconds(_spec.Windup);
-        //_tEnd = _tHit.AddSeconds(_spec.Backswing);
         _tEnd = _tStart.AddSeconds(_handler.GetDuration());
 
         _handler.OnEnter(player, _ctx);
@@ -38,6 +37,11 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand
     {
         var now = DateTime.UtcNow;
 
+        if (_forceEnd || now >= _tEnd)
+        {
+            ChangeState(player);
+        }
+
         if (!_didHit && now >= _tHit)
         {
             _handler.OnHit(player, _ctx);
@@ -45,34 +49,34 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand
         }
 
         _handler.OnTick(player, _ctx);
-
-        if (_forceEnd || now >= _tEnd)
-        {
-            if (player.Intent.TryConsume(out var dest))
-            {
-                if (player.TryHandleMoveWithTokens(dest))
-                    return;
-
-                C_Move cmd = new C_Move()
-                {
-                    IsTargetOn = !dest.IsGround,
-                    TargetId = dest.TargetId,
-                    TargetPosition = dest.TargetPos,
-                };
-
-                player.ChangeState(new Player_MovingState(cmd));
-                player.SendMoveSyncPacket(dest.TargetPos);
-            }
-            else
-            {
-                player.ChangeState(new Player_IdleState());
-            }
-        }
     }
 
     public void Exit(Player player)
     {
         _handler.OnExit(player, _ctx);
+    }
+
+    private void ChangeState(Player player)
+    {
+        if (player.Intent.TryConsume(out var dest))
+        {
+            if (player.TryHandleMoveWithTokens(dest))
+                return;
+
+            C_Move cmd = new C_Move()
+            {
+                IsTargetOn = !dest.IsGround,
+                TargetId = dest.TargetId,
+                TargetPosition = dest.TargetPos,
+            };
+
+            player.ChangeState(new Player_MovingState(cmd));
+            player.SendMoveSyncPacket(dest.TargetPos);
+        }
+        else
+        {
+            player.ChangeState(new Player_IdleState());
+        }
     }
 
     public void OnMoveCommand(Player player, C_Move move)

@@ -226,11 +226,11 @@ namespace Google.Protobuf.Protocol {
             "EAUqaAoJSXRlbUdyYWRlEgoKBkNPTU1PThAAEgwKCFVOQ09NTU9OEAESCAoE",
             "UkFSRRACEggKBEVQSUMQAxINCglMRUdFTkRBUlkQBBIKCgZNWVRISUMQBRIS",
             "Cg5JVEVNX0dSQURFX0VORBAGKi4KClN0b3BSZWFzb24SDAoIU1RPUF9BTEwQ",
-            "ABISCg5TVE9QX01PVkVfT05MWRABKiYKD1NraWxsTW90aW9uVHlwZRIICgRE",
-            "YXNoEAASCQoFQmxpbmsQASo3CgxQcm9wb3NhbE1vZGUSCAoETm9uZRAAEg4K",
-            "ClNpbmdsZVNob3QQARINCglTdHJlYW1pbmcQAio1CgpWYXJpYW50S2V5Eg8K",
-            "C05vQ29sbGlzaW9uEAASCAoEQ2FzdBABEgwKCEZvbGxvd3VwEAJCG6oCGEdv",
-            "b2dsZS5Qcm90b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
+            "ABISCg5TVE9QX01PVkVfT05MWRABKjIKD1NraWxsTW90aW9uVHlwZRIICgRE",
+            "YXNoEAASCQoFQmxpbmsQARIKCgZGb2xsb3cQAio3CgxQcm9wb3NhbE1vZGUS",
+            "CAoETm9uZRAAEg4KClNpbmdsZVNob3QQARINCglTdHJlYW1pbmcQAio1CgpW",
+            "YXJpYW50S2V5Eg8KC05vQ29sbGlzaW9uEAASCAoEQ2FzdBABEgwKCEZvbGxv",
+            "d3VwEAJCG6oCGEdvb2dsZS5Qcm90b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.EnvType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.MonsterSkill), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.Weapon), typeof(global::Google.Protobuf.Protocol.SkillShape), typeof(global::Google.Protobuf.Protocol.TraitType), typeof(global::Google.Protobuf.Protocol.EquipItemType), typeof(global::Google.Protobuf.Protocol.ItemGrade), typeof(global::Google.Protobuf.Protocol.StopReason), typeof(global::Google.Protobuf.Protocol.SkillMotionType), typeof(global::Google.Protobuf.Protocol.ProposalMode), typeof(global::Google.Protobuf.Protocol.VariantKey), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -520,6 +520,7 @@ namespace Google.Protobuf.Protocol {
   public enum SkillMotionType {
     [pbr::OriginalName("Dash")] Dash = 0,
     [pbr::OriginalName("Blink")] Blink = 1,
+    [pbr::OriginalName("Follow")] Follow = 2,
   }
 
   public enum ProposalMode {

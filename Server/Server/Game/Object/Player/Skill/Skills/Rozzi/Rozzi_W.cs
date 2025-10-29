@@ -33,18 +33,18 @@ public sealed class Rozzi_W : SkillHandlerBase
 
     public override void OnTick(Player p, SkillContext ctx)
     {
-        if (_committed)
-            return;
+        //if (_committed)
+        //    return;
 
-        if (!TryConsumeLatest(out var prop))
-            return;
+        //if (!TryConsumeLatest(out var prop))
+        //    return;
 
-        var from = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
-        var end = prop.EndPass;
+        //var from = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
+        //var end = prop.EndPass;
 
-        CommitMotionOnce(p, from, end);
+        //CommitMotionOnce(p, from, end);
 
-        _committed = true;
+        //_committed = true;
     }
 
     public override void OnExit(Player p, SkillContext ctx)
@@ -54,23 +54,23 @@ public sealed class Rozzi_W : SkillHandlerBase
 
     private void CommitMotionOnce(Player p, Vector3 from, Vector3 end)
     {
-        _finalEnd = end;
+        //_finalEnd = end;
 
-        float dist = Vector3.Distance(from, end);
-        float speed = 4.0f;
-        float duration = MathF.Max(0.05f, dist / speed);
+        //float dist = Vector3.Distance(from, end);
+        //float speed = 4.0f;
+        //float duration = MathF.Max(0.05f, dist / speed);
 
-        p.SendSkillMotion(
-             type: SkillMotionType.Dash,
-             start: from,
-             end: _finalEnd,
-             duration: duration,
-             anim: ""/*spec.AnimName*/,
-             curveId: "EaseOutCubic",
-             serverCollision: true,
-             authoritativeEnd: true);
+        //p.SendSkillMotion(
+        //     type: SkillMotionType.Dash,
+        //     start: from,
+        //     end: _finalEnd,
+        //     duration: duration,
+        //     anim: ""/*spec.AnimName*/,
+        //     curveId: "EaseOutCubic",
+        //     serverCollision: true,
+        //     authoritativeEnd: true);
 
-        p.Flags.IsInSkillMotion = true;
+        //p.Flags.IsInSkillMotion = true;
     }
 }
 

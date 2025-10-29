@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Android;
@@ -95,11 +96,22 @@ public class PlayerSkillController : MonoBehaviour
 
     public void OnSkill(S_SkillMotion packet)
     {
-        PlaySkillMotion((SkillMotionType)packet.Type,
+        if(packet.Type == SkillMotionType.Dash || packet.Type == SkillMotionType.Blink)
+        {
+            PlaySkillMotion((SkillMotionType)packet.Type,
             new Vector3(packet.StartX, packet.StartY, packet.StartZ),
             new Vector3(packet.EndX, packet.EndY, packet.EndZ),
             packet.Duration, packet.Anim, packet.CurveId,
             packet.ServerCollision, packet.AuthoritativeEnd);
+        }
+        else if(packet.Type == SkillMotionType.Follow)
+        {
+            ApplySkillMotion((SkillMotionType)packet.Type,
+            new Vector3(packet.StartX, packet.StartY, packet.StartZ),
+            new Vector3(packet.EndX, packet.EndY, packet.EndZ),
+            packet.Duration, packet.Anim, packet.CurveId,
+            packet.ServerCollision, packet.AuthoritativeEnd);
+        }
     }
 
     // 스킬 시작 승인(시전별 instanceId 포함 -> 안함)
@@ -226,15 +238,6 @@ public class PlayerSkillController : MonoBehaviour
         return packet;
     }
 
-    public void PlaySkillMotion(SkillMotionType type, Vector3 start, Vector3 end,
-                            float duration, string anim, string curveId,
-                            bool serverCollision, bool authoritativeEnd)
-    {
-        if (_motionCo != null)
-            StopCoroutine(_motionCo);
-        _motionCo = StartCoroutine(Co_PlaySkillMotion(type, start, end, duration, anim, curveId, authoritativeEnd));
-    }
-
     public void StopSkillMotion()
     {
         if (_motionCo != null)
@@ -249,6 +252,15 @@ public class PlayerSkillController : MonoBehaviour
         _motionCo = null;
 
         //_player.UpdateTransform();
+    }
+
+    public void PlaySkillMotion(SkillMotionType type, Vector3 start, Vector3 end,
+                            float duration, string anim, string curveId,
+                            bool serverCollision, bool authoritativeEnd)
+    {
+        if (_motionCo != null)
+            StopCoroutine(_motionCo);
+        _motionCo = StartCoroutine(Co_PlaySkillMotion(type, start, end, duration, anim, curveId, authoritativeEnd));
     }
 
     private IEnumerator Co_PlaySkillMotion(SkillMotionType type, Vector3 start, Vector3 end,
@@ -323,6 +335,20 @@ public class PlayerSkillController : MonoBehaviour
         _motionCo = null;
 
         _player.UpdateTransform();
+    }
+
+    private void ApplySkillMotion(SkillMotionType type, Vector3 start, Vector3 end,
+                            float duration, string anim, string curveId,
+                            bool serverCollision, bool authoritativeEnd)
+    {
+        if(_agent != null)
+            _agent.enabled = false;
+
+        transform.position = end;
+        Debug.Log($"end : {end}, Pos : {transform.position}");
+        _player.UpdateTransform();
+
+        _agent.enabled = true;
     }
 
     private float ApplyCurve(float u, string id)

@@ -152,8 +152,8 @@ public class PlayerViewController : MonoBehaviour
         else
             _agent.speed = _player.Speed;
 
-            // 추적 코루틴 정리
-            StopFollowTarget();
+        // 추적 코루틴 정리
+        StopFollowTarget();
 
         _agent.enabled = true;
         _agent.updatePosition = true;     

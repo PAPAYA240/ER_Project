@@ -459,8 +459,8 @@ namespace Server.Game
         }
 
         public void SendSkillMotion(SkillMotionType type, Vector3 start, Vector3 end,
-                            float duration, string anim, string curveId,
-                            bool serverCollision, bool authoritativeEnd)
+                            float duration = 0f, string anim = default, string curveId = default,
+                            bool serverCollision = false, bool authoritativeEnd = true)
         {
             S_SkillMotion pkt = new S_SkillMotion
             {

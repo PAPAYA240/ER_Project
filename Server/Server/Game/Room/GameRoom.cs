@@ -60,6 +60,8 @@ namespace Server.Game
 
         public override void Update()
         {
+            TimeUtil.Update();
+
             foreach (Projectile projectile in _projectiles.Values)
             {
                 projectile.Update();

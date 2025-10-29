@@ -41,16 +41,6 @@ public abstract class SkillHandlerBase : ISkillHandler
             // 이동 금지 스킬이면 강제 정지
             p.SendStopPacket(StopReason.StopMoveOnly);
         }
-
-
-        // 대기 중이던 제안이 있으면 즉시 소비(레이스 방지)
-        //if (p.PendingProposal.Has)
-        //{
-        //    OnPropose(p, in p.PendingProposal.Prop);
-        //    p.PendingProposal = default;
-        //}
-
-        //_deadline = DateTime.UtcNow.AddMilliseconds(150); // 짧게만 기다림(네트워크 품질에 맞춰 조절)
     }
 
     public virtual void OnExit(Player p, SkillContext ctx)
@@ -102,6 +92,14 @@ public abstract class SkillHandlerBase : ISkillHandler
     public KeyCode GetKeyCode()
     {
         return _keyCode;
+    }
+
+    protected SkillSpec GetSkillSpec(bool isCast)
+    {
+        if(isCast)
+            return DataManager.SkillSpecDict[_characterType][_keyCode].cast;
+        else
+            return DataManager.SkillSpecDict[_characterType][_keyCode].followup;
     }
 
     // Tick 등에서 소비(가져가면 플래그 리셋)

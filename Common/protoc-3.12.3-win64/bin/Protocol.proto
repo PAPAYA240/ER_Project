@@ -215,6 +215,7 @@ enum StopReason {
 enum SkillMotionType {
   Dash = 0;     
   Blink = 1;    
+  Follow = 2;
 }
 
 enum ProposalMode { 
