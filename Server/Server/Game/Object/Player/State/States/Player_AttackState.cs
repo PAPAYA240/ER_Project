@@ -61,7 +61,7 @@ public class Player_AttackState : IPlayerState
         _nextAttackReadyUtc = now;              // 즉시 공격 가능
         _comboResetDeadlineUtc = default;
 
-        StartSwing(player, now);
+        //StartSwing(player, now);
     }
 
     public void Execute(Player player)
@@ -204,8 +204,8 @@ public class Player_AttackState : IPlayerState
         // 애니 송출(서버 권한)
         p.SendAnimPacket(animName, 0.05f);
 
-        // 필요 시 바라보기 보정
-        p.FaceToTarget(_targetId);
+        //// 필요 시 바라보기 보정
+        //p.FaceToTarget(_targetId);
     }
 
     // 데미지 적용 훅(프로젝트 룰에 맞게 연결)

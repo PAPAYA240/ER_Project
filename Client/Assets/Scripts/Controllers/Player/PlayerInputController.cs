@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Assertions.Must;
+using static UnityEditor.PlayerSettings;
 using static UnityEngine.GraphicsBuffer;
 
 public class PlayerInputController : MonoBehaviour
@@ -45,7 +47,7 @@ public class PlayerInputController : MonoBehaviour
     {
         if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving || _player.State == CreatureState.Attack || _player.State == CreatureState.Skill)
         {
-            if (!Input.GetMouseButton(1))
+            if (!Input.GetMouseButtonDown(1))
                 return null;
 
             GameObject target = GetAttackableUnderCursor();
@@ -102,24 +104,30 @@ public class PlayerInputController : MonoBehaviour
             return null;
         }
 
-
-
     }
 
+    private GameObject _target;
+    private int _preId;
     // 우클릭 "타겟 공격" (클릭 순간 1회)
     public C_Attack GetAttackCommand()
     {
         if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving || _player.State == CreatureState.Attack)
         {
-            if (!Input.GetMouseButtonDown(1))
+            if (!Input.GetKeyDown(KeyCode.C))
                 return null;
 
             int id = GetAttackableUnderCursorID();
             if (id == 0)
                 return null;
 
-            // temp
-            Debug.Log(id);
+            if (id == _preId)
+                return null;
+
+            _target = Managers.Object.FindById(id);
+            if (_target == null)
+                return null;
+
+            _preId = id;
 
             return new C_Attack { TargetId = id };
         }

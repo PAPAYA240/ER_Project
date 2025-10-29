@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerViewController : MonoBehaviour
 {
@@ -29,7 +30,7 @@ public class PlayerViewController : MonoBehaviour
     private Coroutine _coFollow;
 
     // Attack
-    private int _targetId;
+    private GameObject _target;
 
     public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
 
@@ -63,13 +64,12 @@ public class PlayerViewController : MonoBehaviour
 
         if (_player.State == CreatureState.Attack)
         {
-            var targetView = Managers.Object.FindById(_targetId);
-            // TEMP
-            if (targetView != null)
-            {
-                Vector3 pos = targetView.transform.position;
-                UpdateTarget(pos);
-            }
+            //// TEMP
+            //if (_target != null)
+            //{
+            //    Vector3 pos = _target.transform.position;
+            //    UpdateTarget(pos);
+            //}
         }
         else if (_player.State == CreatureState.Moving || _player.State == CreatureState.Idle)
         {
@@ -255,11 +255,6 @@ public class PlayerViewController : MonoBehaviour
 
 
     #region Helper
-    public void DeliveryTargetId(int targetId)
-    {
-        _targetId = targetId;
-    }
-
     public void UpdateTarget(Vector3 targetPos)
     {
         Vector3 dir = targetPos - transform.position;
@@ -270,6 +265,39 @@ public class PlayerViewController : MonoBehaviour
         transform.rotation = Quaternion.LookRotation(dir);
 
         _player.UpdateTransform();
+    }
+
+    public void RotateAttack(C_Attack packet)
+    {
+        _target = Managers.Object.FindById(packet.TargetId);
+        if (_target == null)
+            return;
+
+        StartCoroutine(CoRotateToTarget(packet));
+    }
+
+    private IEnumerator CoRotateToTarget(C_Attack packet)
+    {
+        float rotateSpeed = 20f;
+        while (_target != null)
+        {
+            Vector3 dir = (_target.transform.position - transform.position);
+            dir.y = 0;
+
+            if (dir.magnitude < 0.1f)
+                break;
+
+            Quaternion targetRot = Quaternion.LookRotation(dir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * rotateSpeed);
+
+            if (Quaternion.Angle(transform.rotation, targetRot) < 1f)
+                break;
+
+            yield return null;
+        }
+
+        Debug.Log("회전 후 타겟 패킷 전송!");
+        Managers.Network.Send(packet);
     }
 
     private GameObject FindVisibleObjectById(int objectId)
