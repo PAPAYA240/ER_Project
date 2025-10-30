@@ -20,16 +20,7 @@ public sealed class Skill_Blink : SkillHandlerBase
         Latest = default;
         _committed = false;
 
-        // 이동 잠금
         p.SendStopPacket(StopReason.StopMoveOnly);
-
-        // 대기 중이던 제안이 있으면 즉시 소비(레이스 방지)
-        //if (p.PendingProposal.Has)
-        //{
-        //    OnPropose(p, in p.PendingProposal.Prop);
-        //    p.PendingProposal = default;
-        //}
-
         p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Cast);
     }
 

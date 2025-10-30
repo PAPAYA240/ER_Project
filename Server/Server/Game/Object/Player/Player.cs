@@ -22,24 +22,6 @@ namespace Server.Game
         public ClientSession Session { get; set; }
 
         // Skill
-        public PlayerFlags Flags { get; } = new PlayerFlags();
-        public class PlayerFlags
-        {
-            public bool IsInSkillMotion;
-            public Vector3 SkillMotionStart;
-            public Vector3 SkillMotionEnd;
-            public float SkillMotionEndTimeUtc; // utcSeconds
-        }
-
-        public PendingSkillProposal PendingProposal;
-        public struct PendingSkillProposal
-        {
-            public int SkillKey;
-            public int Seq;
-            public SkillCollisionProposal Prop;
-            public bool Has;
-        }
-
         protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
         Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
         class CoolTime

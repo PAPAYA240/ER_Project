@@ -12,7 +12,6 @@ public sealed class Rozzi_E : SkillHandlerBase
 {
     private readonly float _followRatio = 0.4f;
     private readonly float _animDuration;
-    private readonly float _behindOffset = 1.0f;
 
     private GameObject _target;
 

@@ -50,7 +50,6 @@ public abstract class SkillHandlerBase : ISkill
         p.PosInfo.PosY = _finalEnd.Y;
         p.PosInfo.PosZ = _finalEnd.Z;
         p.SendMovePacket(new PositionInfo(p.PosInfo), new RotationInfo(p.RotInfo));
-        p.Flags.IsInSkillMotion = false;
     }
 
     public virtual void OnHit(Player p, SkillContext ctx)

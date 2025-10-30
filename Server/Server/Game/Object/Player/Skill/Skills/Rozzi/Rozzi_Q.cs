@@ -19,7 +19,6 @@ public sealed class Rozzi_Q : SkillHandlerBase
     public override void OnEnter(Player p, SkillContext ctx)
     {
         base.OnEnter(p, ctx);
-        // TODO: 코스트/쿨타임 차감
 
         p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
     }
@@ -29,17 +28,8 @@ public sealed class Rozzi_Q : SkillHandlerBase
         return;
     }
 
-    // TEMP
-    bool isCommited = false;
     public override void OnTick(Player p, SkillContext ctx)
     {
-        if (isCommited)
-            return;
-
-        
-
-        isCommited = true;  
-
         return;
     }
 

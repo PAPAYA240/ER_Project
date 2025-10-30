@@ -402,8 +402,8 @@ public class PlayerSkillController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
 
-        Vector3 dir = (hit.point - transform.position).normalized;
-        dir.y = 0;
+        Vector3 hitPos = hit.point; hitPos.y = transform.position.y;
+        Vector3 dir = (hitPos - transform.position).normalized;
 
         if (!isMaxDistance && (hit.point - transform.position).magnitude < range)
         {

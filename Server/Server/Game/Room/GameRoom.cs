@@ -31,8 +31,6 @@ namespace Server.Game
         Dictionary<int, Dictionary<int, Player>> _teams = new Dictionary<int, Dictionary<int, Player>>();
         Dictionary<CharacterType, SkillHandler> _skillHandlers = new Dictionary<CharacterType, SkillHandler>();
 
-        string _navmeshPath = "../../../Resources/Data/NavmeshData.json"; // 배포 경로
-
         bool _teamToggle = false;
         bool _dummyAdded = true;    // TEMP : Dummy
 
