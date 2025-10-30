@@ -52,8 +52,14 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
         if (!_committed)
             return;
 
-        float t = _elapsed / _duration;
+        float t = Math.Clamp(_elapsed / _duration, 0f, 1f);
         Vector3 targetPos = Vector3.Lerp(_startPos, _endPos, t);
+        Console.WriteLine($"t : {t}, targetPos : {targetPos}");
+
+        p.SendSkillMotion(
+         type: SkillMotionType.Transform,
+         start: p.Position,
+         end: targetPos);
 
         _elapsed += TimeUtil.DeltaTime;
         if(_elapsed > _duration)
@@ -64,11 +70,6 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
                 return;
             }    
         }
-
-        p.SendSkillMotion(
-         type: SkillMotionType.Follow,
-         start: p.Position,
-         end: targetPos);
     }
 
     public override void OnExit(Player p, SkillContext ctx)
@@ -85,7 +86,7 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
         float duration = MathF.Max(0.05f, GetDuration() /*dist / speed*/);
 
         p.SendSkillMotion(
-             type: SkillMotionType.Follow,
+             type: SkillMotionType.Transform,
              start: from,
              end: _finalEnd,
              duration: duration,

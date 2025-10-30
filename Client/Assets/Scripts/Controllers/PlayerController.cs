@@ -327,27 +327,27 @@ public class PlayerController : CreatureController
         }
     }
 
-    protected void ExecuteSkill(KeyCode keyCode)
-    {
-        switch (keyCode)
-        {
-            case KeyCode.Q:
-                Skill_Q();
-                break;
-            case KeyCode.W:
-                Skill_W();
-                break;
-            case KeyCode.E:
-                Skill_E();
-                break;
-            case KeyCode.R:
-                Skill_R();
-                break;
-            case KeyCode.F:
-                PassiveSkill();
-                break;
-        }
-    }
+    //protected void ExecuteSkill(KeyCode keyCode)
+    //{
+    //    switch (keyCode)
+    //    {
+    //        case KeyCode.Q:
+    //            Skill_Q();
+    //            break;
+    //        case KeyCode.W:
+    //            Skill_W();
+    //            break;
+    //        case KeyCode.E:
+    //            Skill_E();
+    //            break;
+    //        case KeyCode.R:
+    //            Skill_R();
+    //            break;
+    //        case KeyCode.F:
+    //            PassiveSkill();
+    //            break;
+    //    }
+    //}
 
     // TODO : 이름 바꾸기?
     protected virtual void Skill_Q() { }

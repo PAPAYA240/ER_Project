@@ -69,7 +69,7 @@ public sealed class Rozzi_E : SkillHandlerBase
         _elapsed += TimeUtil.DeltaTime;
 
         p.SendSkillMotion(
-         type: SkillMotionType.Follow,
+         type: SkillMotionType.Transform,
          start: p.Position,
          end: targetPos);
 

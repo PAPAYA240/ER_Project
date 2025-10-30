@@ -133,11 +133,11 @@ namespace Server.Game
             // 1) 치환할 스킬이 있는 지 확인
 
             // 2) 플레이어가 스킬을 사용할 수 있는 상태인지 확인
-            //if (!player.CanUseSkill(key))
-            //{
-            //    player.SendSkillConfirmPacket(false);
-            //    return;
-            //}
+            if (!player.CanUseSkill(key))
+            {
+                player.SendSkillConfirmPacket(false);
+                return;
+            }
 
             // 3) 컨텍스트 구성(마우스 XZ/타겟)
             var ctx = new SkillContext
@@ -151,13 +151,13 @@ namespace Server.Game
             ISkill handler = SkillRegistry.Resolve(player.Info.Player.CharType, key);
 
             // 5) 스킬이 사용 가능한 상탠지 확인
-            //if (!handler.CanCast(player, ctx))
-            //{
-            //    player.SendSkillConfirmPacket(false);
-            //    return;
-            //}
-            //else
-            //    player.CommitSkillUsage(key);
+            if (!handler.CanCast(player, ctx))
+            {
+                player.SendSkillConfirmPacket(false);
+                return;
+            }
+            else
+                player.CommitSkillUsage(key);
 
             // 5) SkillState로 전환
             player.ChangeState(new Player_SkillState(handler, ctx));

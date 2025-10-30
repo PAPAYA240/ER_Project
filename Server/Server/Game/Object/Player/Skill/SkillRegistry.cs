@@ -45,7 +45,7 @@ public static class SkillRegistry
             //if (key == KeyCode.E) return new Theodore_E();
             //if (key == KeyCode.R) return new Theodore_R();
             //if (key == KeyCode.D) return new Theodore_D();
-            //if (key == KeyCode.F) return new Skill_();
+            if (key == KeyCode.F) return new Skill_Blink();
         }
         else if (character == CharacterType.Hyunwoo)
         {

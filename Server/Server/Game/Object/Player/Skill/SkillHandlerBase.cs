@@ -84,7 +84,7 @@ public abstract class SkillHandlerBase : ISkill
     public float GetDuration()
     {
         if (_animName == null)
-            return 0.1f;
+            return 0.05f;
 
         return DataManager.AnimLengthInfoDict[_characterType][_animName].Length;
     }
@@ -94,7 +94,7 @@ public abstract class SkillHandlerBase : ISkill
         return _keyCode;
     }
 
-    protected SkillSpec GetSkillSpec(bool isCast)
+    protected SkillSpec GetSkillSpec(bool isCast = true)
     {
         if(isCast)
             return DataManager.SkillSpecDict[_characterType][_keyCode].cast;

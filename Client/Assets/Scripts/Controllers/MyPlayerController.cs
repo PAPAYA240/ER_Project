@@ -43,8 +43,8 @@ public class MyPlayerController : PlayerController
 
     private void Awake()
     {
-        _input = gameObject.GetOrAddComponent<PlayerInputController>();      
         _skill = gameObject.GetOrAddComponent<PlayerSkillController>();
+        _input = gameObject.GetOrAddComponent<PlayerInputController>();      
         _view = gameObject.GetOrAddComponent<PlayerViewController>();
         _UI = gameObject.GetOrAddComponent<PlayerUIController>();
     }

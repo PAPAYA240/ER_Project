@@ -383,6 +383,7 @@ namespace Server.Game
             }
 
             _skills[KeyCode.T].CurLevel = 1;
+            _skills[KeyCode.F].CurLevel = 1;
         }
 
         private void MakeCoolDownDict()
@@ -905,7 +906,7 @@ namespace Server.Game
                 CanUse = canUse,
                 SkillKey = (int)keyCode,
                 Variants = variants,
-                //CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina },
+                CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina },
                 //InstanceId = ,
                 //TargetId = , 
             };

@@ -66,19 +66,19 @@ public class PlayerSkillController : MonoBehaviour
         _targetId = targetId;
         mousePos = clickWorld;
 
-        //if (_coolDownDict.ContainsKey(_key))
-        //{
-        //    // 스킬을 사용하고 있는 상태가 아닐 때
-        //    if (_player.State == CreatureState.Skill)
-        //        return null;
-        //
-        //    // 쿨타임이 끝났을 때
-        //    if (_coolDownDict[_key].isCoolDown)
-        //        return null;
-        //
-        //    // 스태미나가 충분할 때
-        //    if (_player.Stamina < FindSkill(_key).CurLevelStamina)
-        //        return null;
+        if (_coolDownDict.ContainsKey(_key))
+        {
+            // 스킬을 사용하고 있는 상태가 아닐 때
+            if (_player.State == CreatureState.Skill)
+                return null;
+        
+            // 쿨타임이 끝났을 때
+            if (_coolDownDict[_key].isCoolDown)
+                return null;
+        
+            // 스태미나가 충분할 때
+            if (_player.Stamina < FindSkill(_key).CurLevelStamina)
+                return null;
 
             // 패킷 보내기
             Debug.Log($"스킬 사용! : {_key}");
@@ -89,9 +89,9 @@ public class PlayerSkillController : MonoBehaviour
                 MouseX = clickWorld.x,
                 MouseZ = clickWorld.z
             };
-        //}
-        //else
-        //    return null;
+        }
+        else
+            return null;
     }
 
     public void OnSkill(S_SkillMotion packet)
@@ -120,20 +120,20 @@ public class PlayerSkillController : MonoBehaviour
             SendSkillCollisionPacket();
         }
 
-        //KeyCode key = (KeyCode)packet.SkillKey;
+        KeyCode key = (KeyCode)packet.SkillKey;
 
-        //Debug.Log($"Key : {key}, CoolTime : {packet.CostInfo.CoolTime}, Stamina : {packet.CostInfo.Stamina}");
+        Debug.Log($"Key : {key}, CoolTime : {packet.CostInfo.CoolTime}, Stamina : {packet.CostInfo.Stamina}");
 
-        // 쿨타임 코루틴 시작
-        //StartCoroutine(CoInputCooltime(key, packet.CostInfo.CoolTime));
+        //쿨타임 코루틴 시작
+        StartCoroutine(CoInputCooltime(key, packet.CostInfo.CoolTime));
 
-        // 스태미너 연동
-        //_player.Stamina = packet.CostInfo.Stamina;
+        //스태미너 연동
+        _player.Stamina = packet.CostInfo.Stamina;
 
-        // 스킬 실행 UI 연동
-        //PlayerInterface.UseSkill(KeyToUIEnum(key));
+        //스킬 실행 UI 연동
+        //_player.UI.PlayerInterface.UseSkill(KeyToUIEnum(key));
 
-        //CreateSkillMesh(key);
+        CreateSkillMesh(key);
     }
 
     private void SendSkillCollisionPacket()
@@ -286,7 +286,7 @@ public class PlayerSkillController : MonoBehaviour
         //if (!string.IsNullOrEmpty(anim))
         //    PlayAnimFromServer(anim, 0.05f);
 
-        if (type == SkillMotionType.Blink)
+        if (type == SkillMotionType.Transform)
         {
             _agent.Warp(end);
             _agent.nextPosition = end;
@@ -444,12 +444,16 @@ public class PlayerSkillController : MonoBehaviour
 
     public void CreateSkillMesh(KeyCode keyCode)
     {
-        SkillHitbox skillHitbox = DataManager.SkillHitboxDict[_player.ObjInfo.Player.CharType][keyCode];
-        GameObject go = Managers.Resource.Instantiate("Debug/SkillMesh", gameObject.transform);
-        SkillMesh sm = go.GetComponent<SkillMesh>();
-        if (sm == null)
+        if (DataManager.SkillHitboxDict[_player.ObjInfo.Player.CharType].TryGetValue(keyCode, out SkillHitbox skillHitbox))
+        {
+            GameObject go = Managers.Resource.Instantiate("Debug/SkillMesh", gameObject.transform);
+            SkillMesh sm = go.GetComponent<SkillMesh>();
+            if (sm == null)
+                return;
+            sm.Init(skillHitbox, gameObject.transform, _player.ObjInfo.Player.Team);
+        }
+        else
             return;
-        sm.Init(skillHitbox, gameObject.transform, _player.ObjInfo.Player.Team);
     }
     #endregion
 

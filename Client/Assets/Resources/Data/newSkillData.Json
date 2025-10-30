@@ -605,6 +605,63 @@
           "피해량": [ "60", "120", "180" ],
           "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
         }
+      },
+      "F": {
+        "name": "블링크",
+        "description": "사용 시 지정한 위치로 일정 거리 순간이동합니다.",
+        "type": "Warp",
+        "maxLevel": 2,
+        "mechanics": {
+          "targetType": "NonTarget",
+          "damageType": "None"
+        },
+        "scaling": {
+          "adRatio": 0.0
+        },
+        "levels": {
+          "1": {
+            "damage": 0,
+            "cooldown": 2,
+            "staminaCost": 0,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 15,
+                "duration": 2.5
+              }
+            ]
+          },
+          "2": {
+            "damage": 0,
+            "cooldown": 30,
+            "staminaCost": 0,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 15,
+                "duration": 2.5
+              }
+            ]
+          }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "<color=#FFFFFF>60</color><color=#DFC480>(+공격력의 50%)</color>",
+            "<color=#FFFFFF>120</color><color=#DFC480>(+공격력의 50%)</color>",
+            "<color=#FFFFFF>180</color><color=#DFC480>(+공격력의 50%)</color>"
+          ],
+          "{MaxHpRatio}": [
+            "<color=#FFFFFF>4%</color>",
+            "<color=#FFFFFF>7%</color>",
+            "<color=#FFFFFF>10%</color>"
+          ]
+        },
+        "popupInfo": {
+          "피해량": [ "60", "120", "180" ],
+          "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
+        }
       }
     },
     "Yuki": {
@@ -1189,7 +1246,7 @@
         "description": "테오도르가 지정한 위치에 7초 동안 유지되는 증폭 스크린을 생성합니다.\n\n증폭 스크린을 통과한 테오도르의 <color=#FFFFFF>기본 공격</color> 탄환과 <color=#FFFFFF>스파크탄</color>은 적중한 적 주변으로 확산됩니다. 스크린을 통과한 기본 공격은 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 24%)</color>의 추가 스킬 피해를 입히고, 스파크탄은 투사체 속도와 사거리가 증가합니다.",
         "type": "Normal",
         "maxLevel": 5,
-        "canMoveDuringCast" :  true,
+        "canMoveDuringCast": true,
         "mechanics": {
           "targetType": "TargetArea",
           "damageType": "Magic"
@@ -1647,6 +1704,63 @@
           "공격 속도 증가량(%)": [ "40%", "60%", "80%" ],
           "쿨다운": [ "80", "70", "60" ],
           "소모량": [ "100", "125", "150" ]
+        }
+      },
+      "F": {
+        "name": "블링크",
+        "description": "사용 시 지정한 위치로 일정 거리 순간이동합니다.",
+        "type": "Warp",
+        "maxLevel": 2,
+        "mechanics": {
+          "targetType": "NonTarget",
+          "damageType": "None"
+        },
+        "scaling": {
+          "adRatio": 0.0
+        },
+        "levels": {
+          "1": {
+            "damage": 0,
+            "cooldown": 2,
+            "staminaCost": 0,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 15,
+                "duration": 2.5
+              }
+            ]
+          },
+          "2": {
+            "damage": 0,
+            "cooldown": 30,
+            "staminaCost": 0,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 15,
+                "duration": 2.5
+              }
+            ]
+          }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "<color=#FFFFFF>60</color><color=#DFC480>(+공격력의 50%)</color>",
+            "<color=#FFFFFF>120</color><color=#DFC480>(+공격력의 50%)</color>",
+            "<color=#FFFFFF>180</color><color=#DFC480>(+공격력의 50%)</color>"
+          ],
+          "{MaxHpRatio}": [
+            "<color=#FFFFFF>4%</color>",
+            "<color=#FFFFFF>7%</color>",
+            "<color=#FFFFFF>10%</color>"
+          ]
+        },
+        "popupInfo": {
+          "피해량": [ "60", "120", "180" ],
+          "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
         }
       }
     },
