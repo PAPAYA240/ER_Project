@@ -23,7 +23,6 @@ public class MyPlayerController : PlayerController
 
     //UI
     UI_PlayerHUD _playerHUD;
-    public UI_PlayerInterface PlayerInterface { get; protected set; }
     // Inventory
     List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
 
@@ -170,7 +169,9 @@ public class MyPlayerController : PlayerController
     public override void EquipItem(int itemId)
     {
         base.EquipItem(itemId);
-        PlayerInterface.Equip(DataManager.ItemDict[itemId] as EquipItemInfo);
+        if (UI.PlayerInterface == null)
+            return;
+        UI.PlayerInterface.Equip(DataManager.ItemDict[itemId] as EquipItemInfo);
     }  
     #endregion
 

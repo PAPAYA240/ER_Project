@@ -70,6 +70,11 @@ enum MsgId {
   C_REST = 61;
   C_DEATH = 62;
 
+
+  S_OCCUPY_BEACON = 63;
+  S_CHANGE_BEACON_TIME = 64;
+  S_CHANGE_SCORE = 65;
+  S_GAME_OVER = 66;
 }
 
 enum CreatureState{
@@ -527,6 +532,24 @@ message S_AddAbigailCoord{
 
 message S_RemoveAbigailCoord{
 	int32 objectId = 1;
+}
+
+message S_OccupyBeacon{
+	int32 team = 1;
+}
+
+message S_ChangeBeaconTime{
+	int32 beacon = 1;
+	int32 time = 2;
+}
+
+message S_ChangeScore{
+	int32 team = 1;
+	int32 score = 2;
+}
+
+message S_GameOver{
+	int32 winTeam  = 1;
 }
 
 message PositionInfo{

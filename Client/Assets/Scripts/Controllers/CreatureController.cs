@@ -155,7 +155,7 @@ public class CreatureController : BaseController
         if (targetObject == null)
             return false;
 
-        CreatureController cc = targetObject.GetComponent<CreatureController>();
+        CreatureController cc = targetObject.GetComponentInChildren<CreatureController>();
         if (cc == null) 
             return false;
 
