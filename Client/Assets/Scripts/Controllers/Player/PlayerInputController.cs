@@ -196,6 +196,19 @@ public class PlayerInputController : MonoBehaviour
         return null;
     }
 
+    public KeyCode GetSkillLevelUpCommand()
+    {
+        if (Input.GetKey(KeyCode.LeftControl))
+        {
+            if (Input.GetKeyDown(KeyCode.Q))        { return KeyCode.Q; }       
+            else if (Input.GetKeyDown(KeyCode.W))   { return KeyCode.W; } 
+            else if (Input.GetKeyDown(KeyCode.E))   { return KeyCode.E; } 
+            else if (Input.GetKeyDown(KeyCode.R))   { return KeyCode.R; } 
+        }
+
+        return KeyCode.None;
+    }
+
     #region Util
     private Vector3 GetMouseWorldPosition()
     {

@@ -93,9 +93,16 @@ public class MyPlayerController : PlayerController
         }
 
         // 스킬
-        var skillCmd = _input.GetSkillCommand();
-        if (skillCmd != null)
-            Managers.Network.Send(skillCmd);
+        // 스킬 레벨 업
+        var skillLevelUpCmd = _input.GetSkillLevelUpCommand();
+        if (skillLevelUpCmd != KeyCode.None)
+            _UI.TrySkillLevelUp(skillLevelUpCmd);
+        else
+        {
+            var skillCmd = _input.GetSkillCommand();
+            if (skillCmd != null)
+                Managers.Network.Send(skillCmd);
+        }
 
         // 휴식(X)
         var restCmd = _input.GetRestCommand();
