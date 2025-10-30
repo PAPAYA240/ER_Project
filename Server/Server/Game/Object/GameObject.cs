@@ -355,8 +355,6 @@ namespace Server.Game
                         addAbigailCoordPkt.AttackerTeam = statusEffect.attacker.Info.Player.Team;
                         addAbigailCoordPkt.Duration = statusEffect.duration;
                         Room.Broadcast(addAbigailCoordPkt);
-
-                        // 시야 제공 (용수야 도와줘)
                     }
                 }                    
             }

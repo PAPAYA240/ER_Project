@@ -189,7 +189,7 @@ class PacketHandler
             if (attPc == null) 
                 return;
 
-            Managers.Object.MyPlayer.NotifyKill(attPc, pc); 
+            Managers.Object.MyPlayer.UI.NotifyKill(attPc, pc); 
         }
     }
 
@@ -644,7 +644,7 @@ class PacketHandler
 
         if(Managers.Object.MyPlayer != null)
         {
-            Managers.Object.MyPlayer.SetTimer(syncTimerPacket.Phase, clientLocalTargetRealtimeSinceStartupEnd);
+            Managers.Object.MyPlayer.UI.SetTimer(syncTimerPacket.Phase, clientLocalTargetRealtimeSinceStartupEnd);
         }
     }
 

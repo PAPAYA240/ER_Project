@@ -280,12 +280,8 @@ namespace Server.Game
 
         public override void OnDead(GameObject attacker)
         {
-            // 용수야 도와줘
-
             if (Room == null)
                 return;
-
-            PosInfo.State = CreatureState.Dead;
             
             // KDA 변화 패킷
             S_ChangeKDA KdaPacket = new S_ChangeKDA();

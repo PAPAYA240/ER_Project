@@ -539,8 +539,6 @@ namespace Server.Game
                 player.Room.Broadcast(removeAbigailCoordPkt);
 
                 player.RemoveStatusEffects("Coord");
-
-                // 시야 제공 제거 (용수야 도와줘)
             }
 
             target.OnDamaged(player, damage);
