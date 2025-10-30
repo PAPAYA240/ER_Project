@@ -67,6 +67,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SRespawn, PacketHandler.S_RespawnHandler);		
 		_onRecv.Add((ushort)MsgId.SSkillLevelUp, MakePacket<S_SkillLevelUp>);
 		_handler.Add((ushort)MsgId.SSkillLevelUp, PacketHandler.S_SkillLevelUpHandler);		
+		_onRecv.Add((ushort)MsgId.SPlayerState, MakePacket<S_PlayerState>);
+		_handler.Add((ushort)MsgId.SPlayerState, PacketHandler.S_PlayerStateHandler);		
 		_onRecv.Add((ushort)MsgId.SChangeStat, MakePacket<S_ChangeStat>);
 		_handler.Add((ushort)MsgId.SChangeStat, PacketHandler.S_ChangeStatHandler);		
 		_onRecv.Add((ushort)MsgId.SChangeItemStat, MakePacket<S_ChangeItemStat>);
@@ -89,6 +91,16 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SAddAbigailCoord, PacketHandler.S_AddAbigailCoordHandler);		
 		_onRecv.Add((ushort)MsgId.SRemoveAbigailCoord, MakePacket<S_RemoveAbigailCoord>);
 		_handler.Add((ushort)MsgId.SRemoveAbigailCoord, PacketHandler.S_RemoveAbigailCoordHandler);		
+		_onRecv.Add((ushort)MsgId.SMoveSync, MakePacket<S_MoveSync>);
+		_handler.Add((ushort)MsgId.SMoveSync, PacketHandler.S_MoveSyncHandler);		
+		_onRecv.Add((ushort)MsgId.SStop, MakePacket<S_Stop>);
+		_handler.Add((ushort)MsgId.SStop, PacketHandler.S_StopHandler);		
+		_onRecv.Add((ushort)MsgId.SSetMoveTarget, MakePacket<S_SetMoveTarget>);
+		_handler.Add((ushort)MsgId.SSetMoveTarget, PacketHandler.S_SetMoveTargetHandler);		
+		_onRecv.Add((ushort)MsgId.SSkillConfirm, MakePacket<S_SkillConfirm>);
+		_handler.Add((ushort)MsgId.SSkillConfirm, PacketHandler.S_SkillConfirmHandler);		
+		_onRecv.Add((ushort)MsgId.SSkillMotion, MakePacket<S_SkillMotion>);
+		_handler.Add((ushort)MsgId.SSkillMotion, PacketHandler.S_SkillMotionHandler);		
 		_onRecv.Add((ushort)MsgId.SOccupyBeacon, MakePacket<S_OccupyBeacon>);
 		_handler.Add((ushort)MsgId.SOccupyBeacon, PacketHandler.S_OccupyBeaconHandler);		
 		_onRecv.Add((ushort)MsgId.SChangeBeaconTime, MakePacket<S_ChangeBeaconTime>);

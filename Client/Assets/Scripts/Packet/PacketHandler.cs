@@ -172,7 +172,7 @@ class PacketHandler
         {
             if(Managers.Object.MyPlayer.Id == diePacket.ObjectId)
             {
-                go.GetComponentInChildren<MyPlayerController>().PlayerInterface.OnDead(diePacket.RespawnTime);
+                go.GetComponentInChildren<MyPlayerController>().UI.PlayerInterface.OnDead(diePacket.RespawnTime);
             }
             
             // 죽은 플레이어
@@ -352,9 +352,9 @@ class PacketHandler
         MyPlayerController mpc = go.GetComponent<MyPlayerController>();
         if (null != mpc)
         {
-            mpc.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
+            mpc.UI.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
             mpc.UpdateLevel();
-            mpc.PlayerInterface.UpdateStat();
+            mpc.UI.PlayerInterface.UpdateStat();
             return;
         }
 
@@ -522,7 +522,7 @@ class PacketHandler
 
         if(pc is MyPlayerController mpc)
         {
-            mpc.PlayerInterface.UpdateStat();
+            mpc.UI.PlayerInterface.UpdateStat();
         }
     }
 
