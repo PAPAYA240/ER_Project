@@ -21,7 +21,12 @@ public sealed class Theodore_D : SkillHandlerBase
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
-        base.OnEnter(p, ctx);
+        //if ()
+        //{
+        //    //조준
+        //    p.SendAnimPacket("CHARGING", 0.05f);
+        //}
+        //base.OnEnter(p, ctx);
 
         p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
     }

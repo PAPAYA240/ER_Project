@@ -86,6 +86,9 @@ public abstract class SkillHandlerBase : ISkill
         if (_animName == null)
             return 0.01f;
 
+        if (!DataManager.AnimLengthInfoDict[_characterType].ContainsKey(_animName))
+            return 0.01f;
+
         return DataManager.AnimLengthInfoDict[_characterType][_animName].Length;
     }
 
@@ -96,6 +99,9 @@ public abstract class SkillHandlerBase : ISkill
 
     protected SkillSpec GetSkillSpec(bool isCast)
     {
+        if (!DataManager.SkillSpecDict[_characterType].ContainsKey(_keyCode))
+            return null;
+
         if(isCast)
             return DataManager.SkillSpecDict[_characterType][_keyCode].cast;
         else

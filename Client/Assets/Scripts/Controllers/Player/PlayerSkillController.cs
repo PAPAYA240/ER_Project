@@ -193,9 +193,6 @@ public class PlayerSkillController : MonoBehaviour
     {
         if (variants == VariantKey.NoCollision)
             return null;
-
-        if (variants == VariantKey.NoCollision)
-            return null;
         if(variants == VariantKey.Cast)
             return _skillSpecs[key].cast;
         if(variants == VariantKey.Followup)

@@ -21,6 +21,7 @@ public sealed class Theodore_Q : SkillHandlerBase
         base.OnEnter(p, ctx);
         // TODO: 코스트/쿨타임 차감
 
+        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -45,17 +46,6 @@ public sealed class Theodore_Q : SkillHandlerBase
     public override void OnExit(Player p, SkillContext ctx)
     {
         base.OnExit(p, ctx);
-
-        p.Tokens.Add(new NextInputToken
-        {
-            Active = true,
-            RemainingUses = 1,
-            ExpireUtc = TimeUtil.UtcSec() + 3.0,
-            Priority = 10,
-            Trigger = InputKind.Move,
-            ReplacementSkillKey = "Rozzi_Q_Dash",
-            CancelOnUseSkill = true
-        });
     }
 }
 

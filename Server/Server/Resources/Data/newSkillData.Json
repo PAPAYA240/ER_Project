@@ -1070,6 +1070,7 @@
         "name": "에너지 포",
         "description": "충전: 테오도르가 1.5초에 걸쳐 자신의 레일건에 에너지를 충전하며 이동 속도가 20%까지 서서히 감소합니다.\n\n발사: 다시 사용하면 지정한 방향으로 광선을 발사하여 적에게는 <color=#FFFFFF>{normalDamage}</color><color=#CDA1C8>(+스킬 증폭의 70%)</color>의 스킬 피해를 입히고 아군은 2.5초에 걸쳐 <color=#FFFFFF>{normalHeal}</color><color=#CDA1C8>(+스킬 증폭의 20%)</color>의 체력을 회복시킵니다. 충전 시간에 비례해 사거리가 증가합니다.\n\n<color=#FFFFFF>에너지 포</color>가 <color=#FFFFFF>증폭 스크린</color>에 적중하면 잠시 뒤 스크린 정면으로 광선을 발사해 적에게는 <color=#FFFFFF>{screenDamage}</color><color=#CDA1C8>(+스킬 증폭의 70%)</color>의 스킬 피해를 입히고 아군은 2.5초에 걸쳐 <color=#FFFFFF>{screenHeal}</color><color=#CDA1C8>(+스킬 증폭의 20%)</color>의 체력을 회복시킵니다.",
         "type": "Normal",
+        "canCharge": true,
         "maxLevel": 5,
         "mechanics": {
           "targetType": "TargetArea",
@@ -1187,9 +1188,10 @@
       "W": {
         "name": "증폭 스크린",
         "description": "테오도르가 지정한 위치에 7초 동안 유지되는 증폭 스크린을 생성합니다.\n\n증폭 스크린을 통과한 테오도르의 <color=#FFFFFF>기본 공격</color> 탄환과 <color=#FFFFFF>스파크탄</color>은 적중한 적 주변으로 확산됩니다. 스크린을 통과한 기본 공격은 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 24%)</color>의 추가 스킬 피해를 입히고, 스파크탄은 투사체 속도와 사거리가 증가합니다.",
+        "canCharge": true,
         "type": "Normal",
         "maxLevel": 5,
-        "canMoveDuringCast" :  true,
+        "canMoveDuringCast": true,
         "mechanics": {
           "targetType": "TargetArea",
           "damageType": "Magic"
@@ -1372,6 +1374,7 @@
       "E": {
         "name": "스파크탄",
         "description": "<color=#2EE635>지속 효과:</color> <color=#FFFFFF>에너지 포</color> 또는 <color=#FFFFFF>스파크탄</color> 적중 시 다음 기본 공격 사거리가 1 증가합니다.\n\n테오도르가 스파크탄을 던져 적중한 적의 이동 속도를 2초동안 {speed}% 감소시키며 4초 동안 <color=#FFFFFF>목표물</color>로 지정합니다. 테오도르는 목표물이 된 대상으로부터 시야를 제공받으며, 기본 공격 또는 스킬로 공격하면 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 60%)</color>의 스킬 피해를 입히고 {CC}초 동안 속박합니다.",
+        "canCharge": true,
         "type": "Projectile",
         "maxLevel": 5,
         "mechanics": {
@@ -1487,6 +1490,7 @@
       "R": {
         "name": "에너지 필드",
         "description": "테오도르가 에너지를 최대로 끌어올려 지정한 방향으로 4초 동안 유지되는 <color=#FFFFFF>에너지 필드</color>를 생성해 같은 방향으로 이동하는 아군의 이동 속도를 <color=#FFFFFF>{speed}%</color><color=#CDA1C8>(+스킬 증폭의 2%)</color> 증가시키고, 강력한 에너지 파동을 발사하여 적에게 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 90%)</color>의 스킬 피해를 입힙니다.\n\n발사 이후, 테오도르는 <color=#FFFFFF>과충전 상태</color>가 되어, 공격속도가 8초 동안 <color=#FFFFFF>{attackSpeed}%</color> 증가하며, <color=#FFFFFF>에너지 포</color> 최대 충전 시간이 0.5초로 감소합니다.",
+        "canCharge": true,
         "type": "Ultimate",
         "maxLevel": 3,
         "mechanics": {

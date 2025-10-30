@@ -84,17 +84,5 @@ public sealed class Theodore_E : SkillHandlerBase
     {
         base.OnExit(p, ctx);
     }
-
-    public override bool CanCast(Player p, SkillContext ctx)
-    {
-        _target = ObjectManager.Instance.Find(ctx.TargetId);
-        SkillSpec spec = GetSkillSpec(true);
-        if (_target == null || (_target != null && Vector3.Distance(_target.Position, p.Position) > spec.limits.baseMaxDist))
-        {
-            return false;
-        }
-
-        return true;
-    }
 }
 
