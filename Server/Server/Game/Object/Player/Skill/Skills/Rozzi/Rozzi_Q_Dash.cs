@@ -28,6 +28,7 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
         base.OnEnter(p, ctx);
 
         _elapsed = 0.0f;
+        _committed = false;
 
         p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Followup);
     }
@@ -38,38 +39,41 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
     }
 
     public override void OnTick(Player p, SkillContext ctx)
-    {
-        if (TryConsumeLatest(out var prop))
-        {
-            _startPos = p.Position;
-            _endPos = prop.EndBlocked;
-
-            _duration = Vector3.Distance(_startPos, _endPos) / _spec.limits.speed;
-
-            _committed = true;
-        }
-
+    {       
         if (!_committed)
-            return;
-
-        float t = Math.Clamp(_elapsed / _duration, 0f, 1f);
-        Vector3 targetPos = Vector3.Lerp(_startPos, _endPos, t);
-        Console.WriteLine($"t : {t}, targetPos : {targetPos}");
-
-        p.SendSkillMotion(
-         type: SkillMotionType.Transform,
-         start: p.Position,
-         end: targetPos);
-
-        _elapsed += TimeUtil.DeltaTime;
-        if(_elapsed > _duration)
         {
-            if(p.CurrentState is Player_SkillState skill)
+            if (TryConsumeLatest(out var prop))
             {
-                skill.RequestFinish();
-                return;
-            }    
+                _startPos = p.Position;
+                _endPos = prop.EndBlocked;
+
+                _duration = Vector3.Distance(_startPos, _endPos) / _spec.limits.speed;
+
+                _committed = true;
+                Console.WriteLine("Commit!!");
+            }
         }
+        else
+        {
+            float t = Math.Clamp(_elapsed / _duration, 0f, 1f);
+            Vector3 targetPos = Vector3.Lerp(_startPos, _endPos, t);
+            Console.WriteLine($"_startPos : {_startPos}, _endPos : {_endPos}, t: {t}, targetPos : {targetPos}");
+
+            p.SendSkillMotion(
+             type: SkillMotionType.Transform,
+             start: p.Position,
+             end: targetPos);
+
+            _elapsed += TimeUtil.DeltaTime;
+            if (_elapsed > _duration)
+            {
+                if (p.CurrentState is Player_SkillState skill)
+                {
+                    skill.RequestFinish();
+                    return;
+                }
+            }
+        }         
     }
 
     public override void OnExit(Player p, SkillContext ctx)
