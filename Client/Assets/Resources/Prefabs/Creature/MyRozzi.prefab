@@ -581,7 +581,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &5021250955521430936
 Animator:
-  serializedVersion: 5
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -595,6 +595,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -1590,6 +1591,9 @@ SkinnedMeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 3
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2681,8 +2685,6 @@ GameObject:
   - component: {fileID: 7715207981999100302}
   - component: {fileID: 8649169367258116997}
   - component: {fileID: 603066989652546787}
-  - component: {fileID: -3627917903102980039}
-  - component: {fileID: -5177017171371246027}
   m_Layer: 0
   m_Name: MyRozzi
   m_TagString: Untagged
@@ -2763,44 +2765,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d07a4ac14489814e9692da7473da8c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-3627917903102980039
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4507760152863837473}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b45822c208a4ffe40909f65084d07e82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _attackRange: 3
-  _stopBuffer: 0.1
-  _destEps: 0.15
-  _groundMask:
-    serializedVersion: 2
-    m_Bits: 2048
-  _monsterMask:
-    serializedVersion: 2
-    m_Bits: 256
-  _playerMask:
-    serializedVersion: 2
-    m_Bits: 8
---- !u!114 &-5177017171371246027
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4507760152863837473}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59c136465ba5ff64a92847f1c690590d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _minMoveDelta: 0.03
-  _minAngleDelta: 1
 --- !u!1 &4552065746279300795
 GameObject:
   m_ObjectHideFlags: 0

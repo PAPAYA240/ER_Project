@@ -21,8 +21,12 @@ public class MyPlayerController : PlayerController
     private PlayerUIController _UI;
     public PlayerUIController UI {  get { return _UI; } }
 
+    public SkillIndicator Indicator { get { return _skillIndicator; } }
+
     //UI
     UI_PlayerHUD _playerHUD;
+    private SkillIndicator _skillIndicator;
+
     // Inventory
     List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
 
@@ -57,6 +61,9 @@ public class MyPlayerController : PlayerController
         _UI.Init();
 
         _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHPColor();
+
+        // 스킬 인디케이터
+        _skillIndicator = gameObject.GetOrAddComponent<SkillIndicator>();
 
         // 전장의 안개 카메라 설정
         GameObject fogCamGo = GameObject.Find("FogCamera");
@@ -133,6 +140,10 @@ public class MyPlayerController : PlayerController
         //UpdateTransform();
     }
 
+    public bool RequiresCharge(KeyCode key)
+    {
+        return DataManager.SkillDict[ObjInfo.Player.CharType][key].canCharge;
+    }
 
     // 서버 응답 전달
     //public void OnServerUpdate(S_Idle packet) => _view.OnIdle(packet);
