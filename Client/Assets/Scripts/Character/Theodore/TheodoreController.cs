@@ -5,10 +5,10 @@ using System.Collections;
 using UnityEngine;
 using static Data.SkillEffectList;
 
-public class TheodoreController : MyPlayerController
+public class UI_Indicator : MyPlayerController
 {
     private Material _passiveMaterial, _originMaterial;
-    private UI_IndicatorTheodore _indicator;
+    private SkillIndicator _indicator;
     private GameObject _skillTarget;
     private Renderer _myRenderer;
 
