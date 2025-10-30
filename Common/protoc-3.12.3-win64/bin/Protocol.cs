@@ -268,14 +268,14 @@ namespace Google.Protobuf.Protocol {
             "WVBFX0VORBAFKmgKCUl0ZW1HcmFkZRIKCgZDT01NT04QABIMCghVTkNPTU1P",
             "ThABEggKBFJBUkUQAhIICgRFUElDEAMSDQoJTEVHRU5EQVJZEAQSCgoGTVlU",
             "SElDEAUSEgoOSVRFTV9HUkFERV9FTkQQBiouCgpTdG9wUmVhc29uEgwKCFNU",
-            "T1BfQUxMEAASEgoOU1RPUF9NT1ZFX09OTFkQASoyCg9Ta2lsbE1vdGlvblR5",
-            "cGUSCAoERGFzaBAAEgkKBUJsaW5rEAESCgoGRm9sbG93EAIqNwoMUHJvcG9z",
-            "YWxNb2RlEggKBE5vbmUQABIOCgpTaW5nbGVTaG90EAESDQoJU3RyZWFtaW5n",
-            "EAIqNQoKVmFyaWFudEtleRIPCgtOb0NvbGxpc2lvbhAAEggKBENhc3QQARIM",
-            "CghGb2xsb3d1cBACKmcKDkNvbWJhdFRleHRUeXBlEgYKAkFEEAASBgoCQVAQ",
-            "ARIICgRUUlVFEAISDwoLSFBfUkVDT1ZFUlkQAxIUChBTVEFNSU5BX1JFQ09W",
-            "RVJZEAQSCwoHQkFSUklFUhAFEgcKA0VORBAGQhuqAhhHb29nbGUuUHJvdG9i",
-            "dWYuUHJvdG9jb2xiBnByb3RvMw=="));
+            "T1BfQUxMEAASEgoOU1RPUF9NT1ZFX09OTFkQASorCg9Ta2lsbE1vdGlvblR5",
+            "cGUSCQoFYWdlbnQQABINCgl0cmFuc2Zvcm0QASo3CgxQcm9wb3NhbE1vZGUS",
+            "CAoETm9uZRAAEg4KClNpbmdsZVNob3QQARINCglTdHJlYW1pbmcQAio1CgpW",
+            "YXJpYW50S2V5Eg8KC05vQ29sbGlzaW9uEAASCAoEQ2FzdBABEgwKCEZvbGxv",
+            "d3VwEAIqZwoOQ29tYmF0VGV4dFR5cGUSBgoCQUQQABIGCgJBUBABEggKBFRS",
+            "VUUQAhIPCgtIUF9SRUNPVkVSWRADEhQKEFNUQU1JTkFfUkVDT1ZFUlkQBBIL",
+            "CgdCQVJSSUVSEAUSBwoDRU5EEAZCG6oCGEdvb2dsZS5Qcm90b2J1Zi5Qcm90",
+            "b2NvbGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.EnvType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.MonsterSkill), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.Weapon), typeof(global::Google.Protobuf.Protocol.SkillShape), typeof(global::Google.Protobuf.Protocol.TraitType), typeof(global::Google.Protobuf.Protocol.EquipItemType), typeof(global::Google.Protobuf.Protocol.ItemGrade), typeof(global::Google.Protobuf.Protocol.StopReason), typeof(global::Google.Protobuf.Protocol.SkillMotionType), typeof(global::Google.Protobuf.Protocol.ProposalMode), typeof(global::Google.Protobuf.Protocol.VariantKey), typeof(global::Google.Protobuf.Protocol.CombatTextType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -597,9 +597,8 @@ namespace Google.Protobuf.Protocol {
   }
 
   public enum SkillMotionType {
-    [pbr::OriginalName("Dash")] Dash = 0,
-    [pbr::OriginalName("Blink")] Blink = 1,
-    [pbr::OriginalName("Follow")] Follow = 2,
+    [pbr::OriginalName("agent")] Agent = 0,
+    [pbr::OriginalName("transform")] Transform = 1,
   }
 
   public enum ProposalMode {
@@ -15371,7 +15370,7 @@ namespace Google.Protobuf.Protocol {
 
     /// <summary>Field number for the "type" field.</summary>
     public const int TypeFieldNumber = 2;
-    private global::Google.Protobuf.Protocol.SkillMotionType type_ = global::Google.Protobuf.Protocol.SkillMotionType.Dash;
+    private global::Google.Protobuf.Protocol.SkillMotionType type_ = global::Google.Protobuf.Protocol.SkillMotionType.Agent;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Google.Protobuf.Protocol.SkillMotionType Type {
       get { return type_; }
@@ -15563,7 +15562,7 @@ namespace Google.Protobuf.Protocol {
     public override int GetHashCode() {
       int hash = 1;
       if (ObjectId != 0) hash ^= ObjectId.GetHashCode();
-      if (Type != global::Google.Protobuf.Protocol.SkillMotionType.Dash) hash ^= Type.GetHashCode();
+      if (Type != global::Google.Protobuf.Protocol.SkillMotionType.Agent) hash ^= Type.GetHashCode();
       if (StartX != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(StartX);
       if (StartY != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(StartY);
       if (StartZ != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(StartZ);
@@ -15593,7 +15592,7 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(8);
         output.WriteInt32(ObjectId);
       }
-      if (Type != global::Google.Protobuf.Protocol.SkillMotionType.Dash) {
+      if (Type != global::Google.Protobuf.Protocol.SkillMotionType.Agent) {
         output.WriteRawTag(16);
         output.WriteEnum((int) Type);
       }
@@ -15653,7 +15652,7 @@ namespace Google.Protobuf.Protocol {
       if (ObjectId != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(ObjectId);
       }
-      if (Type != global::Google.Protobuf.Protocol.SkillMotionType.Dash) {
+      if (Type != global::Google.Protobuf.Protocol.SkillMotionType.Agent) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Type);
       }
       if (StartX != 0F) {
@@ -15704,7 +15703,7 @@ namespace Google.Protobuf.Protocol {
       if (other.ObjectId != 0) {
         ObjectId = other.ObjectId;
       }
-      if (other.Type != global::Google.Protobuf.Protocol.SkillMotionType.Dash) {
+      if (other.Type != global::Google.Protobuf.Protocol.SkillMotionType.Agent) {
         Type = other.Type;
       }
       if (other.StartX != 0F) {

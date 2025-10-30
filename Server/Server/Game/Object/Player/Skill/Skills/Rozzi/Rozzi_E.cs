@@ -19,8 +19,6 @@ public sealed class Rozzi_E : SkillHandlerBase
     private float _elapsed;
     private Vector3 _startPos, _midPos;
 
-    private bool _canUse = true;
-
     public Rozzi_E()
     {
         _characterType = CharacterType.Rozzi;

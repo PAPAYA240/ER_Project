@@ -905,7 +905,7 @@ namespace Server.Game
                 CanUse = canUse,
                 SkillKey = (int)keyCode,
                 Variants = variants,
-                CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina },
+                //CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina },
                 //InstanceId = ,
                 //TargetId = , 
             };

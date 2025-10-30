@@ -66,19 +66,19 @@ public class PlayerSkillController : MonoBehaviour
         _targetId = targetId;
         mousePos = clickWorld;
 
-        if (_coolDownDict.ContainsKey(_key))
-        {
-            // 스킬을 사용하고 있는 상태가 아닐 때
-            if (_player.State == CreatureState.Skill)
-                return null;
-
-            // 쿨타임이 끝났을 때
-            if (_coolDownDict[_key].isCoolDown)
-                return null;
-
-            // 스태미나가 충분할 때
-            if (_player.Stamina < FindSkill(_key).CurLevelStamina)
-                return null;
+        //if (_coolDownDict.ContainsKey(_key))
+        //{
+        //    // 스킬을 사용하고 있는 상태가 아닐 때
+        //    if (_player.State == CreatureState.Skill)
+        //        return null;
+        //
+        //    // 쿨타임이 끝났을 때
+        //    if (_coolDownDict[_key].isCoolDown)
+        //        return null;
+        //
+        //    // 스태미나가 충분할 때
+        //    if (_player.Stamina < FindSkill(_key).CurLevelStamina)
+        //        return null;
 
             // 패킷 보내기
             Debug.Log($"스킬 사용! : {_key}");
@@ -89,14 +89,14 @@ public class PlayerSkillController : MonoBehaviour
                 MouseX = clickWorld.x,
                 MouseZ = clickWorld.z
             };
-        }
-        else
-            return null;
+        //}
+        //else
+        //    return null;
     }
 
     public void OnSkill(S_SkillMotion packet)
     {
-        if(packet.Type == SkillMotionType.Dash || packet.Type == SkillMotionType.Blink)
+        if(packet.Type == SkillMotionType.Agent)
         {
             PlaySkillMotion((SkillMotionType)packet.Type,
             new Vector3(packet.StartX, packet.StartY, packet.StartZ),
@@ -104,13 +104,10 @@ public class PlayerSkillController : MonoBehaviour
             packet.Duration, packet.Anim, packet.CurveId,
             packet.ServerCollision, packet.AuthoritativeEnd);
         }
-        else if(packet.Type == SkillMotionType.Follow)
+        else if(packet.Type == SkillMotionType.Transform)
         {
             ApplySkillMotion((SkillMotionType)packet.Type,
-            new Vector3(packet.StartX, packet.StartY, packet.StartZ),
-            new Vector3(packet.EndX, packet.EndY, packet.EndZ),
-            packet.Duration, packet.Anim, packet.CurveId,
-            packet.ServerCollision, packet.AuthoritativeEnd);
+            new Vector3(packet.EndX, packet.EndY, packet.EndZ));
         }
     }
 
@@ -123,20 +120,20 @@ public class PlayerSkillController : MonoBehaviour
             SendSkillCollisionPacket();
         }
 
-        KeyCode key = (KeyCode)packet.SkillKey;
+        //KeyCode key = (KeyCode)packet.SkillKey;
 
-        Debug.Log($"Key : {key}, CoolTime : {packet.CostInfo.CoolTime}, Stamina : {packet.CostInfo.Stamina}");
+        //Debug.Log($"Key : {key}, CoolTime : {packet.CostInfo.CoolTime}, Stamina : {packet.CostInfo.Stamina}");
 
         // 쿨타임 코루틴 시작
-        StartCoroutine(CoInputCooltime(key, packet.CostInfo.CoolTime));
+        //StartCoroutine(CoInputCooltime(key, packet.CostInfo.CoolTime));
 
         // 스태미너 연동
-        _player.Stamina = packet.CostInfo.Stamina;
+        //_player.Stamina = packet.CostInfo.Stamina;
 
         // 스킬 실행 UI 연동
         //PlayerInterface.UseSkill(KeyToUIEnum(key));
 
-        CreateSkillMesh(key);
+        //CreateSkillMesh(key);
     }
 
     private void SendSkillCollisionPacket()
@@ -337,15 +334,13 @@ public class PlayerSkillController : MonoBehaviour
         _player.UpdateTransform();
     }
 
-    private void ApplySkillMotion(SkillMotionType type, Vector3 start, Vector3 end,
-                            float duration, string anim, string curveId,
-                            bool serverCollision, bool authoritativeEnd)
+    private void ApplySkillMotion(SkillMotionType type, Vector3 targetPos)
     {
         if(_agent != null)
             _agent.enabled = false;
 
         // NavMesh 위로 수정
-        if (NavMesh.SamplePosition(end, out var endHit, 2.0f, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(targetPos, out var endHit, 2.0f, NavMesh.AllAreas))
             _endPosition = endHit.position;
 
         transform.position = _endPosition;

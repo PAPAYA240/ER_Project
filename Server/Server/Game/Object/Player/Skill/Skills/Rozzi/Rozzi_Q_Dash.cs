@@ -9,16 +9,25 @@ using static Server.Data.DataUtils;
 
 public sealed class Rozzi_Q_Dash : SkillHandlerBase
 {
+    private float _elapsed, _duration;
+    private Vector3 _startPos, _endPos;
+
+    SkillSpec _spec;
+
     public Rozzi_Q_Dash()
     {
         _characterType = CharacterType.Rozzi;
         _animName = "SKILL_Q_DASH";
         _keyCode = KeyCode.Q;
+
+        _spec = GetSkillSpec(false);
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
         base.OnEnter(p, ctx);
+
+        _elapsed = 0.0f;
 
         p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Followup);
     }
@@ -30,18 +39,36 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
 
     public override void OnTick(Player p, SkillContext ctx)
     {
-        if (_committed)
+        if (TryConsumeLatest(out var prop))
+        {
+            _startPos = p.Position;
+            _endPos = prop.EndBlocked;
+
+            _duration = Vector3.Distance(_startPos, _endPos) / _spec.limits.speed;
+
+            _committed = true;
+        }
+
+        if (!_committed)
             return;
 
-        if (!TryConsumeLatest(out var prop))
-            return;
+        float t = _elapsed / _duration;
+        Vector3 targetPos = Vector3.Lerp(_startPos, _endPos, t);
 
-        var from = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
-        var end = prop.EndBlocked;
+        _elapsed += TimeUtil.DeltaTime;
+        if(_elapsed > _duration)
+        {
+            if(p.CurrentState is Player_SkillState skill)
+            {
+                skill.RequestFinish();
+                return;
+            }    
+        }
 
-        CommitMotionOnce(p, from, end);
-
-        _committed = true;
+        p.SendSkillMotion(
+         type: SkillMotionType.Follow,
+         start: p.Position,
+         end: targetPos);
     }
 
     public override void OnExit(Player p, SkillContext ctx)
@@ -58,7 +85,7 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
         float duration = MathF.Max(0.05f, GetDuration() /*dist / speed*/);
 
         p.SendSkillMotion(
-             type: SkillMotionType.Dash,
+             type: SkillMotionType.Follow,
              start: from,
              end: _finalEnd,
              duration: duration,

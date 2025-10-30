@@ -84,7 +84,7 @@ public abstract class SkillHandlerBase : ISkill
     public float GetDuration()
     {
         if (_animName == null)
-            return 0.01f;
+            return 0.1f;
 
         return DataManager.AnimLengthInfoDict[_characterType][_animName].Length;
     }
