@@ -191,7 +191,10 @@ public class PlayerSkillController : MonoBehaviour
 
     private SkillSpec GetSkillSpec(KeyCode key, VariantKey variants)
     {
-        if(variants == VariantKey.NoCollision)
+        if (variants == VariantKey.NoCollision)
+            return null;
+
+        if (variants == VariantKey.NoCollision)
             return null;
         if(variants == VariantKey.Cast)
             return _skillSpecs[key].cast;

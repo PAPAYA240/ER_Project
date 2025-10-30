@@ -208,28 +208,14 @@ public class PlayerInputController : MonoBehaviour
     private GameObject GetAttackableUnderCursor(float radius = 0.1f)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        var hits = Physics.SphereCastAll(ray, radius, 1000f, _monsterMask | _playerMask);
-
-        if (hits.Length == 0)
-            return null;
-
-        float minDist = float.MaxValue;
-        GameObject nearest = null;
-
-        foreach (var hit in hits)
+        if (Physics.SphereCast(ray, radius, out RaycastHit hit, 1000f, _monsterMask | _playerMask))
         {
             var cc = hit.collider.GetComponentInParent<CreatureController>();
             if (cc != null && IsAttackable(hit.collider.gameObject))
-            {
-                if (hit.distance < minDist)
-                {
-                    minDist = hit.distance;
-                    nearest = cc.gameObject;
-                }
-            }
+                return cc.gameObject;
         }
 
-        return nearest;
+        return null;
     }
 
     private int GetAttackableUnderCursorID(float radius = 0.1f)

@@ -40,11 +40,11 @@ public static class SkillRegistry
         }
         else if (character == CharacterType.Theodore)
         {
-            //if (key == KeyCode.Q) return new Theodore_Q();
-            //if (key == KeyCode.W) return new Theodore_W();
-            //if (key == KeyCode.E) return new Theodore_E();
-            //if (key == KeyCode.R) return new Theodore_R();
-            //if (key == KeyCode.D) return new Theodore_D();
+            if (key == KeyCode.Q) return new Theodore_Q();
+            if (key == KeyCode.W) return new Theodore_W();
+            if (key == KeyCode.E) return new Theodore_E();
+            if (key == KeyCode.R) return new Theodore_R();
+            if (key == KeyCode.D) return new Theodore_D();
             //if (key == KeyCode.F) return new Skill_();
         }
         else if (character == CharacterType.Hyunwoo)
