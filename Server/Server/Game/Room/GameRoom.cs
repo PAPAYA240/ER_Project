@@ -197,9 +197,8 @@ namespace Server.Game
 
         public override void Update()
         {
-            TimeUtil.Update();
-
             CurTick = Environment.TickCount;
+            TimeUtil.Update(CurTick);
 
             foreach (Projectile projectile in _projectiles.Values)
             {
@@ -211,7 +210,7 @@ namespace Server.Game
                 player.Update();
             }
             foreach (Monster monster in _monsters.Values)
-            {
+            {   
                 monster.Update();
             }
             foreach (EnvironmentObject env in _envs.Values)
