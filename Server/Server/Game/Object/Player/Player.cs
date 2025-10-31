@@ -245,6 +245,7 @@ namespace Server.Game
             
             TickTokens(); // ��ū ����/����
             _stateMachine.Update(this);
+            _statRegenerator.Update();
             CheckUpdateStat();
         }
 

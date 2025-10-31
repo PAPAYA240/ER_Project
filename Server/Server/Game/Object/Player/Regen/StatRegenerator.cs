@@ -11,7 +11,7 @@ class StatRegenerator
     private readonly Player _owner;
 
     // 누적 시간(ms)과 틱 간격
-    private int _elapsedMs;
+    private float _elapsedMs;
     private int _intervalMs;
 
     // 동작 on/off
@@ -25,21 +25,17 @@ class StatRegenerator
         _intervalMs = Math.Max(1, intervalMs);
     }
 
-    public void Update(int deltaMs)
+    public void Update()
     {
         if (!_enabled)
             return;
 
-        // 비정상 큰 delta 방지(예: 디버깅/일시정지 후 복귀). 너무 크면 컷/클램프.
-        if (deltaMs < 0) deltaMs = 0;
-        if (deltaMs > 200) deltaMs = 200; // 룸 틱이 50ms라 가정시, 200ms 정도로 상한
-
-        _elapsedMs += deltaMs;
+        _elapsedMs += TimeUtil.DeltaTime * 1000f;
 
         // interval을 초과한 만큼 틱을 여러 번 처리(로딩/일시정지 후 catch-up)
         while (_elapsedMs >= _intervalMs)
         {
-            _elapsedMs -= _intervalMs;
+            _elapsedMs = 0;
 
             if (!_owner.CanRegenerate())
                 continue;
