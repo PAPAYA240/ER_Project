@@ -280,7 +280,7 @@ public class PlayerViewController : MonoBehaviour
 
     private IEnumerator CoRotateToTarget()
     {
-        float rotateSpeed = 10f;
+        float rotateSpeed = 15f;
         while (_target != null)
         {
             Vector3 dir = (_target.transform.position - transform.position);
