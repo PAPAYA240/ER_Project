@@ -895,10 +895,6 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendFxPacket()
-        {
-
-        }
         public void SendDeadPacket(S_Respawn packet)
         {
             Room.Push(Room.Broadcast, packet);

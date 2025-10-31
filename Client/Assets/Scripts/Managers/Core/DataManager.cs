@@ -41,7 +41,7 @@ public class DataManager
         StatDict = LoadJson<Data.StatData, CharacterType, StatInfo>("StatData").MakeDict();
         SkillDict = LoadJson<Data.GameData, CharacterType, Dictionary<KeyCode, SkillData>>("newSkillData").MakeDict();
         SkillHitboxDict = LoadJson<Data.HitboxData, CharacterType, Dictionary<KeyCode, SkillHitbox>>("HitboxData").MakeDict();
-        SkillSpecDict = LoadJson<Data.SkillSpecData, CharacterType, Dictionary<KeyCode, SkillPlayerEffectDictVariants>>("SkillSpecData").MakeDict();
+        SkillSpecDict = LoadJson<Data.SkillSpecData, CharacterType, Dictionary<KeyCode, SkillVariants>>("SkillSpecData").MakeDict();
         
         IndicatorDict = LoadJson<Data.IndicatorData, CharacterType, Dictionary<KeyCode, SkillIndicatorConfig>>("IndicatorData").MakeDict();
 

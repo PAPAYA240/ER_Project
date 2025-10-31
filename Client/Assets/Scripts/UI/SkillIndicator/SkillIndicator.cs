@@ -24,12 +24,14 @@ public class SkillIndicator : UI_Base
 
     private Dictionary<ValueTuple<CharacterType, KeyCode>, List<Action<Canvas, GameObject>>> _activeSkillFuncs
     = new Dictionary<ValueTuple<CharacterType, KeyCode>, List<Action<Canvas, GameObject>>>();
-
-    private bool _bInitSetting = false;
-
+    
     public override void Init()
     {
         LoadData();
+
+         //Transform InCircleTransform = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "InCircle").transform;
+         //_targetScaled = InCircleTransform.localScale;
+         //InCircleTransform.localScale = Vector3.zero;
     }
     private void Update()
     {
@@ -75,10 +77,23 @@ public class SkillIndicator : UI_Base
             if (canvas != null)
                 canvas.enabled = false;
 
-            _bInitSetting = false;
             _activeSkillFuncs.Remove(value);
         }
+        //if (_indicatorMap.TryGetValue(key, out GameObject go))
+        //{
+        //    Canvas canvas = go.GetComponent<Canvas>();
+        //    if (canvas != null)
+        //        canvas.enabled = false; 
+
+        //    if (key == KeyCode.Q)
+        //    {
+        //        Transform pos = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "InCircle").transform;
+        //        pos.localScale = Vector3.zero;
+        //    }
+        //}
     }
+
+    #region Action
 
     // 주 Object는 Indicator 이름으로 통일
     private void TrackMouseCursor(Canvas canvas, GameObject map)
@@ -102,32 +117,20 @@ public class SkillIndicator : UI_Base
         map.transform.rotation = Quaternion.Lerp(atMouse, map.transform.rotation, 0);
     }
 
-    #region Theodore Action
     // 스케일을 점점 확대시키는 함수
-
-    private const float SCALE_SPEED = 1.5f;
-    private Vector3 _targetScaled = new Vector3();
-
     private void ExpandScaleOverTime(Canvas canvas, GameObject map)
     {
-        Transform inCircleTransform = Util.FindChildByName(map.transform, "InCircle").transform;
-        if (!_bInitSetting)
-        {
-            _bInitSetting = true;
-            _targetScaled = inCircleTransform.localScale;
-            inCircleTransform.localScale = Vector3.zero;
-        }
-
-        if (Vector3.Distance(inCircleTransform.localScale, _targetScaled) < 0.01f)
-        {
-            inCircleTransform.localScale = _targetScaled;
-            return;
-        }
-        inCircleTransform.localScale = Vector3.Lerp(
-                inCircleTransform.localScale,
-                _targetScaled,
-                Time.deltaTime * SCALE_SPEED
-            );
+        //Transform _inCircleTransform = Util.FindChildByName(_indicatorMap[KeyCode.Q].transform, "InCircle").transform;
+        //if (Vector3.Distance(_inCircleTransform.localScale, _targetScaled) < 0.01f)
+        //{
+        //    _inCircleTransform.localScale = _targetScaled;
+        //    return;
+        //}
+        //_inCircleTransform.localScale = Vector3.Lerp(
+        //        _inCircleTransform.localScale,
+        //        _targetScaled,
+        //        Time.deltaTime * SCALE_SPEED
+        //    );
     }
     #endregion
 

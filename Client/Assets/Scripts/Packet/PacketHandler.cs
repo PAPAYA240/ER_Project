@@ -37,47 +37,33 @@ class PacketHandler
     }
     public static void S_MoveHandler(PacketSession session, IMessage packet)
     {
-        S_Move mPacket = packet as S_Move;
+        S_Move movePacket = packet as S_Move;
         ServerSession serverSession = session as ServerSession;
 
-        GameObject go = Managers.Object.FindById(mPacket.ObjectId);
+        GameObject go = Managers.Object.FindById(movePacket.ObjectId);
         if (go == null)
             return;
 
-        if (Managers.Object.MyPlayer.Id == mPacket.ObjectId)
+        if (Managers.Object.MyPlayer.Id == movePacket.ObjectId)
         {
-            Managers.Object.MyPlayer.OnServerUpdate(mPacket);
+            Managers.Object.MyPlayer.OnServerUpdate(movePacket);
         }
         else
         {
-            BaseController bc = go.GetComponentInChildren<BaseController>();
-            if (bc == null)
+            PlayerController pc = go.GetComponentInChildren<PlayerController>();
+            if (pc == null)
                 return;
-            GameObjectType objectType = ObjectManager.GetObjectTypeById(bc.Id);
-            if (objectType == GameObjectType.Player)
-            {
-                PlayerController pc = go.GetComponentInChildren<PlayerController>();
-                if (pc == null)
-                    return;
 
-                if (pc.State == CreatureState.Moving)
-                {
-                    pc.SyncPosFromServer(mPacket);
-                }
-                else
-                {
-                    pc.transform.position = mPacket.PosInfo.ToVector();
-                    pc.transform.rotation = mPacket.RotInfo;
-                    pc.PosInfo = mPacket.PosInfo;
-                    pc.RotInfo = mPacket.RotInfo;
-                }
+            if (pc.State == CreatureState.Moving)
+            {
+                pc.SyncPosFromServer(movePacket);
             }
             else
             {
-                bc.transform.position = mPacket.PosInfo.ToVector();
-                bc.transform.rotation = mPacket.RotInfo;
-                bc.PosInfo = mPacket.PosInfo;
-                bc.RotInfo = mPacket.RotInfo;
+                pc.transform.position = movePacket.PosInfo.ToVector();
+                pc.transform.rotation = movePacket.RotInfo;
+                pc.PosInfo = movePacket.PosInfo;
+                pc.RotInfo = movePacket.RotInfo;
             }
         }     
     }
@@ -382,7 +368,18 @@ class PacketHandler
 
     public static void S_FxHandler(PacketSession session, IMessage packet)
     {
-       
+        S_Fx effectPacket = packet as S_Fx;
+
+        GameObject go = Managers.Object.FindById(effectPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc != null)
+        {
+            if (pc.Id != Managers.Object.MyPlayer.Id)
+                pc.PlayEffectFromServer(effectPacket.FxInfo);
+        }
     }
 
     public static void S_RespawnHandler(PacketSession session, IMessage packet)
@@ -545,6 +542,15 @@ class PacketHandler
     }
     public static void S_ProjectileHandler(PacketSession session, IMessage packet)
     {
+        S_Projectile changeEquipPacket = packet as S_Projectile;
+
+        GameObject go = Managers.Object.FindById(changeEquipPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
     }
     
     public static void S_EnvRequestHandler(PacketSession session, IMessage packet)

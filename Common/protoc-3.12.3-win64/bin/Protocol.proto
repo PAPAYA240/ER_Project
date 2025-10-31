@@ -50,28 +50,31 @@ enum MsgId {
   S_CHANGE_K_D_A = 42;
   S_SYNC_TIMER = 43;
 
-  C_ENV_REQUEST = 44;
-  S_ENV_REQUEST = 45;
-  S_ADD_ABIGAIL_COORD = 46;
-  S_REMOVE_ABIGAIL_COORD = 47;
-  S_MOVE_SYNC = 48;
-  C_MOVE_SYNC = 49;
-  C_ATTACK = 50;
-  C_SET_MOVE_TARGET = 51;
-  C_STOP = 52;
-  S_STOP = 53;
-  S_SET_MOVE_TARGET = 54;
-  S_SKILL_CONFIRM = 55;
-  S_SKILL_MOTION = 56;
-  C_SKILL_INPUT = 57;
-  C_SKILL_COLLISION_PROPOSE = 58;
-  C_REST = 59;
-  C_DEATH = 60;
+  C_PROJECTILE = 44;
+  S_PROJECTILE = 45;
+  C_ENV_REQUEST = 46;
+  S_ENV_REQUEST = 47;
+  S_ADD_ABIGAIL_COORD = 48;
+  S_REMOVE_ABIGAIL_COORD = 49;
+  S_MOVE_SYNC = 50;
+  C_MOVE_SYNC = 51;
+  C_ATTACK = 52;
+  C_SET_MOVE_TARGET = 53;
+  C_STOP = 54;
+  S_STOP = 55;
+  S_SET_MOVE_TARGET = 56;
+  S_SKILL_CONFIRM = 57;
+  S_SKILL_MOTION = 58;
+  C_SKILL_INPUT = 59;
+  C_SKILL_COLLISION_PROPOSE = 60;
+  C_REST = 61;
+  C_DEATH = 62;
 
-  S_OCCUPY_BEACON = 61;
-  S_CHANGE_BEACON_TIME = 62;
-  S_CHANGE_SCORE = 63;
-  S_GAME_OVER = 64;
+
+  S_OCCUPY_BEACON = 63;
+  S_CHANGE_BEACON_TIME = 64;
+  S_CHANGE_SCORE = 65;
+  S_GAME_OVER = 66;
 }
 
 enum CreatureState{
@@ -347,12 +350,12 @@ message S_SkillLevelUp{
 }
 
 message C_Fx{
-	int32 objectId = 1;
+	EffectInfo fxInfo = 1;
 }
 
 message S_Fx{
 	int32 objectId = 1;
-	string fxName = 2;
+	EffectInfo fxInfo = 2;
 }
 
 message C_Anim{
@@ -483,7 +486,12 @@ message C_TestDamage{
 	int32 objectId = 1;
 }
 
-
+message C_Projectile{
+	int32 objectId = 1;
+}
+message S_Projectile{
+	int32 objectId = 1;
+}
 message S_CombatText{
 	int32 objectId = 1;
 	CombatTextType type = 2;
@@ -626,6 +634,10 @@ message PickScenePlayerInfo{
 message AnimInfo{
 	string name = 1;
 	float ratio = 2;
+}
+
+message EffectInfo{
+	int32 keyCode = 1;
 }
 
 message WeaponMasteryInfo{

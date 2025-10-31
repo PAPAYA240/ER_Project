@@ -2,32 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3cefb427-91fc-47ba-b98e-86372cdae44d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Data/PlayerEffectData.json" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Data/PlayerEffectData.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Theodore/Projectile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Character/Theodore/Projectile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Contents/ObjectManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Managers/Contents/ObjectManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/PacketHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/PacketHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/Protocol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Packet/Protocol.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SkillIndicator/SkillIndicator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/UI/SkillIndicator/SkillIndicator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/ClientPacketManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/ClientPacketManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/Protocol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/Protocol.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/Protocol.proto" beforeDir="false" afterPath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/Protocol.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/ServerPacketManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Common/protoc-3.12.3-win64/bin/ServerPacketManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Resources/Theodore/AnimatorController/Alpha_01.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Resources/Theodore/AnimatorController/Alpha_01.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/MonsterController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Assets/Scripts/Controllers/MonsterController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/Data/Data.Contents.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Data/Data.Contents.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Data/DataManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Data/DataManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/Arrow.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/Creature.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/Creature.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/Player/Player.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/Player/Player.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/Player/Skill/Skills/Theodore/Theodore_D.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/Player/Skill/Skills/Theodore/Theodore_D.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/Player/Skill/Skills/Theodore/Theodore_E.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/Player/Skill/Skills/Theodore/Theodore_E.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/Player/Skill/Skills/Theodore/Theodore_Q.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/Player/Skill/Skills/Theodore/Theodore_Q.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/Player/Skill/Skills/Theodore/Theodore_W.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/Player/Skill/Skills/Theodore/Theodore_W.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/Projectile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/Projectile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/GameObject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/GameObject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/Monster/Monster.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/Monster/Monster.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Object/Monster/MonsterManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Object/Monster/MonsterManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/Game/Room/GameRoom.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Room/GameRoom.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Room/GameRoom_Prev.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Room/GameRoom_Prev.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Game/Room/RoomManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Game/Room/RoomManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/Server/Packet/PacketHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Packet/PacketHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Packet/Protocol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Packet/Protocol.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Packet/ServerPacketManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Packet/ServerPacketManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server/Server.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Server.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server/Session/ClientSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server/Session/ClientSession.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
