@@ -113,7 +113,7 @@ class PacketHandler
         if (room == null)
             return;
 
-        room.Push(room.HandleVF, player, skillPacket);
+        //room.Push(room.HandleVF, player, skillPacket);
     }
     public static void C_CharacterHandler(PacketSession session, IMessage packet)
     {
@@ -271,14 +271,6 @@ class PacketHandler
         //Console.WriteLine($"AttackerId: {targetingSkillPkt.ObjectId}");
         room.Push(room.HandleAttackSkillTarget, player, targetingSkillPkt);
     }
-
-     public static void C_ProjectileHandler(PacketSession session, IMessage packet)
-     {
-        ClientSession clientSession = session as ClientSession;
-        Player player = clientSession.MyPlayer;
-
-        Projectile projectile = player?.CreateProjectile();
-     }
 
     public static void C_EnvRequestHandler(PacketSession session, IMessage packet)
     {

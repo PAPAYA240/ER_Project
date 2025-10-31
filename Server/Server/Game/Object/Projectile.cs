@@ -10,35 +10,42 @@ namespace Server.Game
         private long _endTime = 0;
         private long _lastTickTime = 0;
         private float _speed = 15.0f;
-        public bool IsActive = false;
+
         public Projectile()
         {
             ObjectType = GameObjectType.Projectile;
         }
+        
+        public void Init()
+        {
+            if (Owner == null)
+                return;
 
-        bool bMove = false;
+            _endTime = Environment.TickCount64 + 500;
+            _lastTickTime = Environment.TickCount64;
+
+            // Owner의 현재 위치를 복사
+            Info.PosInfo = new PositionInfo
+            {
+                PosX = Owner.PosInfo.PosX,
+                PosY = Owner.PosInfo.PosY,
+                PosZ = Owner.PosInfo.PosZ
+            };
+
+            Info.RotInfo = Owner.RotInfo; 
+        }
+
         public override void Update()
         {
             if (Owner == null)
                 return;
 
-            if (IsActive)
+            if (Deactivation())
             {
-                IsActive = false;
-                bMove = true;
-                _endTime = Environment.TickCount64 + 2000;
-                _lastTickTime = Environment.TickCount64; 
+                Room.LeaveGame(Id);
+                return;
             }
-
-            if (bMove)
-            {
-                if (Deactivation())
-                {
-                    Room.LeaveGame(Id);
-                    return;
-                }
-                Moving();
-            }
+            Moving();
         }
 
         private void Moving()
@@ -60,19 +67,19 @@ namespace Server.Game
             Info.PosInfo.PosY = 1.5f;
             MovingBroadcast();
         }
-
-      
         private bool Deactivation()
         {
             return (Environment.TickCount64 >= _endTime);
         }
         private void MovingBroadcast()
         {
-            S_Move movePacket = new S_Move();
-            movePacket.ObjectId = Id;
-            movePacket.PosInfo = PosInfo;
-            movePacket.RotInfo = RotInfo;
-            Room?.Push(Room.Broadcast, movePacket);
+            S_Move packet = new S_Move
+            {
+                ObjectId = base.Id,
+                PosInfo = PosInfo,
+                RotInfo = RotInfo
+            };
+            base.Room?.Push(Room.Broadcast, packet);
         }
     }
 }
