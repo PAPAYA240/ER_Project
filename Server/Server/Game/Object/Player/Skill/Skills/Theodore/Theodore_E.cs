@@ -51,29 +51,29 @@ public sealed class Theodore_E : SkillHandlerBase
 
     public override void OnTick(Player p, SkillContext ctx)
     {
-        float t = _elapsed / _animDuration;
+        //float t = _elapsed / _animDuration;
 
-        Vector3 targetPos;
+        //Vector3 targetPos;
 
-        if (t < _followRatio)
-        {
-            _midPos = _target.Position;
+        //if (t < _followRatio)
+        //{
+        //    _midPos = _target.Position;
 
-            float midT = t / _followRatio;
-            targetPos = Vector3.Lerp(_startPos, _midPos, midT);
-        }
-        else
-        {
-            float endT = (t - (1 - _followRatio)) / _followRatio;
-            targetPos = Vector3.Lerp(_midPos, _midPos, endT);
-        }
+        //    float midT = t / _followRatio;
+        //    targetPos = Vector3.Lerp(_startPos, _midPos, midT);
+        //}
+        //else
+        //{
+        //    float endT = (t - (1 - _followRatio)) / _followRatio;
+        //    targetPos = Vector3.Lerp(_midPos, _midPos, endT);
+        //}
 
-        _elapsed += TimeUtil.DeltaTime;
+        //_elapsed += TimeUtil.DeltaTime;
 
-        p.SendSkillMotion(
-         type: SkillMotionType.Follow,
-         start: p.Position,
-         end: targetPos);
+        //p.SendSkillMotion(
+        // type: SkillMotionType.Follow,
+        // start: p.Position,
+        // end: targetPos);
 
         //Console.WriteLine($"targetPos : {targetPos}");
         

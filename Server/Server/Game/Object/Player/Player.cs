@@ -184,7 +184,7 @@ namespace Server.Game
             {
                 TimeSpan damageTime = Room.TimeStamp - record.TimeStamp;
 
-                if(damageTime.TotalSeconds > 15)
+                if(damageTime.TotalSeconds > AsistTime)
                 {
                     _damageRecords.Remove(record.Id);
                 }
@@ -265,23 +265,23 @@ namespace Server.Game
             if (Room == null)
                 return;
             
-            // KDA ��ȭ ��Ŷ
+            // KDA 패킷
             S_ChangeKDA KdaPacket = new S_ChangeKDA();
 
-            // ���� ����
+            // 데스 처리
             {
                 ++DeathAmount;
                 KdaPacket.KDAs.Add(new KDAInfo { ObjectId = Id, Kill = KillAmount, Death = DeathAmount, Asist = AsistAmount });
             }
             
-            // ų ����
+            // 킬 처리
             if(attacker is Player attackPlayer)
             {
                 ++attackPlayer.KillAmount;
                 KdaPacket.KDAs.Add(new KDAInfo { ObjectId = attackPlayer.Id, Kill = attackPlayer.KillAmount, Death = attackPlayer.DeathAmount, Asist = attackPlayer.AsistAmount });
             }
 
-            // ��� ����
+            // 어시 처리
             {
                 foreach(DamageRecord record in _damageRecords.Values)
                 {
@@ -908,7 +908,7 @@ namespace Server.Game
         }
         #endregion
 
-        #region StatusEffect(����, �����), Barrier(��) ����
+        #region StatusEffect(버프, 디버프), Barrier(방어막) 관련
         public override void UpdateBarrier()
         {
             float barrier = 0;
