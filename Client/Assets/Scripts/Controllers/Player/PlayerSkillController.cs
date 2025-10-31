@@ -455,6 +455,9 @@ public class PlayerSkillController : MonoBehaviour
         if (sm == null)
             return;
         sm.Init(skillHitbox, gameObject.transform, _player.ObjInfo.Player.Team);
+
+        if (_player.ObjInfo.Player.CharType == CharacterType.Abigail && keyCode == KeyCode.Q)
+            CreateSkillMesh(KeyCode.F1);
     }
     #endregion
 

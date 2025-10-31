@@ -706,6 +706,24 @@ class PacketHandler
 
     }
 
+    public static void S_ChangeTransformHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeTransform changeTransformPkt = packet as S_ChangeTransform;
+
+        GameObject go = Managers.Object.FindById(changeTransformPkt.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.transform.position = changeTransformPkt.PosInfo.ToVector();
+        pc.transform.rotation = changeTransformPkt.RotInfo;
+        pc.PosInfo = changeTransformPkt.PosInfo;
+        pc.RotInfo = changeTransformPkt.RotInfo;
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;

@@ -70,11 +70,11 @@ enum MsgId {
   C_REST = 61;
   C_DEATH = 62;
 
-
   S_OCCUPY_BEACON = 63;
   S_CHANGE_BEACON_TIME = 64;
   S_CHANGE_SCORE = 65;
   S_GAME_OVER = 66;
+  S_CHANGE_TRANSFORM = 67;
 }
 
 enum CreatureState{
@@ -806,6 +806,14 @@ message S_MoveSync {
   PositionInfo targetPos = 2;
   float speed = 3;
 }
+
+message S_ChangeTransform{
+  int32 objectId = 1;
+  PositionInfo posInfo = 2;
+  RotationInfo rotInfo = 3;
+  bool isWarp = 4;
+}
+
 message ChangeInventoryInfo{
 	int32 itemId = 1;
 	int32 inventoryIndex = 2;

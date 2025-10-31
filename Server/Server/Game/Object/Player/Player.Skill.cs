@@ -102,8 +102,10 @@ namespace Server.Game
         {
             return _skills[key];
         }
+
         #endregion
 
+        #region Token
         // 토큰 추가
         public void AddToken(NextInputToken t, double windowSec)
         {
@@ -197,5 +199,6 @@ namespace Server.Game
             }
             return best;
         }
+        #endregion
     }
 }
