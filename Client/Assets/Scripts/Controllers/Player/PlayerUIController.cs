@@ -69,6 +69,8 @@ public class PlayerUIController : MonoBehaviour
         UpdateCool();
     }
 
+    public void TrySkillLevelUp(KeyCode keycode) => PlayerInterface.TrySkillLevelUp(keycode);
+
     private UI_PlayerInterface.GameObjects KeyToUIEnum(KeyCode key)
     {
         switch (key)

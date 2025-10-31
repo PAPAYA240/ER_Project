@@ -191,6 +191,7 @@ namespace Server.Data
         public string description;
         public string type;
         public int maxLevel;
+        public bool canCharge;
         public bool canMoveDuringCast;
         public Mechanics mechanics;
         public Scaling scaling;

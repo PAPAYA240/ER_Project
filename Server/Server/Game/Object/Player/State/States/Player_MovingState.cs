@@ -31,7 +31,7 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
     }
 
     public void Enter(Player player)
-    {
+    {      
         player.State = CreatureState.Moving;
         player.SendStatePacket();
         player.SendAnimPacket("RUN", 0.1f);

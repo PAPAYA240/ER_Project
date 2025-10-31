@@ -8,19 +8,22 @@ using System.Numerics;
 using System.Text;
 using static Server.Data.DataUtils;
 
-public sealed class Rozzi_E : SkillHandlerBase
+public sealed class Theodore_E : SkillHandlerBase
 {
     private readonly float _followRatio = 0.4f;
     private readonly float _animDuration;
+    private readonly float _behindOffset = 1.0f;
 
     private GameObject _target;
 
     private float _elapsed;
     private Vector3 _startPos, _midPos;
 
-    public Rozzi_E()
+    private bool _canUse = true;
+
+    public Theodore_E()
     {
-        _characterType = CharacterType.Rozzi;
+        _characterType = CharacterType.Theodore;
         _animName = "SKILL_E";
         _keyCode = KeyCode.E;
 
@@ -68,7 +71,7 @@ public sealed class Rozzi_E : SkillHandlerBase
         _elapsed += TimeUtil.DeltaTime;
 
         p.SendSkillMotion(
-         type: SkillMotionType.Transform,
+         type: SkillMotionType.Follow,
          start: p.Position,
          end: targetPos);
 
@@ -80,18 +83,6 @@ public sealed class Rozzi_E : SkillHandlerBase
     public override void OnExit(Player p, SkillContext ctx)
     {
         base.OnExit(p, ctx);
-    }
-
-    public override bool CanCast(Player p, SkillContext ctx)
-    {
-        _target = ObjectManager.Instance.Find(ctx.TargetId);
-        SkillSpec spec = GetSkillSpec(true);
-        if (_target == null || (_target != null && Vector3.Distance(_target.Position, p.Position) > spec.limits.baseMaxDist))
-        {
-            return false;
-        }
-
-        return true;
     }
 }
 

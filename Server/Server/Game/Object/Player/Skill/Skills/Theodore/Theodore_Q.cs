@@ -7,21 +7,21 @@ using System.Numerics;
 using System.Text;
 using static Server.Data.DataUtils;
 
-public sealed class Skill_Blink : SkillHandlerBase
+public sealed class Theodore_Q : SkillHandlerBase
 {
-    public Skill_Blink()
+    public Theodore_Q()
     {
-        _keyCode = KeyCode.F;
+        _characterType = CharacterType.Theodore;
+        _animName = "SKILL_Q";
+        _keyCode = KeyCode.Q;
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
-        LastSeq = 0;
-        Latest = default;
-        _committed = false;
+        base.OnEnter(p, ctx);
+        // TODO: 코스트/쿨타임 차감
 
-        p.SendStopPacket(StopReason.StopMoveOnly);
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Cast);
+        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -29,20 +29,18 @@ public sealed class Skill_Blink : SkillHandlerBase
         return;
     }
 
+    // TEMP
+    bool isCommited = false;
     public override void OnTick(Player p, SkillContext ctx)
     {
-        if (_committed)
+        if (isCommited)
             return;
 
-        if (!TryConsumeLatest(out var prop))
-            return;
+        
 
-        p.SendSkillMotion(
-         type: SkillMotionType.Transform,
-         start: p.Position,
-         end: prop.EndPass);
+        isCommited = true;  
 
-        _committed = true;
+        return;
     }
 
     public override void OnExit(Player p, SkillContext ctx)

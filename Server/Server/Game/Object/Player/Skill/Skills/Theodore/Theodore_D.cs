@@ -7,21 +7,28 @@ using System.Numerics;
 using System.Text;
 using static Server.Data.DataUtils;
 
-public sealed class Skill_Blink : SkillHandlerBase
+public sealed class Theodore_D : SkillHandlerBase
 {
-    public Skill_Blink()
+    public override bool CanMoveDuringCast => true;
+    public override float MoveSpeedMultiplier => 1.2f;
+
+    public Theodore_D()
     {
-        _keyCode = KeyCode.F;
+        _characterType = CharacterType.Theodore;
+        _animName = "SKILL_D";
+        _keyCode = KeyCode.D;
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
-        LastSeq = 0;
-        Latest = default;
-        _committed = false;
+        //if ()
+        //{
+        //    //조준
+        //    p.SendAnimPacket("CHARGING", 0.05f);
+        //}
+        //base.OnEnter(p, ctx);
 
-        p.SendStopPacket(StopReason.StopMoveOnly);
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Cast);
+        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -31,18 +38,7 @@ public sealed class Skill_Blink : SkillHandlerBase
 
     public override void OnTick(Player p, SkillContext ctx)
     {
-        if (_committed)
-            return;
-
-        if (!TryConsumeLatest(out var prop))
-            return;
-
-        p.SendSkillMotion(
-         type: SkillMotionType.Transform,
-         start: p.Position,
-         end: prop.EndPass);
-
-        _committed = true;
+        return;
     }
 
     public override void OnExit(Player p, SkillContext ctx)

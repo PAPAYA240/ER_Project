@@ -50,7 +50,6 @@ public abstract class SkillHandlerBase : ISkill
         p.PosInfo.PosY = _finalEnd.Y;
         p.PosInfo.PosZ = _finalEnd.Z;
         p.SendMovePacket(new PositionInfo(p.PosInfo), new RotationInfo(p.RotInfo));
-        p.Flags.IsInSkillMotion = false;
     }
 
     public virtual void OnHit(Player p, SkillContext ctx)
@@ -84,6 +83,9 @@ public abstract class SkillHandlerBase : ISkill
     public float GetDuration()
     {
         if (_animName == null)
+            return 0.05f;
+
+        if (!DataManager.AnimLengthInfoDict[_characterType].ContainsKey(_animName))
             return 0.01f;
 
         return DataManager.AnimLengthInfoDict[_characterType][_animName].Length;
@@ -94,8 +96,11 @@ public abstract class SkillHandlerBase : ISkill
         return _keyCode;
     }
 
-    protected SkillSpec GetSkillSpec(bool isCast)
+    protected SkillSpec GetSkillSpec(bool isCast = true)
     {
+        if (!DataManager.SkillSpecDict[_characterType].ContainsKey(_keyCode))
+            return null;
+
         if(isCast)
             return DataManager.SkillSpecDict[_characterType][_keyCode].cast;
         else

@@ -21,6 +21,9 @@ public class MyPlayerController : PlayerController
     private PlayerUIController _UI;
     public PlayerUIController UI {  get { return _UI; } }
 
+    public SkillIndicator Indicator { get { return _skillIndicator; } }
+
+    private SkillIndicator _skillIndicator;
 
     // Inventory
     List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
@@ -41,8 +44,8 @@ public class MyPlayerController : PlayerController
 
     private void Awake()
     {
-        _input = gameObject.GetOrAddComponent<PlayerInputController>();      
         _skill = gameObject.GetOrAddComponent<PlayerSkillController>();
+        _input = gameObject.GetOrAddComponent<PlayerInputController>();      
         _view = gameObject.GetOrAddComponent<PlayerViewController>();
         _UI = gameObject.GetOrAddComponent<PlayerUIController>();
     }
@@ -56,6 +59,9 @@ public class MyPlayerController : PlayerController
         _UI.Init();
 
         _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHPColor();
+
+        // 스킬 인디케이터
+        _skillIndicator = gameObject.GetOrAddComponent<SkillIndicator>();
 
         // 전장의 안개 카메라 설정
         GameObject fogCamGo = GameObject.Find("FogCamera");
@@ -92,9 +98,16 @@ public class MyPlayerController : PlayerController
         }
 
         // 스킬
-        var skillCmd = _input.GetSkillCommand();
-        if (skillCmd != null)
-            Managers.Network.Send(skillCmd);
+        // 스킬 레벨 업
+        var skillLevelUpCmd = _input.GetSkillLevelUpCommand();
+        if (skillLevelUpCmd != KeyCode.None)
+            _UI.TrySkillLevelUp(skillLevelUpCmd);
+        else
+        {
+            var skillCmd = _input.GetSkillCommand();
+            if (skillCmd != null)
+                Managers.Network.Send(skillCmd);
+        }
 
         // 휴식(X)
         var restCmd = _input.GetRestCommand();
@@ -125,6 +138,10 @@ public class MyPlayerController : PlayerController
         //UpdateTransform();
     }
 
+    public bool RequiresCharge(KeyCode key)
+    {
+        return DataManager.SkillDict[ObjInfo.Player.CharType][key].canCharge;
+    }
 
     // 서버 응답 전달
     //public void OnServerUpdate(S_Idle packet) => _view.OnIdle(packet);

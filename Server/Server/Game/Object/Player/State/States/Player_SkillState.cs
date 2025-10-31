@@ -18,6 +18,8 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand
     {
         _handler = handler;
         _ctx = ctx;
+
+        _ctx.AttachFinishHandler(RequestFinish);
     }
 
     public void Enter(Player player)
@@ -31,8 +33,6 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand
         _handler.OnEnter(player, _ctx);
     }
 
-    public void RequestFinish() => _forceEnd = true;
-
     public void Execute(Player player)
     {
         var now = DateTime.UtcNow;
@@ -40,6 +40,7 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand
         if (_forceEnd || now >= _tEnd)
         {
             ChangeState(player);
+            return;
         }
 
         if (!_didHit && now >= _tHit)
@@ -96,7 +97,7 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand
             // 지금은 못 움직이니까 예약
             player.SendStopPacket(StopReason.StopMoveOnly);
 
-            // 2) 나중에 스킬이 끝나면 바로 이동시키기 위해 의도를 큐에 넣는다.
+            // 2) 나중에 스킬이 끝나면 바로 이동시키기 위해 의도를 큐에 넣음
             C_SetMoveTarget deferred = new C_SetMoveTarget()
             {
                 IsGround = !move.IsTargetOn,
@@ -105,6 +106,11 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand
             };
             player.EnqueueMove(deferred);
         }
+    }
+
+    public void RequestFinish(SkillFinishReason reason = SkillFinishReason.EarlyEnd)
+    {
+        _forceEnd = true;
     }
 }
 
