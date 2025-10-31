@@ -3,15 +3,10 @@ using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Windows;
 using static Data.SkillEffectList;
-using static Define;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using static UnityEditor.Experimental.GraphView.GraphView;
+
 
 public class PlayerController : CreatureController
 {
@@ -327,27 +322,27 @@ public class PlayerController : CreatureController
         }
     }
 
-    protected void ExecuteSkill(KeyCode keyCode)
-    {
-        switch (keyCode)
-        {
-            case KeyCode.Q:
-                Skill_Q();
-                break;
-            case KeyCode.W:
-                Skill_W();
-                break;
-            case KeyCode.E:
-                Skill_E();
-                break;
-            case KeyCode.R:
-                Skill_R();
-                break;
-            case KeyCode.F:
-                PassiveSkill();
-                break;
-        }
-    }
+    //protected void ExecuteSkill(KeyCode keyCode)
+    //{
+    //    switch (keyCode)
+    //    {
+    //        case KeyCode.Q:
+    //            Skill_Q();
+    //            break;
+    //        case KeyCode.W:
+    //            Skill_W();
+    //            break;
+    //        case KeyCode.E:
+    //            Skill_E();
+    //            break;
+    //        case KeyCode.R:
+    //            Skill_R();
+    //            break;
+    //        case KeyCode.F:
+    //            PassiveSkill();
+    //            break;
+    //    }
+    //}
 
     // TODO : 이름 바꾸기?
     protected virtual void Skill_Q() { }

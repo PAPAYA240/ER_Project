@@ -12,14 +12,11 @@ public sealed class Rozzi_E : SkillHandlerBase
 {
     private readonly float _followRatio = 0.4f;
     private readonly float _animDuration;
-    private readonly float _behindOffset = 1.0f;
 
     private GameObject _target;
 
     private float _elapsed;
     private Vector3 _startPos, _midPos;
-
-    private bool _canUse = true;
 
     public Rozzi_E()
     {
@@ -71,7 +68,7 @@ public sealed class Rozzi_E : SkillHandlerBase
         _elapsed += TimeUtil.DeltaTime;
 
         p.SendSkillMotion(
-         type: SkillMotionType.Follow,
+         type: SkillMotionType.Transform,
          start: p.Position,
          end: targetPos);
 

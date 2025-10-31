@@ -33,18 +33,7 @@ public sealed class Rozzi_W : SkillHandlerBase
 
     public override void OnTick(Player p, SkillContext ctx)
     {
-        //if (_committed)
-        //    return;
-
-        //if (!TryConsumeLatest(out var prop))
-        //    return;
-
-        //var from = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
-        //var end = prop.EndPass;
-
-        //CommitMotionOnce(p, from, end);
-
-        //_committed = true;
+        return;
     }
 
     public override void OnExit(Player p, SkillContext ctx)
@@ -52,8 +41,8 @@ public sealed class Rozzi_W : SkillHandlerBase
         base.OnExit(p, ctx);
     }
 
-    private void CommitMotionOnce(Player p, Vector3 from, Vector3 end)
-    {
+    //private void CommitMotionOnce(Player p, Vector3 from, Vector3 end)
+    //{
         //_finalEnd = end;
 
         //float dist = Vector3.Distance(from, end);
@@ -71,6 +60,6 @@ public sealed class Rozzi_W : SkillHandlerBase
         //     authoritativeEnd: true);
 
         //p.Flags.IsInSkillMotion = true;
-    }
+    //}
 }
 

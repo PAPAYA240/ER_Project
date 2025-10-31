@@ -197,7 +197,7 @@ class PacketHandler
             if (attPc == null)
                 return;
 
-            Managers.Object.MyPlayer.NotifyKill(attPc, pc);
+            Managers.Object.MyPlayer.UI.NotifyKill(attPc, pc); 
         }
     }
 
@@ -360,9 +360,9 @@ class PacketHandler
         MyPlayerController mpc = go.GetComponent<MyPlayerController>();
         if (null != mpc)
         {
-            mpc.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
+            mpc.UI.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
             mpc.UpdateLevel();
-            mpc.PlayerInterface.UpdateStat();
+            mpc.UI.PlayerInterface.UpdateStat();
             return;
         }
 
@@ -530,7 +530,7 @@ class PacketHandler
 
         if(pc is MyPlayerController mpc)
         {
-            mpc.PlayerInterface.UpdateStat();
+            mpc.UI.PlayerInterface.UpdateStat();
         }
     }
 
@@ -652,7 +652,7 @@ class PacketHandler
 
         if(Managers.Object.MyPlayer != null)
         {
-            Managers.Object.MyPlayer.SetTimer(syncTimerPacket.Phase, clientLocalTargetRealtimeSinceStartupEnd);
+            Managers.Object.MyPlayer.UI.SetTimer(syncTimerPacket.Phase, clientLocalTargetRealtimeSinceStartupEnd);
         }
     }
 
@@ -684,6 +684,52 @@ class PacketHandler
             return;
 
         abigailCoord.DeactivateAbigailCoord();
+    }
+
+    public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)
+    {
+        S_OccupyBeacon occupyBeaconPkt = packet as S_OccupyBeacon;
+
+
+    }
+
+    public static void S_ChangeBeaconTimeHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeBeaconTime changeBeaconTimePkt = packet as S_ChangeBeaconTime;
+
+
+    }
+
+    public static void S_ChangeScoreHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeScore changeScorePkt = packet as S_ChangeScore;
+
+
+    }
+
+    public static void S_GameOverHandler(PacketSession session, IMessage packet)
+    {
+        S_GameOver gameOverPkt = packet as S_GameOver;
+
+
+    }
+
+    public static void S_ChangeTransformHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeTransform changeTransformPkt = packet as S_ChangeTransform;
+
+        GameObject go = Managers.Object.FindById(changeTransformPkt.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.transform.position = changeTransformPkt.PosInfo.ToVector();
+        pc.transform.rotation = changeTransformPkt.RotInfo;
+        pc.PosInfo = changeTransformPkt.PosInfo;
+        pc.RotInfo = changeTransformPkt.RotInfo;
     }
 
     static float GetCurrentEstimatedOneWayLatency()

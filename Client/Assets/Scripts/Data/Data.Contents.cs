@@ -145,6 +145,7 @@ namespace Data
         public string description;
         public string type;
         public int maxLevel;
+        public bool canCharge;
         public bool canMoveDuringCast;
         public Mechanics mechanics;
         public Scaling scaling;
@@ -237,7 +238,47 @@ namespace Data
         public float speed;
         public int range;
         public string prefab;
-    }  
+    }
+    #endregion
+
+    #region Indicator
+    [Serializable]
+    public class SkillIndicatorConfig
+    {
+        public string indicatorPrefabPath;
+        public List<string> invokeFuncs = new List<string>();
+        public Vector3 targetScale = Vector3.one;
+        public float scaleSpeed = 1.5f;
+    }
+
+    [Serializable]
+    public class IndicatorData : ILoader<CharacterType, Dictionary<KeyCode, SkillIndicatorConfig>>
+    {
+        public Dictionary<string, Dictionary<string, SkillIndicatorConfig>> characters = new Dictionary<string, Dictionary<string, SkillIndicatorConfig>>();
+
+        public Dictionary<CharacterType, Dictionary<KeyCode, SkillIndicatorConfig>> MakeDict()
+        {
+            var nestedDict = new Dictionary<CharacterType, Dictionary<KeyCode, SkillIndicatorConfig>>();
+
+            foreach (var chars in characters)
+            {
+                CharacterType chartype = (CharacterType)Enum.Parse(typeof(CharacterType), chars.Key);
+
+                var dict = new Dictionary<KeyCode, SkillIndicatorConfig>();
+                foreach (var skills in chars.Value)
+                {
+                    KeyCode keyCode = (KeyCode)Enum.Parse(typeof(KeyCode), skills.Key);
+
+                    dict.Add(keyCode, skills.Value);
+                }
+
+                nestedDict.Add(chartype, dict);
+            }
+
+            return nestedDict;
+        }
+    }
+
     #endregion
 
     #region Hitbox

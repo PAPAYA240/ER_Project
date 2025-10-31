@@ -1,0 +1,22 @@
+{
+  "characters": {
+    "Theodore": {
+      "Q": {
+        "indicatorPrefabPath": "UI/Character/Theodore/IndicatorQ",
+        "invokeFuncs": [ "AimAtMousePosition", "ExpandScaleOverTime" ]
+      },
+      "W": {
+        "indicatorPrefabPath": "UI/Character/Theodore/IndicatorW",
+        "invokeFuncs": [ "TrackMouseCursor" ]
+      },
+      "E": {
+        "indicatorPrefabPath": "UI/Character/Theodore/IndicatorE",
+        "invokeFuncs": [ "AimAtMousePosition" ]
+      },
+      "R": {
+        "indicatorPrefabPath": "UI/Character/Theodore/IndicatorR",
+        "invokeFuncs": [ "AimAtMousePosition" ]
+      }
+    }
+  }
+}

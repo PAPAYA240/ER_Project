@@ -40,24 +40,24 @@ namespace Server.Game
             if (_skills[keyCode].CurLevel == 0)
                 return false;
 
-            // ÄğÅ¸ÀÓ Ã¼Å©
+            // ì¿¨íƒ€ì„ ì²´í¬
             if (!CheckCoolTime(keyCode))
                 return false;
 
-            // ½ºÅ×¹Ì³ª Ã¼Å©
+            // ìŠ¤í…Œë¯¸ë‚˜ ì²´í¬
             if (!CheckStamina(keyCode))
                 return false;
 
             return true;
         }
 
-        // Ã¼Å© ³¡³ª¸é µ¥ÀÌÅÍ º¯°æ
+        // ì²´í¬ ëë‚˜ë©´ ë°ì´í„° ë³€ê²½
         public void CommitSkillUsage(KeyCode keyCode)
         {
-            // ÄğÅ¸ÀÓ Àç±â ½ÃÀÛ
+            // ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             _ = CoInputCooltime(keyCode, FindSkill(keyCode).CurLevelCooldown);
 
-            // ½ºÅ×¹Ì³ª °¨¼Ò
+            // ï¿½ï¿½ï¿½×¹Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½
             Stamina -= FindSkill(keyCode).CurLevelStamina;
         }
 
@@ -91,7 +91,7 @@ namespace Server.Game
             while (sw.Elapsed.TotalSeconds < time)
             {
                 _coolDownDict[key].coolTime = (float)(time - sw.Elapsed.TotalSeconds);
-                await Task.Delay(10); // 0.01ÃÊ¸¶´Ù ³²Àº ÄğÅ¸ÀÓ °»½Å
+                await Task.Delay(10); // 0.01ì´ˆë§ˆë‹¤ ë‚¨ì€ ì¿¨íƒ€ì„ ê°±ì‹ 
             }
 
             _coolDownDict[key].isCoolDown = false;
@@ -102,19 +102,21 @@ namespace Server.Game
         {
             return _skills[key];
         }
+
         #endregion
 
-        // ÅäÅ« Ãß°¡
+        #region Token
+        // í† í° ì¶”ê°€
         public void AddToken(NextInputToken t, double windowSec)
         {
-            t.ExpireUtc = TimeUtil.UtcSec() + windowSec; // ¸¸·á½Ã°¢
+            t.ExpireUtc = TimeUtil.UtcSec() + windowSec; // ë§Œë£Œì‹œê°
             t.Active = true;
             Tokens.Add(t);
-            // (¼±ÅÃ) ¿ì¼±¼øÀ§ ³ôÀº ¼øÀ¸·Î Á¤·ÄÇØµµ µÊ
+            // (ì„ íƒ) ìš°ì„ ìˆœìœ„ ë†’ì€ ìˆœìœ¼ë¡œ ì •ë ¬í•´ë„ ë¨
             // Tokens.Sort((a,b) => b.Priority.CompareTo(a.Priority));
         }
 
-        // ¸Å Æ½ À¯È¿ÇÑ ÅäÅ«ÀÎÁö °Ë»ç
+        // ë§¤ í‹± ìœ íš¨í•œ í† í°ì¸ì§€ ê²€ì‚¬
         public void TickTokens()
         {
             double now = TimeUtil.UtcSec();
@@ -131,7 +133,7 @@ namespace Server.Game
             if (req == null)
                 return false;
 
-            // 1) À¯È¿ÇÑ ÅäÅ« °í¸£±â (¸¸·á/ÀÜ¿©¼ö Æ÷ÇÔ)
+            // 1) ìœ íš¨í•œ í† í° ê³ ë¥´ê¸° (ë§Œë£Œ/ì”ì—¬ìˆ˜ í¬í•¨)
             var tok = Tokens
                 .Where(t => t.Active
                             && t.Trigger == InputKind.Move
@@ -143,7 +145,7 @@ namespace Server.Game
             if (tok == null)
                 return false;
 
-            // 2) Ä¡È¯ ½ºÅ³ Ä³½ºÆ®
+            // 2) ì¹˜í™˜ ìŠ¤í‚¬ ìºìŠ¤íŠ¸
             var skill = SkillRegistry.Create(tok.ReplacementSkillKey);
             if (skill == null)
                 return false;
@@ -159,7 +161,7 @@ namespace Server.Game
 
             ChangeState(new Player_SkillState(skill, ctx));
 
-            // 3) ÅäÅ« ¼Ò¸ğ/ºñÈ°¼º
+            // 3) í† í° ì†Œëª¨/ë¹„í™œì„±
             tok.RemainingUses--;
             if (tok.RemainingUses <= 0)
                 tok.Active = false;
@@ -167,7 +169,7 @@ namespace Server.Game
             return true;
         }
 
-        // ÀÌº¥Æ® ±â¹İ Ãë¼Ò(½ºÅ³ ½ÃÀü/ÇÇ°İ µî)
+        // ì´ë²¤íŠ¸ ê¸°ë°˜ ì·¨ì†Œ(ìŠ¤í‚¬ ì‹œì „/í”¼ê²© ë“±)
         public void CancelTokensOnSkillCast()
         {
             Tokens.RemoveAll(t => t.CancelOnUseSkill);
@@ -178,7 +180,7 @@ namespace Server.Game
             Tokens.RemoveAll(t => t.CancelOnTakeDamage);
         }
 
-        // (¿É¼Ç) Á¶È¸ ÇïÆÛ: Æ¯Á¤ Æ®¸®°ÅÀÇ ÃÖ°í ¿ì¼±¼øÀ§ ÅäÅ«
+        // (ì˜µì…˜) ì¡°íšŒ í—¬í¼: íŠ¹ì • íŠ¸ë¦¬ê±°ì˜ ìµœê³  ìš°ì„ ìˆœìœ„ í† í°
         public NextInputToken PeekToken(InputKind trigger)
         {
             NextInputToken best = null;
@@ -197,5 +199,6 @@ namespace Server.Game
             }
             return best;
         }
+        #endregion
     }
 }

@@ -16,8 +16,8 @@ public class PlayerUIController : MonoBehaviour
     private MyPlayerController _player;
     private UI_PlayerInterface _UI;
     private PlayerSkillController _skill;
-    UI_PlayerHUD _playerHUD;
 
+    public UI_PlayerHUD PlayerHUD;
     public UI_PlayerInterface PlayerInterface { get; protected set; }
 
     List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
@@ -40,8 +40,8 @@ public class PlayerUIController : MonoBehaviour
         //UI
         GameObject go = Managers.Resource.Instantiate("UI/Scene/PlayerHUD");
         go.transform.SetParent(gameObject.transform);
-        _playerHUD = go.GetComponent<UI_PlayerHUD>();
-        _playerHUD.Init();
+        PlayerHUD = go.GetComponent<UI_PlayerHUD>();
+        PlayerHUD.Init();
 
         PlayerInterface = go.GetComponentInChildren<UI_PlayerInterface>();
         PlayerInterface.CharacterCode = CharTypeToCharCode(_player.ObjInfo.Player.CharType);
@@ -57,7 +57,7 @@ public class PlayerUIController : MonoBehaviour
         SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, FindSkill(KeyCode.Q).MaxCooldown);
 
         //업데이트 함수들 호출
-        //_player.Stat = _player.Stat;
+        _player.Stat = _player.Stat;
 
         _player.NameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHPColor();
 
@@ -68,6 +68,8 @@ public class PlayerUIController : MonoBehaviour
     {
         UpdateCool();
     }
+
+    public void TrySkillLevelUp(KeyCode keycode) => PlayerInterface.TrySkillLevelUp(keycode);
 
     private UI_PlayerInterface.GameObjects KeyToUIEnum(KeyCode key)
     {
@@ -261,6 +263,16 @@ public class PlayerUIController : MonoBehaviour
         //PlayerInterface.SetSkillCool(GameObjects.FSkill, );
     }
     #endregion
+
+    public void SetTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)
+    {
+        PlayerHUD.SetTimer(phase, clientLocalTargetRealtimeSinceStartupEnd);
+    }
+
+    public void NotifyKill(PlayerController attPc, PlayerController diePc)
+    {
+        PlayerHUD.NotifyKill(attPc, diePc);
+    }
 
     #region Inventory
     private void MakeInventory()

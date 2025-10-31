@@ -19,6 +19,8 @@ public class Player_DeadState : IPlayerState
 
         player.SendAnimPacket("DEAD", 0.1f);
 
+        //UI
+
         RespawnTime(player);
     }
 

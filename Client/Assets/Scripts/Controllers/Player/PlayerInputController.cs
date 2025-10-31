@@ -1,15 +1,8 @@
 ﻿using Google.Protobuf.Protocol;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Assertions.Must;
-using static UnityEditor.PlayerSettings;
-using static UnityEngine.GraphicsBuffer;
+
 
 public class PlayerInputController : MonoBehaviour
 {
@@ -159,6 +152,12 @@ public class PlayerInputController : MonoBehaviour
             if (!Input.GetKeyDown(key))
                 continue;
 
+            if (_player.RequiresCharge(key))
+            {
+                StartCoroutine(CoChargeSkill(key));
+                return null;
+            }
+
             return _skill.TryCast((int)key, GetAttackableUnderCursorID(), GetMouseWorldPosition());
         }
 
@@ -195,6 +194,45 @@ public class PlayerInputController : MonoBehaviour
 
         return null;
     }
+
+    public KeyCode GetSkillLevelUpCommand()
+    {
+        if (Input.GetKey(KeyCode.LeftControl))
+        {
+            if (Input.GetKeyDown(KeyCode.Q))        { return KeyCode.Q; }       
+            else if (Input.GetKeyDown(KeyCode.W))   { return KeyCode.W; } 
+            else if (Input.GetKeyDown(KeyCode.E))   { return KeyCode.E; } 
+            else if (Input.GetKeyDown(KeyCode.R))   { return KeyCode.R; } 
+        }
+
+        return KeyCode.None;
+    }
+
+    #region Charge
+    private IEnumerator CoChargeSkill(KeyCode key)
+    {
+         _player.Indicator.EnableIndicator(_player.ObjInfo.Player.CharType, key);
+
+        while (Input.GetKey(key) && !Input.GetMouseButtonDown(0))
+        {
+            if (Input.GetMouseButtonDown(1))
+            {
+                // 차징 취소
+                _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
+                yield break;
+            }
+            // 차징 중
+            yield return null;
+        }
+
+        // 스킬 시전
+         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
+
+        var skillCmd = _skill.TryCast((int)key, GetAttackableUnderCursorID(), GetMouseWorldPosition());
+        if (skillCmd != null)
+            Managers.Network.Send(skillCmd);
+    }
+    #endregion
 
     #region Util
     private Vector3 GetMouseWorldPosition()

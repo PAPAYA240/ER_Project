@@ -69,6 +69,12 @@ enum MsgId {
   C_SKILL_COLLISION_PROPOSE = 60;
   C_REST = 61;
   C_DEATH = 62;
+
+  S_OCCUPY_BEACON = 63;
+  S_CHANGE_BEACON_TIME = 64;
+  S_CHANGE_SCORE = 65;
+  S_GAME_OVER = 66;
+  S_CHANGE_TRANSFORM = 67;
   S_TARGET_CHANGE = 63;
 }
 
@@ -233,9 +239,8 @@ enum StopReason {
 }
 
 enum SkillMotionType {
-  Dash = 0;     
-  Blink = 1;    
-  Follow = 2;
+  agent = 0;
+  transform = 1;
 }
 
 enum ProposalMode { 
@@ -530,6 +535,24 @@ message S_RemoveAbigailCoord{
 	int32 objectId = 1;
 }
 
+message S_OccupyBeacon{
+	int32 team = 1;
+}
+
+message S_ChangeBeaconTime{
+	int32 beacon = 1;
+	int32 time = 2;
+}
+
+message S_ChangeScore{
+	int32 team = 1;
+	int32 score = 2;
+}
+
+message S_GameOver{
+	int32 winTeam  = 1;
+}
+
 message PositionInfo{
 	CreatureState state = 1;
 	float posX = 2;
@@ -783,6 +806,14 @@ message S_MoveSync {
   PositionInfo targetPos = 2;
   float speed = 3;
 }
+
+message S_ChangeTransform{
+  int32 objectId = 1;
+  PositionInfo posInfo = 2;
+  RotationInfo rotInfo = 3;
+  bool isWarp = 4;
+}
+
 
 message S_TargetChange {
   int32 targetId = 1;

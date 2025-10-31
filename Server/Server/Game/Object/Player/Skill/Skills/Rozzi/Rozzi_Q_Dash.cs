@@ -9,16 +9,26 @@ using static Server.Data.DataUtils;
 
 public sealed class Rozzi_Q_Dash : SkillHandlerBase
 {
+    private float _elapsed, _duration;
+    private Vector3 _startPos, _endPos;
+
+    SkillSpec _spec;
+
     public Rozzi_Q_Dash()
     {
         _characterType = CharacterType.Rozzi;
         _animName = "SKILL_Q_DASH";
         _keyCode = KeyCode.Q;
+
+        _spec = GetSkillSpec(false);
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
         base.OnEnter(p, ctx);
+
+        _elapsed = 0.0f;
+        _committed = false;
 
         p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Followup);
     }
@@ -29,45 +39,40 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
     }
 
     public override void OnTick(Player p, SkillContext ctx)
-    {
-        if (_committed)
-            return;
+    {       
+        if (!_committed)
+        {
+            if (TryConsumeLatest(out var prop))
+            {
+                _startPos = p.Position;
+                _endPos = prop.EndBlocked;
 
-        if (!TryConsumeLatest(out var prop))
-            return;
+                _duration = Vector3.Distance(_startPos, _endPos) / _spec.limits.speed;
 
-        var from = new Vector3(p.PosInfo.PosX, p.PosInfo.PosY, p.PosInfo.PosZ);
-        var end = prop.EndBlocked;
+                _committed = true;
+            }
+        }
+        else
+        {
+            float t = Math.Clamp(_elapsed / _duration, 0f, 1f);
+            Vector3 targetPos = Vector3.Lerp(_startPos, _endPos, t);
 
-        CommitMotionOnce(p, from, end);
+            p.SendSkillMotion(
+             type: SkillMotionType.Transform,
+             start: p.Position,
+             end: targetPos);
 
-        _committed = true;
+            _elapsed += TimeUtil.DeltaTime;
+            if (_elapsed > _duration)
+            {
+                ctx.RequestFinish();
+            }
+        }         
     }
 
     public override void OnExit(Player p, SkillContext ctx)
     {
         base.OnExit(p, ctx);
-    }
-
-    private void CommitMotionOnce(Player p, Vector3 from, Vector3 end)
-    {
-        _finalEnd = end;
-
-        float dist = Vector3.Distance(from, end);
-        //float speed = /*spec.limits.speed*/ /*dist / GetDuration()*/ 4.0f;
-        float duration = MathF.Max(0.05f, GetDuration() /*dist / speed*/);
-
-        p.SendSkillMotion(
-             type: SkillMotionType.Dash,
-             start: from,
-             end: _finalEnd,
-             duration: duration,
-             anim: ""/*spec.AnimName*/,
-             curveId: "EaseOutCubic",
-             serverCollision: true,
-             authoritativeEnd: true);
-
-        p.Flags.IsInSkillMotion = true;
     }
 }
 

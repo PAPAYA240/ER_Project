@@ -202,7 +202,7 @@
                 },
                 {
                     "clip": "Rozzi_Pistol_Skill01_Move",
-                    "length": 0.4,
+                    "length": 2.0,
                     "frameRate": 30.0,
                     "samples": 3,
                     "animName": "SKILL_Q_DASH"
@@ -240,316 +240,316 @@
         {
             "character": "Theodore",
             "controller": "Assets/Resources/Animator/Theodore.controller",
-            "clips": [
-                {
-                    "clip": "Theodore_Common_arrive",
-                    "length": 0.5,
-                    "frameRate": 30.0,
-                    "samples": 15,
-                    "animName": "hyperLoop_Arrive"
-                },
-                {
-                    "clip": "Theodore_Common_boxopen",
-                    "length": 4.0,
-                    "frameRate": 30.0,
-                    "samples": 120,
-                    "animName": "airdrop_open"
-                },
-                {
-                    "clip": "Theodore_Common_collect",
-                    "length": 3.0,
-                    "frameRate": 30.0,
-                    "samples": 90,
-                    "animName": "collect"
-                },
-                {
-                    "clip": "Theodore_Common_collect_Stone",
-                    "length": 3.0,
-                    "frameRate": 30.0,
-                    "samples": 90,
-                    "animName": "collect_Stone"
-                },
-                {
-                    "clip": "Theodore_Common_collect_Water",
-                    "length": 3.0,
-                    "frameRate": 30.0,
-                    "samples": 90,
-                    "animName": "collect_Water"
-                },
-                {
-                    "clip": "Theodore_Common_collect_Wood",
-                    "length": 3.0,
-                    "frameRate": 30.0,
-                    "samples": 90,
-                    "animName": "collect_Wood"
-                },
-                {
-                    "clip": "Theodore_Common_craftfood",
-                    "length": 9.0,
-                    "frameRate": 30.0,
-                    "samples": 270,
-                    "animName": "Craft_Food"
-                },
-                {
-                    "clip": "Theodore_Common_craftmetal",
-                    "length": 9.0,
-                    "frameRate": 30.0,
-                    "samples": 270,
-                    "animName": "Craft_Metal"
-                },
-                {
-                    "clip": "Theodore_Common_dance",
-                    "length": 1.0,
-                    "frameRate": 30.0,
-                    "samples": 30,
-                    "animName": "DANCE"
-                },
-                {
-                    "clip": "Theodore_Common_death",
-                    "length": 2.5,
-                    "frameRate": 30.0,
-                    "samples": 75,
-                    "animName": "DEAD | downed"
-                },
-                {
-                    "clip": "Theodore_Common_down_dead",
-                    "length": 1.333334,
-                    "frameRate": 30.0,
-                    "samples": 40,
-                    "animName": "down_dead"
-                },
-                {
-                    "clip": "Theodore_Common_down_run",
-                    "length": 1.200001,
-                    "frameRate": 30.0,
-                    "samples": 36,
-                    "animName": "downed_run"
-                },
-                {
-                    "clip": "Theodore_Common_down_start",
-                    "length": 0.5,
-                    "frameRate": 30.0,
-                    "samples": 15,
-                    "animName": "downed_start"
-                },
-                {
-                    "clip": "Theodore_Common_down_wait",
-                    "length": 1.666667,
-                    "frameRate": 30.0,
-                    "samples": 50,
-                    "animName": "downed_wait"
-                },
-                {
-                    "clip": "Theodore_Common_fishing",
-                    "length": 3.0,
-                    "frameRate": 30.0,
-                    "samples": 90,
-                    "animName": "fishing"
-                },
-                {
-                    "clip": "Theodore_Common_Install_trap",
-                    "length": 0.5,
-                    "frameRate": 30.0,
-                    "samples": 15,
-                    "animName": "trap_Install"
-                },
-                {
-                    "clip": "Theodore_Common_operate",
-                    "length": 5.000001,
-                    "frameRate": 30.0,
-                    "samples": 150,
-                    "animName": "OPERATE"
-                },
-                {
-                    "clip": "Theodore_Common_rest_end",
-                    "length": 1.0,
-                    "frameRate": 30.0,
-                    "samples": 30,
-                    "animName": "REST_END"
-                },
-                {
-                    "clip": "Theodore_Common_rest_loop",
-                    "length": 4.0,
-                    "frameRate": 30.0,
-                    "samples": 120,
-                    "animName": "REST_LOOP"
-                },
-                {
-                    "clip": "Theodore_Common_rest_start",
-                    "length": 1.0,
-                    "frameRate": 30.0,
-                    "samples": 30,
-                    "animName": "REST_START"
-                },
-                {
-                    "clip": "Theodore_Common_resurrect",
-                    "length": 3.0,
-                    "frameRate": 30.0,
-                    "samples": 90,
-                    "animName": "Resurrect"
-                },
-                {
-                    "clip": "Theodore_Common_run",
-                    "length": 0.8,
-                    "frameRate": 30.0,
-                    "samples": 24,
-                    "animName": "DEFAULT_RUN | fastrun"
-                },
-                {
-                    "clip": "Theodore_Common_wait",
-                    "length": 2.0,
-                    "frameRate": 30.0,
-                    "samples": 60,
-                    "animName": "DEFAULT_WAIT | canNotControl"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_atk01",
-                    "length": 1.5,
-                    "frameRate": 30.0,
-                    "samples": 45,
-                    "animName": "ATTACK_1"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_atk02",
-                    "length": 1.5,
-                    "frameRate": 30.0,
-                    "samples": 45,
-                    "animName": "ATTACK_2"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_Jump_Glide",
-                    "length": 3.0,
-                    "frameRate": 30.0,
-                    "samples": 90,
-                    "animName": "vectical_luancher_Glide"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_Jump_Landing",
-                    "length": 1.0,
-                    "frameRate": 30.0,
-                    "samples": 30,
-                    "animName": "vectical_luancher_landing"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_Jump_Landing_loop",
-                    "length": 1.0,
-                    "frameRate": 30.0,
-                    "samples": 30,
-                    "animName": "vectical_landing_Loop"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_Jump_Start_loop",
-                    "length": 1.0,
-                    "frameRate": 30.0,
-                    "samples": 30,
-                    "animName": "vectical_luancher_Jump_start"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_Jump_Start_transform",
-                    "length": 1.0,
-                    "frameRate": 30.0,
-                    "samples": 30,
-                    "animName": "vectical_luancher_Jump_change"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_reload",
-                    "length": 2.0,
-                    "frameRate": 30.0,
-                    "samples": 60,
-                    "animName": "Reload_LowSpeed"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_reload_fastrun",
-                    "length": 2.0,
-                    "frameRate": 30.0,
-                    "samples": 60,
-                    "animName": "Reload"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_run",
-                    "length": 0.8,
-                    "frameRate": 30.0,
-                    "samples": 24,
-                    "animName": "RUN"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_skill01_loop",
-                    "length": 3.0,
-                    "frameRate": 30.0,
-                    "samples": 90,
-                    "animName": "Theodore_Sniperrifle_skill01_loop"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_skill01_loop_run",
-                    "length": 3.200001,
-                    "frameRate": 30.0,
-                    "samples": 96,
-                    "animName": "skill01_loop | Theodore_Sniperrifle_run"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_skill01_shot",
-                    "length": 1.0,
-                    "frameRate": 30.0,
-                    "samples": 30,
-                    "animName": "SKILL_Q"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_skill01_start_run",
-                    "length": 0.333333,
-                    "frameRate": 30.0,
-                    "samples": 10,
-                    "animName": "skill01_start"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_skill03",
-                    "length": 1.0,
-                    "frameRate": 30.0,
-                    "samples": 30,
-                    "animName": "SKILL_E"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_skill04",
-                    "length": 1.666667,
-                    "frameRate": 30.0,
-                    "samples": 50,
-                    "animName": "SKILL_R"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_wait",
-                    "length": 2.0,
-                    "frameRate": 30.0,
-                    "samples": 60,
-                    "animName": "WAIT"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_weaponskill_end",
-                    "length": 0.5,
-                    "frameRate": 30.0,
-                    "samples": 15,
-                    "animName": "WeaponSniper_End"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_weaponskill_loop",
-                    "length": 0.333333,
-                    "frameRate": 30.0,
-                    "samples": 10,
-                    "animName": "WeaponSniper_Loop"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_weaponskill_shot",
-                    "length": 0.5,
-                    "frameRate": 30.0,
-                    "samples": 15,
-                    "animName": "WeaponSniper_Shot"
-                },
-                {
-                    "clip": "Theodore_Sniperrifle_weaponskill_start",
-                    "length": 0.366667,
-                    "frameRate": 30.0,
-                    "samples": 11,
-                    "animName": "WeaponSniper_Start"
-                }
-            ]
+          "clips": [
+            {
+              "clip": "Theodore_Common_arrive",
+              "length": 0.5,
+              "frameRate": 30.0,
+              "samples": 15,
+              "animName": "hyperLoop_Arrive"
+            },
+            {
+              "clip": "Theodore_Common_boxopen",
+              "length": 4.0,
+              "frameRate": 30.0,
+              "samples": 120,
+              "animName": "airdrop_open"
+            },
+            {
+              "clip": "Theodore_Common_collect",
+              "length": 3.0,
+              "frameRate": 30.0,
+              "samples": 90,
+              "animName": "collect"
+            },
+            {
+              "clip": "Theodore_Common_collect_Stone",
+              "length": 3.0,
+              "frameRate": 30.0,
+              "samples": 90,
+              "animName": "collect_Stone"
+            },
+            {
+              "clip": "Theodore_Common_collect_Water",
+              "length": 3.0,
+              "frameRate": 30.0,
+              "samples": 90,
+              "animName": "collect_Water"
+            },
+            {
+              "clip": "Theodore_Common_collect_Wood",
+              "length": 3.0,
+              "frameRate": 30.0,
+              "samples": 90,
+              "animName": "collect_Wood"
+            },
+            {
+              "clip": "Theodore_Common_craftfood",
+              "length": 9.0,
+              "frameRate": 30.0,
+              "samples": 270,
+              "animName": "Craft_Food"
+            },
+            {
+              "clip": "Theodore_Common_craftmetal",
+              "length": 9.0,
+              "frameRate": 30.0,
+              "samples": 270,
+              "animName": "Craft_Metal"
+            },
+            {
+              "clip": "Theodore_Common_dance",
+              "length": 1.0,
+              "frameRate": 30.0,
+              "samples": 30,
+              "animName": "DANCE"
+            },
+            {
+              "clip": "Theodore_Common_death",
+              "length": 2.5,
+              "frameRate": 30.0,
+              "samples": 75,
+              "animName": "DEAD | downed"
+            },
+            {
+              "clip": "Theodore_Common_down_dead",
+              "length": 1.333334,
+              "frameRate": 30.0,
+              "samples": 40,
+              "animName": "down_dead"
+            },
+            {
+              "clip": "Theodore_Common_down_run",
+              "length": 1.200001,
+              "frameRate": 30.0,
+              "samples": 36,
+              "animName": "downed_run"
+            },
+            {
+              "clip": "Theodore_Common_down_start",
+              "length": 0.5,
+              "frameRate": 30.0,
+              "samples": 15,
+              "animName": "downed_start"
+            },
+            {
+              "clip": "Theodore_Common_down_wait",
+              "length": 1.666667,
+              "frameRate": 30.0,
+              "samples": 50,
+              "animName": "downed_wait"
+            },
+            {
+              "clip": "Theodore_Common_fishing",
+              "length": 3.0,
+              "frameRate": 30.0,
+              "samples": 90,
+              "animName": "fishing"
+            },
+            {
+              "clip": "Theodore_Common_Install_trap",
+              "length": 0.5,
+              "frameRate": 30.0,
+              "samples": 15,
+              "animName": "trap_Install"
+            },
+            {
+              "clip": "Theodore_Common_operate",
+              "length": 5.000001,
+              "frameRate": 30.0,
+              "samples": 150,
+              "animName": "OPERATE"
+            },
+            {
+              "clip": "Theodore_Common_rest_end",
+              "length": 1.0,
+              "frameRate": 30.0,
+              "samples": 30,
+              "animName": "REST_END"
+            },
+            {
+              "clip": "Theodore_Common_rest_loop",
+              "length": 4.0,
+              "frameRate": 30.0,
+              "samples": 120,
+              "animName": "REST_LOOP"
+            },
+            {
+              "clip": "Theodore_Common_rest_start",
+              "length": 1.0,
+              "frameRate": 30.0,
+              "samples": 30,
+              "animName": "REST_START"
+            },
+            {
+              "clip": "Theodore_Common_resurrect",
+              "length": 3.0,
+              "frameRate": 30.0,
+              "samples": 90,
+              "animName": "Resurrect"
+            },
+            {
+              "clip": "Theodore_Common_run",
+              "length": 0.8,
+              "frameRate": 30.0,
+              "samples": 24,
+              "animName": "DEFAULT_RUN | fastrun"
+            },
+            {
+              "clip": "Theodore_Common_wait",
+              "length": 2.0,
+              "frameRate": 30.0,
+              "samples": 60,
+              "animName": "DEFAULT_WAIT | canNotControl"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_atk01",
+              "length": 1.5,
+              "frameRate": 30.0,
+              "samples": 45,
+              "animName": "ATTACK_1"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_atk02",
+              "length": 1.5,
+              "frameRate": 30.0,
+              "samples": 45,
+              "animName": "ATTACK_2"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_Jump_Glide",
+              "length": 3.0,
+              "frameRate": 30.0,
+              "samples": 90,
+              "animName": "vectical_luancher_Glide"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_Jump_Landing",
+              "length": 1.0,
+              "frameRate": 30.0,
+              "samples": 30,
+              "animName": "vectical_luancher_landing"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_Jump_Landing_loop",
+              "length": 1.0,
+              "frameRate": 30.0,
+              "samples": 30,
+              "animName": "vectical_landing_Loop"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_Jump_Start_loop",
+              "length": 1.0,
+              "frameRate": 30.0,
+              "samples": 30,
+              "animName": "vectical_luancher_Jump_start"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_Jump_Start_transform",
+              "length": 1.0,
+              "frameRate": 30.0,
+              "samples": 30,
+              "animName": "vectical_luancher_Jump_change"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_reload",
+              "length": 2.0,
+              "frameRate": 30.0,
+              "samples": 60,
+              "animName": "Reload_LowSpeed"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_reload_fastrun",
+              "length": 2.0,
+              "frameRate": 30.0,
+              "samples": 60,
+              "animName": "Reload"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_run",
+              "length": 0.8,
+              "frameRate": 30.0,
+              "samples": 24,
+              "animName": "RUN"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_skill01_loop",
+              "length": 3.0,
+              "frameRate": 30.0,
+              "samples": 90,
+              "animName": "CHARGING"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_skill01_loop_run",
+              "length": 3.200001,
+              "frameRate": 30.0,
+              "samples": 96,
+              "animName": "skill01_loop | Theodore_Sniperrifle_run"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_skill01_shot",
+              "length": 1.0,
+              "frameRate": 30.0,
+              "samples": 30,
+              "animName": "SKILL_Q"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_skill01_start_run",
+              "length": 0.333333,
+              "frameRate": 30.0,
+              "samples": 10,
+              "animName": "skill01_start"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_skill03",
+              "length": 1.0,
+              "frameRate": 30.0,
+              "samples": 30,
+              "animName": "SKILL_E"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_skill04",
+              "length": 1.666667,
+              "frameRate": 30.0,
+              "samples": 50,
+              "animName": "SKILL_R"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_wait",
+              "length": 2.0,
+              "frameRate": 30.0,
+              "samples": 60,
+              "animName": "WAIT"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_weaponskill_end",
+              "length": 0.5,
+              "frameRate": 30.0,
+              "samples": 15,
+              "animName": "WeaponSniper_End"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_weaponskill_loop",
+              "length": 0.333333,
+              "frameRate": 30.0,
+              "samples": 10,
+              "animName": "WeaponSniper_Loop"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_weaponskill_shot",
+              "length": 0.5,
+              "frameRate": 30.0,
+              "samples": 15,
+              "animName": "WeaponSniper_Shot"
+            },
+            {
+              "clip": "Theodore_Sniperrifle_weaponskill_start",
+              "length": 0.366667,
+              "frameRate": 30.0,
+              "samples": 11,
+              "animName": "WeaponSniper_Start"
+            }
+          ]
         },
         {
             "character": "Yuki",

@@ -105,17 +105,14 @@ public class PlayerViewController : MonoBehaviour
 
     public void OnAnim(S_Anim packet)
     {
-        //_animator.SetTrigger(packet.AnimInfo.AnimName);
     }
 
     public void OnHpChanged(S_ChangeHp packet)
     {
-        // TODO: HP bar UI
     }
 
     public void OnDead(S_Die packet)
     {
-        //_animator.SetTrigger("Die");
     }
 
     public S_Die GetRestCommand()

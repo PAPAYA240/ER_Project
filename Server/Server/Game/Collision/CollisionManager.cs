@@ -86,7 +86,7 @@ namespace Server.Game
             SetUpStatusEffects();
         }
 
-        public Hitbox AddHitbox(Creature player, CharacterType charType, KeyCode keyCode, Vector2 targetPos = new Vector2(), float chargeRatio = 0)
+        public Hitbox AddHitbox(Creature player, CharacterType charType, KeyCode keyCode, Vector2 mousePos = new Vector2(), float chargeRatio = 0)
         {
             Hitbox hitbox = null;
             lock (_lock)
@@ -106,7 +106,7 @@ namespace Server.Game
                     Team = player.Info.Player.Team,
                     Data = skillHitbox,
 
-                    MousePos = targetPos,
+                    MousePos = mousePos,
                     Interactions = ConvertProtoInteractionsToKeyCodeDictionary(skillHitbox.Interactions)
                 };
 
@@ -118,7 +118,7 @@ namespace Server.Game
             if(_hitboxChainDict.TryGetValue(charType, out Dictionary<KeyCode, KeyCode> chainDict))
             {
                 if (chainDict.TryGetValue(keyCode, out KeyCode value))
-                    AddHitbox(player, charType, value, targetPos, chargeRatio);
+                    AddHitbox(player, charType, value, mousePos, chargeRatio);
             }
             return hitbox;
         }
