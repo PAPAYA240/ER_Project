@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -336,6 +337,20 @@ namespace Server.Data
             this.sound = sound;
             this.position = position;
             this.rotation = rotation;
+        }
+    }
+
+    [Serializable]
+    public class PlayerEffectDict : ILoader<CharacterType, List<string>>
+    {
+        public Dictionary<CharacterType, List<string>> effects = new Dictionary<CharacterType, List<string>>();
+
+        public Dictionary<CharacterType, List<string>> MakeDict()
+        {
+            return effects.ToDictionary(
+                kvp => kvp.Key,
+                kvp => new List<string>(kvp.Value)
+            );
         }
     }
 

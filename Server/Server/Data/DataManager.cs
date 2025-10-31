@@ -45,6 +45,7 @@ namespace Server.Data
         public static Dictionary<int, ItemInfoBase> ItemDict { get; private set; } = new Dictionary<int, ItemInfoBase>();
        
         public static Dictionary<CharacterType, List<List<int>>> ItemSetDict { get; private set; } = new Dictionary<CharacterType, List<List<int>>>();
+        public static Dictionary<CharacterType, List<string>> PlayerFxDict { get; private set; } = new Dictionary<CharacterType, List<string>>();
 
         public static void LoadData()
         {
@@ -75,7 +76,11 @@ namespace Server.Data
             // For System
             PhaseDict = LoadJson<Data.PhaseData, int, int>("PhaseData", "player").MakeDict();
             RespawnDict = LoadJson<Data.RespawnData, int, int>("RespawnData", "player").MakeDict();
+
+            // For Effect
+            PlayerFxDict = LoadJson<Data.PlayerEffectDict, CharacterType, List<string>>("PlayerEffectData", "monster").MakeDict();
         }
+        
 
         static Loader LoadJson<Loader, Key, Value>(string path, string key) where Loader : ILoader<Key, Value>
         {
