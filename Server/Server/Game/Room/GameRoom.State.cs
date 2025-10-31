@@ -183,21 +183,6 @@ namespace Server.Game
                 //Speed = skillPacket.Speed
             };
 
-            //if (!(player.CurrentState is Player_SkillState skillState))
-            //{
-            //    if (!player.PendingProposal.Has || skillPacket.Seq > player.PendingProposal.Seq)
-            //    {
-            //        player.PendingProposal = new PendingSkillProposal
-            //        {
-            //            Has = true,
-            //            SkillKey = skillPacket.SkillKey,
-            //            Seq = skillPacket.Seq,
-            //            Prop = prop
-            //        };
-            //    }
-            //    return;
-            //}
-
             // 스킬로 전달
             if (player.CurrentState is Player_SkillState skillState)
                 skillState.Handler.OnPropose(player, prop);

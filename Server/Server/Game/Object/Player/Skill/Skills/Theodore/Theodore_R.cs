@@ -7,13 +7,13 @@ using System.Numerics;
 using System.Text;
 using static Server.Data.DataUtils;
 
-public sealed class Rozzi_Q : SkillHandlerBase
+public sealed class Theodore_R : SkillHandlerBase
 {
-    public Rozzi_Q()
+    public Theodore_R()
     {
-        _characterType = CharacterType.Rozzi;
-        _animName = "SKILL_Q";
-        _keyCode = KeyCode.Q;
+        _characterType = CharacterType.Theodore;
+        _animName = "SKILL_R";
+        _keyCode = KeyCode.R;
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
@@ -21,7 +21,6 @@ public sealed class Rozzi_Q : SkillHandlerBase
         base.OnEnter(p, ctx);
 
         p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
-        p.LookAtMouse(ctx.MousePos);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -37,17 +36,6 @@ public sealed class Rozzi_Q : SkillHandlerBase
     public override void OnExit(Player p, SkillContext ctx)
     {
         base.OnExit(p, ctx);
-
-        p.Tokens.Add(new NextInputToken
-        {
-            Active = true,
-            RemainingUses = 1,
-            ExpireUtc = TimeUtil.UtcSec() + 3.0,
-            Priority = 10,
-            Trigger = InputKind.Move,
-            ReplacementSkillKey = "Rozzi_Q_Dash",
-            CancelOnUseSkill = true
-        });
     }
 }
 

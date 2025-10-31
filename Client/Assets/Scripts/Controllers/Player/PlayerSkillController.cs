@@ -71,11 +71,11 @@ public class PlayerSkillController : MonoBehaviour
             // 스킬을 사용하고 있는 상태가 아닐 때
             if (_player.State == CreatureState.Skill)
                 return null;
-
+        
             // 쿨타임이 끝났을 때
             if (_coolDownDict[_key].isCoolDown)
                 return null;
-
+        
             // 스태미나가 충분할 때
             if (_player.Stamina < FindSkill(_key).CurLevelStamina)
                 return null;
@@ -96,7 +96,7 @@ public class PlayerSkillController : MonoBehaviour
 
     public void OnSkill(S_SkillMotion packet)
     {
-        if(packet.Type == SkillMotionType.Dash || packet.Type == SkillMotionType.Blink)
+        if(packet.Type == SkillMotionType.Agent)
         {
             PlaySkillMotion((SkillMotionType)packet.Type,
             new Vector3(packet.StartX, packet.StartY, packet.StartZ),
@@ -104,13 +104,10 @@ public class PlayerSkillController : MonoBehaviour
             packet.Duration, packet.Anim, packet.CurveId,
             packet.ServerCollision, packet.AuthoritativeEnd);
         }
-        else if(packet.Type == SkillMotionType.Follow)
+        else if(packet.Type == SkillMotionType.Transform)
         {
             ApplySkillMotion((SkillMotionType)packet.Type,
-            new Vector3(packet.StartX, packet.StartY, packet.StartZ),
-            new Vector3(packet.EndX, packet.EndY, packet.EndZ),
-            packet.Duration, packet.Anim, packet.CurveId,
-            packet.ServerCollision, packet.AuthoritativeEnd);
+            new Vector3(packet.EndX, packet.EndY, packet.EndZ));
         }
     }
 
@@ -127,14 +124,14 @@ public class PlayerSkillController : MonoBehaviour
 
         Debug.Log($"Key : {key}, CoolTime : {packet.CostInfo.CoolTime}, Stamina : {packet.CostInfo.Stamina}");
 
-        // 쿨타임 코루틴 시작
+        //쿨타임 코루틴 시작
         StartCoroutine(CoInputCooltime(key, packet.CostInfo.CoolTime));
 
-        // 스태미너 연동
+        //스태미너 연동
         _player.Stamina = packet.CostInfo.Stamina;
 
-        // 스킬 실행 UI 연동
-        //PlayerInterface.UseSkill(KeyToUIEnum(key));
+        //스킬 실행 UI 연동
+        //_player.UI.PlayerInterface.UseSkill(KeyToUIEnum(key));
 
         CreateSkillMesh(key);
     }
@@ -191,7 +188,7 @@ public class PlayerSkillController : MonoBehaviour
 
     private SkillSpec GetSkillSpec(KeyCode key, VariantKey variants)
     {
-        if(variants == VariantKey.NoCollision)
+        if (variants == VariantKey.NoCollision)
             return null;
         if(variants == VariantKey.Cast)
             return _skillSpecs[key].cast;
@@ -289,7 +286,7 @@ public class PlayerSkillController : MonoBehaviour
         //if (!string.IsNullOrEmpty(anim))
         //    PlayAnimFromServer(anim, 0.05f);
 
-        if (type == SkillMotionType.Blink)
+        if (type == SkillMotionType.Transform)
         {
             _agent.Warp(end);
             _agent.nextPosition = end;
@@ -337,15 +334,13 @@ public class PlayerSkillController : MonoBehaviour
         _player.UpdateTransform();
     }
 
-    private void ApplySkillMotion(SkillMotionType type, Vector3 start, Vector3 end,
-                            float duration, string anim, string curveId,
-                            bool serverCollision, bool authoritativeEnd)
+    private void ApplySkillMotion(SkillMotionType type, Vector3 targetPos)
     {
         if(_agent != null)
             _agent.enabled = false;
 
         // NavMesh 위로 수정
-        if (NavMesh.SamplePosition(end, out var endHit, 2.0f, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(targetPos, out var endHit, 2.0f, NavMesh.AllAreas))
             _endPosition = endHit.position;
 
         transform.position = _endPosition;
@@ -407,8 +402,8 @@ public class PlayerSkillController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         bool raycastHit = Physics.Raycast(ray, out hit, 1000.0f);
 
-        Vector3 dir = (hit.point - transform.position).normalized;
-        dir.y = 0;
+        Vector3 hitPos = hit.point; hitPos.y = transform.position.y;
+        Vector3 dir = (hitPos - transform.position).normalized;
 
         if (!isMaxDistance && (hit.point - transform.position).magnitude < range)
         {
@@ -449,15 +444,17 @@ public class PlayerSkillController : MonoBehaviour
 
     public void CreateSkillMesh(KeyCode keyCode)
     {
-        SkillHitbox skillHitbox = DataManager.SkillHitboxDict[_player.ObjInfo.Player.CharType][keyCode];
-        GameObject go = Managers.Resource.Instantiate("Debug/SkillMesh", gameObject.transform);
-        SkillMesh sm = go.GetComponent<SkillMesh>();
-        if (sm == null)
-            return;
-        sm.Init(skillHitbox, gameObject.transform, _player.ObjInfo.Player.Team);
+        if (DataManager.SkillHitboxDict[_player.ObjInfo.Player.CharType].TryGetValue(keyCode, out SkillHitbox skillHitbox))
+        {
+            GameObject go = Managers.Resource.Instantiate("Debug/SkillMesh", gameObject.transform);
+            SkillMesh sm = go.GetComponent<SkillMesh>();
+            if (sm == null)
+                return;
+            sm.Init(skillHitbox, gameObject.transform, _player.ObjInfo.Player.Team);
 
-        if (_player.ObjInfo.Player.CharType == CharacterType.Abigail && keyCode == KeyCode.Q)
-            CreateSkillMesh(KeyCode.F1);
+            if (_player.ObjInfo.Player.CharType == CharacterType.Abigail && keyCode == KeyCode.Q)
+                CreateSkillMesh(KeyCode.F1);
+        }
     }
     #endregion
 

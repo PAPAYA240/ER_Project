@@ -21,8 +21,10 @@ public class MyPlayerController : PlayerController
     private PlayerUIController _UI;
     public PlayerUIController UI {  get { return _UI; } }
 
-    //UI
-    UI_PlayerHUD _playerHUD;
+    public SkillIndicator Indicator { get { return _skillIndicator; } }
+
+    private SkillIndicator _skillIndicator;
+
     // Inventory
     List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
 
@@ -43,7 +45,7 @@ public class MyPlayerController : PlayerController
     private void Awake()
     {
         _skill = gameObject.GetOrAddComponent<PlayerSkillController>();
-        _input = gameObject.GetOrAddComponent<PlayerInputController>();    
+        _input = gameObject.GetOrAddComponent<PlayerInputController>();
         _view = gameObject.GetOrAddComponent<PlayerViewController>();
         _UI = gameObject.GetOrAddComponent<PlayerUIController>();
     }
@@ -57,6 +59,9 @@ public class MyPlayerController : PlayerController
         _UI.Init();
 
         _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHPColor();
+
+        // 스킬 인디케이터
+        _skillIndicator = gameObject.GetOrAddComponent<SkillIndicator>();
 
         // 전장의 안개 카메라 설정
         GameObject fogCamGo = GameObject.Find("FogCamera");
@@ -93,9 +98,16 @@ public class MyPlayerController : PlayerController
         }
 
         // 스킬
-        var skillCmd = _input.GetSkillCommand();
-        if (skillCmd != null)
-            Managers.Network.Send(skillCmd);
+        // 스킬 레벨 업
+        var skillLevelUpCmd = _input.GetSkillLevelUpCommand();
+        if (skillLevelUpCmd != KeyCode.None)
+            _UI.TrySkillLevelUp(skillLevelUpCmd);
+        else
+        {
+            var skillCmd = _input.GetSkillCommand();
+            if (skillCmd != null)
+                Managers.Network.Send(skillCmd);
+        }
 
         // 휴식(X)
         var restCmd = _input.GetRestCommand();
@@ -126,6 +138,10 @@ public class MyPlayerController : PlayerController
         //UpdateTransform();
     }
 
+    public bool RequiresCharge(KeyCode key)
+    {
+        return DataManager.SkillDict[ObjInfo.Player.CharType][key].canCharge;
+    }
 
     // 서버 응답 전달
     //public void OnServerUpdate(S_Idle packet) => _view.OnIdle(packet);
@@ -150,22 +166,12 @@ public class MyPlayerController : PlayerController
     public void OnServerUpdate(S_SkillConfirm packet) => _skill.OnSkillConfirm(packet);
 
     #region UI
-    public void SetTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)
-    {
-        //_playerHUD.SetTimer(phase, clientLocalTargetRealtimeSinceStartupEnd);
-    }
-
     public override void SetKDA(int kill, int death, int asist)
     {
         base.SetKDA(kill, death, asist);
-        //_playerHUD.SetKDA(kill, death, asist);
+        UI.PlayerHUD.SetKDA(kill, death, asist);
     }
-    
-    public void NotifyKill(PlayerController attPc, PlayerController diePc)
-    {
-        //_playerHUD.NotifyKill(attPc, diePc);
-    }
-    
+
     public override void EquipItem(int itemId)
     {
         base.EquipItem(itemId);
@@ -337,7 +343,7 @@ public class MyPlayerController : PlayerController
     #endregion
 
     protected override void UpdateHp() { base.UpdateHp(); _UI.UpdateHp(); }
-    protected override void UpdateMaxHp() { base.UpdateMaxHp(); _UI.UpdateHp(); }
+    protected override void UpdateMaxHp() { base.UpdateMaxHp(); _UI.UpdateMaxHp(); } 
     protected override void UpdateStamina() { base.UpdateStamina(); _UI.UpdateStamina(); }
     protected override void UpdateMaxStamina() { base.UpdateMaxStamina(); _UI.UpdateMaxStamina(); }
     public void UpdateLevel() { _UI.UpdateLevel(); }

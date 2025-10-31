@@ -14,33 +14,15 @@ namespace Server.Game
         public ClientSession Session { get; set; }
 
         // Skill
-        public PlayerFlags Flags { get; } = new PlayerFlags();
-        public class PlayerFlags
-        {
-            public bool IsInSkillMotion;
-            public Vector3 SkillMotionStart;
-            public Vector3 SkillMotionEnd;
-            public float SkillMotionEndTimeUtc; // utcSeconds
-        }
-
-        public PendingSkillProposal PendingProposal;
-        public struct PendingSkillProposal
-        {
-            public int SkillKey;
-            public int Seq;
-            public SkillCollisionProposal Prop;
-            public bool Has;
-        }
-
         protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
         Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
         class CoolTime
         {
-            public bool isCoolDown;     // ÄğÅ¸ÀÓÀÌ µ¹°í ÀÖ´ÂÁö (false : »ç¿ë °¡´É)
-            public float coolTime;      // ³²Àº ÄğÅ¸ÀÓ
+            public bool isCoolDown;     // ï¿½ï¿½Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ (false : ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+            public float coolTime;      // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½
         }
 
-        // temp ÀÓ½Ã ÄÚµå ³ªÁß¿¡ »èÁ¦
+        // temp ï¿½Ó½ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½
         bool _isDeath = false;
         public bool IsDeath
         {
@@ -194,7 +176,7 @@ namespace Server.Game
             {
                 TimeSpan damageTime = Room.TimeStamp - record.TimeStamp;
 
-                if(damageTime.TotalSeconds > 15)
+                if(damageTime.TotalSeconds > AsistTime)
                 {
                     _damageRecords.Remove(record.Id);
                 }
@@ -208,15 +190,15 @@ namespace Server.Game
 
             UpdateDamageRecords();
 
-            // Á×±â Àü¿¡ Ãß°¡ÇÏ·Á°í ¼ø¼­¸¦ ÀÌ·¸°Ô ÇÔ.
-            if (_damageRecords.TryGetValue(attacker.Id, out DamageRecord damageRecord)) // ÀÌ¹Ì ÇØ´ç ÇÃ·¹ÀÌ¾î¿¡°Ô µ¥¹ÌÁö¸¦ ÀÔ¾ú´Ù¸é ½Ã°£À» ÃÖ½ÅÈ­.
+            // ï¿½×±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½.
+            if (_damageRecords.TryGetValue(attacker.Id, out DamageRecord damageRecord)) // ï¿½Ì¹ï¿½ ï¿½Ø´ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¾ï¿½ï¿½Ù¸ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½Ö½ï¿½È­.
             {
                 damageRecord.Damage += damage;
                 damageRecord.TimeStamp = Room.TimeStamp;
             }
             else
             {
-                _damageRecords.Add(attacker.Id, new DamageRecord(attacker.Id, damage, Room.TimeStamp)); // ÇÇÇØ¸¦ ÀÔÀº ÀûÀÌ ¾ø´Ù¸é »õ·Î Ãß°¡.
+                _damageRecords.Add(attacker.Id, new DamageRecord(attacker.Id, damage, Room.TimeStamp)); // ï¿½ï¿½ï¿½Ø¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½.
             }
 
             base.OnDamaged(attacker, damage, isTrueDamage);
@@ -253,7 +235,7 @@ namespace Server.Game
 
             //base.Update();
             
-            TickTokens(); // ÅäÅ« ¸¸·á/°»½Å
+            TickTokens(); // ï¿½ï¿½Å« ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½
             _stateMachine.Update(this);
             CheckUpdateStat();
         }
@@ -274,24 +256,24 @@ namespace Server.Game
         {
             if (Room == null)
                 return;
-
-            // KDA º¯È­ ÆĞÅ¶
+            
+            // KDA íŒ¨í‚·
             S_ChangeKDA KdaPacket = new S_ChangeKDA();
 
-            // µ¥½º Áõ°¡
+            // ë°ìŠ¤ ì²˜ë¦¬
             {
                 ++DeathAmount;
                 KdaPacket.KDAs.Add(new KDAInfo { ObjectId = Id, Kill = KillAmount, Death = DeathAmount, Asist = AsistAmount });
             }
             
-            // Å³ Áõ°¡
+            // í‚¬ ì²˜ë¦¬
             if(attacker is Player attackPlayer)
             {
                 ++attackPlayer.KillAmount;
                 KdaPacket.KDAs.Add(new KDAInfo { ObjectId = attackPlayer.Id, Kill = attackPlayer.KillAmount, Death = attackPlayer.DeathAmount, Asist = attackPlayer.AsistAmount });
             }
 
-            // ¾î½Ã Áõ°¡
+            // ì–´ì‹œ ì²˜ë¦¬
             {
                 foreach(DamageRecord record in _damageRecords.Values)
                 {
@@ -360,7 +342,7 @@ namespace Server.Game
         #region Skill
         private void MakeSkillDict()
         {
-            // º»ÀÎ Ä³¸¯ÅÍÀÇ ½ºÅ³ Á¤º¸¸¸ ÃßÃâ
+            // ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å³ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             Dictionary<KeyCode, SkillData> skills = DataManager.SkillDict[Info.Player.CharType];
             foreach (var skillData in skills)
             {
@@ -371,6 +353,7 @@ namespace Server.Game
             }
 
             _skills[KeyCode.T].CurLevel = 1;
+            _skills[KeyCode.F].CurLevel = 1;
         }
 
         private void MakeCoolDownDict()
@@ -498,14 +481,14 @@ namespace Server.Game
         {
             for (int i = 0; i < MaxInventorySlot; ++i)
             {
-                _inventory.Add(null); //ºñ¾î ÀÖ´Â ÀÎº¥Åä¸®¸¦ »ı¼º
+                _inventory.Add(null); //ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             }
         }
 
-        // ¾ÆÀÌÅÛ È¹µæ ÇÔ¼ö
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¹ï¿½ï¿½ ï¿½Ô¼ï¿½
         public bool AcquireItem(ItemInfoBase item)
         {
-            // _inventory ¸®½ºÆ®¿¡¼­ null °ªÀÌ ÀÖ´Â Ã¹ ¹øÂ° ÀÎµ¦½º¸¦ ¹İÈ¯ÇØÁÜ.
+            // _inventory ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ null ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ Ã¹ ï¿½ï¿½Â° ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½.
             int firstEmptySlotIndex = _inventory.IndexOf(null);
 
             switch (item)
@@ -517,7 +500,7 @@ namespace Server.Game
                         GameRoom room = Room;
                         ClientSession session = Session;
 
-                        // ÀÌ¹Ì ÀÖ´Â ¼Ò¸ğÇ°ÀÌ¶ó¸é
+                        // ï¿½Ì¹ï¿½ ï¿½Ö´ï¿½ ï¿½Ò¸ï¿½Ç°ï¿½Ì¶ï¿½ï¿½
                         for (int i = 0; i < MaxInventorySlot; ++i)
                         {
                             if (_inventory[i] != null && _inventory[i] is ConsumableItemInfo itemInfo && _inventory[i].Id == consumableItem.Id)
@@ -533,7 +516,7 @@ namespace Server.Game
                             }
                         }
 
-                        // »õ·Î¿î ¼Ò¸ğÇ°ÀÎµ¥ ÀÎº¥Åä¸®°¡ ²Ë Âü.
+                        // ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½Ò¸ï¿½Ç°ï¿½Îµï¿½ ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½.
                         if (firstEmptySlotIndex == -1)
                             return false;
 
@@ -548,13 +531,13 @@ namespace Server.Game
                     }
                 case EquipItemInfo equipItem:
                     {
-                        // ÀÎº¥Åä¸®°¡ ²Ë Âü.
+                        // ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½.
                         if (firstEmptySlotIndex == -1)
                             return false;
 
                         _inventory[firstEmptySlotIndex] = equipItem;
 
-                        // È¹µæÇÑ ÀåºñÀÇ Ä­ÀÌ ºñ¾î ÀÖÀ¸¸é ¹Ù·Î ÀåÂø ¶Ç´Â ¾òÀº ÀåºñÀÇ µî±ŞÀÌ ³ôÀ¸¸é ÀÚµ¿ ±³Ã¼
+                        // È¹ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ Ä­ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ ï¿½ï¿½Ã¼
                         if (_equipItemSlot[equipItem.Type] == null || _equipItemSlot[equipItem.Type].Grade < equipItem.Grade)
                             EquipItem(equipItem, firstEmptySlotIndex);
                         else
@@ -578,7 +561,7 @@ namespace Server.Game
             return false;
         }
 
-        // ¾ÆÀÌÅÛ »ç¿ë ÇÔ¼ö(ÀåÂø, ¼³Ä¡), ¸î ¹øÂ° ÀÎº¥¿¡ ÀÖ´Â ¾ÆÀÌÅÛÀ» »ç¿ëÇÏ°Ú´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½(ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½Ä¡), ï¿½ï¿½ ï¿½ï¿½Â° ï¿½Îºï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°Ú´ï¿½.
         public void UseItem(int index)
         {
             if (null == _inventory[index])
@@ -600,7 +583,7 @@ namespace Server.Game
             }
         }
 
-        // Àåºñ ¾ÆÀÌÅÛ ÀåÂø ÇÔ¼ö
+        // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
         private void EquipItem(EquipItemInfo item, int inventoryIndex)
         {
             S_ChangeInventory changeInventoryPacket = new S_ChangeInventory();
@@ -639,7 +622,7 @@ namespace Server.Game
 
         public void EquipItemSet(CharacterType type, int phase)
         {
-            // ÇØ´ç ÆäÀÌÁî¿¡ ÀåÂøÇÒ ¾ÆÀÌÅÛ ¼¼Æ®ÀÇ ¾ÆÀÌµğ ¸®½ºÆ®¸¦ °¡Á®¿È.
+            // ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½î¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
             List<int> itemIdList = DataManager.ItemSetDict[type][phase];
 
             foreach (int itemId in itemIdList)
@@ -652,7 +635,7 @@ namespace Server.Game
                 changeEquipItemPacket.ObjectId = Id;
                 changeEquipItemPacket.ItemId = itemId;
 
-                // ÀÌ¹Ì Çª½¬µÇ¾î¼­ ¿Â »óÈ². Çª½¬µÈ ÇÔ¼ö¾È¿¡ ÀÖ°Å³ª ÀÌ ÇÔ¼ö¸¦ Çª½¬ÇØ¼­ »ç¿ë.
+                // ï¿½Ì¹ï¿½ Çªï¿½ï¿½ï¿½Ç¾î¼­ ï¿½ï¿½ ï¿½ï¿½È². Çªï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½È¿ï¿½ ï¿½Ö°Å³ï¿½ ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ Çªï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½.
                 GameRoom room = Room;
                 room.Broadcast(changeEquipItemPacket);
             }
@@ -662,13 +645,13 @@ namespace Server.Game
             Console.WriteLine($"{Info.Player.CharType} Eqiup done!");
         }
 
-        // ¾ÆÀÌÅÛ ¹ö¸®´Â ÇÔ¼ö
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
         public void DiscardItem()
         {
 
         }
 
-        // ÀÎº¥Åä¸® ³»ÀÇ ¾ÆÀÌÅÛÀ» ¾ÆÀÌµğ·Î Ã£´Â ÇÔ¼ö
+        // ï¿½Îºï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½Ô¼ï¿½
         public ItemInfoBase FindItemInInventory()
         {
 
@@ -676,10 +659,10 @@ namespace Server.Game
             return null;
         }
 
-        // ÀÎº¥Åä¸® ½º¿Ò(¾ÆÀÌÅÛ À§Ä¡ ¹Ù²Ù±â) 
+        // ï¿½Îºï¿½ï¿½ä¸® ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½Ù²Ù±ï¿½) 
         public void SwapInventory(int firstIndex, int secondIndex)
         {
-            // 1. À¯È¿¼º °Ë»ç (ÀÎµ¦½º ¹üÀ§ ¹× µ¿ÀÏ ÀÎµ¦½º ½º¿Ò ¹æÁö)
+            // 1. ï¿½ï¿½È¿ï¿½ï¿½ ï¿½Ë»ï¿½ (ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
             if (firstIndex < 0 || firstIndex >= _inventory.Count ||
                 secondIndex < 0 || secondIndex >= _inventory.Count ||
                 firstIndex == secondIndex)
@@ -702,7 +685,7 @@ namespace Server.Game
                     packet.Changes.Add(new ChangeInventoryInfo { ItemId = _inventory[firstIndex].Id, InventoryIndex = firstIndex });
                 }
             }
-            else //ºóÄ­ Ã³¸®
+            else //ï¿½ï¿½Ä­ Ã³ï¿½ï¿½
             {
                 packet.Changes.Add(new ChangeInventoryInfo { ItemId = 0, InventoryIndex = firstIndex });
             }
@@ -718,7 +701,7 @@ namespace Server.Game
                     packet.Changes.Add(new ChangeInventoryInfo { ItemId = _inventory[secondIndex].Id, InventoryIndex = secondIndex });
                 }
             }
-            else //ºóÄ­ Ã³¸®
+            else //ï¿½ï¿½Ä­ Ã³ï¿½ï¿½
             {
                 packet.Changes.Add(new ChangeInventoryInfo { ItemId = 0, InventoryIndex = secondIndex });
 
@@ -731,7 +714,7 @@ namespace Server.Game
                 room.Push(session.Send, packet);
         }
 
-        // ¾÷µ¥ÀÌÆ® ¾ÆÀÌÅÛ ½ºÅÈ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         private void UpdateItemStat()
         {
             lock (this)
@@ -939,7 +922,7 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendChangeTransformPacket() // ¼öµ¿À¸·Î ÇÃ·¹ÀÌ¾î À§Ä¡orÈ¸Àü ¼öÁ¤ÇÑ ÈÄ¿¡ º¸³»´Â ÆĞÅ¶
+        public void SendChangeTransformPacket() // ìˆ˜ë™ìœ¼ë¡œ í”Œë ˆì´ì–´ ìœ„ì¹˜oríšŒì „ ìˆ˜ì •í•œ í›„ì— ë³´ë‚´ëŠ” íŒ¨í‚·
         {
             S_ChangeTransform pkt = new S_ChangeTransform
             {
@@ -953,7 +936,7 @@ namespace Server.Game
 
         #endregion
 
-        #region StatusEffect(¹öÇÁ, µğ¹öÇÁ), Barrier(¹æ¾î¸·) °ü·Ã
+        #region StatusEffect(ë²„í”„, ë””ë²„í”„), Barrier(ë°©ì–´ë§‰) ê´€ë ¨
         public override void UpdateBarrier()
         {
             float barrier = 0;

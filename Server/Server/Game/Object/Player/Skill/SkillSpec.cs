@@ -56,10 +56,3 @@ public sealed class CollisionSpec
     public bool SlideOnWall = false;    
     public float Skin = 0.05f;          // 벽 앞에서 살짝 띄우기
 }
-
-public sealed class SkillContext
-{
-    public Vector2 MousePos;            // XZ
-    public int TargetId;                // 필요 시
-    public KeyCode Key;
-}
