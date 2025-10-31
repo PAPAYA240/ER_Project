@@ -232,18 +232,7 @@ public class MyPlayerController : PlayerController
     
         return EffectList;
     }
-    
-    protected List<GameObject> PlayEffectAtPosition(CreatureState state, KeyCode key, Vector3 position, Quaternion rot, EffectType type = EffectType.Caster)
-    {
-        List<EffectData> effectList = Managers.Data.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
-    
-        if (effectList == null || effectList.Count == 0)
-            return null;
-    
-        List<GameObject> EffectList = Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, this.transform, position, rot);
-    
-        return EffectList;
-    }
+
     #endregion
 
     #region Inventory, EquipItem

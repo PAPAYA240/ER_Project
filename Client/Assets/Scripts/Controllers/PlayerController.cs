@@ -528,11 +528,6 @@ public class PlayerController : CreatureController
     #endregion
 
     #region Effect
-    public virtual void PlayEffectFromServer(EffectInfo fxInfo)
-    {
-        PlayEffectTransform(CreatureState.Skill, (KeyCode)fxInfo.KeyCode);
-    }
-
     // 현재 상태, 키, 타겟팅 상대에게 이펙트
     protected virtual List<GameObject> PlayEffectTransform(CreatureState state, KeyCode key, EffectType type = EffectType.Caster,
        GameObject target = null, Transform targetTransform = null)
@@ -542,6 +537,24 @@ public class PlayerController : CreatureController
         EffectList = Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, transform);
 
         return EffectList;
+    }
+    public List<GameObject> PlayEffectAtPosition(CreatureState state, KeyCode key, Vector3 position, Quaternion rot, EffectType type = EffectType.Caster)
+    {
+        List<EffectData> effectList = Managers.Data.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
+
+        if (effectList == null || effectList.Count == 0)
+            return null;
+
+        List<GameObject> EffectList = Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, this.transform, position, rot);
+
+        return EffectList;
+    }
+    public Quaternion GetIndicatorRotation()
+    {
+        float playerYaw = transform.rotation.eulerAngles.y;
+        Quaternion yawRotationOnly = Quaternion.Euler(0, playerYaw, 0);
+        Quaternion desiredXRotation = Quaternion.Euler(-90f, 180f, 0);
+        return yawRotationOnly * desiredXRotation;
     }
     #endregion
 
