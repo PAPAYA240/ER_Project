@@ -101,6 +101,16 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SSkillConfirm, PacketHandler.S_SkillConfirmHandler);		
 		_onRecv.Add((ushort)MsgId.SSkillMotion, MakePacket<S_SkillMotion>);
 		_handler.Add((ushort)MsgId.SSkillMotion, PacketHandler.S_SkillMotionHandler);		
+		_onRecv.Add((ushort)MsgId.SOccupyBeacon, MakePacket<S_OccupyBeacon>);
+		_handler.Add((ushort)MsgId.SOccupyBeacon, PacketHandler.S_OccupyBeaconHandler);		
+		_onRecv.Add((ushort)MsgId.SChangeBeaconTime, MakePacket<S_ChangeBeaconTime>);
+		_handler.Add((ushort)MsgId.SChangeBeaconTime, PacketHandler.S_ChangeBeaconTimeHandler);		
+		_onRecv.Add((ushort)MsgId.SChangeScore, MakePacket<S_ChangeScore>);
+		_handler.Add((ushort)MsgId.SChangeScore, PacketHandler.S_ChangeScoreHandler);		
+		_onRecv.Add((ushort)MsgId.SGameOver, MakePacket<S_GameOver>);
+		_handler.Add((ushort)MsgId.SGameOver, PacketHandler.S_GameOverHandler);		
+		_onRecv.Add((ushort)MsgId.SChangeTransform, MakePacket<S_ChangeTransform>);
+		_handler.Add((ushort)MsgId.SChangeTransform, PacketHandler.S_ChangeTransformHandler);		
 		_onRecv.Add((ushort)MsgId.STargetChange, MakePacket<S_TargetChange>);
 		_handler.Add((ushort)MsgId.STargetChange, PacketHandler.S_TargetChangeHandler);
 	}
