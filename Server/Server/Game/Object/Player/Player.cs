@@ -1,18 +1,10 @@
-using Google.Protobuf;
-using Google.Protobuf.Protocol;
-using Server.Data;
-using ServerCore;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net.Sockets;
 using System.Numerics;
-using System.Threading;
-using System.Threading.Tasks;
-using static ISkill;
+using Google.Protobuf.Protocol;
+using Server.Data;
 using static Server.Data.DataUtils;
-using static Server.Game.GameRoom;
 
 namespace Server.Game
 {
@@ -184,7 +176,7 @@ namespace Server.Game
             {
                 TimeSpan damageTime = Room.TimeStamp - record.TimeStamp;
 
-                if(damageTime.TotalSeconds > 15)
+                if(damageTime.TotalSeconds > AsistTime)
                 {
                     _damageRecords.Remove(record.Id);
                 }
@@ -263,30 +255,26 @@ namespace Server.Game
 
         public override void OnDead(GameObject attacker)
         {
-            // ����� ������
-
             if (Room == null)
                 return;
-
-            PosInfo.State = CreatureState.Dead;
             
-            // KDA ��ȭ ��Ŷ
+            // KDA 패킷
             S_ChangeKDA KdaPacket = new S_ChangeKDA();
 
-            // ���� ����
+            // 데스 처리
             {
                 ++DeathAmount;
                 KdaPacket.KDAs.Add(new KDAInfo { ObjectId = Id, Kill = KillAmount, Death = DeathAmount, Asist = AsistAmount });
             }
             
-            // ų ����
+            // 킬 처리
             if(attacker is Player attackPlayer)
             {
                 ++attackPlayer.KillAmount;
                 KdaPacket.KDAs.Add(new KDAInfo { ObjectId = attackPlayer.Id, Kill = attackPlayer.KillAmount, Death = attackPlayer.DeathAmount, Asist = attackPlayer.AsistAmount });
             }
 
-            // ��� ����
+            // 어시 처리
             {
                 foreach(DamageRecord record in _damageRecords.Values)
                 {
@@ -787,6 +775,29 @@ namespace Server.Game
         {
             return ObjectManager.Instance.Find(targetId);
         }
+
+        public void LookAtMouse(Vector2 mousePos)
+        {
+            Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
+            Vector2 dir = mousePos - myPos;
+
+            if (dir.LengthSquared() < 0.0001f)
+                return;
+
+            float angle = (float)Math.Atan2(dir.X, dir.Y);
+            Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle);
+
+            RotInfo = new RotationInfo
+            {
+                Qx = rot.X,
+                Qy = rot.Y,
+                Qz = rot.Z,
+                Qw = rot.W
+            };
+
+            SendChangeTransformPacket();
+        }
+
         #endregion
 
         #region Packet
@@ -911,9 +922,22 @@ namespace Server.Game
             };
             Room.Push(Room.Broadcast, packet);
         }
+
+        public void SendChangeTransformPacket() // 수동으로 플레이어 위치or회전 수정한 후에 보내는 패킷
+        {
+            S_ChangeTransform pkt = new S_ChangeTransform
+            {
+                ObjectId = Id,
+                PosInfo = new PositionInfo(PosInfo),
+                RotInfo = new RotationInfo(RotInfo)
+            };
+
+            Room.Push(Room.Broadcast, pkt);
+        }
+
         #endregion
 
-        #region StatusEffect(����, �����), Barrier(��) ����
+        #region StatusEffect(버프, 디버프), Barrier(방어막) 관련
         public override void UpdateBarrier()
         {
             float barrier = 0;

@@ -31,10 +31,10 @@ public static class SkillRegistry
         }
         else if (character == CharacterType.Abigail)
         {
-            //if (key == KeyCode.Q) return new Abigail_Q();
-            //if (key == KeyCode.W) return new Abigail_W();
-            //if (key == KeyCode.E) return new Abigail_E();
-            //if (key == KeyCode.R) return new Abigail_R();
+            if (key == KeyCode.Q) return new Abigail_Q();
+            if (key == KeyCode.W) return new Abigail_W();
+            if (key == KeyCode.E) return new Abigail_E();
+            if (key == KeyCode.R) return new Abigail_R();
             //if (key == KeyCode.D) return new Abigail_D();
             //if (key == KeyCode.F) return new Skill_();
         }

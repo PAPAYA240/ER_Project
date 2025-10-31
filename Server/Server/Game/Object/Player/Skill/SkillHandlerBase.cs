@@ -41,6 +41,17 @@ public abstract class SkillHandlerBase : ISkill
             // 이동 금지 스킬이면 강제 정지
             p.SendStopPacket(StopReason.StopMoveOnly);
         }
+
+        switch (ctx.Key)
+        {
+            case KeyCode.Q:
+            case KeyCode.W:
+            case KeyCode.E:
+            case KeyCode.R:
+                p.Room.CollManager.AddHitbox(p, p.Info.Player.CharType, ctx.Key, ctx.MousePos);
+                break;
+
+        }
     }
 
     public virtual void OnExit(Player p, SkillContext ctx)
@@ -54,12 +65,12 @@ public abstract class SkillHandlerBase : ISkill
 
     public virtual void OnHit(Player p, SkillContext ctx)
     {
-        throw new NotImplementedException();
+        
     }
 
     public virtual void OnTick(Player p, SkillContext ctx)
     {
-        throw new NotImplementedException();
+        
     }
 
     public virtual void OnPropose(Player p, in SkillCollisionProposal prop)

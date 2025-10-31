@@ -430,69 +430,69 @@ namespace Server.Game
 
         private void HandleNormalSkill(Player player, C_Skill skillPacket)
         {
-            // 나영아 도와줘
-            if (player == null) return;
+            //// 나영아 도와줘
+            //if (player == null) return;
 
-            ObjectInfo info = player.Info;
-            S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
-            KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
+            //ObjectInfo info = player.Info;
+            //S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
+            //KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
 
-            skill.ChargeRatio = skillPacket.ChargeRatio;
+            //skill.ChargeRatio = skillPacket.ChargeRatio;
 
-            if (!player.CanUseSkill(keyCode))
-            {
-                skill.CanUse = false;
-                player.Session.Send(skill);
-                return;
-            }
-            else
-                player.CommitSkillUsage(keyCode);
-
-            //foreach (int targetid in skillPacket.TargetsId)
+            //if (!player.CanUseSkill(keyCode))
             //{
-            //    if (TryGetMonster(targetid, out Monster target))
-            //    {
-            //        player.Target = target;
-            //        player.SkillTarget = target;
-            //        player.UsedTargetingSkill = keyCode;
-
-            //    }
-            //    else if (_players.TryGetValue(targetid, out Player skillTarget))
-            //    {
-            //        player.SkillTarget = skillTarget;
-            //        player.UsedTargetingSkill = keyCode;
-            //    }
+            //    skill.CanUse = false;
+            //    player.Session.Send(skill);
+            //    return;
             //}
-
-            info.PosInfo.State = CreatureState.Skill;
-            skill.CanUse = true;
-            skill.ObjectId = info.ObjectId;
-            skill.SkillInfo = new SkillInfo
-            {
-                SkillId = skillPacket.SkillInfo.SkillId,
-                KeyCode = skillPacket.SkillInfo.KeyCode,
-            };
-            skill.CostInfo = new CostInfo
-            {
-                CoolTime = player.GetCoolTime(keyCode),
-                Stamina = player.Stamina,
-            };
-            Broadcast(skill);
-
-            //float damage = 0f;
-
-            //if(player.SkillTarget.ObjectType == GameObjectType.Player)
-            //    damage = _collisionManager.CalcDamage(player, player.SkillTarget as Player, player.UsedTargetingSkill);
             //else
-            //    damage = _collisionManager.CalcDamage(player, player.SkillTarget.Stat, player.UsedTargetingSkill);   
+            //    player.CommitSkillUsage(keyCode);
 
-            // 프로젝타일
-            Projectile proj= FindProjectile(player);
-            if (proj != null)
-                proj.IsActive = true;
+            ////foreach (int targetid in skillPacket.TargetsId)
+            ////{
+            ////    if (TryGetMonster(targetid, out Monster target))
+            ////    {
+            ////        player.Target = target;
+            ////        player.SkillTarget = target;
+            ////        player.UsedTargetingSkill = keyCode;
 
-            _collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode,
-                new Vector2(skillPacket.MousePosX, skillPacket.MousePosZ), skillPacket.ChargeRatio);
+            ////    }
+            ////    else if (_players.TryGetValue(targetid, out Player skillTarget))
+            ////    {
+            ////        player.SkillTarget = skillTarget;
+            ////        player.UsedTargetingSkill = keyCode;
+            ////    }
+            ////}
+
+            //info.PosInfo.State = CreatureState.Skill;
+            //skill.CanUse = true;
+            //skill.ObjectId = info.ObjectId;
+            //skill.SkillInfo = new SkillInfo
+            //{
+            //    SkillId = skillPacket.SkillInfo.SkillId,
+            //    KeyCode = skillPacket.SkillInfo.KeyCode,
+            //};
+            //skill.CostInfo = new CostInfo
+            //{
+            //    CoolTime = player.GetCoolTime(keyCode),
+            //    Stamina = player.Stamina,
+            //};
+            //Broadcast(skill);
+
+            ////float damage = 0f;
+
+            ////if(player.SkillTarget.ObjectType == GameObjectType.Player)
+            ////    damage = _collisionManager.CalcDamage(player, player.SkillTarget as Player, player.UsedTargetingSkill);
+            ////else
+            ////    damage = _collisionManager.CalcDamage(player, player.SkillTarget.Stat, player.UsedTargetingSkill);   
+
+            //// 프로젝타일
+            //Projectile proj= FindProjectile(player);
+            //if (proj != null)
+            //    proj.IsActive = true;
+
+            //_collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode,
+            //    new Vector2(skillPacket.MousePosX, skillPacket.MousePosZ), skillPacket.ChargeRatio);
         }
 
         #endregion
@@ -536,8 +536,6 @@ namespace Server.Game
                 player.Room.Broadcast(removeAbigailCoordPkt);
 
                 player.RemoveStatusEffects("Coord");
-
-                // 시야 제공 제거 (용수야 도와줘)
             }
 
             target.OnDamaged(player, damage);

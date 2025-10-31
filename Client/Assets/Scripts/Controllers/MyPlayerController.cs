@@ -23,8 +23,6 @@ public class MyPlayerController : PlayerController
 
     public SkillIndicator Indicator { get { return _skillIndicator; } }
 
-    //UI
-    UI_PlayerHUD _playerHUD;
     private SkillIndicator _skillIndicator;
 
     // Inventory
@@ -47,7 +45,7 @@ public class MyPlayerController : PlayerController
     private void Awake()
     {
         _skill = gameObject.GetOrAddComponent<PlayerSkillController>();
-        _input = gameObject.GetOrAddComponent<PlayerInputController>();      
+        _input = gameObject.GetOrAddComponent<PlayerInputController>();
         _view = gameObject.GetOrAddComponent<PlayerViewController>();
         _UI = gameObject.GetOrAddComponent<PlayerUIController>();
     }
@@ -168,22 +166,12 @@ public class MyPlayerController : PlayerController
     public void OnServerUpdate(S_SkillConfirm packet) => _skill.OnSkillConfirm(packet);
 
     #region UI
-    public void SetTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)
-    {
-        //_playerHUD.SetTimer(phase, clientLocalTargetRealtimeSinceStartupEnd);
-    }
-
     public override void SetKDA(int kill, int death, int asist)
     {
         base.SetKDA(kill, death, asist);
-        //_playerHUD.SetKDA(kill, death, asist);
+        UI.PlayerHUD.SetKDA(kill, death, asist);
     }
-    
-    public void NotifyKill(PlayerController attPc, PlayerController diePc)
-    {
-        //_playerHUD.NotifyKill(attPc, diePc);
-    }
-    
+
     public override void EquipItem(int itemId)
     {
         base.EquipItem(itemId);
@@ -355,7 +343,7 @@ public class MyPlayerController : PlayerController
     #endregion
 
     protected override void UpdateHp() { base.UpdateHp(); _UI.UpdateHp(); }
-    protected override void UpdateMaxHp() { base.UpdateMaxHp(); _UI.UpdateHp(); }
+    protected override void UpdateMaxHp() { base.UpdateMaxHp(); _UI.UpdateMaxHp(); } 
     protected override void UpdateStamina() { base.UpdateStamina(); _UI.UpdateStamina(); }
     protected override void UpdateMaxStamina() { base.UpdateMaxStamina(); _UI.UpdateMaxStamina(); }
     public void UpdateLevel() { _UI.UpdateLevel(); }

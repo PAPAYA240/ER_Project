@@ -40,18 +40,18 @@ namespace Server.Game
             if (_skills[keyCode].CurLevel == 0)
                 return false;
 
-            // ��Ÿ�� üũ
+            // 쿨타임 체크
             if (!CheckCoolTime(keyCode))
                 return false;
 
-            // ���׹̳� üũ
+            // 스테미나 체크
             if (!CheckStamina(keyCode))
                 return false;
 
             return true;
         }
 
-        // üũ ������ ������ ����
+        // 체크 끝나면 데이터 변경
         public void CommitSkillUsage(KeyCode keyCode)
         {
             // ��Ÿ�� ��� ����
@@ -91,7 +91,7 @@ namespace Server.Game
             while (sw.Elapsed.TotalSeconds < time)
             {
                 _coolDownDict[key].coolTime = (float)(time - sw.Elapsed.TotalSeconds);
-                await Task.Delay(10); // 0.01�ʸ��� ���� ��Ÿ�� ����
+                await Task.Delay(10); // 0.01초마다 남은 쿨타임 갱신
             }
 
             _coolDownDict[key].isCoolDown = false;
@@ -102,19 +102,21 @@ namespace Server.Game
         {
             return _skills[key];
         }
+
         #endregion
 
-        // ��ū �߰�
+        #region Token
+        // 토큰 추가
         public void AddToken(NextInputToken t, double windowSec)
         {
-            t.ExpireUtc = TimeUtil.UtcSec() + windowSec; // ����ð�
+            t.ExpireUtc = TimeUtil.UtcSec() + windowSec; // 만료시각
             t.Active = true;
             Tokens.Add(t);
-            // (����) �켱���� ���� ������ �����ص� ��
+            // (선택) 우선순위 높은 순으로 정렬해도 됨
             // Tokens.Sort((a,b) => b.Priority.CompareTo(a.Priority));
         }
 
-        // �� ƽ ��ȿ�� ��ū���� �˻�
+        // 매 틱 유효한 토큰인지 검사
         public void TickTokens()
         {
             double now = TimeUtil.UtcSec();
@@ -131,7 +133,7 @@ namespace Server.Game
             if (req == null)
                 return false;
 
-            // 1) ��ȿ�� ��ū ����� (����/�ܿ��� ����)
+            // 1) 유효한 토큰 고르기 (만료/잔여수 포함)
             var tok = Tokens
                 .Where(t => t.Active
                             && t.Trigger == InputKind.Move
@@ -143,7 +145,7 @@ namespace Server.Game
             if (tok == null)
                 return false;
 
-            // 2) ġȯ ��ų ĳ��Ʈ
+            // 2) 치환 스킬 캐스트
             var skill = SkillRegistry.Create(tok.ReplacementSkillKey);
             if (skill == null)
                 return false;
@@ -159,7 +161,7 @@ namespace Server.Game
 
             ChangeState(new Player_SkillState(skill, ctx));
 
-            // 3) ��ū �Ҹ�/��Ȱ��
+            // 3) 토큰 소모/비활성
             tok.RemainingUses--;
             if (tok.RemainingUses <= 0)
                 tok.Active = false;
@@ -167,7 +169,7 @@ namespace Server.Game
             return true;
         }
 
-        // �̺�Ʈ ��� ���(��ų ����/�ǰ� ��)
+        // 이벤트 기반 취소(스킬 시전/피격 등)
         public void CancelTokensOnSkillCast()
         {
             Tokens.RemoveAll(t => t.CancelOnUseSkill);
@@ -178,7 +180,7 @@ namespace Server.Game
             Tokens.RemoveAll(t => t.CancelOnTakeDamage);
         }
 
-        // (�ɼ�) ��ȸ ����: Ư�� Ʈ������ �ְ� �켱���� ��ū
+        // (옵션) 조회 헬퍼: 특정 트리거의 최고 우선순위 토큰
         public NextInputToken PeekToken(InputKind trigger)
         {
             NextInputToken best = null;
@@ -197,5 +199,6 @@ namespace Server.Game
             }
             return best;
         }
+        #endregion
     }
 }

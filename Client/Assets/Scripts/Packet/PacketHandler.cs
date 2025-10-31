@@ -189,7 +189,7 @@ class PacketHandler
             if (attPc == null) 
                 return;
 
-            Managers.Object.MyPlayer.NotifyKill(attPc, pc); 
+            Managers.Object.MyPlayer.UI.NotifyKill(attPc, pc); 
         }
     }
 
@@ -644,7 +644,7 @@ class PacketHandler
 
         if(Managers.Object.MyPlayer != null)
         {
-            Managers.Object.MyPlayer.SetTimer(syncTimerPacket.Phase, clientLocalTargetRealtimeSinceStartupEnd);
+            Managers.Object.MyPlayer.UI.SetTimer(syncTimerPacket.Phase, clientLocalTargetRealtimeSinceStartupEnd);
         }
     }
 
@@ -704,6 +704,24 @@ class PacketHandler
         S_GameOver gameOverPkt = packet as S_GameOver;
 
 
+    }
+
+    public static void S_ChangeTransformHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeTransform changeTransformPkt = packet as S_ChangeTransform;
+
+        GameObject go = Managers.Object.FindById(changeTransformPkt.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.transform.position = changeTransformPkt.PosInfo.ToVector();
+        pc.transform.rotation = changeTransformPkt.RotInfo;
+        pc.PosInfo = changeTransformPkt.PosInfo;
+        pc.RotInfo = changeTransformPkt.RotInfo;
     }
 
     static float GetCurrentEstimatedOneWayLatency()

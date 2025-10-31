@@ -21,6 +21,7 @@ public sealed class Rozzi_Q : SkillHandlerBase
         base.OnEnter(p, ctx);
 
         p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
+        p.LookAtMouse(ctx.MousePos);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
