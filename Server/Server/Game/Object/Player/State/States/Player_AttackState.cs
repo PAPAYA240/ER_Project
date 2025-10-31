@@ -29,6 +29,10 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     private bool _damageApplied;
     private int _attackIndex;               // 0/1 → A/B 번갈이
 
+    // 회전
+    private Vector3 _targetPos;
+    private bool _isRotate = false;
+
     private DateTime _swingStartUtc;
     private DateTime _hitMomentUtc;
     private DateTime _swingEndUtc;
@@ -49,6 +53,22 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     // 공격 중 타겟 교체(사거리 내 우클릭)
     public void ChangeTarget(int newTargetId) => _targetId = newTargetId;
 
+    public bool IsLookingAtTargetYawOnly(Vector3 myPos, Quaternion myRot, Vector3 targetPos, float toleranceDeg = 5f)
+    {
+        // 쿼터니언에서 forward 꺼내기
+        Vector3 forward = Vector3.Transform(Vector3.UnitZ, myRot); // Z를 forward로 쓴다고 가정
+        forward.Y = 0;
+        forward = Vector3.Normalize(forward);
+
+        Vector3 toTarget = targetPos - myPos;
+        toTarget.Y = 0;
+        toTarget = Vector3.Normalize(toTarget);
+
+        float dot = Vector3.Dot(forward, toTarget);
+        float cos = MathF.Cos(toleranceDeg * MathF.PI / 180f);
+        return dot >= cos;
+    }
+
     public void Enter(Player player)
     {
         player.State = CreatureState.Attack;
@@ -56,6 +76,12 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         player.SendStopPacket(StopReason.StopMoveOnly);
         _swingActive = false;
         _damageApplied = false;
+
+        // 최초 타겟 변경 시 회전 패킷
+        S_TargetChange pkt = new S_TargetChange();
+        pkt.TargetId = _targetId;
+        player.SendTargetChangePacket(pkt);
+        _isRotate = true;
 
         var now = DateTime.UtcNow;
         _nextAttackReadyUtc = now;              // 즉시 공격 가능
@@ -72,7 +98,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         GameObject target = player.FindTarget(_targetId);
         if (target == null || target.State == CreatureState.Dead)
         {
-            // 스윙 중이 아니고 pending 타겟이 있으면 교체 후 재시도
+            // 공격 중이 아니고 pending 타겟이 있으면 교체 후 재시도
             if (!_swingActive && _pendingTargetId.HasValue)
             {
                 _targetId = _pendingTargetId.Value;
@@ -94,6 +120,15 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         // 거리 판정
         Vector3 pos = new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ);
         Vector3 targetPos = new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ);
+
+        if (_isRotate == true)
+        {
+            if (IsLookingAtTargetYawOnly(player.Position, new Quaternion(player.RotInfo.Qx, player.RotInfo.Qy, player.RotInfo.Qz, player.RotInfo.Qw), targetPos))
+            {
+                _isRotate = false;
+            }
+        }
+
         bool inRange = Vector3.Distance(pos, targetPos) <= _attackRange;
 
         var now = DateTime.UtcNow;
@@ -125,19 +160,24 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
                 {
                     _targetId = _pendingTargetId.Value;
                     _pendingTargetId = null;
+
+                    // 최초 타겟 변경 시 회전 패킷
+                    S_TargetChange pkt = new S_TargetChange();
+                    pkt.TargetId = _targetId;
+                    player.SendTargetChangePacket(pkt);
+                    _isRotate = true;
                 }
             }
             return; // 스윙 중에는 추가 개시 없음
         }
 
         // ===== 공격 중이 아님 =====
-
-        // 콤보 리셋
-        if (_comboResetDeadlineUtc != default && now >= _comboResetDeadlineUtc)
-        {
-            _attackIndex = 0; // 다음 스윙은 첫타
-            _comboResetDeadlineUtc = default;
-        }
+        //// 콤보 리셋
+        //if (_comboResetDeadlineUtc != default && now >= _comboResetDeadlineUtc)
+        //{
+        //    _attackIndex = 0; // 다음 스윙은 첫타
+        //    _comboResetDeadlineUtc = default;
+        //}
 
         // 사거리 밖
         if (!inRange)
@@ -166,7 +206,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         }
 
         // 사거리 내 + 다음 타 가능 → 스윙 개시
-        if (now >= _nextAttackReadyUtc)
+        if (now >= _nextAttackReadyUtc && _isRotate == false)
         {
             StartSwing(player, now);
         }
@@ -179,7 +219,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     }
 
     // 외부에서 타겟 변경을 요청할 때 호출(스윙 진행 중이면 종료 후에 반영)
-    public void RequestTargetChange(Player p, int newTargetId)
+    public void RequestTargetChange(int newTargetId)
     {
         if (_swingActive)
             _pendingTargetId = newTargetId;
@@ -219,9 +259,5 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 
     public bool IsSwingActive() { return _swingActive; }
 
-    public void SetPendingTarget(int targetId)
-    {
-        _pendingTargetId = targetId;
-    }
 }
 

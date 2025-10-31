@@ -68,6 +68,14 @@ class PacketHandler
         }     
     }
 
+    public static void S_TargetChangeHandler(PacketSession session, IMessage packet)
+    {
+        S_TargetChange targetChangePacket = packet as S_TargetChange;
+        ServerSession serverSession = session as ServerSession;
+
+        Managers.Object.MyPlayer.View.RotateAttack(targetChangePacket.TargetId);
+    }
+
     public static void S_SetMoveTargetHandler(PacketSession session, IMessage packet)
     {
         S_SetMoveTarget targetPacket = packet as S_SetMoveTarget;

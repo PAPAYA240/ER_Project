@@ -272,16 +272,16 @@ public class PlayerViewController : MonoBehaviour
         _player.UpdateTransform();
     }
 
-    public void RotateAttack(C_Attack packet)
+    public void RotateAttack(int targetId)
     {
-        _target = Managers.Object.FindById(packet.TargetId);
+        _target = Managers.Object.FindById(targetId);
         if (_target == null)
             return;
-
-        StartCoroutine(CoRotateToTarget(packet));
+        
+        StartCoroutine(CoRotateToTarget());
     }
 
-    private IEnumerator CoRotateToTarget(C_Attack packet)
+    private IEnumerator CoRotateToTarget()
     {
         float rotateSpeed = 20f;
         while (_target != null)
@@ -300,9 +300,6 @@ public class PlayerViewController : MonoBehaviour
 
             yield return null;
         }
-
-        Debug.Log("회전 후 타겟 패킷 전송!");
-        Managers.Network.Send(packet);
     }
 
     private GameObject FindVisibleObjectById(int objectId)

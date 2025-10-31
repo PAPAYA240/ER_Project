@@ -16,6 +16,7 @@ public class PlayerUIController : MonoBehaviour
     private MyPlayerController _player;
     private UI_PlayerInterface _UI;
     private PlayerSkillController _skill;
+    UI_PlayerHUD _playerHUD;
 
     public UI_PlayerInterface PlayerInterface { get; protected set; }
 
@@ -39,6 +40,9 @@ public class PlayerUIController : MonoBehaviour
         //UI
         GameObject go = Managers.Resource.Instantiate("UI/Scene/PlayerHUD");
         go.transform.SetParent(gameObject.transform);
+        _playerHUD = go.GetComponent<UI_PlayerHUD>();
+        _playerHUD.Init();
+
         PlayerInterface = go.GetComponentInChildren<UI_PlayerInterface>();
         PlayerInterface.CharacterCode = CharTypeToCharCode(_player.ObjInfo.Player.CharType);
         PlayerInterface.CharacterName = Enum.GetName(typeof(CharacterType), _player.ObjInfo.Player.CharType);

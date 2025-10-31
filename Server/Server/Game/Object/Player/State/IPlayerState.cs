@@ -20,5 +20,5 @@ public interface IReceivesAttackCommand
 {
     public bool IsSwingActive();
 
-    public void SetPendingTarget(int targetId);
+    public void RequestTargetChange(int targetId);
 }

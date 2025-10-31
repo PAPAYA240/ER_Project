@@ -69,7 +69,7 @@ enum MsgId {
   C_SKILL_COLLISION_PROPOSE = 60;
   C_REST = 61;
   C_DEATH = 62;
-
+  S_TARGET_CHANGE = 63;
 }
 
 enum CreatureState{
@@ -783,6 +783,12 @@ message S_MoveSync {
   PositionInfo targetPos = 2;
   float speed = 3;
 }
+
+message S_TargetChange {
+  int32 targetId = 1;
+  bool isEndAttack = 2;
+}
+
 message ChangeInventoryInfo{
 	int32 itemId = 1;
 	int32 inventoryIndex = 2;
