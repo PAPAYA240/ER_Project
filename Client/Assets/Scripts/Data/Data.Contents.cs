@@ -271,14 +271,11 @@ namespace Data
 
                     dict.Add(keyCode, skills.Value);
                 }
-
                 nestedDict.Add(chartype, dict);
             }
-
             return nestedDict;
         }
     }
-
     #endregion
 
     #region Hitbox

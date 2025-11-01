@@ -26,6 +26,7 @@ public class PlayerController : CreatureController
     private FogOfWarVision _fogOfWarVision;
 
     protected bool _isSkillDebug = true;
+
     // NameTag
     protected UI_PlayerNameTag _nameTag;
     public UI_PlayerNameTag NameTag { get { return _nameTag; } }
@@ -34,6 +35,7 @@ public class PlayerController : CreatureController
     Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
     public ItemStat ItemStat { get; private set; } = new ItemStat();
     protected GameObject _eqipWeapon = null;
+
 
     #region Property
     public override float Attack
@@ -528,6 +530,27 @@ public class PlayerController : CreatureController
     #endregion
 
     #region Effect
+    public void PlaySkillEffect(KeyCode skillKey)
+    {
+        CharacterType type = ObjInfo.Player.CharType;
+        CreatureState state = CreatureState.Skill;
+
+        if (!DataManager.PlayerFxDict.ContainsKey(type))
+            return;
+        if (!DataManager.PlayerFxDict[type].ContainsKey(state))
+            return;
+        if (!DataManager.PlayerFxDict[type][state].ContainsKey(skillKey))
+            return;
+
+        SkillEffectList myEffectList = DataManager.PlayerFxDict[type][state][skillKey];
+        List<EffectData> dataList = new List<EffectData>();
+        foreach (EffectData effect in myEffectList.Caster)
+        {
+            dataList.Add(effect);
+        }
+        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, transform);
+    }
+
     // 현재 상태, 키, 타겟팅 상대에게 이펙트
     protected virtual List<GameObject> PlayEffectTransform(CreatureState state, KeyCode key, EffectType type = EffectType.Caster,
        GameObject target = null, Transform targetTransform = null)

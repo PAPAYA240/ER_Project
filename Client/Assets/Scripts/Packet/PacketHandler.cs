@@ -479,6 +479,12 @@ class PacketHandler
             if(true == confirmPacket.CanUse)
                 Managers.Object.MyPlayer.OnServerUpdate(confirmPacket);
         }
+
+        PlayerController player = go.GetComponent<PlayerController>();
+        if (player != null)
+        { 
+            player.PlaySkillEffect((KeyCode)confirmPacket.SkillKey); 
+        }
     }
 
     public static void S_SkillMotionHandler(PacketSession session, IMessage packet)

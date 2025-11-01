@@ -63,6 +63,8 @@ namespace Server.Game
 
         public float GetCoolTime(KeyCode key)
         {
+            if (_coolDownDict.ContainsKey(key))
+                return 0f;
             return _coolDownDict[key].coolTime;
         }
 

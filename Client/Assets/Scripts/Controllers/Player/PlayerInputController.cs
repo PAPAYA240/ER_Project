@@ -2,8 +2,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-using static Data.SkillEffectList;
-
 
 public class PlayerInputController : MonoBehaviour
 {
@@ -153,7 +151,6 @@ public class PlayerInputController : MonoBehaviour
             if (!Input.GetKeyDown(key))
                 continue;
 
-            _player.PlayEffectAtPosition(CreatureState.Skill, key, GetMouseWorldPosition(), _player.GetIndicatorRotation(), EffectType.Caster);
             if (_player.RequiresCharge(key))
             {
                 StartCoroutine(CoChargeSkill(key));
