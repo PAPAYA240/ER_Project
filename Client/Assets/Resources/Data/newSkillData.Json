@@ -1127,6 +1127,7 @@
         "name": "에너지 포",
         "description": "충전: 테오도르가 1.5초에 걸쳐 자신의 레일건에 에너지를 충전하며 이동 속도가 20%까지 서서히 감소합니다.\n\n발사: 다시 사용하면 지정한 방향으로 광선을 발사하여 적에게는 <color=#FFFFFF>{normalDamage}</color><color=#CDA1C8>(+스킬 증폭의 70%)</color>의 스킬 피해를 입히고 아군은 2.5초에 걸쳐 <color=#FFFFFF>{normalHeal}</color><color=#CDA1C8>(+스킬 증폭의 20%)</color>의 체력을 회복시킵니다. 충전 시간에 비례해 사거리가 증가합니다.\n\n<color=#FFFFFF>에너지 포</color>가 <color=#FFFFFF>증폭 스크린</color>에 적중하면 잠시 뒤 스크린 정면으로 광선을 발사해 적에게는 <color=#FFFFFF>{screenDamage}</color><color=#CDA1C8>(+스킬 증폭의 70%)</color>의 스킬 피해를 입히고 아군은 2.5초에 걸쳐 <color=#FFFFFF>{screenHeal}</color><color=#CDA1C8>(+스킬 증폭의 20%)</color>의 체력을 회복시킵니다.",
         "type": "Normal",
+        "canMoveDuringCast": true,
         "skillType": "Charge",
         "maxLevel": 5,
         "mechanics": {
