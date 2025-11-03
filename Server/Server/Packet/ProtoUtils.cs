@@ -12,18 +12,27 @@ namespace Google.Protobuf.Protocol
         {
             return new Vector3(PosX, PosY, PosZ);
         }
+
         public void SetPosInfoFromVector3(Vector3 pos)
         {
             PosX = pos.X;
             PosY = pos.Y;
             PosZ = pos.Z;
         }
+
         public float Distance(PositionInfo other)
         {
             float dx = PosX - other.PosX;
-            float dy = PosX - other.PosX;
-            float dz = PosX - other.PosX;
+            float dy = PosY - other.PosY;
+            float dz = PosZ - other.PosZ;
             return (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        }
+
+        public float Distance(Vector2 pos)
+        {
+            float dx = PosX - pos.X;
+            float dz = PosZ - pos.Y;
+            return MathF.Sqrt(dx * dx + dz * dz);
         }
 
         // Vector3 -> PositionInfo (암시적 변환)

@@ -718,10 +718,9 @@ class PacketHandler
         if (pc == null)
             return;
 
-        pc.transform.position = changeTransformPkt.PosInfo.ToVector();
-        pc.transform.rotation = changeTransformPkt.RotInfo;
-        pc.PosInfo = changeTransformPkt.PosInfo;
+        pc.CellPos = changeTransformPkt.PosInfo.ToVector();
         pc.RotInfo = changeTransformPkt.RotInfo;
+        pc.SyncPos(changeTransformPkt.IsWarp);
     }
 
     static float GetCurrentEstimatedOneWayLatency()

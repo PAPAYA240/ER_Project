@@ -213,6 +213,20 @@
       },
       "F": {
         "variants": {
+          "cast": {
+            "proposalMode": "SingleShot",
+            "needs": {
+              "endBlocked": false,
+              "endPass": true,
+              "behindBlocked": false,
+              "candidateTargetId": false
+            },
+            "limits": {
+              "baseMaxDist": 3.0,
+              "extraMaxBehind": 0.0,
+              "speed": 0.0
+            }
+          }
         }
       }
     },

@@ -202,7 +202,8 @@ public class PlayerInputController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Q))        { return KeyCode.Q; }       
             else if (Input.GetKeyDown(KeyCode.W))   { return KeyCode.W; } 
             else if (Input.GetKeyDown(KeyCode.E))   { return KeyCode.E; } 
-            else if (Input.GetKeyDown(KeyCode.R))   { return KeyCode.R; } 
+            else if (Input.GetKeyDown(KeyCode.R))   { return KeyCode.R; }
+            else if (Input.GetKeyDown(KeyCode.T)) { return KeyCode.T; }
         }
 
         return KeyCode.None;

@@ -36,7 +36,7 @@ public static class SkillRegistry
             if (key == KeyCode.E) return new Abigail_E();
             if (key == KeyCode.R) return new Abigail_R();
             //if (key == KeyCode.D) return new Abigail_D();
-            //if (key == KeyCode.F) return new Skill_();
+            if (key == KeyCode.F) return new Skill_Blink();
         }
         else if (character == CharacterType.Theodore)
         {

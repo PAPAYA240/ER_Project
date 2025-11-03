@@ -68,6 +68,9 @@ public class PlayerSkillController : MonoBehaviour
 
         if (_coolDownDict.ContainsKey(_key))
         {
+            if (FindSkill(_key).CurLevel <= 0)
+                return null;
+
             // 스킬을 사용하고 있는 상태가 아닐 때
             if (_player.State == CreatureState.Skill)
                 return null;
@@ -81,7 +84,7 @@ public class PlayerSkillController : MonoBehaviour
                 return null;
 
             // 패킷 보내기
-            Debug.Log($"스킬 사용! : {_key}");
+            Debug.Log($"스킬 사용시도! : {_key}");
             return new C_SkillInput
             {
                 SkillKey = skillKey,

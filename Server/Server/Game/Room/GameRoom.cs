@@ -775,7 +775,43 @@ namespace Server.Game
             }
             return null;
         }
-      
+
+        public GameObject FindNearest(int id, Vector2 pos, float radius)
+        {
+            GameObject nearest = null;
+            float nearestDistSq = radius * radius;
+
+            foreach (var kvp in _players)
+            {
+                if (kvp.Key == id)
+                    continue;
+                var player = kvp.Value;
+                Vector2 playerPos = new Vector2(player.PosInfo.PosX, player.PosInfo.PosZ);
+                float distSq = Vector2.DistanceSquared(pos, playerPos);
+                if (distSq < nearestDistSq)
+                {
+                    nearestDistSq = distSq;
+                    nearest = player;
+                }
+            }
+
+            foreach (var kvp in _monsters)
+            {
+                if (kvp.Key == id)
+                    continue;
+                var monster = kvp.Value;
+                Vector2 monsterPos = new Vector2(monster.PosInfo.PosX, monster.PosInfo.PosZ);
+                float distSq = Vector2.DistanceSquared(pos, monsterPos);
+                if (distSq < nearestDistSq)
+                {
+                    nearestDistSq = distSq;
+                    nearest = monster;
+                }
+            }
+
+            return nearest;
+        }
+
         #endregion
 
         public void AddStatusEffect(Creature creature, StatusEffect statusEffect)

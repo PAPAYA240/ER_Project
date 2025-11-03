@@ -893,16 +893,31 @@ namespace Server.Game
 
         public void SendSkillConfirmPacket(bool canUse, KeyCode keyCode = KeyCode.None, VariantKey variants = default)
         {
-            S_SkillConfirm packet = new S_SkillConfirm
+            S_SkillConfirm packet;
+
+            if (canUse)
             {
-                ObjectId = Id,
-                CanUse = canUse,
-                SkillKey = (int)keyCode,
-                Variants = variants,
-                CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina },
-                //InstanceId = ,
-                //TargetId = , 
-            };
+                packet = new S_SkillConfirm
+                {
+                    ObjectId = Id,
+                    CanUse = canUse,
+                    SkillKey = (int)keyCode,
+                    Variants = variants,
+                    CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina },
+                    //InstanceId = ,
+                    //TargetId = , 
+                };
+            }
+            else
+            {
+                packet = new S_SkillConfirm
+                {
+                    ObjectId = Id,
+                    CanUse = canUse,
+                    SkillKey = (int)keyCode,
+                };
+            }
+
             Room.Push(Room.Broadcast, packet);
         }
 
@@ -922,13 +937,14 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendChangeTransformPacket() // 수동으로 플레이어 위치or회전 수정한 후에 보내는 패킷
+        public void SendChangeTransformPacket(bool isWarp = false) // 수동으로 플레이어 위치or회전 수정한 후에 보내는 패킷
         {
             S_ChangeTransform pkt = new S_ChangeTransform
             {
                 ObjectId = Id,
                 PosInfo = new PositionInfo(PosInfo),
-                RotInfo = new RotationInfo(RotInfo)
+                RotInfo = new RotationInfo(RotInfo),
+                IsWarp = isWarp
             };
 
             Room.Push(Room.Broadcast, pkt);
@@ -945,10 +961,6 @@ namespace Server.Game
             {
                 float ratio = Math.Min(b.ratioPerTarget * b.targetCnt, b.maxRatio);
                 barrier += (b.value + (b.coeff * SkillAmplification * 0.01f)) * (1f + ratio * 0.01f);
-                //Console.WriteLine($"coeff: {b.coeff}");
-                //Console.WriteLine($"SkillAmplification: {SkillAmplification}");
-                //Console.WriteLine($"b.targetCnt: {b.targetCnt}");
-                //Console.WriteLine($"ratio: {ratio}");
             }
                 
             Barrier = barrier;
