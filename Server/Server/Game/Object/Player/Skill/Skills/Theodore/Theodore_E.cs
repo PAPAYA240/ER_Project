@@ -26,7 +26,7 @@ public sealed class Theodore_E : SkillHandlerBase
         _characterType = CharacterType.Theodore;
         _animName = "SKILL_E";
         _keyCode = KeyCode.E;
-
+        
         _animDuration = GetDuration();
     }
 
@@ -34,14 +34,13 @@ public sealed class Theodore_E : SkillHandlerBase
     {
         base.OnEnter(p, ctx);
 
-        _target = ObjectManager.Instance.Find(ctx.TargetId);
-
-        _elapsed = 0.0f;
-
-        _startPos = p.Position;
-        _midPos = _target.Position;
-
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
+        Projectile projectile = ObjectManager.Instance.Add<Projectile>();
+        if (projectile != null)
+        {
+            projectile.Owner = p;
+            projectile.Init();
+            p.Room.EnterGame(projectile);
+        }
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -51,33 +50,6 @@ public sealed class Theodore_E : SkillHandlerBase
 
     public override void OnTick(Player p, SkillContext ctx)
     {
-        //float t = _elapsed / _animDuration;
-
-        //Vector3 targetPos;
-
-        //if (t < _followRatio)
-        //{
-        //    _midPos = _target.Position;
-
-        //    float midT = t / _followRatio;
-        //    targetPos = Vector3.Lerp(_startPos, _midPos, midT);
-        //}
-        //else
-        //{
-        //    float endT = (t - (1 - _followRatio)) / _followRatio;
-        //    targetPos = Vector3.Lerp(_midPos, _midPos, endT);
-        //}
-
-        //_elapsed += TimeUtil.DeltaTime;
-
-        //p.SendSkillMotion(
-        // type: SkillMotionType.Transform,
-        // start: p.Position,
-        // end: targetPos);
-
-        //Console.WriteLine($"targetPos : {targetPos}");
-        
-        return;
     }
 
     public override void OnExit(Player p, SkillContext ctx)

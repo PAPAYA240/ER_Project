@@ -115,7 +115,7 @@ public class DataManager
 
     public List<EffectData> GetSkillEffectList(CharacterType charType, CreatureState state, KeyCode keyCode, EffectType type = EffectType.Caster)
     {
-        if (DataManager.PlayerFxDict == null || !DataManager.PlayerFxDict.TryGetValue(charType, out var stateDict))
+        if (PlayerFxDict == null || !PlayerFxDict.TryGetValue(charType, out var stateDict))
             return null;
 
         if (!stateDict.TryGetValue(state, out var keyCodeDict))

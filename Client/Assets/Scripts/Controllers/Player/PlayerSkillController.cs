@@ -73,8 +73,8 @@ public class PlayerSkillController : MonoBehaviour
                 return null;
 
             // 스킬을 사용하고 있는 상태가 아닐 때
-            if (_player.State == CreatureState.Skill)
-                return null;
+            //if (_player.State == CreatureState.Skill)
+            //    return null;
         
             // 쿨타임이 끝났을 때
             if (_coolDownDict[_key].isCoolDown)

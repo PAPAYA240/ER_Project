@@ -6,12 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
-using System.Linq;
-using static ISkill;
-using static Lucene.Net.Index.SegmentReader;
-using static Lucene.Net.Util.AttributeSource;
 using static Server.Data.DataUtils;
-using static Server.Game.Player;
 using System.Threading;
 using static Server.Game.GameObject;
 
@@ -321,7 +316,6 @@ namespace Server.Game
                 Projectile projectile = gameObject as Projectile;
                 projectile.Room = this;
                 _projectiles.TryAdd(gameObject.Id, projectile);
-                return;
             }
             else if (type == GameObjectType.Environment)
             {
@@ -380,6 +374,7 @@ namespace Server.Game
                     return;
 
                 projectile.Room = null;
+                projectile.Owner = null;
             }
 
             // 타인한테 정보 전송
@@ -496,19 +491,6 @@ namespace Server.Game
         }
 
         #endregion
-
-        public void HandleVF(Player player, C_Fx skillPacket)
-        {
-            if (player == null)
-                return;
-
-            S_Fx effect = new S_Fx()
-            {
-                ObjectId = player.Info.ObjectId,
-                FxInfo = skillPacket.FxInfo,
-            };
-            Broadcast(effect);
-        }
 
         public void HandleAttackSkillTarget(Player player, C_TargetingSkill targetingSkill)
         {

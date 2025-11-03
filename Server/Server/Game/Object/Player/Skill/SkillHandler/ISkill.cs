@@ -38,6 +38,10 @@ public interface ISkill
 
     bool CanCast(Player p, SkillContext ctx);
 
+    // 스킬 중에 움직이는가?
+    void OnMove(Player p);
+    void OnStop(Player p);
+
     bool CanMoveDuringCast { get; }
     float MoveSpeedMultiplier { get; }
 

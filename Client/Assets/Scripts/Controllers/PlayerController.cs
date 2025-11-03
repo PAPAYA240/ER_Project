@@ -26,6 +26,7 @@ public class PlayerController : CreatureController
     private FogOfWarVision _fogOfWarVision;
 
     protected bool _isSkillDebug = true;
+
     // NameTag
     protected UI_PlayerNameTag _nameTag;
     public UI_PlayerNameTag NameTag { get { return _nameTag; } }
@@ -34,6 +35,7 @@ public class PlayerController : CreatureController
     Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
     public ItemStat ItemStat { get; private set; } = new ItemStat();
     protected GameObject _eqipWeapon = null;
+
 
     #region Property
     public override float Attack
@@ -287,6 +289,18 @@ public class PlayerController : CreatureController
     }
 
     #region Util
+    public Vector3 GetMouseWorldPosition()
+    {
+        Camera mainCam = Camera.main;
+        if (mainCam == null) return Vector3.zero;
+
+        Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Map")))
+            return hit.point;
+
+        return Vector3.zero;
+    }
     protected string GetCharacterName()
     {
         return System.Enum.GetName(typeof(CharacterType), ObjInfo.Player.CharType);
@@ -528,9 +542,25 @@ public class PlayerController : CreatureController
     #endregion
 
     #region Effect
-    public virtual void PlayEffectFromServer(EffectInfo fxInfo)
+    public void PlaySkillEffect(KeyCode skillKey)
     {
-        PlayEffectTransform(CreatureState.Skill, (KeyCode)fxInfo.KeyCode);
+        CharacterType type = ObjInfo.Player.CharType;
+        CreatureState state = CreatureState.Skill;
+
+        if (!DataManager.PlayerFxDict.ContainsKey(type))
+            return;
+        if (!DataManager.PlayerFxDict[type].ContainsKey(state))
+            return;
+        if (!DataManager.PlayerFxDict[type][state].ContainsKey(skillKey))
+            return;
+
+        SkillEffectList myEffectList = DataManager.PlayerFxDict[type][state][skillKey];
+        List<EffectData> dataList = new List<EffectData>();
+        foreach (EffectData effect in myEffectList.Caster)
+        {
+            dataList.Add(effect);
+        }
+        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, transform);
     }
 
     // 현재 상태, 키, 타겟팅 상대에게 이펙트
@@ -543,6 +573,18 @@ public class PlayerController : CreatureController
 
         return EffectList;
     }
+    public List<GameObject> PlayEffectAtPosition(CreatureState state, KeyCode key, Vector3 position, Quaternion rot, EffectType type = EffectType.Caster)
+    {
+        List<EffectData> effectList = Managers.Data.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
+
+        if (effectList == null || effectList.Count == 0)
+            return null;
+
+        List<GameObject> EffectList = Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, this.transform, position, rot);
+
+        return EffectList;
+    }
+
     #endregion
 
     #region State:Dead

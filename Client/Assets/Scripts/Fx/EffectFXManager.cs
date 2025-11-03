@@ -19,7 +19,6 @@ public class EffectFXManager : MonoBehaviour
         fxLayer = LayerMask.NameToLayer("FX");
     }
 
-    // casterTransform = 붙여줄 캐릭터(본체) Transform (특정 뼈대에 붙이고자 한다면 json에 따로 추가)
     public List<GameObject> PlayEffect(int ownerId, List<EffectData> effectData, Transform casterTransform, Vector3 targetPos = new Vector3(), Quaternion rot = new Quaternion())
     {
         if (effectData == null || effectData.Count == 0)
@@ -43,7 +42,7 @@ public class EffectFXManager : MonoBehaviour
 
 
             fxObject.transform.SetPositionAndRotation(
-                 GetSpawnPosition(data, copyTransform, targetPos, out Transform parentTransform),
+                 GetSpawnPosition(ownerId, data, copyTransform, targetPos, out Transform parentTransform),
                  GetSpawnRotation(data, copyTransform, targetPos, rot));
             fxObject.transform.SetParent(parentTransform);
 
@@ -120,7 +119,7 @@ public class EffectFXManager : MonoBehaviour
     #endregion
 
     #region Transform Helpers
-    private Vector3 GetSpawnPosition(EffectData data, Transform casterTransform, Vector3 targetPos, out Transform parentTransform)
+    private Vector3 GetSpawnPosition(int id, EffectData data, Transform casterTransform, Vector3 targetPos, out Transform parentTransform)
     {
         switch (data.target)
         {
@@ -136,6 +135,15 @@ public class EffectFXManager : MonoBehaviour
             case EEffectTarget.Target:
                 parentTransform = null;
                 return targetPos;
+
+            case EEffectTarget.Mouse:
+                parentTransform = null;
+                GameObject go = Managers.Object.FindById(id);
+                if(go == null) return Vector3.zero;
+
+                PlayerController pc = go.GetComponent<PlayerController>();
+                if (pc == null) return Vector3.zero;
+                return pc.GetMouseWorldPosition();
 
             case EEffectTarget.Ground:
                 parentTransform = null;
@@ -159,6 +167,7 @@ public class EffectFXManager : MonoBehaviour
                 return casterTransform.rotation;
 
             case EEffectTarget.Target:
+            case EEffectTarget.Mouse:
             case EEffectTarget.Shoot:
                 return rot;
 
