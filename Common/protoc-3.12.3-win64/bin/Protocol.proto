@@ -819,6 +819,11 @@ message S_ChangeTransform{
   bool isWarp = 4;
 }
 
+message S_TargetChange {
+  int32 targetId = 1;
+  bool isEndAttack = 2;
+}
+
 message S_CanStopSkill{
 	int32 objectId = 1;
 	bool canStopSkill = 2;

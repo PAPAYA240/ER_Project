@@ -492,19 +492,6 @@ namespace Server.Game
 
         #endregion
 
-        public void HandleVF(Player player, C_Fx skillPacket)
-        {
-            if (player == null)
-                return;
-
-            S_Fx effect = new S_Fx()
-            {
-                ObjectId = player.Info.ObjectId,
-                FxInfo = skillPacket.FxInfo,
-            };
-            Broadcast(effect);
-        }
-
         public void AttackSkillTarget(Player player, GameObject target, KeyCode keyCode) // 타게팅 스킬. 대상 1명.
         {
             if (player == null)
