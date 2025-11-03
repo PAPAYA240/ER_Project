@@ -322,6 +322,7 @@ public class UI_PlayerInterface : UI_Base
         GetObject((int)GameObjects.WSkill).GetComponent<UI_SkillBase>().UpdateSkillAcc(skillAcc);
         GetObject((int)GameObjects.ESkill).GetComponent<UI_SkillBase>().UpdateSkillAcc(skillAcc);
         GetObject((int)GameObjects.RSkill).GetComponent<UI_SkillBase>().UpdateSkillAcc(skillAcc);
+        GetObject((int)GameObjects.TSkill).GetComponent<UI_SkillBase>().UpdateSkillAcc(skillAcc);
     }
 
     #endregion

@@ -159,12 +159,14 @@ public class PlayerUIController : MonoBehaviour
         SkillBase WSkill = FindSkill(KeyCode.W);
         SkillBase ESkill = FindSkill(KeyCode.E);
         SkillBase RSkill = FindSkill(KeyCode.R);
+        SkillBase TSkill = FindSkill(KeyCode.T);
 
         
         SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, CalculateMaxCool(QSkill.CurLevelCooldown, _player.ItemStat.SkillAcceleration));
         SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.WSkill, CalculateMaxCool(WSkill.CurLevelCooldown, _player.ItemStat.SkillAcceleration));
         SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, CalculateMaxCool(ESkill.CurLevelCooldown, _player.ItemStat.SkillAcceleration));
         SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(RSkill.CurLevelCooldown, _player.ItemStat.SkillAcceleration));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.TSkill, CalculateMaxCool(TSkill.CurLevelCooldown, _player.ItemStat.SkillAcceleration));
     }
 
     protected float CalculateMaxCool(float cooldown, float skillAcc)

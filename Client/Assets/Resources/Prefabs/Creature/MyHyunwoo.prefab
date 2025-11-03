@@ -1692,7 +1692,7 @@ Animator:
   m_GameObject: {fileID: 1394858152380701}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 7a0e26b3ee56f384cabeeabc709d5cbb, type: 2}
-  m_Controller: {fileID: 9100000, guid: 1bf53a69408e10842a85c1a9454890e7, type: 2}
+  m_Controller: {fileID: 9100000, guid: c9c8acac4b10b7f4ea0f2c532a1564b0, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1783,8 +1783,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4366341910117166}
   - component: {fileID: 136483301112181312}
+  - component: {fileID: -7297693006577042440}
+  - component: {fileID: -1063505943179309422}
   m_Layer: 0
-  m_Name: Hyunwoo
+  m_Name: MyHyunwoo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1829,6 +1831,40 @@ CapsuleCollider:
   m_Height: 2.77
   m_Direction: 1
   m_Center: {x: 0, y: 0.56, z: 0}
+--- !u!195 &-7297693006577042440
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1410087195572070}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.3
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0.2
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 0
+--- !u!114 &-1063505943179309422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1410087195572070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d07a4ac14489814e9692da7473da8c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1414983113027675
 GameObject:
   m_ObjectHideFlags: 0
