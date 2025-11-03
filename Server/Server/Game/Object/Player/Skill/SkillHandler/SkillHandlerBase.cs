@@ -56,11 +56,7 @@ public abstract class SkillHandlerBase : ISkill
 
     public virtual void OnExit(Player p, SkillContext ctx)
     {
-        // 최종 보정 1회
-        p.PosInfo.PosX = _finalEnd.X;
-        p.PosInfo.PosY = _finalEnd.Y;
-        p.PosInfo.PosZ = _finalEnd.Z;
-        p.SendMovePacket(new PositionInfo(p.PosInfo), new RotationInfo(p.RotInfo));
+
     }
 
     public virtual void OnHit(Player p, SkillContext ctx)

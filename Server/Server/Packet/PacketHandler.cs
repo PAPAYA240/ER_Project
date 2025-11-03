@@ -352,4 +352,15 @@ class PacketHandler
 
         player.Room.Push(player.Room.HandleDeath, player, req);
     }
+
+    public static void C_KeyInputForTestHandler(PacketSession session, IMessage packet)
+    {
+        var client = (ClientSession)session;
+        var player = client?.MyPlayer;
+        if (player?.Room == null)
+            return;
+        var req = (C_KeyInputForTest)packet;
+
+        player.Room.Push(player.Room.HandleKeyInputForTest, player, req);
+    }
 }

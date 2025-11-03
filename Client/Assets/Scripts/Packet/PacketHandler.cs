@@ -487,6 +487,17 @@ class PacketHandler
         }
     }
 
+    public static void S_SkillCostHandler(PacketSession session, IMessage packet)
+    {
+        S_SkillCost costPacket = packet as S_SkillCost;
+
+        GameObject go = Managers.Object.FindById(costPacket.ObjectId);
+        if (go == null)
+            return;
+
+        Managers.Object.MyPlayer.OnServerUpdate(costPacket);
+    }
+
     public static void S_SkillMotionHandler(PacketSession session, IMessage packet)
     {
         S_SkillMotion motionPacket = packet as S_SkillMotion;

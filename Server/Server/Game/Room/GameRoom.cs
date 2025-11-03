@@ -594,6 +594,14 @@ namespace Server.Game
             player.IsDeath = true;
         }
 
+        public void HandleKeyInputForTest(Player player, C_KeyInputForTest pkt)
+        {
+            if (player == null)
+                return;
+
+            player.Skill.SetCooldown(KeyCode.R, 0f);
+        }
+
         #endregion
         public void Broadcast(IMessage packet)
         {

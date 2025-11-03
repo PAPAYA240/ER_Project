@@ -14,13 +14,9 @@ namespace Server.Game
         public ClientSession Session { get; set; }
 
         // Skill
+        public SkillController Skill { get; private set; }
+
         protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
-        Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
-        class CoolTime
-        {
-            public bool isCoolDown;     // ��Ÿ���� ���� �ִ��� (false : ��� ����)
-            public float coolTime;      // ���� ��Ÿ��
-        }
 
         // temp �ӽ� �ڵ� ���߿� ����
         bool _isDeath = false;
@@ -33,6 +29,7 @@ namespace Server.Game
         // Inventory
         Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
         ItemStat _totalItemStat = new ItemStat();
+        public ItemStat TotalItemStat { get { return _totalItemStat; } }
         List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
         static int MaxInventorySlot = 10;
 
@@ -223,6 +220,9 @@ namespace Server.Game
             _stateMachine.ChangeState(new Player_IdleState(), this);
             MakeDict();
             InitAboutItem();
+
+            var cd = new CooldownController_Tick(this);
+            Skill = new SkillController(this, cd);
         }
 
         public override void Update()
@@ -234,7 +234,7 @@ namespace Server.Game
             }
 
             //base.Update();
-            
+
             TickTokens(); // ��ū ����/����
             _stateMachine.Update(this);
             _statRegenerator.Update();
@@ -354,21 +354,12 @@ namespace Server.Game
             }
 
             _skills[KeyCode.T].CurLevel = 1;
-            //_skills[KeyCode.F].CurLevel = 1;
-        }
-
-        private void MakeCoolDownDict()
-        {
-            foreach (var skill in _skills)
-            {
-                _coolDownDict[skill.Key] = new CoolTime { isCoolDown = false, coolTime = 0.0f };
-            }
+            _skills[KeyCode.F].CurLevel = 1;
         }
 
         private void MakeDict()
         {
             MakeSkillDict();
-            MakeCoolDownDict();
         }
 
         public bool SkillLevelUp(KeyCode key)
@@ -623,6 +614,7 @@ namespace Server.Game
 
         public void EquipItemSet(CharacterType type, int phase)
         {
+            // �ش� ����� ������ ������ ��Ʈ�� ���̵� ����Ʈ�� ������.
             List<int> itemIdList = DataManager.ItemSetDict[type][phase];
 
             foreach (int itemId in itemIdList)
@@ -635,6 +627,7 @@ namespace Server.Game
                 changeEquipItemPacket.ObjectId = Id;
                 changeEquipItemPacket.ItemId = itemId;
 
+                // �̹� Ǫ���Ǿ �� ��Ȳ. Ǫ���� �Լ��ȿ� �ְų� �� �Լ��� Ǫ���ؼ� ���.
                 GameRoom room = Room;
                 room.Broadcast(changeEquipItemPacket);
             }
@@ -892,22 +885,51 @@ namespace Server.Game
 
         public void SendSkillConfirmPacket(bool canUse, KeyCode keyCode = KeyCode.None, VariantKey variants = default)
         {
-            S_SkillConfirm packet = new S_SkillConfirm
+            S_SkillConfirm packet;
+
+            if (canUse)
             {
-                ObjectId = Id,
-                CanUse = canUse,
-                SkillKey = (int)keyCode,
-                Variants = variants,
-                CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina },
-                //InstanceId = ,
-                //TargetId = , 
-            };
-            Room.Push(Room.Broadcast, packet);
+                packet = new S_SkillConfirm
+                {
+                    ObjectId = Id,
+                    CanUse = canUse,
+                    SkillKey = (int)keyCode,
+                    Variants = variants,
+                    //CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina },
+                    //InstanceId = ,
+                    //TargetId = , 
+                };
+               
+                SendSkillCostPacket(keyCode, GetCoolTime(keyCode));
+            }
+            else
+            {
+                packet = new S_SkillConfirm
+                {
+                    ObjectId = Id,
+                    CanUse = canUse,
+                    SkillKey = (int)keyCode,
+                };
+            }
+
+            Session.Send(packet);
         }
 
         public void SendDeadPacket(S_Respawn packet)
         {
             Room.Push(Room.Broadcast, packet);
+        }
+
+        public void SendSkillCostPacket(KeyCode keyCode, float coolTime)
+        {
+            S_SkillCost costPacket = new S_SkillCost
+            {
+                ObjectId = Id,
+                SkillKey = (int)keyCode,
+                CostInfo = new CostInfo { CoolTime = coolTime, Stamina = Stamina }
+            };
+
+            Session.Send(costPacket);
         }
 
         public void SendTargetChangePacket(S_TargetChange packet)
@@ -926,13 +948,14 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendChangeTransformPacket() // 수동으로 플레이어 위치or회전 수정한 후에 보내는 패킷
+        public void SendChangeTransformPacket(bool isWarp = false) // 수동으로 플레이어 위치or회전 수정한 후에 보내는 패킷
         {
             S_ChangeTransform pkt = new S_ChangeTransform
             {
                 ObjectId = Id,
                 PosInfo = new PositionInfo(PosInfo),
-                RotInfo = new RotationInfo(RotInfo)
+                RotInfo = new RotationInfo(RotInfo),
+                IsWarp = isWarp
             };
 
             Room.Push(Room.Broadcast, pkt);
@@ -949,10 +972,6 @@ namespace Server.Game
             {
                 float ratio = Math.Min(b.ratioPerTarget * b.targetCnt, b.maxRatio);
                 barrier += (b.value + (b.coeff * SkillAmplification * 0.01f)) * (1f + ratio * 0.01f);
-                //Console.WriteLine($"coeff: {b.coeff}");
-                //Console.WriteLine($"SkillAmplification: {SkillAmplification}");
-                //Console.WriteLine($"b.targetCnt: {b.targetCnt}");
-                //Console.WriteLine($"ratio: {ratio}");
             }
                 
             Barrier = barrier;

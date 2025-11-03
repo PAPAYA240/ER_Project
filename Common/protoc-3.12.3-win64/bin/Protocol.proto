@@ -76,6 +76,9 @@ enum MsgId {
   S_GAME_OVER = 66;
   S_CHANGE_TRANSFORM = 67;
   S_TARGET_CHANGE = 68;
+
+  C_KEY_INPUT_FOR_TEST = 69;
+  S_SKILL_COST = 70;
 }
 
 enum CreatureState{
@@ -749,9 +752,9 @@ message S_SkillConfirm {
   int32 objectId = 1;			
   bool canUse = 2;
   int32 skillKey = 3;			
-  CostInfo costInfo = 4;
-  int32 targetId = 5;
-  VariantKey variants = 6;
+  VariantKey variants = 4;
+  //CostInfo costInfo = 5;
+  //int32 targetId = 6;
 }
 
 message S_SkillMotion {
@@ -831,4 +834,14 @@ message KDAInfo{
 	int32 kill = 2;
 	int32 death = 3;
 	int32 asist = 4;
+}
+
+message C_KeyInputForTest{
+	int32 keyCode = 1; 
+}
+
+message S_SkillCost{
+	int32 objectId = 1;
+	int32 skillKey = 2;	
+	CostInfo costInfo = 3;
 }

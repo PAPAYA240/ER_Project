@@ -126,6 +126,16 @@ public class PlayerSkillController : MonoBehaviour
 
         KeyCode key = (KeyCode)packet.SkillKey;
 
+        //스킬 실행 UI 연동
+        //_player.UI.PlayerInterface.UseSkill(KeyToUIEnum(key));
+
+        CreateSkillMesh(key);
+    }
+
+    public void OnSkillCost(S_SkillCost packet)
+    {
+        KeyCode key = (KeyCode)packet.SkillKey;
+
         Debug.Log($"Key : {key}, CoolTime : {packet.CostInfo.CoolTime}, Stamina : {packet.CostInfo.Stamina}");
 
         //쿨타임 코루틴 시작
@@ -133,9 +143,6 @@ public class PlayerSkillController : MonoBehaviour
 
         //스태미너 연동
         _player.Stamina = packet.CostInfo.Stamina;
-
-        //스킬 실행 UI 연동
-        //_player.UI.PlayerInterface.UseSkill(KeyToUIEnum(key));
 
         CreateSkillMesh(key);
     }
