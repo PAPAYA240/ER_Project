@@ -237,6 +237,7 @@ namespace Server.Game
             
             TickTokens(); // ��ū ����/����
             _stateMachine.Update(this);
+            _statRegenerator.Update();
             CheckUpdateStat();
         }
 
@@ -907,6 +908,11 @@ namespace Server.Game
         public void SendDeadPacket(S_Respawn packet)
         {
             Room.Push(Room.Broadcast, packet);
+        }
+
+        public void SendTargetChangePacket(S_TargetChange packet)
+        {
+            Session.Send(packet);
         }
 
         public void SendMoveSyncPacket(PositionInfo targetPos, float speed = 1.0f)

@@ -10,14 +10,23 @@ public static class TimeUtil
         => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000.0;
 
     public static float DeltaTime { get; private set; }
-    private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
-    private static long _lastTicks;
+    public static long LastTick { get; private set; }
 
-    public static void Update()
+    public static void Update(int curTick)
     {
-        long currentTicks = _stopwatch.ElapsedTicks;
-        long deltaTicks = currentTicks - _lastTicks;
-        DeltaTime = (float)deltaTicks / Stopwatch.Frequency;
-        _lastTicks = currentTicks;
+        if(LastTick == 0)
+        {
+            LastTick = curTick;
+            DeltaTime = 0;
+            return;
+        }
+
+        int deltaTick = curTick - (int)LastTick;
+
+        if (deltaTick < 0)
+            deltaTick += int.MaxValue;
+
+        DeltaTime = deltaTick / 1000f;
+        LastTick = curTick;
     }
 }
