@@ -145,7 +145,7 @@ namespace Data
         public string description;
         public string type;
         public int maxLevel;
-        public bool canCharge;
+        public string skillType;
         public bool canMoveDuringCast;
         public Mechanics mechanics;
         public Scaling scaling;

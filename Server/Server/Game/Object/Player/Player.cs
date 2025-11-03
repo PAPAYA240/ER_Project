@@ -11,6 +11,7 @@ using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using static ISkill;
+using static Lucene.Net.Util.AttributeSource;
 using static Server.Data.DataUtils;
 using static Server.Game.GameRoom;
 
@@ -310,6 +311,8 @@ namespace Server.Game
         {
             _stateMachine.ChangeState(newState, this);
         }
+
+
         #endregion
 
         #region Stat

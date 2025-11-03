@@ -94,6 +94,7 @@ public class ObjectManager
         GameObject go = Managers.Resource.Instantiate($"Creature/Monster/{info.Monster.MonsterType}");
         go.name = info.Name;
         _objects.Add(info.ObjectId, go);
+        go.transform.position = new Vector3(info.PosInfo.PosX, info.PosInfo.PosY, info.PosInfo.PosZ);
 
         MonsterController mc = go.GetComponentInChildren<MonsterController>();
         mc.ObjInfo = info;

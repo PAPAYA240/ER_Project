@@ -72,6 +72,8 @@ enum MsgId {
   S_CHANGE_BEACON_TIME = 62;
   S_CHANGE_SCORE = 63;
   S_GAME_OVER = 64;
+  C_SKILL_PREPARE = 65;
+  C_SKILL_CANCEL = 66;
 }
 
 enum CreatureState{
@@ -83,6 +85,14 @@ enum CreatureState{
   REST = 5;
   CHARGING = 6;
   APPEAR = 7;
+}
+
+enum SkillInputType
+{
+    Instant = 0;
+    Charge = 1;
+    Placement = 2;
+    ChargeAndPlace = 3;
 }
 
 enum GameObjectType{
@@ -296,6 +306,16 @@ message S_State {
 	MonsterSkill skilltype = 5;
 	int32 sequenceId = 6;
 	PositionInfo targetPosition = 7;
+}
+
+message C_SkillPrepare{
+   int32 objectId = 1;
+   int32  skillKey = 2;
+}
+
+message C_SkillCancel{
+   int32 objectId = 1;
+   int32  skillKey = 2;
 }
 
 message S_Spawn {
@@ -762,7 +782,7 @@ message C_SkillInput {
   int32 skillKey = 1;
   int32 targetId = 2; 
   float mouseX = 3;
-  float mouseZ = 4; 
+  float mouseZ = 4;
 }
 
 message C_SkillCollisionPropose {

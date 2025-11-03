@@ -33,8 +33,6 @@ public sealed class Theodore_Q : SkillHandlerBase
         if (isCommited)
             return;
 
-        
-
         isCommited = true;  
 
         return;
