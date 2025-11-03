@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Game\Object\Player\Skill\Skills\Abigail\**" />
-    <EmbeddedResource Remove="Game\Object\Player\Skill\Skills\Abigail\**" />
-    <None Remove="Game\Object\Player\Skill\Skills\Abigail\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Remove="Game\Collision\SkillHitboxFactory.cs" />
   </ItemGroup>
 
