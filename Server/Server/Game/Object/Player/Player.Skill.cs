@@ -63,7 +63,13 @@ namespace Server.Game
 
         public float GetCoolTime(KeyCode key)
         {
-            return _coolDownDict[key].coolTime;
+            if (_coolDownDict.TryGetValue(key, out CoolTime coolTime))
+                return coolTime.coolTime;
+            else
+            {
+                Console.WriteLine($"GetCoolTime Error!! KeyCode : {key}");
+                return 0.0f;
+            }
         }
 
         private bool CheckCoolTime(KeyCode key)
@@ -100,7 +106,13 @@ namespace Server.Game
 
         private Skill FindSkill(KeyCode key)
         {
-            return _skills[key];
+            if (_skills.TryGetValue(key, out Skill skill))
+                return _skills[key];
+            else
+            {
+                Console.WriteLine($"FindSkill Error!! KeyCode : {key}");
+                return null;
+            }
         }
 
         #endregion

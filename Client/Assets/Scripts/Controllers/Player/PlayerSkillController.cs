@@ -68,6 +68,9 @@ public class PlayerSkillController : MonoBehaviour
 
         if (_coolDownDict.ContainsKey(_key))
         {
+            //if (FindSkill(_key).CurLevel <= 0)
+            //    return null;
+
             // 스킬을 사용하고 있는 상태가 아닐 때
             if (_player.State == CreatureState.Skill)
                 return null;
