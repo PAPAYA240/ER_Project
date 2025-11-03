@@ -287,8 +287,6 @@ public class MyPlayerController : PlayerController
     public override void UpdateItemStat(ItemStat stat)
     {
         base.UpdateItemStat(stat);
-    
-        // 스탯 UI 업데이트
     }
     #endregion
 

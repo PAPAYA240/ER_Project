@@ -623,7 +623,6 @@ namespace Server.Game
 
         public void EquipItemSet(CharacterType type, int phase)
         {
-            // �ش� ����� ������ ������ ��Ʈ�� ���̵� ����Ʈ�� ������.
             List<int> itemIdList = DataManager.ItemSetDict[type][phase];
 
             foreach (int itemId in itemIdList)
@@ -636,7 +635,6 @@ namespace Server.Game
                 changeEquipItemPacket.ObjectId = Id;
                 changeEquipItemPacket.ItemId = itemId;
 
-                // �̹� Ǫ���Ǿ �� ��Ȳ. Ǫ���� �Լ��ȿ� �ְų� �� �Լ��� Ǫ���ؼ� ���.
                 GameRoom room = Room;
                 room.Broadcast(changeEquipItemPacket);
             }

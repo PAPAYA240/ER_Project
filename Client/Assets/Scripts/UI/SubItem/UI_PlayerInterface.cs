@@ -316,6 +316,13 @@ public class UI_PlayerInterface : UI_Base
         Managers.Network.Send(packet);
     }
 
+    public void UpdateSkillAccForPopup(int skillAcc)
+    {
+        GetObject((int)GameObjects.QSkill).GetComponent<UI_SkillBase>().UpdateSkillAcc(skillAcc);
+        GetObject((int)GameObjects.WSkill).GetComponent<UI_SkillBase>().UpdateSkillAcc(skillAcc);
+        GetObject((int)GameObjects.ESkill).GetComponent<UI_SkillBase>().UpdateSkillAcc(skillAcc);
+        GetObject((int)GameObjects.RSkill).GetComponent<UI_SkillBase>().UpdateSkillAcc(skillAcc);
+    }
 
     #endregion
 
