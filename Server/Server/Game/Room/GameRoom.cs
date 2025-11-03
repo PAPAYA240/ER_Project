@@ -511,26 +511,19 @@ namespace Server.Game
             Broadcast(effect);
         }
 
-        public void HandleAttackSkillTarget(Player player, C_TargetingSkill targetingSkill)
+        public void AttackSkillTarget(Player player, GameObject target, KeyCode keyCode) // 타게팅 스킬. 대상 1명.
         {
             if (player == null)
                 return;
 
             float damage = 0f;
 
-            GameObject target = ObjectManager.Instance.Find(targetingSkill.TargetId);
-
             if (target.ObjectType == GameObjectType.Player)
-                damage = _collisionManager.CalcDamage(player, target as Player, (KeyCode)targetingSkill.KeyCode);
+                damage = _collisionManager.CalcDamage(player, target as Player, keyCode);
             else
-                damage = _collisionManager.CalcDamage(player, target.Stat, (KeyCode)targetingSkill.KeyCode);
+                damage = _collisionManager.CalcDamage(player, target.Stat, keyCode);
 
-            //if (target is Player)
-            //    Console.WriteLine($"Attacker:{player.Info.Player.CharType}_{player.Id}, Target:{target.Info.Player.CharType}_{target.Id}, Damage:{damage}");
-            //else
-            //    Console.WriteLine($"Attacker:{player.Info.Player.CharType}_{player.Id}, Target:Env_{target.Id}, Damage:{damage}");
-
-            if(player.Info.Player.CharType == CharacterType.Abigail && (KeyCode)targetingSkill.KeyCode == KeyCode.E)
+            if(player.Info.Player.CharType == CharacterType.Abigail && keyCode == KeyCode.E)
             {
                 S_RemoveAbigailCoord removeAbigailCoordPkt = new S_RemoveAbigailCoord();
                 removeAbigailCoordPkt.ObjectId = target.Id;

@@ -47,6 +47,7 @@ public class PlayerSkillController : MonoBehaviour
     // TEMP
     Vector3 _endPosition;
 
+
     private void Awake()
     {
         _player = GetComponentInChildren<MyPlayerController>();
@@ -72,7 +73,7 @@ public class PlayerSkillController : MonoBehaviour
                 return null;
 
             // 스킬을 사용하고 있는 상태가 아닐 때
-            if (_player.State == CreatureState.Skill)
+            if (_player.State == CreatureState.Skill && false == _player.CanStopSkill)
                 return null;
         
             // 쿨타임이 끝났을 때
@@ -522,6 +523,9 @@ public class PlayerSkillController : MonoBehaviour
             skill.SkillData = data.Value;
             _skills.Add(data.Key, skill);
         }
+
+        _skills[KeyCode.T].CurLevel = 1;
+        _skills[KeyCode.F].CurLevel = 1;
     }
 
     private void MakeCoolDownDict()

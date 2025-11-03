@@ -34,14 +34,6 @@ namespace Google.Protobuf.Protocol
             float dz = PosZ - pos.Y;
             return MathF.Sqrt(dx * dx + dz * dz);
         }
-
-        // Vector3 -> PositionInfo (암시적 변환)
-        public static implicit operator PositionInfo(Vector3 v)
-            => new PositionInfo { PosX = v.X, PosY = v.Y, PosZ = v.Z };
-
-        // PositionInfo -> Vector3 (암시적 변환)
-        public static implicit operator Vector3(PositionInfo p)
-            => new Vector3(p.PosX, p.PosY, p.PosZ);
     }
 
     public sealed partial class StatInfo

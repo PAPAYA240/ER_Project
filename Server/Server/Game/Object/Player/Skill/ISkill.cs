@@ -41,6 +41,7 @@ public interface ISkill
     bool CanMoveDuringCast { get; }
     float MoveSpeedMultiplier { get; }
 
+    bool CanStopSkill { get; }
     #region Utils
     float GetDuration();
 

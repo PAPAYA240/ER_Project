@@ -47,8 +47,6 @@ class PacketManager
 		_handler.Add((ushort)MsgId.CInteract, PacketHandler.C_InteractHandler);		
 		_onRecv.Add((ushort)MsgId.CSkillLevelUp, MakePacket<C_SkillLevelUp>);
 		_handler.Add((ushort)MsgId.CSkillLevelUp, PacketHandler.C_SkillLevelUpHandler);		
-		_onRecv.Add((ushort)MsgId.CTargetingSkill, MakePacket<C_TargetingSkill>);
-		_handler.Add((ushort)MsgId.CTargetingSkill, PacketHandler.C_TargetingSkillHandler);		
 		_onRecv.Add((ushort)MsgId.CTestDamage, MakePacket<C_TestDamage>);
 		_handler.Add((ushort)MsgId.CTestDamage, PacketHandler.C_TestDamageHandler);		
 		_onRecv.Add((ushort)MsgId.CProjectile, MakePacket<C_Projectile>);

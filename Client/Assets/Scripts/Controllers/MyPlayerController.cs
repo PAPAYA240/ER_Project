@@ -41,6 +41,7 @@ public class MyPlayerController : PlayerController
             return baseSpeed * multiplier;
         }
     }
+    public bool CanStopSkill { get; set; } = false;
 
     private void Awake()
     {

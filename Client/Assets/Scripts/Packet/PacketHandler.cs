@@ -723,6 +723,21 @@ class PacketHandler
         pc.SyncPos(changeTransformPkt.IsWarp);
     }
 
+    public static void S_CanStopSkillHandler(PacketSession session, IMessage packet) 
+    {
+        S_CanStopSkill canStopSkillPkt = packet as S_CanStopSkill;
+
+        GameObject go = Managers.Object.FindById(canStopSkillPkt.ObjectId);
+        if (go == null)
+            return;
+
+        MyPlayerController mpc = go.GetComponentInChildren<MyPlayerController>();
+        if (mpc == null)
+            return;
+
+        mpc.CanStopSkill = canStopSkillPkt.CanStopSkill;
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;

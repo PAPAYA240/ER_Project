@@ -942,11 +942,21 @@ namespace Server.Game
             S_ChangeTransform pkt = new S_ChangeTransform
             {
                 ObjectId = Id,
-                PosInfo = new PositionInfo(PosInfo),
+                PosInfo = this.PosInfo.Clone(),
                 RotInfo = new RotationInfo(RotInfo),
                 IsWarp = isWarp
             };
 
+            Room.Push(Room.Broadcast, pkt);
+        }
+
+        public void SendCanStopSkillPacket(bool canStopSkill)
+        {
+            S_CanStopSkill pkt = new S_CanStopSkill
+            {
+                ObjectId = Id,
+                CanStopSkill = canStopSkill
+            };
             Room.Push(Room.Broadcast, pkt);
         }
 

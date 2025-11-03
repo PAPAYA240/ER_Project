@@ -6,13 +6,22 @@ using Server.Game;
 using static Server.Data.DataUtils;
 
 
-public sealed class Abigail_R : SkillHandlerBase
+public sealed class Abigail_R : Skill_Abigail
 {
-    public Abigail_R()
+    public Abigail_R()  
     {
-        _characterType = CharacterType.Abigail;
         _animName = "SKILL_R";
         _keyCode = KeyCode.R;
+        _animDuration = GetDuration();
+    }
+    public override void OnTick(Player p, SkillContext ctx)
+    {
+        float t = _elapsed / _animDuration;
+        _elapsed += TimeUtil.DeltaTime;
+        
+        CanStopSkill = true;
+        p.SendCanStopSkillPacket(CanStopSkill);
+        return;
     }
 
     public override void OnEnter(Player p, SkillContext ctx)

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
 using Server.Game;
 using static Server.Data.DataUtils;
 
 
-public sealed class Abigail_E : SkillHandlerBase
+public sealed class Abigail_E : Skill_Abigail
 {
     float _range = 6.2f;
     float _radius = 1.2f;
@@ -15,9 +16,9 @@ public sealed class Abigail_E : SkillHandlerBase
 
     public Abigail_E()
     {
-        _characterType = CharacterType.Abigail;
         _animName = "SKILL_E";
         _keyCode = KeyCode.E;
+        _animDuration = GetDuration();
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
@@ -27,24 +28,25 @@ public sealed class Abigail_E : SkillHandlerBase
 
         p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
 
-        p.PosInfo = new PositionInfo
-        {
-            State = p.PosInfo.State,
-            PosX = ctx.MousePos.X,
-            PosY = 0,
-            PosZ = ctx.MousePos.Y
-        };
+        p.PosInfo.PosX = ctx.MousePos.X;
+        p.PosInfo.PosZ = ctx.MousePos.Y;
         p.SendChangeTransformPacket(true);
+        p.Room.AttackSkillTarget(p, _target, _keyCode);
+    }
 
-        //_target = null;
+    public override void OnTick(Player p, SkillContext ctx)
+    {
+        float t = _elapsed / _animDuration;
+        _elapsed += TimeUtil.DeltaTime;
+
+        CanStopSkill = true;
+        p.SendCanStopSkillPacket(CanStopSkill);
+        return;
     }
 
     public override bool CanCast(Player p, SkillContext ctx)
     {
-        //if (_target != null)
-        //    return false;
-
-        float dist = p.PosInfo.Distance(ctx.MousePos);
+        float dist = p.Info.PosInfo.Distance(ctx.MousePos);
         if (dist > _range + _radius)
             return false;
 
@@ -52,7 +54,7 @@ public sealed class Abigail_E : SkillHandlerBase
         if (null == target)
             return false;
 
-        //_target = target;
+        _target = target;
         return true;
     }
 }
