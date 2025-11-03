@@ -114,7 +114,7 @@ class PacketHandler
         if (room == null)
             return;
 
-        room.Push(room.HandleVF, player, skillPacket);
+        //room.Push(room.HandleVF, player, skillPacket);
     }
     public static void C_CharacterHandler(PacketSession session, IMessage packet)
     {
@@ -257,13 +257,38 @@ class PacketHandler
         room.Push(room.HandleSkill, player, skillPacket);
     }
 
-     public static void C_ProjectileHandler(PacketSession session, IMessage packet)
-     {
+    public static void C_SkillPrepareHandler(PacketSession session, IMessage packet)
+    {
+        C_SkillPrepare skillPacket = packet as C_SkillPrepare;
         ClientSession clientSession = session as ClientSession;
-        Player player = clientSession.MyPlayer;
 
-        Projectile projectile = player?.CreateProjectile();
-     }
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandlerPrepareSkill, player, skillPacket);
+    }
+    public static void C_SkillCancelHandler(PacketSession session, IMessage packet)
+    {
+        C_SkillCancel skillPacket = packet as C_SkillCancel;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandlerChargeCancelSkill, player, skillPacket);
+    }
+
+
 
     public static void C_EnvRequestHandler(PacketSession session, IMessage packet)
     {

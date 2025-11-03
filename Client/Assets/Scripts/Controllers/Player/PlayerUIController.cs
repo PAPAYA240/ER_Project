@@ -54,7 +54,7 @@ public class PlayerUIController : MonoBehaviour
         minimap.ActivatePlayerIcon(UI_MinimapCharIcon.IconType.MyPlayer, _player);
 
         //쿨타임 설정
-        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, FindSkill(KeyCode.Q).MaxCooldown);
+        UpdateSkillMaxCool();
 
         //업데이트 함수들 호출
         _player.Stat = _player.Stat;
@@ -149,7 +149,7 @@ public class PlayerUIController : MonoBehaviour
         PlayerInterface.SetSkillMaxCool(skillEnum, value);
     }
 
-    private void UpdateSkillMaxCool()
+    public void UpdateSkillMaxCool()
     {
         // TODO 현재 스킬레벨에 따른 쿨타임과 아이템으로 인한 스킬 가속을 적용하여 UI에 반영
         // 일단 스킬 가속에 대한 계산이 어떻게 되는지 알아야하고, 스킬들이 레벨마다 어떤 쿨타임을 가질지 데이터(Json)를 만들어줘야함.
@@ -159,18 +159,28 @@ public class PlayerUIController : MonoBehaviour
         SkillBase WSkill = FindSkill(KeyCode.W);
         SkillBase ESkill = FindSkill(KeyCode.E);
         SkillBase RSkill = FindSkill(KeyCode.R);
+        SkillBase TSkill = FindSkill(KeyCode.T);
 
-        float skillAcc = 0.0f;
-        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, CalculateMaxCool(QSkill.CurLevelCooldown, skillAcc));
-        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.WSkill, CalculateMaxCool(WSkill.CurLevelCooldown, skillAcc));
-        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, CalculateMaxCool(ESkill.CurLevelCooldown, skillAcc));
-        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(RSkill.CurLevelCooldown, skillAcc));
+        
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, CalculateMaxCool(QSkill.CurLevelCooldown, _player.ItemStat.SkillAcceleration));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.WSkill, CalculateMaxCool(WSkill.CurLevelCooldown, _player.ItemStat.SkillAcceleration));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, CalculateMaxCool(ESkill.CurLevelCooldown, _player.ItemStat.SkillAcceleration));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(RSkill.CurLevelCooldown, _player.ItemStat.SkillAcceleration));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.TSkill, CalculateMaxCool(TSkill.CurLevelCooldown, _player.ItemStat.SkillAcceleration));
     }
 
-    private float CalculateMaxCool(float cooldown, float skillAcc)
+    protected float CalculateMaxCool(float cooldown, float skillAcc)
     {
         // 최종 쿨타임 = 기본 쿨타임 × (100 / (100 + 스킬가속))
         return cooldown * (100f / (100f + skillAcc));
+    }
+
+    public void UpdateSkillAccToPopupInfo()
+    {
+        //_player.
+        // _player.ItemStat.SkillAcceleration
+
+
     }
 
     protected void OnCharSkillLevelUp(SkillEnum skill)

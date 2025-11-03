@@ -37,35 +37,57 @@ class PacketHandler
     }
     public static void S_MoveHandler(PacketSession session, IMessage packet)
     {
-        S_Move movePacket = packet as S_Move;
+        S_Move mPacket = packet as S_Move;
         ServerSession serverSession = session as ServerSession;
 
-        GameObject go = Managers.Object.FindById(movePacket.ObjectId);
+        GameObject go = Managers.Object.FindById(mPacket.ObjectId);
         if (go == null)
             return;
 
-        if (Managers.Object.MyPlayer.Id == movePacket.ObjectId)
+        if (Managers.Object.MyPlayer.Id == mPacket.ObjectId)
         {
-            Managers.Object.MyPlayer.OnServerUpdate(movePacket);
+            Managers.Object.MyPlayer.OnServerUpdate(mPacket);
         }
         else
         {
-            PlayerController pc = go.GetComponentInChildren<PlayerController>();
-            if (pc == null)
+            BaseController bc = go.GetComponentInChildren<BaseController>();
+            if (bc == null)
                 return;
-
-            if (pc.State == CreatureState.Moving)
+            GameObjectType objectType = ObjectManager.GetObjectTypeById(bc.Id);
+            if (objectType == GameObjectType.Player)
             {
-                pc.SyncPosFromServer(movePacket);
+                PlayerController pc = go.GetComponentInChildren<PlayerController>();
+                if (pc == null)
+                    return;
+
+                if (pc.State == CreatureState.Moving)
+                {
+                    pc.SyncPosFromServer(mPacket);
+                }
+                else
+                {
+                    pc.transform.position = mPacket.PosInfo.ToVector();
+                    pc.transform.rotation = mPacket.RotInfo;
+                    pc.PosInfo = mPacket.PosInfo;
+                    pc.RotInfo = mPacket.RotInfo;
+                }
             }
             else
             {
-                pc.transform.position = movePacket.PosInfo.ToVector();
-                pc.transform.rotation = movePacket.RotInfo;
-                pc.PosInfo = movePacket.PosInfo;
-                pc.RotInfo = movePacket.RotInfo;
+                bc.transform.position = mPacket.PosInfo.ToVector();
+                bc.transform.rotation = mPacket.RotInfo;
+                bc.PosInfo = mPacket.PosInfo;
+                bc.RotInfo = mPacket.RotInfo;
             }
         }     
+    }
+
+    public static void S_TargetChangeHandler(PacketSession session, IMessage packet)
+    {
+        S_TargetChange targetChangePacket = packet as S_TargetChange;
+        ServerSession serverSession = session as ServerSession;
+
+        Managers.Object.MyPlayer.View.RotateAttack(targetChangePacket.TargetId);
     }
 
     public static void S_SetMoveTargetHandler(PacketSession session, IMessage packet)
@@ -170,11 +192,11 @@ class PacketHandler
 
         if (Managers.Object.MyPlayer != null)
         {
-            if(Managers.Object.MyPlayer.Id == diePacket.ObjectId)
+            if (Managers.Object.MyPlayer.Id == diePacket.ObjectId)
             {
                 go.GetComponentInChildren<MyPlayerController>().UI.PlayerInterface.OnDead(diePacket.RespawnTime);
             }
-            
+
             // 죽은 플레이어
             PlayerController pc = cc as PlayerController;
             if (pc == null)
@@ -182,11 +204,11 @@ class PacketHandler
 
             // 공격 플레이어
             GameObject attackerGo = Managers.Object.FindById(diePacket.AttackerId);
-            if (attackerGo == null) 
+            if (attackerGo == null)
                 return;
 
             PlayerController attPc = attackerGo.GetComponentInChildren<PlayerController>();
-            if (attPc == null) 
+            if (attPc == null)
                 return;
 
             Managers.Object.MyPlayer.UI.NotifyKill(attPc, pc); 
@@ -368,18 +390,7 @@ class PacketHandler
 
     public static void S_FxHandler(PacketSession session, IMessage packet)
     {
-        S_Fx effectPacket = packet as S_Fx;
-
-        GameObject go = Managers.Object.FindById(effectPacket.ObjectId);
-        if (go == null)
-            return;
-
-        PlayerController pc = go.GetComponent<PlayerController>();
-        if (pc != null)
-        {
-            if (pc.Id != Managers.Object.MyPlayer.Id)
-                pc.PlayEffectFromServer(effectPacket.FxInfo);
-        }
+       
     }
 
     public static void S_RespawnHandler(PacketSession session, IMessage packet)
@@ -407,6 +418,7 @@ class PacketHandler
         KeyCode key = (KeyCode)skillLevelUpPacket.KeyCode;
 
         Managers.Object.MyPlayer.UI.PlayerInterface.SpecificSkillLevelUp(key);
+        Managers.Object.MyPlayer.UI.UpdateSkillMaxCool();
     }
 
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
@@ -476,6 +488,13 @@ class PacketHandler
             if(true == confirmPacket.CanUse)
                 Managers.Object.MyPlayer.OnServerUpdate(confirmPacket);
         }
+
+        // 스킬 시 이펙트 자신의 스킬 이펙트만 호출
+        PlayerController player = go.GetComponent<PlayerController>();
+        if (player != null)
+        { 
+            player.PlaySkillEffect((KeyCode)confirmPacket.SkillKey); 
+        }
     }
 
     public static void S_SkillMotionHandler(PacketSession session, IMessage packet)
@@ -523,6 +542,8 @@ class PacketHandler
         if(pc is MyPlayerController mpc)
         {
             mpc.UI.PlayerInterface.UpdateStat();
+            mpc.UI.PlayerInterface.UpdateSkillAccForPopup((int)changeItemStatPacket.ItemStat.SkillAcceleration);
+            mpc.UI.UpdateSkillMaxCool();
         }
     }
 
@@ -542,15 +563,6 @@ class PacketHandler
     }
     public static void S_ProjectileHandler(PacketSession session, IMessage packet)
     {
-        S_Projectile changeEquipPacket = packet as S_Projectile;
-
-        GameObject go = Managers.Object.FindById(changeEquipPacket.ObjectId);
-        if (go == null)
-            return;
-
-        PlayerController pc = go.GetComponent<PlayerController>();
-        if (pc == null)
-            return;
     }
     
     public static void S_EnvRequestHandler(PacketSession session, IMessage packet)

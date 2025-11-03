@@ -145,7 +145,7 @@ namespace Data
         public string description;
         public string type;
         public int maxLevel;
-        public bool canCharge;
+        public string skillType;
         public bool canMoveDuringCast;
         public Mechanics mechanics;
         public Scaling scaling;
@@ -271,14 +271,11 @@ namespace Data
 
                     dict.Add(keyCode, skills.Value);
                 }
-
                 nestedDict.Add(chartype, dict);
             }
-
             return nestedDict;
         }
     }
-
     #endregion
 
     #region Hitbox
@@ -334,6 +331,7 @@ namespace Data
             Self,       // 캐스터의 위치에 부착 (자식으로)
             Relative,   // 캐스터의 회전을 고려한 상대적 위치
             Target,     // 특정 타겟의 위치
+            Mouse,     
             Ground,     // 월드 좌표의 특정 위치
             Shoot       // 발사체
         }

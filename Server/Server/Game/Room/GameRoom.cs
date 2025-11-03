@@ -6,12 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
-using System.Linq;
-using static ISkill;
-using static Lucene.Net.Index.SegmentReader;
-using static Lucene.Net.Util.AttributeSource;
 using static Server.Data.DataUtils;
-using static Server.Game.Player;
 using System.Threading;
 using static Server.Game.GameObject;
 
@@ -197,9 +192,8 @@ namespace Server.Game
 
         public override void Update()
         {
-            TimeUtil.Update();
-
             CurTick = Environment.TickCount;
+            TimeUtil.Update(CurTick);
 
             foreach (Projectile projectile in _projectiles.Values)
             {
@@ -211,7 +205,7 @@ namespace Server.Game
                 player.Update();
             }
             foreach (Monster monster in _monsters.Values)
-            {
+            {   
                 monster.Update();
             }
             foreach (EnvironmentObject env in _envs.Values)
@@ -322,7 +316,6 @@ namespace Server.Game
                 Projectile projectile = gameObject as Projectile;
                 projectile.Room = this;
                 _projectiles.TryAdd(gameObject.Id, projectile);
-                return;
             }
             else if (type == GameObjectType.Environment)
             {
@@ -381,6 +374,7 @@ namespace Server.Game
                     return;
 
                 projectile.Room = null;
+                projectile.Owner = null;
             }
 
             // 타인한테 정보 전송

@@ -54,8 +54,11 @@ namespace Server.Game
         // 체크 끝나면 데이터 변경
         public void CommitSkillUsage(KeyCode keyCode)
         {
+            // Cool time with skill acceleration
+            float cooltime = FindSkill(keyCode).CurLevelCooldown * (100f / (100f + _totalItemStat.SkillAcceleration));
+
             // ��Ÿ�� ��� ����
-            _ = CoInputCooltime(keyCode, FindSkill(keyCode).CurLevelCooldown);
+            _ = CoInputCooltime(keyCode, cooltime);
 
             // ���׹̳� ����
             Stamina -= FindSkill(keyCode).CurLevelStamina;
@@ -63,7 +66,13 @@ namespace Server.Game
 
         public float GetCoolTime(KeyCode key)
         {
-            return _coolDownDict[key].coolTime;
+            if (_coolDownDict.TryGetValue(key, out CoolTime coolTime))
+                return coolTime.coolTime;
+            else
+            {
+                Console.WriteLine($"GetCoolTime Error!! KeyCode : {key}");
+                return 0.0f;
+            }
         }
 
         private bool CheckCoolTime(KeyCode key)
@@ -100,7 +109,13 @@ namespace Server.Game
 
         private Skill FindSkill(KeyCode key)
         {
-            return _skills[key];
+            if (_skills.TryGetValue(key, out Skill skill))
+                return _skills[key];
+            else
+            {
+                Console.WriteLine($"FindSkill Error!! KeyCode : {key}");
+                return null;
+            }
         }
 
         #endregion

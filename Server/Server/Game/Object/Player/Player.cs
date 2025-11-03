@@ -237,6 +237,7 @@ namespace Server.Game
             
             TickTokens(); // ��ū ����/����
             _stateMachine.Update(this);
+            _statRegenerator.Update();
             CheckUpdateStat();
         }
 
@@ -298,6 +299,8 @@ namespace Server.Game
         {
             _stateMachine.ChangeState(newState, this);
         }
+
+
         #endregion
 
         #region Stat
@@ -353,7 +356,7 @@ namespace Server.Game
             }
 
             _skills[KeyCode.T].CurLevel = 1;
-            _skills[KeyCode.F].CurLevel = 1;
+            //_skills[KeyCode.F].CurLevel = 1;
         }
 
         private void MakeCoolDownDict()
@@ -622,7 +625,6 @@ namespace Server.Game
 
         public void EquipItemSet(CharacterType type, int phase)
         {
-            // �ش� ����� ������ ������ ��Ʈ�� ���̵� ����Ʈ�� ������.
             List<int> itemIdList = DataManager.ItemSetDict[type][phase];
 
             foreach (int itemId in itemIdList)
@@ -635,7 +637,6 @@ namespace Server.Game
                 changeEquipItemPacket.ObjectId = Id;
                 changeEquipItemPacket.ItemId = itemId;
 
-                // �̹� Ǫ���Ǿ �� ��Ȳ. Ǫ���� �Լ��ȿ� �ְų� �� �Լ��� Ǫ���ؼ� ���.
                 GameRoom room = Room;
                 room.Broadcast(changeEquipItemPacket);
             }
@@ -921,9 +922,18 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
+        public void SendFxPacket()
+        {
+
+        }
         public void SendDeadPacket(S_Respawn packet)
         {
             Room.Push(Room.Broadcast, packet);
+        }
+
+        public void SendTargetChangePacket(S_TargetChange packet)
+        {
+            Session.Send(packet);
         }
 
         public void SendMoveSyncPacket(PositionInfo targetPos, float speed = 1.0f)

@@ -29,12 +29,10 @@ namespace Server.Game
 
             if (player.CurrentState is IReceivesAttackCommand swing && player.State == CreatureState.Attack)
             {
-                // 이미 공격 중인 상태라면, 애니메이션 끝난 뒤 변경되도록 보류
-                if (swing.IsSwingActive())
-                {
-                    swing.SetPendingTarget(pkt.TargetId);
-                    return;
-                }
+                // 이미 공격 중인 상태라면 애니메이션 끝난 뒤 변경되도록
+                swing.RequestTargetChange(pkt.TargetId);
+                Console.WriteLine("공격 상태 중일 때 ");
+                return;
             }
 
             player.ChangeState(new Player_AttackState(pkt.TargetId, chaseAllowed: true));
@@ -164,7 +162,28 @@ namespace Server.Game
 
             // 6) 클라에 허락 패킷 보내기 -> 각 Skill의 OnEnter에서
         }
+        public void HandlerPrepareSkill(Player player, C_SkillPrepare skillPacket)
+        {
+            var key = (KeyCode)skillPacket.SkillKey;
 
+            if (!player.CanUseSkill(key))
+                return;
+
+            ISkill handler = SkillRegistry.Prepare(player.Info.Player.CharType, key);
+            var ctx = new SkillContext
+            {
+                Key = key,
+            };
+
+            player.ChangeState(new Player_SkillState(handler, ctx));
+        }
+
+        public void HandlerChargeCancelSkill(Player player, C_SkillCancel skillPacket)
+        {
+            var key = (KeyCode)skillPacket.SkillKey;
+
+            ISkill handler = SkillRegistry.Prepare(player.Info.Player.CharType, key);
+        }
         public void HandleSkillCollision(Player player, C_SkillCollisionPropose skillPacket)
         {
             if (player == null)
@@ -216,6 +235,9 @@ namespace Server.Game
                     }
                     break;
             }
+
+            if (player.CurrentState is IReceivesStopCommand stop)
+                stop.OnStopCommand(player, pkt);
         }
 
         #region Utils

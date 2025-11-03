@@ -85,8 +85,6 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SChangeKDA, PacketHandler.S_ChangeKDAHandler);		
 		_onRecv.Add((ushort)MsgId.SSyncTimer, MakePacket<S_SyncTimer>);
 		_handler.Add((ushort)MsgId.SSyncTimer, PacketHandler.S_SyncTimerHandler);		
-		_onRecv.Add((ushort)MsgId.SProjectile, MakePacket<S_Projectile>);
-		_handler.Add((ushort)MsgId.SProjectile, PacketHandler.S_ProjectileHandler);		
 		_onRecv.Add((ushort)MsgId.SEnvRequest, MakePacket<S_EnvRequest>);
 		_handler.Add((ushort)MsgId.SEnvRequest, PacketHandler.S_EnvRequestHandler);		
 		_onRecv.Add((ushort)MsgId.SAddAbigailCoord, MakePacket<S_AddAbigailCoord>);
@@ -112,7 +110,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SGameOver, MakePacket<S_GameOver>);
 		_handler.Add((ushort)MsgId.SGameOver, PacketHandler.S_GameOverHandler);		
 		_onRecv.Add((ushort)MsgId.SChangeTransform, MakePacket<S_ChangeTransform>);
-		_handler.Add((ushort)MsgId.SChangeTransform, PacketHandler.S_ChangeTransformHandler);
+		_handler.Add((ushort)MsgId.SChangeTransform, PacketHandler.S_ChangeTransformHandler);		
+		_onRecv.Add((ushort)MsgId.STargetChange, MakePacket<S_TargetChange>);
+		_handler.Add((ushort)MsgId.STargetChange, PacketHandler.S_TargetChangeHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

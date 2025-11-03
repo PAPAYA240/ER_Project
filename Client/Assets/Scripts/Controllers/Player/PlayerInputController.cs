@@ -1,14 +1,17 @@
-﻿using Google.Protobuf.Protocol;
+﻿using Data;
+using Google.Protobuf.Protocol;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-
+using UnityEngine.InputSystem;
 
 public class PlayerInputController : MonoBehaviour
 {
-    private MyPlayerController _player;    
+    protected MyPlayerController _player;    
+    protected PlayerSkillController _skill;
     private NavMeshAgent _agent;
-    private PlayerSkillController _skill;
 
     [SerializeField] float _attackRange = 3.0f;  
     [SerializeField] float _stopBuffer = 1.5f;
@@ -152,16 +155,29 @@ public class PlayerInputController : MonoBehaviour
             if (!Input.GetKeyDown(key))
                 continue;
 
-            if (_player.RequiresCharge(key))
+            if (IsCharge(key))
             {
-                StartCoroutine(CoChargeSkill(key));
+                ChargeSkill(key);
                 return null;
             }
 
             return _skill.TryCast((int)key, GetAttackableUnderCursorID(), GetMouseWorldPosition());
         }
-
         return null;
+    }
+
+    private bool IsCharge(KeyCode key)
+    {
+        SkillData skillData = DataManager.SkillDict[_player.ObjInfo.Player.CharType][key];
+        if (skillData == null)
+            return false;
+
+        if (Enum.TryParse(skillData.skillType, out SkillInputType skillType))
+        {
+            if (skillType == SkillInputType.Charge)
+                return true;
+        }
+        return false;
     }
 
     public C_Rest GetRestCommand()
@@ -210,33 +226,14 @@ public class PlayerInputController : MonoBehaviour
     }
 
     #region Charge
-    private IEnumerator CoChargeSkill(KeyCode key)
+    protected virtual void ChargeSkill(KeyCode key)
     {
-         _player.Indicator.EnableIndicator(_player.ObjInfo.Player.CharType, key);
-
-        while (Input.GetKey(key) && !Input.GetMouseButtonDown(0))
-        {
-            if (Input.GetMouseButtonDown(1))
-            {
-                // 차징 취소
-                _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
-                yield break;
-            }
-            // 차징 중
-            yield return null;
-        }
-
-        // 스킬 시전
-         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
-
-        var skillCmd = _skill.TryCast((int)key, GetAttackableUnderCursorID(), GetMouseWorldPosition());
-        if (skillCmd != null)
-            Managers.Network.Send(skillCmd);
     }
+
     #endregion
 
     #region Util
-    private Vector3 GetMouseWorldPosition()
+    protected Vector3 GetMouseWorldPosition()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit))
@@ -249,7 +246,7 @@ public class PlayerInputController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.SphereCast(ray, radius, out RaycastHit hit, 1000f, _monsterMask | _playerMask))
         {
-            var cc = hit.collider.GetComponentInParent<CreatureController>();
+            var cc = hit.collider.GetComponentInChildren<CreatureController>();
             if (cc != null && IsAttackable(hit.collider.gameObject))
                 return cc.gameObject;
         }
@@ -257,7 +254,7 @@ public class PlayerInputController : MonoBehaviour
         return null;
     }
 
-    private int GetAttackableUnderCursorID(float radius = 0.1f)
+    protected int GetAttackableUnderCursorID(float radius = 0.1f)
     {
         GameObject target = GetAttackableUnderCursor();
         if (target == null)

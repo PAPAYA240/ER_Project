@@ -25,10 +25,16 @@ public class FXManager : MonoBehaviour
         UI = uiGO.AddComponent<UIFXManager>();
         UI.Init(_pool);
     }
-
+    public Quaternion GetIndicatorRotation(Transform casterTransform)
+    {
+        float playerYaw = casterTransform.rotation.eulerAngles.y;
+        Quaternion yawRotationOnly = Quaternion.Euler(0, playerYaw, 0);
+        Quaternion desiredXRotation = Quaternion.Euler(-90f, 180f, 0);
+        return yawRotationOnly * desiredXRotation;
+    }
     public List<GameObject> PlayEffect(int ownerId, List<EffectData> effectData, Transform casterTransform, Vector3 targetPos = new Vector3(), Quaternion rot = new Quaternion())
     {
-        return Effect.PlayEffect(ownerId, effectData, casterTransform, targetPos, rot);
+        return Effect.PlayEffect(ownerId, effectData, casterTransform, targetPos, GetIndicatorRotation(casterTransform));
     }
 
     public void PlayStatusEffect(GameObject target, CharacterType effectName, float duration)

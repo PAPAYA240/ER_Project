@@ -59,7 +59,15 @@ public static class SkillRegistry
 
         return null;
     }
+    public static ISkill Prepare(CharacterType character, KeyCode key)
+    {
+       if (character == CharacterType.Theodore)
+        {
+            if (key == KeyCode.Q) return new Theodore_Charge();
+        }
 
+        return null;
+    }
     // 다른 명령을 대체할 스킬 등록
     public static void InitRegister()
     {
