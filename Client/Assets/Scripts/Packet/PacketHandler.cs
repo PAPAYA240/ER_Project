@@ -68,6 +68,14 @@ class PacketHandler
         }     
     }
 
+    public static void S_TargetChangeHandler(PacketSession session, IMessage packet)
+    {
+        S_TargetChange targetChangePacket = packet as S_TargetChange;
+        ServerSession serverSession = session as ServerSession;
+
+        Managers.Object.MyPlayer.View.RotateAttack(targetChangePacket.TargetId);
+    }
+
     public static void S_SetMoveTargetHandler(PacketSession session, IMessage packet)
     {
         S_SetMoveTarget targetPacket = packet as S_SetMoveTarget;
@@ -170,11 +178,11 @@ class PacketHandler
 
         if (Managers.Object.MyPlayer != null)
         {
-            if(Managers.Object.MyPlayer.Id == diePacket.ObjectId)
+            if (Managers.Object.MyPlayer.Id == diePacket.ObjectId)
             {
                 go.GetComponentInChildren<MyPlayerController>().UI.PlayerInterface.OnDead(diePacket.RespawnTime);
             }
-            
+
             // 죽은 플레이어
             PlayerController pc = cc as PlayerController;
             if (pc == null)
@@ -182,11 +190,11 @@ class PacketHandler
 
             // 공격 플레이어
             GameObject attackerGo = Managers.Object.FindById(diePacket.AttackerId);
-            if (attackerGo == null) 
+            if (attackerGo == null)
                 return;
 
             PlayerController attPc = attackerGo.GetComponentInChildren<PlayerController>();
-            if (attPc == null) 
+            if (attPc == null)
                 return;
 
             Managers.Object.MyPlayer.UI.NotifyKill(attPc, pc); 

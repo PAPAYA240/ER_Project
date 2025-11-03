@@ -75,6 +75,7 @@ enum MsgId {
   S_CHANGE_SCORE = 65;
   S_GAME_OVER = 66;
   S_CHANGE_TRANSFORM = 67;
+  S_TARGET_CHANGE = 68;
 }
 
 enum CreatureState{
@@ -811,6 +812,12 @@ message S_ChangeTransform{
   PositionInfo posInfo = 2;
   RotationInfo rotInfo = 3;
   bool isWarp = 4;
+}
+
+
+message S_TargetChange {
+  int32 targetId = 1;
+  bool isEndAttack = 2;
 }
 
 message ChangeInventoryInfo{
