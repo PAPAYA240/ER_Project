@@ -1,10 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
-using Google.Protobuf.WellKnownTypes;
 using Server.Game;
-using System;
-using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
 using static Server.Data.DataUtils;
 
 public sealed class Theodore_W : SkillHandlerBase
@@ -21,7 +17,7 @@ public sealed class Theodore_W : SkillHandlerBase
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
+        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision); 
     }
 
     public override void OnHit(Player p, SkillContext ctx)

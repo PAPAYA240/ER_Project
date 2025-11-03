@@ -289,6 +289,18 @@ public class PlayerController : CreatureController
     }
 
     #region Util
+    public Vector3 GetMouseWorldPosition()
+    {
+        Camera mainCam = Camera.main;
+        if (mainCam == null) return Vector3.zero;
+
+        Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Map")))
+            return hit.point;
+
+        return Vector3.zero;
+    }
     protected string GetCharacterName()
     {
         return System.Enum.GetName(typeof(CharacterType), ObjInfo.Player.CharType);
@@ -572,13 +584,7 @@ public class PlayerController : CreatureController
 
         return EffectList;
     }
-    public Quaternion GetIndicatorRotation()
-    {
-        float playerYaw = transform.rotation.eulerAngles.y;
-        Quaternion yawRotationOnly = Quaternion.Euler(0, playerYaw, 0);
-        Quaternion desiredXRotation = Quaternion.Euler(-90f, 180f, 0);
-        return yawRotationOnly * desiredXRotation;
-    }
+
     #endregion
 
     #region State:Dead

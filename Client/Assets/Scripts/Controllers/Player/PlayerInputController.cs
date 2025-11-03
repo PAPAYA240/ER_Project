@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem;
 
 public class PlayerInputController : MonoBehaviour
 {
@@ -154,8 +155,7 @@ public class PlayerInputController : MonoBehaviour
             if (!Input.GetKeyDown(key))
                 continue;
 
-            var skillData = (SkillInputType)Enum.Parse(typeof(SkillInputType), DataManager.SkillDict[_player.ObjInfo.Player.CharType][key].skillType);
-            if (skillData == SkillInputType.Charge)
+            if (IsCharge(key))
             {
                 ChargeSkill(key);
                 return null;
@@ -163,8 +163,21 @@ public class PlayerInputController : MonoBehaviour
 
             return _skill.TryCast((int)key, GetAttackableUnderCursorID(), GetMouseWorldPosition());
         }
-
         return null;
+    }
+
+    private bool IsCharge(KeyCode key)
+    {
+        SkillData skillData = DataManager.SkillDict[_player.ObjInfo.Player.CharType][key];
+        if (skillData == null)
+            return false;
+
+        if (Enum.TryParse(skillData.skillType, out SkillInputType skillType))
+        {
+            if (skillType == SkillInputType.Charge)
+                return true;
+        }
+        return false;
     }
 
     public C_Rest GetRestCommand()

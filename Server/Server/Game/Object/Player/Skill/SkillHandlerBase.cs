@@ -82,12 +82,10 @@ public abstract class SkillHandlerBase : ISkill
     #region 스킬 중 이동 관련
     public virtual void OnMove(Player p)
     {
-        throw new NotImplementedException();
     }
 
     public virtual void OnStop(Player p)
     {
-        throw new NotImplementedException();
     }
     #endregion
     #region Utils

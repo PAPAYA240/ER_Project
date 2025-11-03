@@ -220,11 +220,11 @@ public class MyPlayerController : PlayerController
     
         return EffectList;
     }
-
+ 
     #endregion
 
     #region Inventory, EquipItem
-    
+
     public void ChangeInventory(S_ChangeInventory packet)
     {
         foreach (var change in packet.Changes)
