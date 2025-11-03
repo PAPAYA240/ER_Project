@@ -54,8 +54,11 @@ namespace Server.Game
         // 체크 끝나면 데이터 변경
         public void CommitSkillUsage(KeyCode keyCode)
         {
+            // Cool time with skill acceleration
+            float cooltime = FindSkill(keyCode).CurLevelCooldown * (100f / (100f + _totalItemStat.SkillAcceleration));
+
             // ��Ÿ�� ��� ����
-            _ = CoInputCooltime(keyCode, FindSkill(keyCode).CurLevelCooldown);
+            _ = CoInputCooltime(keyCode, cooltime);
 
             // ���׹̳� ����
             Stamina -= FindSkill(keyCode).CurLevelStamina;

@@ -407,6 +407,7 @@ class PacketHandler
         KeyCode key = (KeyCode)skillLevelUpPacket.KeyCode;
 
         Managers.Object.MyPlayer.UI.PlayerInterface.SpecificSkillLevelUp(key);
+        Managers.Object.MyPlayer.UI.UpdateSkillMaxCool();
     }
 
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
@@ -523,6 +524,8 @@ class PacketHandler
         if(pc is MyPlayerController mpc)
         {
             mpc.UI.PlayerInterface.UpdateStat();
+            mpc.UI.PlayerInterface.UpdateSkillAccForPopup((int)changeItemStatPacket.ItemStat.SkillAcceleration);
+            mpc.UI.UpdateSkillMaxCool();
         }
     }
 

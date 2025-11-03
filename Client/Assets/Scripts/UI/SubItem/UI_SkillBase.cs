@@ -86,6 +86,11 @@ public abstract class UI_SkillBase : UI_Base
         PopupActivate(false);
     }
 
+    public void UpdateSkillAcc(int skillAcc)
+    {
+        _popupUi.SkillAcc = skillAcc;
+    }
+
     protected void PopupActivate(bool activate)
     {
         if (null != _popupGameObject)
