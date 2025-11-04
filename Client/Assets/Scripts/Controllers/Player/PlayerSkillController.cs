@@ -513,7 +513,7 @@ public class PlayerSkillController : MonoBehaviour
     {
         Vector3 targetPos = new Vector3(endX, transform.position.y, endZ);
 
-        if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 1.0f, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 0.5f, NavMesh.AllAreas))
         {
             return navHit.position;
         }
@@ -650,7 +650,7 @@ public class PlayerSkillController : MonoBehaviour
         }
 
         _skills[KeyCode.T].CurLevel = 1;
-        //_skills[KeyCode.F].CurLevel = 1;
+        _skills[KeyCode.F].CurLevel = 1;
     }
 
     private void MakeCoolDownDict()
