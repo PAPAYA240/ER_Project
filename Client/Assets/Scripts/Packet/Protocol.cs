@@ -185,9 +185,9 @@ namespace Google.Protobuf.Protocol {
             "EAoIb2JqZWN0SWQYASABKAUSJwoEdHlwZRgCIAEoDjIZLlByb3RvY29sLlNr",
             "aWxsTW90aW9uVHlwZRIOCgZzdGFydFgYAyABKAISDgoGc3RhcnRZGAQgASgC",
             "Eg4KBnN0YXJ0WhgFIAEoAhIMCgRlbmRYGAYgASgCEgwKBGVuZFkYByABKAIS",
-            "DAoEZW5kWhgIIAEoAhIQCghkdXJhdGlvbhgJIAEoAhIMCgRhbmltGAogASgJ",
-            "Eg8KB2N1cnZlSWQYCyABKAkSFwoPc2VydmVyQ29sbGlzaW9uGAwgASgIEhgK",
-            "EGF1dGhvcml0YXRpdmVFbmQYDSABKAgSEQoJa2V5ZnJhbWVzGA4gAygCIlIK",
+            "DAoEZW5kWhgIIAEoAhIYChBhdXRob3JpdGF0aXZlRW5kGAkgASgIEhAKCGR1",
+            "cmF0aW9uGAogASgCEgwKBGFuaW0YCyABKAkSDwoHY3VydmVJZBgMIAEoCRIX",
+            "Cg9zZXJ2ZXJDb2xsaXNpb24YDSABKAgSEQoJa2V5ZnJhbWVzGA4gAygCIlIK",
             "DENfU2tpbGxJbnB1dBIQCghza2lsbEtleRgBIAEoBRIQCgh0YXJnZXRJZBgC",
             "IAEoBRIOCgZtb3VzZVgYAyABKAISDgoGbW91c2VaGAQgASgCIvcBChdDX1Nr",
             "aWxsQ29sbGlzaW9uUHJvcG9zZRIQCghza2lsbEtleRgBIAEoBRILCgNzZXEY",
@@ -370,7 +370,7 @@ namespace Google.Protobuf.Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Stop), global::Google.Protobuf.Protocol.S_Stop.Parser, new[]{ "Id", "Reason" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_SetMoveTarget), global::Google.Protobuf.Protocol.S_SetMoveTarget.Parser, new[]{ "Id", "IsGround", "TargetId", "TargetPos" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_SkillConfirm), global::Google.Protobuf.Protocol.S_SkillConfirm.Parser, new[]{ "ObjectId", "CanUse", "SkillKey", "Variants" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_SkillMotion), global::Google.Protobuf.Protocol.S_SkillMotion.Parser, new[]{ "ObjectId", "Type", "StartX", "StartY", "StartZ", "EndX", "EndY", "EndZ", "Duration", "Anim", "CurveId", "ServerCollision", "AuthoritativeEnd", "Keyframes" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_SkillMotion), global::Google.Protobuf.Protocol.S_SkillMotion.Parser, new[]{ "ObjectId", "Type", "StartX", "StartY", "StartZ", "EndX", "EndY", "EndZ", "AuthoritativeEnd", "Duration", "Anim", "CurveId", "ServerCollision", "Keyframes" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_SkillInput), global::Google.Protobuf.Protocol.C_SkillInput.Parser, new[]{ "SkillKey", "TargetId", "MouseX", "MouseZ" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_SkillCollisionPropose), global::Google.Protobuf.Protocol.C_SkillCollisionPropose.Parser, new[]{ "SkillKey", "Seq", "Mode", "EndBlockedX", "EndBlockedZ", "EndPassX", "EndPassZ", "BehindBlockedX", "BehindBlockedZ", "CandidateTargetId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.C_Rest), global::Google.Protobuf.Protocol.C_Rest.Parser, new[]{ "IsRest" }, null, null, null, null),
@@ -15623,11 +15623,11 @@ namespace Google.Protobuf.Protocol {
       endX_ = other.endX_;
       endY_ = other.endY_;
       endZ_ = other.endZ_;
+      authoritativeEnd_ = other.authoritativeEnd_;
       duration_ = other.duration_;
       anim_ = other.anim_;
       curveId_ = other.curveId_;
       serverCollision_ = other.serverCollision_;
-      authoritativeEnd_ = other.authoritativeEnd_;
       keyframes_ = other.keyframes_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -15725,11 +15725,25 @@ namespace Google.Protobuf.Protocol {
       }
     }
 
+    /// <summary>Field number for the "authoritativeEnd" field.</summary>
+    public const int AuthoritativeEndFieldNumber = 9;
+    private bool authoritativeEnd_;
+    /// <summary>
+    /// 끝난 시점에 서버 좌표가 권위
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool AuthoritativeEnd {
+      get { return authoritativeEnd_; }
+      set {
+        authoritativeEnd_ = value;
+      }
+    }
+
     /// <summary>Field number for the "duration" field.</summary>
-    public const int DurationFieldNumber = 9;
+    public const int DurationFieldNumber = 10;
     private float duration_;
     /// <summary>
-    /// 초; 0이면 즉시(블링크)
+    /// 초; 0이면 즉시(블링크) // 여기 이하 안쓰는 중 
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float Duration {
@@ -15740,7 +15754,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "anim" field.</summary>
-    public const int AnimFieldNumber = 10;
+    public const int AnimFieldNumber = 11;
     private string anim_ = "";
     /// <summary>
     /// 옵션
@@ -15754,7 +15768,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "curveId" field.</summary>
-    public const int CurveIdFieldNumber = 11;
+    public const int CurveIdFieldNumber = 12;
     private string curveId_ = "";
     /// <summary>
     /// 클라 보간커브 선택(옵션)
@@ -15768,7 +15782,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     /// <summary>Field number for the "serverCollision" field.</summary>
-    public const int ServerCollisionFieldNumber = 12;
+    public const int ServerCollisionFieldNumber = 13;
     private bool serverCollision_;
     /// <summary>
     /// 서버가 충돌 반영해 준 결과임
@@ -15778,20 +15792,6 @@ namespace Google.Protobuf.Protocol {
       get { return serverCollision_; }
       set {
         serverCollision_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "authoritativeEnd" field.</summary>
-    public const int AuthoritativeEndFieldNumber = 13;
-    private bool authoritativeEnd_;
-    /// <summary>
-    /// 끝난 시점에 서버 좌표가 권위
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool AuthoritativeEnd {
-      get { return authoritativeEnd_; }
-      set {
-        authoritativeEnd_ = value;
       }
     }
 
@@ -15829,11 +15829,11 @@ namespace Google.Protobuf.Protocol {
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(EndX, other.EndX)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(EndY, other.EndY)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(EndZ, other.EndZ)) return false;
+      if (AuthoritativeEnd != other.AuthoritativeEnd) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Duration, other.Duration)) return false;
       if (Anim != other.Anim) return false;
       if (CurveId != other.CurveId) return false;
       if (ServerCollision != other.ServerCollision) return false;
-      if (AuthoritativeEnd != other.AuthoritativeEnd) return false;
       if(!keyframes_.Equals(other.keyframes_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -15849,11 +15849,11 @@ namespace Google.Protobuf.Protocol {
       if (EndX != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(EndX);
       if (EndY != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(EndY);
       if (EndZ != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(EndZ);
+      if (AuthoritativeEnd != false) hash ^= AuthoritativeEnd.GetHashCode();
       if (Duration != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Duration);
       if (Anim.Length != 0) hash ^= Anim.GetHashCode();
       if (CurveId.Length != 0) hash ^= CurveId.GetHashCode();
       if (ServerCollision != false) hash ^= ServerCollision.GetHashCode();
-      if (AuthoritativeEnd != false) hash ^= AuthoritativeEnd.GetHashCode();
       hash ^= keyframes_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -15900,25 +15900,25 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(69);
         output.WriteFloat(EndZ);
       }
+      if (AuthoritativeEnd != false) {
+        output.WriteRawTag(72);
+        output.WriteBool(AuthoritativeEnd);
+      }
       if (Duration != 0F) {
-        output.WriteRawTag(77);
+        output.WriteRawTag(85);
         output.WriteFloat(Duration);
       }
       if (Anim.Length != 0) {
-        output.WriteRawTag(82);
+        output.WriteRawTag(90);
         output.WriteString(Anim);
       }
       if (CurveId.Length != 0) {
-        output.WriteRawTag(90);
+        output.WriteRawTag(98);
         output.WriteString(CurveId);
       }
       if (ServerCollision != false) {
-        output.WriteRawTag(96);
-        output.WriteBool(ServerCollision);
-      }
-      if (AuthoritativeEnd != false) {
         output.WriteRawTag(104);
-        output.WriteBool(AuthoritativeEnd);
+        output.WriteBool(ServerCollision);
       }
       keyframes_.WriteTo(output, _repeated_keyframes_codec);
       if (_unknownFields != null) {
@@ -15953,6 +15953,9 @@ namespace Google.Protobuf.Protocol {
       if (EndZ != 0F) {
         size += 1 + 4;
       }
+      if (AuthoritativeEnd != false) {
+        size += 1 + 1;
+      }
       if (Duration != 0F) {
         size += 1 + 4;
       }
@@ -15963,9 +15966,6 @@ namespace Google.Protobuf.Protocol {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(CurveId);
       }
       if (ServerCollision != false) {
-        size += 1 + 1;
-      }
-      if (AuthoritativeEnd != false) {
         size += 1 + 1;
       }
       size += keyframes_.CalculateSize(_repeated_keyframes_codec);
@@ -16004,6 +16004,9 @@ namespace Google.Protobuf.Protocol {
       if (other.EndZ != 0F) {
         EndZ = other.EndZ;
       }
+      if (other.AuthoritativeEnd != false) {
+        AuthoritativeEnd = other.AuthoritativeEnd;
+      }
       if (other.Duration != 0F) {
         Duration = other.Duration;
       }
@@ -16015,9 +16018,6 @@ namespace Google.Protobuf.Protocol {
       }
       if (other.ServerCollision != false) {
         ServerCollision = other.ServerCollision;
-      }
-      if (other.AuthoritativeEnd != false) {
-        AuthoritativeEnd = other.AuthoritativeEnd;
       }
       keyframes_.Add(other.keyframes_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -16063,24 +16063,24 @@ namespace Google.Protobuf.Protocol {
             EndZ = input.ReadFloat();
             break;
           }
-          case 77: {
+          case 72: {
+            AuthoritativeEnd = input.ReadBool();
+            break;
+          }
+          case 85: {
             Duration = input.ReadFloat();
             break;
           }
-          case 82: {
+          case 90: {
             Anim = input.ReadString();
             break;
           }
-          case 90: {
+          case 98: {
             CurveId = input.ReadString();
             break;
           }
-          case 96: {
-            ServerCollision = input.ReadBool();
-            break;
-          }
           case 104: {
-            AuthoritativeEnd = input.ReadBool();
+            ServerCollision = input.ReadBool();
             break;
           }
           case 114:

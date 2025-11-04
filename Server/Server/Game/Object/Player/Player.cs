@@ -862,9 +862,9 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendSkillMotion(SkillMotionType type, Vector3 start, Vector3 end,
+        public void SendSkillMotion(SkillMotionType type, Vector3 start, Vector3 end, bool authoritativeEnd = false,
                             float duration = 0f, string anim = default, string curveId = default,
-                            bool serverCollision = false, bool authoritativeEnd = true)
+                            bool serverCollision = false)
         {
             S_SkillMotion pkt = new S_SkillMotion
             {

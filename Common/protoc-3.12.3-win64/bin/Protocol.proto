@@ -770,14 +770,12 @@ message S_SkillMotion {
   float  endX       = 6;
   float  endY       = 7;
   float  endZ       = 8;
-  bool	 isStart	= 9;
-  bool	 isEnd		= 10;
-  float  duration   = 11;			// 초; 0이면 즉시(블링크)
-  string anim       = 12;			// 옵션
-  string curveId    = 13;			// 클라 보간커브 선택(옵션)
-  bool   serverCollision = 14;		// 서버가 충돌 반영해 준 결과임
-  bool   authoritativeEnd = 15;		// 끝난 시점에 서버 좌표가 권위
-  repeated float keyframes = 16;	// [x0,y0,z0,t0, x1,y1,z1,t1, ...] (옵션)
+  bool   authoritativeEnd = 9;		// 끝난 시점에 서버 좌표가 권위
+  float  duration   = 10;			// 초; 0이면 즉시(블링크) // 여기 이하 안쓰는 중 
+  string anim       = 11;			// 옵션
+  string curveId    = 12;			// 클라 보간커브 선택(옵션)
+  bool   serverCollision = 13;		// 서버가 충돌 반영해 준 결과임
+  repeated float keyframes = 14;	// [x0,y0,z0,t0, x1,y1,z1,t1, ...] (옵션)
 }
 
 message C_SkillInput { 

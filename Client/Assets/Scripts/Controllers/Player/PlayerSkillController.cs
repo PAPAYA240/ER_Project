@@ -113,13 +113,15 @@ public class PlayerSkillController : MonoBehaviour
         else if(packet.Type == SkillMotionType.Transform)
         {
             ApplySkillMotion((SkillMotionType)packet.Type,
-            new Vector3(packet.EndX, packet.EndY, packet.EndZ));
+            new Vector3(packet.EndX, packet.EndY, packet.EndZ),
+            packet.AuthoritativeEnd);
         }
     }
 
     // 스킬 시작 승인(시전별 instanceId 포함 -> 안함)
     public void OnSkillConfirm(S_SkillConfirm packet)
     {
+        _player.State = CreatureState.Skill;
         _curSkill = GetSkillSpec((KeyCode)packet.SkillKey, packet.Variants);
         if (_curSkill != null)
         {
@@ -357,19 +359,22 @@ public class PlayerSkillController : MonoBehaviour
         _player.UpdateTransform();
     }
 
-    private void ApplySkillMotion(SkillMotionType type, Vector3 targetPos)
+    private void ApplySkillMotion(SkillMotionType type, Vector3 targetPos, bool authoritativeEnd)
     {
-        if(_agent != null)
+        if(_agent != null || _agent.enabled)
             _agent.enabled = false;
 
         // NavMesh 위로 수정
         //if (NavMesh.SamplePosition(targetPos, out var endHit, 2.0f, NavMesh.AllAreas))
         //    _endPosition = endHit.position;
 
-        transform.position = targetPos;
+        Vector3 finalPos = targetPos;
+        finalPos.y = transform.position.y;
+        transform.position = finalPos;
         _player.UpdateTransform();
 
-        _agent.enabled = true;
+        if(authoritativeEnd)
+            _agent.enabled = true;
     }
 
     private float ApplyCurve(float u, string id)
@@ -415,8 +420,17 @@ public class PlayerSkillController : MonoBehaviour
 
     Vector3 ComputeBehindBlocked(int skillKey, SkillSpec spec, int targetId, float clickX, float clickZ)
     {
-        // TODO : 
-        return Vector3.zero;
+        Vector3 targetPos = GetTargetPos(spec.limits.extraMaxBehind);
+
+        if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 1.0f, NavMesh.AllAreas))
+        {
+            return navHit.position;
+        }
+        else
+        {
+            var start = transform.position;
+            return GetReachablePosition(start, targetPos, out NavMeshHit hit);
+        }
     }
 
     protected Vector3 GetTargetPos(float range, bool isMaxDistance = true)

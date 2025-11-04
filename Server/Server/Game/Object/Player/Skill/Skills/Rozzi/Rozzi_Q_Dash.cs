@@ -39,10 +39,10 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
     }
 
     public override void OnTick(Player p, SkillContext ctx)
-    {       
+    {
         if (!_committed)
-        {
-            if (TryConsumeLatest(out var prop))
+        { 
+            if(TryConsumeLatest(out SkillCollisionProposal prop))
             {
                 _startPos = p.Position;
                 _endPos = prop.EndBlocked;
@@ -50,7 +50,7 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
                 _duration = Vector3.Distance(_startPos, _endPos) / _spec.limits.speed;
 
                 _committed = true;
-            }
+            }                
         }
         else
         {
@@ -61,6 +61,8 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
              type: SkillMotionType.Transform,
              start: p.Position,
              end: targetPos);
+
+            _finalEnd = targetPos;
 
             _elapsed += TimeUtil.DeltaTime;
             if (_elapsed > _duration)
@@ -73,6 +75,12 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
     public override void OnExit(Player p, SkillContext ctx)
     {
         base.OnExit(p, ctx);
+
+        p.SendSkillMotion(
+            type: SkillMotionType.Transform,
+            start: p.Position,
+            end: _finalEnd,
+            authoritativeEnd: true);
     }
 }
 
