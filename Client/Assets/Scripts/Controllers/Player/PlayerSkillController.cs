@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Android;
 using UnityEngine.InputSystem;
+using UnityEngine.Timeline;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using static Unity.Burst.Intrinsics.X86.Avx;
 
@@ -30,7 +31,7 @@ public class PlayerSkillController : MonoBehaviour
         public bool isCoolDown;
         public float coolTime;
     }
-    private Coroutine _CoolDownCo;
+    private Dictionary<KeyCode, Coroutine> _coolDownCoDict = new Dictionary<KeyCode, Coroutine>();
 
     private Coroutine _motionCo;
     private bool _isSkillMotion;
@@ -138,9 +139,18 @@ public class PlayerSkillController : MonoBehaviour
         KeyCode key = (KeyCode)packet.SkillKey;
 
         //쿨타임 코루틴 시작
-        if (_CoolDownCo != null)
-            StopCoroutine(_CoolDownCo);
-        _CoolDownCo = StartCoroutine(CoInputCooltime(key, packet.CostInfo.CoolTime));
+        //if (_CoolDownCo != null)
+        //    StopCoroutine(_CoolDownCo);
+        //_CoolDownCo = StartCoroutine(CoInputCooltime(key, packet.CostInfo.CoolTime));
+
+        if(_coolDownCoDict.TryGetValue(key, out var co) && co != null)
+        {
+            StopCoroutine(co);           
+            _coolDownCoDict.Remove(key);
+        }
+
+        var newCo = StartCoroutine(CoInputCooltime(key, packet.CostInfo.CoolTime));
+        _coolDownCoDict[key] = newCo;
 
         //스태미너 연동
         _player.Stamina = packet.CostInfo.Stamina;
@@ -253,6 +263,7 @@ public class PlayerSkillController : MonoBehaviour
             StopCoroutine(_motionCo);
 
         //_agent.Warp(_endPosition);
+        _agent.enabled = true;
         _agent.updatePosition = true;
         _agent.updateRotation = true;
         _agent.isStopped = false;
@@ -352,10 +363,10 @@ public class PlayerSkillController : MonoBehaviour
             _agent.enabled = false;
 
         // NavMesh 위로 수정
-        if (NavMesh.SamplePosition(targetPos, out var endHit, 2.0f, NavMesh.AllAreas))
-            _endPosition = endHit.position;
+        //if (NavMesh.SamplePosition(targetPos, out var endHit, 2.0f, NavMesh.AllAreas))
+        //    _endPosition = endHit.position;
 
-        transform.position = _endPosition;
+        transform.position = targetPos;
         _player.UpdateTransform();
 
         _agent.enabled = true;
