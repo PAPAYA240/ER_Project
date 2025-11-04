@@ -1,16 +1,9 @@
 using Data;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.AI;
 using static Data.SkillEffectList;
-using static UI_PlayerInterface;
-using static UI_SkillBase;
-using static UnityEngine.GraphicsBuffer;
 
 public class MyPlayerController : PlayerController
 {
@@ -41,6 +34,7 @@ public class MyPlayerController : PlayerController
             return baseSpeed * multiplier;
         }
     }
+    public bool CanStopSkill { get; set; } = false;
 
     private void Awake()
     {
@@ -142,12 +136,7 @@ public class MyPlayerController : PlayerController
         //}
         //UpdateTransform();
     }
-
-    public bool RequiresCharge(KeyCode key)
-    {
-        return DataManager.SkillDict[ObjInfo.Player.CharType][key].canCharge;
-    }
-
+    
     // 서버 응답 전달
     //public void OnServerUpdate(S_Idle packet) => _view.OnIdle(packet);
     public void OnServerUpdate(S_Move packet) => _view.OnMove(packet);
@@ -233,22 +222,11 @@ public class MyPlayerController : PlayerController
     
         return EffectList;
     }
-    
-    protected List<GameObject> PlayEffectAtPosition(CreatureState state, KeyCode key, Vector3 position, Quaternion rot, EffectType type = EffectType.Caster)
-    {
-        List<EffectData> effectList = Managers.Data.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
-    
-        if (effectList == null || effectList.Count == 0)
-            return null;
-    
-        List<GameObject> EffectList = Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, this.transform, position, rot);
-    
-        return EffectList;
-    }
+ 
     #endregion
 
     #region Inventory, EquipItem
-    
+
     public void ChangeInventory(S_ChangeInventory packet)
     {
         foreach (var change in packet.Changes)

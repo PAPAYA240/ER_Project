@@ -36,7 +36,7 @@ public static class SkillRegistry
             if (key == KeyCode.E) return new Abigail_E();
             if (key == KeyCode.R) return new Abigail_R();
             //if (key == KeyCode.D) return new Abigail_D();
-            //if (key == KeyCode.F) return new Skill_();
+            if (key == KeyCode.F) return new Skill_Blink();
         }
         else if (character == CharacterType.Theodore)
         {
@@ -59,7 +59,15 @@ public static class SkillRegistry
 
         return null;
     }
+    public static ISkill Prepare(CharacterType character, KeyCode key)
+    {
+       if (character == CharacterType.Theodore)
+        {
+            if (key == KeyCode.Q) return new Theodore_Charge();
+        }
 
+        return null;
+    }
     // 다른 명령을 대체할 스킬 등록
     public static void InitRegister()
     {

@@ -299,6 +299,8 @@ namespace Server.Game
         {
             _stateMachine.ChangeState(newState, this);
         }
+
+
         #endregion
 
         #region Stat
@@ -915,6 +917,10 @@ namespace Server.Game
             Session.Send(packet);
         }
 
+        public void SendFxPacket()
+        {
+
+        }
         public void SendDeadPacket(S_Respawn packet)
         {
             Room.Push(Room.Broadcast, packet);
@@ -954,11 +960,21 @@ namespace Server.Game
             S_ChangeTransform pkt = new S_ChangeTransform
             {
                 ObjectId = Id,
-                PosInfo = new PositionInfo(PosInfo),
+                PosInfo = this.PosInfo.Clone(),
                 RotInfo = new RotationInfo(RotInfo),
                 IsWarp = isWarp
             };
 
+            Room.Push(Room.Broadcast, pkt);
+        }
+
+        public void SendCanStopSkillPacket(bool canStopSkill)
+        {
+            S_CanStopSkill pkt = new S_CanStopSkill
+            {
+                ObjectId = Id,
+                CanStopSkill = canStopSkill
+            };
             Room.Push(Room.Broadcast, pkt);
         }
 

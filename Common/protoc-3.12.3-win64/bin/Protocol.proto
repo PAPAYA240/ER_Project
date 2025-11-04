@@ -41,7 +41,7 @@ enum MsgId {
   S_SKILL_LEVEL_UP = 33;
   S_PLAYER_STATE = 34;
   S_CHANGE_STAT = 35;
-  C_TARGETING_SKILL = 36;
+  S_CAN_STOP_SKILL = 36;
   S_CHANGE_ITEM_STAT = 37;
   S_CHANGE_EQUIP_ITEM = 38;
   S_CHANGE_INVENTORY = 39;
@@ -50,25 +50,26 @@ enum MsgId {
   S_CHANGE_K_D_A = 42;
   S_SYNC_TIMER = 43;
 
-  C_PROJECTILE = 44;
-  S_PROJECTILE = 45;
-  C_ENV_REQUEST = 46;
-  S_ENV_REQUEST = 47;
-  S_ADD_ABIGAIL_COORD = 48;
-  S_REMOVE_ABIGAIL_COORD = 49;
-  S_MOVE_SYNC = 50;
-  C_MOVE_SYNC = 51;
-  C_ATTACK = 52;
-  C_SET_MOVE_TARGET = 53;
-  C_STOP = 54;
-  S_STOP = 55;
-  S_SET_MOVE_TARGET = 56;
-  S_SKILL_CONFIRM = 57;
-  S_SKILL_MOTION = 58;
-  C_SKILL_INPUT = 59;
-  C_SKILL_COLLISION_PROPOSE = 60;
-  C_REST = 61;
-  C_DEATH = 62;
+  C_ENV_REQUEST = 44;
+  S_ENV_REQUEST = 45;
+  S_ADD_ABIGAIL_COORD = 46;
+  S_REMOVE_ABIGAIL_COORD = 47;
+  S_MOVE_SYNC = 48;
+  C_MOVE_SYNC = 49;
+  C_ATTACK = 50;
+  C_SET_MOVE_TARGET = 51;
+  C_STOP = 52;
+  S_STOP = 53;
+  S_SET_MOVE_TARGET = 54;
+  S_SKILL_CONFIRM = 55;
+  S_SKILL_MOTION = 56;
+  C_SKILL_INPUT = 57;
+  C_SKILL_COLLISION_PROPOSE = 58;
+  C_REST = 59;
+  C_DEATH = 60;
+
+  C_SKILL_PREPARE = 61;
+  C_SKILL_CANCEL = 62;
 
   S_OCCUPY_BEACON = 63;
   S_CHANGE_BEACON_TIME = 64;
@@ -90,6 +91,14 @@ enum CreatureState{
   REST = 5;
   CHARGING = 6;
   APPEAR = 7;
+}
+
+enum SkillInputType
+{
+    Instant = 0;
+    Charge = 1;
+    Placement = 2;
+    ChargeAndPlace = 3;
 }
 
 enum GameObjectType{
@@ -305,6 +314,16 @@ message S_State {
 	PositionInfo targetPosition = 7;
 }
 
+message C_SkillPrepare{
+   int32 objectId = 1;
+   int32  skillKey = 2;
+}
+
+message C_SkillCancel{
+   int32 objectId = 1;
+   int32  skillKey = 2;
+}
+
 message S_Spawn {
   repeated ObjectInfo objects = 1;
 }
@@ -354,12 +373,12 @@ message S_SkillLevelUp{
 }
 
 message C_Fx{
-	EffectInfo fxInfo = 1;
+	int32 objectId = 1;
 }
 
 message S_Fx{
 	int32 objectId = 1;
-	EffectInfo fxInfo = 2;
+	string fxName = 2;
 }
 
 message C_Anim{
@@ -490,12 +509,7 @@ message C_TestDamage{
 	int32 objectId = 1;
 }
 
-message C_Projectile{
-	int32 objectId = 1;
-}
-message S_Projectile{
-	int32 objectId = 1;
-}
+
 message S_CombatText{
 	int32 objectId = 1;
 	CombatTextType type = 2;
@@ -520,12 +534,6 @@ message C_EnvRequest{
 message S_EnvRequest{
 	int32 objectId = 1;
 	EnvType envType = 2;
-}
-
-message C_TargetingSkill{
-	int32 objectId = 1;
-	int32 keyCode = 2;
-	int32 targetId = 3;
 }
 
 message S_AddAbigailCoord{
@@ -638,10 +646,6 @@ message PickScenePlayerInfo{
 message AnimInfo{
 	string name = 1;
 	float ratio = 2;
-}
-
-message EffectInfo{
-	int32 keyCode = 1;
 }
 
 message WeaponMasteryInfo{
@@ -778,7 +782,7 @@ message C_SkillInput {
   int32 skillKey = 1;
   int32 targetId = 2; 
   float mouseX = 3;
-  float mouseZ = 4; 
+  float mouseZ = 4;
 }
 
 message C_SkillCollisionPropose {
@@ -817,10 +821,14 @@ message S_ChangeTransform{
   bool isWarp = 4;
 }
 
-
 message S_TargetChange {
   int32 targetId = 1;
   bool isEndAttack = 2;
+}
+
+message S_CanStopSkill{
+	int32 objectId = 1;
+	bool canStopSkill = 2;
 }
 
 message ChangeInventoryInfo{

@@ -27,8 +27,6 @@ public sealed class Theodore_D : SkillHandlerBase
         //    p.SendAnimPacket("CHARGING", 0.05f);
         //}
         //base.OnEnter(p, ctx);
-
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

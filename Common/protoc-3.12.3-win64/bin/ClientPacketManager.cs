@@ -71,6 +71,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SPlayerState, PacketHandler.S_PlayerStateHandler);		
 		_onRecv.Add((ushort)MsgId.SChangeStat, MakePacket<S_ChangeStat>);
 		_handler.Add((ushort)MsgId.SChangeStat, PacketHandler.S_ChangeStatHandler);		
+		_onRecv.Add((ushort)MsgId.SCanStopSkill, MakePacket<S_CanStopSkill>);
+		_handler.Add((ushort)MsgId.SCanStopSkill, PacketHandler.S_CanStopSkillHandler);		
 		_onRecv.Add((ushort)MsgId.SChangeItemStat, MakePacket<S_ChangeItemStat>);
 		_handler.Add((ushort)MsgId.SChangeItemStat, PacketHandler.S_ChangeItemStatHandler);		
 		_onRecv.Add((ushort)MsgId.SChangeEquipItem, MakePacket<S_ChangeEquipItem>);
@@ -83,8 +85,6 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SChangeKDA, PacketHandler.S_ChangeKDAHandler);		
 		_onRecv.Add((ushort)MsgId.SSyncTimer, MakePacket<S_SyncTimer>);
 		_handler.Add((ushort)MsgId.SSyncTimer, PacketHandler.S_SyncTimerHandler);		
-		_onRecv.Add((ushort)MsgId.SProjectile, MakePacket<S_Projectile>);
-		_handler.Add((ushort)MsgId.SProjectile, PacketHandler.S_ProjectileHandler);		
 		_onRecv.Add((ushort)MsgId.SEnvRequest, MakePacket<S_EnvRequest>);
 		_handler.Add((ushort)MsgId.SEnvRequest, PacketHandler.S_EnvRequestHandler);		
 		_onRecv.Add((ushort)MsgId.SAddAbigailCoord, MakePacket<S_AddAbigailCoord>);

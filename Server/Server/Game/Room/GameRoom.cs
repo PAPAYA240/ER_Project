@@ -6,12 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
-using System.Linq;
-using static ISkill;
-using static Lucene.Net.Index.SegmentReader;
-using static Lucene.Net.Util.AttributeSource;
 using static Server.Data.DataUtils;
-using static Server.Game.Player;
 using System.Threading;
 using static Server.Game.GameObject;
 
@@ -321,7 +316,6 @@ namespace Server.Game
                 Projectile projectile = gameObject as Projectile;
                 projectile.Room = this;
                 _projectiles.TryAdd(gameObject.Id, projectile);
-                return;
             }
             else if (type == GameObjectType.Environment)
             {
@@ -380,6 +374,7 @@ namespace Server.Game
                     return;
 
                 projectile.Room = null;
+                projectile.Owner = null;
             }
 
             // 타인한테 정보 전송
@@ -497,39 +492,19 @@ namespace Server.Game
 
         #endregion
 
-        public void HandleVF(Player player, C_Fx skillPacket)
-        {
-            if (player == null)
-                return;
-
-            S_Fx effect = new S_Fx()
-            {
-                ObjectId = player.Info.ObjectId,
-                FxInfo = skillPacket.FxInfo,
-            };
-            Broadcast(effect);
-        }
-
-        public void HandleAttackSkillTarget(Player player, C_TargetingSkill targetingSkill)
+        public void AttackSkillTarget(Player player, GameObject target, KeyCode keyCode) // 타게팅 스킬. 대상 1명.
         {
             if (player == null)
                 return;
 
             float damage = 0f;
 
-            GameObject target = ObjectManager.Instance.Find(targetingSkill.TargetId);
-
             if (target.ObjectType == GameObjectType.Player)
-                damage = _collisionManager.CalcDamage(player, target as Player, (KeyCode)targetingSkill.KeyCode);
+                damage = _collisionManager.CalcDamage(player, target as Player, keyCode);
             else
-                damage = _collisionManager.CalcDamage(player, target.Stat, (KeyCode)targetingSkill.KeyCode);
+                damage = _collisionManager.CalcDamage(player, target.Stat, keyCode);
 
-            //if (target is Player)
-            //    Console.WriteLine($"Attacker:{player.Info.Player.CharType}_{player.Id}, Target:{target.Info.Player.CharType}_{target.Id}, Damage:{damage}");
-            //else
-            //    Console.WriteLine($"Attacker:{player.Info.Player.CharType}_{player.Id}, Target:Env_{target.Id}, Damage:{damage}");
-
-            if(player.Info.Player.CharType == CharacterType.Abigail && (KeyCode)targetingSkill.KeyCode == KeyCode.E)
+            if(player.Info.Player.CharType == CharacterType.Abigail && keyCode == KeyCode.E)
             {
                 S_RemoveAbigailCoord removeAbigailCoordPkt = new S_RemoveAbigailCoord();
                 removeAbigailCoordPkt.ObjectId = target.Id;
@@ -782,7 +757,43 @@ namespace Server.Game
             }
             return null;
         }
-      
+
+        public GameObject FindNearest(int id, Vector2 pos, float radius)
+        {
+            GameObject nearest = null;
+            float nearestDistSq = radius * radius;
+
+            foreach (var kvp in _players)
+            {
+                if (kvp.Key == id)
+                    continue;
+                var player = kvp.Value;
+                Vector2 playerPos = new Vector2(player.PosInfo.PosX, player.PosInfo.PosZ);
+                float distSq = Vector2.DistanceSquared(pos, playerPos);
+                if (distSq < nearestDistSq)
+                {
+                    nearestDistSq = distSq;
+                    nearest = player;
+                }
+            }
+
+            foreach (var kvp in _monsters)
+            {
+                if (kvp.Key == id)
+                    continue;
+                var monster = kvp.Value;
+                Vector2 monsterPos = new Vector2(monster.PosInfo.PosX, monster.PosInfo.PosZ);
+                float distSq = Vector2.DistanceSquared(pos, monsterPos);
+                if (distSq < nearestDistSq)
+                {
+                    nearestDistSq = distSq;
+                    nearest = monster;
+                }
+            }
+
+            return nearest;
+        }
+
         #endregion
 
         public void AddStatusEffect(Creature creature, StatusEffect statusEffect)

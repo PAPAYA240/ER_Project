@@ -1,9 +1,9 @@
 {
   "effects": {
-    "Theodore": {     // 1단계 키: CharacterType
-      "Skill": { // 2단계 키: CreatureState 
-        "Z": { // 3단계 키: KeyCode 
-          "Caster": [ // 4단계 값: SkillEffectList
+    "Theodore": {    
+      "Skill": {
+        "Z": { 
+          "Caster": [ 
             {
               "prefabName": "FX_Attack",
               "target": "Shoot",
@@ -52,8 +52,8 @@
         "W": {
           "Caster": [
             {
-              "prefabName": "FX_PassiveShideld",
-              "target": "Self",
+              "prefabName": "FX_Shield",
+              "target": "Mouse",
               "duration": 5,
               "delayTime": 0
             }

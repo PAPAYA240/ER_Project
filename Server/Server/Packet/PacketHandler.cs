@@ -9,6 +9,7 @@ using ServerCore;
 using System.Collections.Generic;
 using System.Numerics;
 using static Server.Data.DataUtils;
+using System.Diagnostics;
 
 class PacketHandler
 {
@@ -113,7 +114,7 @@ class PacketHandler
         if (room == null)
             return;
 
-        room.Push(room.HandleVF, player, skillPacket);
+        //room.Push(room.HandleVF, player, skillPacket);
     }
     public static void C_CharacterHandler(PacketSession session, IMessage packet)
     {
@@ -256,11 +257,11 @@ class PacketHandler
         room.Push(room.HandleSkill, player, skillPacket);
     }
 
-    public static void C_TargetingSkillHandler(PacketSession session, IMessage packet)
+    public static void C_SkillPrepareHandler(PacketSession session, IMessage packet)
     {
-        C_SkillCollisionPropose skillPacket = packet as C_SkillCollisionPropose;
+        C_SkillPrepare skillPacket = packet as C_SkillPrepare;
         ClientSession clientSession = session as ClientSession;
-        C_TargetingSkill targetingSkillPkt = packet as C_TargetingSkill;
+
         Player player = clientSession.MyPlayer;
         if (player == null)
             return;
@@ -268,17 +269,26 @@ class PacketHandler
         GameRoom room = player.Room;
         if (room == null)
             return;
-        //Console.WriteLine($"AttackerId: {targetingSkillPkt.ObjectId}");
-        room.Push(room.HandleAttackSkillTarget, player, targetingSkillPkt);
+
+        room.Push(room.HandlerPrepareSkill, player, skillPacket);
+    }
+    public static void C_SkillCancelHandler(PacketSession session, IMessage packet)
+    {
+        C_SkillCancel skillPacket = packet as C_SkillCancel;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandlerChargeCancelSkill, player, skillPacket);
     }
 
-     public static void C_ProjectileHandler(PacketSession session, IMessage packet)
-     {
-        ClientSession clientSession = session as ClientSession;
-        Player player = clientSession.MyPlayer;
 
-        Projectile projectile = player?.CreateProjectile();
-     }
 
     public static void C_EnvRequestHandler(PacketSession session, IMessage packet)
     {

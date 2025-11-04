@@ -37,33 +37,47 @@ class PacketHandler
     }
     public static void S_MoveHandler(PacketSession session, IMessage packet)
     {
-        S_Move movePacket = packet as S_Move;
+        S_Move mPacket = packet as S_Move;
         ServerSession serverSession = session as ServerSession;
 
-        GameObject go = Managers.Object.FindById(movePacket.ObjectId);
+        GameObject go = Managers.Object.FindById(mPacket.ObjectId);
         if (go == null)
             return;
 
-        if (Managers.Object.MyPlayer.Id == movePacket.ObjectId)
+        if (Managers.Object.MyPlayer.Id == mPacket.ObjectId)
         {
-            Managers.Object.MyPlayer.OnServerUpdate(movePacket);
+            Managers.Object.MyPlayer.OnServerUpdate(mPacket);
         }
         else
         {
-            PlayerController pc = go.GetComponentInChildren<PlayerController>();
-            if (pc == null)
+            BaseController bc = go.GetComponentInChildren<BaseController>();
+            if (bc == null)
                 return;
-
-            if (pc.State == CreatureState.Moving)
+            GameObjectType objectType = ObjectManager.GetObjectTypeById(bc.Id);
+            if (objectType == GameObjectType.Player)
             {
-                pc.SyncPosFromServer(movePacket);
+                PlayerController pc = go.GetComponentInChildren<PlayerController>();
+                if (pc == null)
+                    return;
+
+                if (pc.State == CreatureState.Moving)
+                {
+                    pc.SyncPosFromServer(mPacket);
+                }
+                else
+                {
+                    pc.transform.position = mPacket.PosInfo.ToVector();
+                    pc.transform.rotation = mPacket.RotInfo;
+                    pc.PosInfo = mPacket.PosInfo;
+                    pc.RotInfo = mPacket.RotInfo;
+                }
             }
             else
             {
-                pc.transform.position = movePacket.PosInfo.ToVector();
-                pc.transform.rotation = movePacket.RotInfo;
-                pc.PosInfo = movePacket.PosInfo;
-                pc.RotInfo = movePacket.RotInfo;
+                bc.transform.position = mPacket.PosInfo.ToVector();
+                bc.transform.rotation = mPacket.RotInfo;
+                bc.PosInfo = mPacket.PosInfo;
+                bc.RotInfo = mPacket.RotInfo;
             }
         }     
     }
@@ -376,18 +390,7 @@ class PacketHandler
 
     public static void S_FxHandler(PacketSession session, IMessage packet)
     {
-        S_Fx effectPacket = packet as S_Fx;
-
-        GameObject go = Managers.Object.FindById(effectPacket.ObjectId);
-        if (go == null)
-            return;
-
-        PlayerController pc = go.GetComponent<PlayerController>();
-        if (pc != null)
-        {
-            if (pc.Id != Managers.Object.MyPlayer.Id)
-                pc.PlayEffectFromServer(effectPacket.FxInfo);
-        }
+       
     }
 
     public static void S_RespawnHandler(PacketSession session, IMessage packet)
@@ -485,6 +488,13 @@ class PacketHandler
             if(true == confirmPacket.CanUse)
                 Managers.Object.MyPlayer.OnServerUpdate(confirmPacket);
         }
+
+        // 스킬 시 이펙트 자신의 스킬 이펙트만 호출
+        PlayerController player = go.GetComponent<PlayerController>();
+        if (player != null)
+        { 
+            player.PlaySkillEffect((KeyCode)confirmPacket.SkillKey); 
+        }
     }
 
     public static void S_SkillCostHandler(PacketSession session, IMessage packet)
@@ -564,15 +574,6 @@ class PacketHandler
     }
     public static void S_ProjectileHandler(PacketSession session, IMessage packet)
     {
-        S_Projectile changeEquipPacket = packet as S_Projectile;
-
-        GameObject go = Managers.Object.FindById(changeEquipPacket.ObjectId);
-        if (go == null)
-            return;
-
-        PlayerController pc = go.GetComponent<PlayerController>();
-        if (pc == null)
-            return;
     }
     
     public static void S_EnvRequestHandler(PacketSession session, IMessage packet)
@@ -740,10 +741,24 @@ class PacketHandler
         if (pc == null)
             return;
 
-        pc.transform.position = changeTransformPkt.PosInfo.ToVector();
-        pc.transform.rotation = changeTransformPkt.RotInfo;
-        pc.PosInfo = changeTransformPkt.PosInfo;
+        pc.CellPos = changeTransformPkt.PosInfo.ToVector();
         pc.RotInfo = changeTransformPkt.RotInfo;
+        pc.SyncPos(changeTransformPkt.IsWarp);
+    }
+
+    public static void S_CanStopSkillHandler(PacketSession session, IMessage packet) 
+    {
+        S_CanStopSkill canStopSkillPkt = packet as S_CanStopSkill;
+
+        GameObject go = Managers.Object.FindById(canStopSkillPkt.ObjectId);
+        if (go == null)
+            return;
+
+        MyPlayerController mpc = go.GetComponentInChildren<MyPlayerController>();
+        if (mpc == null)
+            return;
+
+        mpc.CanStopSkill = canStopSkillPkt.CanStopSkill;
     }
 
     static float GetCurrentEstimatedOneWayLatency()
