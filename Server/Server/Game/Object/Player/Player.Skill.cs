@@ -37,11 +37,8 @@ namespace Server.Game
         #region Skill
         public bool CanUseSkill(KeyCode keyCode)
         {
+            // 스킬 레벨 체크
             if (_skills[keyCode].CurLevel == 0)
-                return false;
-
-            // 쿨타임 체크
-            if (!CheckCoolTime(keyCode))
                 return false;
 
             // 스테미나 체크
@@ -54,8 +51,12 @@ namespace Server.Game
         // 체크 끝나면 데이터 변경
         public void CommitSkillUsage(KeyCode keyCode)
         {
-            // ��Ÿ�� ��� ����
-            _ = CoInputCooltime(keyCode, FindSkill(keyCode).CurLevelCooldown);
+            //// Cool time with skill acceleration
+            //float cooltime = FindSkill(keyCode).CurLevelCooldown * (100f / (100f + _totalItemStat.SkillAcceleration));
+
+            //// ��Ÿ�� ��� ����
+            //_ = CoInputCooltime(keyCode, cooltime);
+            Skill.StartCooldown(keyCode);
 
             // ���׹̳� ����
             Stamina -= FindSkill(keyCode).CurLevelStamina;
@@ -63,15 +64,7 @@ namespace Server.Game
 
         public float GetCoolTime(KeyCode key)
         {
-            return _coolDownDict[key].coolTime;
-        }
-
-        private bool CheckCoolTime(KeyCode key)
-        {
-            if (!_coolDownDict[key].isCoolDown)
-                return true;
-
-            return false;
+            return Skill.GetCooldown(key);
         }
 
         private bool CheckStamina(KeyCode key)
@@ -82,25 +75,15 @@ namespace Server.Game
             return true;
         }
 
-        private async Task CoInputCooltime(KeyCode key, float time)
+        public Skill FindSkill(KeyCode key)
         {
-            _coolDownDict[key].isCoolDown = true;
-
-            var sw = Stopwatch.StartNew();
-
-            while (sw.Elapsed.TotalSeconds < time)
+            if (_skills.TryGetValue(key, out Skill skill))
+                return _skills[key];
+            else
             {
-                _coolDownDict[key].coolTime = (float)(time - sw.Elapsed.TotalSeconds);
-                await Task.Delay(10); // 0.01초마다 남은 쿨타임 갱신
+                Console.WriteLine($"FindSkill Error!! KeyCode : {key}");
+                return null;
             }
-
-            _coolDownDict[key].isCoolDown = false;
-            _coolDownDict[key].coolTime = 0.0f;
-        }
-
-        private Skill FindSkill(KeyCode key)
-        {
-            return _skills[key];
         }
 
         #endregion

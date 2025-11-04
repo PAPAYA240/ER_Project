@@ -13,6 +13,7 @@ public abstract class SkillHandlerBase : ISkill
 {
     public virtual bool CanMoveDuringCast => false;
     public virtual float MoveSpeedMultiplier => 1.0f;
+    public bool CanStopSkill { get; set; } = false;
 
     public int                      LastSeq { get { return _lastSeq; } set { _lastSeq = value; } }
     public SkillCollisionProposal   Latest { get { return _latest; } set { _latest = value; } }
@@ -56,11 +57,7 @@ public abstract class SkillHandlerBase : ISkill
 
     public virtual void OnExit(Player p, SkillContext ctx)
     {
-        // 최종 보정 1회
-        p.PosInfo.PosX = _finalEnd.X;
-        p.PosInfo.PosY = _finalEnd.Y;
-        p.PosInfo.PosZ = _finalEnd.Z;
-        p.SendMovePacket(new PositionInfo(p.PosInfo), new RotationInfo(p.RotInfo));
+
     }
 
     public virtual void OnHit(Player p, SkillContext ctx)
@@ -95,6 +92,15 @@ public abstract class SkillHandlerBase : ISkill
         return true;
     }
 
+    #region 스킬 중 이동 관련
+    public virtual void OnMove(Player p)
+    {
+    }
+
+    public virtual void OnStop(Player p)
+    {
+    }
+    #endregion
     #region Utils
     public float GetDuration()
     {
@@ -135,5 +141,6 @@ public abstract class SkillHandlerBase : ISkill
         prop = _latest;
         return true;
     }
+
     #endregion
 }

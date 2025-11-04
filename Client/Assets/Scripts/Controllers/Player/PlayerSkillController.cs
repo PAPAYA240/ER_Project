@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Android;
 using UnityEngine.InputSystem;
+using UnityEngine.Timeline;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using static Unity.Burst.Intrinsics.X86.Avx;
 
@@ -30,6 +31,7 @@ public class PlayerSkillController : MonoBehaviour
         public bool isCoolDown;
         public float coolTime;
     }
+    private Dictionary<KeyCode, Coroutine> _coolDownCoDict = new Dictionary<KeyCode, Coroutine>();
 
     private Coroutine _motionCo;
     private bool _isSkillMotion;
@@ -46,6 +48,7 @@ public class PlayerSkillController : MonoBehaviour
 
     // TEMP
     Vector3 _endPosition;
+
 
     private void Awake()
     {
@@ -72,7 +75,7 @@ public class PlayerSkillController : MonoBehaviour
                 return null;
 
             // 스킬을 사용하고 있는 상태가 아닐 때
-            if (_player.State == CreatureState.Skill)
+            if (_player.State == CreatureState.Skill && false == _player.CanStopSkill)
                 return null;
         
             // 쿨타임이 끝났을 때
@@ -84,7 +87,7 @@ public class PlayerSkillController : MonoBehaviour
                 return null;
 
             // 패킷 보내기
-            Debug.Log($"스킬 사용! : {_key}");
+            Debug.Log($"스킬 사용시도! : {_key}");
             return new C_SkillInput
             {
                 SkillKey = skillKey,
@@ -125,16 +128,32 @@ public class PlayerSkillController : MonoBehaviour
 
         KeyCode key = (KeyCode)packet.SkillKey;
 
-        Debug.Log($"Key : {key}, CoolTime : {packet.CostInfo.CoolTime}, Stamina : {packet.CostInfo.Stamina}");
+        //스킬 실행 UI 연동
+        //_player.UI.PlayerInterface.UseSkill(KeyToUIEnum(key));
+
+        CreateSkillMesh(key);
+    }
+
+    public void OnSkillCost(S_SkillCost packet)
+    {
+        KeyCode key = (KeyCode)packet.SkillKey;
 
         //쿨타임 코루틴 시작
-        StartCoroutine(CoInputCooltime(key, packet.CostInfo.CoolTime));
+        //if (_CoolDownCo != null)
+        //    StopCoroutine(_CoolDownCo);
+        //_CoolDownCo = StartCoroutine(CoInputCooltime(key, packet.CostInfo.CoolTime));
+
+        if(_coolDownCoDict.TryGetValue(key, out var co) && co != null)
+        {
+            StopCoroutine(co);           
+            _coolDownCoDict.Remove(key);
+        }
+
+        var newCo = StartCoroutine(CoInputCooltime(key, packet.CostInfo.CoolTime));
+        _coolDownCoDict[key] = newCo;
 
         //스태미너 연동
         _player.Stamina = packet.CostInfo.Stamina;
-
-        //스킬 실행 UI 연동
-        //_player.UI.PlayerInterface.UseSkill(KeyToUIEnum(key));
 
         CreateSkillMesh(key);
     }
@@ -244,6 +263,7 @@ public class PlayerSkillController : MonoBehaviour
             StopCoroutine(_motionCo);
 
         //_agent.Warp(_endPosition);
+        _agent.enabled = true;
         _agent.updatePosition = true;
         _agent.updateRotation = true;
         _agent.isStopped = false;
@@ -343,10 +363,10 @@ public class PlayerSkillController : MonoBehaviour
             _agent.enabled = false;
 
         // NavMesh 위로 수정
-        if (NavMesh.SamplePosition(targetPos, out var endHit, 2.0f, NavMesh.AllAreas))
-            _endPosition = endHit.position;
+        //if (NavMesh.SamplePosition(targetPos, out var endHit, 2.0f, NavMesh.AllAreas))
+        //    _endPosition = endHit.position;
 
-        transform.position = _endPosition;
+        transform.position = targetPos;
         _player.UpdateTransform();
 
         _agent.enabled = true;
@@ -522,6 +542,9 @@ public class PlayerSkillController : MonoBehaviour
             skill.SkillData = data.Value;
             _skills.Add(data.Key, skill);
         }
+
+        _skills[KeyCode.T].CurLevel = 1;
+        _skills[KeyCode.F].CurLevel = 1;
     }
 
     private void MakeCoolDownDict()

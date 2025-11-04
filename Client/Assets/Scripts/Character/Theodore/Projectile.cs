@@ -7,21 +7,11 @@ public class Projectile : BaseController
 
     private Vector3 _lastForward;
     private float _elapsedTime = 0f;
-    private void Awake()
-    {
-        gameObject?.SetActive(false);
-    }
-    public void MoveHandler(S_Move movePacket)
-    {
-        gameObject?.SetActive(true);
-        PosInfo = movePacket.PosInfo;
-        RotInfo = movePacket.RotInfo;
-        SyncPos(movePacket.IsWarp);
 
-        _elapsedTime += Time.deltaTime;
-        if(_elapsedTime >= 2.0f)
-            Destroy(gameObject);
+    void Update()
+    {
     }
+
 
     void OnTriggerEnter(Collider other)
     {

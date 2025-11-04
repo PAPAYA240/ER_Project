@@ -1299,15 +1299,6 @@ public class MyPlayerController_Prev : PlayerController
         Debug.Log("스킬 패킷 보내기");
     }
 
-    protected void SendFXPacket(KeyCode key)
-    {
-        C_Fx fxPacket = new C_Fx();
-
-        fxPacket.FxInfo = new EffectInfo() { KeyCode = (int)_keyCode };
-
-        Managers.Network.Send(fxPacket);
-    }
-
     private void SendAnimPacket(string name, float ratio)
     {
         C_Anim animPacket = new C_Anim() { AnimInfo = new AnimInfo() { Name = name, Ratio = ratio } };

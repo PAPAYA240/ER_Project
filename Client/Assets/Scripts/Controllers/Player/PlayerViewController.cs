@@ -189,6 +189,7 @@ public class PlayerViewController : MonoBehaviour
         {
             case StopReason.StopAll:
             case StopReason.StopMoveOnly:
+                _agent.enabled = true;
                 _agent.isStopped = true;
                 StopFollowTarget(); // 추적 종료(서버 사인에 의해)
                 _agent.ResetPath();
@@ -241,6 +242,7 @@ public class PlayerViewController : MonoBehaviour
         if (_coFollow != null)
         { StopCoroutine(_coFollow); _coFollow = null; }
 
+        _agent.enabled = true;
         _agent.isStopped = true;
         _agent.ResetPath();
     }

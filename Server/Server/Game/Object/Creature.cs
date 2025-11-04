@@ -24,27 +24,6 @@ namespace Server.Game
 
         public bool IsSkillAmplification { get; set; } = false;
 
-
-        #region Projectile
-        public Projectile CreateProjectile()
-        {
-            Projectile projectile = ObjectManager.Instance.Add<Projectile>();
-            if (projectile == null)
-                return null;
-
-            projectile.Owner = this;
-            projectile.Info.PosInfo = PosInfo;
-            projectile.Info.RotInfo = RotInfo;
-            Room?.EnterGame(projectile);
-
-            S_Spawn spawnPacket = new S_Spawn();
-            spawnPacket.Objects.Add(projectile.Info);
-            Room?.Broadcast(spawnPacket);
-
-            return projectile;
-        }
-        #endregion
-
         #region Astar
         public bool HasPath => _path != null && _path.Count > 0;
         public PathState SearchPath(Vector3 targetPos)

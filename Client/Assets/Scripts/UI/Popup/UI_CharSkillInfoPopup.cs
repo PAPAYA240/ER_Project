@@ -35,6 +35,9 @@ public class UI_CharSkillInfoPopup : UI_Popup
     }
     int _curSkillLevel = 0; // 0 - 5까지 실제 스킬 레벨
     int _maxSkillLevel = 0;
+
+    int _skillAcc = 0;
+    public int SkillAcc { get { return _skillAcc; } set { _skillAcc = value; SetStaminaCool(GenerateStrStaminaCool()); } } 
     SkillData _skilldata;
     List<UI_SkillPopupLevelUpValue> _skillPopupLevelUpValues = new List<UI_SkillPopupLevelUpValue>();
 
@@ -172,8 +175,10 @@ public class UI_CharSkillInfoPopup : UI_Popup
     private string GenerateStrStaminaCool()
     {
         //스킬 안찍었을 때도 1레벨의 정보를 나타내기 위해 Max함수 사용
+        float cool = _skilldata.levels[Mathf.Max(CurSkillLevel, 1)].cooldown * (100f / (100f + SkillAcc));
+
         string result = $"스테미나 {_skilldata.levels[Mathf.Max(CurSkillLevel, 1)].staminaCost}\n" +
-            $"쿨다운 {_skilldata.levels[Mathf.Max(CurSkillLevel, 1)].cooldown} 초";
+            $"쿨다운 {cool.ToString("F1")} 초";
         return result;
     }
     private string GenerateDescription()
