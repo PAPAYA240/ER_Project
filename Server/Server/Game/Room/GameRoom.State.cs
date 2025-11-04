@@ -31,7 +31,6 @@ namespace Server.Game
             {
                 // 이미 공격 중인 상태라면 애니메이션 끝난 뒤 변경되도록
                 swing.RequestTargetChange(pkt.TargetId);
-                Console.WriteLine("공격 상태 중일 때 ");
                 return;
             }
 

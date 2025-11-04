@@ -4,12 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
-
+using static Server.Data.DataUtils;
 
 public class Abigail_T : Player_AttackState
 {
     static readonly float _tAttackRange = 2.15f;
     private const string AnimAttackT = "SKILL_T";
+    KeyCode _keyCode = KeyCode.T;
+    bool IsPassiveAttack = false;
 
     public Abigail_T(int targetId, bool chaseAllowed = true, float attackRange = DefaultAttackRange) : base(targetId, chaseAllowed, _tAttackRange)
     {
@@ -25,18 +27,35 @@ public class Abigail_T : Player_AttackState
         _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds);
 
         // 애니 송출(서버 권한)
-        p.SendAnimPacket(AnimAttackT, 0.05f);
+        string animName = AnimAttackT;
+        
+        if (p.Skill.IsPassiveAttackReady())
+        {
+            animName = AnimAttackT;
+            p.Skill.StartCooldown(_keyCode);
+            p.SendSkillCostPacket(_keyCode, p.Skill.GetCooldown(_keyCode));
+            IsPassiveAttack = true;
+        }
+        else
+        {
+            animName = (_attackIndex == 0) ? AnimAttackA : AnimAttackB;
+            _attackIndex = 1 - _attackIndex;
+            IsPassiveAttack = false;
+        }
 
-        //p.FaceToTarget(_targetId);
+        p.SendAnimPacket(animName, 0.05f);
     }
 
-    // 데미지 적용 훅(프로젝트 룰에 맞게 연결)
     protected override void ApplyHit(Player p, GameObject target)
     {
         if (target == null || target.State == CreatureState.Dead)
             return;
 
-        // TODO: 실제 데미지 계산/적용 로직에 연결
-        // 예) target.OnDamaged(p, 10f);
+        // 스킬 데미지
+        if (IsPassiveAttack)
+            p.Room.Push(p.Room.AttackSkillTarget, p, target, _keyCode);
+
+        // 평타 데미지
+        float damage = p.Info.StatInfo.Attack;
     }
 }

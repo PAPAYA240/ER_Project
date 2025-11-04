@@ -23,7 +23,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     protected readonly float _attackRange;
     protected int _targetId;
     protected bool _chaseAllowed;
-    private int? _pendingTargetId;          // 스윙 중 들어온 타겟 변경은 스윙 종료 후 반영
+    protected int? _pendingTargetId;          // 스윙 중 들어온 타겟 변경은 스윙 종료 후 반영
 
     protected bool _swingActive;
     protected bool _damageApplied;
@@ -38,6 +38,8 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     protected DateTime _swingEndUtc;
     private DateTime _nextAttackReadyUtc;
     private DateTime _comboResetDeadlineUtc;
+
+    // 데미지
 
     public Player_AttackState(int targetId, bool chaseAllowed = true, float attackRange = DefaultAttackRange)
     {
@@ -212,7 +214,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         }
     }
 
-    public void Exit(Player player)
+    public virtual void Exit(Player player)
     {
         _swingActive = false;
         _pendingTargetId = null;
@@ -243,7 +245,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 
         // 애니 송출(서버 권한)
         p.SendAnimPacket(animName, 0.05f);
-
+ 
         //p.FaceToTarget(_targetId);
     }
 
@@ -261,7 +263,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 
     public static Player_AttackState CreateAttackState(Player p, int targetId, bool chaseAllowed = true, float attackRange = DefaultAttackRange)
     {
-        if(p.Info.Player.CharType == CharacterType.Abigail && p.Skill.IsPassiveAttackReady())
+        if(p.Info.Player.CharType == CharacterType.Abigail)
             return new Abigail_T(targetId, chaseAllowed, attackRange);
 
         return new Player_AttackState(targetId, chaseAllowed, attackRange);

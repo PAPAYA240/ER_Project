@@ -101,7 +101,6 @@ public sealed class SkillController
         if (!_cd.IsReady(key))
             return false;
 
-        StartCooldown(key);
         return true;
     }
 }
