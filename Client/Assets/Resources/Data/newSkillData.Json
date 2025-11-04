@@ -1245,8 +1245,8 @@
       "W": {
         "name": "증폭 스크린",
         "description": "테오도르가 지정한 위치에 7초 동안 유지되는 증폭 스크린을 생성합니다.\n\n증폭 스크린을 통과한 테오도르의 <color=#FFFFFF>기본 공격</color> 탄환과 <color=#FFFFFF>스파크탄</color>은 적중한 적 주변으로 확산됩니다. 스크린을 통과한 기본 공격은 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 24%)</color>의 추가 스킬 피해를 입히고, 스파크탄은 투사체 속도와 사거리가 증가합니다.",
-        "type": "Normal",
         "canCharge": true,
+        "type": "Normal",
         "maxLevel": 5,
         "canMoveDuringCast": true,
         "mechanics": {
@@ -1431,8 +1431,8 @@
       "E": {
         "name": "스파크탄",
         "description": "<color=#2EE635>지속 효과:</color> <color=#FFFFFF>에너지 포</color> 또는 <color=#FFFFFF>스파크탄</color> 적중 시 다음 기본 공격 사거리가 1 증가합니다.\n\n테오도르가 스파크탄을 던져 적중한 적의 이동 속도를 2초동안 {speed}% 감소시키며 4초 동안 <color=#FFFFFF>목표물</color>로 지정합니다. 테오도르는 목표물이 된 대상으로부터 시야를 제공받으며, 기본 공격 또는 스킬로 공격하면 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 60%)</color>의 스킬 피해를 입히고 {CC}초 동안 속박합니다.",
-        "type": "Projectile",
         "canCharge": true,
+        "type": "Projectile",
         "maxLevel": 5,
         "mechanics": {
           "targetType": "TargetUnit",
@@ -1547,8 +1547,8 @@
       "R": {
         "name": "에너지 필드",
         "description": "테오도르가 에너지를 최대로 끌어올려 지정한 방향으로 4초 동안 유지되는 <color=#FFFFFF>에너지 필드</color>를 생성해 같은 방향으로 이동하는 아군의 이동 속도를 <color=#FFFFFF>{speed}%</color><color=#CDA1C8>(+스킬 증폭의 2%)</color> 증가시키고, 강력한 에너지 파동을 발사하여 적에게 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 90%)</color>의 스킬 피해를 입힙니다.\n\n발사 이후, 테오도르는 <color=#FFFFFF>과충전 상태</color>가 되어, 공격속도가 8초 동안 <color=#FFFFFF>{attackSpeed}%</color> 증가하며, <color=#FFFFFF>에너지 포</color> 최대 충전 시간이 0.5초로 감소합니다.",
-        "type": "Ultimate",
         "canCharge": true,
+        "type": "Ultimate",
         "maxLevel": 3,
         "mechanics": {
           "targetType": "TargetArea",
@@ -2572,6 +2572,520 @@
         "popupInfo": {
           "피해량": [ "150", "275", "400" ],
           "쿨다운": [ "80", "70", "60" ]
+        }
+      }
+    },
+    "Hyunwoo": {
+      "T": {
+        "name": "도그파이트",
+        "description": "현우가 적을 공격할 때마다 도그파이트 중첩을 1 얻고, {count} 중첩이 되면 도그파이트가 활성화됩니다. 다음 공격은 대상에게 <color=#FFFFFF>{damage}</color><color=#DFC480>(+공격력의 40%)</color><color=#CDA1C8>(+스킬 증폭의 35%)</color>의 추가 스킬 피해를 입히며, 현우는 최대 체력 <color=#FFFFFF>{maxHpRatio}</color>의 체력을 회복하고 <color=#FFFFFF>허세</color>의 쿨다운이 2초 감소합니다.",
+        "type": "Passive",
+        "maxLevel": 3,
+        "mechanics": {
+          "targetType": "TargetUnit",
+          "damageType": "Magic"
+        },
+        "scaling": {
+          "adRatio": "40",
+          "apRatio" : "35"
+        },
+        "levels": {
+          "1": {
+            "damage": 40
+          },
+          "2": {
+            "damage": 70
+          },
+          "3": {
+            "damage": 100
+          }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "40",
+            "70",
+            "100"
+          ],
+          "{count}": [ "10", "9", "8" ],
+          "{maxHpRatio}": [ "7%", "11%", "15%" ]
+        },
+        "popupInfo": {
+          "피해량": [ "40", "70", "100" ],
+          "체력 회복량": [ "7%", "11%", "15%" ],
+          "활성화 카운트": [ "10", "9", "8" ]
+        }
+      },
+      "Q": {
+        "name": "발 밟기",
+        "description": "현우가 지정한 위치를 강하게 밟아, 적에게 <color=#FFFFFF>{damage}</color><color=#DFC480>(+추가 공격력의 40%)</color><color=#CDA1C8>(+스킬 증폭의 80%)</color>의 스킬 피해를 입히고 2초 동안 이동 속도를 40% 감소시킵니다. 적에게 스킬을 적중하면, 현우의 이동 속도가 2초 동안 {speed}% 증가합니다.",
+        "type": "Normal",
+        "maxLevel": 5,
+        "mechanics": {
+          "targetType": "TargetArea",
+          "damageType": "Magic"
+        },
+        "scaling": {
+          "adRatio": "40",
+          "apRatio": "80"
+        },
+        "levels": {
+          "1": {
+            "damage": 50,
+            "cooldown": 9,
+            "staminaCost": 40,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "MoveSpeed",
+                "value": -40,
+                "duration": 2
+              },
+              {
+                "type": "Buff",
+                "stat": "MoveSpeed",
+                "value": 8,
+                "duration": 2
+              }
+            ]
+          },
+          "2": {
+            "damage": 100,
+            "cooldown": 8,
+            "staminaCost": 45,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "MoveSpeed",
+                "value": -40,
+                "duration": 2
+              },
+              {
+                "type": "Buff",
+                "stat": "MoveSpeed",
+                "value": 9,
+                "duration": 2
+              }
+            ]
+          },
+          "3": {
+            "damage": 150,
+            "cooldown": 7,
+            "staminaCost": 50,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "MoveSpeed",
+                "value": -40,
+                "duration": 2
+              },
+              {
+                "type": "Buff",
+                "stat": "MoveSpeed",
+                "value": 10,
+                "duration": 2
+              }
+            ]
+          },
+          "4": {
+            "damage": 200,
+            "cooldown": 6,
+            "staminaCost": 55,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "MoveSpeed",
+                "value": -40,
+                "duration": 2
+              },
+              {
+                "type": "Buff",
+                "stat": "MoveSpeed",
+                "value": 11,
+                "duration": 2
+              }
+            ]
+          },
+          "5": {
+            "damage": 250,
+            "cooldown": 5,
+            "staminaCost": 60,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "MoveSpeed",
+                "value": -40,
+                "duration": 2
+              },
+              {
+                "type": "Buff",
+                "stat": "MoveSpeed",
+                "value": 12,
+                "duration": 2
+              }
+            ]
+          }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "50",
+            "100",
+            "150",
+            "200",
+            "250"
+          ],
+          "{speed}": [
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ]
+        },
+        "popupInfo": {
+          "피해량": [ "50", "100", "150", "200", "250" ],
+          "이동 속도 증가량(%)": [ "8", "9", "10", "11", "12" ],
+          "쿨다운": [ "9", "8", "7", "6", "5" ],
+          "소모량": [ "40", "45", "50", "55", "60" ]
+        }
+      },
+      "W": {
+        "name": "허세",
+        "description": "현우가 허게를 부려 <color=#FFFFFF>도그파이트</color>를 활성화하고, 2.5초 동안 방어력이 <color=#FFFFFF>{defense}</color><color=#8EA8BC>(+방어력 10 당 1)</color>증가합니다. 지속 기간동안 적에게 기본 공격을 받을 때마다 도그파이트 중접울 1 획득합니다.\n\n허세가 발동된 후 1초 동안 현우는 이동 방해 효과를 무시합니다.",
+        "type": "Normal",
+        "maxLevel": 5,
+        "mechanics": {
+          "targetType": "TargetArea",
+          "damageType": "Magic"
+        },
+        "levels": {
+          "1": {
+            "cooldown": 15,
+            "staminaCost": 30,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "defense",
+                "value": 12,
+                "duration": 2.5,
+                "subject": "Self"
+              }
+            ]
+          },
+          "2": {
+            "cooldown": 14,
+            "staminaCost": 30,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "defense",
+                "value": 20,
+                "duration": 2.5,
+                "subject": "Self"
+              }
+            ]
+          },
+          "3": {
+            "cooldown": 13,
+            "staminaCost": 30,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "defense",
+                "value": 28,
+                "duration": 2.5,
+                "subject": "Self"
+              }
+            ]
+          },
+          "4": {
+            "cooldown": 12,
+            "staminaCost": 30,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "defense",
+                "value": 36,
+                "duration": 2.5,
+                "subject": "Self"
+              }
+            ]
+          },
+          "5": {
+            "cooldown": 11,
+            "staminaCost": 30,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "defense",
+                "value": 44,
+                "duration": 2.5,
+                "subject": "Self"
+              }
+            ]
+          }
+        },
+        "descriptionInfo": {
+          "{defense}": [
+            "12",
+            "20",
+            "28",
+            "36",
+            "44"
+          ]
+        },
+        "popupInfo": {
+          "방어력": [ "12", "20", "28", "36", "44" ],
+          "쿨다운": [ "15", "14", "13", "12", "11" ]
+        }
+      },
+      "E": {
+        "name": "선빵필승",
+        "description": "현우가 지정한 방향으로 돌진하며, 적과 부딪히면 <color=#DFC480>(+추가 공격력의 70%)</color><color=#CDA1C8>(+스킬 증폭의 55%)</color><color=#6F8627>(+대상 현재 체력의 {curHpRatio}%)</color>의 스킬 피해를 입히고 밀어냅니다.\n\n밀어낸 적이 벽에 부딪히면 <color=#FFFFFF>{damage}</color><color=#DFC480>(+추가 공격력의 60%)</color><color=#CDA1C8>(+스킬 증폭의 90%)</color>의 스킬 피해를 입히고 1.2초 간 기절시킵니다.",
+        "type": "Normal",
+        "maxLevel": 5,
+        "mechanics": {
+          "targetType": "TargetArea",
+          "damageType": "Magic"
+        },
+        "scaling": {
+          "adRatio": "70",
+          "apRatio": "55",
+          "dstCurHpRatio": "5"
+        },
+        "levels": {
+          "1": {
+            "damage": 80,
+            "cooldown": 14,
+            "staminaCost": 70,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 1.2
+              },
+              {
+                "type": "MoveTargetObject"
+              }
+            ]
+          },
+          "2": {
+            "damage": 115,
+            "cooldown": 13,
+            "staminaCost": 75,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 1.2
+              },
+              {
+                "type": "MoveTargetObject"
+              }
+            ]
+          },
+          "3": {
+            "damage": 150,
+            "cooldown": 12,
+            "staminaCost": 80,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 1.2
+              },
+              {
+                "type": "MoveTargetObject"
+              }
+            ]
+          },
+          "4": {
+            "damage": 185,
+            "cooldown": 11,
+            "staminaCost": 85,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 1.2
+              },
+              {
+                "type": "MoveTargetObject"
+              }
+            ]
+          },
+          "5": {
+            "damage": 220,
+            "cooldown": 10,
+            "staminaCost": 90,
+            "effects": [
+              {
+                "type": "Stun",
+                "duration": 1.2
+              },
+              {
+                "type": "MoveTargetObject"
+              }
+            ]
+          }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "80",
+            "115",
+            "150",
+            "185",
+            "220"
+          ],
+          "{curHpRatio}": ["5", "8", "11", "14", "17"]
+        },
+        "popupInfo": {
+          "현재 체력 비례 피해량(%)": [ "5", "8", "11", "14", "17" ],
+          "피해량": [ "80", "115", "150", "185", "220" ],
+          "쿨다운": [ "14", "13", "12", "11", "10" ],
+          "소모량": [ "70", "75", "80", "85", "90" ]
+        }
+      },
+      "R": {
+        "name": "핵펀치",
+        "description": "현우가 1.2초 동안 힘을 충전한 후, 강력한 한 방을 날려 <color=#FFFFFF>{minDamage}</color><color=#DFC480>(+추가 공격력의 35%)</color><color=#CDA1C8>(+스킬 증폭의 75%)</color> ~ <color=#FFFFFF>{maxDamage}</color><color=#DFC480>(+추가 공격력의 105%)</color><color=#CDA1C8>(+스킬 증폭의 225%)</color>의 스킬 피해를 입히고 5초 동안 방어력을 {defense}% 감소시킨 후 짧게 밀쳐냅니다.\n\n최대 충전 시, 적을 범위 밖까지 밀어낸 후 0.5초 동안 기절시킵니다.",
+        "type": "Ultimate",
+        "maxLevel": 3,
+        "mechanics": {
+          "targetType": "TargetArea",
+          "damageType": "Magic"
+        },
+        "scaling": {
+          "adRatio": 0.35,
+          "apRatio": 0.75
+        },
+        "levels": {
+          "1": {
+            "damage": 100,
+            "cooldown": 60,
+            "staminaCost": 90,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "defense",
+                "value": -20,
+                "duration": 5
+              },
+              {
+                "type": "MoveTargetObject",
+                "condition": "FullCharge"
+              }
+            ]
+          },
+          "2": {
+            "damage": 140,
+            "cooldown": 55,
+            "staminaCost": 90,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "defense",
+                "value": -25,
+                "duration": 5
+              },
+              {
+                "type": "MoveTargetObject",
+                "condition": "FullCharge"
+              }
+            ]
+          },
+          "3": {
+            "damage": 180,
+            "cooldown": 50,
+            "staminaCost": 90,
+            "effects": [
+              {
+                "type": "Debuff",
+                "stat": "defense",
+                "value": -30,
+                "duration": 5
+              },
+              {
+                "type": "MoveTargetObject",
+                "condition": "FullCharge"
+              }
+            ]
+          }
+        },
+        "descriptionInfo": {
+          "{minDamage}": [
+            "100",
+            "140",
+            "180"
+          ],
+          "{maxDamage}": [
+            "300",
+            "420",
+            "540"
+          ],
+          "{defense}": [
+            "20",
+            "25",
+            "30"
+          ]
+        },
+        "popupInfo": {
+          "최소 피해량": [ "100", "140", "180" ],
+          "최대 피해량": [ "300", "420", "540" ],
+          "방어력 감소량(%)": [ "20", "25", "30" ],
+          "쿨다운": [ "60", "55", "50" ]
+        }
+      },
+      "F": {
+        "name": "블링크",
+        "description": "사용 시 지정한 위치로 일정 거리 순간이동합니다.",
+        "type": "Warp",
+        "maxLevel": 2,
+        "mechanics": {
+          "targetType": "NonTarget",
+          "damageType": "None"
+        },
+        "scaling": {
+          "adRatio": 0.0
+        },
+        "levels": {
+          "1": {
+            "damage": 0,
+            "cooldown": 1,
+            "staminaCost": 0,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 15,
+                "duration": 2.5
+              }
+            ]
+          },
+          "2": {
+            "damage": 0,
+            "cooldown": 30,
+            "staminaCost": 0,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 15,
+                "duration": 2.5
+              }
+            ]
+          }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "<color=#FFFFFF>60</color><color=#DFC480>(+공격력의 50%)</color>",
+            "<color=#FFFFFF>120</color><color=#DFC480>(+공격력의 50%)</color>",
+            "<color=#FFFFFF>180</color><color=#DFC480>(+공격력의 50%)</color>"
+          ],
+          "{MaxHpRatio}": [
+            "<color=#FFFFFF>4%</color>",
+            "<color=#FFFFFF>7%</color>",
+            "<color=#FFFFFF>10%</color>"
+          ]
+        },
+        "popupInfo": {
+          "피해량": [ "60", "120", "180" ],
+          "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
         }
       }
     }
