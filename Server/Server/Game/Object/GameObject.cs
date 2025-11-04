@@ -360,11 +360,11 @@ namespace Server.Game
             }
         }
 
-        public void RemoveStatusEffects(string type, string stat = null) // 해당 종류의 상태효과 모두 제거
+        public int RemoveStatusEffects(string type, string stat = null) // 해당 종류의 상태효과 모두 제거
         {
             lock (_lock)
             {
-                _statusEffects.RemoveWhere(se =>
+                return _statusEffects.RemoveWhere(se =>
                     se.type == type &&
                     se.stat == stat);
             }
