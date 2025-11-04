@@ -9,33 +9,33 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 {
     // ===== 튜닝 파라미터(테이블화 가능) =====
     public const float DefaultAttackRange = 3.0f;   // MyPlayerController 기본값 매칭
-    private const float WindupSeconds = 0.20f;      // 선딜(히트 타이밍까지)
-    private const float BackswingSeconds = 0.30f;   // 후딜
+    protected const float WindupSeconds = 0.20f;      // 선딜(히트 타이밍까지)
+    protected const float BackswingSeconds = 0.30f;   // 후딜
     private const float ReattackGapSeconds = 0.10f; // 연속 스윙 사이 최소 텀
     private const float ComboResetSeconds = 2.00f;  // 콤보 리셋 타이머
 
     // 애니메이션(프로젝트 애니 자원명/ID에 맞춰 교체)
-    private const string AnimAttackA = "ATTACK_1";
-    private const string AnimAttackB = "ATTACK_2";
+    protected const string AnimAttackA = "ATTACK_1";
+    protected const string AnimAttackB = "ATTACK_2";
     private const string AnimRun = "RUN";
 
     // ===== 상태 필드 =====
-    private readonly float _attackRange;
-    private int _targetId;
-    private bool _chaseAllowed;
+    protected readonly float _attackRange;
+    protected int _targetId;
+    protected bool _chaseAllowed;
     private int? _pendingTargetId;          // 스윙 중 들어온 타겟 변경은 스윙 종료 후 반영
 
-    private bool _swingActive;
-    private bool _damageApplied;
-    private int _attackIndex;               // 0/1 → A/B 번갈이
+    protected bool _swingActive;
+    protected bool _damageApplied;
+    protected int _attackIndex;               // 0/1 → A/B 번갈이
 
     // 회전
     private Vector3 _targetPos;
     private bool _isRotate = false;
 
-    private DateTime _swingStartUtc;
-    private DateTime _hitMomentUtc;
-    private DateTime _swingEndUtc;
+    protected DateTime _swingStartUtc;
+    protected DateTime _hitMomentUtc;
+    protected DateTime _swingEndUtc;
     private DateTime _nextAttackReadyUtc;
     private DateTime _comboResetDeadlineUtc;
 
@@ -228,7 +228,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     }
 
     // ===== 내부 유틸 =====
-    private void StartSwing(Player p, DateTime now)
+    protected virtual void StartSwing(Player p, DateTime now)
     {
         _swingActive = true;
         _damageApplied = false;
@@ -248,7 +248,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     }
 
     // 데미지 적용 훅(프로젝트 룰에 맞게 연결)
-    private void ApplyHit(Player p, GameObject target)
+    protected virtual void ApplyHit(Player p, GameObject target)
     {
         if (target == null || target.State == CreatureState.Dead)
             return;
