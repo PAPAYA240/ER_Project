@@ -1,7 +1,6 @@
 ﻿
 using Google.Protobuf.Protocol;
 using Server.Game;
-using System.Numerics;
 using static Server.Data.DataUtils;
 
 public sealed class Theodore_Charge : SkillHandlerBase
@@ -14,7 +13,7 @@ public sealed class Theodore_Charge : SkillHandlerBase
     public Theodore_Charge()
     {
         _characterType = CharacterType.Theodore;
-        _keyCode = KeyCode.Q;
+        //_keyCode = KeyCode.Q;
         _animName = ANIM_CHARGE;
     }
     public override void OnEnter(Player p, SkillContext ctx)

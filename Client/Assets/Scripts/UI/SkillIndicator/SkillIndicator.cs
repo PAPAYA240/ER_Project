@@ -114,7 +114,7 @@ public class SkillIndicator : UI_Base
         if (!_bInitSetting)
         {
             _bInitSetting = true;
-            _targetScaled = inCircleTransform.localScale;
+            _targetScaled = Util.FindChildByName(map.transform, "OutCircle").transform.localScale;
             inCircleTransform.localScale = Vector3.zero;
         }
 

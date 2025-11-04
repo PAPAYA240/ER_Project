@@ -39,7 +39,7 @@ public class PlayerInputController : MonoBehaviour
     }
 
     // 우클릭 유지 중 이동 의도(타겟 이동 or 땅 이동)
-    public C_SetMoveTarget GetSetMoveTarget()
+    public virtual C_SetMoveTarget GetSetMoveTarget()
     {
         if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving || _player.State == CreatureState.Attack || _player.State == CreatureState.Skill)
         {

@@ -14,7 +14,6 @@ namespace Server.Game
         }
         public void OnUpdate(Monster caster)
         {
-            Console.WriteLine("플레이어 넉백시키기");
         }
         public void OnEnd(Monster caster)
         {

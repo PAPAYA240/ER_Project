@@ -2,6 +2,7 @@
 using System;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering.Universal;
+using System.Collections;
 
 public class CameraController : MonoBehaviour
 {
@@ -86,51 +87,117 @@ public class CameraController : MonoBehaviour
     {
         float scroll = Input.GetAxis("Mouse ScrollWheel");
 
-        if (scroll < 0f)
+        if (!_isSkillZooming)
         {
-            _currentStep = Mathf.Max(_currentStep - 1, 0);
-            _targetZoom = _zoomSteps[_currentStep];
-        }
-        else if (scroll > 0f)
-        {
-            _currentStep = Mathf.Min(_currentStep + 1, _zoomSteps.Length - 1);
-            _targetZoom = _zoomSteps[_currentStep];
-        }
+            if (scroll < 0f)
+            {
+                _currentStep = Mathf.Max(_currentStep - 1, 0);
+                _targetZoom = _zoomSteps[_currentStep];
+            }
+            else if (scroll > 0f)
+            {
+                _currentStep = Mathf.Min(_currentStep + 1, _zoomSteps.Length - 1);
+                _targetZoom = _zoomSteps[_currentStep];
+            }
 
-        if (_isLerpComplete)
-        {
-            _currentZoom = Mathf.MoveTowards(_currentZoom, _targetZoom, _zoomSpeed * Time.deltaTime);
+            if (_isLerpComplete)
+            {
+                _currentZoom = Mathf.MoveTowards(_currentZoom, _targetZoom, _zoomSpeed * Time.deltaTime);
+            }
         }
     }
 
     void LateUpdate()
     {
-        if (_mode == Define.CameraMode.QuaterView)
+        if (!_isSkillZooming)
         {
-            if (_player == null || !_player.activeSelf) // IsValid() 대신 null 또는 activeSelf 체크
+            if (_mode == Define.CameraMode.QuaterView)
             {
-                return;
+                if (_player == null || !_player.activeSelf) // IsValid() 대신 null 또는 activeSelf 체크
+                {
+                    return;
+                }
+
+                Vector3 targetDelta = (_currentZoom <= _lastZoom) ? _nearDelta : _farDelta;
+                _delta = Vector3.MoveTowards(_delta, targetDelta, _lerpSpeed * Time.deltaTime);
+
+                if (Vector3.Distance(_delta, targetDelta) < 0.01f)
+                    _isLerpComplete = true;
+                else
+                    _isLerpComplete = false;
+
+                Vector3 zoomedOffset = _delta.normalized * _currentZoom;
+                transform.position = _player.transform.position + zoomedOffset;
+                transform.LookAt(_player.transform.position + Vector3.up);
+
+                LateUpdateAction?.Invoke();
             }
-
-            Vector3 targetDelta = (_currentZoom <= _lastZoom) ? _nearDelta : _farDelta;
-            _delta = Vector3.MoveTowards(_delta, targetDelta, _lerpSpeed * Time.deltaTime);
-
-            if (Vector3.Distance(_delta, targetDelta) < 0.01f)
-                _isLerpComplete = true;
-            else
-                _isLerpComplete = false;
-
-            Vector3 zoomedOffset = _delta.normalized * _currentZoom;
-            transform.position = _player.transform.position + zoomedOffset;
-            transform.LookAt(_player.transform.position + Vector3.up);
-
-            LateUpdateAction?.Invoke();
         }
+       
     }
 
     public void SetQuaterView(Vector3 delta)
     {
         _mode = Define.CameraMode.QuaterView;
         _farDelta = delta;
+    }
+
+     bool _isSkillZooming = false;
+    private Vector3 _originalDelta;
+    private Vector3 _skillZoomDelta;
+    private Vector3 _skillZoomCenter; // center 저장용
+    private float _speed = 7f;
+
+    public IEnumerator CameraZoomOut(Vector3 center, float zoomOutDistance, float duration)
+    {
+        if (_player == null) 
+            yield break;
+
+        _isSkillZooming = true;
+
+        float originalZoom = _currentZoom;
+
+        Vector3 originalPlayerDelta = transform.position - _player.transform.position; // 플레이어 기준 현재 델타
+        Vector3 currentPosition = transform.position;
+        Vector3 directionFromCenter = (currentPosition - center).normalized;
+
+        float targetZoomDistance = Vector3.Distance(currentPosition, center) + zoomOutDistance;
+
+        Vector3 targetPosition = center + directionFromCenter * targetZoomDistance;
+
+        float elapsed = 0f;
+
+        while (elapsed < 1f)
+        {
+            elapsed += Time.deltaTime * _speed; 
+            float currentDistance = Vector3.Distance(currentPosition, targetPosition);
+
+            transform.position = Vector3.Lerp(currentPosition, targetPosition, elapsed);
+
+            //transform.LookAt(center + Vector3.up);
+
+            yield return null;
+        }
+        transform.position = targetPosition;
+
+        yield return new WaitForSeconds(duration);
+
+        Vector3 returnPosition = _player.transform.position + originalPlayerDelta;
+        elapsed = 0f;
+
+        while (elapsed < 1f)
+        {
+            elapsed += Time.deltaTime * _speed; 
+
+            transform.position = Vector3.Lerp(targetPosition, returnPosition, elapsed);
+
+            transform.LookAt(_player.transform.position + Vector3.up);
+
+            yield return null;
+        }
+
+        transform.position = returnPosition;
+        _isSkillZooming = false;
+        _delta = originalPlayerDelta;
     }
 }

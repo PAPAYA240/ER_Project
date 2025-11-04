@@ -102,7 +102,6 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
         if (_handler.CanMoveDuringCast)
         {
             // (A) 이 스킬은 시전 중 이동 허용
-
             player.SendMoveSyncPacket(
                 move.TargetPosition,
                 _handler.MoveSpeedMultiplier

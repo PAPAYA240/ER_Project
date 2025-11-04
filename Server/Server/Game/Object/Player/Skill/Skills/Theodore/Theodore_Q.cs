@@ -1,14 +1,10 @@
 ﻿using Google.Protobuf.Protocol;
-using Google.Protobuf.WellKnownTypes;
 using Server.Game;
-using System;
-using System.Collections.Generic;
-using System.Numerics;
-using System.Text;
 using static Server.Data.DataUtils;
 
 public sealed class Theodore_Q : SkillHandlerBase
 {
+    public override bool CanMoveDuringCast => false;
     public Theodore_Q()
     {
         _characterType = CharacterType.Theodore;
@@ -19,6 +15,9 @@ public sealed class Theodore_Q : SkillHandlerBase
     public override void OnEnter(Player p, SkillContext ctx)
     {
         base.OnEnter(p, ctx);
+
+        p.LookAtMouse(ctx.MousePos);
+        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
