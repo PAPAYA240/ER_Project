@@ -62,16 +62,7 @@ public class PlayerViewController : MonoBehaviour
 
         _player.UpdateTransform();
 
-        if (_player.State == CreatureState.Attack)
-        {
-            //// TEMP
-            //if (_target != null)
-            //{
-            //    Vector3 pos = _target.transform.position;
-            //    UpdateTarget(pos);
-            //}
-        }
-        else if (_player.State == CreatureState.Moving || _player.State == CreatureState.Idle)
+        if (_player.State == CreatureState.Moving || _player.State == CreatureState.Idle)
         {
             _player.UpdateTransform();
         }
@@ -283,6 +274,9 @@ public class PlayerViewController : MonoBehaviour
         float rotateSpeed = 15f;
         while (_target != null)
         {
+            if (_player.State == CreatureState.Moving)
+                break;
+
             Vector3 dir = (_target.transform.position - transform.position);
             dir.y = 0;
 

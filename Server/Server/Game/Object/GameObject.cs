@@ -343,7 +343,7 @@ namespace Server.Game
                 {
                     _barriers.Add(statusEffect);
                     UpdateBarrier();
-                }                    
+                }
                 else
                 {
                     _statusEffects.Add(statusEffect);

@@ -781,5 +781,11 @@ namespace Server.Game
         {
             creature.AddStatusEffect(statusEffect);
         }
+
+        public void BehindDash(Player player)
+        {
+            if (player.CurrentState is Player_SkillState skillState)
+                skillState.Handler.OnCollision(player);
+        }
     }
 }

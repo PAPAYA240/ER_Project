@@ -68,6 +68,11 @@ public abstract class SkillHandlerBase : ISkill
         
     }
 
+    public virtual void OnCollision(Player p)
+    {
+
+    }
+
     public virtual void OnTick(Player p, SkillContext ctx)
     {
         

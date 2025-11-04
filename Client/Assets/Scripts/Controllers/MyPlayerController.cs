@@ -119,6 +119,15 @@ public class MyPlayerController : PlayerController
         if (deathCmd != null)
             Managers.Network.Send(deathCmd);
 
+        //if (_agent.hasPath)
+        //{
+        //    if (_agent.velocity.sqrMagnitude > 0.01f)
+        //    {
+        //        Quaternion targetRot = Quaternion.LookRotation(_agent.velocity.normalized);
+        //        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 20f);
+        //    }
+        //}
+
         CheckUpdatedFlag();
     }
 

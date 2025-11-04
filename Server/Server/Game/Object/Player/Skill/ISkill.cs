@@ -27,6 +27,8 @@ public interface ISkill
     // 타격 타이밍(예: tHit)
     void OnHit(Player p, SkillContext ctx);
 
+    void OnCollision(Player p);
+
     // 매 틱(Streaming 필요 시만 Player_SkillState에서 호출)
     void OnTick(Player p, SkillContext ctx);
 
