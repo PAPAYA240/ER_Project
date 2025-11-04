@@ -921,9 +921,24 @@ namespace Server.Game
         {
 
         }
+
         public void SendDeadPacket(S_Respawn packet)
         {
             Room.Push(Room.Broadcast, packet);
+        }
+
+        public void SendSkillCollisionRequestPacket(KeyCode keyCode, CollisionType type, Vector3 startPos, Vector3 endPos)
+        {
+            S_SkillCollisionRequest packet = new S_SkillCollisionRequest
+            {
+                SkillKey = (int)keyCode,
+                Type = type,
+                StartX = startPos.X,
+                StartZ = startPos.Z,
+                EndX = endPos.X,
+                EndZ = endPos.Z
+            };
+            Session.Send(packet);
         }
 
         public void SendSkillCostPacket(KeyCode keyCode, float coolTime)

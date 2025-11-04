@@ -18,6 +18,12 @@ public sealed class Rozzi_E : SkillHandlerBase
     private float _elapsed;
     private Vector3 _startPos, _midPos, _endPos;
 
+    private float _dashDistance = 4.0f;
+    private float _behindDistance = 2.0f;
+
+    // TEMP
+    private bool _isRequest;
+
     public Rozzi_E()
     {
         _characterType = CharacterType.Rozzi;
@@ -62,7 +68,7 @@ public sealed class Rozzi_E : SkillHandlerBase
             p.SendSkillMotion(
                 type: SkillMotionType.Transform,
                 start: p.Position,
-                end: targetPos);
+                end: targetPos);           
         }
         else
         {
@@ -71,7 +77,7 @@ public sealed class Rozzi_E : SkillHandlerBase
                 if (TryConsumeLatest(out SkillCollisionProposal prop))
                 {
                     _committed = true;
-                    _endPos = prop.BehindBlocked;
+                    _endPos = prop.EndBlocked;
                 }
             }
             else
@@ -85,6 +91,15 @@ public sealed class Rozzi_E : SkillHandlerBase
                     start: p.Position,
                     end: targetPos);
             }                
+        }
+
+        if(!_isRequest && t >= _followRatio)
+        {
+            Vector3 dir = Vector3.Normalize(_target.Position - p.Position);
+            Vector3 requestPos = p.Position + dir * _behindDistance;
+            p.SendSkillCollisionRequestPacket(_keyCode, CollisionType.Block, p.Position, requestPos);
+
+            _isRequest = true;
         }
 
         _elapsed += TimeUtil.DeltaTime;
