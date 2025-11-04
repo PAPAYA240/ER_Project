@@ -650,7 +650,7 @@ public class PlayerSkillController : MonoBehaviour
         }
 
         _skills[KeyCode.T].CurLevel = 1;
-        _skills[KeyCode.F].CurLevel = 1;
+        //_skills[KeyCode.F].CurLevel = 1;
     }
 
     private void MakeCoolDownDict()

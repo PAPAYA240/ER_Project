@@ -39,7 +39,10 @@ public sealed class Yuki_E : SkillHandlerBase
 
         _elapsed = 0f;
 
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Cast);
+        //p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Cast);
+        Vector3 targetPos = _endPos;
+        p.SendSkillCollisionRequestPacket(_keyCode, CollisionType.Clamp, p.Position, targetPos);
+
         p.LookAtMouse(ctx.MousePos);
     }
 
@@ -55,15 +58,28 @@ public sealed class Yuki_E : SkillHandlerBase
 
     public override void OnTick(Player p, SkillContext ctx)
     {
-        if (_elapsed < _duration)
-            nextPos = Vector3.Lerp(_startPos, _endPos, _elapsed / _duration);
+        if (!_committed)
+        {
+            if (TryConsumeLatest(out SkillCollisionProposal prop))
+            {
+                _startPos = p.Position;
+                _endPos = prop.BehindBlocked;
+                _committed = true;
+            }
+        }
 
-        _elapsed += TimeUtil.DeltaTime;
-        p.SendSkillMotion(
-            type: SkillMotionType.Transform,
-            start: p.Position,
-            end: nextPos
-        );
+        if(_committed)
+        {
+            if (_elapsed < _duration)
+                nextPos = Vector3.Lerp(_startPos, _endPos, _elapsed / _duration);
+
+            _elapsed += TimeUtil.DeltaTime;
+            p.SendSkillMotion(
+                type: SkillMotionType.Transform,
+                start: p.Position,
+                end: nextPos
+            );
+        }        
 
         return;
     }
