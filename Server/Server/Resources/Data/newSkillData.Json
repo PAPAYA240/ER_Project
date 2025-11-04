@@ -916,12 +916,11 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "Dash",
+                "type": "DashAttack",
+                "subject": "Self",
                 "condition": "Hit"
               },
               {
-                "type": "CDR",
-                "value": 3,
                 "condition": "Hit"
               }
             ]
@@ -932,11 +931,12 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "DashAttack",
+                "subject": "Self",
+                "condition": "Hit"
               },
               {
-                "type": "Untargetable"
+                "condition": "Hit"
               }
             ]
           },
@@ -946,11 +946,12 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "DashAttack",
+                "subject": "Self",
+                "condition": "Hit"
               },
               {
-                "type": "Untargetable"
+                "condition": "Hit"
               }
             ]
           },
@@ -960,11 +961,12 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "DashAttack",
+                "subject": "Self",
+                "condition": "Hit"
               },
               {
-                "type": "Untargetable"
+                "condition": "Hit"
               }
             ]
           },
@@ -974,11 +976,12 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "DashAttack",
+                "subject": "Self",
+                "condition": "Hit"
               },
               {
-                "type": "Untargetable"
+                "condition": "Hit"
               }
             ]
           }

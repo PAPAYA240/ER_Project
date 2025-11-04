@@ -21,6 +21,8 @@ public class PlayerInputController : MonoBehaviour
     private bool _lastCmdIsTarget;
     [SerializeField] float _destEps = 0.15f; // 15cm 이상 움직일 때만 새 명령
 
+    private GameObject _target;
+
     [SerializeField] private LayerMask _groundMask;
     [SerializeField] private LayerMask _monsterMask;
     [SerializeField] private LayerMask _playerMask;
@@ -101,28 +103,21 @@ public class PlayerInputController : MonoBehaviour
         }
     }
 
-    private GameObject _target;
-    private int _preId;
     // 우클릭 "타겟 공격" (클릭 순간 1회)
     public C_Attack GetAttackCommand()
     {
         if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving || _player.State == CreatureState.Attack)
         {
-            if (!Input.GetKeyDown(KeyCode.C))
+            if (!Input.GetKeyDown(KeyCode.C) /*|| !Input.GetMouseButtonDown(1)*/)
                 return null;
 
             int id = GetAttackableUnderCursorID();
             if (id == 0)
                 return null;
 
-            if (id == _preId)
-                return null;
-
             _target = Managers.Object.FindById(id);
             if (_target == null)
                 return null;
-
-            _preId = id;
 
             return new C_Attack { TargetId = id };
         }
