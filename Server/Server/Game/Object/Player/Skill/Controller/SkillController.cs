@@ -58,7 +58,6 @@ public sealed class SkillController
         }
         if (!_cd.IsReady(key))
         {
-            Console.WriteLine($"CoolTime Remaining! : key - {key}, Remaining - {_cd.GetRemaining(key)}");
             _owner.SendSkillConfirmPacket(false);
             return false;
         }
@@ -71,13 +70,9 @@ public sealed class SkillController
             return false;
         }
 
-        Console.WriteLine($"CoolTime Ready! : key - {key}, Ready - {_cd.GetRemaining(key)}");
-
         // 3) 커밋(코스트 소모 등), 상태 전환
         _owner.CommitSkillUsage(key);
         _owner.ChangeState(new Player_SkillState(handler, ctx));
-
-        Console.WriteLine($"CoolTime Commit! : key - {key}, Commit - {_cd.GetRemaining(key)}");
 
         return true;
     }

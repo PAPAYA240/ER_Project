@@ -137,14 +137,10 @@ public class PlayerSkillController : MonoBehaviour
     {
         KeyCode key = (KeyCode)packet.SkillKey;
 
-        Debug.Log($"Key : {key}, CoolTime : {packet.CostInfo.CoolTime}, Stamina : {packet.CostInfo.Stamina}");
-
         //쿨타임 코루틴 시작
         if (_CoolDownCo != null)
             StopCoroutine(_CoolDownCo);
         _CoolDownCo = StartCoroutine(CoInputCooltime(key, packet.CostInfo.CoolTime));
-
-        Debug.Log($"coolTimeDict : {_coolDownDict[KeyCode.R].coolTime}");
 
         //스태미너 연동
         _player.Stamina = packet.CostInfo.Stamina;

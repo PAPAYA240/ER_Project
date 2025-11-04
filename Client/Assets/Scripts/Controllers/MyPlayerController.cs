@@ -116,7 +116,10 @@ public class MyPlayerController : PlayerController
         // temp 임시 코드 나중에 삭제
         var tempCmd = _input.Get_KeyInputForTestCommand();
         if (tempCmd != null)
+        {
+            Debug.Log("Send KeyInputForTest");
             Managers.Network.Send(tempCmd);
+        }
 
         CheckUpdatedFlag();
     }

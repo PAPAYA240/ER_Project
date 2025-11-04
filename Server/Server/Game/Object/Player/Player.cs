@@ -936,7 +936,6 @@ namespace Server.Game
             };
 
             Session.Send(costPacket);
-            Console.WriteLine("Send Skill Cost Packet!!");
         }
 
         public void SendTargetChangePacket(S_TargetChange packet)
