@@ -21,6 +21,7 @@ namespace Server.Game
                 return;
             }
 
+            _behavior = CreateBehaviorFromClassName(_skillData.SkillBehavior);
             RotateTowardTarget(monster);
 
             SetupSkill(monster);
@@ -88,6 +89,37 @@ namespace Server.Game
             Vector3 direction = targetPosition - myPosition;
 
             monster.LookAtTarget(direction, elapsedTime, false);
+        }
+
+        private static ISkillBehavior CreateBehaviorFromClassName(string behaviorClassName)
+        {
+            Type behaviorType = Type.GetType(behaviorClassName);
+
+            if (behaviorType == null)
+            {
+                Console.WriteLine($"경고: 이름 '{behaviorClassName}'에 해당하는 클래스 Type을 찾을 수 없습니다.");
+                return null;
+            }
+
+            try
+            {
+                object instance = Activator.CreateInstance(behaviorType);
+                
+                if (instance is ISkillBehavior skillBehavior)
+                {
+                    return skillBehavior;
+                }
+                else
+                {
+                    Console.WriteLine($"오류: 생성된 클래스 '{behaviorClassName}'는 ISkillBehavior를 구현하지 않았습니다.");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"클래스 인스턴스 생성 오류 (이름: {behaviorClassName}): {ex.Message}");
+                return null;
+            }
         }
     }
     #endregion

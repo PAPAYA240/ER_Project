@@ -6,13 +6,13 @@ using Server.Game;
 using static Server.Data.DataUtils;
 
 
-public sealed class Abigail_W : SkillHandlerBase
+public sealed class Abigail_W : Skill_Abigail
 {
     public Abigail_W()
     {
-        _characterType = CharacterType.Abigail;
         _animName = "SKILL_W";
         _keyCode = KeyCode.W;
+        _animDuration = GetDuration();
     }
 
     public override void OnEnter(Player p, SkillContext ctx)

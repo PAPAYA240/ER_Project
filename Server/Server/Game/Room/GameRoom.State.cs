@@ -127,42 +127,65 @@ namespace Server.Game
             if (player == null)
                 return;
 
+            player.Skill.HandleSkillPacket(skillPacket);
+
+            //var key = (KeyCode)skillPacket.SkillKey;
+            //// 1) 치환할 스킬이 있는 지 확인
+
+            //// 2) 플레이어가 스킬을 사용할 수 있는 상태인지 확인
+            //if (!player.CanUseSkill(key))
+            //{
+            //    player.SendSkillConfirmPacket(false);
+            //    return;
+            //}
+
+            //// 3) 컨텍스트 구성(마우스 XZ/타겟)
+            //var ctx = new SkillContext
+            //{
+            //    MousePos = new Vector2(skillPacket.MouseX, skillPacket.MouseZ),
+            //    TargetId = skillPacket.TargetId,
+            //    Key = key,
+            //};
+
+            //// 4) 핸들러 결정
+            //ISkill handler = SkillRegistry.Resolve(player.Info.Player.CharType, key);
+
+            //// 5) 스킬이 사용 가능한 상탠지 확인
+            //if (!handler.CanCast(player, ctx))
+            //{
+            //    player.SendSkillConfirmPacket(false);
+            //    return;
+            //}
+            //else
+            //    player.CommitSkillUsage(key);
+
+            //// 5) SkillState로 전환
+            //player.ChangeState(new Player_SkillState(handler, ctx));
+
+            //// 6) 클라에 허락 패킷 보내기 -> 각 Skill의 OnEnter에서
+        }
+        public void HandlerPrepareSkill(Player player, C_SkillPrepare skillPacket)
+        {
             var key = (KeyCode)skillPacket.SkillKey;
-            // 1) 치환할 스킬이 있는 지 확인
 
-            // 2) 플레이어가 스킬을 사용할 수 있는 상태인지 확인
             if (!player.CanUseSkill(key))
-            {
-                player.SendSkillConfirmPacket(false);
                 return;
-            }
 
-            // 3) 컨텍스트 구성(마우스 XZ/타겟)
+            ISkill handler = SkillRegistry.Prepare(player.Info.Player.CharType, key);
             var ctx = new SkillContext
             {
-                MousePos = new Vector2(skillPacket.MouseX, skillPacket.MouseZ),
-                TargetId = skillPacket.TargetId,
                 Key = key,
             };
 
-            // 4) 핸들러 결정
-            ISkill handler = SkillRegistry.Resolve(player.Info.Player.CharType, key);
-
-            // 5) 스킬이 사용 가능한 상탠지 확인
-            if (!handler.CanCast(player, ctx))
-            {
-                player.SendSkillConfirmPacket(false);
-                return;
-            }
-            else
-                player.CommitSkillUsage(key);
-
-            // 5) SkillState로 전환
             player.ChangeState(new Player_SkillState(handler, ctx));
-
-            // 6) 클라에 허락 패킷 보내기 -> 각 Skill의 OnEnter에서
         }
 
+        public void HandlerChargeCancelSkill(Player player, C_SkillCancel skillPacket)
+        {
+            var key = (KeyCode)skillPacket.SkillKey;
+
+            ISkill handler = SkillRegistry.Prepare(player.Info.Player.CharType, key);
+        }
         public void HandleSkillCollision(Player player, C_SkillCollisionPropose skillPacket)
         {
             if (player == null)
@@ -214,6 +237,9 @@ namespace Server.Game
                     }
                     break;
             }
+
+            if (player.CurrentState is IReceivesStopCommand stop)
+                stop.OnStopCommand(player, pkt);
         }
 
         #region Utils

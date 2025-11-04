@@ -94,6 +94,7 @@ public class ObjectManager
         GameObject go = Managers.Resource.Instantiate($"Creature/Monster/{info.Monster.MonsterType}");
         go.name = info.Name;
         _objects.Add(info.ObjectId, go);
+        go.transform.position = new Vector3(info.PosInfo.PosX, info.PosInfo.PosY, info.PosInfo.PosZ);
 
         MonsterController mc = go.GetComponentInChildren<MonsterController>();
         mc.ObjInfo = info;
@@ -106,16 +107,17 @@ public class ObjectManager
     }
     private void AddProjectile(ObjectInfo info)
     {
-        if (_objects.ContainsKey(info.ObjectId))
-            return;
-        GameObject go = Managers.Resource.Instantiate($"Creature/Weapon/Projectile");
-        go.name = $"Projectile";
-     
-        _objects.Add(info.ObjectId, go);
-        Projectile pc = go.GetComponent<Projectile>();
-        pc.PosInfo = info.PosInfo;
-        pc.Stat = info.StatInfo;
-        pc.SyncPos();
+        GameObject go = Managers.Object.FindById(info.ObjectId);
+        if (go == null)
+        {
+            go = Managers.Resource.Instantiate("Creature/Weapon/Projectile");
+            go.name = "Projectile_" + info.ObjectId;
+            Projectile pc = go.GetComponent<Projectile>();
+            pc.PosInfo = info.PosInfo;
+            pc.Stat = info.StatInfo;
+            _objects.Add(info.ObjectId, go);
+            pc.SyncPos();
+        }
     }
     private void AddEnvironment(ObjectInfo info)
     {

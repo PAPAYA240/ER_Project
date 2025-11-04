@@ -76,6 +76,7 @@ namespace Server.Data
             PhaseDict = LoadJson<Data.PhaseData, int, int>("PhaseData", "player").MakeDict();
             RespawnDict = LoadJson<Data.RespawnData, int, int>("RespawnData", "player").MakeDict();
         }
+        
 
         static Loader LoadJson<Loader, Key, Value>(string path, string key) where Loader : ILoader<Key, Value>
         {

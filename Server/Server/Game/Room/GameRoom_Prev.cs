@@ -251,18 +251,6 @@ namespace Server.Game
             //resMovePacket.IsWarp = movePacket.IsWarp;
             //Broadcast(resMovePacket);
         }
-        public void HandleVF(Player player, C_Fx skillPacket)
-        {
-            if (player == null)
-                return;
-
-            S_Fx effect = new S_Fx() {
-                ObjectId = player.Info.ObjectId,
-                FxInfo = skillPacket.FxInfo,
-            };
-            Broadcast(effect);
-        }
-
         public void HandleSkill(Player player, C_Skill skillPacket)
         {
             //if(player == null) 

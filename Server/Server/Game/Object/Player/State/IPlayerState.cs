@@ -15,6 +15,10 @@ public interface IReceivesMoveCommand
 {
     void OnMoveCommand(Player player, C_Move cmd);
 }
+public interface IReceivesStopCommand
+{
+    void OnStopCommand(Player player, C_Stop stopPacket);
+}
 
 public interface IReceivesAttackCommand
 {
