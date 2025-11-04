@@ -57,7 +57,7 @@ public abstract class SkillHandlerBase : ISkill
 
     public virtual void OnExit(Player p, SkillContext ctx)
     {
-        
+
     }
 
     public virtual void OnHit(Player p, SkillContext ctx)

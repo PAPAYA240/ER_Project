@@ -14,7 +14,6 @@ using static UI_PlayerInterface;
 public class PlayerUIController : MonoBehaviour
 {
     private MyPlayerController _player;
-    private UI_PlayerInterface _UI;
     private PlayerSkillController _skill;
 
     public UI_PlayerHUD PlayerHUD;

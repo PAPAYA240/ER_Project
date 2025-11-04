@@ -37,11 +37,8 @@ namespace Server.Game
         #region Skill
         public bool CanUseSkill(KeyCode keyCode)
         {
+            // 스킬 레벨 체크
             if (_skills[keyCode].CurLevel == 0)
-                return false;
-
-            // 쿨타임 체크
-            if (!CheckCoolTime(keyCode))
                 return false;
 
             // 스테미나 체크
@@ -54,11 +51,12 @@ namespace Server.Game
         // 체크 끝나면 데이터 변경
         public void CommitSkillUsage(KeyCode keyCode)
         {
-            // Cool time with skill acceleration
-            float cooltime = FindSkill(keyCode).CurLevelCooldown * (100f / (100f + _totalItemStat.SkillAcceleration));
+            //// Cool time with skill acceleration
+            //float cooltime = FindSkill(keyCode).CurLevelCooldown * (100f / (100f + _totalItemStat.SkillAcceleration));
 
-            // ��Ÿ�� ��� ����
-            _ = CoInputCooltime(keyCode, cooltime);
+            //// ��Ÿ�� ��� ����
+            //_ = CoInputCooltime(keyCode, cooltime);
+            Skill.StartCooldown(keyCode);
 
             // ���׹̳� ����
             Stamina -= FindSkill(keyCode).CurLevelStamina;
@@ -66,21 +64,7 @@ namespace Server.Game
 
         public float GetCoolTime(KeyCode key)
         {
-            if (_coolDownDict.TryGetValue(key, out CoolTime coolTime))
-                return coolTime.coolTime;
-            else
-            {
-                Console.WriteLine($"GetCoolTime Error!! KeyCode : {key}");
-                return 0.0f;
-            }
-        }
-
-        private bool CheckCoolTime(KeyCode key)
-        {
-            if (!_coolDownDict[key].isCoolDown)
-                return true;
-
-            return false;
+            return Skill.GetCooldown(key);
         }
 
         private bool CheckStamina(KeyCode key)
@@ -91,23 +75,7 @@ namespace Server.Game
             return true;
         }
 
-        private async Task CoInputCooltime(KeyCode key, float time)
-        {
-            _coolDownDict[key].isCoolDown = true;
-
-            var sw = Stopwatch.StartNew();
-
-            while (sw.Elapsed.TotalSeconds < time)
-            {
-                _coolDownDict[key].coolTime = (float)(time - sw.Elapsed.TotalSeconds);
-                await Task.Delay(10); // 0.01초마다 남은 쿨타임 갱신
-            }
-
-            _coolDownDict[key].isCoolDown = false;
-            _coolDownDict[key].coolTime = 0.0f;
-        }
-
-        private Skill FindSkill(KeyCode key)
+        public Skill FindSkill(KeyCode key)
         {
             if (_skills.TryGetValue(key, out Skill skill))
                 return _skills[key];

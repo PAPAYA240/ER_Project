@@ -70,7 +70,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CSkillPrepare, MakePacket<C_SkillPrepare>);
 		_handler.Add((ushort)MsgId.CSkillPrepare, PacketHandler.C_SkillPrepareHandler);		
 		_onRecv.Add((ushort)MsgId.CSkillCancel, MakePacket<C_SkillCancel>);
-		_handler.Add((ushort)MsgId.CSkillCancel, PacketHandler.C_SkillCancelHandler);
+		_handler.Add((ushort)MsgId.CSkillCancel, PacketHandler.C_SkillCancelHandler);		
+		_onRecv.Add((ushort)MsgId.CKeyInputForTest, MakePacket<C_KeyInputForTest>);
+		_handler.Add((ushort)MsgId.CKeyInputForTest, PacketHandler.C_KeyInputForTestHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

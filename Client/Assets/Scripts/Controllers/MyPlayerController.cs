@@ -113,6 +113,14 @@ public class MyPlayerController : PlayerController
         if (deathCmd != null)
             Managers.Network.Send(deathCmd);
 
+        // temp 임시 코드 나중에 삭제
+        var tempCmd = _input.Get_KeyInputForTestCommand();
+        if (tempCmd != null)
+        {
+            Debug.Log("Send KeyInputForTest");
+            Managers.Network.Send(tempCmd);
+        }
+
         CheckUpdatedFlag();
     }
 
@@ -153,6 +161,7 @@ public class MyPlayerController : PlayerController
     public void OnServerUpdate(S_Stop packet) => _view.OnStop(packet);
     public void OnServerUpdate(S_SkillMotion packet) => _skill.OnSkill(packet);
     public void OnServerUpdate(S_SkillConfirm packet) => _skill.OnSkillConfirm(packet);
+    public void OnServerUpdate(S_SkillCost packet) => _skill.OnSkillCost(packet);
 
     #region UI
     public override void SetKDA(int kill, int death, int asist)

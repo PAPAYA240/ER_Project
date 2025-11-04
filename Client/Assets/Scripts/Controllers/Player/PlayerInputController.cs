@@ -225,6 +225,14 @@ public class PlayerInputController : MonoBehaviour
         return KeyCode.None;
     }
 
+    public C_KeyInputForTest Get_KeyInputForTestCommand()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+            return new C_KeyInputForTest() { KeyCode = (int)KeyCode.L };
+
+        return null;
+    }
+
     #region Charge
     protected virtual void ChargeSkill(KeyCode key)
     {

@@ -30,6 +30,7 @@ public class PlayerSkillController : MonoBehaviour
         public bool isCoolDown;
         public float coolTime;
     }
+    private Coroutine _CoolDownCo;
 
     private Coroutine _motionCo;
     private bool _isSkillMotion;
@@ -126,16 +127,23 @@ public class PlayerSkillController : MonoBehaviour
 
         KeyCode key = (KeyCode)packet.SkillKey;
 
-        Debug.Log($"Key : {key}, CoolTime : {packet.CostInfo.CoolTime}, Stamina : {packet.CostInfo.Stamina}");
+        //스킬 실행 UI 연동
+        //_player.UI.PlayerInterface.UseSkill(KeyToUIEnum(key));
+
+        CreateSkillMesh(key);
+    }
+
+    public void OnSkillCost(S_SkillCost packet)
+    {
+        KeyCode key = (KeyCode)packet.SkillKey;
 
         //쿨타임 코루틴 시작
-        StartCoroutine(CoInputCooltime(key, packet.CostInfo.CoolTime));
+        if (_CoolDownCo != null)
+            StopCoroutine(_CoolDownCo);
+        _CoolDownCo = StartCoroutine(CoInputCooltime(key, packet.CostInfo.CoolTime));
 
         //스태미너 연동
         _player.Stamina = packet.CostInfo.Stamina;
-
-        //스킬 실행 UI 연동
-        //_player.UI.PlayerInterface.UseSkill(KeyToUIEnum(key));
 
         CreateSkillMesh(key);
     }
