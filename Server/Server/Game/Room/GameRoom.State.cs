@@ -27,9 +27,10 @@ namespace Server.Game
             if (player.IsDead)
                 return;
 
+            // Attack 상태이고 공격 애니메이션이 진행중이면 
             if (player.CurrentState is IReceivesAttackCommand swing && player.State == CreatureState.Attack)
             {
-                // 이미 공격 중인 상태라면 애니메이션 끝난 뒤 변경되도록
+                // 애니메이션 끝난 뒤 타겟이 변경됨
                 swing.RequestTargetChange(pkt.TargetId);
                 return;
             }

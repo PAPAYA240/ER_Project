@@ -130,88 +130,92 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
                 _isRotate = false;
             }
         }
-
-        bool inRange = Vector3.Distance(pos, targetPos) <= _attackRange;
-
-        var now = DateTime.UtcNow;
-
-        // ===== 공격 진행 중 =====
-        if (_swingActive)
+        else
         {
-            if (!_damageApplied && now >= _hitMomentUtc)
+            bool inRange = Vector3.Distance(pos, targetPos) <= _attackRange;
+
+            var now = DateTime.UtcNow;
+
+            // ===== 공격 진행 중 =====
+            if (_swingActive)
             {
-                // 히트 타이밍: 서버 거리 검증(위에서 inRange는 프레임 타임이라 다시 체크해도 됨)
-                float distNow = Vector3.Distance(
-                    new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ),
-                    new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ));
-                if (distNow <= _attackRange /* + player.HitTolerance 가능 */)
-                    ApplyHit(player, target);
-
-                _damageApplied = true;
-            }
-
-            if (now >= _swingEndUtc)
-            {
-                _swingActive = false;
-                _damageApplied = false;
-                _nextAttackReadyUtc = now.AddSeconds(ReattackGapSeconds);
-                _comboResetDeadlineUtc = now.AddSeconds(ComboResetSeconds);
-
-                // 공격 종료 후에만 타겟 변경 반영
-                if (_pendingTargetId.HasValue)
+                if (!_damageApplied && now >= _hitMomentUtc)
                 {
-                    _targetId = _pendingTargetId.Value;
-                    _pendingTargetId = null;
+                    // 히트 타이밍: 서버 거리 검증(위에서 inRange는 프레임 타임이라 다시 체크해도 됨)
+                    float distNow = Vector3.Distance(
+                        new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ),
+                        new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ));
+                    if (distNow <= _attackRange /* + player.HitTolerance 가능 */)
+                        ApplyHit(player, target);
 
-                    // 최초 타겟 변경 시 회전 패킷
-                    S_TargetChange pkt = new S_TargetChange();
-                    pkt.TargetId = _targetId;
-                    player.SendTargetChangePacket(pkt);
-                    _isRotate = true;
+                    _damageApplied = true;
                 }
+
+                if (now >= _swingEndUtc)
+                {
+                    _swingActive = false;
+                    _damageApplied = false;
+                    _nextAttackReadyUtc = now.AddSeconds(ReattackGapSeconds);
+                    _comboResetDeadlineUtc = now.AddSeconds(ComboResetSeconds);
+
+                    // 공격 종료 후에만 타겟 변경 반영
+                    if (_pendingTargetId.HasValue)
+                    {
+                        _targetId = _pendingTargetId.Value;
+                        _pendingTargetId = null;
+
+                        // 타겟 변경 시 회전 패킷
+                        S_TargetChange pkt = new S_TargetChange();
+                        pkt.TargetId = _targetId;
+                        player.SendTargetChangePacket(pkt);
+                        _isRotate = true;
+                    }
+                }
+                return; // 스윙 중에는 추가 개시 없음
             }
-            return; // 스윙 중에는 추가 개시 없음
-        }
 
-        // ===== 공격 중이 아님 =====
-        //// 콤보 리셋
-        //if (_comboResetDeadlineUtc != default && now >= _comboResetDeadlineUtc)
-        //{
-        //    _attackIndex = 0; // 다음 스윙은 첫타
-        //    _comboResetDeadlineUtc = default;
-        //}
+            // ===== 공격 중이 아님 =====
+            //// 콤보 리셋
+            //if (_comboResetDeadlineUtc != default && now >= _comboResetDeadlineUtc)
+            //{
+            //    _attackIndex = 0; // 다음 스윙은 첫타
+            //    _comboResetDeadlineUtc = default;
+            //}
 
-        // 사거리 밖
-        if (!inRange)
-        {
-            // CHANGED: H키 이후 추격 금지 모드면, 자리 지키기 → 범위 밖이면 종료
-            if (!_chaseAllowed)
+            // 사거리 밖
+            if (!inRange)
             {
-                player.ChangeState(new Player_IdleState());
+                // CHANGED: H키 이후 추격 금지 모드면, 자리 지키기 → 범위 밖이면 종료
+                if (!_chaseAllowed)
+                {
+                    player.ChangeState(new Player_IdleState());
+                    return;
+                }
+
+                // 기존 이동 상태 재사용(타겟 추격)
+                var move = new C_Move
+                {
+                    IsTargetOn = true,
+                    TargetId = _targetId,
+                    TargetPosition = new PositionInfo
+                    {
+                        PosX = targetPos.X,
+                        PosY = targetPos.Y,
+                        PosZ = targetPos.Z
+                    }
+                };
+                player.ChangeState(new Player_MovingState(move));
                 return;
             }
 
-            // 기존 이동 상태 재사용(타겟 추격)
-            var move = new C_Move
+            // 사거리 내 + 다음 타 가능 → 스윙 개시
+            if (now >= _nextAttackReadyUtc && _isRotate == false)
             {
-                IsTargetOn = true,
-                TargetId = _targetId,
-                TargetPosition = new PositionInfo
-                {
-                    PosX = targetPos.X,
-                    PosY = targetPos.Y,
-                    PosZ = targetPos.Z
-                }
-            };
-            player.ChangeState(new Player_MovingState(move));
-            return;
+                StartSwing(player, now);
+            }
         }
 
-        // 사거리 내 + 다음 타 가능 → 스윙 개시
-        if (now >= _nextAttackReadyUtc && _isRotate == false)
-        {
-            StartSwing(player, now);
-        }
+        
     }
 
     public virtual void Exit(Player player)

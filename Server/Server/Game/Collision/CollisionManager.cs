@@ -704,7 +704,12 @@ namespace Server.Game
                 switch (effect.subject)
                 {
                     case Subject.Self:
-                        player.Room.Push(player.Room.AddStatusEffect, player, effect);
+                        if (effect.type == "DashAttack")
+                        {
+                            player.Room.Push(player.Room.BehindDash, player);
+                        }
+                        else
+                            player.Room.Push(player.Room.AddStatusEffect, player, effect);
                         break;
                     case Subject.Ally: // 이건 아군대상 스킬에만 있을거같긴해서 생략
                         break;
