@@ -35,7 +35,7 @@ namespace Server.Game
                 return;
             }
 
-            player.ChangeState(new Player_AttackState(pkt.TargetId, chaseAllowed: true));
+            player.ChangeState(Player_AttackState.CreateAttackState(player, pkt.TargetId, chaseAllowed: true));
         }
 
         // 우클릭 유지로 들어온 이동 의도

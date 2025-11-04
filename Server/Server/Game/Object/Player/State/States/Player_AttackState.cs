@@ -259,5 +259,12 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 
     public bool IsSwingActive() { return _swingActive; }
 
+    public static Player_AttackState CreateAttackState(Player p, int targetId, bool chaseAllowed = true, float attackRange = DefaultAttackRange)
+    {
+        if(p.Info.Player.CharType == CharacterType.Abigail && p.Skill.IsPassiveAttackReady())
+            return new Abigail_T(targetId, chaseAllowed, attackRange);
+
+        return new Player_AttackState(targetId, chaseAllowed, attackRange);
+    }
 }
 

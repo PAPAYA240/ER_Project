@@ -344,10 +344,6 @@ namespace Server.Game
                     _barriers.Add(statusEffect);
                     UpdateBarrier();
                 }
-                else if(statusEffect.duration <= 0)
-                {
-
-                }
                 else
                 {
                     _statusEffects.Add(statusEffect);
