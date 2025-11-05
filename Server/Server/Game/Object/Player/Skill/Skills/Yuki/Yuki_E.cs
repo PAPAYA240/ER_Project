@@ -9,18 +9,17 @@ using static Server.Data.DataUtils;
 
 public sealed class Yuki_E : SkillHandlerBase
 {
-    private Vector3 _startPos, _endPos, nextPos, _collisionPos, _dir;
+    private Vector3 _startPos, _endPos, nextPos, _dir;
     private float _elapsed;
-    private float _duration = 0.3f;
+    private float _duration;
     private float _dashRange;       // 대쉬 이동거리
-
-    private GameObject enemy;
+    private float _speed;
 
     public Yuki_E()
     {
         _characterType = CharacterType.Yuki;
         _animName = "SKILL_E";
-        _keyCode = KeyCode.W;
+        _keyCode = KeyCode.E;
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
@@ -30,7 +29,10 @@ public sealed class Yuki_E : SkillHandlerBase
 
         _startPos = p.Position;
 
+        // 초기화
         _dashRange = 5.0f;
+        _elapsed = 0f;
+        _speed = 17f;
 
         Vector3 mouseWorldPos = new Vector3(ctx.MousePos.X, p.Position.Y, ctx.MousePos.Y);
 
@@ -40,11 +42,11 @@ public sealed class Yuki_E : SkillHandlerBase
 
         _endPos = _startPos + _dir * _dashRange;
 
-        _elapsed = 0f;
+        _duration = _dashRange / _speed;
 
-        //p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Cast);
         Vector3 targetPos = _endPos;
         p.SendSkillCollisionRequestPacket(_keyCode, CollisionType.Clamp, p.Position, targetPos);
+        p.SendSkillCostPacket(_keyCode);
 
         p.LookAtMouse(ctx.MousePos);
     }
@@ -54,20 +56,18 @@ public sealed class Yuki_E : SkillHandlerBase
         return;
     }
 
-    public override void OnCollision(Player p, GameObject obj)
+    public override void OnCollision(Player p)
     {
-        enemy = obj;
-
         _startPos = p.Position;
 
-        // 충돌 시점 저장
-        _collisionPos = obj.Position;
-
-        _dashRange = 1.0f;
-        _endPos = _collisionPos + _dir * _dashRange;
+        _dashRange = 1.5f;
+        _endPos = _startPos + _dir * _dashRange;
 
         _elapsed = 0f;
-        _duration = _dashRange / 10f;
+
+        float distance = Vector3.Distance(_startPos, _endPos);
+
+        _duration = distance / _speed;
 
         return;
     }
@@ -87,7 +87,10 @@ public sealed class Yuki_E : SkillHandlerBase
         if(_committed)
         {
             if (_elapsed < _duration)
+            {
+                float t = Math.Clamp(_elapsed / _duration, 0f, 1f);
                 nextPos = Vector3.Lerp(_startPos, _endPos, _elapsed / _duration);
+            }
 
             _elapsed += TimeUtil.DeltaTime;
             p.SendSkillMotion(

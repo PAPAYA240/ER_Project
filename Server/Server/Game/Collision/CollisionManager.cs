@@ -706,7 +706,7 @@ namespace Server.Game
                     case Subject.Self:
                         if (effect.type == "DashAttack")
                         {
-                            player.Room.Push(player.Room.BehindDash, player, FindNearestTarget(hitbox, hitTargets));
+                            player.Room.Push(player.Room.BehindDash, player/*, FindNearestTarget(hitbox, hitTargets)*/);
                         }
                         else
                             player.Room.Push(player.Room.AddStatusEffect, player, effect);

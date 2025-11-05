@@ -69,7 +69,7 @@ public abstract class SkillHandlerBase : ISkill
         
     }
 
-    public virtual void OnCollision(Player p, GameObject obj)
+    public virtual void OnCollision(Player p)
     {
 
     }
