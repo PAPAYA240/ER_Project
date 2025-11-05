@@ -9,9 +9,12 @@ using static Server.Data.DataUtils;
 
 public sealed class Yuki_E : SkillHandlerBase
 {
-    private Vector3 _startPos, _endPos, nextPos;
+    private Vector3 _startPos, _endPos, nextPos, _collisionPos, _dir;
     private float _elapsed;
     private float _duration = 0.3f;
+    private float _dashRange;
+
+    private GameObject enemy;
 
     public Yuki_E()
     {
@@ -27,15 +30,15 @@ public sealed class Yuki_E : SkillHandlerBase
 
         _startPos = p.Position;
 
-        const float dashRange = 5.0f;
+        _dashRange = 5.0f;
 
         Vector3 mouseWorldPos = new Vector3(ctx.MousePos.X, p.Position.Y, ctx.MousePos.Y);
 
-        Vector3 dir = mouseWorldPos - p.Position;
-        dir.Y = 0;
-        dir = Vector3.Normalize(dir);
+        _dir = mouseWorldPos - p.Position;
+        _dir.Y = 0;
+        _dir = Vector3.Normalize(_dir);
 
-        _endPos = _startPos + dir * dashRange;
+        _endPos = _startPos + _dir * _dashRange;
 
         _elapsed = 0f;
 
@@ -48,8 +51,21 @@ public sealed class Yuki_E : SkillHandlerBase
         return;
     }
 
-    public override void OnCollision(Player p)
+    public override void OnCollision(Player p, GameObject obj)
     {
+        enemy = obj;
+
+        _startPos = p.Position;
+
+        // 충돌 시점 저장
+        _collisionPos = obj.Position;
+
+        _dashRange = 1.0f;
+        _endPos = _collisionPos + _dir * _dashRange;
+
+        _elapsed = 0f;
+        _duration = _dashRange / 10f;
+
         return;
     }
 
@@ -64,6 +80,7 @@ public sealed class Yuki_E : SkillHandlerBase
             start: p.Position,
             end: nextPos
         );
+
 
         return;
     }

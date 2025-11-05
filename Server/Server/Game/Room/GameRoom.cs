@@ -801,10 +801,10 @@ namespace Server.Game
             creature.AddStatusEffect(statusEffect);
         }
 
-        public void BehindDash(Player player)
+        public void BehindDash(Player player, GameObject obj)
         {
             if (player.CurrentState is Player_SkillState skillState)
-                skillState.Handler.OnCollision(player);
+                skillState.Handler.OnCollision(player, obj);
         }
     }
 }

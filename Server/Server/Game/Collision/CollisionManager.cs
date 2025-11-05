@@ -680,7 +680,7 @@ namespace Server.Game
             }
         }
 
-        void HandleStatusEffects<T>(Hitbox hitbox, List<T> hitTargets)
+        void HandleStatusEffects<T>(Hitbox hitbox, List<T> hitTargets) where T : GameObject, new()
         {
             if (!(hitbox.Creature is Player))
                 return;
@@ -706,7 +706,7 @@ namespace Server.Game
                     case Subject.Self:
                         if (effect.type == "DashAttack")
                         {
-                            player.Room.Push(player.Room.BehindDash, player);
+                            player.Room.Push(player.Room.BehindDash, player, FindNearestTarget(hitbox, hitTargets));
                         }
                         else
                             player.Room.Push(player.Room.AddStatusEffect, player, effect);
