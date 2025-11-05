@@ -25,7 +25,7 @@ public sealed class Hyunwoo_Q : SkillHandlerBase
 
     public override void OnHit(Player p, SkillContext ctx)
     {
-        return;
+
     }
 
     public override void OnTick(Player p, SkillContext ctx)
@@ -36,8 +36,6 @@ public sealed class Hyunwoo_Q : SkillHandlerBase
         // 특정 시간 이후에는 키 인풋을 받을 수 있도록 한다. 그래서 키 인풋이 들어오면
         // 해당 키에 맞는 스테이트로 바로 넘어가고, 아니면 나머지 애니메이션을 재생한다.
         
-
-        return;
     }
 
     public override void OnExit(Player p, SkillContext ctx)

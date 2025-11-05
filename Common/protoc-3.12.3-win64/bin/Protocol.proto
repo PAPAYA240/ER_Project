@@ -577,7 +577,6 @@ message S_GameOver{
 
 message C_ChargingSkill{
 	float charginRatio = 1;
-	int32 keyCode = 2;
 }
 
 message PositionInfo{

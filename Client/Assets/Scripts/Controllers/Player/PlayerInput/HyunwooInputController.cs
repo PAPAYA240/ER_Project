@@ -1,10 +1,14 @@
 using Google.Protobuf.Protocol;
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class HyunwooInputController : PlayerInputController
 {
+    float _chargeTime = 0;
+    Coroutine _coCharge = null;
 
-
+    const float _fullCharge = 1.2f;
 
     public override C_SkillInput GetSkillCommand()
     {
@@ -15,19 +19,52 @@ public class HyunwooInputController : PlayerInputController
             if (!Input.GetKeyDown(key))
                 continue;
 
+            if (key == KeyCode.R)
+            {
+                if(null != _coCharge)
+                {
+                    StopCoroutine(_coCharge);
+                    _coCharge = null;
+                }
+                _chargeTime = 0;
+                _coCharge = StartCoroutine(CoCharge());
+            }
+
             return _skill.TryCast((int)key, GetAttackableUnderCursorID(), GetMouseWorldPosition());
         }
 
         if (Input.GetKeyUp(KeyCode.R))
         {
+            if (null != _coCharge)
+            {
+                StopCoroutine(_coCharge);
+                _coCharge = null;
+            }
+
             C_ChargingSkill packet = new C_ChargingSkill();
-            packet.CharginRatio = 0.1f;
-            packet.KeyCode = (int)KeyCode.R;
+
+            if(_chargeTime > _fullCharge)
+                packet.CharginRatio = 1f;
+            else
+                packet.CharginRatio = _chargeTime / _fullCharge;
 
             Managers.Network.Send(packet);
             return null;
         }
 
         return null;
+    }
+
+    IEnumerator CoCharge()
+    {
+        while(_chargeTime < 3.2)
+        {
+            _chargeTime += Time.deltaTime;
+
+            //Debug.Log($"charge time : {_chargeTime}");
+
+            yield return null;
+        }
+        _chargeTime = 0;
     }
 }

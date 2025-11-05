@@ -253,7 +253,7 @@ namespace Server.Game
 
                 if(skillHandler != null)
                 {
-                    skillHandler.OnCharge(p, state._ctx);
+                    skillHandler.OnCharge(p, state.Ctx);
                 }
             }
         }
