@@ -62,16 +62,7 @@ public class PlayerViewController : MonoBehaviour
 
         _player.UpdateTransform();
 
-        if (_player.State == CreatureState.Attack)
-        {
-            //// TEMP
-            //if (_target != null)
-            //{
-            //    Vector3 pos = _target.transform.position;
-            //    UpdateTarget(pos);
-            //}
-        }
-        else if (_player.State == CreatureState.Moving || _player.State == CreatureState.Idle)
+        if (_player.State == CreatureState.Moving || _player.State == CreatureState.Idle)
         {
             _player.UpdateTransform();
         }
@@ -198,6 +189,7 @@ public class PlayerViewController : MonoBehaviour
         {
             case StopReason.StopAll:
             case StopReason.StopMoveOnly:
+                _agent.enabled = true;
                 _agent.isStopped = true;
                 StopFollowTarget(); // 추적 종료(서버 사인에 의해)
                 _agent.ResetPath();
@@ -250,6 +242,7 @@ public class PlayerViewController : MonoBehaviour
         if (_coFollow != null)
         { StopCoroutine(_coFollow); _coFollow = null; }
 
+        _agent.enabled = true;
         _agent.isStopped = true;
         _agent.ResetPath();
     }
@@ -280,9 +273,12 @@ public class PlayerViewController : MonoBehaviour
 
     private IEnumerator CoRotateToTarget()
     {
-        float rotateSpeed = 10f;
+        float rotateSpeed = 15f;
         while (_target != null)
         {
+            if (_player.State == CreatureState.Moving)
+                break;
+
             Vector3 dir = (_target.transform.position - transform.position);
             dir.y = 0;
 

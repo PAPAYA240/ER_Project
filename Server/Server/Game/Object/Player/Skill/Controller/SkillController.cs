@@ -95,5 +95,13 @@ public sealed class SkillController
     }
 
     public void Reduce(KeyCode key, float seconds) => _cd.Reduce(key, seconds);
+
+    public bool IsPassiveAttackReady(KeyCode key = KeyCode.T)
+    {
+        if (!_cd.IsReady(key))
+            return false;
+
+        return true;
+    }
 }
 

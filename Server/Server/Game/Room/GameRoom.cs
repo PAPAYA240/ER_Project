@@ -510,7 +510,9 @@ namespace Server.Game
                 removeAbigailCoordPkt.ObjectId = target.Id;
                 player.Room.Broadcast(removeAbigailCoordPkt);
 
-                player.RemoveStatusEffects("Coord");
+                int removeCnt = target.RemoveStatusEffects("Coord");
+                if (removeCnt > 0) // 표식 있는 적에게 E 사용시 E 쿨타임 초기화
+                    player.Skill.SetCooldown(keyCode, 0);
             }
 
             target.OnDamaged(player, damage);
@@ -799,6 +801,12 @@ namespace Server.Game
         public void AddStatusEffect(Creature creature, StatusEffect statusEffect)
         {
             creature.AddStatusEffect(statusEffect);
+        }
+
+        public void BehindDash(Player player)
+        {
+            if (player.CurrentState is Player_SkillState skillState)
+                skillState.Handler.OnCollision(player);
         }
     }
 }

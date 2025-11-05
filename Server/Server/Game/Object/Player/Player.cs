@@ -182,7 +182,7 @@ namespace Server.Game
             }
         }
 
-        public override void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false)
+        public override void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false, bool isBasicAttack = false)
         {
             if (Room == null || State == CreatureState.Dead)
                 return;
@@ -864,9 +864,9 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendSkillMotion(SkillMotionType type, Vector3 start, Vector3 end,
+        public void SendSkillMotion(SkillMotionType type, Vector3 start, Vector3 end, bool authoritativeEnd = false,
                             float duration = 0f, string anim = default, string curveId = default,
-                            bool serverCollision = false, bool authoritativeEnd = true)
+                            bool serverCollision = false)
         {
             S_SkillMotion pkt = new S_SkillMotion
             {
@@ -923,9 +923,24 @@ namespace Server.Game
         {
 
         }
+
         public void SendDeadPacket(S_Respawn packet)
         {
             Room.Push(Room.Broadcast, packet);
+        }
+
+        public void SendSkillCollisionRequestPacket(KeyCode keyCode, CollisionType type, Vector3 startPos, Vector3 endPos)
+        {
+            S_SkillCollisionRequest packet = new S_SkillCollisionRequest
+            {
+                SkillKey = (int)keyCode,
+                Type = type,
+                StartX = startPos.X,
+                StartZ = startPos.Z,
+                EndX = endPos.X,
+                EndZ = endPos.Z
+            };
+            Session.Send(packet);
         }
 
         public void SendSkillCostPacket(KeyCode keyCode, float coolTime)
@@ -935,6 +950,18 @@ namespace Server.Game
                 ObjectId = Id,
                 SkillKey = (int)keyCode,
                 CostInfo = new CostInfo { CoolTime = coolTime, Stamina = Stamina }
+            };
+
+            Session.Send(costPacket);
+        }
+
+        public void SendSkillCostPacket(KeyCode keyCode)
+        {
+            S_SkillCost costPacket = new S_SkillCost
+            {
+                ObjectId = Id,
+                SkillKey = (int)keyCode,
+                CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina }
             };
 
             Session.Send(costPacket);

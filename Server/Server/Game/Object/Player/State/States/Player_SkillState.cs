@@ -9,7 +9,7 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
     public ISkill Handler {  get { return _handler; } }
     public readonly SkillContext _ctx;
 
-    private DateTime _tStart, _tHit, _tEnd;
+    private int _tStartTick, _tHitTick, _tEndTick;
     private bool _didHit, _forceEnd;
 
     private Vector3? _currentDestination = null;
@@ -18,7 +18,6 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
     {
         _handler = handler;
         _ctx = ctx;
-
         _ctx.AttachFinishHandler(RequestFinish);
     }
 
@@ -27,23 +26,29 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
         player.State = CreatureState.Skill;
         player.SendStatePacket();
 
-        _tStart = DateTime.UtcNow;
-        _tEnd = _tStart.AddSeconds(_handler.GetDuration());
+        int nowTick = TimeUtil.LastTick;
+        _tStartTick = nowTick;
+
+        float durSec = _handler.GetDuration();
+        _tEndTick = unchecked(_tStartTick + (int)MathF.Round(durSec * 1000f));
+
+        //float hitSec;
+        //_tHitTick = unchecked(_tStartTick + (int)MathF.Round(hitSec * 1000f));
 
         _handler.OnEnter(player, _ctx);
     }
 
     public void Execute(Player player)
     {
-        var now = DateTime.UtcNow;
+        int now = TimeUtil.LastTick;
 
-        if (_forceEnd || now >= _tEnd)
+        if (_forceEnd || TimeUtil.IsPastOrNow(now, _tEndTick))
         {
             ChangeState(player);
             return;
         }
 
-        if (!_didHit && now >= _tHit)
+        if (!_didHit && TimeUtil.IsPastOrNow(now, _tHitTick))
         {
             _handler.OnHit(player, _ctx);
             _didHit = true;

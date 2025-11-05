@@ -81,7 +81,8 @@ enum MsgId {
   C_KEY_INPUT_FOR_TEST = 69;
   S_SKILL_COST = 70;
 
-  C_CHARGING_SKILL = 71;
+  S_SKILL_COLLISION_REQUEST = 71;
+  C_CHARGING_SKILL = 72;
 }
 
 enum CreatureState{
@@ -261,6 +262,13 @@ enum ProposalMode {
   None = 0;
   SingleShot = 1; 
   Streaming = 2;
+}
+
+enum CollisionType {
+  BLOCK = 0;
+  CLAMP = 1;
+  PASS = 2;
+  WARP = 3;
 }
 
 message C_Death {
@@ -777,11 +785,11 @@ message S_SkillMotion {
   float  endX       = 6;
   float  endY       = 7;
   float  endZ       = 8;
-  float  duration   = 9;			// 초; 0이면 즉시(블링크)
-  string anim       = 10;			// 옵션
-  string curveId    = 11;			// 클라 보간커브 선택(옵션)
-  bool   serverCollision = 12;		// 서버가 충돌 반영해 준 결과임
-  bool   authoritativeEnd = 13;		// 끝난 시점에 서버 좌표가 권위
+  bool   authoritativeEnd = 9;		// 끝난 시점에 서버 좌표가 권위
+  float  duration   = 10;			// 초; 0이면 즉시(블링크) // 여기 이하 안쓰는 중 
+  string anim       = 11;			// 옵션
+  string curveId    = 12;			// 클라 보간커브 선택(옵션)
+  bool   serverCollision = 13;		// 서버가 충돌 반영해 준 결과임
   repeated float keyframes = 14;	// [x0,y0,z0,t0, x1,y1,z1,t1, ...] (옵션)
 }
 
@@ -790,6 +798,17 @@ message C_SkillInput {
   int32 targetId = 2; 
   float mouseX = 3;
   float mouseZ = 4;
+}
+
+message S_SkillCollisionRequest
+{
+  int32 skillKey = 1;
+  CollisionType type = 2;
+
+  float startX = 3;
+  float startZ = 4;
+  float endX = 5;
+  float endZ = 6;
 }
 
 message C_SkillCollisionPropose {

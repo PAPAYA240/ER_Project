@@ -4,6 +4,7 @@ using Server.Game;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using static Server.Data.DataUtils;
 
@@ -30,7 +31,9 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
         _elapsed = 0.0f;
         _committed = false;
 
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Followup);
+        //p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Followup);
+        Vector3 targetPos = new Vector3(ctx.MousePos.X, p.Position.Y, ctx.MousePos.Y);
+        p.SendSkillCollisionRequestPacket(_keyCode, CollisionType.Block, p.Position, targetPos);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -39,10 +42,10 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
     }
 
     public override void OnTick(Player p, SkillContext ctx)
-    {       
+    {
         if (!_committed)
-        {
-            if (TryConsumeLatest(out var prop))
+        { 
+            if(TryConsumeLatest(out SkillCollisionProposal prop))
             {
                 _startPos = p.Position;
                 _endPos = prop.EndBlocked;
@@ -50,9 +53,10 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
                 _duration = Vector3.Distance(_startPos, _endPos) / _spec.limits.speed;
 
                 _committed = true;
-            }
+            }                
         }
-        else
+        
+        if(_committed)
         {
             float t = Math.Clamp(_elapsed / _duration, 0f, 1f);
             Vector3 targetPos = Vector3.Lerp(_startPos, _endPos, t);
@@ -61,6 +65,8 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
              type: SkillMotionType.Transform,
              start: p.Position,
              end: targetPos);
+
+            _finalEnd = targetPos;
 
             _elapsed += TimeUtil.DeltaTime;
             if (_elapsed > _duration)
@@ -73,6 +79,12 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
     public override void OnExit(Player p, SkillContext ctx)
     {
         base.OnExit(p, ctx);
+
+        p.SendSkillMotion(
+            type: SkillMotionType.Transform,
+            start: p.Position,
+            end: _finalEnd,
+            authoritativeEnd: true);
     }
 }
 

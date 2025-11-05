@@ -13,6 +13,22 @@ public sealed class Abigail_W : Skill_Abigail
         _animName = "SKILL_W";
         _keyCode = KeyCode.W;
         _animDuration = GetDuration();
+        StopSkillTime = 0.433f; // 12프레임 * 30FPS
+    }
+
+    public override void OnTick(Player p, SkillContext ctx)
+    {
+        if (CanStopSkill)
+            return;
+
+        float t = _elapsed / _animDuration;
+        _elapsed += TimeUtil.DeltaTime;
+
+        if(_elapsed >= StopSkillTime)
+        {
+            CanStopSkill = true;
+            p.SendCanStopSkillPacket(CanStopSkill);
+        }
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
@@ -22,5 +38,6 @@ public sealed class Abigail_W : Skill_Abigail
 
         p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
         p.LookAtMouse(ctx.MousePos);
+        p.SendCanStopSkillPacket(false);
     }
 }

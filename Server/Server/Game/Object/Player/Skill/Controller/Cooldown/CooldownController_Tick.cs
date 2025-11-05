@@ -74,7 +74,6 @@ public class CooldownController_Tick : ICooldownController
 
         Console.WriteLine($"Reduce : {GetRemaining(key)}");
 
-
         _owner.SendSkillCostPacket(key, GetRemaining(key));
     }
 

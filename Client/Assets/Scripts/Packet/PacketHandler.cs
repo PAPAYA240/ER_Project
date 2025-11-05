@@ -497,6 +497,13 @@ class PacketHandler
         }
     }
 
+    public static void S_SkillCollisionRequestHandler(PacketSession session, IMessage packet)
+    {
+        S_SkillCollisionRequest requestPacket = packet as S_SkillCollisionRequest;
+
+        Managers.Object.MyPlayer.OnServerUpdate(requestPacket);
+    }
+
     public static void S_SkillCostHandler(PacketSession session, IMessage packet)
     {
         S_SkillCost costPacket = packet as S_SkillCost;

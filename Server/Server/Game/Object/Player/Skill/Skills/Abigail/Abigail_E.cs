@@ -24,24 +24,14 @@ public sealed class Abigail_E : Skill_Abigail
     public override void OnEnter(Player p, SkillContext ctx)
     {
         base.OnEnter(p, ctx);
-        // TODO: 코스트/쿨타임 차감
-
+        
         p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
 
         p.PosInfo.PosX = ctx.MousePos.X;
         p.PosInfo.PosZ = ctx.MousePos.Y;
         p.SendChangeTransformPacket(true);
         p.Room.AttackSkillTarget(p, _target, _keyCode);
-    }
-
-    public override void OnTick(Player p, SkillContext ctx)
-    {
-        float t = _elapsed / _animDuration;
-        _elapsed += TimeUtil.DeltaTime;
-
         CanStopSkill = true;
-        p.SendCanStopSkillPacket(CanStopSkill);
-        return;
     }
 
     public override bool CanCast(Player p, SkillContext ctx)

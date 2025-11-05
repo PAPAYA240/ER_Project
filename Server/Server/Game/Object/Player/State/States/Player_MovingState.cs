@@ -86,7 +86,7 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
                 float dist = Vector3.Distance(player.Position, t.Position);
                 if (dist <= player.AttackRange)
                 {
-                    player.ChangeState(new Player_AttackState(_targetId, chaseAllowed: true));
+                    player.ChangeState(Player_AttackState.CreateAttackState(player, _targetId, chaseAllowed: true));
                     return;
                 }
             }
@@ -99,7 +99,7 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
             if (_isTargetOn)
             {
                 // 타겟 이동: 사정거리 진입 의미로 공격 전환
-                player.ChangeState(new Player_AttackState(_targetId, chaseAllowed: true));
+                player.ChangeState(Player_AttackState.CreateAttackState(player, _targetId, chaseAllowed: true));
             }
             else
             {

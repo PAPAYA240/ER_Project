@@ -10,6 +10,7 @@ public class Skill_Abigail : SkillHandlerBase
 {
     protected float _elapsed;
     protected float _animDuration;
+    protected float StopSkillTime { get; set; } = float.MaxValue;
 
     public Skill_Abigail()
     {
@@ -19,7 +20,5 @@ public class Skill_Abigail : SkillHandlerBase
     public override void OnEnter(Player p, SkillContext ctx)
     {
         base.OnEnter(p, ctx);
-
-        p.SendCanStopSkillPacket(false);
     }
 }

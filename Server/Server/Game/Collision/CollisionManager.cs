@@ -52,7 +52,7 @@ namespace Server.Game
         #endregion
     }
 
-    public enum Subject { Subject_None, Self, Ally, Enemy }
+    public enum Subject { Subject_None, Self, Ally, Enemy, Q, W, E, R, T }
 
     public class CollisionManager
     {
@@ -557,7 +557,7 @@ namespace Server.Game
                         continue;
 
                     float damage = attakerKvp.Value;
-                    hitTarget.Room.Push(hitTarget.OnDamaged, attacker, damage, false);
+                    hitTarget.Room.Push(hitTarget.OnDamaged, attacker, damage, false, false);
                 }
             }
         }
@@ -686,7 +686,7 @@ namespace Server.Game
             }
         }
 
-        void HandleStatusEffects<T>(Hitbox hitbox, List<T> hitTargets)
+        void HandleStatusEffects<T>(Hitbox hitbox, List<T> hitTargets) where T : GameObject, new ()
         {
             if (!(hitbox.Creature is Player))
                 return;
@@ -710,13 +710,22 @@ namespace Server.Game
                 switch (effect.subject)
                 {
                     case Subject.Self:
-                        player.Room.Push(player.Room.AddStatusEffect, player, effect);
+                        if (effect.type == "DashAttack")
+                        {
+                            player.Room.Push(player.Room.BehindDash, player/*, FindNearestTarget(hitbox, hitTargets)*/);
+                        }
+                        else
+                            player.Room.Push(player.Room.AddStatusEffect, player, effect);
                         break;
                     case Subject.Ally: // 이건 아군대상 스킬에만 있을거같긴해서 생략
                         break;
                     case Subject.Enemy:
                         foreach(var enemy in hitTargets.OfType<Creature>()) // Creature 일때만
                             enemy.Room.Push(enemy.Room.AddStatusEffect, enemy, effect);
+                        break;
+                    case Subject.T:
+                        if(effect.type == "CDR")
+                            player.Skill.Reduce(KeyCode.T, effect.value);
                         break;
                 }
             }

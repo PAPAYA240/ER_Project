@@ -190,25 +190,25 @@ namespace Server.Game
             Room.Broadcast(packet);
         }
 
-        public virtual void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false)
+        public virtual void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false, bool isBasicAttack = false)
         {
             if (Room == null || State == CreatureState.Dead || State == CreatureState.Appear)
                 return;
 
             if (isTrueDamage)
             {
-                OnDamaged(attacker, damage);
+                OnDamaged(attacker, damage, isBasicAttack);
             }
             else
             {
                 float finalDefense = Defense * (1f - attacker.PercentageDefensePenetration * 0.01f) - attacker.FixedDefensePenetration;
                 float finalDamage = damage * 100f / (100f + finalDefense);
 
-                OnDamaged(attacker, finalDamage);
+                OnDamaged(attacker, finalDamage, isBasicAttack);
             }
         }
 
-        private void OnDamaged(GameObject attacker, float damage)
+        private void OnDamaged(GameObject attacker, float damage, bool isBasicAttack = false)
         {
             //배리어가 흡수할 수치 계산
             float absorbed = Math.Min(Barrier, damage);
@@ -245,12 +245,14 @@ namespace Server.Game
 
             // 데미지 텍스트를 공격자와 피격자에게 보냄.
             //TODO 데미지 타입을 받아와야함.
-
-            if(remaining >= 1)
+            if (remaining >= 1)
             {
                 S_CombatText damageTextPacket = new S_CombatText();
                 damageTextPacket.ObjectId = Id;
-                damageTextPacket.Type = CombatTextType.Ad;
+                if(isBasicAttack)
+                    damageTextPacket.Type = CombatTextType.Ad;
+                else
+                    damageTextPacket.Type = CombatTextType.Ap;
                 damageTextPacket.Value = remaining;
 
                 if (targetPlayer != null)
@@ -347,7 +349,7 @@ namespace Server.Game
                 {
                     _barriers.Add(statusEffect);
                     UpdateBarrier();
-                }                    
+                }
                 else
                 {
                     _statusEffects.Add(statusEffect);
@@ -364,11 +366,11 @@ namespace Server.Game
             }
         }
 
-        public void RemoveStatusEffects(string type, string stat = null) // 해당 종류의 상태효과 모두 제거
+        public int RemoveStatusEffects(string type, string stat = null) // 해당 종류의 상태효과 모두 제거
         {
             lock (_lock)
             {
-                _statusEffects.RemoveWhere(se =>
+                return _statusEffects.RemoveWhere(se =>
                     se.type == type &&
                     se.stat == stat);
             }
