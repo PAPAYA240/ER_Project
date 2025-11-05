@@ -533,16 +533,14 @@ public class PlayerSkillController : MonoBehaviour
         Vector3 validPos = targetPos;
 
         var path = new NavMeshPath();
-        if (!NavMesh.CalculatePath(startPos, targetPos, NavMesh.AllAreas, path) || path.status == NavMeshPathStatus.PathInvalid)
+        if (!NavMesh.CalculatePath(startPos, targetPos, _agent.areaMask, path) || path.status != NavMeshPathStatus.PathComplete)
         {
             // 경로 자체가 없으면 레이캐스트로 첫 히트 포인트 클램프
             if (NavMesh.Raycast(startPos, targetPos, out var hit, NavMesh.AllAreas))
             {
                 validPos = hit.position;
-                Debug.Log("InValid Position");
             }
         }
-
         return validPos;
     }
 

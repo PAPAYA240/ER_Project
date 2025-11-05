@@ -145,6 +145,5 @@ public abstract class SkillHandlerBase : ISkill
         prop = _latest;
         return true;
     }
-
     #endregion
 }

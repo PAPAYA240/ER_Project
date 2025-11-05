@@ -17,7 +17,7 @@ public sealed class Yuki_E : SkillHandlerBase
     {
         _characterType = CharacterType.Yuki;
         _animName = "SKILL_E";
-        _keyCode = KeyCode.W;
+        _keyCode = KeyCode.E;
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
@@ -42,7 +42,7 @@ public sealed class Yuki_E : SkillHandlerBase
         //p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Cast);
         Vector3 targetPos = _endPos;
         p.SendSkillCollisionRequestPacket(_keyCode, CollisionType.Clamp, p.Position, targetPos);
-        ////////////////////p.SendSkillCostPacket(_keyCode, p.GetCoolTime(_keyCode));
+        p.SendSkillCostPacket(_keyCode);
         p.LookAtMouse(ctx.MousePos);
     }
 
