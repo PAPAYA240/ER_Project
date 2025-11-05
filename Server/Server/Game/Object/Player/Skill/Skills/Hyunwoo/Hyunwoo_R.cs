@@ -8,6 +8,8 @@ using static Server.Data.DataUtils;
 
 public sealed class Hyunwoo_R : ChargingSkillHandler
 {
+    double _start;
+
     public Hyunwoo_R()
     {
         _characterType = CharacterType.Hyunwoo;
@@ -21,6 +23,8 @@ public sealed class Hyunwoo_R : ChargingSkillHandler
 
         //p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
         p.LookAtMouse(ctx.MousePos);
+
+        _start = TimeUtil.UtcSec();
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -44,13 +48,15 @@ public sealed class Hyunwoo_R : ChargingSkillHandler
 
     public override void OnTick(Player p, SkillContext ctx)
     {
-   
+        if(_start + 2 < TimeUtil.UtcSec())
+            p.ChangeState(new Player_SkillState(SkillRegistry.Create("Hyunwoo_R_Loop"), ctx));
     }
 
     public override void OnExit(Player p, SkillContext ctx)
     {
         base.OnExit(p, ctx);
 
+        _start = 0;
     }
 }
 

@@ -7,7 +7,7 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
 {
     private readonly ISkill _handler;
     public ISkill Handler {  get { return _handler; } }
-    public readonly SkillContext _ctx;
+    public readonly SkillContext Ctx;
 
     private int _tStartTick, _tHitTick, _tEndTick;
     private bool _didHit, _forceEnd;
@@ -17,8 +17,8 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
     public Player_SkillState(ISkill handler, SkillContext ctx)
     {
         _handler = handler;
-        _ctx = ctx;
-        _ctx.AttachFinishHandler(RequestFinish);
+        Ctx = ctx;
+        Ctx.AttachFinishHandler(RequestFinish);
     }
 
     public void Enter(Player player)
@@ -35,7 +35,7 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
         //float hitSec;
         //_tHitTick = unchecked(_tStartTick + (int)MathF.Round(hitSec * 1000f));
 
-        _handler.OnEnter(player, _ctx);
+        _handler.OnEnter(player, Ctx);
     }
 
     public void Execute(Player player)
@@ -50,19 +50,19 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
 
         if (!_didHit && TimeUtil.IsPastOrNow(now, _tHitTick))
         {
-            _handler.OnHit(player, _ctx);
+            _handler.OnHit(player, Ctx);
             _didHit = true;
         }
 
         if(HandleMovementCompletion(player))
             OnStopCommand(player, null);
 
-        _handler.OnTick(player, _ctx);
+        _handler.OnTick(player, Ctx);
     }
 
     public void Exit(Player player)
     {
-        _handler.OnExit(player, _ctx);
+        _handler.OnExit(player, Ctx);
     }
 
     private void ChangeState(Player player)

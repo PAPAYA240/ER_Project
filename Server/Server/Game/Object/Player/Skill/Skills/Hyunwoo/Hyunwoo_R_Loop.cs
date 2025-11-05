@@ -6,8 +6,10 @@ using System.Text;
 using static Server.Data.DataUtils;
 
 
-public sealed class Hyunwoo_R_Loop : SkillHandlerBase
+public sealed class Hyunwoo_R_Loop : ChargingSkillHandler
 {
+    double _start;
+
     public Hyunwoo_R_Loop()
     {
         _characterType = CharacterType.Hyunwoo;
@@ -21,20 +23,29 @@ public sealed class Hyunwoo_R_Loop : SkillHandlerBase
 
         //p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
         p.LookAtMouse(ctx.MousePos);
+
+        _start = TimeUtil.UtcSec();
     }
 
     public override void OnHit(Player p, SkillContext ctx)
     {
-        return;
+
+    }
+    public override void OnCharge(Player p, SkillContext ctx)
+    {
+        // when charging end
+        p.ChargingRatio = 1;
+        p.ChangeState(new Player_SkillState(SkillRegistry.Create("Hyunwoo_R_End"), ctx));
     }
 
     public override void OnTick(Player p, SkillContext ctx)
     {
-        // 만약 여기서 체인지 스테이트를 하면 될 것 같은데 되나? > p.ChangeState();
-        // 루프 애니메이션을 계속 돌아야하는데 > 딕트에 시간을 바꿔놓고 사용.
-        
+        if (_start + 1.2 < TimeUtil.UtcSec())
+        {
+            p.ChargingRatio = 1;
+            p.ChangeState(new Player_SkillState(SkillRegistry.Create("Hyunwoo_R_End"), ctx));
+        }
 
-        return;
     }
 
     public override void OnExit(Player p, SkillContext ctx)
