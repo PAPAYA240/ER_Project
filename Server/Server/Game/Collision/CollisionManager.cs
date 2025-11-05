@@ -551,7 +551,7 @@ namespace Server.Game
                         continue;
 
                     float damage = attakerKvp.Value;
-                    hitTarget.Room.Push(hitTarget.OnDamaged, attacker, damage, false);
+                    hitTarget.Room.Push(hitTarget.OnDamaged, attacker, damage, false, false);
                 }
             }
         }
@@ -706,7 +706,7 @@ namespace Server.Game
                     case Subject.Self:
                         if (effect.type == "DashAttack")
                         {
-                            player.Room.Push(player.Room.BehindDash, player);
+                            player.Room.Push(player.Room.BehindDash, player/*, FindNearestTarget(hitbox, hitTargets)*/);
                         }
                         else
                             player.Room.Push(player.Room.AddStatusEffect, player, effect);

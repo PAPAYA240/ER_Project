@@ -9,9 +9,11 @@ using static Server.Data.DataUtils;
 
 public sealed class Yuki_E : SkillHandlerBase
 {
-    private Vector3 _startPos, _endPos, nextPos;
+    private Vector3 _startPos, _endPos, nextPos, _dir;
     private float _elapsed;
-    private float _duration = 0.3f;
+    private float _duration;
+    private float _dashRange;       // 대쉬 이동거리
+    private float _speed;
 
     public Yuki_E()
     {
@@ -27,22 +29,25 @@ public sealed class Yuki_E : SkillHandlerBase
 
         _startPos = p.Position;
 
-        const float dashRange = 5.0f;
+        // 초기화
+        _dashRange = 5.0f;
+        _elapsed = 0f;
+        _speed = 17f;
 
         Vector3 mouseWorldPos = new Vector3(ctx.MousePos.X, p.Position.Y, ctx.MousePos.Y);
 
-        Vector3 dir = mouseWorldPos - p.Position;
-        dir.Y = 0;
-        dir = Vector3.Normalize(dir);
+        _dir = mouseWorldPos - p.Position;
+        _dir.Y = 0;
+        _dir = Vector3.Normalize(_dir);
 
-        _endPos = _startPos + dir * dashRange;
+        _endPos = _startPos + _dir * _dashRange;
 
-        _elapsed = 0f;
+        _duration = _dashRange / _speed;
 
-        //p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Cast);
         Vector3 targetPos = _endPos;
         p.SendSkillCollisionRequestPacket(_keyCode, CollisionType.Clamp, p.Position, targetPos);
         p.SendSkillCostPacket(_keyCode);
+
         p.LookAtMouse(ctx.MousePos);
     }
 
@@ -53,6 +58,17 @@ public sealed class Yuki_E : SkillHandlerBase
 
     public override void OnCollision(Player p)
     {
+        _startPos = p.Position;
+
+        _dashRange = 1.5f;
+        _endPos = _startPos + _dir * _dashRange;
+
+        _elapsed = 0f;
+
+        float distance = Vector3.Distance(_startPos, _endPos);
+
+        _duration = distance / _speed;
+
         return;
     }
 
@@ -71,7 +87,10 @@ public sealed class Yuki_E : SkillHandlerBase
         if(_committed)
         {
             if (_elapsed < _duration)
+            {
+                float t = Math.Clamp(_elapsed / _duration, 0f, 1f);
                 nextPos = Vector3.Lerp(_startPos, _endPos, _elapsed / _duration);
+            }
 
             _elapsed += TimeUtil.DeltaTime;
             p.SendSkillMotion(
