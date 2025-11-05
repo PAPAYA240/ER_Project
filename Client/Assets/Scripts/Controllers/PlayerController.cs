@@ -369,8 +369,6 @@ public class PlayerController : CreatureController
     protected virtual void PassiveSkill() { }
     public virtual void OnAttackTiming() { }
 
-    public virtual void OnSkillMeshTiming(KeyCode key) { }
-
     IEnumerator CoStartSkill()
     {
         // 대기 시간
