@@ -1,9 +1,10 @@
+using Google.Protobuf.Protocol;
+using Lucene.Net.Support;
+using Server.Data;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Numerics;
-using Google.Protobuf.Protocol;
-using Server.Data;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -979,7 +980,9 @@ namespace Server.Game
                 TargetPos = targetPos,
                 Speed = speed,
             };
-            Room.Push(Room.Broadcast, packet);
+            //Room.Push(Room.Broadcast, packet);
+            Session.Send(packet);
+            Console.WriteLine($"MoveSync : {targetPos.PosX:F2}, {targetPos.PosZ:F2}");
         }
 
         public void SendChangeTransformPacket(bool isWarp = false) // 수동으로 플레이어 위치or회전 수정한 후에 보내는 패킷

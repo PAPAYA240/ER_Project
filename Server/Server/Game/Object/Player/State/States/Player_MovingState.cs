@@ -115,6 +115,8 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
     // C_Move가 연속으로 들어올 때 "상태 재진입 없이" 목표지/타겟만 갱신
     public void OnMoveCommand(Player player, C_Move packet)
     {
+        Console.WriteLine("@ OnMoveCommand : Moving");
+
         bool newIsTargetOn = packet.IsTargetOn;
         int newTargetId = packet.TargetId;
         Vector3 newTargetPos = new Vector3

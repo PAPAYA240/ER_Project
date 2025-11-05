@@ -104,10 +104,11 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
     }
     public void OnMoveCommand(Player player, C_Move move)
     {
+        Console.WriteLine("@ OnMoveCommand : Skill");
+
         if (_handler.CanMoveDuringCast)
         {
             // (A) 이 스킬은 시전 중 이동 허용
-
             player.SendMoveSyncPacket(
                 move.TargetPosition,
                 _handler.MoveSpeedMultiplier
@@ -127,7 +128,7 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
             {
                 // (B) 시전 중 이동 불가 스킬
                 // 지금은 못 움직이니까 예약
-                player.SendStopPacket(StopReason.StopMoveOnly);
+                //player.SendStopPacket(StopReason.StopMoveOnly);
 
                 // 2) 나중에 스킬이 끝나면 바로 이동시키기 위해 의도를 큐에 넣음
                 C_SetMoveTarget deferred = new C_SetMoveTarget()

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEditor.PlayerSettings;
 using static UnityEngine.GraphicsBuffer;
 
 public class PlayerViewController : MonoBehaviour
@@ -62,10 +63,10 @@ public class PlayerViewController : MonoBehaviour
 
         _player.UpdateTransform();
 
-        if (_player.State == CreatureState.Moving || _player.State == CreatureState.Idle)
-        {
-            _player.UpdateTransform();
-        }
+        //if (_player.State == CreatureState.Moving || _player.State == CreatureState.Idle)
+        //{
+        //    _player.UpdateTransform();
+        //}
     }
 
     public void OnMove(S_Move packet)
@@ -86,6 +87,7 @@ public class PlayerViewController : MonoBehaviour
 
     public void OnMoveSync(S_MoveSync packet)
     {
+        //Debug.Log("@ OnMoveSync");
         C_SetMoveTarget cmd = new C_SetMoveTarget()
         {
             IsGround = true,
@@ -130,15 +132,30 @@ public class PlayerViewController : MonoBehaviour
         if (_agent == null)
             return;
 
-        if (_player.State == CreatureState.Skill && !isServerSync)
-            return;
-        else
-            _skill.StopSkillMotion();
+        //if (_player.State == CreatureState.Skill && !isServerSync)
+        //    return;
+        //else
+        //    _skill.StopSkillMotion();
 
-        if(isServerSync)
-            _agent.speed = _player.Speed * speed;
+        //Debug.Log("@ ApplyLocalSetMoveTarget");
+
+        if (_player.State == CreatureState.Skill)
+        {
+            if(!isServerSync)
+            {
+                //Debug.Log("@ Skill : 서버 이동 아님");
+                return;
+            }
+            else
+                Debug.Log($"@ Skill : 서버 이동 - {cmd.TargetPos.PosX:F2}, {cmd.TargetPos.PosZ:F2}");
+        }
         else
-            _agent.speed = _player.Speed;
+        {
+            _skill.StopSkillMotion();
+            //Debug.Log("@ Skill : StopSkillMotion");
+        }
+
+        _agent.speed = isServerSync ? _player.Speed * speed : _player.Speed;
 
         // 추적 코루틴 정리
         StopFollowTarget();
@@ -155,14 +172,15 @@ public class PlayerViewController : MonoBehaviour
             if (NavMesh.SamplePosition(final, out var navHit, 2.0f, NavMesh.AllAreas))
                 final = navHit.position;
 
-            _agent.isStopped = false;
             _agent.SetDestination(final);
+            Debug.Log($"@ Skill : agent - {final.x:F2}, {final.z:F2}");
+            //if (!_agent.hasPath || Vector3.SqrMagnitude(_agent.destination - final) > 0.0004f)
+            //    _agent.SetDestination(final);
         }
         else
         {
             // 타겟팅 이동: 타겟 현재 위치를 주기적으로 따라간다
             _followTargetId = cmd.TargetId;
-            _agent.isStopped = false;
 
             // 즉시 한 번 갱신 후, 주기 추적 시작
             UpdateFollowDestinationOnce();
