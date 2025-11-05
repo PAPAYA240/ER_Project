@@ -94,6 +94,7 @@ enum CreatureState{
   REST = 5;
   CHARGING = 6;
   APPEAR = 7;
+  OPERATE = 8;
 }
 
 enum SkillInputType
@@ -118,7 +119,7 @@ enum EnvType{
    DEVICE_SPAWNPOINT = 2;
    ACCBOUNDARY_SPAWNPOINT = 3;
    BARRIER_SPAWNPOINT = 4;
-   TURBINE = 5;
+   BEACON = 5;
 }
    
 enum SkillType{
