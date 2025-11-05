@@ -12,7 +12,7 @@ public sealed class Yuki_E : SkillHandlerBase
     private Vector3 _startPos, _endPos, nextPos, _collisionPos, _dir;
     private float _elapsed;
     private float _duration = 0.3f;
-    private float _dashRange;
+    private float _dashRange;       // 대쉬 이동거리
 
     private GameObject enemy;
 
@@ -96,7 +96,6 @@ public sealed class Yuki_E : SkillHandlerBase
                 end: nextPos
             );
         }        
-
 
         return;
     }
