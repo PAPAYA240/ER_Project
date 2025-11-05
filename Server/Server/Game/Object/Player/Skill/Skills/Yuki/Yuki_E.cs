@@ -58,6 +58,8 @@ public sealed class Yuki_E : SkillHandlerBase
 
     public override void OnCollision(Player p)
     {
+        _committed = false;
+
         _startPos = p.Position;
 
         _dashRange = 1.5f;
@@ -68,6 +70,8 @@ public sealed class Yuki_E : SkillHandlerBase
         float distance = Vector3.Distance(_startPos, _endPos);
 
         _duration = distance / _speed;
+
+        p.SendSkillCollisionRequestPacket(_keyCode, CollisionType.Block, _startPos, _endPos);
 
         return;
     }
