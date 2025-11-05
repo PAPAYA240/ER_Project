@@ -48,7 +48,7 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
             if(TryConsumeLatest(out SkillCollisionProposal prop))
             {
                 _startPos = p.Position;
-                _endPos = prop.EndBlocked;
+                _endPos = prop.collisionPos;
 
                 _duration = Vector3.Distance(_startPos, _endPos) / _spec.limits.speed;
 

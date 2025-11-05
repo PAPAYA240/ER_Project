@@ -43,7 +43,7 @@ public sealed class Skill_Blink : SkillHandlerBase
         p.SendSkillMotion(
          type: SkillMotionType.Transform,
          start: p.Position,
-         end: prop.EndPass);
+         end: prop.collisionPos);
 
         _committed = true;
     }

@@ -63,7 +63,7 @@ public sealed class Yuki_E : SkillHandlerBase
             if (TryConsumeLatest(out SkillCollisionProposal prop))
             {
                 _startPos = p.Position;
-                _endPos = prop.BehindBlocked;
+                _endPos = prop.collisionPos;
                 _committed = true;
             }
         }

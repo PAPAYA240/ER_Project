@@ -77,7 +77,7 @@ public sealed class Rozzi_E : SkillHandlerBase
                 if (TryConsumeLatest(out SkillCollisionProposal prop))
                 {
                     _committed = true;
-                    _endPos = prop.EndBlocked;
+                    _endPos = prop.collisionPos;
                 }
             }
             else

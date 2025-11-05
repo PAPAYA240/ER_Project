@@ -196,11 +196,7 @@ namespace Server.Game
             {
                 Seq = skillPacket.Seq,
 
-                EndBlocked = new Vector3(skillPacket.EndBlockedX, player.PosInfo.PosY, skillPacket.EndBlockedZ),
-                EndPass = new Vector3(skillPacket.EndPassX, player.PosInfo.PosY, skillPacket.EndPassZ),
-                BehindBlocked = new Vector3(skillPacket.BehindBlockedX, player.PosInfo.PosY, skillPacket.BehindBlockedZ),
-
-                CandidateTargetId = skillPacket.CandidateTargetId,
+                collisionPos = new Vector3(skillPacket.CollisionX, player.PosInfo.PosY, skillPacket.CollisionZ),
                 //Speed = skillPacket.Speed
             };
 
