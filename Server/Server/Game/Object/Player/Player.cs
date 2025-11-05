@@ -953,6 +953,18 @@ namespace Server.Game
             Session.Send(costPacket);
         }
 
+        public void SendSkillCostPacket(KeyCode keyCode)
+        {
+            S_SkillCost costPacket = new S_SkillCost
+            {
+                ObjectId = Id,
+                SkillKey = (int)keyCode,
+                CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina }
+            };
+
+            Session.Send(costPacket);
+        }
+
         public void SendTargetChangePacket(S_TargetChange packet)
         {
             Session.Send(packet);
