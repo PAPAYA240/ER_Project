@@ -16,11 +16,6 @@ public class PlayerInputController : MonoBehaviour
     [SerializeField] float _attackRange = 3.0f;  
     [SerializeField] float _stopBuffer = 1.5f;
 
-    private Vector3 _lastCmdDest;
-    private int _lastCmdTargetId;
-    private bool _lastCmdIsTarget;
-    [SerializeField] float _destEps = 0.15f; // 15cm 이상 움직일 때만 새 명령
-
     private GameObject _target;
 
     [SerializeField] private LayerMask _groundMask;
@@ -55,15 +50,6 @@ public class PlayerInputController : MonoBehaviour
                 if (!TryGetGroundDestination(out Vector3 final))
                     return null;
 
-                // 중복 억제: 연속 같은 목적지면 전송 생략
-                if (!_lastCmdIsTarget &&
-                    (final - _lastCmdDest).sqrMagnitude < _destEps * _destEps)
-                    return null;
-
-                _lastCmdIsTarget = false;
-                _lastCmdDest = final;
-                _lastCmdTargetId = 0;
-
                 return new C_SetMoveTarget
                 {
                     IsGround = true,
@@ -75,14 +61,6 @@ public class PlayerInputController : MonoBehaviour
                 // 타겟팅 이동
                 if (!TryGetTargetDestination(target, out Vector3 final, out int id))
                     return null;
-
-                // 중복 억제: 같은 타겟이면 전송 생략
-                if (_lastCmdIsTarget && id == _lastCmdTargetId)
-                    return null;
-
-                _lastCmdIsTarget = true;
-                _lastCmdTargetId = id;
-                _lastCmdDest = final; // (정보 유지용)
 
                 return new C_SetMoveTarget
                 {

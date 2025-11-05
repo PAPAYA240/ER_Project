@@ -438,6 +438,17 @@ namespace Server.Game
                         Vector2 center = new Vector2(hitbox.PosX, hitbox.PosZ);
                         Vector2 toTarget = new Vector2(go.PosInfo.PosX - center.X, go.PosInfo.PosZ - center.Y);
 
+                        Vector2 mouseDir = Vector2.Normalize(new Vector2(hitbox.MousePos.X - center.X, hitbox.MousePos.Y - center.Y));
+                        Vector2 mouseRightVec = new Vector2(mouseDir.Y, -mouseDir.X);
+
+
+                        if (hitbox.Data.LookOffset != 0f || hitbox.Data.RightOffset != 0f)
+                        {
+                            center += mouseDir * hitbox.Data.LookOffset;
+                            center += mouseRightVec * hitbox.Data.RightOffset;
+                        }
+
+                        toTarget = new Vector2(go.PosInfo.PosX - center.X, go.PosInfo.PosZ - center.Y);
                         float dist = toTarget.Length();
                         if (dist > hitbox.Data.Radius + go.Radius)
                             return false;
@@ -445,7 +456,7 @@ namespace Server.Game
                         if (dist <= go.Radius)
                             return true;
 
-                        Vector2 mouseDir = Vector2.Normalize(new Vector2(hitbox.MousePos.X - center.X, hitbox.MousePos.Y - center.Y));
+                        
                         Vector2 targetDir = toTarget / dist;
 
                         float dot = Math.Clamp(Vector2.Dot(mouseDir, targetDir), -1f, 1f);

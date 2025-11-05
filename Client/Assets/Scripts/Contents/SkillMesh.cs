@@ -111,7 +111,7 @@ public class SkillMesh : MonoBehaviour
 
             case SkillShape.Ray:
                 float range = Mathf.Lerp(_hitbox.MinRange, _hitbox.MaxRange, ChargeRatio);
-                visualObject.transform.localPosition = new Vector3(0, 0, range * 0.5f);
+                visualObject.transform.localPosition = new Vector3(_hitbox.RightOffset, 0, range * 0.5f + _hitbox.LookOffset);
                 DrawRectangle(lr, _hitbox.Width, range);
                 break;
 
