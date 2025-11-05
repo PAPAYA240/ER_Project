@@ -156,8 +156,6 @@ namespace Data
 
     public class SkillSpec
     {
-        public ProposalMode proposalMode;
-
         public SkillNeed needs;
         public SkillLimits limits;        
     }

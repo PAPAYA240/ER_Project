@@ -787,24 +787,25 @@ message C_SkillInput {
   float mouseZ = 4;
 }
 
-message S_SkillCollisionRequest
-{
+message S_SkillCollisionRequest {
   int32 skillKey = 1;
   CollisionType type = 2;
+  int32 requestId = 3;
 
-  float startX = 3;
-  float startZ = 4;
-  float endX = 5;
-  float endZ = 6;
+  float startX = 4;
+  float startZ = 5;
+  float endX = 6;
+  float endZ = 7;
 }
 
 message C_SkillCollisionPropose {
   int32  skillKey = 1;
-  int32  seq = 2;              
+  int32 requestId = 2;
+  int32  seq = 3;              
 
   // 후보 지점 2가지
-  float collisionX = 3;  
-  float collisionZ = 4; 
+  float collisionX = 4;  
+  float collisionZ = 5; 
 }
 
 message C_Rest {

@@ -8,6 +8,7 @@ using static Server.Data.DataUtils;
 
 public struct SkillCollisionProposal
 {
+    public int requestId;
     public int Seq;                         // 최신만
 
     public Vector3 collisionPos;

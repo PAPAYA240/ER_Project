@@ -72,11 +72,10 @@ public sealed class Rozzi_E : SkillHandlerBase
         }
         else
         {
-            if (!_committed)
+            if (_requestId != _commitId)
             {
-                if (TryConsumeLatest(out SkillCollisionProposal prop))
+                if (TryConsumeLatest(ref _commitId, out SkillCollisionProposal prop))
                 {
-                    _committed = true;
                     _endPos = prop.collisionPos;
                 }
             }
@@ -97,8 +96,7 @@ public sealed class Rozzi_E : SkillHandlerBase
         {
             Vector3 dir = Vector3.Normalize(_target.Position - p.Position);
             Vector3 requestPos = p.Position + dir * _behindDistance;
-            p.SendSkillCollisionRequestPacket(_keyCode, CollisionType.Block, p.Position, requestPos);
-
+            SendSkillCollisionRequestPacket(p, CollisionType.Block, p.Position, requestPos);
             _isRequest = true;
         }
 

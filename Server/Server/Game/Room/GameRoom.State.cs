@@ -194,6 +194,7 @@ namespace Server.Game
             // 제안 변환
             var prop = new SkillCollisionProposal
             {
+                requestId = skillPacket.RequestId,
                 Seq = skillPacket.Seq,
 
                 collisionPos = new Vector3(skillPacket.CollisionX, player.PosInfo.PosY, skillPacket.CollisionZ),
@@ -202,7 +203,7 @@ namespace Server.Game
 
             // 스킬로 전달
             if (player.CurrentState is Player_SkillState skillState)
-                skillState.Handler.OnPropose(player, prop);
+                skillState.Handler.OnPropose(player, prop); 
         }
 
         // S/H
