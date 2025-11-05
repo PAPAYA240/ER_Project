@@ -42,7 +42,7 @@ public sealed class Yuki_E : SkillHandlerBase
         //p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Cast);
         Vector3 targetPos = _endPos;
         p.SendSkillCollisionRequestPacket(_keyCode, CollisionType.Clamp, p.Position, targetPos);
-
+        ////////////////////p.SendSkillCostPacket(_keyCode, p.GetCoolTime(_keyCode));
         p.LookAtMouse(ctx.MousePos);
     }
 

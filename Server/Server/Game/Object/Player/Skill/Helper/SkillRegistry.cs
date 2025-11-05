@@ -54,7 +54,7 @@ public static class SkillRegistry
             //if (key == KeyCode.E) return new Hyunwoo_E();
             //if (key == KeyCode.R) return new Hyunwoo_R();
             //if (key == KeyCode.D) return new Hyunwoo_D();
-            //if (key == KeyCode.F) return new Skill_Blink();
+            if (key == KeyCode.F) return new Skill_Blink();
         }
 
         return null;

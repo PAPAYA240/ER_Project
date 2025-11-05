@@ -1,8 +1,10 @@
 ﻿using Data;
 using Google.Protobuf.Protocol;
+using NUnit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -483,11 +485,12 @@ public class PlayerSkillController : MonoBehaviour
 
     Vector3 ComputeEndPass(float startX, float startZ, float endX, float endZ)
     {
+        Vector3 startPos = new Vector3(startX, transform.position.y, startZ);
         Vector3 targetPos = new Vector3(endX, transform.position.y, endZ);
 
         if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
         {
-            return navHit.position;
+            return GetValidPosition(startPos, navHit.position);
         }
 
         Debug.Log("ComputeEndPass Error!");
@@ -511,17 +514,36 @@ public class PlayerSkillController : MonoBehaviour
 
     Vector3 ComputeClamp(float startX, float startZ, float endX, float endZ)
     {
+        Vector3 startPos = new Vector3(startX, transform.position.y, startZ);
         Vector3 targetPos = new Vector3(endX, transform.position.y, endZ);
 
         if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 0.5f, NavMesh.AllAreas))
         {
-            return navHit.position;
+            return GetValidPosition(startPos, navHit.position);
         }
         else
         {
             var start = transform.position;
             return GetReachablePosition(start, targetPos, out NavMeshHit hit);
         }
+    }
+
+    private Vector3 GetValidPosition(Vector3 startPos, Vector3 targetPos)
+    {
+        Vector3 validPos = targetPos;
+
+        var path = new NavMeshPath();
+        if (!NavMesh.CalculatePath(startPos, targetPos, NavMesh.AllAreas, path) || path.status == NavMeshPathStatus.PathInvalid)
+        {
+            // 경로 자체가 없으면 레이캐스트로 첫 히트 포인트 클램프
+            if (NavMesh.Raycast(startPos, targetPos, out var hit, NavMesh.AllAreas))
+            {
+                validPos = hit.position;
+                Debug.Log("InValid Position");
+            }
+        }
+
+        return validPos;
     }
 
     protected Vector3 GetTargetPos(float range, bool isMaxDistance = true)
