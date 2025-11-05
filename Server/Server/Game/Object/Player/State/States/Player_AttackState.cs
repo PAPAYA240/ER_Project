@@ -268,7 +268,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     public static Player_AttackState CreateAttackState(Player p, int targetId, bool chaseAllowed = true, float attackRange = DefaultAttackRange)
     {
         if(p.Info.Player.CharType == CharacterType.Abigail)
-            return new Abigail_T(targetId, chaseAllowed, attackRange);
+            return new Abigail_AttackState(targetId, chaseAllowed, attackRange);
 
         return new Player_AttackState(targetId, chaseAllowed, attackRange);
     }

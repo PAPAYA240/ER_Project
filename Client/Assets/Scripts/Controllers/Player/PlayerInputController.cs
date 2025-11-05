@@ -37,7 +37,7 @@ public class PlayerInputController : MonoBehaviour
 
         _groundMask = 1 << LayerMask.NameToLayer("Map");
         _monsterMask = 1 << LayerMask.NameToLayer("Monster");
-        _playerMask = 1 << LayerMask.NameToLayer("Fog");    // TEMP
+        _playerMask = 1 << LayerMask.NameToLayer("Player");    // TEMP
     }
 
     // 우클릭 유지 중 이동 의도(타겟 이동 or 땅 이동)
