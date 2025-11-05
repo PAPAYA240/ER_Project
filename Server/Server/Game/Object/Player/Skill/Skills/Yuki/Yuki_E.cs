@@ -61,9 +61,9 @@ public sealed class Yuki_E : SkillHandlerBase
         _startPos = p.Position;
 
         _dashRange = 1.5f;
-        _endPos = _startPos + _dir * _dashRange;
-
         _elapsed = 0f;
+
+        _endPos = _startPos + _dir * _dashRange;
 
         float distance = Vector3.Distance(_startPos, _endPos);
 
@@ -86,13 +86,14 @@ public sealed class Yuki_E : SkillHandlerBase
 
         if(_committed)
         {
+            _elapsed += TimeUtil.DeltaTime;
+
             if (_elapsed < _duration)
             {
                 float t = Math.Clamp(_elapsed / _duration, 0f, 1f);
-                nextPos = Vector3.Lerp(_startPos, _endPos, _elapsed / _duration);
+                nextPos = Vector3.Lerp(_startPos, _endPos, t);
             }
 
-            _elapsed += TimeUtil.DeltaTime;
             p.SendSkillMotion(
                 type: SkillMotionType.Transform,
                 start: p.Position,
