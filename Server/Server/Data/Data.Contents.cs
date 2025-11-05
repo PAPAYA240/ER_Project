@@ -209,6 +209,7 @@ namespace Server.Data
         public bool areaOfEffect; //잘모름
         public float radius;
         public float range;
+        public float chargeCoefficient; 
 
         public ProjectileData projectile;
     }

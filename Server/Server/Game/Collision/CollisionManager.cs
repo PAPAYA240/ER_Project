@@ -513,7 +513,6 @@ namespace Server.Game
 
         public float CalcDamage(Creature attacker, StatInfo target, KeyCode keyCode)
         {
-            // 플레이어가 몬스터 때릴 때
             // TODO 버프 디버프 정보도 가지고 와야함. 예를 들면 방깍 디버프 같은거 
             Player playerAttacker = attacker as Player;
             if (playerAttacker == null) return 0f;
@@ -527,6 +526,13 @@ namespace Server.Game
                 + skill.SkillData.scaling.dstMaxHpRatio * target.MaxHp * 0.01f
                 + skill.SkillData.scaling.srcCurHpRatio * playerAttacker.Hp * 0.01f
                 + skill.SkillData.scaling.srcMaxHpRatio * playerAttacker.MaxHp * 0.01f;
+
+            // charging skill
+            if(playerAttacker.Info.Player.CharType == CharacterType.Hyunwoo && keyCode == KeyCode.R)
+            {
+                // lerp with Charging Ratio and Charging Coeff
+                damage = damage * (1 + playerAttacker.ChargingRatio * skill.SkillData.mechanics.chargeCoefficient);
+            }
 
             // 그냥 예시 : 추가 데미지를 입힐 시에
             if (playerAttacker.IsSkillAmplification)

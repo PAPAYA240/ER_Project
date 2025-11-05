@@ -242,6 +242,22 @@ namespace Server.Game
                 stop.OnStopCommand(player, pkt);
         }
 
+        public void HandleChargingSkill(Player p, C_ChargingSkill packet)
+        {
+            p.ChargingRatio = packet.CharginRatio;
+
+            Player_SkillState state = p.CurrentState as Player_SkillState;
+            if (state != null)
+            {
+                ChargingSkillHandler skillHandler = state.Handler as ChargingSkillHandler;
+
+                if(skillHandler != null)
+                {
+                    skillHandler.OnCharge(p, state._ctx);
+                }
+            }
+        }
+
         #region Utils
         public GameObject FindNearestEnemy(Player me, int range)
         {

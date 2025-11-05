@@ -7,7 +7,7 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
 {
     private readonly ISkill _handler;
     public ISkill Handler {  get { return _handler; } }
-    private readonly SkillContext _ctx;
+    public readonly SkillContext _ctx;
 
     private DateTime _tStart, _tHit, _tEnd;
     private bool _didHit, _forceEnd;

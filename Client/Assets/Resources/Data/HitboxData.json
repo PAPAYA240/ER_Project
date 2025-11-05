@@ -39,24 +39,28 @@
       "Q": {
         "shape": "Sector",
         "type": "SkillStatic",
-        "radius": 2.2,
+        "radius": 3,
         "angle": 90,
-        "duration": 0.2
+        "startFrame": 8,
+        "endFrame": 12
       },
       "W": {
         "type": "SkillStatic"
       },
       "E": {
-        "type": "SkillTrack"
+        "shape": "Circle",
+        "radius": 1.5,
+        "type": "SkillTrack",
+        "startFrame": 0,
+        "endFrame": 12
       },
       "R": {
         "shape": "Ray",
         "type": "SkillStatic",
-        "charge": true,
         "width": 3,
-        "duration": 0.3,
-        "minRange": 1,
-        "maxRange": 4
+        "startFrame": 0,
+        "endFrame": 5,
+        "maxRange": 4.2
       }
     },
     "Rozzi": {

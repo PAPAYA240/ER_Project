@@ -51,8 +51,8 @@ public static class SkillRegistry
         {
             if (key == KeyCode.Q) return new Hyunwoo_Q();
             //if (key == KeyCode.W) return new Hyunwoo_W();
-            //if (key == KeyCode.E) return new Hyunwoo_E();
-            //if (key == KeyCode.R) return new Hyunwoo_R();
+            if (key == KeyCode.E) return new Hyunwoo_E();
+            if (key == KeyCode.R) return new Hyunwoo_R();
             //if (key == KeyCode.D) return new Hyunwoo_D();
             //if (key == KeyCode.F) return new Skill_();
         }
@@ -72,6 +72,8 @@ public static class SkillRegistry
     public static void InitRegister()
     {
         SkillRegistry.Register<Rozzi_Q_Dash>("Rozzi_Q_Dash");
+        SkillRegistry.Register<Hyunwoo_R_Short_End>("Hyunwoo_R_Short_End");
+        SkillRegistry.Register<Hyunwoo_R_End>("Hyunwoo_R_End");
     }
 
     public static void Register<T>(string key) where T : ISkill, new()

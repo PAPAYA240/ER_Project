@@ -80,6 +80,8 @@ enum MsgId {
 
   C_KEY_INPUT_FOR_TEST = 69;
   S_SKILL_COST = 70;
+
+  C_CHARGING_SKILL = 71;
 }
 
 enum CreatureState{
@@ -562,6 +564,11 @@ message S_ChangeScore{
 
 message S_GameOver{
 	int32 winTeam  = 1;
+}
+
+message C_ChargingSkill{
+	float charginRatio = 1;
+	int32 keyCode = 2;
 }
 
 message PositionInfo{

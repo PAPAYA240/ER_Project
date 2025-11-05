@@ -245,19 +245,23 @@ namespace Server.Game
 
             // 데미지 텍스트를 공격자와 피격자에게 보냄.
             //TODO 데미지 타입을 받아와야함.
-            S_CombatText damageTextPacket = new S_CombatText();
-            damageTextPacket.ObjectId = Id;
-            damageTextPacket.Type = CombatTextType.Ad;
-            damageTextPacket.Value = remaining;
 
-            if (targetPlayer != null)
+            if(remaining >= 1)
             {
-                targetPlayer.Session.Send(damageTextPacket);
-            }
+                S_CombatText damageTextPacket = new S_CombatText();
+                damageTextPacket.ObjectId = Id;
+                damageTextPacket.Type = CombatTextType.Ad;
+                damageTextPacket.Value = remaining;
 
-            if (attackPlayer != null)
-            {
-                attackPlayer.Session.Send(damageTextPacket);
+                if (targetPlayer != null)
+                {
+                    targetPlayer.Session.Send(damageTextPacket);
+                }
+
+                if (attackPlayer != null)
+                {
+                    attackPlayer.Session.Send(damageTextPacket);
+                }
             }
 
             Room.Broadcast(changePacket);

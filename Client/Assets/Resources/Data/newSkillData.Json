@@ -2689,7 +2689,7 @@
         "levels": {
           "1": {
             "damage": 50,
-            "cooldown": 9,
+            "cooldown": 1,
             "staminaCost": 40,
             "effects": [
               {
@@ -2817,7 +2817,7 @@
         },
         "levels": {
           "1": {
-            "cooldown": 15,
+            "cooldown": 1,
             "staminaCost": 30,
             "effects": [
               {
@@ -2913,7 +2913,7 @@
         "levels": {
           "1": {
             "damage": 80,
-            "cooldown": 14,
+            "cooldown": 1,
             "staminaCost": 70,
             "effects": [
               {
@@ -3006,7 +3006,8 @@
         "maxLevel": 3,
         "mechanics": {
           "targetType": "TargetArea",
-          "damageType": "Magic"
+          "damageType": "Magic",
+          "chargeCoefficient": 2
         },
         "scaling": {
           "adRatio": 0.35,
@@ -3015,7 +3016,7 @@
         "levels": {
           "1": {
             "damage": 100,
-            "cooldown": 60,
+            "cooldown": 1,
             "staminaCost": 90,
             "effects": [
               {

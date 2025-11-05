@@ -35,7 +35,7 @@ public class PlayerInputController : MonoBehaviour
 
         _groundMask = 1 << LayerMask.NameToLayer("Map");
         _monsterMask = 1 << LayerMask.NameToLayer("Monster");
-        _playerMask = 1 << LayerMask.NameToLayer("Fog");    // TEMP
+        _playerMask = 1 << LayerMask.NameToLayer("Player");
     }
 
     // 우클릭 유지 중 이동 의도(타겟 이동 or 땅 이동)
@@ -141,12 +141,12 @@ public class PlayerInputController : MonoBehaviour
         return null;
     }
 
-    private static readonly KeyCode[] _skillKeys =
+    protected static readonly KeyCode[] _skillKeys =
     {
         KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R, KeyCode.D, KeyCode.F
     };
 
-    public C_SkillInput GetSkillCommand()
+    public virtual C_SkillInput GetSkillCommand()
     {
         // 배열 순서대로 키다운 검사 -> 처음 눌린 키에 대해 바로 생성/리턴
         for (int i = 0; i < _skillKeys.Length; i++)
