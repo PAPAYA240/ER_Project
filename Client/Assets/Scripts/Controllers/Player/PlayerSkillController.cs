@@ -14,6 +14,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Timeline;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using static Unity.Burst.Intrinsics.X86.Avx;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerSkillController : MonoBehaviour
 {
@@ -44,7 +45,7 @@ public class PlayerSkillController : MonoBehaviour
     KeyCode _key = KeyCode.None;
     SkillSpec _curSkill;
     int _targetId;
-    Vector3 mousePos;
+    Vector3 _mousePos;
 
     // TEMP
     Vector3 _endPosition;
@@ -67,7 +68,7 @@ public class PlayerSkillController : MonoBehaviour
     {
         _key = (KeyCode)skillKey;
         _targetId = targetId;
-        mousePos = clickWorld;
+        _mousePos = clickWorld;
 
         if (_coolDownDict.ContainsKey(_key))
         {
@@ -113,25 +114,36 @@ public class PlayerSkillController : MonoBehaviour
         else if(packet.Type == SkillMotionType.Transform)
         {
             ApplySkillMotion((SkillMotionType)packet.Type,
-            new Vector3(packet.EndX, packet.EndY, packet.EndZ));
+            new Vector3(packet.EndX, packet.EndY, packet.EndZ),
+            packet.AuthoritativeEnd);
         }
+    }
+
+    public void OnSkillCollisionRequest(S_SkillCollisionRequest packet)
+    {
+        KeyCode key = (KeyCode)packet.SkillKey;
+
+        _player.SendPacket(ComputeSkillCollision(packet.SkillKey, packet.Type, packet.StartX, packet.StartZ, packet.EndX, packet.EndZ));
+
+        CreateSkillMesh(key);
     }
 
     // 스킬 시작 승인(시전별 instanceId 포함 -> 안함)
     public void OnSkillConfirm(S_SkillConfirm packet)
     {
-        _curSkill = GetSkillSpec((KeyCode)packet.SkillKey, packet.Variants);
-        if (_curSkill != null)
-        {
-            SendSkillCollisionPacket();
-        }
+        //_player.State = CreatureState.Skill;
+        //_curSkill = GetSkillSpec((KeyCode)packet.SkillKey, packet.Variants);
+        //if (_curSkill != null)
+        //{
+        //    SendSkillCollisionPacket();
+        //}
 
-        KeyCode key = (KeyCode)packet.SkillKey;
+        //KeyCode key = (KeyCode)packet.SkillKey;
 
-        //스킬 실행 UI 연동
-        //_player.UI.PlayerInterface.UseSkill(KeyToUIEnum(key));
+        ////스킬 실행 UI 연동
+        ////_player.UI.PlayerInterface.UseSkill(KeyToUIEnum(key));
 
-        CreateSkillMesh(key);
+        //CreateSkillMesh(key);
     }
 
     public void OnSkillCost(S_SkillCost packet)
@@ -162,7 +174,7 @@ public class PlayerSkillController : MonoBehaviour
     {
         if (_curSkill.proposalMode == ProposalMode.SingleShot)
         {
-            _player.SendPacket(ComputeSkillCollision((int)_key, _curSkill, _targetId, mousePos.x, mousePos.z));
+            _player.SendPacket(ComputeSkillCollision((int)_key, _curSkill, _targetId, _mousePos.x, _mousePos.z));
         }
         else
         {
@@ -194,7 +206,7 @@ public class PlayerSkillController : MonoBehaviour
             if (Time.frameCount % 6 == 0)
             {
                 ++seq;
-                _player.SendPacket(ComputeSkillCollision((int)_key, _curSkill, _targetId, mousePos.x, mousePos.z, seq));
+                _player.SendPacket(ComputeSkillCollision((int)_key, _curSkill, _targetId, _mousePos.x, _mousePos.z, seq));
             }
 
             // 로컬 추적 연출(간단)
@@ -252,6 +264,38 @@ public class PlayerSkillController : MonoBehaviour
 
             if(_curSkill.needs.candidateTargetId)
                 packet.CandidateTargetId = targetId;
+        }
+
+        return packet;
+    }
+
+    private C_SkillCollisionPropose ComputeSkillCollision(int skillKey, CollisionType type, float startX, float startZ, float endX, float endZ)
+    {
+        C_SkillCollisionPropose packet = new C_SkillCollisionPropose();
+        packet.SkillKey = skillKey;
+        packet.Seq = 1;
+
+        if (type == CollisionType.Block)
+        {
+            Vector3 endBlocked = ComputeEndBlocked(startX, startZ, endX, endZ);
+            packet.EndBlockedX = endBlocked.x;
+            packet.EndBlockedZ = endBlocked.z;
+
+            Debug.Log($"EndBlocked => X : {endBlocked.x}, Z : {endBlocked.z}");
+        }
+        else if (type == CollisionType.Pass)
+        {
+            Vector3 endPass = ComputeEndPass(startX, startZ, endX, endZ);
+            packet.EndPassX = endPass.x;
+            packet.EndPassZ = endPass.z;
+
+            Debug.Log($"EndPass => X : {endPass.x}, Z : {endPass.z}");
+        }
+        else if (type == CollisionType.Clamp)
+        {
+            Vector3 behindBlocked = ComputeClamp(startX, startZ, endX, endZ);
+            packet.BehindBlockedX = behindBlocked.x;
+            packet.BehindBlockedZ = behindBlocked.z;
         }
 
         return packet;
@@ -357,19 +401,22 @@ public class PlayerSkillController : MonoBehaviour
         _player.UpdateTransform();
     }
 
-    private void ApplySkillMotion(SkillMotionType type, Vector3 targetPos)
+    private void ApplySkillMotion(SkillMotionType type, Vector3 targetPos, bool authoritativeEnd)
     {
-        if(_agent != null)
+        if(_agent != null || _agent.enabled)
             _agent.enabled = false;
 
         // NavMesh 위로 수정
         //if (NavMesh.SamplePosition(targetPos, out var endHit, 2.0f, NavMesh.AllAreas))
         //    _endPosition = endHit.position;
 
-        transform.position = targetPos;
+        Vector3 finalPos = targetPos;
+        finalPos.y = transform.position.y;
+        transform.position = finalPos;
         _player.UpdateTransform();
 
-        _agent.enabled = true;
+        if(authoritativeEnd)
+            _agent.enabled = true;
     }
 
     private float ApplyCurve(float u, string id)
@@ -398,6 +445,27 @@ public class PlayerSkillController : MonoBehaviour
         return blocked;
     }
 
+    Vector3 ComputeEndBlocked(float startX, float startZ, float endX, float endZ)
+    {
+        Vector3 startPos = new Vector3 { x = startX, y = transform.position.y, z = startZ };
+        Vector3 endPos = new Vector3 { x = endX, y = transform.position.y, z = endZ };
+
+        Vector3 targetPos = endPos;
+        if (NavMesh.Raycast(startPos, endPos, out NavMeshHit rayHit, NavMesh.AllAreas))
+        {
+            targetPos = rayHit.position;
+        }
+
+        // 최종 목적지 설정
+        if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 1.0f, NavMesh.AllAreas))
+        {
+            return navHit.position;
+        }
+
+        Debug.Log("ComputeEndBlocked Error!");
+        return Vector3.zero;
+    }
+
     Vector3 ComputeEndPass(int skillKey, SkillSpec spec, float clickX, float clickZ)
     {
         Vector3 targetPos = GetTargetPos(spec.limits.baseMaxDist);
@@ -413,10 +481,47 @@ public class PlayerSkillController : MonoBehaviour
         }
     }
 
+    Vector3 ComputeEndPass(float startX, float startZ, float endX, float endZ)
+    {
+        Vector3 targetPos = new Vector3(endX, transform.position.y, endZ);
+
+        if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
+        {
+            return navHit.position;
+        }
+
+        Debug.Log("ComputeEndPass Error!");
+        return targetPos;
+    }
+
     Vector3 ComputeBehindBlocked(int skillKey, SkillSpec spec, int targetId, float clickX, float clickZ)
     {
-        // TODO : 
-        return Vector3.zero;
+        Vector3 targetPos = GetTargetPos(spec.limits.extraMaxBehind);
+
+        if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 1.0f, NavMesh.AllAreas))
+        {
+            return navHit.position;
+        }
+        else
+        {
+            var start = transform.position;
+            return GetReachablePosition(start, targetPos, out NavMeshHit hit);
+        }
+    }
+
+    Vector3 ComputeClamp(float startX, float startZ, float endX, float endZ)
+    {
+        Vector3 targetPos = new Vector3(endX, transform.position.y, endZ);
+
+        if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 0.5f, NavMesh.AllAreas))
+        {
+            return navHit.position;
+        }
+        else
+        {
+            var start = transform.position;
+            return GetReachablePosition(start, targetPos, out NavMeshHit hit);
+        }
     }
 
     protected Vector3 GetTargetPos(float range, bool isMaxDistance = true)
@@ -449,6 +554,7 @@ public class PlayerSkillController : MonoBehaviour
             return navHit.position;
         }
 
+        Debug.Log("GetReachablePosition Error!");
         return Vector3.zero;
     }
 

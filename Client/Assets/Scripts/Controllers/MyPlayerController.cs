@@ -167,6 +167,7 @@ public class MyPlayerController : PlayerController
     public void OnServerUpdate(S_Stop packet) => _view.OnStop(packet);
     public void OnServerUpdate(S_SkillMotion packet) => _skill.OnSkill(packet);
     public void OnServerUpdate(S_SkillConfirm packet) => _skill.OnSkillConfirm(packet);
+    public void OnServerUpdate(S_SkillCollisionRequest packet) => _skill.OnSkillCollisionRequest(packet);
     public void OnServerUpdate(S_SkillCost packet) => _skill.OnSkillCost(packet);
 
     #region UI

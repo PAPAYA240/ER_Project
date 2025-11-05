@@ -356,7 +356,7 @@ namespace Server.Game
             }
 
             _skills[KeyCode.T].CurLevel = 1;
-            //_skills[KeyCode.F].CurLevel = 1;
+            _skills[KeyCode.F].CurLevel = 1;
         }
 
         private void MakeDict()
@@ -862,9 +862,9 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendSkillMotion(SkillMotionType type, Vector3 start, Vector3 end,
+        public void SendSkillMotion(SkillMotionType type, Vector3 start, Vector3 end, bool authoritativeEnd = false,
                             float duration = 0f, string anim = default, string curveId = default,
-                            bool serverCollision = false, bool authoritativeEnd = true)
+                            bool serverCollision = false)
         {
             S_SkillMotion pkt = new S_SkillMotion
             {
@@ -921,9 +921,24 @@ namespace Server.Game
         {
 
         }
+
         public void SendDeadPacket(S_Respawn packet)
         {
             Room.Push(Room.Broadcast, packet);
+        }
+
+        public void SendSkillCollisionRequestPacket(KeyCode keyCode, CollisionType type, Vector3 startPos, Vector3 endPos)
+        {
+            S_SkillCollisionRequest packet = new S_SkillCollisionRequest
+            {
+                SkillKey = (int)keyCode,
+                Type = type,
+                StartX = startPos.X,
+                StartZ = startPos.Z,
+                EndX = endPos.X,
+                EndZ = endPos.Z
+            };
+            Session.Send(packet);
         }
 
         public void SendSkillCostPacket(KeyCode keyCode, float coolTime)

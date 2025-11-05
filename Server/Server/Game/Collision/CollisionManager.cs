@@ -52,7 +52,7 @@ namespace Server.Game
         #endregion
     }
 
-    public enum Subject { Subject_None, Self, Ally, Enemy }
+    public enum Subject { Subject_None, Self, Ally, Enemy, Q, W, E, R, T }
 
     public class CollisionManager
     {
@@ -680,7 +680,7 @@ namespace Server.Game
             }
         }
 
-        void HandleStatusEffects<T>(Hitbox hitbox, List<T> hitTargets) where T : GameObject, new()
+        void HandleStatusEffects<T>(Hitbox hitbox, List<T> hitTargets) where T : GameObject, new ()
         {
             if (!(hitbox.Creature is Player))
                 return;
@@ -716,6 +716,10 @@ namespace Server.Game
                     case Subject.Enemy:
                         foreach(var enemy in hitTargets.OfType<Creature>()) // Creature 일때만
                             enemy.Room.Push(enemy.Room.AddStatusEffect, enemy, effect);
+                        break;
+                    case Subject.T:
+                        if(effect.type == "CDR")
+                            player.Skill.Reduce(KeyCode.T, effect.value);
                         break;
                 }
             }

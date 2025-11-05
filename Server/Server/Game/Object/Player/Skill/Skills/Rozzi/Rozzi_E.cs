@@ -16,7 +16,13 @@ public sealed class Rozzi_E : SkillHandlerBase
     private GameObject _target;
 
     private float _elapsed;
-    private Vector3 _startPos, _midPos;
+    private Vector3 _startPos, _midPos, _endPos;
+
+    private float _dashDistance = 4.0f;
+    private float _behindDistance = 2.0f;
+
+    // TEMP
+    private bool _isRequest;
 
     public Rozzi_E()
     {
@@ -38,7 +44,7 @@ public sealed class Rozzi_E : SkillHandlerBase
         _startPos = p.Position;
         _midPos = _target.Position;
 
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
+        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Cast);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -50,36 +56,70 @@ public sealed class Rozzi_E : SkillHandlerBase
     {
         float t = _elapsed / _animDuration;
 
-        Vector3 targetPos;
+        Vector3 targetPos = p.Position;
 
-        if (t < _followRatio)
+        if (t <= _followRatio)
         {
             _midPos = _target.Position;
 
-            float midT = t / _followRatio;
+            float midT = Math.Clamp(t / _followRatio, 0f, 1f);
             targetPos = Vector3.Lerp(_startPos, _midPos, midT);
+
+            p.SendSkillMotion(
+                type: SkillMotionType.Transform,
+                start: p.Position,
+                end: targetPos);           
         }
         else
         {
-            float endT = (t - (1 - _followRatio)) / _followRatio;
-            targetPos = Vector3.Lerp(_midPos, _midPos, endT);
+            if (!_committed)
+            {
+                if (TryConsumeLatest(out SkillCollisionProposal prop))
+                {
+                    _committed = true;
+                    _endPos = prop.EndBlocked;
+                }
+            }
+            else
+            {
+                float endT = (t - _followRatio) / (1f - _followRatio);
+                endT = Math.Clamp(endT, 0f, 1f);
+                targetPos = Vector3.Lerp(_midPos, _endPos, endT);
+
+                p.SendSkillMotion(
+                    type: SkillMotionType.Transform,
+                    start: p.Position,
+                    end: targetPos);
+            }                
+        }
+
+        if(!_isRequest && t >= _followRatio)
+        {
+            Vector3 dir = Vector3.Normalize(_target.Position - p.Position);
+            Vector3 requestPos = p.Position + dir * _behindDistance;
+            p.SendSkillCollisionRequestPacket(_keyCode, CollisionType.Block, p.Position, requestPos);
+
+            _isRequest = true;
         }
 
         _elapsed += TimeUtil.DeltaTime;
-
-        p.SendSkillMotion(
-         type: SkillMotionType.Transform,
-         start: p.Position,
-         end: targetPos);
+      
+        _finalEnd = targetPos;
 
         //Console.WriteLine($"targetPos : {targetPos}");
-        
+
         return;
     }
 
     public override void OnExit(Player p, SkillContext ctx)
     {
         base.OnExit(p, ctx);
+
+        p.SendSkillMotion(
+         type: SkillMotionType.Transform,
+         start: p.Position,
+         end: _finalEnd,
+         authoritativeEnd: true);
     }
 
     public override bool CanCast(Player p, SkillContext ctx)

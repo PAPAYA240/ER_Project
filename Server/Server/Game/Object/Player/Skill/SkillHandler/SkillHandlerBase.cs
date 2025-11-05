@@ -57,7 +57,11 @@ public abstract class SkillHandlerBase : ISkill
 
     public virtual void OnExit(Player p, SkillContext ctx)
     {
-
+        //p.SendSkillMotion(
+        //    type: SkillMotionType.Transform,
+        //    start: p.Position,
+        //    end: _finalEnd,
+        //    authoritativeEnd: true);
     }
 
     public virtual void OnHit(Player p, SkillContext ctx)

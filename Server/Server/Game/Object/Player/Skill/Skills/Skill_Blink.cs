@@ -21,7 +21,10 @@ public sealed class Skill_Blink : SkillHandlerBase
         _committed = false;
 
         p.SendStopPacket(StopReason.StopMoveOnly);
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Cast);
+        //p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Cast);
+
+        Vector3 targetPos = new Vector3(ctx.MousePos.X, p.Position.Y, ctx.MousePos.Y);
+        p.SendSkillCollisionRequestPacket(_keyCode, CollisionType.Pass, p.Position, targetPos);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
