@@ -180,7 +180,7 @@ namespace Server.Game
             }
         }
 
-        public override void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false)
+        public override void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false, bool isBasicAttack = false)
         {
             if (Room == null || State == CreatureState.Dead)
                 return;
