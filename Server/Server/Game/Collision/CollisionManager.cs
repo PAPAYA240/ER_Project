@@ -551,7 +551,7 @@ namespace Server.Game
                         continue;
 
                     float damage = attakerKvp.Value;
-                    hitTarget.Room.Push(hitTarget.OnDamaged, attacker, damage, false);
+                    hitTarget.Room.Push(hitTarget.OnDamaged, attacker, damage, false, false);
                 }
             }
         }

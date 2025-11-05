@@ -56,6 +56,6 @@ public class Abigail_T : Player_AttackState
             p.Room.Push(p.Room.AttackSkillTarget, p, target, _keyCode);
 
         // 평타 데미지
-        float damage = p.Info.StatInfo.Attack;
+        target.OnDamaged(p, p.Attack, false, true);
     }
 }
