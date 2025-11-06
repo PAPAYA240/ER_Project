@@ -373,4 +373,21 @@ class PacketHandler
 
         player.Room.Push(player.Room.HandleKeyInputForTest, player, req);
     }
+
+    // Receive and save the charging ratio from the client.
+    public static void C_ChargingSkillHandler(PacketSession session, IMessage packet)
+    {
+        C_ChargingSkill chargePacket = packet as C_ChargingSkill;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleChargingSkill, player, chargePacket);
+    }
 }

@@ -48,6 +48,12 @@ public class MyPlayerController : PlayerController
     {
         base.Init();
 
+        if(ObjInfo.Player.CharType == CharacterType.Hyunwoo)
+        {
+            Destroy(_input);
+            _input = gameObject.GetOrAddComponent<HyunwooInputController>();
+        }
+
         Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
         _skill.Init();
         _UI.Init();

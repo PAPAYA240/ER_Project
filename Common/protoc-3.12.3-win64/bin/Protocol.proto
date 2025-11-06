@@ -80,7 +80,9 @@ enum MsgId {
 
   C_KEY_INPUT_FOR_TEST = 69;
   S_SKILL_COST = 70;
+
   S_SKILL_COLLISION_REQUEST = 71;
+  C_CHARGING_SKILL = 72;
 }
 
 enum CreatureState{
@@ -92,6 +94,7 @@ enum CreatureState{
   REST = 5;
   CHARGING = 6;
   APPEAR = 7;
+  OPERATE = 8;
 }
 
 enum SkillInputType
@@ -116,7 +119,7 @@ enum EnvType{
    DEVICE_SPAWNPOINT = 2;
    ACCBOUNDARY_SPAWNPOINT = 3;
    BARRIER_SPAWNPOINT = 4;
-   TURBINE = 5;
+   BEACON = 5;
 }
    
 enum SkillType{
@@ -564,6 +567,10 @@ message S_ChangeScore{
 
 message S_GameOver{
 	int32 winTeam  = 1;
+}
+
+message C_ChargingSkill{
+	float charginRatio = 1;
 }
 
 message PositionInfo{

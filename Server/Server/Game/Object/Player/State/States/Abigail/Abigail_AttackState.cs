@@ -6,14 +6,14 @@ using System.Numerics;
 using System.Text;
 using static Server.Data.DataUtils;
 
-public class Abigail_T : Player_AttackState
+public class Abigail_AttackState : Player_AttackState
 {
     static readonly float _tAttackRange = 2.15f;
     private const string AnimAttackT = "SKILL_T";
     KeyCode _keyCode = KeyCode.T;
     bool IsPassiveAttack = false;
 
-    public Abigail_T(int targetId, bool chaseAllowed = true, float attackRange = DefaultAttackRange) : base(targetId, chaseAllowed, _tAttackRange)
+    public Abigail_AttackState(int targetId, bool chaseAllowed = true, float attackRange = DefaultAttackRange) : base(targetId, chaseAllowed, _tAttackRange)
     {
     }
 

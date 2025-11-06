@@ -19,6 +19,8 @@ namespace Server.Game
 
         protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
 
+        public float ChargingRatio { get; set; } = 0; // How Long Charge 0 ~ 1
+
         // temp �ӽ� �ڵ� ���߿� ����
         bool _isDeath = false;
         public bool IsDeath
