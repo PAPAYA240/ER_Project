@@ -13,6 +13,7 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
     private bool _didHit, _forceEnd;
 
     private Vector3? _currentDestination = null;
+    private const float DEST_CHANGE_EPS = 0.05f; // 목적지 미세변경 무시
 
     public Player_SkillState(ISkill handler, SkillContext ctx)
     {
@@ -102,18 +103,29 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
         }
         return false;
     }
+
     public void OnMoveCommand(Player player, C_Move move)
     {
         if (_handler.CanMoveDuringCast)
         {
             // (A) 이 스킬은 시전 중 이동 허용
 
+            Vector3 newDest = move.TargetPosition.ToVector();
+
+            if (_currentDestination.HasValue)
+            {
+                float sqrDist = Vector3.DistanceSquared(newDest, _currentDestination.Value);
+                if (sqrDist < DEST_CHANGE_EPS * DEST_CHANGE_EPS)
+                    return; // 거의 같은 목적지면 무시
+            }
+
+            _currentDestination = newDest;
+
             player.SendMoveSyncPacket(
                 move.TargetPosition,
                 _handler.MoveSpeedMultiplier
             );
 
-            _currentDestination = move.TargetPosition.ToVector();
             _handler.OnMove(player);
         }
         else
