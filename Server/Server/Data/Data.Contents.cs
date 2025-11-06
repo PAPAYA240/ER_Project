@@ -323,6 +323,9 @@ namespace Server.Data
         public float ratioPerTarget; // 대상 1명 추가당 증가량 (ex: 아비게일 W: 추가로 적중한 적 하나 당 보호막량 20% 증가)
         public float maxRatio;       // 최대 증가량
 
+        //public Vector3 knockbackDistance; // 밀치기 거리
+        //public float knockbackSpeed; // 밀치는 속도
+
         public string prefabName; // 프리팹 이름
         public float delayTime; // 이펙트 시작 시간
         public Vector3 position;

@@ -76,9 +76,14 @@ public abstract class SkillHandlerBase : ISkill
         
     }
 
-    public virtual void OnCollision(Player p)
+    public virtual void OnCollision<T>(Player p, List<T> targets, GameObject.StatusEffect effect)
     {
+        
+    }
 
+    public virtual void OnCollision<T>(Player p, T nearestTarget, GameObject.StatusEffect effect)
+    {
+        
     }
 
     public virtual void OnTick(Player p, SkillContext ctx)
@@ -157,5 +162,7 @@ public abstract class SkillHandlerBase : ISkill
         prop = default;
         return false;
     }
+
+
     #endregion
 }

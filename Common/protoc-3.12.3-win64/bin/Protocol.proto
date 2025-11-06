@@ -95,6 +95,7 @@ enum CreatureState{
   CHARGING = 6;
   APPEAR = 7;
   OPERATE = 8;
+  STUN = 9;
 }
 
 enum SkillInputType

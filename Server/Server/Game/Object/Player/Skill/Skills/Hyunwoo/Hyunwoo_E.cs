@@ -29,7 +29,7 @@ public sealed class Hyunwoo_E : SkillHandlerBase
 
         _startPos = p.Position;
 
-        // 초기화
+        // Init values
         _dashRange = 5.0f;
         _elapsed = 0f;
         _speed = 17f;
@@ -40,18 +40,16 @@ public sealed class Hyunwoo_E : SkillHandlerBase
         _dir.Y = 0;
         _dir = Vector3.Normalize(_dir);
 
+        // calculate End Position
         _endPos = _startPos + _dir * _dashRange;
 
         _duration = _dashRange / _speed;
 
-        Vector3 targetPos = _endPos;
-        SendSkillCollisionRequestPacket(p, CollisionType.Block, p.Position, targetPos);
+        // Request collision position to client
+        SendSkillCollisionRequestPacket(p, CollisionType.Block, p.Position, _endPos);
         p.SendSkillCostPacket(_keyCode);
 
         p.LookAtMouse(ctx.MousePos);
-
-        //p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
-        //p.LookAtMouse(ctx.MousePos);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -78,20 +76,22 @@ public sealed class Hyunwoo_E : SkillHandlerBase
 
             if (_elapsed < _duration)
             {
+                // calc move position
                 float t = Math.Clamp(_elapsed / _duration, 0f, 1f);
                 nextPos = Vector3.Lerp(_startPos, _endPos, t);
             }
             else
             {
-                if(_dashRange - (_startPos - _endPos).Length() > 0.1f)
+                // hit the wall
+                if(_dashRange - (_startPos - _endPos).Length() > float.Epsilon)
                 {
                     p.ChangeState(new Player_SkillState(SkillRegistry.Create("Hyunwoo_E_End"), ctx));
                 }
+                // do not hit the wall
                 else
                 {
                     p.ChangeState(new Player_IdleState());
                 }
-
             }
 
             p.SendSkillMotion(
@@ -100,8 +100,6 @@ public sealed class Hyunwoo_E : SkillHandlerBase
                 end: nextPos
             );
         }
-
-
     }
 
     public override void OnExit(Player p, SkillContext ctx)
