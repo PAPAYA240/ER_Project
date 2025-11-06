@@ -259,12 +259,6 @@ enum SkillMotionType {
   transform = 1;
 }
 
-enum ProposalMode { 
-  None = 0;
-  SingleShot = 1; 
-  Streaming = 2;
-}
-
 enum CollisionType {
   BLOCK = 0;
   CLAMP = 1;
@@ -771,7 +765,7 @@ message S_SkillConfirm {
   int32 objectId = 1;			
   bool canUse = 2;
   int32 skillKey = 3;			
-  VariantKey variants = 4;
+  bool canMove = 4;
   //CostInfo costInfo = 5;
   //int32 targetId = 6;
 }
@@ -800,34 +794,25 @@ message C_SkillInput {
   float mouseZ = 4;
 }
 
-message S_SkillCollisionRequest
-{
+message S_SkillCollisionRequest {
   int32 skillKey = 1;
   CollisionType type = 2;
+  int32 requestId = 3;
 
-  float startX = 3;
-  float startZ = 4;
-  float endX = 5;
-  float endZ = 6;
+  float startX = 4;
+  float startZ = 5;
+  float endX = 6;
+  float endZ = 7;
 }
 
 message C_SkillCollisionPropose {
   int32  skillKey = 1;
-  int32  seq = 2;              // Streaming일 때만 증가 (서버는 최신만 사용)
-  ProposalMode  mode = 3;             // SingleShot or Streaming
+  int32 requestId = 2;
+  int32  seq = 3;              
 
   // 후보 지점 2가지
-  float endBlockedX = 4;  // 벽 앞(Agent.Raycast hit - skin)
-  float endBlockedZ = 5; 
-  float endPassX = 6;   
-  float endPassZ = 7;    // 통과 가정 목표(타겟 쪽)
-  float behindBlockedX = 8;
-  float behindBlockedZ = 9;
-
-  int32 candidateTargetId = 10;
-  //float speed = 11;
-  // 검증 힌트(서버는 자체 스펙으로 재검증)
-  //float  radius, maxDistance, speed;
+  float collisionX = 4;  
+  float collisionZ = 5; 
 }
 
 message C_Rest {

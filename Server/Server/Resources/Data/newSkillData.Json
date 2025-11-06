@@ -606,6 +606,112 @@
           "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
         }
       },
+      "D": {
+        "name": "무빙리로드",
+        "description": "1초 동안 이동 속도가 상승합니다. 이동 중에는 기본 공격을 할 수 없으며, 이동이 끝난 후에는 다음 2회의 기본 공격 속도가 70% 증가합니다.",
+        "type": "Buff",
+        "maxLevel": 3,
+        "mechanics": {
+          "targetType": "NonTarget",
+          "damageType": "None"
+        },
+        "scaling": {
+          "adRatio": 0.0
+        },
+        "levels": {
+          "1": {
+            "damage": 0,
+            "cooldown": 1,
+            "staminaCost": 0,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 40,
+                "duration": 1
+              },
+              {
+                "type": "Buff",
+                "stat": "AttackSpeed",
+                "value": 70,
+                "duration": 2
+              },
+              {
+                "type": "Debuff",
+                "stat": "Attack",
+                "value": 0,
+                "duration": 1
+              }
+            ]
+          },
+          "2": {
+            "damage": 0,
+            "cooldown": 1,
+            "staminaCost": 0,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 55,
+                "duration": 1
+              },
+              {
+                "type": "Buff",
+                "stat": "AttackSpeed",
+                "value": 70,
+                "duration": 2
+              },
+              {
+                "type": "Debuff",
+                "stat": "Attack",
+                "value": 0,
+                "duration": 1
+              }
+            ]
+          },
+          "3": {
+            "damage": 0,
+            "cooldown": 1,
+            "staminaCost": 0,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 70,
+                "duration": 1
+              },
+              {
+                "type": "Buff",
+                "stat": "AttackSpeed",
+                "value": 70,
+                "duration": 2
+              },
+              {
+                "type": "Debuff",
+                "stat": "Attack",
+                "value": 0,
+                "duration": 1
+              }
+            ]
+          }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "<color=#FFFFFF>60</color><color=#DFC480>(+공격력의 50%)</color>",
+            "<color=#FFFFFF>120</color><color=#DFC480>(+공격력의 50%)</color>",
+            "<color=#FFFFFF>180</color><color=#DFC480>(+공격력의 50%)</color>"
+          ],
+          "{MaxHpRatio}": [
+            "<color=#FFFFFF>4%</color>",
+            "<color=#FFFFFF>7%</color>",
+            "<color=#FFFFFF>10%</color>"
+          ]
+        },
+        "popupInfo": {
+          "피해량": [ "60", "120", "180" ],
+          "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
+        }
+      },
       "F": {
         "name": "블링크",
         "description": "사용 시 지정한 위치로 일정 거리 순간이동합니다.",
@@ -912,7 +1018,7 @@
         "levels": {
           "1": {
             "damage": 40,
-            "cooldown": 15,
+            "cooldown": 3,
             "staminaCost": 50,
             "effects": [
               {

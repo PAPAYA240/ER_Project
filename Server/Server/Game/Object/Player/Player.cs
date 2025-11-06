@@ -1,9 +1,10 @@
+using Google.Protobuf.Protocol;
+using Lucene.Net.Support;
+using Server.Data;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Numerics;
-using Google.Protobuf.Protocol;
-using Server.Data;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -359,6 +360,9 @@ namespace Server.Game
 
             _skills[KeyCode.T].CurLevel = 1;
             _skills[KeyCode.F].CurLevel = 1;
+
+            if (_skills.TryGetValue(KeyCode.D, out var value))
+                value.CurLevel = 1;
         }
 
         private void MakeDict()
@@ -848,8 +852,6 @@ namespace Server.Game
             };
 
             Room.Push(Room.Broadcast, packet);
-
-            //Console.WriteLine($"Char : {Info.Player.CharType} / x : {posInfo.PosX}, z : {posInfo.PosZ}");
         }
 
         public void SendSetMoveTarget(bool isGround, int targetId, PositionInfo posOpt = null)
@@ -887,7 +889,7 @@ namespace Server.Game
             Room.Broadcast(pkt);
         }
 
-        public void SendSkillConfirmPacket(bool canUse, KeyCode keyCode = KeyCode.None, VariantKey variants = default)
+        public void SendSkillConfirmPacket(bool canUse, KeyCode keyCode = KeyCode.None, bool canMoveDuringCast = false, bool sendCostPacket = true)
         {
             S_SkillConfirm packet;
 
@@ -898,13 +900,11 @@ namespace Server.Game
                     ObjectId = Id,
                     CanUse = canUse,
                     SkillKey = (int)keyCode,
-                    Variants = variants,
-                    //CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina },
-                    //InstanceId = ,
-                    //TargetId = , 
+                    CanMove = canMoveDuringCast
                 };
                
-                SendSkillCostPacket(keyCode, GetCoolTime(keyCode));
+                if(sendCostPacket)
+                    SendSkillCostPacket(keyCode, GetCoolTime(keyCode));
             }
             else
             {
@@ -929,11 +929,12 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendSkillCollisionRequestPacket(KeyCode keyCode, CollisionType type, Vector3 startPos, Vector3 endPos)
+        public void SendSkillCollisionRequestPacket(KeyCode keyCode, int requestId, CollisionType type, Vector3 startPos, Vector3 endPos)
         {
             S_SkillCollisionRequest packet = new S_SkillCollisionRequest
             {
                 SkillKey = (int)keyCode,
+                RequestId = requestId,
                 Type = type,
                 StartX = startPos.X,
                 StartZ = startPos.Z,
@@ -980,7 +981,8 @@ namespace Server.Game
                 TargetPos = targetPos,
                 Speed = speed,
             };
-            Room.Push(Room.Broadcast, packet);
+            //Room.Push(Room.Broadcast, packet);
+            Session.Send(packet);
         }
 
         public void SendChangeTransformPacket(bool isWarp = false) // 수동으로 플레이어 위치or회전 수정한 후에 보내는 패킷

@@ -20,7 +20,7 @@ public sealed class Rozzi_Q : SkillHandlerBase
     {
         base.OnEnter(p, ctx);
 
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
+        SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
     }
 

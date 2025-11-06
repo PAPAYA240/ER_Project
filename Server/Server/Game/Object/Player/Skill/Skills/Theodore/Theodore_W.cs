@@ -17,7 +17,7 @@ public sealed class Theodore_W : SkillHandlerBase
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision); 
+        SendSkillConfirmPacket(p); 
     }
 
     public override void OnHit(Player p, SkillContext ctx)

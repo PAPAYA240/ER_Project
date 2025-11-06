@@ -20,7 +20,7 @@ public sealed class Rozzi_R : SkillHandlerBase
     {
         base.OnEnter(p, ctx);
 
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
+        SendSkillConfirmPacket(p);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
