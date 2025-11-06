@@ -765,7 +765,7 @@ message S_SkillConfirm {
   int32 objectId = 1;			
   bool canUse = 2;
   int32 skillKey = 3;			
-  VariantKey variants = 4;
+  bool canMove = 4;
   //CostInfo costInfo = 5;
   //int32 targetId = 6;
 }

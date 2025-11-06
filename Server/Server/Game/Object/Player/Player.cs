@@ -889,7 +889,7 @@ namespace Server.Game
             Room.Broadcast(pkt);
         }
 
-        public void SendSkillConfirmPacket(bool canUse, KeyCode keyCode = KeyCode.None, VariantKey variants = default)
+        public void SendSkillConfirmPacket(bool canUse, KeyCode keyCode = KeyCode.None, bool canMoveDuringCast = false, bool sendCostPacket = true)
         {
             S_SkillConfirm packet;
 
@@ -900,13 +900,11 @@ namespace Server.Game
                     ObjectId = Id,
                     CanUse = canUse,
                     SkillKey = (int)keyCode,
-                    Variants = variants,
-                    //CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina },
-                    //InstanceId = ,
-                    //TargetId = , 
+                    CanMove = canMoveDuringCast
                 };
                
-                SendSkillCostPacket(keyCode, GetCoolTime(keyCode));
+                if(sendCostPacket)
+                    SendSkillCostPacket(keyCode, GetCoolTime(keyCode));
             }
             else
             {

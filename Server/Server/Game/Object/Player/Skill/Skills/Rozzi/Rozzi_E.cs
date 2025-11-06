@@ -44,7 +44,7 @@ public sealed class Rozzi_E : SkillHandlerBase
         _startPos = p.Position;
         _midPos = _target.Position;
 
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Cast);
+        SendSkillConfirmPacket(p);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

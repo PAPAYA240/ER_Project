@@ -106,6 +106,11 @@ public abstract class SkillHandlerBase : ISkill
     }
     #endregion
     #region Utils
+    protected void SendSkillConfirmPacket(Player p, bool sendCostPacket = true)
+    {
+        p.SendSkillConfirmPacket(true, _keyCode, CanMoveDuringCast, sendCostPacket);
+    }
+
     protected void SendSkillCollisionRequestPacket(Player p, CollisionType type, Vector3 startPos, Vector3 targetPos)
     {
         p.SendSkillCollisionRequestPacket(_keyCode, _requestId, CollisionType.Pass, p.Position, targetPos);
