@@ -19,7 +19,7 @@ public sealed class Hyunwoo_E_Loop : SkillHandlerBase
     {
         base.OnEnter(p, ctx);
 
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
+        SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
     }
 

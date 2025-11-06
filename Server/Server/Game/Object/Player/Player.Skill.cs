@@ -129,20 +129,23 @@ namespace Server.Game
                 return false;
 
             // 2) 치환 스킬 캐스트
-            var skill = SkillRegistry.Create(tok.ReplacementSkillKey);
-            if (skill == null)
+            var handler = SkillRegistry.Create(tok.ReplacementSkillKey);
+            if (handler == null)
                 return false;
 
             var ctx = new SkillContext
             {
-                Key = skill.GetKeyCode(),
+                Key = handler.GetKeyCode(),
                 MousePos = new Vector2(req.TargetPos.PosX, req.TargetPos.PosZ),
             };
 
-            if (!skill.CanCast(this, ctx))
+            if (!handler.CanCast(this, ctx))
                 return false;
 
-            ChangeState(new Player_SkillState(skill, ctx));
+            if (handler is InstantHandlerBase instant)
+                instant.ExecuteInstant(this);
+            else
+                ChangeState(new Player_SkillState(handler, ctx));
 
             // 3) 토큰 소모/비활성
             tok.RemainingUses--;

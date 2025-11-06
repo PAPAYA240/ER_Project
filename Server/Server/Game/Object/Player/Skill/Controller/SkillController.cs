@@ -72,7 +72,11 @@ public sealed class SkillController
 
         // 3) 커밋(코스트 소모 등), 상태 전환
         _owner.CommitSkillUsage(key);
-        _owner.ChangeState(new Player_SkillState(handler, ctx));
+
+        if (handler is InstantHandlerBase instant)
+            instant.ExecuteInstant(_owner);
+        else
+            _owner.ChangeState(new Player_SkillState(handler, ctx));
 
         return true;
     }

@@ -25,7 +25,7 @@ public sealed class Abigail_E : Skill_Abigail
     {
         base.OnEnter(p, ctx);
         
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
+        SendSkillConfirmPacket(p);
 
         p.PosInfo.PosX = ctx.MousePos.X;
         p.PosInfo.PosZ = ctx.MousePos.Y;

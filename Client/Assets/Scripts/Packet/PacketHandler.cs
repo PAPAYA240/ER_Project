@@ -64,21 +64,12 @@ class PacketHandler
                 {
                     pc.SyncPosFromServer(mPacket);
                 }
-                else
-                {
-                    pc.transform.position = mPacket.PosInfo.ToVector();
-                    pc.transform.rotation = mPacket.RotInfo;
-                    pc.PosInfo = mPacket.PosInfo;
-                    pc.RotInfo = mPacket.RotInfo;
-                }
             }
-            else
-            {
-                bc.transform.position = mPacket.PosInfo.ToVector();
-                bc.transform.rotation = mPacket.RotInfo;
-                bc.PosInfo = mPacket.PosInfo;
-                bc.RotInfo = mPacket.RotInfo;
-            }
+
+            bc.transform.position = mPacket.PosInfo.ToVector();
+            bc.transform.rotation = mPacket.RotInfo;
+            bc.PosInfo = mPacket.PosInfo;
+            bc.RotInfo = mPacket.RotInfo;
         }     
     }
 

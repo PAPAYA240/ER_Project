@@ -194,19 +194,16 @@ namespace Server.Game
             // 제안 변환
             var prop = new SkillCollisionProposal
             {
+                requestId = skillPacket.RequestId,
                 Seq = skillPacket.Seq,
 
-                EndBlocked = new Vector3(skillPacket.EndBlockedX, player.PosInfo.PosY, skillPacket.EndBlockedZ),
-                EndPass = new Vector3(skillPacket.EndPassX, player.PosInfo.PosY, skillPacket.EndPassZ),
-                BehindBlocked = new Vector3(skillPacket.BehindBlockedX, player.PosInfo.PosY, skillPacket.BehindBlockedZ),
-
-                CandidateTargetId = skillPacket.CandidateTargetId,
+                collisionPos = new Vector3(skillPacket.CollisionX, player.PosInfo.PosY, skillPacket.CollisionZ),
                 //Speed = skillPacket.Speed
             };
 
             // 스킬로 전달
             if (player.CurrentState is Player_SkillState skillState)
-                skillState.Handler.OnPropose(player, prop);
+                skillState.Handler.OnPropose(player, prop); 
         }
 
         // S/H
