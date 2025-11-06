@@ -45,7 +45,7 @@ public sealed class Hyunwoo_E : SkillHandlerBase
         _duration = _dashRange / _speed;
 
         Vector3 targetPos = _endPos;
-        p.SendSkillCollisionRequestPacket(_keyCode, CollisionType.Block, p.Position, targetPos);
+        SendSkillCollisionRequestPacket(p, CollisionType.Block, p.Position, targetPos);
         p.SendSkillCostPacket(_keyCode);
 
         p.LookAtMouse(ctx.MousePos);
@@ -61,19 +61,18 @@ public sealed class Hyunwoo_E : SkillHandlerBase
 
     public override void OnTick(Player p, SkillContext ctx)
     {
-        if (!_committed)
+        if (_requestId != _commitId)
         {
-            if (TryConsumeLatest(out SkillCollisionProposal prop))
+            if (TryConsumeLatest(ref _commitId, out SkillCollisionProposal prop))
             {
                 _startPos = p.Position;
-                _endPos = prop.EndBlocked;
-                _committed = true;
+                _endPos = prop.collisionPos;
 
                 _duration = (_startPos - _endPos).Length() / _speed;
             }
         }
 
-        if (_committed)
+        if (_requestId == _commitId)
         {
             _elapsed += TimeUtil.DeltaTime;
 
