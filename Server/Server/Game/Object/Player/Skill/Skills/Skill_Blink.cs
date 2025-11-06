@@ -9,6 +9,8 @@ using static Server.Data.DataUtils;
 
 public sealed class Skill_Blink : SkillHandlerBase
 {
+    private float _blinkDistance = 3.0f;
+
     public Skill_Blink()
     {
         _keyCode = KeyCode.F;
@@ -23,7 +25,10 @@ public sealed class Skill_Blink : SkillHandlerBase
         p.SendStopPacket(StopReason.StopMoveOnly);
         p.SendSkillCostPacket(_keyCode);
 
-        Vector3 targetPos = new Vector3(ctx.MousePos.X, p.Position.Y, ctx.MousePos.Y);
+        Vector3 mousePos = new Vector3(ctx.MousePos.X, p.Position.Y, ctx.MousePos.Y);
+        Vector3 dir = Vector3.Normalize(mousePos - p.Position);
+        Vector3 targetPos = p.Position + dir * _blinkDistance;
+
         SendSkillCollisionRequestPacket(p, CollisionType.Pass, p.Position, targetPos);
     }
 

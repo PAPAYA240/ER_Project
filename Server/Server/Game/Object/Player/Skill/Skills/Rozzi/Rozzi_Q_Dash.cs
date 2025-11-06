@@ -31,7 +31,7 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
         _elapsed = 0.0f;
         //_committed = false;
 
-        //p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.Followup);
+        //SendSkillConfirmPacket(p, false);
         Vector3 targetPos = new Vector3(ctx.MousePos.X, p.Position.Y, ctx.MousePos.Y);
         SendSkillCollisionRequestPacket(p, CollisionType.Block, p.Position, targetPos);
     }

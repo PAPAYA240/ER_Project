@@ -606,6 +606,112 @@
           "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
         }
       },
+      "D": {
+        "name": "무빙리로드",
+        "description": "1초 동안 이동 속도가 상승합니다. 이동 중에는 기본 공격을 할 수 없으며, 이동이 끝난 후에는 다음 2회의 기본 공격 속도가 70% 증가합니다.",
+        "type": "Buff",
+        "maxLevel": 3,
+        "mechanics": {
+          "targetType": "NonTarget",
+          "damageType": "None"
+        },
+        "scaling": {
+          "adRatio": 0.0
+        },
+        "levels": {
+          "1": {
+            "damage": 0,
+            "cooldown": 1,
+            "staminaCost": 0,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 40,
+                "duration": 1
+              },
+              {
+                "type": "Buff",
+                "stat": "AttackSpeed",
+                "value": 70,
+                "duration": 2
+              },
+              {
+                "type": "Debuff",
+                "stat": "Attack",
+                "value": 0,
+                "duration": 1
+              }
+            ]
+          },
+          "2": {
+            "damage": 0,
+            "cooldown": 1,
+            "staminaCost": 0,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 55,
+                "duration": 1
+              },
+              {
+                "type": "Buff",
+                "stat": "AttackSpeed",
+                "value": 70,
+                "duration": 2
+              },
+              {
+                "type": "Debuff",
+                "stat": "Attack",
+                "value": 0,
+                "duration": 1
+              }
+            ]
+          },
+          "3": {
+            "damage": 0,
+            "cooldown": 1,
+            "staminaCost": 0,
+            "effects": [
+              {
+                "type": "Buff",
+                "stat": "speed",
+                "value": 70,
+                "duration": 1
+              },
+              {
+                "type": "Buff",
+                "stat": "AttackSpeed",
+                "value": 70,
+                "duration": 2
+              },
+              {
+                "type": "Debuff",
+                "stat": "Attack",
+                "value": 0,
+                "duration": 1
+              }
+            ]
+          }
+        },
+        "descriptionInfo": {
+          "{damage}": [
+            "<color=#FFFFFF>60</color><color=#DFC480>(+공격력의 50%)</color>",
+            "<color=#FFFFFF>120</color><color=#DFC480>(+공격력의 50%)</color>",
+            "<color=#FFFFFF>180</color><color=#DFC480>(+공격력의 50%)</color>"
+          ],
+          "{MaxHpRatio}": [
+            "<color=#FFFFFF>4%</color>",
+            "<color=#FFFFFF>7%</color>",
+            "<color=#FFFFFF>10%</color>"
+          ]
+        },
+        "popupInfo": {
+          "피해량": [ "60", "120", "180" ],
+          "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
+        }
+      },
       "F": {
         "name": "블링크",
         "description": "사용 시 지정한 위치로 일정 거리 순간이동합니다.",
@@ -916,7 +1022,7 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "DashAttack",
+                "type": "OnCollisionSingleTarget",
                 "subject": "Self",
                 "condition": "Hit"
               },
@@ -931,7 +1037,7 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "DashAttack",
+                "type": "OnCollisionSingleTarget",
                 "subject": "Self",
                 "condition": "Hit"
               },
@@ -946,7 +1052,7 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "DashAttack",
+                "type": "OnCollisionSingleTarget",
                 "subject": "Self",
                 "condition": "Hit"
               },
@@ -961,7 +1067,7 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "DashAttack",
+                "type": "OnCollisionSingleTarget",
                 "subject": "Self",
                 "condition": "Hit"
               },
@@ -976,7 +1082,7 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "DashAttack",
+                "type": "OnCollisionSingleTarget",
                 "subject": "Self",
                 "condition": "Hit"
               },
@@ -2704,8 +2810,8 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "40",
-          "apRatio" : "35"
+          "adRatio": "0.4",
+          "apRatio" : "0.35"
         },
         "levels": {
           "1": {
@@ -2743,8 +2849,8 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "40",
-          "apRatio": "80"
+          "adRatio": "0.4",
+          "apRatio": "0.8"
         },
         "levels": {
           "1": {
@@ -2756,13 +2862,17 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Enemy"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 8,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Self"
               }
             ]
           },
@@ -2775,13 +2885,17 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Enemy"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 9,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Self"
               }
             ]
           },
@@ -2794,13 +2908,17 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Enemy"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 10,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Self"
               }
             ]
           },
@@ -2813,13 +2931,17 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Enemy"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 11,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Self"
               }
             ]
           },
@@ -2832,13 +2954,17 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Enemy"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 12,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Self"
               }
             ]
           }
@@ -2868,7 +2994,7 @@
       },
       "W": {
         "name": "허세",
-        "description": "현우가 허게를 부려 <color=#FFFFFF>도그파이트</color>를 활성화하고, 2.5초 동안 방어력이 <color=#FFFFFF>{defense}</color><color=#8EA8BC>(+방어력 10 당 1)</color>증가합니다. 지속 기간동안 적에게 기본 공격을 받을 때마다 도그파이트 중접울 1 획득합니다.\n\n허세가 발동된 후 1초 동안 현우는 이동 방해 효과를 무시합니다.",
+        "description": "현우가 허세를 부려 <color=#FFFFFF>도그파이트</color>를 활성화하고, 2.5초 동안 방어력이 <color=#FFFFFF>{defense}</color><color=#8EA8BC>(+방어력 10 당 1)</color>증가합니다. 지속 기간동안 적에게 기본 공격을 받을 때마다 도그파이트 중접울 1 획득합니다.\n\n허세가 발동된 후 1초 동안 현우는 이동 방해 효과를 무시합니다.",
         "type": "Normal",
         "maxLevel": 5,
         "mechanics": {
@@ -2966,9 +3092,9 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "70",
-          "apRatio": "55",
-          "dstCurHpRatio": "5"
+          "adRatio": "0.7",
+          "apRatio": "0.55",
+          "dstCurHpRatio": "0.11"
         },
         "levels": {
           "1": {
@@ -3081,9 +3207,11 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -20,
-                "duration": 5
+                "condition": "Hit",
+                "duration": 5,
+                "subject": "Enemy"
               },
               {
                 "type": "MoveTargetObject",
@@ -3098,9 +3226,11 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -25,
-                "duration": 5
+                "condition": "Hit",
+                "duration": 5,
+                "subject": "Enemy"
               },
               {
                 "type": "MoveTargetObject",
@@ -3115,9 +3245,11 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -30,
-                "duration": 5
+                "condition": "Hit",
+                "duration": 5,
+                "subject": "Enemy"
               },
               {
                 "type": "MoveTargetObject",

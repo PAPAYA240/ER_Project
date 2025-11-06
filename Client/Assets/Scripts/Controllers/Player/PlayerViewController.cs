@@ -131,7 +131,7 @@ public class PlayerViewController : MonoBehaviour
         if (_agent == null)
             return;
 
-        if (_player.State == CreatureState.Skill && !isServerSync)
+        if (_player.State == CreatureState.Skill && !_skill.CanMoveDuringCast)
             return;
         else
             _skill.StopSkillMotion();

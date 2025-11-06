@@ -1,4 +1,4 @@
-using Google.Protobuf.Protocol;
+ï»¿using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -12,7 +12,7 @@ public class HyunwooInputController : PlayerInputController
 
     public override C_SkillInput GetSkillCommand()
     {
-        // ¹è¿­ ¼ø¼­´ë·Î Å°´Ù¿î °Ë»ç -> Ã³À½ ´­¸° Å°¿¡ ´ëÇØ ¹Ù·Î »ý¼º/¸®ÅÏ
+        // ë°°ì—´ ìˆœì„œëŒ€ë¡œ í‚¤ë‹¤ìš´ ê²€ì‚¬ -> ì²˜ìŒ ëˆŒë¦° í‚¤ì— ëŒ€í•´ ë°”ë¡œ ìƒì„±/ë¦¬í„´
         for (int i = 0; i < _skillKeys.Length; i++)
         {
             var key = _skillKeys[i];

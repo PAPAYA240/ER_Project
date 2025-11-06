@@ -36,7 +36,7 @@ public sealed class Abigail_R : Skill_Abigail
         base.OnEnter(p, ctx);
         // TODO: 코스트/쿨타임 차감
 
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
+        SendSkillConfirmPacket(p);
         p.SendCanStopSkillPacket(false);
     }
 }

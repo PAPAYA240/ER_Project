@@ -19,7 +19,7 @@ public sealed class Yuki_W : SkillHandlerBase
         base.OnEnter(p, ctx);
         // TODO: 코스트/쿨타임 차감
 
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
+        SendSkillConfirmPacket(p);
         //p.LookAtMouse(ctx.MousePos);
     }
 

@@ -78,9 +78,14 @@ public abstract class SkillHandlerBase : ISkill
         
     }
 
-    public virtual void OnCollision(Player p)
+    public virtual void OnCollision<T>(Player p, List<T> targets, GameObject.StatusEffect effect)
     {
+        
+    }
 
+    public virtual void OnCollision<T>(Player p, T nearestTarget, GameObject.StatusEffect effect)
+    {
+        
     }
 
     public virtual void OnTick(Player p, SkillContext ctx)
@@ -108,9 +113,14 @@ public abstract class SkillHandlerBase : ISkill
     }
     #endregion
     #region Utils
+    protected void SendSkillConfirmPacket(Player p, bool sendCostPacket = true)
+    {
+        p.SendSkillConfirmPacket(true, _keyCode, CanMoveDuringCast, sendCostPacket);
+    }
+
     protected void SendSkillCollisionRequestPacket(Player p, CollisionType type, Vector3 startPos, Vector3 targetPos)
     {
-        p.SendSkillCollisionRequestPacket(_keyCode, _requestId, CollisionType.Pass, p.Position, targetPos);
+        p.SendSkillCollisionRequestPacket(_keyCode, _requestId, type, startPos, targetPos);
         ++_requestId;
     }
 
@@ -154,5 +164,7 @@ public abstract class SkillHandlerBase : ISkill
         prop = default;
         return false;
     }
+
+
     #endregion
 }

@@ -17,7 +17,8 @@ public static class SkillRegistry
             if (key == KeyCode.W) return new Rozzi_W();
             if (key == KeyCode.E) return new Rozzi_E();
             if (key == KeyCode.R) return new Rozzi_R();
-            if (key == KeyCode.D) return new Rozzi_D();
+            //if (key == KeyCode.D) return new Rozzi_D();
+            if (key == KeyCode.D) return new Rozzi_Buff();
             if (key == KeyCode.F) return new Skill_Blink();
         }
         else if (character == CharacterType.Yuki)
@@ -75,6 +76,7 @@ public static class SkillRegistry
         SkillRegistry.Register<Hyunwoo_R_Short_End>("Hyunwoo_R_Short_End");
         SkillRegistry.Register<Hyunwoo_R_End>("Hyunwoo_R_End");
         SkillRegistry.Register<Hyunwoo_R_Loop>("Hyunwoo_R_Loop");
+        SkillRegistry.Register<Hyunwoo_E_End>("Hyunwoo_E_End");
     }
 
     public static void Register<T>(string key) where T : ISkill, new()

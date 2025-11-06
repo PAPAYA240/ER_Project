@@ -9,6 +9,7 @@ using System.Numerics;
 using static Server.Data.DataUtils;
 using System.Threading;
 using static Server.Game.GameObject;
+using static Player_StunState;
 
 namespace Server.Game
 {
@@ -576,7 +577,13 @@ namespace Server.Game
             if (player == null)
                 return;
 
-            player.Skill.SetCooldown(KeyCode.R, 0f);
+            //player.Skill.SetCooldown(KeyCode.R, 0f);
+            StunStateDesc desc = new StunStateDesc();
+            desc.Duration = 5;
+            desc.Speed = 17;
+            desc.EndPos = Vector3.Zero;
+            player.ChangeState(new Player_StunState(desc));
+
         }
 
         #endregion
@@ -803,10 +810,21 @@ namespace Server.Game
             creature.AddStatusEffect(statusEffect);
         }
 
-        public void BehindDash(Player player)
+        //public void BehindDash(Player player)
+        //{
+        //    if (player.CurrentState is Player_SkillState skillState)
+        //        skillState.Handler.OnCollision(player);
+        //}
+
+        public void CallOnCollision<T>(Player player, List<T> hitTargets, StatusEffect effect) where T : GameObject, new()
         {
             if (player.CurrentState is Player_SkillState skillState)
-                skillState.Handler.OnCollision(player);
+                skillState.Handler.OnCollision(player, hitTargets, effect);
+        }
+        public void CallOnCollision<T>(Player player, T nearTarget, StatusEffect effect) where T : GameObject, new()
+        {
+            if (player.CurrentState is Player_SkillState skillState)
+                skillState.Handler.OnCollision(player, nearTarget, effect);
         }
     }
 }

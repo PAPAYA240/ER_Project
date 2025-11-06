@@ -17,5 +17,7 @@ public sealed class Yuki_Q : SkillHandlerBase
     public override void OnEnter(Player p, SkillContext ctx)
     {
 
+        SendSkillConfirmPacket(p);
+        p.LookAtMouse(ctx.MousePos);
     }
 }

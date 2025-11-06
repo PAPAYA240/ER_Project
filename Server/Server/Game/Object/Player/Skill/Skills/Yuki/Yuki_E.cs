@@ -58,7 +58,7 @@ public sealed class Yuki_E : SkillHandlerBase
         return;
     }
 
-    public override void OnCollision(Player p)
+    public override void OnCollision<T>(Player p, T nearestTarget, GameObject.StatusEffect effect)
     {
         _isCollision = true;
 
