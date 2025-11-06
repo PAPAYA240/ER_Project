@@ -6,10 +6,6 @@ public abstract class ChargingSkillHandler : SkillHandlerBase
 {
     public override void OnEnter(Player p, SkillContext ctx)
     {
-        LastSeq = 0;
-        Latest = default;
-        _committed = false;
-
         // 애니메이션 패킷 전송
         p.SendAnimPacket(_animName, 0.05f);
 
