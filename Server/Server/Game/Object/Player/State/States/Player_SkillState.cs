@@ -104,8 +104,6 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
     }
     public void OnMoveCommand(Player player, C_Move move)
     {
-        Console.WriteLine("@ OnMoveCommand : Skill");
-
         if (_handler.CanMoveDuringCast)
         {
             // (A) 이 스킬은 시전 중 이동 허용

@@ -847,8 +847,6 @@ namespace Server.Game
             };
 
             Room.Push(Room.Broadcast, packet);
-
-            //Console.WriteLine($"Char : {Info.Player.CharType} / x : {posInfo.PosX}, z : {posInfo.PosZ}");
         }
 
         public void SendSetMoveTarget(bool isGround, int targetId, PositionInfo posOpt = null)
@@ -982,7 +980,6 @@ namespace Server.Game
             };
             //Room.Push(Room.Broadcast, packet);
             Session.Send(packet);
-            Console.WriteLine($"MoveSync : {targetPos.PosX:F2}, {targetPos.PosZ:F2}");
         }
 
         public void SendChangeTransformPacket(bool isWarp = false) // 수동으로 플레이어 위치or회전 수정한 후에 보내는 패킷

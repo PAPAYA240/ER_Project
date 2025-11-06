@@ -72,8 +72,6 @@ public class CooldownController_Tick : ICooldownController
         int delta = SecToMs(seconds);
         e.EndTick = unchecked(e.EndTick - delta);
 
-        Console.WriteLine($"Reduce : {GetRemaining(key)}");
-
         _owner.SendSkillCostPacket(key, GetRemaining(key));
     }
 
@@ -90,7 +88,6 @@ public class CooldownController_Tick : ICooldownController
         else
             e.EndTick = unchecked(now + SecToMs(seconds));
 
-        Console.WriteLine($"Set Remaining : {GetRemaining(key)}");
         _owner.SendSkillCostPacket(key, GetRemaining(key));
     }
 

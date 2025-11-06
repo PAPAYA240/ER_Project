@@ -94,6 +94,8 @@ public class PlayerInputController : MonoBehaviour
         }
         else if (_player.State == CreatureState.Rest)
         {
+            if(!_agent.enabled)
+                _agent.enabled = true;
             _agent.isStopped = true;
             return null;
         }
