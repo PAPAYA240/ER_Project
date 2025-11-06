@@ -22,4 +22,22 @@ public sealed class Yuki_W : SkillHandlerBase
         p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
         //p.LookAtMouse(ctx.MousePos);
     }
+
+    public override void OnHit(Player p, SkillContext ctx)
+    {
+        return;
+    }
+
+    public override void OnTick(Player p, SkillContext ctx)
+    {
+
+        return;
+    }
+
+    public override void OnExit(Player p, SkillContext ctx)
+    {
+        p.YukiStud = 4;
+        Console.WriteLine($"유키 단추 : {p.YukiStud}");
+        base.OnExit(p, ctx);
+    }
 }

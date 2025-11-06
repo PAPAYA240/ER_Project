@@ -144,6 +144,33 @@ namespace Server.Game
             }
         }
 
+        // CombatState
+        // 전투 시간 (용수야 여기야)
+        private float _combatTime = 0f;
+        private readonly float _nonCombatTime = 5f;
+        public float CombatTime
+        {
+            get { return _combatTime; }
+            set { _combatTime = value; }
+        }
+
+        private CombatState _curCombat;
+        public CombatState CombatState
+        {
+            get { return _curCombat; }
+            set { _curCombat = value; }
+        }
+
+        // 유키 단추용
+        public static readonly int MaxStud = 4;
+        public int _yukiStud_cnt = 4;
+
+        public int YukiStud
+        {
+            get { return _yukiStud_cnt; }
+            set { _yukiStud_cnt = value; }
+        }
+
         #region KDA
         //KDA
         public int KillAmount {  get; set; }
@@ -235,6 +262,25 @@ namespace Server.Game
                 _isDeath = false;
                 _stateMachine.ChangeState(new Player_DeadState(), this);
             }
+
+            // 일정 시간 지나면 비전투 (용수야 여기야)
+            if (CombatState == CombatState.Combat)
+            {
+                _combatTime += TimeUtil.DeltaTime;
+                if (_combatTime > _nonCombatTime)
+                {
+                    _combatTime = 0;
+
+                    Console.WriteLine($"비전투 상태");
+                    CombatState = CombatState.NonCombat;
+
+                    // 유키 단추용
+                    if (Info.Player.CharType == CharacterType.Yuki)
+                        YukiStud = MaxStud;
+                }
+            }
+
+            
 
             //base.Update();
 

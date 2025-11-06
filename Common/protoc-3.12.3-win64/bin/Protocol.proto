@@ -85,6 +85,11 @@ enum MsgId {
   C_CHARGING_SKILL = 72;
 }
 
+enum CombatState{
+  NON_COMBAT = 0;
+  COMBAT = 1;
+}
+
 enum CreatureState{
   IDLE = 0;
   MOVING = 1;

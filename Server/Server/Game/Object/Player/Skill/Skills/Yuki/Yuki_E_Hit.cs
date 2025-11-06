@@ -1,5 +1,4 @@
 ﻿using Google.Protobuf.Protocol;
-using Google.Protobuf.WellKnownTypes;
 using Server.Game;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Numerics;
 using System.Text;
 using static Server.Data.DataUtils;
 
-public sealed class Yuki_E : SkillHandlerBase
+public sealed class Yuki_E_Hit : SkillHandlerBase
 {
     private Vector3 _startPos, _endPos, nextPos, _dir;
     private float _elapsed;
@@ -15,13 +14,12 @@ public sealed class Yuki_E : SkillHandlerBase
     private float _dashRange;       // 대쉬 이동거리
     private float _speed;
 
-    private bool _isCollision = false;
-
-    public Yuki_E()
+    public Yuki_E_Hit(Vector3 dir)
     {
         _characterType = CharacterType.Yuki;
-        _animName = "SKILL_E";
-        _keyCode = KeyCode.E;
+        _animName = "SKILL_E_HIT";
+
+        _dir = dir;
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
@@ -32,25 +30,17 @@ public sealed class Yuki_E : SkillHandlerBase
         _startPos = p.Position;
 
         // 초기화
-        _dashRange = 5.0f;
+        _dashRange = 1.5f;
         _elapsed = 0f;
         _speed = 17f;
 
-        Vector3 mouseWorldPos = new Vector3(ctx.MousePos.X, p.Position.Y, ctx.MousePos.Y);
-
-        _dir = mouseWorldPos - p.Position;
-        _dir.Y = 0;
-        _dir = Vector3.Normalize(_dir);
-
         _endPos = _startPos + _dir * _dashRange;
 
-        _duration = _dashRange / _speed;
+        float distance = Vector3.Distance(_startPos, _endPos);
 
-        Vector3 targetPos = _endPos;
-        SendSkillCollisionRequestPacket(p, CollisionType.Clamp, _startPos, targetPos);
-        p.SendSkillCostPacket(_keyCode);
+        _duration = distance / _speed;
 
-        p.LookAtMouse(ctx.MousePos);
+        SendSkillCollisionRequestPacket(p, CollisionType.Block, _startPos, _endPos);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -58,18 +48,8 @@ public sealed class Yuki_E : SkillHandlerBase
         return;
     }
 
-    public override void OnCollision(Player p)
-    {
-        _isCollision = true;
-
-        return;
-    }
-
     public override void OnTick(Player p, SkillContext ctx)
     {
-        if (_isCollision)
-            p.ChangeState(new Player_SkillState(new Yuki_E_Hit(_dir), ctx));
-
         if (_requestId != _commitId)
         {
             if (TryConsumeLatest(ref _commitId, out SkillCollisionProposal prop))
@@ -79,7 +59,7 @@ public sealed class Yuki_E : SkillHandlerBase
             }
         }
 
-        if(_requestId == _commitId)
+        if (_requestId == _commitId)
         {
             _elapsed += TimeUtil.DeltaTime;
 

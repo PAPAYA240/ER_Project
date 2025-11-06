@@ -247,6 +247,17 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         string animName = (_attackIndex == 0) ? AnimAttackA : AnimAttackB;
         _attackIndex = 1 - _attackIndex;
 
+        // 전투 상태 평타 칠 때마다 갱신
+        p.CombatState = CombatState.Combat;
+        p.CombatTime = 0f;
+
+        // 유키 단추
+        if (p.Info.Player.CharType == CharacterType.Yuki)
+        {
+            if (p.YukiStud > 0)
+                p.YukiStud--;
+        }
+
         // 애니 송출(서버 권한)
         p.SendAnimPacket(animName, 0.05f);
  
