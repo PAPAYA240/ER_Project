@@ -72,6 +72,8 @@ public class UI_DamageText : UI_Base
 
         // 초기 위치와 스케일 설정
         _initialPosition = worldPos;
+        _initialPosition.x += Random.Range(horizontalDriftRange.x, horizontalDriftRange.y);
+        _initialPosition.z += Random.Range(horizontalDriftRange.x, horizontalDriftRange.y);
         transform.localScale = startScale;
 
         // 투명도 초기화 (이전 사용 후 남아있을 수 있으므로)
@@ -79,7 +81,7 @@ public class UI_DamageText : UI_Base
         currentTextColor.a = 1f;
 
         // 폰트 색 + 숫자 설정.
-        switch (type)
+        switch (_type)
         {
             case CombatTextType.Ad:
                 _textMeshProUGUI.text = $"<color=#E00800>{_damageValue.ToString("F0")}</color>"; 
@@ -97,18 +99,31 @@ public class UI_DamageText : UI_Base
                 _textMeshProUGUI.text = $"<color=#2DF0E9>{_damageValue.ToString("F0")}</color>";
                 break;
             case CombatTextType.Barrier:
-                _textMeshProUGUI.text = $"<color=#83817D>{_damageValue.ToString("F0")}</color>";
+                _textMeshProUGUI.text = $"<color=#E9FF3D>{_damageValue.ToString("F0")}</color>";
                 break;
         }
 
-        // 최종 도착 지점 계산
-        _targetEndPoint = new Vector3(
-            _initialPosition.x + Random.Range(horizontalDriftRange.x, horizontalDriftRange.y),
-            _initialPosition.y + finalYOffsetFromStart, // 시작 Y좌표에서 최종 Y좌표 오프셋 적용
-            _initialPosition.z + Random.Range(horizontalDriftRange.x, horizontalDriftRange.y)
-        );
 
-        if(null != _coroutine)
+        if(_type == CombatTextType.Ad || _type == CombatTextType.Ap)
+        {
+            // 최종 도착 지점 계산
+            _targetEndPoint = new Vector3(
+                _initialPosition.x + Random.Range(horizontalDriftRange.x, horizontalDriftRange.y),
+                _initialPosition.y + finalYOffsetFromStart, // 시작 Y좌표에서 최종 Y좌표 오프셋 적용
+                _initialPosition.z + Random.Range(horizontalDriftRange.x, horizontalDriftRange.y)
+            );
+        }
+        else if(_type == CombatTextType.Barrier)
+        {
+            _targetEndPoint = new Vector3(
+                _initialPosition.x + Random.Range(horizontalDriftRange.x, horizontalDriftRange.y),
+                _initialPosition.y, 
+                _initialPosition.z + Random.Range(horizontalDriftRange.x, horizontalDriftRange.y)
+            );
+        }
+
+
+        if (null != _coroutine)
             StopCoroutine(_coroutine); // 이전에 실행 중인 코루틴이 있다면 중지
 
         // 새 애니메이션 코루틴 시작
@@ -231,7 +246,7 @@ public class UI_DamageText : UI_Base
             timer += Time.deltaTime;
             float t = timer / totalAnimationDuration; // 0에서 1까지 증가하는 비율
 
-            Vector3 screenPos = Camera.main.WorldToScreenPoint(_initialPosition);
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(_targetEndPoint);
             _rectTransform.anchoredPosition = screenPos; // 위치 적용
 
             transform.localScale = Vector3.one; // 스케일 적용

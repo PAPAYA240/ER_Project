@@ -438,6 +438,17 @@ namespace Server.Game
                         Vector2 center = new Vector2(hitbox.PosX, hitbox.PosZ);
                         Vector2 toTarget = new Vector2(go.PosInfo.PosX - center.X, go.PosInfo.PosZ - center.Y);
 
+                        Vector2 mouseDir = Vector2.Normalize(new Vector2(hitbox.MousePos.X - center.X, hitbox.MousePos.Y - center.Y));
+                        Vector2 mouseRightVec = new Vector2(mouseDir.Y, -mouseDir.X);
+
+
+                        if (hitbox.Data.LookOffset != 0f || hitbox.Data.RightOffset != 0f)
+                        {
+                            center += mouseDir * hitbox.Data.LookOffset;
+                            center += mouseRightVec * hitbox.Data.RightOffset;
+                        }
+
+                        toTarget = new Vector2(go.PosInfo.PosX - center.X, go.PosInfo.PosZ - center.Y);
                         float dist = toTarget.Length();
                         if (dist > hitbox.Data.Radius + go.Radius)
                             return false;
@@ -445,7 +456,7 @@ namespace Server.Game
                         if (dist <= go.Radius)
                             return true;
 
-                        Vector2 mouseDir = Vector2.Normalize(new Vector2(hitbox.MousePos.X - center.X, hitbox.MousePos.Y - center.Y));
+                        
                         Vector2 targetDir = toTarget / dist;
 
                         float dot = Math.Clamp(Vector2.Dot(mouseDir, targetDir), -1f, 1f);
@@ -513,7 +524,6 @@ namespace Server.Game
 
         public float CalcDamage(Creature attacker, StatInfo target, KeyCode keyCode)
         {
-            // 플레이어가 몬스터 때릴 때
             // TODO 버프 디버프 정보도 가지고 와야함. 예를 들면 방깍 디버프 같은거 
             Player playerAttacker = attacker as Player;
             if (playerAttacker == null) return 0f;
@@ -527,6 +537,13 @@ namespace Server.Game
                 + skill.SkillData.scaling.dstMaxHpRatio * target.MaxHp * 0.01f
                 + skill.SkillData.scaling.srcCurHpRatio * playerAttacker.Hp * 0.01f
                 + skill.SkillData.scaling.srcMaxHpRatio * playerAttacker.MaxHp * 0.01f;
+
+            // charging skill
+            if(playerAttacker.Info.Player.CharType == CharacterType.Hyunwoo && keyCode == KeyCode.R)
+            {
+                // lerp with Charging Ratio and Charging Coeff
+                damage = damage * (1 + playerAttacker.ChargingRatio * skill.SkillData.mechanics.chargeCoefficient);
+            }
 
             // 그냥 예시 : 추가 데미지를 입힐 시에
             if (playerAttacker.IsSkillAmplification)

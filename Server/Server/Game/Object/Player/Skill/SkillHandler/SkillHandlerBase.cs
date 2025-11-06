@@ -15,13 +15,19 @@ public abstract class SkillHandlerBase : ISkill
     public virtual float MoveSpeedMultiplier => 1.0f;
     public bool CanStopSkill { get; set; } = false;
 
-    public int                      LastSeq { get { return _lastSeq; } set { _lastSeq = value; } }
-    public SkillCollisionProposal   Latest { get { return _latest; } set { _latest = value; } }
+    //public int                      LastSeq { get { return _lastSeq; } set { _lastSeq = value; } }
+    //public SkillCollisionProposal   Latest { get { return _latest; } set { _latest = value; } }
+    public Dictionary<int, SkillCollisionProposal> _collisions = new Dictionary<int, SkillCollisionProposal>();
 
-    protected int _lastSeq;
-    protected SkillCollisionProposal _latest;
-    protected bool _committed;
+
+    //protected int _lastSeq;
+    //protected SkillCollisionProposal _latest;
+    //protected bool _committed;
     protected Vector3 _finalEnd;
+
+    // TEMP
+    protected int _requestId = 0;
+    protected int _commitId = 0;
 
     protected CharacterType _characterType;
     protected string _animName;
@@ -29,9 +35,10 @@ public abstract class SkillHandlerBase : ISkill
 
     public virtual void OnEnter(Player p, SkillContext ctx)
     {
-        LastSeq = 0;
-        Latest = default;
-        _committed = false;
+        //LastSeq = 0;
+        //Latest = default;
+        //_collisions = default;
+        //_committed = false;
 
         // 애니메이션 패킷 전송
         p.SendAnimPacket(_animName, 0.05f);
@@ -81,14 +88,7 @@ public abstract class SkillHandlerBase : ISkill
 
     public virtual void OnPropose(Player p, in SkillCollisionProposal prop)
     {
-        if (_committed)
-            return;
-
-        if (prop.Seq <= LastSeq)
-            return;
-
-        LastSeq = prop.Seq;
-        Latest = prop;
+        _collisions.Add(prop.requestId, prop);
     }
 
     public virtual bool CanCast(Player p, SkillContext ctx)
@@ -106,6 +106,12 @@ public abstract class SkillHandlerBase : ISkill
     }
     #endregion
     #region Utils
+    protected void SendSkillCollisionRequestPacket(Player p, CollisionType type, Vector3 startPos, Vector3 targetPos)
+    {
+        p.SendSkillCollisionRequestPacket(_keyCode, _requestId, CollisionType.Pass, p.Position, targetPos);
+        ++_requestId;
+    }
+
     public float GetDuration()
     {
         if (_animName == null)
@@ -134,17 +140,17 @@ public abstract class SkillHandlerBase : ISkill
     }
 
     // Tick 등에서 소비(가져가면 플래그 리셋)
-    protected bool TryConsumeLatest(out SkillCollisionProposal prop)
+    protected bool TryConsumeLatest(ref int requestId, out SkillCollisionProposal prop)
     {
-        if (LastSeq <= 0)
-        { 
-            prop = default; 
-            return false; 
+        if(_collisions.TryGetValue(requestId, out prop))
+        {
+            _collisions.Remove(requestId);
+            ++requestId;
+            return true;
         }
 
-        prop = _latest;
-        return true;
+        prop = default;
+        return false;
     }
-
     #endregion
 }

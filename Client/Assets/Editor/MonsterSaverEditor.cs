@@ -148,7 +148,7 @@ public class EnvSaverEditor : MonoBehaviour
                 Vector3 pos = envInfo.transform.position;
                 Quaternion rot = envInfo.transform.rotation;
 
-                EnvSaveData data = new EnvSaveData(EnvType.Turbine, pos, rot);
+                EnvSaveData data = new EnvSaveData(EnvType.Beacon, pos, rot);
                 envList.EnvObjects.Add(data);
             }
         }

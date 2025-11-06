@@ -551,38 +551,10 @@
             }
           ]
         },
-      {
+        {
         "character": "Yuki",
         "controller": "Assets/Resources/Animator/Yuki.controller",
         "clips": [
-          {
-            "clip": "Yuki_2Hand_atk01",
-            "length": 1.5,
-            "frameRate": 30.0,
-            "samples": 45,
-            "animName": "ATTACK_1"
-          },
-          {
-            "clip": "Yuki_2Hand_atk02",
-            "length": 1.5,
-            "frameRate": 30.0,
-            "samples": 45,
-            "animName": "ATTACK_2"
-          },
-          {
-            "clip": "Yuki_2Hand_run",
-            "length": 0.666667,
-            "frameRate": 30.0,
-            "samples": 20,
-            "animName": "RUN"
-          },
-          {
-            "clip": "Yuki_2Hand_skill01",
-            "length": 1.0,
-            "frameRate": 30.0,
-            "samples": 30,
-            "animName": "SKILL_Q"
-          },
           {
             "clip": "Yuki_2Hand_skill02_upper_wait",
             "length": 1.5,
@@ -591,18 +563,67 @@
             "animName": "SKILL_W"
           },
           {
-            "clip": "Yuki_2Hand_skill03_move",
+            "clip": "Yuki_2Hand_wait",
+            "length": 1.5,
+            "frameRate": 30.0,
+            "samples": 45,
+            "animName": "WAIT"
+          },
+          {
+            "clip": "Yuki_BareHands_atk01",
+            "length": 1.5,
+            "frameRate": 30.0,
+            "samples": 45,
+            "animName": "ATTACK_1"
+          },
+          {
+            "clip": "Yuki_BareHands_atk02",
+            "length": 1.5,
+            "frameRate": 30.0,
+            "samples": 45,
+            "animName": "ATTACK_2"
+          },
+          {
+            "clip": "Yuki_BareHands_skill01",
+            "length": 1.0,
+            "frameRate": 30.0,
+            "samples": 30,
+            "animName": "SKILL_Q"
+          },
+          {
+            "clip": "Yuki_BareHands_skill03_attack",
+            "length": 0.566667,
+            "frameRate": 30.0,
+            "samples": 17,
+            "animName": "SKILL_E_HIT"
+          },
+          {
+            "clip": "Yuki_BareHands_skill03_move",
             "length": 1.0,
             "frameRate": 30.0,
             "samples": 30,
             "animName": "SKILL_E"
           },
           {
-            "clip": "Yuki_2Hand_wait",
-            "length": 1.5,
+            "clip": "Yuki_Common_dance",
+            "length": 0.8,
             "frameRate": 30.0,
-            "samples": 45,
-            "animName": "WAIT"
+            "samples": 24,
+            "animName": "DANCE"
+          },
+          {
+            "clip": "Yuki_Common_death",
+            "length": 1.6,
+            "frameRate": 30.0,
+            "samples": 48,
+            "animName": "DEAD"
+          },
+          {
+            "clip": "Yuki_Common_operate",
+            "length": 5.0,
+            "frameRate": 30.0,
+            "samples": 150,
+            "animName": "OPERATE"
           },
           {
             "clip": "Yuki_Common_rest_end",
@@ -638,10 +659,17 @@
             "frameRate": 30.0,
             "samples": 60,
             "animName": "YUKI_R_END"
+          },
+          {
+            "clip": "Yuki_Empty_run",
+            "length": 0.666667,
+            "frameRate": 30.0,
+            "samples": 20,
+            "animName": "RUN"
           }
         ]
       },
-      {
+        {
         "character": "Hyunwoo",
         "controller": "Assets/Resources/Animator/Hyunwoo.controller",
         "clips": [
@@ -752,14 +780,14 @@
           },
           {
             "clip": "Hyunwoo_Glove_skill04_loop",
-            "length": 1.2,
+            "length": 2.2,
             "frameRate": 30.0,
             "samples": 36,
             "animName": "SKILL_R_LOOP"
           },
           {
             "clip": "Hyunwoo_Glove_skill04_start",
-            "length": 2.0,
+            "length": 3.0,
             "frameRate": 30.0,
             "samples": 60,
             "animName": "SKILL_R"

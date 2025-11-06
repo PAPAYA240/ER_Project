@@ -16,11 +16,6 @@ public class PlayerInputController : MonoBehaviour
     [SerializeField] float _attackRange = 3.0f;  
     [SerializeField] float _stopBuffer = 1.5f;
 
-    private Vector3 _lastCmdDest;
-    private int _lastCmdTargetId;
-    private bool _lastCmdIsTarget;
-    [SerializeField] float _destEps = 0.15f; // 15cm 이상 움직일 때만 새 명령
-
     private GameObject _target;
 
     [SerializeField] private LayerMask _groundMask;
@@ -37,7 +32,7 @@ public class PlayerInputController : MonoBehaviour
 
         _groundMask = 1 << LayerMask.NameToLayer("Map");
         _monsterMask = 1 << LayerMask.NameToLayer("Monster");
-        _playerMask = 1 << LayerMask.NameToLayer("Fog");    // TEMP
+        _playerMask = 1 << LayerMask.NameToLayer("Player");
     }
 
     // 우클릭 유지 중 이동 의도(타겟 이동 or 땅 이동)
@@ -55,15 +50,6 @@ public class PlayerInputController : MonoBehaviour
                 if (!TryGetGroundDestination(out Vector3 final))
                     return null;
 
-                // 중복 억제: 연속 같은 목적지면 전송 생략
-                if (!_lastCmdIsTarget &&
-                    (final - _lastCmdDest).sqrMagnitude < _destEps * _destEps)
-                    return null;
-
-                _lastCmdIsTarget = false;
-                _lastCmdDest = final;
-                _lastCmdTargetId = 0;
-
                 return new C_SetMoveTarget
                 {
                     IsGround = true,
@@ -76,14 +62,6 @@ public class PlayerInputController : MonoBehaviour
                 if (!TryGetTargetDestination(target, out Vector3 final, out int id))
                     return null;
 
-                // 중복 억제: 같은 타겟이면 전송 생략
-                if (_lastCmdIsTarget && id == _lastCmdTargetId)
-                    return null;
-
-                _lastCmdIsTarget = true;
-                _lastCmdTargetId = id;
-                _lastCmdDest = final; // (정보 유지용)
-
                 return new C_SetMoveTarget
                 {
                     IsGround = false,
@@ -94,6 +72,8 @@ public class PlayerInputController : MonoBehaviour
         }
         else if (_player.State == CreatureState.Rest)
         {
+            if(!_agent.enabled)
+                _agent.enabled = true;
             _agent.isStopped = true;
             return null;
         }
@@ -136,12 +116,12 @@ public class PlayerInputController : MonoBehaviour
         return null;
     }
 
-    private static readonly KeyCode[] _skillKeys =
+    protected static readonly KeyCode[] _skillKeys =
     {
         KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R, KeyCode.D, KeyCode.F
     };
 
-    public C_SkillInput GetSkillCommand()
+    public virtual C_SkillInput GetSkillCommand()
     {
         // 배열 순서대로 키다운 검사 -> 처음 눌린 키에 대해 바로 생성/리턴
         for (int i = 0; i < _skillKeys.Length; i++)

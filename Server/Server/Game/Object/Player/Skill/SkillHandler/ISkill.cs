@@ -8,11 +8,10 @@ using static Server.Data.DataUtils;
 
 public struct SkillCollisionProposal
 {
+    public int requestId;
     public int Seq;                         // 최신만
 
-    public Vector3 EndBlocked;              // 벽 앞 후보
-    public Vector3 EndPass;                 // 통과 가정 후보
-    public Vector3 BehindBlocked;           // 타겟 뒤 벽 앞 
+    public Vector3 collisionPos;
 
     public int CandidateTargetId;           // BehindBlocked 에서 사용된 타겟 ID
     public float Speed;                     // TEMP: 대쉬 속도

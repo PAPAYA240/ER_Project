@@ -1,9 +1,10 @@
+using Google.Protobuf.Protocol;
+using Lucene.Net.Support;
+using Server.Data;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Numerics;
-using Google.Protobuf.Protocol;
-using Server.Data;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -17,6 +18,8 @@ namespace Server.Game
         public SkillController Skill { get; private set; }
 
         protected Dictionary<KeyCode, Skill> _skills = new Dictionary<KeyCode, Skill>();  // key : KeyCode
+
+        public float ChargingRatio { get; set; } = 0; // How Long Charge 0 ~ 1
 
         // temp �ӽ� �ڵ� ���߿� ����
         bool _isDeath = false;
@@ -846,8 +849,6 @@ namespace Server.Game
             };
 
             Room.Push(Room.Broadcast, packet);
-
-            //Console.WriteLine($"Char : {Info.Player.CharType} / x : {posInfo.PosX}, z : {posInfo.PosZ}");
         }
 
         public void SendSetMoveTarget(bool isGround, int targetId, PositionInfo posOpt = null)
@@ -927,11 +928,12 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendSkillCollisionRequestPacket(KeyCode keyCode, CollisionType type, Vector3 startPos, Vector3 endPos)
+        public void SendSkillCollisionRequestPacket(KeyCode keyCode, int requestId, CollisionType type, Vector3 startPos, Vector3 endPos)
         {
             S_SkillCollisionRequest packet = new S_SkillCollisionRequest
             {
                 SkillKey = (int)keyCode,
+                RequestId = requestId,
                 Type = type,
                 StartX = startPos.X,
                 StartZ = startPos.Z,
@@ -978,7 +980,8 @@ namespace Server.Game
                 TargetPos = targetPos,
                 Speed = speed,
             };
-            Room.Push(Room.Broadcast, packet);
+            //Room.Push(Room.Broadcast, packet);
+            Session.Send(packet);
         }
 
         public void SendChangeTransformPacket(bool isWarp = false) // 수동으로 플레이어 위치or회전 수정한 후에 보내는 패킷

@@ -85,6 +85,8 @@ namespace Server.Game
             if (_room == null || envList == null)
                 return;
 
+            List<EnvironmentObject> beaconList = new List<EnvironmentObject>();
+
             foreach (var eData in envList.EnvObjects)
             {
                 EnvironmentObject env = ObjectManager.Instance.Add<EnvironmentObject>();
@@ -100,9 +102,23 @@ namespace Server.Game
 
                 env.Info.Env = new EnvInfo();
                 env.Info.Env.EnvType = eData.envType;
+
+                if (env.Info.Env.EnvType == EnvType.Beacon)
+                {
+                    beaconList.Add(env);
+                    continue;
+                }
+
                 env.Info.Name = $"{env.Id} Environment";
                 _room.Push(_room.EnterGame, env);
             }
+
+            beaconList.Sort((a, b) => a.Info.PosInfo.PosZ.CompareTo(b.Info.PosInfo.PosZ));
+            beaconList[0].Info.Name = "Beacon_Right";
+            beaconList[1].Info.Name = "Beacon_Center";
+            beaconList[2].Info.Name = "Beacon_Left";
+            foreach (var beacon in beaconList)
+                _room.Push(_room.EnterGame, beacon);
         }
     }
 }

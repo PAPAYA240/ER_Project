@@ -1,8 +1,10 @@
 ﻿using Data;
 using Google.Protobuf.Protocol;
+using NUnit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -123,7 +125,7 @@ public class PlayerSkillController : MonoBehaviour
     {
         KeyCode key = (KeyCode)packet.SkillKey;
 
-        _player.SendPacket(ComputeSkillCollision(packet.SkillKey, packet.Type, packet.StartX, packet.StartZ, packet.EndX, packet.EndZ));
+        _player.SendPacket(ComputeSkillCollision(packet.SkillKey, packet.RequestId, packet.Type, packet.StartX, packet.StartZ, packet.EndX, packet.EndZ));
 
         CreateSkillMesh(key);
     }
@@ -172,53 +174,53 @@ public class PlayerSkillController : MonoBehaviour
 
     private void SendSkillCollisionPacket()
     {
-        if (_curSkill.proposalMode == ProposalMode.SingleShot)
-        {
-            _player.SendPacket(ComputeSkillCollision((int)_key, _curSkill, _targetId, _mousePos.x, _mousePos.z));
-        }
-        else
-        {
-            //_currentInstanceId = m.instanceId;
-            if (_streamCo != null)
-                StopCoroutine(_streamCo);
-            _streamCo = StartCoroutine(Co_StreamPropose());
-        }
+        //if (_curSkill.proposalMode == ProposalMode.SingleShot)
+        //{
+        //    _player.SendPacket(ComputeSkillCollision((int)_key, _curSkill, _targetId, _mousePos.x, _mousePos.z));
+        //}
+        //else
+        //{
+        //    //_currentInstanceId = m.instanceId;
+        //    if (_streamCo != null)
+        //        StopCoroutine(_streamCo);
+        //    _streamCo = StartCoroutine(Co_StreamPropose());
+        //}
     }
 
-    IEnumerator Co_StreamPropose(/*S_SkillFollow m*/)
-    {
-        //if (!SkillSpecCache.TryGet(m.skillKey, out var spec))
-        //    yield break;
+    //IEnumerator Co_StreamPropose(/*S_SkillFollow m*/)
+    //{
+    //    //if (!SkillSpecCache.TryGet(m.skillKey, out var spec))
+    //    //    yield break;
 
-        int seq = 0;
-        float t = 0f;
+    //    int seq = 0;
+    //    float t = 0f;
 
-        // 추적 연출 중엔 Agent가 좌표를 끌어올리지 못하게
-        _agent.isStopped = true;
-        _agent.updatePosition = false;
-        _agent.updateRotation = false;
+    //    // 추적 연출 중엔 Agent가 좌표를 끌어올리지 못하게
+    //    _agent.isStopped = true;
+    //    _agent.updatePosition = false;
+    //    _agent.updateRotation = false;
 
-        while (/*t < m.maxDuration*/ _player.State == CreatureState.Skill)
-        {
-            t += Time.deltaTime;
+    //    while (/*t < m.maxDuration*/ _player.State == CreatureState.Skill)
+    //    {
+    //        t += Time.deltaTime;
 
-            // 10~15Hz 전송
-            if (Time.frameCount % 6 == 0)
-            {
-                ++seq;
-                _player.SendPacket(ComputeSkillCollision((int)_key, _curSkill, _targetId, _mousePos.x, _mousePos.z, seq));
-            }
+    //        // 10~15Hz 전송
+    //        if (Time.frameCount % 6 == 0)
+    //        {
+    //            ++seq;
+    //            _player.SendPacket(ComputeSkillCollision((int)_key, _curSkill, _targetId, _mousePos.x, _mousePos.z, seq));
+    //        }
 
-            // 로컬 추적 연출(간단)
-            LocalFollowTick(_targetId, 6.0f, /*m.passThroughWalls*/ false);
-            yield return null;
-        }
+    //        // 로컬 추적 연출(간단)
+    //        LocalFollowTick(_targetId, 6.0f, /*m.passThroughWalls*/ false);
+    //        yield return null;
+    //    }
 
-        _agent.updatePosition = true;
-        _agent.updateRotation = true;
-        _agent.isStopped = false;
-        _streamCo = null;
-    }
+    //    _agent.updatePosition = true;
+    //    _agent.updateRotation = true;
+    //    _agent.isStopped = false;
+    //    _streamCo = null;
+    //}
 
     private SkillSpec GetSkillSpec(KeyCode key, VariantKey variants)
     {
@@ -232,71 +234,72 @@ public class PlayerSkillController : MonoBehaviour
         return null;
     }
 
-    private C_SkillCollisionPropose ComputeSkillCollision(int skillKey, SkillSpec spec, int targetId, float clickX, float clickZ, int seq = 1)
+    //private C_SkillCollisionPropose ComputeSkillCollision(int skillKey, SkillSpec spec, int targetId, float clickX, float clickZ, int seq = 1)
+    //{
+    //    C_SkillCollisionPropose packet = new C_SkillCollisionPropose();
+    //    packet.SkillKey = skillKey;
+    //    packet.Seq = seq;
+    //    packet.Mode = spec.proposalMode;
+    //    //packet.Speed = spec.limits.speed;  // TEMP : 필요한가
+
+    //    if (_curSkill.needs.endBlocked)
+    //    {
+    //        Vector3 endBlocked = ComputeEndBlocked(skillKey, spec, clickX, clickZ);
+    //        packet.EndBlockedX = endBlocked.x;
+    //        packet.EndBlockedZ = endBlocked.z;
+
+    //        Debug.Log($"EndBlocked => X : {endBlocked.x}, Z : {endBlocked.z}");
+    //    }
+    //    if (_curSkill.needs.endPass)
+    //    {
+    //        Vector3 endPass = ComputeEndPass(skillKey, spec, clickX, clickZ);
+    //        packet.EndPassX = endPass.x;
+    //        packet.EndPassZ = endPass.z;
+
+    //        Debug.Log($"EndPass => X : {endPass.x}, Z : {endPass.z}");
+    //    }
+    //    if (_curSkill.needs.behindBlocked)
+    //    {
+    //        Vector3 behindBlocked = ComputeBehindBlocked(skillKey, spec, targetId, clickX, clickZ);
+    //        packet.BehindBlockedX = behindBlocked.x;
+    //        packet.BehindBlockedZ = behindBlocked.z;
+
+    //        if (_curSkill.needs.candidateTargetId)
+    //            packet.CandidateTargetId = targetId;
+    //    }
+
+    //    return packet;
+    //}
+
+    private C_SkillCollisionPropose ComputeSkillCollision(int skillKey, int requestId, CollisionType type, float startX, float startZ, float endX, float endZ)
     {
         C_SkillCollisionPropose packet = new C_SkillCollisionPropose();
         packet.SkillKey = skillKey;
-        packet.Seq = seq;
-        packet.Mode = spec.proposalMode;
-        //packet.Speed = spec.limits.speed;  // TEMP : 필요한가
-
-        if (_curSkill.needs.endBlocked)
-        {
-            Vector3 endBlocked = ComputeEndBlocked(skillKey, spec, clickX, clickZ);
-            packet.EndBlockedX = endBlocked.x;
-            packet.EndBlockedZ = endBlocked.z;
-
-            Debug.Log($"EndBlocked => X : {endBlocked.x}, Z : {endBlocked.z}");
-        }
-        if(_curSkill.needs.endPass)
-        {
-            Vector3 endPass = ComputeEndPass(skillKey, spec, clickX, clickZ);
-            packet.EndPassX = endPass.x;
-            packet.EndPassZ = endPass.z;
-
-            Debug.Log($"EndPass => X : {endPass.x}, Z : {endPass.z}");
-        }
-        if(_curSkill.needs.behindBlocked)
-        {
-            Vector3 behindBlocked = ComputeBehindBlocked(skillKey, spec, targetId, clickX, clickZ);
-            packet.BehindBlockedX = behindBlocked.x;
-            packet.BehindBlockedZ = behindBlocked.z;
-
-            if(_curSkill.needs.candidateTargetId)
-                packet.CandidateTargetId = targetId;
-        }
-
-        return packet;
-    }
-
-    private C_SkillCollisionPropose ComputeSkillCollision(int skillKey, CollisionType type, float startX, float startZ, float endX, float endZ)
-    {
-        C_SkillCollisionPropose packet = new C_SkillCollisionPropose();
-        packet.SkillKey = skillKey;
+        packet.RequestId = requestId;
         packet.Seq = 1;
 
+        Vector3 collisionPos = Vector3.zero;
         if (type == CollisionType.Block)
         {
-            Vector3 endBlocked = ComputeEndBlocked(startX, startZ, endX, endZ);
-            packet.EndBlockedX = endBlocked.x;
-            packet.EndBlockedZ = endBlocked.z;
-
-            Debug.Log($"EndBlocked => X : {endBlocked.x}, Z : {endBlocked.z}");
+            collisionPos = ComputeEndBlocked(startX, startZ, endX, endZ);
+            
+            Debug.Log($"EndBlocked => X : {collisionPos.x}, Z : {collisionPos.z}");
         }
         else if (type == CollisionType.Pass)
         {
-            Vector3 endPass = ComputeEndPass(startX, startZ, endX, endZ);
-            packet.EndPassX = endPass.x;
-            packet.EndPassZ = endPass.z;
+            collisionPos = ComputeEndPass(startX, startZ, endX, endZ);
 
-            Debug.Log($"EndPass => X : {endPass.x}, Z : {endPass.z}");
+            Debug.Log($"EndPass => X : {collisionPos.x}, Z : {collisionPos.z}");
         }
         else if (type == CollisionType.Clamp)
         {
-            Vector3 behindBlocked = ComputeClamp(startX, startZ, endX, endZ);
-            packet.BehindBlockedX = behindBlocked.x;
-            packet.BehindBlockedZ = behindBlocked.z;
+            collisionPos = ComputeClamp(startX, startZ, endX, endZ);
+
+            Debug.Log($"Clamp => X : {collisionPos.x}, Z : {collisionPos.z}");
         }
+
+        packet.CollisionX = collisionPos.x;
+        packet.CollisionZ = collisionPos.z;
 
         return packet;
     }
@@ -483,11 +486,12 @@ public class PlayerSkillController : MonoBehaviour
 
     Vector3 ComputeEndPass(float startX, float startZ, float endX, float endZ)
     {
+        Vector3 startPos = new Vector3(startX, transform.position.y, startZ);
         Vector3 targetPos = new Vector3(endX, transform.position.y, endZ);
 
         if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
         {
-            return navHit.position;
+            return GetValidPosition(startPos, navHit.position);
         }
 
         Debug.Log("ComputeEndPass Error!");
@@ -511,17 +515,34 @@ public class PlayerSkillController : MonoBehaviour
 
     Vector3 ComputeClamp(float startX, float startZ, float endX, float endZ)
     {
+        Vector3 startPos = new Vector3(startX, transform.position.y, startZ);
         Vector3 targetPos = new Vector3(endX, transform.position.y, endZ);
 
         if (NavMesh.SamplePosition(targetPos, out NavMeshHit navHit, 0.5f, NavMesh.AllAreas))
         {
-            return navHit.position;
+            return GetValidPosition(startPos, navHit.position);
         }
         else
         {
             var start = transform.position;
             return GetReachablePosition(start, targetPos, out NavMeshHit hit);
         }
+    }
+
+    private Vector3 GetValidPosition(Vector3 startPos, Vector3 targetPos)
+    {
+        Vector3 validPos = targetPos;
+
+        var path = new NavMeshPath();
+        if (!NavMesh.CalculatePath(startPos, targetPos, _agent.areaMask, path) || path.status != NavMeshPathStatus.PathComplete)
+        {
+            // 경로 자체가 없으면 레이캐스트로 첫 히트 포인트 클램프
+            if (NavMesh.Raycast(startPos, targetPos, out var hit, NavMesh.AllAreas))
+            {
+                validPos = hit.position;
+            }
+        }
+        return validPos;
     }
 
     protected Vector3 GetTargetPos(float range, bool isMaxDistance = true)
@@ -650,7 +671,7 @@ public class PlayerSkillController : MonoBehaviour
         }
 
         _skills[KeyCode.T].CurLevel = 1;
-        //_skills[KeyCode.F].CurLevel = 1;
+        _skills[KeyCode.F].CurLevel = 1;
     }
 
     private void MakeCoolDownDict()

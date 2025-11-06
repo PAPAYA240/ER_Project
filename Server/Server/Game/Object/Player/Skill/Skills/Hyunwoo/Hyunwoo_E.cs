@@ -1,0 +1,49 @@
+﻿using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
+using Server.Game;
+using System;
+using System.Collections.Generic;
+using System.Numerics;
+using System.Text;
+using static Server.Data.DataUtils;
+
+
+public sealed class Hyunwoo_E : SkillHandlerBase
+{
+    private float _elapsed, _duration;
+    private Vector3 _startPos, _endPos;
+
+    SkillSpec _spec;
+
+    public Hyunwoo_E()
+    {
+        _characterType = CharacterType.Hyunwoo;
+        _animName = "SKILL_E";
+        _keyCode = KeyCode.E;
+    }
+
+    public override void OnEnter(Player p, SkillContext ctx)
+    {
+        base.OnEnter(p, ctx);
+
+        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
+        p.LookAtMouse(ctx.MousePos);
+    }
+
+    public override void OnHit(Player p, SkillContext ctx)
+    {
+
+    }
+
+    public override void OnTick(Player p, SkillContext ctx)
+    {
+
+    }
+
+    public override void OnExit(Player p, SkillContext ctx)
+    {
+        base.OnExit(p, ctx);
+
+    }
+}
+

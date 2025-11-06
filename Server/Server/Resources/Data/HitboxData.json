@@ -19,7 +19,7 @@
         "shape": "Sector",
         "type": "SkillStatic",
         "startFrame": 8,
-        "endFrame": 20,
+        "endFrame": 13,
         "radius": 5.75,
         "angle": 60
       },
@@ -31,7 +31,7 @@
         "shape": "Circle",
         "type": "SkillTrack",
         "startFrame": 20,
-        "endFrame": 50,
+        "endFrame": 22,
         "radius": 3.5
       }
     },
@@ -39,24 +39,29 @@
       "Q": {
         "shape": "Sector",
         "type": "SkillStatic",
-        "radius": 2.2,
+        "radius": 3,
         "angle": 90,
-        "duration": 0.2
+        "startFrame": 8,
+        "endFrame": 12,
+        "lookOffset": 0.5
       },
       "W": {
         "type": "SkillStatic"
       },
       "E": {
-        "type": "SkillTrack"
+        "shape": "Circle",
+        "radius": 1.5,
+        "type": "SkillTrack",
+        "startFrame": 0,
+        "endFrame": 12
       },
       "R": {
         "shape": "Ray",
         "type": "SkillStatic",
-        "charge": true,
         "width": 3,
-        "duration": 0.3,
-        "minRange": 1,
-        "maxRange": 4
+        "startFrame": 0,
+        "endFrame": 5,
+        "maxRange": 4.2
       }
     },
     "Rozzi": {

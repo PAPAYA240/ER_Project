@@ -7,8 +7,6 @@ using static Server.Data.DataUtils;
 
 public class SkillSpec
 {
-    public ProposalMode proposalMode;
-
     public SkillNeed needs;
     public SkillLimits limits;
 }

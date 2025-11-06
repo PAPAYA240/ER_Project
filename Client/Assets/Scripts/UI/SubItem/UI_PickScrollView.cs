@@ -32,7 +32,7 @@ public class UI_PickScrollView : UI_Base
         AddCharButton("Abigail");
         AddCharButton("Yuki");
         AddCharButton("Theodore");
-        //AddCharButton("Hyunwoo");
+        AddCharButton("Hyunwoo");
     }
 
     void Update()

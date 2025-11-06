@@ -64,7 +64,7 @@ public sealed class SkillController
 
         // 2) 핸들러 결정 & 개별 핸들러의 추가 검증
         var handler = SkillRegistry.Resolve(_owner.Info.Player.CharType, key);
-        if (!handler.CanCast(_owner, ctx))
+        if (handler == null || !handler.CanCast(_owner, ctx))
         {
             _owner.SendSkillConfirmPacket(false);
             return false;

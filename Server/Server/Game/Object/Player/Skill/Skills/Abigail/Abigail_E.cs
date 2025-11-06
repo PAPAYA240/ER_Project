@@ -31,16 +31,7 @@ public sealed class Abigail_E : Skill_Abigail
         p.PosInfo.PosZ = ctx.MousePos.Y;
         p.SendChangeTransformPacket(true);
         p.Room.AttackSkillTarget(p, _target, _keyCode);
-    }
-
-    public override void OnTick(Player p, SkillContext ctx)
-    {
-        float t = _elapsed / _animDuration;
-        _elapsed += TimeUtil.DeltaTime;
-
         CanStopSkill = true;
-        p.SendCanStopSkillPacket(CanStopSkill);
-        return;
     }
 
     public override bool CanCast(Player p, SkillContext ctx)
