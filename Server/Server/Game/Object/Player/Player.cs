@@ -685,7 +685,9 @@ namespace Server.Game
 
         public void EquipItemSet(CharacterType type, int phase)
         {
-            // �ش� ����� ������ ������ ��Ʈ�� ���̵� ����Ʈ�� ������.
+            if (!DataManager.ItemSetDict.ContainsKey(type))
+                return;
+
             List<int> itemIdList = DataManager.ItemSetDict[type][phase];
 
             foreach (int itemId in itemIdList)

@@ -164,6 +164,10 @@ namespace Server.Game
 
             //// 6) 클라에 허락 패킷 보내기 -> 각 Skill의 OnEnter에서
         }
+        public void HandleExecuteSkill(Player player, C_SkillExecute skillPacket)
+        {
+            var key = (KeyCode)skillPacket.SkillKey;
+        }
         public void HandlerPrepareSkill(Player player, C_SkillPrepare skillPacket)
         {
             var key = (KeyCode)skillPacket.SkillKey;

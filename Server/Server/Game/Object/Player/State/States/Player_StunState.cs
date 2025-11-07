@@ -60,7 +60,7 @@ public class Player_StunState : IPlayerState
             float distanceToTravel = Vector3.Distance(_startPos, _desc.EndPos);
 
             // 이동에 필요한 총 시간 계산
-            float knockbackMovementTotalTime = (distanceToTravel > float.Epsilon) ? (distanceToTravel / _desc.Speed) : 0f;
+            float knockbackMovementTotalTime = 0.1f;//(distanceToTravel > float.Epsilon) ? (distanceToTravel / _desc.Speed) : 0f;
 
             double knockbackElapsedTime = TimeUtil.UtcSec() - _startTime;
 
@@ -74,7 +74,12 @@ public class Player_StunState : IPlayerState
                 if (nextPos != currentPos) // 위치가 실제로 변경되었을 때만 전송
                 {
                     player.Position = nextPos;
-                    player.SendMoveSyncPacket(player.PosInfo);
+                    player.SendSkillMotion(
+                        type: SkillMotionType.Transform,
+                        start: player.Position,
+                        end: nextPos
+                    );
+                    //player.SendMoveSyncPacket(player.PosInfo);
                     //player.SendMovePacket(); // 또는 특정 스킬 모션 패킷으로
                 }
             }

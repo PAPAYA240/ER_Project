@@ -35,7 +35,6 @@ namespace Server.Game
                     monster.ChangeState(FSMManager.Instance.EvaluateTargetForNextState(monster));
                 else
                     monster.ChangeState(FSMManager.Instance.GetIdleState());
-                Console.WriteLine("AIM");
             }
         }
 

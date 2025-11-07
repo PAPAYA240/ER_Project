@@ -5,11 +5,10 @@ namespace Server.Game
 {
     public interface ISkillHandler
     {
-        // 스킬 사용이 가능한지 확인
-        bool CanUse(Player player, S_Skill skillPacket);
+        bool CanUse(Player player, S_Interact skillPacket); // 스킬 사용이 가능한지 확인
     }
     public abstract class SkillHandler : ISkillHandler
     {
-        public abstract bool CanUse(Player player, S_Skill skillPacket);
+        public abstract bool CanUse(Player player, S_Interact skillPacket);
     }
 }
