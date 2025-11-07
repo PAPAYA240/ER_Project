@@ -113,8 +113,7 @@ public class PlayerSkillController : MonoBehaviour
         }
         else if(packet.Type == SkillMotionType.Transform)
         {
-            ApplySkillMotion((SkillMotionType)packet.Type,
-            new Vector3(packet.EndX, packet.EndY, packet.EndZ),
+            ApplySkillMotion(new Vector3(packet.EndX, packet.EndY, packet.EndZ),
             packet.AuthoritativeEnd);
         }
     }
@@ -295,7 +294,7 @@ public class PlayerSkillController : MonoBehaviour
         _player.UpdateTransform();
     }
 
-    private void ApplySkillMotion(SkillMotionType type, Vector3 targetPos, bool authoritativeEnd)
+    private void ApplySkillMotion(Vector3 targetPos, bool authoritativeEnd)
     {
         if(_agent != null || _agent.enabled)
             _agent.enabled = false;

@@ -9,6 +9,8 @@ using static Server.Data.DataUtils;
 
 public sealed class Rozzi_Q : SkillHandlerBase
 {
+    private float _coolDownReductionValue = 2.0f;
+
     public Rozzi_Q()
     {
         _characterType = CharacterType.Rozzi;
@@ -24,30 +26,20 @@ public sealed class Rozzi_Q : SkillHandlerBase
         p.LookAtMouse(ctx.MousePos);
     }
 
-    public override void OnHit(Player p, SkillContext ctx)
+    public override void OnCollision(Player p)
     {
-        return;
-    }
-
-    public override void OnTick(Player p, SkillContext ctx)
-    {
-        return;
-    }
-
-    public override void OnExit(Player p, SkillContext ctx)
-    {
-        base.OnExit(p, ctx);
-
         p.Tokens.Add(new NextInputToken
         {
             Active = true,
             RemainingUses = 1,
-            ExpireUtc = TimeUtil.UtcSec() + 3.0,
+            ExpireUtc = TimeUtil.UtcSec() + 2.0,
             Priority = 10,
             Trigger = InputKind.Move,
             ReplacementSkillKey = "Rozzi_Q_Dash",
             CancelOnUseSkill = true
         });
+
+        p.Skill.Reduce(_keyCode, _coolDownReductionValue);
     }
 }
 

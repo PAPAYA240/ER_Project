@@ -113,7 +113,7 @@ public abstract class SkillHandlerBase : ISkill
 
     protected void SendSkillCollisionRequestPacket(Player p, CollisionType type, Vector3 startPos, Vector3 targetPos)
     {
-        p.SendSkillCollisionRequestPacket(_keyCode, _requestId, CollisionType.Pass, p.Position, targetPos);
+        p.SendSkillCollisionRequestPacket(_keyCode, _requestId, type, startPos, targetPos);
         ++_requestId;
     }
 
