@@ -3104,10 +3104,18 @@
             "effects": [
               {
                 "type": "Stun",
-                "duration": 1.2
+                "duration": 1.2,
+                "condition": "HitTheWall"
               },
               {
-                "type": "MoveTargetObject"
+                "type": "Stun",
+                "duration": 0.4,
+                "condition": "Hit"
+              },
+              {
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3118,10 +3126,13 @@
             "effects": [
               {
                 "type": "Stun",
-                "duration": 1.2
+                "duration": 1.2,
+                "condition": "HitTheWall"
               },
               {
-                "type": "MoveTargetObject"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3132,10 +3143,13 @@
             "effects": [
               {
                 "type": "Stun",
-                "duration": 1.2
+                "duration": 1.2,
+                "condition": "HitTheWall"
               },
               {
-                "type": "MoveTargetObject"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3146,10 +3160,13 @@
             "effects": [
               {
                 "type": "Stun",
-                "duration": 1.2
+                "duration": 1.2,
+                "condition": "HitTheWall"
               },
               {
-                "type": "MoveTargetObject"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3160,10 +3177,13 @@
             "effects": [
               {
                 "type": "Stun",
-                "duration": 1.2
+                "duration": 1.2,
+                "condition": "HitTheWall"
               },
               {
-                "type": "MoveTargetObject"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           }
