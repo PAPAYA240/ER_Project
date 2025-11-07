@@ -10,32 +10,39 @@ public class UIFXManager : MonoBehaviour
     };
 
     private Dictionary<int, List<GameObject>> currentlyPlayingMarks = new Dictionary<int, List<GameObject>>();
-    private PoolManager _pool = null;
-    public void Init(PoolManager pool)
+    public void Init()
     {
-        _pool = pool;
         foreach (var pair in _statusMarkEffectPaths)
         {
             GameObject prefab = Resources.Load<GameObject>(pair.Value);
             if (prefab != null)
-                _pool.CreatePool(prefab, 10);
+                Managers.FX.CreatePool(prefab, 10);
         }
     }
 
-    public void PlayStatusEffect(GameObject target, CharacterType effectName, float duration)
+    public void PlayStatusEffect(GameObject target, CharacterType charType, float duration)
     {
-        if (target == null || !_statusMarkEffectPaths.ContainsKey(effectName)) return;
-
-        string prefabPath = _statusMarkEffectPaths[effectName];
-        GameObject prefab = Managers.Resource.Load<GameObject>(prefabPath);
-        if (prefab == null) return;
-
-        StopStatusEffect(target, effectName);
-
-        Poolable poolable = _pool.Pop(prefab, target.transform);
-        if (poolable == null)
+        if (target == null || !_statusMarkEffectPaths.ContainsKey(charType)) 
             return;
-        GameObject fxObject = poolable.gameObject;
+
+        string prefabPath = _statusMarkEffectPaths[charType];
+        GameObject prefab = Managers.Resource.Load<GameObject>(prefabPath);
+        if (prefab == null) 
+            return;
+
+        StopStatusEffect(target, charType);
+
+        GameObject fxObject = Managers.FX.Pop(prefab, target.transform);
+        if (fxObject == null)
+        { 
+            Managers.FX.CreatePool(prefab, 1);
+            fxObject = Managers.FX.Pop(prefab, target.transform);
+            if (fxObject == null)
+            {
+                Debug.LogError($"UIFXManager: Failed to pop poolable for {prefabPath}");
+                return;
+            }
+        }
 
         UI_TargetingMark mark = fxObject.GetOrAddComponent<UI_TargetingMark>();
         if (!currentlyPlayingMarks.ContainsKey(target.GetInstanceID()))
@@ -48,7 +55,7 @@ public class UIFXManager : MonoBehaviour
             if (currentlyPlayingMarks.ContainsKey(target.GetInstanceID()))
             {
                 currentlyPlayingMarks[target.GetInstanceID()].Remove(fxObject);
-                _pool.Push(poolable);
+                Managers.FX.Push(fxObject);
             }
         });
     }
@@ -74,8 +81,7 @@ public class UIFXManager : MonoBehaviour
                 markToStop.GetComponent<UI_TargetingMark>()?.Hide();
 
                 currentlyPlayingMarks[target.GetInstanceID()].Remove(markToStop);
-                // 풀로 반환
-                _pool.Push(markToStop.GetOrAddComponent<Poolable>());
+                Managers.FX.Push(markToStop);
             }
         }
     }
@@ -88,7 +94,7 @@ public class UIFXManager : MonoBehaviour
             foreach (GameObject mark in new List<GameObject>(effectList))
             {
                 mark.GetComponent<UI_TargetingMark>()?.Hide();
-                _pool.Push(mark.GetOrAddComponent<Poolable>());
+                Managers.FX.Push(mark);
             }
             effectList.Clear();
             currentlyPlayingMarks.Remove(ownerId);

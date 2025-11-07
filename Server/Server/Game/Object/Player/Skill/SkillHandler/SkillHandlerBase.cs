@@ -52,6 +52,11 @@ public abstract class SkillHandlerBase : ISkill
             p.SendStopPacket(StopReason.StopMoveOnly);
         }
 
+        CreateHitbox(p, ctx);
+    }
+
+    public void CreateHitbox(Player p, SkillContext ctx)
+    {
         switch (ctx.Key)
         {
             case KeyCode.Q:
@@ -63,7 +68,6 @@ public abstract class SkillHandlerBase : ISkill
 
         }
     }
-
     public virtual void OnExit(Player p, SkillContext ctx)
     {
         //p.SendSkillMotion(

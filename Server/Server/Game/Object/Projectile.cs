@@ -31,7 +31,6 @@ namespace Server.Game
                 PosY = Owner.PosInfo.PosY,
                 PosZ = Owner.PosInfo.PosZ
             };
-
             Info.RotInfo = Owner.RotInfo; 
         }
 
@@ -69,6 +68,7 @@ namespace Server.Game
         }
         private bool Deactivation()
         {
+            // 경과 시간 or 충돌을 했을 경우에 비활성화
             return (Environment.TickCount64 >= _endTime);
         }
         private void MovingBroadcast()

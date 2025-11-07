@@ -2,6 +2,9 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
+using static UnityEngine.Rendering.DebugUI;
+
 
 
 #if UNITY_EDITOR
@@ -52,7 +55,7 @@ public class PlayAnimation : AnimationControlNode
     {
         if (!Check(owner))
             return NodeStatus.Failure;
-
+       
         if (monsterController.State == CreatureState.Idle)
         {
             ClearAnim();
@@ -90,8 +93,7 @@ public class PlayAnimation : AnimationControlNode
         return NodeStatus.Running;
     }
 
-    private void Play(string anim)
-     => _animator.CrossFadeInFixedTime(anim, ratio);
+    private void Play(string anim) => _animator.CrossFadeInFixedTime(anim, ratio);
     public void Reset()
     {
         _currentAnimName = string.Empty;

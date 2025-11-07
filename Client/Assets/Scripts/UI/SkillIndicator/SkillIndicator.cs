@@ -3,6 +3,9 @@ using System;
 using UnityEngine;
 using Google.Protobuf.Protocol;
 using System.Collections.Generic;
+using UnityEngine.UIElements;
+using Google.Protobuf.WellKnownTypes;
+using static UnityEngine.UI.GridLayoutGroup;
 
 
 public class IndicatorRunTimeData
@@ -10,6 +13,7 @@ public class IndicatorRunTimeData
     public GameObject owner;
     public GameObject indicatorObject;
     public Canvas canvas;
+    public string prefabName;
     public Transform scaleTarget;
     public Transform positionTarget;
     public List<Delegate> invokeList;
@@ -22,8 +26,8 @@ public class SkillIndicator : UI_Base
     private Dictionary<CharacterType, Dictionary<KeyCode, IndicatorRunTimeData>> _skillConfigs 
         = new Dictionary< CharacterType, Dictionary<KeyCode, IndicatorRunTimeData>>();
 
-    private Dictionary<ValueTuple<CharacterType, KeyCode>, List<Action<Canvas, GameObject>>> _activeSkillFuncs
-    = new Dictionary<ValueTuple<CharacterType, KeyCode>, List<Action<Canvas, GameObject>>>();
+    private Dictionary<ValueTuple<CharacterType, KeyCode>, List<Action<Canvas, GameObject, string>>> _activeSkillFuncs
+    = new Dictionary<ValueTuple<CharacterType, KeyCode>, List<Action<Canvas, GameObject, string>>>();
 
     private bool _bInitSetting = false;
 
@@ -36,14 +40,15 @@ public class SkillIndicator : UI_Base
         foreach (var keyPair in _activeSkillFuncs)
         {
             var value= keyPair.Key;
-            List<Action<Canvas, GameObject>> funcList = keyPair.Value;
+            List<Action<Canvas, GameObject, string>> funcList = keyPair.Value;
 
             var runTimeData = _skillConfigs[value.Item1][value.Item2]; 
             var map = runTimeData.indicatorObject;
             var canvas = runTimeData.canvas;
+            var prefab = runTimeData.prefabName;
 
             foreach (var func in funcList)
-                func.Invoke(canvas, map);
+                func.Invoke(canvas, map, prefab);
         }
     }
     public void EnableIndicator(CharacterType charType, KeyCode key)
@@ -57,12 +62,12 @@ public class SkillIndicator : UI_Base
             var value = new ValueTuple<CharacterType, KeyCode>(charType, key);
 
             if (!_activeSkillFuncs.ContainsKey(value))
-                _activeSkillFuncs.Add(value, new List<Action<Canvas, GameObject>>());
+                _activeSkillFuncs.Add(value, new List<Action<Canvas, GameObject, string>>());
 
             canvas.enabled = true;
 
             foreach (var InvokeFunc in invokeFuncs)
-                _activeSkillFuncs[value].Add((Action<Canvas, GameObject>)InvokeFunc);
+                _activeSkillFuncs[value].Add((Action<Canvas, GameObject, string>)InvokeFunc);
         }
     }
 
@@ -78,10 +83,22 @@ public class SkillIndicator : UI_Base
             _bInitSetting = false;
             _activeSkillFuncs.Remove(value);
         }
+
+        DisableSkillType(charType, key);
+    }
+
+    private void DisableSkillType(CharacterType charType, KeyCode key)
+    {
+        if (key == KeyCode.F1)
+        {
+            inti = false;
+            var runTimeData = _skillConfigs[charType][key];
+            SkillDReset(runTimeData.indicatorObject);
+        }
     }
 
     // 주 Object는 Indicator 이름으로 통일
-    private void TrackMouseCursor(Canvas canvas, GameObject map)
+    private void TrackMouseCursor(Canvas canvas, GameObject map, string prefabName)
     {
         Vector3 position = GetMousePosition();
 
@@ -89,12 +106,10 @@ public class SkillIndicator : UI_Base
         rot.eulerAngles = new Vector3(0, rot.eulerAngles.y, rot.eulerAngles.z);
         canvas.transform.rotation = Quaternion.Lerp(rot, canvas.transform.rotation, 0);
 
-        Util.FindChildByName(map.transform, "Indicator").transform.position = position;
+        Util.FindChildByName(map.transform, prefabName).transform.position = position;
     }
-    private void AimAtMousePosition(Canvas canvs, GameObject map)
+    private void AimAtMousePosition(Canvas canvs, GameObject map, string prefabName)
     {
-        //ExpandScaleOverTime();
-
         Vector3 position = GetMousePosition();
 
         Quaternion atMouse = Quaternion.LookRotation(position - transform.position);
@@ -102,19 +117,113 @@ public class SkillIndicator : UI_Base
         map.transform.rotation = Quaternion.Lerp(atMouse, map.transform.rotation, 0);
     }
 
+
+
+
+
+
     #region Theodore Action
-    // 스케일을 점점 확대시키는 함수
+    bool inti = false;
+    private void ObjectAimAtMousePosition(Canvas canvas, GameObject map, string prefabName)
+    {
+        Vector3 position = GetMousePosition();
+        if(!inti)
+        {
+            inti = true;
+            Quaternion targetRotation = Quaternion.LookRotation(position - transform.position);
+            targetRotation.eulerAngles = new Vector3(0, targetRotation.eulerAngles.y, targetRotation.eulerAngles.z);
+            map.transform.rotation = Quaternion.Lerp(targetRotation, map.transform.rotation, 0);
+        }
+
+        Quaternion atMouse = Quaternion.LookRotation(position - transform.position);
+        atMouse.eulerAngles = new Vector3(0, atMouse.eulerAngles.y, atMouse.eulerAngles.z);
+
+        GameObject aimObject = Util.FindChildByName(map.transform, prefabName);
+        aimObject.transform.rotation = Quaternion.Lerp(atMouse, map.transform.rotation, 0);
+    }
+
+
 
     private const float SCALE_SPEED = 1.5f;
     private Vector3 _targetScaled = new Vector3();
+    string[,] subName =
+      {
+            { "L_StartLine", "R_StartLine" }, // 활성화
+            { "L_Line", "R_Line" } // 비활성화
+        };
+    private void ArrowSkillMotion(Canvas canvas, GameObject map, string prefabName)
+    {
+        ChangeArrowLine(map); // L, R
 
-    private void ExpandScaleOverTime(Canvas canvas, GameObject map)
+        for (int i = 0; i < subName.GetLength(0); i++)
+        {
+            GameObject lineObject = Util.FindChildByName(map.transform, subName[0, i]);
+            if (lineObject == null)
+                return;
+
+            float elapsed = 0f;    // 경과 시간
+            elapsed += Time.deltaTime;
+            float t = elapsed / 0.4f;
+            lineObject.transform.position = Vector3.Lerp(lineObject.transform.position, targetPosition[i], t);
+            lineObject.transform.rotation = Quaternion.Lerp(lineObject.transform.rotation, targetRotation[i], t);
+        }
+    }
+
+    Vector3[] targetPosition = new Vector3[2];
+    Quaternion[] targetRotation = new Quaternion[2];
+    Vector3[] _originPosition = new Vector3[2];
+    Quaternion[] _originRotation = new Quaternion[2];
+    bool _bArrowInit = false;
+
+    private void ChangeArrowLine(GameObject map)
+    {
+        if (_bArrowInit)
+            return;
+        #region Shit 더러운 하드코딩
+        Transform LStart = Util.FindChildByName(map.transform, "L_StartLine").transform;
+        Transform RStart = Util.FindChildByName(map.transform, "R_StartLine").transform;
+        Transform L = Util.FindChildByName(map.transform, "L_Line").transform;
+        Transform R = Util.FindChildByName(map.transform, "R_Line").transform;
+
+         
+        _bArrowInit = true;
+
+        LStart.gameObject.SetActive(true);
+        RStart.gameObject.SetActive(true);
+        L.gameObject.SetActive(false);
+        R.gameObject.SetActive(false);
+
+        _originPosition[0] = LStart.position;
+        _originPosition[1] = RStart.position;
+        _originRotation[0] = LStart.rotation;
+        _originRotation[1] = RStart.rotation;
+
+        targetPosition[0] = L.position;
+        targetPosition[1] = R.position;
+        targetRotation[0] = L.rotation;
+        targetRotation[1] = R.rotation;
+        #endregion 
+    }
+
+    private void SkillDReset(GameObject map)
+    {
+        #region shit
+        Transform LStart = Util.FindChildByName(map.transform, "L_StartLine").transform;
+        Transform RStart = Util.FindChildByName(map.transform, "R_StartLine").transform;
+        LStart.transform.position = _originPosition[0];
+        RStart.transform.position = _originPosition[1];
+
+        LStart.transform.rotation = _originRotation[0];
+        RStart.transform.rotation = _originRotation[1];
+        #endregion
+    }
+    private void ExpandScaleOverTime(Canvas canvas, GameObject map, string prefabName)
     {
         Transform inCircleTransform = Util.FindChildByName(map.transform, "InCircle").transform;
         if (!_bInitSetting)
         {
             _bInitSetting = true;
-            _targetScaled = inCircleTransform.localScale;
+            _targetScaled = Util.FindChildByName(map.transform, "OutCircle").transform.localScale;
             inCircleTransform.localScale = Vector3.zero;
         }
 
@@ -132,14 +241,15 @@ public class SkillIndicator : UI_Base
     #endregion
 
     #region Utils
+    PlayerController _owner;
     private void LoadData()
     {
         ICollection<CharacterType> allCharacts = DataManager.IndicatorDict.Keys;
-        Type thisType = this.GetType();
+        System.Type thisType = this.GetType();
 
         foreach (CharacterType character in allCharacts)
         {
-            MyPlayerController owner = GetComponentInParent<MyPlayerController>();
+            _owner = GetComponentInParent<MyPlayerController>();
 
             if (!_skillConfigs.ContainsKey(character))
                 _skillConfigs.Add(character, new Dictionary<KeyCode, IndicatorRunTimeData>());
@@ -155,11 +265,13 @@ public class SkillIndicator : UI_Base
 
                 var prefabAddress = config[key].indicatorPrefabPath;
                 keyConfigs[key].indicatorObject = Managers.Resource.Instantiate(prefabAddress);
+                keyConfigs[key].prefabName = config[key].prefabName;
+                keyConfigs[key].indicatorObject.transform.SetParent(_owner.transform);
 
                 keyConfigs[key].canvas = keyConfigs[key].indicatorObject.GetComponent<Canvas>();
-                keyConfigs[key].canvas.transform.SetParent(owner.transform, false);
+                keyConfigs[key].canvas.transform.SetParent(_owner.transform, false);
                 keyConfigs[key].canvas.enabled = false;
-
+                
                 foreach (string funcName in config[key].invokeFuncs)
                 {
                     System.Reflection.MethodInfo method = thisType.GetMethod(funcName,
@@ -169,8 +281,8 @@ public class SkillIndicator : UI_Base
 
                     if (method != null)
                     {
-                        var actionDelegate = (Action<Canvas, GameObject>)
-                            Delegate.CreateDelegate(typeof(Action<Canvas, GameObject>), this, method);
+                        var actionDelegate = (Action<Canvas, GameObject, string>)
+                            Delegate.CreateDelegate(typeof(Action<Canvas, GameObject, string>), this, method);
                         keyConfigs[key].invokeList.Add(actionDelegate);
                     }
                 }

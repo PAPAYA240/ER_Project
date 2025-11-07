@@ -244,6 +244,7 @@ namespace Data
     public class SkillIndicatorConfig
     {
         public string indicatorPrefabPath;
+        public string prefabName;
         public List<string> invokeFuncs = new List<string>();
         public Vector3 targetScale = Vector3.one;
         public float scaleSpeed = 1.5f;
@@ -303,6 +304,31 @@ namespace Data
             return nestedDict;
         }
     }
+
+    [Serializable]
+    public class MonstHitboxData : ILoader<MonsterType, Dictionary<MonsterSkill, SkillHitbox>>
+    {
+        public Dictionary<string, Dictionary<string, SkillHitbox>> hitbox = new Dictionary<string, Dictionary<string, SkillHitbox>>();
+        public Dictionary<MonsterType, Dictionary<MonsterSkill, SkillHitbox>> MakeDict()
+        {
+            var nestedDict = new Dictionary<MonsterType, Dictionary<MonsterSkill, SkillHitbox>>();
+
+            foreach (var chars in hitbox)
+            {
+                MonsterType chartype = (MonsterType)Enum.Parse(typeof(MonsterType), chars.Key);
+                var dict = new Dictionary<MonsterSkill, SkillHitbox>();
+
+                foreach (var skills in chars.Value)
+                {
+                    MonsterSkill keyCode = (MonsterSkill)Enum.Parse(typeof(MonsterSkill), skills.Key);
+                    dict.Add(keyCode, skills.Value);
+                    skills.Value.SetDefaultsIfEmpty();
+                }
+                nestedDict.Add(chartype, dict);
+            }
+            return nestedDict;
+        }
+    }
     #endregion
 
     #region Effect
@@ -324,16 +350,6 @@ namespace Data
     [Serializable]
     public class EffectData
     {
-        public enum EEffectTarget
-        {
-            Self,       // 캐스터의 위치에 부착 (자식으로)
-            Relative,   // 캐스터의 회전을 고려한 상대적 위치
-            Target,     // 특정 타겟의 위치
-            Mouse,     
-            Ground,     // 월드 좌표의 특정 위치
-            Shoot       // 발사체
-        }
-
         public string type;    // Buff / Debuff / Burn 등
         public string stat;    // MoveSpeed / Defense / AttackSpeed 등
         public float value;    // 수치 (%는 그냥 숫자로 저장) 
@@ -341,9 +357,15 @@ namespace Data
         public string condition; // 옵션 (예: "HP<50%")
 
         public string attachBoneName; // 뼈대에 달고자 한다면 그 뼈의 이름
-        
 
-        // + 추가
+        #region 추가
+        public enum EEffectTarget
+        {
+            Self,       // 캐스터의 위치에 부착 (자식으로)
+            Target,     // 아직까지 Target만 따라감
+            Mouse,     // 마우스 따라감
+            Shoot       // 발사체
+        }
         public string prefabName;
         public float delayTime;
         public string skillType;
@@ -351,6 +373,7 @@ namespace Data
         public Quaternion rotation;
         public string sound;
         public EEffectTarget target; // 이펙트가 표시될 위치
+        #endregion
 
         public EffectData(string name, EEffectTarget target, float duration, string sound, Vector3 position = default(Vector3), Quaternion rotation = default(Quaternion))
         {

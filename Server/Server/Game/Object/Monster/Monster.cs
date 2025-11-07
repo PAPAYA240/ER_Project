@@ -60,7 +60,7 @@ namespace Server.Game
             if (DataManager.MonsterDict[type].attackType == "long")
                 DIST_TO_TARGET = 5.0f;
             else
-                DIST_TO_TARGET = 0.5f;
+                DIST_TO_TARGET = 2.0f;
 
             OnAttacked += HandlerRegisterTarget;
             ChangeState(FSMManager.Instance.GetIdleState());
@@ -121,6 +121,7 @@ namespace Server.Game
             if (attacker is Player attackerPlayer)
                 Target = attackerPlayer;
         }
+        // 몬스터가 때린 타겟
         public void OnTargetHit(GameObject target)
         {
             if (target is Creature creatureTarget)

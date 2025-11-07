@@ -391,109 +391,13 @@ namespace Server.Game
         }
 
         #region Handler
-        #region Handler Skill
-        public void HandleSkill(Player player, C_Skill skillPacket)
+        public void HandleAmplificationSkill(Player player, S_Interact skillPacket)
         {
-            if (player == null)
-                return;
-
-            if (skillPacket.SkillInfo.Amplification)
-            {
-                HandleAmplificationSkill(player, skillPacket);
-            }
-            else
-            {
-                HandleNormalSkill(player, skillPacket);
-            }
-        }
-
-        private void HandleAmplificationSkill(Player player, C_Skill skillPacket)
-        {
-            ObjectInfo info = player.Info;
-
-            info.PosInfo.State = CreatureState.Skill;
-            S_Skill skillPacketToSend = new S_Skill()
-            {
-                CanUse = true,
-                ObjectId = player.Info.ObjectId,
-                SkillInfo = skillPacket.SkillInfo
-            };
-            Broadcast(skillPacketToSend);
-
             if (_skillHandlers.TryGetValue(player.Info.Player.CharType, out var handler))
-                handler.CanUse(player, skillPacketToSend);
+                handler.CanUse(player, skillPacket);
         }
 
-        private void HandleNormalSkill(Player player, C_Skill skillPacket)
-        {
-            //// 나영아 도와줘
-            //if (player == null) return;
-
-            //ObjectInfo info = player.Info;
-            //S_Skill skill = new S_Skill() { SkillInfo = new SkillInfo() };
-            //KeyCode keyCode = (KeyCode)skillPacket.SkillInfo.KeyCode;
-
-            //skill.ChargeRatio = skillPacket.ChargeRatio;
-
-            //if (!player.CanUseSkill(keyCode))
-            //{
-            //    skill.CanUse = false;
-            //    player.Session.Send(skill);
-            //    return;
-            //}
-            //else
-            //    player.CommitSkillUsage(keyCode);
-
-            ////foreach (int targetid in skillPacket.TargetsId)
-            ////{
-            ////    if (TryGetMonster(targetid, out Monster target))
-            ////    {
-            ////        player.Target = target;
-            ////        player.SkillTarget = target;
-            ////        player.UsedTargetingSkill = keyCode;
-
-            ////    }
-            ////    else if (_players.TryGetValue(targetid, out Player skillTarget))
-            ////    {
-            ////        player.SkillTarget = skillTarget;
-            ////        player.UsedTargetingSkill = keyCode;
-            ////    }
-            ////}
-
-            //info.PosInfo.State = CreatureState.Skill;
-            //skill.CanUse = true;
-            //skill.ObjectId = info.ObjectId;
-            //skill.SkillInfo = new SkillInfo
-            //{
-            //    SkillId = skillPacket.SkillInfo.SkillId,
-            //    KeyCode = skillPacket.SkillInfo.KeyCode,
-            //};
-            //skill.CostInfo = new CostInfo
-            //{
-            //    CoolTime = player.GetCoolTime(keyCode),
-            //    Stamina = player.Stamina,
-            //};
-            //Broadcast(skill);
-
-            ////float damage = 0f;
-
-            ////if(player.SkillTarget.ObjectType == GameObjectType.Player)
-            ////    damage = _collisionManager.CalcDamage(player, player.SkillTarget as Player, player.UsedTargetingSkill);
-            ////else
-            ////    damage = _collisionManager.CalcDamage(player, player.SkillTarget.Stat, player.UsedTargetingSkill);   
-
-            //// 프로젝타일
-            //Projectile proj= FindProjectile(player);
-            //if (proj != null)
-            //    proj.IsActive = true;
-
-            //_collisionManager.AddHitbox(player, info.Player.CharType, (KeyCode)skillPacket.SkillInfo.KeyCode,
-            //    new Vector2(skillPacket.MousePosX, skillPacket.MousePosZ), skillPacket.ChargeRatio);
-        }
-
-        #endregion
-
-        public void AttackSkillTarget(Player player, GameObject target, KeyCode keyCode) // 타게팅 스킬. 대상 1명.
+        public void HandleAttackSkillTarget(Player player, C_TargetingSkill targetingSkill)
         {
             if (player == null)
                 return;
@@ -805,9 +709,9 @@ namespace Server.Game
 
         #endregion
 
-        public void AddStatusEffect(Creature creature, StatusEffect statusEffect)
+        public void AddStatusEffect(Creature creature, StatusEffect statusEffect, Creature atk)
         {
-            creature.AddStatusEffect(statusEffect);
+            creature.AddStatusEffect(statusEffect, atk);
         }
 
         //public void BehindDash(Player player)

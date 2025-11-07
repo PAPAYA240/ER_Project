@@ -2,7 +2,6 @@ using Google.Protobuf.Protocol;
 using System;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEditor.PlayerSettings;
 
 public class MonsterController : CreatureController
 {
@@ -42,12 +41,44 @@ public class MonsterController : CreatureController
             return;
 
         InitHpBar();
-        
-        Stat = Stat;
     }
+
     protected override void UpdateController()
     {
         transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
+        
+        MeshDebug();
+    }
+    private bool _bMesh = false;
+    private void MeshDebug()
+    {
+        if (!_bMesh && State == CreatureState.Skill)
+        {
+            _bMesh = true;
+            GameObject skillMeshGO = Managers.Resource.Instantiate("Debug/SkillMesh", this.transform);
+            SkillMesh sm = skillMeshGO.GetComponent<SkillMesh>();
+            if (sm == null) return;
+
+            if (!DataManager.MonstSkillHitboxDict.ContainsKey(_monsterType))
+                return;
+            if (!DataManager.MonstSkillHitboxDict[_monsterType].ContainsKey(Skill))
+                return;
+
+            SkillHitbox hitbox = DataManager.MonstSkillHitboxDict[_monsterType][Skill];
+            sm.Init(hitbox, this.transform, 0, 0, this.GetMouseWorldPosition());
+        }
+    }
+    public Vector3 GetMouseWorldPosition()
+    {
+        Camera mainCam = Camera.main;
+        if (mainCam == null) return Vector3.zero;
+
+        Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Map")))
+            return hit.point;
+
+        return Vector3.zero;
     }
     public override void OnDamaged()
     {
@@ -108,6 +139,9 @@ public class MonsterController : CreatureController
         State = packet.MyState;
         if (packet.TargetPosition != null)
             _targetPos = packet.TargetPosition.ToVector();
+
+        if (State == CreatureState.Skill)
+            _bMesh = false;
 
         switch (State)
         {

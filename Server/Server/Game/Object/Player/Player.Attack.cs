@@ -17,26 +17,26 @@ namespace Server.Game
 
         public bool IsDead => this.State == CreatureState.Dead;
 
-        // ÀÌµ¿ ÁßÁö
+        // ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½
         public void StopMove()
         {
-            // ÇÊ¿ä½Ã ¼Óµµ 0, ¸ñÀûÁö Å¬¸®¾î, ÀÌµ¿ ¾Ö´Ï ÁßÁö µî
+            // ï¿½Ê¿ï¿½ï¿½ ï¿½Óµï¿½ 0, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½, ï¿½Ìµï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
         }
 
-        // °ø°Ý ÁßÁö
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         public void CancelAttack()
         {
             if (this.CurrentState is Player_AttackState)
                 this.ChangeState(new Player_IdleState());
         }
 
-        // ÁÖº¯ °¡Àå °¡±î¿î Àû
+        // ï¿½Öºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
         public GameObject FindNearestEnemy(int range)
         {
             return this.Room?.FindNearestEnemy(this, range);
         }
 
-        // Å¸°ÙÀ» ¹Ù¶óº¸±â(Å¸°Ù ID·Î)
+        // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¶óº¸±ï¿½(Å¸ï¿½ï¿½ IDï¿½ï¿½)
         public void FaceToTarget(int targetId)
         {
             var t = FindTarget(targetId);
@@ -45,21 +45,21 @@ namespace Server.Game
             FaceTo(t.Position);
         }
 
-        // ÀÓÀÇÀÇ ¿ùµå ÁÂÇ¥¸¦ ¹Ù¶óº¸±â(Yaw¸¸ º¸Á¤)
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½Ù¶óº¸±ï¿½(Yawï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
         public void FaceTo(Vector3 worldPos)
         {
             Vector3 dir = worldPos - this.Position;
             if (dir.X == 0 && dir.Y == 0 && dir.Z == 0)
                 return;
 
-            // ¼­¹ö ÁÂÇ¥°è¿¡ ¸Â°Ô Yaw °è»ê (X-Z Æò¸é ±âÁØ ¿¹½Ã)
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½è¿¡ ï¿½Â°ï¿½ Yaw ï¿½ï¿½ï¿½ (X-Z ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
             float yawRad = MathF.Atan2(dir.X, dir.Z);
             float yawDeg = yawRad * (180.0f / MathF.PI);
 
-            // PositionInfo¿¡ RotY°¡ ÀÖ´Ù°í °¡Á¤
+            // PositionInfoï¿½ï¿½ RotYï¿½ï¿½ ï¿½Ö´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½
             //this.RotInfo.Qy = yawDeg;
 
-            // (¼±ÅÃ) È¸Àü º¯°æÀ» Å¬¶ó¿¡ ½ÌÅ©ÇÏ°í ½ÍÀ¸¸é Move/State ÆÐÅ¶¿¡ Æ÷ÇÔÇØ¼­ ºê·ÎµåÄ³½ºÆ®
+            // (ï¿½ï¿½ï¿½ï¿½) È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ ï¿½ï¿½Å©ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Move/State ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½Îµï¿½Ä³ï¿½ï¿½Æ®
             // BroadcastPositionRotation();
         }      
     }

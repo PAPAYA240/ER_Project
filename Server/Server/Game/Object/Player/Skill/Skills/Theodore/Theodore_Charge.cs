@@ -1,7 +1,6 @@
 ﻿
 using Google.Protobuf.Protocol;
 using Server.Game;
-using System.Numerics;
 using static Server.Data.DataUtils;
 
 public sealed class Theodore_Charge : SkillHandlerBase
@@ -19,17 +18,21 @@ public sealed class Theodore_Charge : SkillHandlerBase
     }
     public override void OnEnter(Player p, SkillContext ctx)
     {
+        ctx.Key = KeyCode.None;
         base.OnEnter(p, ctx);
     }
     public override void OnTick(Player p, SkillContext ctx)
     {
     }
     public override void OnHit(Player p, SkillContext ctx)
-    { }
- 
-    public override void OnExit(Player p, SkillContext ctx)
     { 
-        base.OnExit(p, ctx);
+        return;
+    }
+
+    public override void OnExit(Player p, SkillContext ctx)
+    {
+        // Skill_Q 로 이동했을 때 위치가 초기화 된다. 이유는 don't know.
+        //base.OnExit(p, ctx); 
     }
 
     // 스킬 중에 애니메이션 변동을 필요로 하는 조건으로 움직임, 

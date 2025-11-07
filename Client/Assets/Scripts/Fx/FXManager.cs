@@ -9,21 +9,22 @@ public class FXManager : MonoBehaviour
     public EffectFXManager Effect { get; private set; }
     public UIFXManager UI { get; private set; }
 
-    protected PoolManager _pool = new PoolManager();
     public void Init()
     {
-        _pool.Init();
+        GameObject rootObj = new GameObject("@UIFXPool_Root");
+        rootObj.transform.SetParent(transform);
+        _poolRoot = rootObj.transform;
 
         GameObject effectGO = new GameObject("EffectFXManager");
         effectGO.transform.SetParent(this.transform);
         Effect = effectGO.AddComponent<EffectFXManager>();
-        Effect.Init(_pool);
+        Effect.Init();
 
         // UIFXManager 생성 및 자식으로 설정
         GameObject uiGO = new GameObject("UIFXManager");
         uiGO.transform.SetParent(this.transform); 
         UI = uiGO.AddComponent<UIFXManager>();
-        UI.Init(_pool);
+        UI.Init();
     }
     public Quaternion GetIndicatorRotation(Transform casterTransform)
     {
@@ -37,9 +38,9 @@ public class FXManager : MonoBehaviour
         return Effect.PlayEffect(ownerId, effectData, casterTransform, targetPos, GetIndicatorRotation(casterTransform));
     }
 
-    public void PlayStatusEffect(GameObject target, CharacterType effectName, float duration)
+    public void PlayStatusEffect(GameObject target, CharacterType charType, float duration)
     {
-        UI.PlayStatusEffect(target, effectName, duration);
+        UI.PlayStatusEffect(target, charType, duration);
     }
 
     // 기타 유틸리티 
@@ -54,4 +55,96 @@ public class FXManager : MonoBehaviour
         Effect.Clear();
         UI.Clear();
     }
+
+    #region FX 전용 Pool 
+    // Pool
+    private class Pool
+    {
+        public GameObject Prefab;
+        public Transform Root;
+        public Queue<GameObject> Available = new Queue<GameObject>();
+        public HashSet<GameObject> InUse = new HashSet<GameObject>();
+    }
+
+    private Dictionary<int, Pool> _pools = new Dictionary<int, Pool>();
+    private Transform _poolRoot;
+    public void CreatePool(GameObject prefab, int initialSize)
+    {
+        if (prefab == null) return;
+
+        int prefabId = prefab.GetInstanceID();
+        if (_pools.ContainsKey(prefabId)) return;
+
+        GameObject poolRoot = new GameObject($"Pool_{prefab.name}");
+        poolRoot.transform.SetParent(_poolRoot);
+
+        Pool pool = new Pool
+        {
+            Prefab = prefab,
+            Root = poolRoot.transform
+        };
+
+        // 초기 오브젝트 생성
+        for (int i = 0; i < initialSize; i++)
+        {
+            GameObject obj = Instantiate(prefab, pool.Root);
+            obj.name = prefab.name;
+            obj.SetActive(false);
+            pool.Available.Enqueue(obj);
+        }
+
+        _pools.Add(prefabId, pool);
+    }
+    public GameObject Pop(GameObject prefab, Transform parent)
+    {
+        if (prefab == null) return null;
+
+        int prefabId = prefab.GetInstanceID();
+        if (!_pools.TryGetValue(prefabId, out Pool pool))
+        {
+            CreatePool(prefab, 10);
+            pool = _pools[prefabId];
+        }
+
+        GameObject obj;
+
+        if (pool.Available.Count > 0)
+        {
+            obj = pool.Available.Dequeue();
+        }
+        else
+        {
+            // 풀이 비었으면 새로 생성
+            obj = Instantiate(pool.Prefab, pool.Root);
+            obj.name = pool.Prefab.name;
+        }
+
+        obj.transform.SetParent(parent);
+        obj.transform.localPosition = Vector3.zero;
+        obj.transform.localRotation = Quaternion.identity;
+        obj.SetActive(true);
+
+        pool.InUse.Add(obj);
+        return obj;
+    }
+
+    public void Push(GameObject obj)
+    {
+        if (obj == null) return;
+
+        // 어느 풀에 속하는지 찾기
+        foreach (var pool in _pools.Values)
+        {
+            if (pool.InUse.Contains(obj))
+            {
+                pool.InUse.Remove(obj);
+                obj.SetActive(false);
+                obj.transform.SetParent(pool.Root);
+                pool.Available.Enqueue(obj);
+                return;
+            }
+        }
+    }
+
+    #endregion
 }
