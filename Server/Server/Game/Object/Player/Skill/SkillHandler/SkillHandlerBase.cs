@@ -35,6 +35,8 @@ public abstract class SkillHandlerBase : ISkill
 
     public virtual void OnEnter(Player p, SkillContext ctx)
     {
+        p.CombatState = CombatState.Combat;
+        p.CombatTime = 0f;
         //LastSeq = 0;
         //Latest = default;
         //_collisions = default;
@@ -76,9 +78,14 @@ public abstract class SkillHandlerBase : ISkill
         
     }
 
-    public virtual void OnCollision(Player p)
+    public virtual void OnCollision<T>(Player p, List<T> targets, GameObject.StatusEffect effect)
     {
+        
+    }
 
+    public virtual void OnCollision<T>(Player p, T nearestTarget, GameObject.StatusEffect effect)
+    {
+        
     }
 
     public virtual void OnTick(Player p, SkillContext ctx)
@@ -157,5 +164,7 @@ public abstract class SkillHandlerBase : ISkill
         prop = default;
         return false;
     }
+
+
     #endregion
 }

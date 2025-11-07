@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using static Server.Data.DataUtils;
+using static Server.Game.GameObject;
 
 public struct SkillCollisionProposal
 {
@@ -26,7 +27,8 @@ public interface ISkill
     // 타격 타이밍(예: tHit)
     void OnHit(Player p, SkillContext ctx);
 
-    void OnCollision(Player p);
+    void OnCollision<T>(Player p, List<T> targets, StatusEffect effect);
+    void OnCollision<T>(Player p, T nearestTarget, StatusEffect effect);
 
     // 매 틱(Streaming 필요 시만 Player_SkillState에서 호출)
     void OnTick(Player p, SkillContext ctx);

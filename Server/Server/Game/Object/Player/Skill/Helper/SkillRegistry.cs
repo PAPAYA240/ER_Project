@@ -76,6 +76,7 @@ public static class SkillRegistry
         SkillRegistry.Register<Hyunwoo_R_Short_End>("Hyunwoo_R_Short_End");
         SkillRegistry.Register<Hyunwoo_R_End>("Hyunwoo_R_End");
         SkillRegistry.Register<Hyunwoo_R_Loop>("Hyunwoo_R_Loop");
+        SkillRegistry.Register<Hyunwoo_E_End>("Hyunwoo_E_End");
     }
 
     public static void Register<T>(string key) where T : ISkill, new()

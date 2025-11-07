@@ -1022,7 +1022,7 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "DashAttack",
+                "type": "OnCollisionSingleTarget",
                 "subject": "Self",
                 "condition": "Hit"
               },
@@ -1037,7 +1037,7 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "DashAttack",
+                "type": "OnCollisionSingleTarget",
                 "subject": "Self",
                 "condition": "Hit"
               },
@@ -1052,7 +1052,7 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "DashAttack",
+                "type": "OnCollisionSingleTarget",
                 "subject": "Self",
                 "condition": "Hit"
               },
@@ -1067,7 +1067,7 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "DashAttack",
+                "type": "OnCollisionSingleTarget",
                 "subject": "Self",
                 "condition": "Hit"
               },
@@ -1082,7 +1082,7 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "DashAttack",
+                "type": "OnCollisionSingleTarget",
                 "subject": "Self",
                 "condition": "Hit"
               },
@@ -2810,8 +2810,8 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "40",
-          "apRatio" : "35"
+          "adRatio": "0.4",
+          "apRatio" : "0.35"
         },
         "levels": {
           "1": {
@@ -2849,8 +2849,8 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "40",
-          "apRatio": "80"
+          "adRatio": "0.4",
+          "apRatio": "0.8"
         },
         "levels": {
           "1": {
@@ -2862,13 +2862,17 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Enemy"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 8,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Self"
               }
             ]
           },
@@ -2881,13 +2885,17 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Enemy"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 9,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Self"
               }
             ]
           },
@@ -2900,13 +2908,17 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Enemy"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 10,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Self"
               }
             ]
           },
@@ -2919,13 +2931,17 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Enemy"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 11,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Self"
               }
             ]
           },
@@ -2938,13 +2954,17 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Enemy"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 12,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Self"
               }
             ]
           }
@@ -2974,7 +2994,7 @@
       },
       "W": {
         "name": "허세",
-        "description": "현우가 허게를 부려 <color=#FFFFFF>도그파이트</color>를 활성화하고, 2.5초 동안 방어력이 <color=#FFFFFF>{defense}</color><color=#8EA8BC>(+방어력 10 당 1)</color>증가합니다. 지속 기간동안 적에게 기본 공격을 받을 때마다 도그파이트 중접울 1 획득합니다.\n\n허세가 발동된 후 1초 동안 현우는 이동 방해 효과를 무시합니다.",
+        "description": "현우가 허세를 부려 <color=#FFFFFF>도그파이트</color>를 활성화하고, 2.5초 동안 방어력이 <color=#FFFFFF>{defense}</color><color=#8EA8BC>(+방어력 10 당 1)</color>증가합니다. 지속 기간동안 적에게 기본 공격을 받을 때마다 도그파이트 중접울 1 획득합니다.\n\n허세가 발동된 후 1초 동안 현우는 이동 방해 효과를 무시합니다.",
         "type": "Normal",
         "maxLevel": 5,
         "mechanics": {
@@ -3072,9 +3092,9 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "70",
-          "apRatio": "55",
-          "dstCurHpRatio": "5"
+          "adRatio": "0.7",
+          "apRatio": "0.55",
+          "dstCurHpRatio": "0.11"
         },
         "levels": {
           "1": {
@@ -3084,10 +3104,18 @@
             "effects": [
               {
                 "type": "Stun",
-                "duration": 1.2
+                "duration": 1.2,
+                "condition": "HitTheWall"
               },
               {
-                "type": "MoveTargetObject"
+                "type": "Stun",
+                "duration": 0.4,
+                "condition": "Hit"
+              },
+              {
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3098,10 +3126,13 @@
             "effects": [
               {
                 "type": "Stun",
-                "duration": 1.2
+                "duration": 1.2,
+                "condition": "HitTheWall"
               },
               {
-                "type": "MoveTargetObject"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3112,10 +3143,13 @@
             "effects": [
               {
                 "type": "Stun",
-                "duration": 1.2
+                "duration": 1.2,
+                "condition": "HitTheWall"
               },
               {
-                "type": "MoveTargetObject"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3126,10 +3160,13 @@
             "effects": [
               {
                 "type": "Stun",
-                "duration": 1.2
+                "duration": 1.2,
+                "condition": "HitTheWall"
               },
               {
-                "type": "MoveTargetObject"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3140,10 +3177,13 @@
             "effects": [
               {
                 "type": "Stun",
-                "duration": 1.2
+                "duration": 1.2,
+                "condition": "HitTheWall"
               },
               {
-                "type": "MoveTargetObject"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           }
@@ -3187,9 +3227,11 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -20,
-                "duration": 5
+                "condition": "Hit",
+                "duration": 5,
+                "subject": "Enemy"
               },
               {
                 "type": "MoveTargetObject",
@@ -3204,9 +3246,11 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -25,
-                "duration": 5
+                "condition": "Hit",
+                "duration": 5,
+                "subject": "Enemy"
               },
               {
                 "type": "MoveTargetObject",
@@ -3221,9 +3265,11 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -30,
-                "duration": 5
+                "condition": "Hit",
+                "duration": 5,
+                "subject": "Enemy"
               },
               {
                 "type": "MoveTargetObject",

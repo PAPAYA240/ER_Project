@@ -721,10 +721,10 @@ namespace Server.Game
                 switch (effect.subject)
                 {
                     case Subject.Self:
-                        if (effect.type == "DashAttack")
-                        {
-                            player.Room.Push(player.Room.BehindDash, player/*, FindNearestTarget(hitbox, hitTargets)*/);
-                        }
+                        if (effect.type == "OnCollisionSingleTarget")
+                            player.Room.Push(player.Room.CallOnCollision, player, FindNearestTarget(hitbox, hitTargets), effect);
+                        else if(effect.type == "OnCollisionMultiTarget")
+                            player.Room.Push(player.Room.CallOnCollision, player, hitTargets, effect);
                         else
                             player.Room.Push(player.Room.AddStatusEffect, player, effect);
                         break;
