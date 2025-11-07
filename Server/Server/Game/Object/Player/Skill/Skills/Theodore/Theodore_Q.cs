@@ -17,7 +17,7 @@ public sealed class Theodore_Q : SkillHandlerBase
         base.OnEnter(p, ctx);
 
         p.LookAtMouse(ctx.MousePos);
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
+        SendSkillConfirmPacket(p);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

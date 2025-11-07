@@ -19,7 +19,7 @@ public sealed class Theodore_W : SkillHandlerBase
     {
         base.CreateHitbox(p, ctx);
         p.LookAtMouse(ctx.MousePos);
-        p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
+        SendSkillConfirmPacket(p);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

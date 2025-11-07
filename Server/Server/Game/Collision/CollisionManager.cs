@@ -309,7 +309,7 @@ namespace Server.Game
                 Monster monster = hitbox.Creature as Monster;
                 if (monster == null)        return;
 
-                monster.OnTargetHit()
+                //monster.OnTargetHit()
             }
         }
 
@@ -813,7 +813,7 @@ namespace Server.Game
             {
                 if (shape == SkillShape.Point)
                 {
-                    hitbox.FixedPosition = hitbox.Creature.PosInfo;
+                    hitbox.FixedPosition = hitbox.Creature.PosInfo.ToVector();
                     hitbox.PosX = hitbox.MousePos.X;
                     hitbox.PosZ = hitbox.MousePos.Y;
                 }
