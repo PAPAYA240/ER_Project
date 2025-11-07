@@ -35,6 +35,8 @@ public abstract class SkillHandlerBase : ISkill
 
     public virtual void OnEnter(Player p, SkillContext ctx)
     {
+        p.CombatState = CombatState.Combat;
+        p.CombatTime = 0f;
         //LastSeq = 0;
         //Latest = default;
         //_collisions = default;
