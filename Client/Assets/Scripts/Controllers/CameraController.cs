@@ -3,6 +3,9 @@ using System;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
+using Google.Protobuf.WellKnownTypes;
+using TMPro;
 
 public class CameraController : MonoBehaviour
 {
@@ -142,62 +145,71 @@ public class CameraController : MonoBehaviour
         _farDelta = delta;
     }
 
-     bool _isSkillZooming = false;
-    private Vector3 _originalDelta;
-    private Vector3 _skillZoomDelta;
-    private Vector3 _skillZoomCenter; // center 저장용
-    private float _speed = 7f;
+    private Coroutine _zoomCoroutine = null;
+    private bool _isSkillZooming = false;
+    private Vector3 _originalPosition;
+    private Quaternion _originalRotation;
 
-    public IEnumerator CameraZoomOut(Vector3 center, float zoomOutDistance, float duration)
+    public void StartAimMode(Vector3 center, float zoomOutDistance)
     {
-        if (_player == null) 
-            yield break;
+        if(_zoomCoroutine != null)
+            StopCoroutine(_zoomCoroutine);
+        _zoomCoroutine = StartCoroutine(CameraZoomOut(center, zoomOutDistance));
+    }
 
-        _isSkillZooming = true;
+    const float AIM_DURATION = 0.7f;
+    const float AIM_DURATION_END = 1.5f;
+    private IEnumerator CameraZoomOut(Vector3 center, float zoomOutDistance)
+    {
+        _isSkillZooming = true; 
+        _originalPosition = transform.position;
+        _originalRotation = transform.rotation;
 
-        float originalZoom = _currentZoom;
-
-        Vector3 originalPlayerDelta = transform.position - _player.transform.position; // 플레이어 기준 현재 델타
-        Vector3 currentPosition = transform.position;
-        Vector3 directionFromCenter = (currentPosition - center).normalized;
-
-        float targetZoomDistance = Vector3.Distance(currentPosition, center) + zoomOutDistance;
-
-        Vector3 targetPosition = center + directionFromCenter * targetZoomDistance;
+        Vector3 directionFromCenter = (_originalPosition - center).normalized;
+        Vector3 targetPosition = center + new Vector3(
+            directionFromCenter.x,
+            zoomOutDistance,  
+            directionFromCenter.z);
 
         float elapsed = 0f;
 
-        while (elapsed < 1f)
+        while (elapsed < AIM_DURATION)
         {
-            elapsed += Time.deltaTime * _speed; 
-            float currentDistance = Vector3.Distance(currentPosition, targetPosition);
+            elapsed += Time.deltaTime;
+            float t = elapsed / AIM_DURATION;
 
-            transform.position = Vector3.Lerp(currentPosition, targetPosition, elapsed);
-
-            //transform.LookAt(center + Vector3.up);
+            float smoothT = Mathf.SmoothStep(0f, 1f, t);
+            transform.position = Vector3.Lerp(_originalPosition, targetPosition, smoothT);
+            transform.rotation = _originalRotation;
 
             yield return null;
         }
+
         transform.position = targetPosition;
-
-        yield return new WaitForSeconds(duration);
-
-        Vector3 returnPosition = _player.transform.position + originalPlayerDelta;
-        elapsed = 0f;
-
-        while (elapsed < 1f)
+        transform.rotation = _originalRotation;
+    }
+    public void EndAimMode()
+    {
+        if (_zoomCoroutine != null)
+            StopCoroutine(_zoomCoroutine);
+        StartCoroutine(CameraZoomIn());
+    }
+    private IEnumerator CameraZoomIn()
+    {
+        float elapsed = 0f;
+        while (elapsed < 0.8f)
         {
-            elapsed += Time.deltaTime * _speed; 
+            elapsed += Time.deltaTime;
+            float t = elapsed / 1.5f;
 
-            transform.position = Vector3.Lerp(targetPosition, returnPosition, elapsed);
-
-            transform.LookAt(_player.transform.position + Vector3.up);
-
+            float smoothT = Mathf.SmoothStep(0f, 1f, t);
+            transform.position = Vector3.Lerp(transform.position, _originalPosition, smoothT);
+            transform.rotation = _originalRotation;
             yield return null;
         }
 
-        transform.position = returnPosition;
+        transform.position = _originalPosition;
+        _delta = _originalPosition;
         _isSkillZooming = false;
-        _delta = originalPlayerDelta;
     }
 }

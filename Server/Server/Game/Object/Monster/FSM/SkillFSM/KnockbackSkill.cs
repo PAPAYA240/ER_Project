@@ -11,9 +11,11 @@ namespace Server.Game
     {
         public void OnStart(Monster caster, MonsterSkillData skillData)
         {
+
         }
         public void OnUpdate(Monster caster)
         {
+            // 몬스터한테 콜리전 먼저 붙이기
         }
         public void OnEnd(Monster caster)
         {
@@ -21,6 +23,7 @@ namespace Server.Game
 
         public void OnHit(Monster caster, Creature target)
         {
+
         }
     }
 

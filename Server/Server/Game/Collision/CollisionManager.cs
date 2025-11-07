@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Threading;
 using Google.Protobuf.Collections;
 using Google.Protobuf.Protocol;
 using Lucene.Net.Index;
@@ -40,15 +41,11 @@ namespace Server.Game
         public Hitbox trackingHitbox { get; set; } = null;
         public MonsterType MonstType { get; set; }
 
-        public RotationInfo Rot { get; set; }
         public Vector2 OffsetPos { get; set; } = new Vector2();
 
         public bool IsInteracted = true;
         public float OffsetRadius = 0;
-
-        //public long DrawMeshDelayTimer { get; set; } = 0;
-        public Vector2 Forward { get; set; }
-        public Vector2 Right { get; set; }
+        public Vector3 FixedPosition = new Vector3();
         #endregion
     }
 
@@ -148,9 +145,9 @@ namespace Server.Game
             Dictionary<int, Dictionary<int, float>> damageDict = new Dictionary<int, Dictionary<int, float>>();
 
             CheckCollisionHit();
-
             CheckPlayerHit(teams, damageDict);
             CheckHit(monsters, damageDict);
+            
             SendChangeHpPkts(teams, damageDict);
         }
 
@@ -184,7 +181,6 @@ namespace Server.Game
                 foreach (Hitbox hitbox in set)
                 {
                     UpdatePosProjectile(hitbox);
-                    UpdateTransform(hitbox);
 
                     if (hitbox.Creature == null || hitbox.Data == null)
                         continue;
@@ -237,7 +233,6 @@ namespace Server.Game
                             HandleAllyHit(hitbox, teamKvp.Value);
                             continue;
                         }                            
-
                         HandleCollision<Player>(hitbox, teamKvp.Value, hitPlayers, damageDict);
                     }
 
@@ -305,7 +300,16 @@ namespace Server.Game
                 if (target == null) return;
 
                 ApplyDamage(hitbox, target, damageDict);
+
                 hitbox.IsUsed = true;
+            }
+
+            if (hitbox.Creature is Monster)
+            {
+                Monster monster = hitbox.Creature as Monster;
+                if (monster == null)        return;
+
+                monster.OnTargetHit()
             }
         }
 
@@ -327,11 +331,18 @@ namespace Server.Game
             }
             return nearestTarget;
         }
-
+       
         bool CheckCollision(Hitbox hitbox, GameObject go)
         {
             if (!System.Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
                 return false;
+
+            if (hitbox.trackingHitbox != null)
+            {
+                if(CheckTrackingCollision(hitbox, go))
+                    return true;
+                return false;
+            }
 
             switch (shape)
             {
@@ -381,8 +392,8 @@ namespace Server.Game
                     }
                 case SkillShape.Point:
                     {
-                        Vector2 center = hitbox.MousePos;
-                        Vector2 playerPos = new Vector2(hitbox.Creature.PosInfo.PosX, hitbox.Creature.PosInfo.PosZ);
+                        Vector2 center = new Vector2(hitbox.PosX, hitbox.PosZ);
+                        Vector2 playerPos = new Vector2(hitbox.FixedPosition.X, hitbox.FixedPosition.Z);
                         Vector2 forward = Vector2.Normalize(center - playerPos);
                         Vector2 right = new Vector2(-forward.Y, forward.X);
 
@@ -472,14 +483,22 @@ namespace Server.Game
 
         void ApplyDamage(Hitbox hitbox, GameObject target, Dictionary<int, Dictionary<int, float>> damageDict)
         {
-            float dmg = CalcDamage(hitbox.Creature, target.Stat, hitbox.KeyCode);
-
+            float dmg = 0f;
+            if (hitbox.Creature is Player)
+            {
+               dmg = CalcDamage(hitbox.Creature, target.Stat, hitbox.KeyCode);
+            }
+            else if (hitbox.Creature is Monster)
+            {
+                dmg = CalcDamage(hitbox.Creature, target as Creature);
+            }
             if (target is Player)
                 Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Creature.Id}, Target:{target.Info.Player.CharType}_{target.Id}, Damage:{dmg}");
             else if (target is Monster)
             {
                 Monster monster = target as Monster;
                 monster.OnHit(hitbox.Creature);
+
                 Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Creature.Id}, Target:{target.Info.Monster.MonsterType}_{target.Id}, Damage:{dmg}");
             }
             else
@@ -510,7 +529,22 @@ namespace Server.Game
             info.MaxHp = target.MaxHp;
             return CalcDamage(attacker, info, keyCode);
         }
+        public float CalcDamage(Creature attacker, Creature target)
+        {
+            Monster monsterAttacker = attacker as Monster;
+            if (monsterAttacker == null) 
+                return 0f;
+            if (!DataManager.MonsterSkillDict.ContainsKey(monsterAttacker.CurrentSkill))
+                return 0f;
 
+            // 몬스터가 타겟이라면 0
+            if(target is Player)
+                return DataManager.MonsterSkillDict[monsterAttacker.CurrentSkill].damage;
+            
+            // 플레이어라면 데미지 리턴
+            else
+                return 0f;
+        }
         public float CalcDamage(Creature attacker, StatInfo target, KeyCode keyCode)
         {
             // 플레이어가 몬스터 때릴 때
@@ -562,7 +596,6 @@ namespace Server.Game
             {
                 foreach (Hitbox pendingHitbox in _pendingHitboxes)
                 {
-
                     if (!_hitboxDict.TryGetValue(pendingHitbox.Creature.Id, out var set))
                     {
                         set = new HashSet<Hitbox>();
@@ -704,13 +737,15 @@ namespace Server.Game
                 switch (effect.subject)
                 {
                     case Subject.Self:
-                        player.Room.Push(player.Room.AddStatusEffect, player, effect);
+                        player.Room.Push(player.Room.AddStatusEffect, player, effect, hitbox.Creature);
                         break;
                     case Subject.Ally: // 이건 아군대상 스킬에만 있을거같긴해서 생략
                         break;
                     case Subject.Enemy:
                         foreach(var enemy in hitTargets.OfType<Creature>()) // Creature 일때만
-                            enemy.Room.Push(enemy.Room.AddStatusEffect, enemy, effect);
+                        { 
+                            enemy.Room.Push(enemy.Room.AddStatusEffect, enemy, effect, hitbox.Creature); 
+                        }
                         break;
                 }
             }
@@ -745,77 +780,21 @@ namespace Server.Game
             }
             return hitbox;
         }
+
         void SettingPointType(Hitbox hitbox)
         {
             if (System.Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
             {
                 if (shape == SkillShape.Point)
                 {
-                    Vector2 center = hitbox.MousePos;
-                    Vector2 playerPos = new Vector2(hitbox.Creature.PosInfo.PosX, hitbox.Creature.PosInfo.PosZ);
-
-                    hitbox.Forward = Vector2.Normalize(center - playerPos);
-                    hitbox.Right = new Vector2(-hitbox.Forward.Y, hitbox.Forward.X);
-
+                    hitbox.FixedPosition = hitbox.Creature.PosInfo;
                     hitbox.PosX = hitbox.MousePos.X;
                     hitbox.PosZ = hitbox.MousePos.Y;
                 }
             }
 
         }
-        private void UpdateTransform(Hitbox hitbox)
-        {
-            if (hitbox.Creature == null || hitbox.Data == null)
-                return;
-            if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
-                return;
-            if (false == Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
-                return;
-
-            // =============== [위치] ==================== 
-            // 마우스 기준 생성
-            if (shape == SkillShape.Point)
-            {
-                Vector2 origin = new Vector2(hitbox.Creature.PosInfo.PosX, hitbox.Creature.PosInfo.PosZ);
-                Vector2 forward = new Vector2();
-
-                hitbox.PosX = hitbox.MousePos.X + hitbox.OffsetPos.X;
-                hitbox.PosZ = hitbox.MousePos.Y + hitbox.OffsetPos.Y;
-                forward = Vector2.Normalize(hitbox.MousePos - origin);
-                return;
-            }
-
-            // =============== [회전] ==================== 
-            Vector2 mforward = new Vector2();
-            RotationInfo currentRotInfo = null;
-
-            if (hitbox.Creature is Player player)
-            {
-                Vector2 or = new Vector2(player.PosInfo.PosX, player.PosInfo.PosZ);
-                mforward = Vector2.Normalize(hitbox.MousePos - or);
-
-                float yawAngleRadians = MathF.Atan2(mforward.X, mforward.Y);
-                Quaternion rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitY, yawAngleRadians);
-                currentRotInfo = new RotationInfo { Qx = rotation.X, Qy = rotation.Y, Qz = rotation.Z, Qw = rotation.W };
-            }
-            else if (hitbox.Creature is Monster monster)
-            {
-                Quaternion monsterRot = new Quaternion(
-                    monster.RotInfo.Qx, monster.RotInfo.Qy,
-                    monster.RotInfo.Qz, monster.RotInfo.Qw
-                );
-                Vector3 forward3D = Vector3.Transform(new Vector3(0, 0, 1), monsterRot);
-                mforward = Vector2.Normalize(new Vector2(forward3D.X, forward3D.Z));
-                currentRotInfo = monster.RotInfo;
-            }
-            if (currentRotInfo == null) return;
-
-            Vector2 right = new Vector2(-mforward.Y, mforward.X);
-            hitbox.Rot = currentRotInfo;
-            hitbox.Forward = mforward;
-            hitbox.Right = right;
-        }
-
+        
         private void UpdatePosProjectile(Hitbox hitbox)
         {
             if (Enum.TryParse<SkillType>(hitbox.Data.Type, out var type) && type == SkillType.SkillProjectile)
@@ -851,7 +830,7 @@ namespace Server.Game
                         float dz = targetHitbox.PosZ - myHitbox.PosZ;
                         float distanceSq = dx * dx + dz * dz;
 
-                        float targetRadius = targetHitbox.Data.Radius;
+                        float targetRadius = targetHitbox.Data.Radius + myHitbox.OffsetRadius;
                         float effectiveRadius = myHitbox.Data.Radius + targetRadius;
 
                         return distanceSq <= effectiveRadius * effectiveRadius;
@@ -910,69 +889,115 @@ namespace Server.Game
 
         bool CheckPointRayCollision(Hitbox pointHitbox, Hitbox rayHitbox)
         {
-            Vector2 centerA = pointHitbox.MousePos;
-            Vector2 playerPosA = new Vector2(pointHitbox.Creature.PosInfo.PosX, pointHitbox.Creature.PosInfo.PosZ);
-            Vector2 forwardA = Vector2.Normalize(centerA - playerPosA);
+            // OBB A 설정
+            Vector2 originA = new Vector2(pointHitbox.PosX, pointHitbox.PosZ);
+            Vector2 forwardA = Vector2.Normalize(pointHitbox.MousePos - originA);
             Vector2 rightA = new Vector2(-forwardA.Y, forwardA.X);
             float halfHeightA = pointHitbox.Data.Height * 0.5f;
             float halfWidthA = pointHitbox.Data.Width * 0.5f;
+            Vector2 centerA = originA + forwardA * halfHeightA;
 
-
+            // OBB B 설정
             Vector2 originB = new Vector2(rayHitbox.PosX, rayHitbox.PosZ);
             Vector2 forwardB = Vector2.Normalize(rayHitbox.MousePos - originB);
+            Vector2 rightB = new Vector2(-forwardB.Y, forwardB.X);
+
             float rangeB = rayHitbox.Data.Height;
+            if (System.Enum.TryParse<SkillType>(rayHitbox.Data.Type, out SkillType type))
+            {
+                if (type == SkillType.SkillTrack)
+                    rangeB = rayHitbox.Data.MinRange + (rayHitbox.Data.MaxRange - rayHitbox.Data.MinRange) * rayHitbox.ChargeRatio;
+            }
+
             float halfHeightB = rangeB * 0.5f;
             float halfWidthB = rayHitbox.Data.Width * 0.5f;
             Vector2 centerB = originB + forwardB * halfHeightB;
-            Vector2 rightB = new Vector2(-forwardB.Y, forwardB.X);
 
-            // 1. OBB 대 OBB 충돌
-            Vector2 toTarget = new Vector2(centerB.X - centerA.X, centerB.Y - centerA.Y);
+            // OBB 충돌 검사
+            Vector2 toTarget = centerB - centerA;
 
-            // 2.OBB A (Point) 축 검사
+            // A forward 
             float projCenterA1 = Vector2.Dot(toTarget, forwardA);
             float projRadiusA1 = halfHeightA + MathF.Abs(Vector2.Dot(forwardA, forwardB)) * halfHeightB + MathF.Abs(Vector2.Dot(forwardA, rightB)) * halfWidthB;
             if (MathF.Abs(projCenterA1) > projRadiusA1) return false;
 
+            // A right 
             float projCenterA2 = Vector2.Dot(toTarget, rightA);
             float projRadiusA2 = halfWidthA + MathF.Abs(Vector2.Dot(rightA, forwardB)) * halfHeightB + MathF.Abs(Vector2.Dot(rightA, rightB)) * halfWidthB;
             if (MathF.Abs(projCenterA2) > projRadiusA2) return false;
 
-            // 3. OBB B 축 검사
+            // B forward 
             float projCenterB1 = Vector2.Dot(toTarget, forwardB);
             float projRadiusB1 = halfHeightB + MathF.Abs(Vector2.Dot(forwardB, forwardA)) * halfHeightA + MathF.Abs(Vector2.Dot(forwardB, rightA)) * halfWidthA;
             if (MathF.Abs(projCenterB1) > projRadiusB1) return false;
 
+            // B right 
             float projCenterB2 = Vector2.Dot(toTarget, rightB);
             float projRadiusB2 = halfWidthB + MathF.Abs(Vector2.Dot(rightB, forwardA)) * halfHeightA + MathF.Abs(Vector2.Dot(rightB, rightA)) * halfWidthA;
             if (MathF.Abs(projCenterB2) > projRadiusB2) return false;
 
-            Vector2 toPointCenter = new Vector2(centerA.X - originB.X, centerA.Y - originB.Y);
-            float projPointForward = Vector2.Dot(toPointCenter, forwardB);
-
-            if (!System.Enum.TryParse<SkillType>(rayHitbox.Data.Type, out SkillType type))
-                return true;
-
-            float range = rayHitbox.Data.MaxRange;
-            if (type == SkillType.SkillTrack)
-                range = rayHitbox.Data.MinRange + (rayHitbox.Data.MaxRange - rayHitbox.Data.MinRange) * rayHitbox.ChargeRatio;
-
-            float pointHalfHeight = pointHitbox.Data.Height * 0.5f;
-
-            bool isWithinStart = projPointForward >= (0 - pointHalfHeight);
-
-            bool isWithinEnd = projPointForward <= (range + pointHalfHeight);
-
-            return isWithinStart && isWithinEnd;
+            return true;
         }
-
+        private readonly object _hitboxesLock = new object();
+        public void AddInteractedHitbox(Hitbox other, Hitbox my)
+        {
+            lock (_hitboxesLock) 
+            {
+                my.InteractedHitboxes.Add(other);
+            }
+        }
         void HandlerInteraction(Hitbox hitboxA, Hitbox hitboxB)
         {
-            hitboxA.InteractedHitboxes.Add(hitboxB);
-            hitboxB.InteractedHitboxes.Add(hitboxA);
+            lock (_hitboxesLock)
+            {
+                AddInteractedHitbox(hitboxB, hitboxA);
+                AddInteractedHitbox(hitboxA, hitboxB);
+            }
 
             _interactionManager.HandleInteraction(hitboxA, hitboxB);
             _interactionManager.HandleInteraction(hitboxB, hitboxA);
+        }
+
+        bool CheckTrackingCollision(Hitbox hitbox, GameObject go)
+        {
+            if (!System.Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
+                return false;
+
+            switch (shape)
+            {
+                case SkillShape.Ray:
+                    {
+                        Vector2 myPosition = hitbox.trackingHitbox.MousePos;
+                        Vector2 fixedtoTarget = new Vector2(hitbox.FixedPosition.X, hitbox.FixedPosition.Z);
+                        Vector2 direction = hitbox.trackingHitbox.MousePos - new Vector2(fixedtoTarget.X, fixedtoTarget.Y);
+
+                        if (direction.LengthSquared() < 0.0001f)
+                            return false;
+
+                        Vector2 forward = Vector2.Normalize(direction);
+                        Vector2 right = new Vector2(-forward.Y, forward.X);
+                        Vector2 toTarget = new Vector2(go.PosInfo.PosX - myPosition.X, go.PosInfo.PosZ - myPosition.Y);
+                        float projForward = Vector2.Dot(toTarget, forward);
+                        float projRight = Vector2.Dot(toTarget, right);
+
+                        if (!Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
+                            return false;
+
+                        float range = hitbox.Data.MaxRange;
+                        if (type == SkillType.SkillTrack)
+                            range = hitbox.Data.MinRange + (hitbox.Data.MaxRange - hitbox.Data.MinRange) * hitbox.ChargeRatio;
+
+                        float halfWidth = hitbox.Data.Width * 0.5f;
+                        float clampedForward = MathF.Max(0f, MathF.Min(projForward, range));
+                        float clampedRight = MathF.Max(-halfWidth, MathF.Min(projRight, halfWidth));
+                        float deltaForward = projForward - clampedForward;
+                        float deltaRight = projRight - clampedRight;
+                        float distSq = deltaForward * deltaForward + deltaRight * deltaRight;
+
+                        return distSq <= go.Radius * go.Radius;
+                    }
+            }
+            return false;
         }
 
         void HandlerInteraction(Hitbox hitbox, GameObject target)
@@ -980,42 +1005,7 @@ namespace Server.Game
             _interactionManager.HandleInteraction(hitbox, target);
         }
 
-        //public void SendDrawMesh(Hitbox hitbox)
-        //{
-        //    Vector2 playerPos2D = new Vector2(hitbox.Creature.PosInfo.PosX, hitbox.Creature.PosInfo.PosZ);
 
-        //    S_Drawmesh pkt = new S_Drawmesh
-        //    {
-        //        ObjectId = hitbox.Creature.Id,
-        //        OffsetRadius = hitbox.OffsetRadius,
-        //        PosInfo = new PositionInfo
-        //        {
-        //            PosX = hitbox.PosX,
-        //            PosY = 0,
-        //            PosZ = hitbox.PosZ
-        //        },
-
-        //        RotInfo = hitbox.Rot,
-
-        //        Hitbox = hitbox.Data,
-
-        //        Forward = new PositionInfo
-        //        {
-        //            PosX = hitbox.Forward.X,
-        //            PosY = 0,
-        //            PosZ = hitbox.Forward.Y
-        //        },
-
-        //        Right = new PositionInfo
-        //        {
-        //            PosX = hitbox.Right.X,
-        //            PosY = 0,
-        //            PosZ = hitbox.Right.Y
-        //        }
-        //    };
-
-        //    hitbox.Creature.Room.Broadcast(pkt);
-        //}
         #endregion
     }
 }

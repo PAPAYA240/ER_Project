@@ -110,7 +110,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SChangeTransform, MakePacket<S_ChangeTransform>);
 		_handler.Add((ushort)MsgId.SChangeTransform, PacketHandler.S_ChangeTransformHandler);		
 		_onRecv.Add((ushort)MsgId.STargetChange, MakePacket<S_TargetChange>);
-		_handler.Add((ushort)MsgId.STargetChange, PacketHandler.S_TargetChangeHandler);
+		_handler.Add((ushort)MsgId.STargetChange, PacketHandler.S_TargetChangeHandler);		
+		_onRecv.Add((ushort)MsgId.SSnare, MakePacket<S_Snare>);
+		_handler.Add((ushort)MsgId.SSnare, PacketHandler.S_SnareHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

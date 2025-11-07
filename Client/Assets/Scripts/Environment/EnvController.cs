@@ -21,7 +21,6 @@ public class EnvController : BaseController
         animator = GetComponent<Animator>() ?? GetComponentInChildren<Animator>();
     }
 
-
     #region Interaction
 
     protected void OnTriggerEnter(Collider other)

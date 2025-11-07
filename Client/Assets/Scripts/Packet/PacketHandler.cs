@@ -3,7 +3,6 @@ using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
 using UnityEngine;
-using static UI_PlayerInterface;
 
 class PacketHandler
 {
@@ -153,7 +152,6 @@ class PacketHandler
         }
     }
     
-    
     public static void S_ChangeHpHandler(PacketSession session, IMessage packet)
     {
         S_ChangeHp changePacket = packet as S_ChangeHp;
@@ -252,28 +250,24 @@ class PacketHandler
 
         GameObjectType objectType = ObjectManager.GetObjectTypeById(creature.Id);
 
-        // 오브젝트 충돌
-        if ((KeyCode)interactPacket.TargetKeyCode == KeyCode.F1)
-        {
-            if (objectType == GameObjectType.Player)
-            {
-                KeyCode mkey = (KeyCode)interactPacket.KeyCode; // Hitbox 키코드
-                GameObject target = Managers.Object.FindById(interactPacket.TargetId); // 공격한 타겟
+        //// 오브젝트 충돌
+        //if ((KeyCode)interactPacket.TargetKeyCode == KeyCode.F1)
+        //{
+        //    if (objectType == GameObjectType.Player)
+        //    {
+        //        KeyCode mkey = (KeyCode)interactPacket.KeyCode; // Hitbox 키코드
+        //        GameObject target = Managers.Object.FindById(interactPacket.TargetId); // 공격한 타겟
 
-                MonsterController mc = target.GetComponentInChildren<MonsterController>();
-                creature.OnObjectCollision(target, mkey);
-            }
-        }
+        //        MonsterController mc = target.GetComponentInChildren<MonsterController>();
+        //    }
+        //}
         // Hitbox 충돌
-        else
-        {
-            if (objectType == GameObjectType.Player)
-            {
-                KeyCode mkey = (KeyCode)interactPacket.KeyCode;
-                KeyCode tKey = (KeyCode)interactPacket.TargetKeyCode;
-                creature.OnHitboxCollision(mkey, tKey);
-            }
-        }
+       if (objectType == GameObjectType.Player)
+       {
+           KeyCode mkey = (KeyCode)interactPacket.KeyCode;
+           KeyCode tKey = (KeyCode)interactPacket.TargetKeyCode;
+           creature.OnHitboxCollision(mkey, tKey);
+       }
     }
 
     public static void S_WeaponHandler(PacketSession session, IMessage packet)
@@ -561,10 +555,6 @@ class PacketHandler
 
         pc.EquipItem(changeEquipPacket.ItemId);
     }
-    public static void S_ProjectileHandler(PacketSession session, IMessage packet)
-    {
-    }
-    
     public static void S_EnvRequestHandler(PacketSession session, IMessage packet)
     {
         S_EnvRequest revPacket = packet as S_EnvRequest;
@@ -590,20 +580,6 @@ class PacketHandler
         mpc.ChangeInventory(changeInventoryPacket);
     }
 
-    public static void S_StunHandler(PacketSession session, IMessage packet)
-    {
-        //S_Stun stunPacket = packet as S_Stun;
-        //GameObject go = Managers.Object.FindById(stunPacket.ObjectId);
-        //if (go == null)
-        //    return;
-
-        //CreatureController cc = go.GetComponentInChildren<CreatureController>();
-        //if (cc != null)
-        //{
-        //    if (stunPacket.IsStun)
-        //        cc.ApplyStun(stunPacket.Duration);
-        //}
-    }
 
     public static void S_CombatTextHandler(PacketSession session, IMessage packet)
     {
@@ -634,11 +610,24 @@ class PacketHandler
             }               
         }
     }
+    public static void S_SnareHandler(PacketSession session, IMessage packet)
+    {
+        S_Snare stunPacket = packet as S_Snare;
 
+        GameObject go = Managers.Object.FindById(stunPacket.ObjectId);
+        if (go == null)     return;
+        GameObject goAtk = Managers.Object.FindById(stunPacket.AttackerId);
+        if (go == null)     return;
+        CreatureController cc = go.GetComponentInChildren<CreatureController>();
+        if (cc == null)     return;
+        CreatureController atkc = goAtk.GetComponentInChildren<CreatureController>();
+        if (atkc == null && !(atkc is PlayerController))    return;
+
+        cc.Snare(stunPacket, atkc.ObjInfo.Player.CharType);
+    }
     public static void S_SyncTimerHandler(PacketSession session, IMessage packet)
     {
         S_SyncTimer syncTimerPacket = packet as S_SyncTimer;
-
 
         float clientPacketReceiveTime = Time.realtimeSinceStartup; // 패킷을 받은 로컬 시간 (Unity)
 
@@ -652,7 +641,6 @@ class PacketHandler
 
         // 클라이언트의 Time.realtimeSinceStartup을 기준으로 타이머가 끝날 최종 목표 시간
         float clientLocalTargetRealtimeSinceStartupEnd = clientPacketReceiveTime + (estimatedServerRemainingDurationMs / 1000f);
-
 
         if(Managers.Object.MyPlayer != null)
         {

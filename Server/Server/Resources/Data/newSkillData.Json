@@ -1449,8 +1449,10 @@
             "staminaCost": 60,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "Snare",
+                "duration": 0.3,
+                "subject": "Enemy",
+                "condition": "Hit"
               },
               {
                 "type": "Untargetable"
@@ -1463,8 +1465,10 @@
             "staminaCost": 70,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "Snare",
+                "duration": 0.3,
+                "subject": "Enemy",
+                "condition": "Hit"
               },
               {
                 "type": "Untargetable"
@@ -1477,8 +1481,10 @@
             "staminaCost": 80,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "Snare",
+                "duration": 0.3,
+                "subject": "Enemy",
+                "condition": "Hit"
               },
               {
                 "type": "Untargetable"
@@ -1491,8 +1497,10 @@
             "staminaCost": 90,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "Snare",
+                "duration": 0.3,
+                "subject": "Enemy",
+                "condition": "Hit"
               },
               {
                 "type": "Untargetable"
@@ -1505,8 +1513,10 @@
             "staminaCost": 100,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "Snare",
+                "duration": 0.3,
+                "subject": "Enemy",
+                "condition": "Hit"
               },
               {
                 "type": "Untargetable"

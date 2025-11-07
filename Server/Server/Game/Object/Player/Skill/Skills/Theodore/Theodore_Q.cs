@@ -25,15 +25,8 @@ public sealed class Theodore_Q : SkillHandlerBase
         return;
     }
 
-    // TEMP
-    bool isCommited = false;
     public override void OnTick(Player p, SkillContext ctx)
     {
-        if (isCommited)
-            return;
-
-        isCommited = true;  
-
         return;
     }
 

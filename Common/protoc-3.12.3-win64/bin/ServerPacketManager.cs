@@ -72,7 +72,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CSkillPrepare, MakePacket<C_SkillPrepare>);
 		_handler.Add((ushort)MsgId.CSkillPrepare, PacketHandler.C_SkillPrepareHandler);		
 		_onRecv.Add((ushort)MsgId.CSkillCancel, MakePacket<C_SkillCancel>);
-		_handler.Add((ushort)MsgId.CSkillCancel, PacketHandler.C_SkillCancelHandler);
+		_handler.Add((ushort)MsgId.CSkillCancel, PacketHandler.C_SkillCancelHandler);		
+		_onRecv.Add((ushort)MsgId.CSkillExecute, MakePacket<C_SkillExecute>);
+		_handler.Add((ushort)MsgId.CSkillExecute, PacketHandler.C_SkillExecuteHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

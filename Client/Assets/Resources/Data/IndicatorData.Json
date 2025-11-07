@@ -7,7 +7,8 @@
       },
       "W": {
         "indicatorPrefabPath": "UI/Character/Theodore/IndicatorW",
-        "invokeFuncs": [ "TrackMouseCursor" ]
+        "invokeFuncs": [ "TrackMouseCursor" ],
+        "prefabName": "Indicator"
       },
       "E": {
         "indicatorPrefabPath": "UI/Character/Theodore/IndicatorE",
@@ -20,6 +21,11 @@
       "D": {
         "indicatorPrefabPath": "UI/Character/Theodore/IndicatorD",
         "invokeFuncs": [ "AimAtMousePosition" ]
+      },
+      "F1": {
+        "indicatorPrefabPath": "UI/Character/Theodore/IndicatorD",
+        "invokeFuncs": [ "ObjectAimAtMousePosition"],
+        "prefabName": "Arrow"
       }
     }
   }

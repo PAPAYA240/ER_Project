@@ -30,6 +30,7 @@ public sealed class Theodore_D : SkillHandlerBase
 
     public override void OnTick(Player p, SkillContext ctx)
     {
+        //총 3발
         return;
     }
 

@@ -8,10 +8,9 @@ public class TheodoreInputController : PlayerInputController
 {
     private const float EFFECT_DURATION = 10f;
     private const float CANCEL_DURATION = 0.5f;
+    private const float SNIPER_AIM_DURATION = 10f;
 
     private float _elapsedTime = 0f;
-    private float _elapsedCancelTime = 0f;
-
     private KeyCode? _currentSkillKey = null;
     private Coroutine _cancelCoroutine = null;
 
@@ -23,13 +22,13 @@ public class TheodoreInputController : PlayerInputController
         switch (key)
         {
         case KeyCode.Q:
-            StartCoroutine(ChargingSkill(key, onCancel: () => CancelSkill(key)));
+                StartCoroutine(ChargingSkill(key, onCancel: () => CancelSkill(key)));
                 break;
 
         case KeyCode.D:
                 {
                     StartCoroutine(InputSkill(key,
-                    onConfirm: () => SniperSkill(key),
+                    onConfirm: () => ExecuteSniperSkill(key),
                     onCancel: () => CancelSkill(key)));
                 }
                 break;
@@ -44,23 +43,61 @@ public class TheodoreInputController : PlayerInputController
                 break;
         }
     }
-    private void SniperSkill(KeyCode key)
+    #region 스킬 실행
+    private void ExecuteSkill(KeyCode key)
+    {
+        _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
+        SendSkillInputPacket(key);
+        _currentSkillKey = null;
+    }
+    private void ExecuteSniperSkill(KeyCode key)
+    {
+        _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
+        StartCoroutine(SniperSkill(key));
+    }
+
+    private const float SNIPER_DISTANCE = 15f;
+    private const float SNIPER_ZOOM_DURATION = 10f;
+    private IEnumerator SniperSkill(KeyCode key)
     {
         CameraController cc = Camera.main.gameObject.GetComponent<CameraController>();
         if (cc == null)
-            return;
-        Vector3 cameraForward = transform.forward;
-        Vector3 playerPosition = _player.transform.position;
-        Vector3 targetPosition = playerPosition + cameraForward * 10f;
- 
-        StartCoroutine(
-                cc.CameraZoomOut(targetPosition,
-                zoomOutDistance : 40f,
-                duration : 12f)
-            );
-        SendSkillInputPacket(key);
-    }
+            yield break;
 
+        SendSkillInputPacket(key);
+        _player.Indicator.EnableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
+
+        Vector3 aimCenter = cc.transform.position +( _player.transform.forward * SNIPER_DISTANCE);
+        cc.StartAimMode(aimCenter, zoomOutDistance: SNIPER_ZOOM_DURATION);
+
+        float elapsed = 0;
+        while (elapsed < SNIPER_AIM_DURATION)
+        {
+            elapsed += Time.deltaTime;
+            // 스킬 취소
+            if (Input.GetMouseButtonDown(1))
+            {
+                cc.EndAimMode();
+                _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
+                yield break;
+            }
+
+            // 스킬 공격
+            if (Input.GetMouseButtonDown(0))
+            {
+                cc.EndAimMode();
+                SendSkillExecutePacket(key);
+                yield break;
+            }
+            yield return null;
+        }
+
+        cc.EndAimMode();
+        _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
+    }
+    #endregion
+
+    #region 스킬 입력 처리
     private IEnumerator InputSkill(KeyCode key, Action onConfirm, Action onCancel)
     {
         while (!Input.GetKeyUp(key) && !Input.GetMouseButtonDown(0))
@@ -74,7 +111,7 @@ public class TheodoreInputController : PlayerInputController
         }
         onConfirm?.Invoke();
     }
- 
+
     private IEnumerator ChargingSkill(KeyCode key, Action onCancel)
     {
         SendSkillPreparePacket(key);
@@ -86,11 +123,18 @@ public class TheodoreInputController : PlayerInputController
         }
 
         onCancel.Invoke();
-        if (_elapsedTime > EFFECT_DURATION)
-            yield break;
-
-        SendSkillInputPacket(key);
+        if (_elapsedTime < EFFECT_DURATION)
+        {
+            SendSkillInputPacket(key);
+        }
     }
+    private void CancelSkill(KeyCode key)
+    {
+        _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
+        _elapsedTime = 0;
+        _currentSkillKey = null;
+    }
+#endregion
 
     #region 이동 처리
     public override C_SetMoveTarget GetSetMoveTarget()
@@ -108,33 +152,24 @@ public class TheodoreInputController : PlayerInputController
             return null;
         }
 
+        if (_currentSkillKey != null && (KeyCode)_currentSkillKey == KeyCode.D && Input.GetMouseButton(1))
+        {
+            _currentSkillKey = null;
+            _cancelCoroutine = StartCoroutine(CancelCooldown(0.9f));
+            return null;
+        }
         return base.GetSetMoveTarget();
     }
 
-    private IEnumerator CancelCooldown()
+    private IEnumerator CancelCooldown(float duration = CANCEL_DURATION)
     {
         float elapsedTime = 0f;
-        while (elapsedTime < CANCEL_DURATION)
+        while (elapsedTime < duration)
         {
             elapsedTime += Time.deltaTime;
             yield return null;
         }
         _cancelCoroutine = null;
-    }
-    #endregion
-
-    #region 스킬 실행 및 취소
-    private void ExecuteSkill(KeyCode key)
-    {
-        _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
-        SendSkillInputPacket(key);
-        _currentSkillKey = null;
-    }
-    private void CancelSkill(KeyCode key)
-    {
-        _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
-        _elapsedTime = 0;
-        _currentSkillKey = null;
     }
     #endregion
 
@@ -160,6 +195,15 @@ public class TheodoreInputController : PlayerInputController
             SkillKey = (int)key
         };
         Managers.Network.Send(preparePacket);
+    }
+    private void SendSkillExecutePacket(KeyCode key)
+    {
+        C_SkillExecute executePacket = new C_SkillExecute
+        {
+            ObjectId = _player.ObjInfo.ObjectId,
+            SkillKey = (int)key
+        };
+        Managers.Network.Send(executePacket);
     }
     #endregion
 }
