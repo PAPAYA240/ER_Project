@@ -9,7 +9,10 @@ using static Server.Data.DataUtils;
 
 public sealed class Rozzi_Q : SkillHandlerBase
 {
-    private float _coolDownReductionValue = 2.0f;
+    private bool _isCollision = false;
+
+    private float _elapsed = 0.0f;
+    private float _StopSkillTime = 0.45f; 
 
     public Rozzi_Q()
     {
@@ -26,20 +29,39 @@ public sealed class Rozzi_Q : SkillHandlerBase
         p.LookAtMouse(ctx.MousePos);
     }
 
-    public override void OnCollision(Player p)
+    public override void OnCollision<T>(Player p, List<T> targets, GameObject.StatusEffect effect)
     {
-        p.Tokens.Add(new NextInputToken
-        {
-            Active = true,
-            RemainingUses = 1,
-            ExpireUtc = TimeUtil.UtcSec() + 2.0,
-            Priority = 10,
-            Trigger = InputKind.Move,
-            ReplacementSkillKey = "Rozzi_Q_Dash",
-            CancelOnUseSkill = true
-        });
+        _isCollision = true;
+    }
 
-        p.Skill.Reduce(_keyCode, _coolDownReductionValue);
+    public override void OnTick(Player p, SkillContext ctx)
+    {
+        if (CanStopSkill)
+            return;
+
+        _elapsed += TimeUtil.DeltaTime;
+        if (_elapsed >= _StopSkillTime)
+        {
+            CanStopSkill = true;
+            p.SendCanStopSkillPacket(CanStopSkill);
+        }
+    }
+
+    public override void OnExit(Player p, SkillContext ctx)
+    {
+        if(_isCollision)
+        {
+            p.Tokens.Add(new NextInputToken
+            {
+                Active = true,
+                RemainingUses = 1,
+                ExpireUtc = TimeUtil.UtcSec() + 2.0,
+                Priority = 10,
+                Trigger = InputKind.Move,
+                ReplacementSkillKey = "Rozzi_Q_Dash",
+                CancelOnUseSkill = true
+            });
+        }
     }
 }
 

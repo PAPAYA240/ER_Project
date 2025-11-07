@@ -83,6 +83,8 @@ enum MsgId {
 
   S_SKILL_COLLISION_REQUEST = 71;
   C_CHARGING_SKILL = 72;
+
+  S_MOVE_SPEED = 73;
 }
 
 enum CombatState{
@@ -869,4 +871,9 @@ message S_SkillCost{
 	int32 objectId = 1;
 	int32 skillKey = 2;	
 	CostInfo costInfo = 3;
+}
+
+message S_MoveSpeed{
+	int32 objectId = 1;
+	float moveSpeed = 2;
 }

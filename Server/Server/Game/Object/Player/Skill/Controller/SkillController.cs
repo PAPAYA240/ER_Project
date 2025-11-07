@@ -98,7 +98,8 @@ public sealed class SkillController
         _cd.Start(key, adjusted, startTick);
     }
 
-    public void Reduce(KeyCode key, float seconds) => _cd.Reduce(key, seconds);
+    // 비율인 경우(isRatio: true) => value : 0 ~ 1 
+    public void Reduce(KeyCode key, float value, bool isRatio = false) => _cd.Reduce(key, value, isRatio);
 
     public bool IsPassiveAttackReady(KeyCode key = KeyCode.T)
     {

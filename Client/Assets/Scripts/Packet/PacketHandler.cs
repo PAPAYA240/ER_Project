@@ -759,6 +759,21 @@ class PacketHandler
         mpc.CanStopSkill = canStopSkillPkt.CanStopSkill;
     }
 
+    public static void S_MoveSpeedHandler(PacketSession session, IMessage packet)
+    {
+        S_MoveSpeed speedPacket = packet as S_MoveSpeed;
+
+        GameObject go = Managers.Object.FindById(speedPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.Speed = speedPacket.MoveSpeed;
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;

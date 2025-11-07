@@ -14,7 +14,7 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
     private Vector3 _startPos, _endPos;
 
     private float _dashDistance = 3.0f;
-    private float _dashSpeed = 4.0f;
+    private float _dashSpeed = 20.0f;
 
     public Rozzi_Q_Dash()
     {
@@ -27,10 +27,12 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
     {
         base.OnEnter(p, ctx);
 
-        _elapsed = 0.0f;
+        Vector3 mousePos = new Vector3(ctx.MousePos.X, p.Position.Y, ctx.MousePos.Y);
+        Vector3 dir = Vector3.Normalize(mousePos - p.Position);
+        Vector3 targetPos = p.Position + dir * _dashDistance;
 
-        Vector3 targetPos = new Vector3(ctx.MousePos.X, p.Position.Y, ctx.MousePos.Y);
         SendSkillCollisionRequestPacket(p, CollisionType.Block, p.Position, targetPos);
+        p.LookAtMouse(ctx.MousePos);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

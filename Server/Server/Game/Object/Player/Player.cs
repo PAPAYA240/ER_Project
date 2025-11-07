@@ -52,7 +52,7 @@ namespace Server.Game
         public override float Speed 
         {
             get { return (base.Speed + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
-            set { base.Speed = value; }
+            set { base.Speed = value; SendMoveSpeedPacket(base.Speed); }
         }
 
         public override float MaxHp 
@@ -962,7 +962,7 @@ namespace Server.Game
                 };
             }
 
-            Session.Send(packet);
+            Room.Push(Session.Send, packet);
         }
 
         public void SendFxPacket()
@@ -987,7 +987,7 @@ namespace Server.Game
                 EndX = endPos.X,
                 EndZ = endPos.Z
             };
-            Session.Send(packet);
+            Room.Push(Session.Send, packet);
         }
 
         public void SendSkillCostPacket(KeyCode keyCode, float coolTime)
@@ -999,7 +999,7 @@ namespace Server.Game
                 CostInfo = new CostInfo { CoolTime = coolTime, Stamina = Stamina }
             };
 
-            Session.Send(costPacket);
+            Room.Push(Session.Send, costPacket);
         }
 
         public void SendSkillCostPacket(KeyCode keyCode)
@@ -1011,7 +1011,7 @@ namespace Server.Game
                 CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina }
             };
 
-            Session.Send(costPacket);
+            Room.Push(Session.Send, costPacket);
         }
 
         public void SendTargetChangePacket(S_TargetChange packet)
@@ -1028,7 +1028,7 @@ namespace Server.Game
                 Speed = speed,
             };
             //Room.Push(Room.Broadcast, packet);
-            Session.Send(packet);
+            Room.Push(Session.Send, packet);
         }
 
         public void SendChangeTransformPacket(bool isWarp = false) // 수동으로 플레이어 위치or회전 수정한 후에 보내는 패킷
@@ -1052,6 +1052,16 @@ namespace Server.Game
                 CanStopSkill = canStopSkill
             };
             Room.Push(Room.Broadcast, pkt);
+        }
+
+        public void SendMoveSpeedPacket(float moveSpeed)
+        {
+            S_MoveSpeed pkt = new S_MoveSpeed
+            {
+                ObjectId = Id,
+                MoveSpeed = moveSpeed,
+            };
+            Room.Push(Session.Send, pkt);
         }
 
         #endregion

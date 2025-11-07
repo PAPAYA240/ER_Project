@@ -51,14 +51,15 @@
             "staminaCost": 40,
             "effects": [
               {
-                "type": "Dash",
-                "condition": "Hit"
-              },
-              {
-                "type": "CDR",
-                "value": 2,
+                "type": "CDR_Ratio",
+                "value": 0.4,
                 "condition": "Hit",
                 "subject": "Q"
+              },
+              {
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -68,14 +69,15 @@
             "staminaCost": 45,
             "effects": [
               {
-                "type": "Dash",
-                "condition": "Hit"
-              },
-              {
-                "type": "CDR",
-                "value": 2,
+                "type": "CDR_Ratio",
+                "value": 0.4,
                 "condition": "Hit",
                 "subject": "Q"
+              },
+              {
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -85,14 +87,15 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "Dash",
-                "condition": "Hit"
-              },
-              {
-                "type": "CDR",
-                "value": 2,
+                "type": "CDR_Ratio",
+                "value": 0.4,
                 "condition": "Hit",
                 "subject": "Q"
+              },
+              {
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -102,14 +105,15 @@
             "staminaCost": 55,
             "effects": [
               {
-                "type": "Dash",
-                "condition": "Hit"
-              },
-              {
-                "type": "CDR",
-                "value": 2,
+                "type": "CDR_Ratio",
+                "value": 0.4,
                 "condition": "Hit",
                 "subject": "Q"
+              },
+              {
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -119,14 +123,15 @@
             "staminaCost": 60,
             "effects": [
               {
-                "type": "Dash",
-                "condition": "Hit"
-              },
-              {
-                "type": "CDR",
-                "value": 2,
+                "type": "CDR_Ratio",
+                "value": 0.4,
                 "condition": "Hit",
                 "subject": "Q"
+              },
+              {
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           }
@@ -180,7 +185,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "moveSpeed",
                 "value": 120,
                 "duration": 0.4,
                 "subject": "Self"
@@ -214,7 +219,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "moveSpeed",
                 "value": 120
               },
               {

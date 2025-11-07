@@ -62,15 +62,25 @@ public class CooldownController_Tick : ICooldownController
     }
 
     // 외부에서 남은 시간 x초 감소
-    public void Reduce(KeyCode key, float seconds)
+    public void Reduce(KeyCode key, float value, bool isRatio = false)
     {
-        if (seconds <= 0f)
+        if (value <= 0f)
             return;
         if (!_coolDownDict.TryGetValue(key, out var e))
             return;
 
-        int delta = SecToMs(seconds);
-        e.EndTick = unchecked(e.EndTick - delta);
+        if(!isRatio)
+        {
+            int delta = SecToMs(value);
+            e.EndTick = unchecked(e.EndTick - delta);
+        }
+        else
+        {
+            float remainingSec = GetRemaining(key); 
+            float deltaSec = remainingSec * value;  
+            int deltaMs = SecToMs(deltaSec);        
+            e.EndTick = unchecked(e.EndTick - deltaMs);
+        }
 
         _owner.SendSkillCostPacket(key, GetRemaining(key));
     }

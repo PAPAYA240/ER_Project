@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.Protocol;
 using Server.Game;
 using System;
+using System.Net.WebSockets;
 using System.Numerics;
 
 public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesStopCommand
@@ -81,10 +82,12 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
 
             player.ChangeState(new Player_MovingState(cmd));
             player.SendMoveSyncPacket(dest.TargetPos);
+            Console.WriteLine($"@ ChangeState : Moving - {dest.TargetPos}");
         }
         else
         {
             player.ChangeState(new Player_IdleState());
+            Console.WriteLine($"@ ChangeState : Idle");
         }
     }
 
@@ -121,6 +124,7 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
             {
                 player.ChangeState(new Player_MovingState(move));
                 player.SendMoveSyncPacket(move.TargetPosition);
+                player.Intent.Clear();
             }
             else
             {

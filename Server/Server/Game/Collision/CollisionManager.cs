@@ -738,6 +738,10 @@ namespace Server.Game
                         if(effect.type == "CDR")
                             player.Skill.Reduce(KeyCode.T, effect.value);
                         break;
+                    case Subject.Q:
+                        if (effect.type == "CDR_Ratio")
+                            player.Skill.Reduce(KeyCode.Q, effect.value, isRatio: true);
+                        break;
                 }
             }
         }
