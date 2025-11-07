@@ -397,7 +397,7 @@ namespace Server.Game
                 handler.CanUse(player, skillPacket);
         }
 
-        public void HandleAttackSkillTarget(Player player, C_TargetingSkill targetingSkill)
+        public void AttackSkillTarget(Player player, GameObject target, KeyCode keyCode) // 타게팅 스킬. 대상 1명.
         {
             if (player == null)
                 return;
@@ -409,7 +409,7 @@ namespace Server.Game
             else
                 damage = _collisionManager.CalcDamage(player, target.Stat, keyCode);
 
-            if(player.Info.Player.CharType == CharacterType.Abigail && keyCode == KeyCode.E)
+            if (player.Info.Player.CharType == CharacterType.Abigail && keyCode == KeyCode.E)
             {
                 S_RemoveAbigailCoord removeAbigailCoordPkt = new S_RemoveAbigailCoord();
                 removeAbigailCoordPkt.ObjectId = target.Id;

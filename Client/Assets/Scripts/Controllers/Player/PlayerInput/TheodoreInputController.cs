@@ -10,6 +10,9 @@ public class TheodoreInputController : PlayerInputController
     private const float CANCEL_DURATION = 0.5f;
     private const float SNIPER_AIM_DURATION = 10f;
 
+    const bool SKIP_STATE_CHECK = false;
+
+
     private float _elapsedTime = 0f;
     private KeyCode? _currentSkillKey = null;
     private Coroutine _cancelCoroutine = null;
@@ -125,7 +128,7 @@ public class TheodoreInputController : PlayerInputController
         onCancel.Invoke();
         if (_elapsedTime < EFFECT_DURATION)
         {
-            SendSkillInputPacket(key);
+            SendSkillInputPacket(key, SKIP_STATE_CHECK);
         }
     }
     private void CancelSkill(KeyCode key)
@@ -174,18 +177,17 @@ public class TheodoreInputController : PlayerInputController
     #endregion
 
     #region Packet
-    private void SendSkillInputPacket(KeyCode key)
+    private void SendSkillInputPacket(KeyCode key, bool checkSkillState = true)
     {
         C_SkillInput skillCmd = _skill.TryCast(
             (int)key,
             GetAttackableUnderCursorID(),
-            GetMouseWorldPosition()
+            GetMouseWorldPosition(),
+            checkSkillState
         );
 
         if (skillCmd != null)
-        {
             Managers.Network.Send(skillCmd);
-        }
     }
     private void SendSkillPreparePacket(KeyCode key)
     {

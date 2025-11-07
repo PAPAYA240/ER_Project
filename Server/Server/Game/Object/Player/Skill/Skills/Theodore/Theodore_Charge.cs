@@ -13,13 +13,14 @@ public sealed class Theodore_Charge : SkillHandlerBase
     public Theodore_Charge()
     {
         _characterType = CharacterType.Theodore;
-        _keyCode = KeyCode.Q;
+        _keyCode = KeyCode.None;
         _animName = ANIM_CHARGE;
     }
     public override void OnEnter(Player p, SkillContext ctx)
     {
-        ctx.Key = KeyCode.None;
+        _hitboxCreated = false;
         base.OnEnter(p, ctx);
+        SendSkillConfirmPacket(p);
     }
     public override void OnTick(Player p, SkillContext ctx)
     {

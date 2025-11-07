@@ -17,8 +17,9 @@ public sealed class Theodore_W : SkillHandlerBase
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
-        base.CreateHitbox(p, ctx);
         p.LookAtMouse(ctx.MousePos);
+
+        base.CreateHitbox(p, ctx);
         SendSkillConfirmPacket(p);
     }
 
