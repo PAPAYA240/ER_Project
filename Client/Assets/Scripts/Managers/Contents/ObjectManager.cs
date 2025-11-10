@@ -112,10 +112,13 @@ public class ObjectManager
         {
             go = Managers.Resource.Instantiate("Creature/Weapon/Projectile");
             go.name = "Projectile_" + info.ObjectId;
+
             Projectile pc = go.GetComponent<Projectile>();
             pc.PosInfo = info.PosInfo;
             pc.Stat = info.StatInfo;
             _objects.Add(info.ObjectId, go);
+
+            go.transform.SetParent(pc.transform);
             pc.SyncPos();
         }
     }

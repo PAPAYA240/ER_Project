@@ -162,8 +162,8 @@ namespace Server.Game
         }
 
         // 유키 단추용
-        public static readonly int MaxStud = 4;
-        public int _yukiStud_cnt = 4;
+        private static readonly int MaxStud = 4;
+        private int _yukiStud_cnt = 4;
 
         public int YukiStud
         {
@@ -171,6 +171,14 @@ namespace Server.Game
             set { _yukiStud_cnt = value; }
         }
 
+        // 유키 강화 평타용
+        private float _attactActiveTime = 0f;
+        private bool _isAttackActive = false;
+        public bool AttackActive
+        {
+            get { return _isAttackActive; }
+            set { _isAttackActive = value; }
+        }
         #region KDA
         //KDA
         public int KillAmount {  get; set; }
@@ -280,7 +288,16 @@ namespace Server.Game
                 }
             }
 
-            
+            // 유키 강화 평타용
+            if (AttackActive == true)
+            {
+                _attactActiveTime += TimeUtil.DeltaTime;
+
+                if (_attactActiveTime > _nonCombatTime)
+                {
+                    AttackActive = false;
+                }
+            }
 
             //base.Update();
 
@@ -668,7 +685,9 @@ namespace Server.Game
 
         public void EquipItemSet(CharacterType type, int phase)
         {
-            // �ش� ����� ������ ������ ��Ʈ�� ���̵� ����Ʈ�� ������.
+            if (!DataManager.ItemSetDict.ContainsKey(type))
+                return;
+
             List<int> itemIdList = DataManager.ItemSetDict[type][phase];
 
             foreach (int itemId in itemIdList)

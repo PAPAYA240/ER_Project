@@ -1,17 +1,13 @@
 ﻿using Google.Protobuf.Protocol;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Numerics;
-using System.Text;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
 {
-    // TODO : 더 좋은 방안 모색하기
     public class TheodoreSkillHandler : SkillHandler
     {
-        public override bool CanUse(Player player, S_Skill skillPacket)
+        // 확장 스킬 처리
+        public override bool CanUse(Player player, S_Interact skillPacket)
         {
             CollisionManager coll = player.Room.CollManager;
             if (coll == null) 
@@ -20,16 +16,16 @@ namespace Server.Game
             return true;
         }
 
-        public void HandleEffect(Player player, S_Skill skillPacke, CollisionManager collisionManager)
+        public void HandleEffect(Player player, S_Interact skillPacket, CollisionManager collisionManager)
         {
-            switch ((KeyCode)skillPacke.SkillInfo.AmplifiKeyCode)
+            switch ((KeyCode)skillPacket.TargetKeyCode)
             {
                 case KeyCode.Q:
-                    AmplifyWithQ(player, skillPacke, collisionManager);
+                    AmplifyWithQ(player, skillPacket, collisionManager);
                     break;
 
                 case KeyCode.E:
-                    AmplifyWithE(player, skillPacke, collisionManager);
+                    AmplifyWithE(player, skillPacket, collisionManager);
                     break;
 
                 default:
@@ -38,9 +34,9 @@ namespace Server.Game
         }
 
          // 기존에 존재하던 W스킬 충돌체가 Q 스킬을 사용할 수 있도록 추가해야 함
-        private void AmplifyWithQ(Player player, S_Skill skillPacket, CollisionManager _collisionManager)
+        private void AmplifyWithQ(Player player, S_Interact skillPacket, CollisionManager _collisionManager)
         {
-            Hitbox hitbox = _collisionManager.FindCollision(player.Id, (KeyCode)skillPacket.SkillInfo.KeyCode);
+            Hitbox hitbox = _collisionManager.FindCollision(player.Id, (KeyCode)skillPacket.KeyCode);
             if (hitbox == null)
                 return;
 
@@ -48,28 +44,26 @@ namespace Server.Game
             if (targetHitbox == null)
                 return;
 
-            Hitbox createHitbox = _collisionManager.AddHitbox(player, player.Info.Player.CharType, (KeyCode)skillPacket.SkillInfo.AmplifiKeyCode,
-           new Vector2(targetHitbox.PosX, targetHitbox.PosZ), skillPacket.ChargeRatio);
+            Hitbox createHitbox = _collisionManager.AddHitbox(player, player.Info.Player.CharType, (KeyCode)skillPacket.TargetKeyCode,
+           new Vector2(targetHitbox.PosX, targetHitbox.PosZ));
 
             createHitbox.trackingHitbox = targetHitbox;
             createHitbox.MousePos = targetHitbox.MousePos;
-            createHitbox.PosX = targetHitbox.PosX;
-            createHitbox.PosZ = targetHitbox.PosZ;
-            createHitbox.Rot = targetHitbox.Rot;
+            createHitbox.FixedPosition = createHitbox.trackingHitbox.FixedPosition;
         }
 
         // 기존에 존재하던 E 스킬의 범위를 넒혀야 함
-        private void AmplifyWithE(Player player, S_Skill skillPacket, CollisionManager _collisionManager)
+        private void AmplifyWithE(Player player, S_Interact skillPacket, CollisionManager _collisionManager)
         {
-            Hitbox hitbox = _collisionManager.FindCollision(player.Id, (KeyCode)skillPacket.SkillInfo.KeyCode);
+            Hitbox hitbox = _collisionManager.FindCollision(player.Id, (KeyCode)skillPacket.KeyCode);
             if (hitbox == null)
                 return;
 
-            Hitbox targetHitbox = _collisionManager.FindCollision(player.Id, KeyCode.E);
+            Hitbox targetHitbox = _collisionManager.FindCollision(player.Id, (KeyCode)skillPacket.TargetKeyCode);
             if (targetHitbox == null)
                 return;
 
-            targetHitbox.OffsetRadius += 1.0f;
+            targetHitbox.OffsetRadius += 1.2f;
         }
     }
 }

@@ -17,7 +17,6 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     // 애니메이션(프로젝트 애니 자원명/ID에 맞춰 교체)
     protected const string AnimAttackA = "ATTACK_1";
     protected const string AnimAttackB = "ATTACK_2";
-    private const string AnimRun = "RUN";
 
     // ===== 상태 필드 =====
     protected readonly float _attackRange;
@@ -30,7 +29,6 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     protected int _attackIndex;               // 0/1 → A/B 번갈이
 
     // 회전
-    private Vector3 _targetPos;
     private bool _isRotate = false;
 
     protected DateTime _swingStartUtc;
@@ -146,7 +144,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
                         new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ),
                         new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ));
                     if (distNow <= _attackRange /* + player.HitTolerance 가능 */)
-                        ApplyHit(player, target);
+                        //ApplyHit(player, target);
 
                     _damageApplied = true;
                 }
@@ -214,8 +212,6 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
                 StartSwing(player, now);
             }
         }
-
-        
     }
 
     public virtual void Exit(Player player)
@@ -280,6 +276,10 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     {
         if(p.Info.Player.CharType == CharacterType.Abigail)
             return new Abigail_AttackState(targetId, chaseAllowed, attackRange);
+        else if (p.Info.Player.CharType == CharacterType.Yuki)
+        {
+            return new Yuki_AttackState(targetId, chaseAllowed, attackRange);
+        }
 
         return new Player_AttackState(targetId, chaseAllowed, attackRange);
     }

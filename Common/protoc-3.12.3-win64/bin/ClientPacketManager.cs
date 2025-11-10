@@ -113,6 +113,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SChangeTransform, PacketHandler.S_ChangeTransformHandler);		
 		_onRecv.Add((ushort)MsgId.STargetChange, MakePacket<S_TargetChange>);
 		_handler.Add((ushort)MsgId.STargetChange, PacketHandler.S_TargetChangeHandler);		
+		_onRecv.Add((ushort)MsgId.SSnare, MakePacket<S_Snare>);
+		_handler.Add((ushort)MsgId.SSnare, PacketHandler.S_SnareHandler);		
 		_onRecv.Add((ushort)MsgId.SSkillCost, MakePacket<S_SkillCost>);
 		_handler.Add((ushort)MsgId.SSkillCost, PacketHandler.S_SkillCostHandler);		
 		_onRecv.Add((ushort)MsgId.SSkillCollisionRequest, MakePacket<S_SkillCollisionRequest>);

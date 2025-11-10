@@ -7,18 +7,18 @@
         "radius": 2.2,
         "angle": 90,
         "duration": 0.2,
-        "startFrame": 0,
-        "endFrame": 70
+        "startFrame": 5,
+        "endFrame": 34
       },
       "MsAttack2": {
         "shape": "Ray",
         "type": "SkillTrack",
         "width": 2,
-        "height": 8,
-        "startFrame": 0,
-        "endFrame": 70,
+        "height": 4,
+        "startFrame": 7,
+        "endFrame": 12,
         "charge": true,
-        "minRange": 6,
+        "minRange": 17,
         "maxRange": 11
       },
       "MsSkill1": {
@@ -27,16 +27,16 @@
         "radius": 3.5,
         "angle": 90,
         "duration": 0.2,
-        "startFrame": 40,
-        "endFrame": 60
+        "startFrame": 65,
+        "endFrame": 84
       },
       "MsSkill2": {
         "shape": "Circle",
         "type": "SkillTrack",
         "radius": 2,
         "lookOffset": 3,
-        "startFrame": 10,
-        "endFrame": 50,
+        "startFrame": 30,
+        "endFrame": 60,
         "isOneTimeUse": true
       }
     },
