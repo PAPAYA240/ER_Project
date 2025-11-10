@@ -27,6 +27,7 @@ public class PlayerController : CreatureController
 
     protected bool _isSkillDebug = true;
 
+    public bool AllowOffPathMovement { get; set; } = false;
 
     // NameTag
     protected UI_PlayerNameTag _nameTag;

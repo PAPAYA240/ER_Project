@@ -2,6 +2,7 @@
 using Server.Data;
 using System;
 using System.Numerics;
+using static Player_StunState;
 
 namespace Server.Game
 {
@@ -49,6 +50,41 @@ namespace Server.Game
         public void OnHit(Monster monster, Creature target)
         {
             _behavior?.OnHit(monster, target);
+
+            if (target is Player)
+            {
+                Player player = target as Player;
+                if (player == null) 
+                    return;
+                #region
+                if (!_skillData.descriptionInfo.ContainsKey("Distance") ||
+                    !_skillData.descriptionInfo.ContainsKey("Duration") ||
+                    !_skillData.descriptionInfo.ContainsKey("Speed"))
+                    return;
+
+                StunStateDesc desc = new StunStateDesc();
+
+                Vector3 worldRight = new Vector3(1f, 0f, 0f);
+                if (_skillData.SkillBehavior == "KnockbackSkill")
+                {
+                    worldRight = new Vector3(-1f, 0f, 0f);
+                }
+                else if (_skillData.SkillBehavior == "FloatSkill")
+                {
+                    worldRight = new Vector3(0f, 1f, 0f);
+                    desc.skillMotionType = SkillMotionType.VerticalTransform;
+                }
+
+                float distance = _skillData.descriptionInfo["Distance"];
+                Vector3 rightDirection = Vector3.Transform(worldRight, monster.RotInfo.GetQuatFromRotInfo());
+                Vector3 endPos = player.PosInfo.ToVector() + (rightDirection * distance);
+
+                desc.Duration = _skillData.descriptionInfo["Duration"];
+                desc.Speed = _skillData.descriptionInfo["Speed"];
+                desc.EndPos = endPos;
+                #endregion
+                player.ChangeState(new Player_StunState(desc));
+            }
         }
 
         public void Exit(Monster monster)

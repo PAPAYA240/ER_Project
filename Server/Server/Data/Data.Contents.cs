@@ -406,6 +406,7 @@ namespace Server.Data
         public float skillDuration;
         public int damage;
         public float skillCoolTime;
+        public Dictionary<string, float> descriptionInfo;
     }
 
     [Serializable]

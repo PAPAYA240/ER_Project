@@ -308,8 +308,12 @@ namespace Server.Game
             {
                 Monster monster = hitbox.Creature as Monster;
                 if (monster == null)        return;
-
-                //monster.OnTargetHit()
+                foreach (T target in hitTargets)
+                {
+                    Player p = target as Player;
+                    if(p != null)
+                        monster.OnTargetHit(p);
+                }
             }
         }
 
@@ -818,7 +822,6 @@ namespace Server.Game
                     hitbox.PosZ = hitbox.MousePos.Y;
                 }
             }
-
         }
         
         private void UpdatePosProjectile(Hitbox hitbox)

@@ -473,13 +473,6 @@ class PacketHandler
             if(true == confirmPacket.CanUse)
                 Managers.Object.MyPlayer.OnServerUpdate(confirmPacket);
         }
-
-        // 스킬 시 이펙트 자신의 스킬 이펙트만 호출
-        PlayerController player = go.GetComponent<PlayerController>();
-        if (player != null)
-        { 
-            player.PlaySkillEffect((KeyCode)confirmPacket.SkillKey); 
-        }
     }
 
     public static void S_SkillCollisionRequestHandler(PacketSession session, IMessage packet)
@@ -697,8 +690,6 @@ class PacketHandler
     public static void S_ChangeBeaconTimeHandler(PacketSession session, IMessage packet)
     {
         S_ChangeBeaconTime changeBeaconTimePkt = packet as S_ChangeBeaconTime;
-
-
     }
 
     public static void S_ChangeScoreHandler(PacketSession session, IMessage packet)

@@ -267,6 +267,8 @@ enum StopReason {
 enum SkillMotionType {
   agent = 0;
   transform = 1;
+  verticalTransform = 2;
+  
 }
 
 enum CollisionType {
@@ -789,6 +791,7 @@ message S_SkillConfirm {
   bool canUse = 2;
   int32 skillKey = 3;			
   bool canMove = 4;
+  bool canLookatMouse = 5;
   //CostInfo costInfo = 5;
   //int32 targetId = 6;
 }

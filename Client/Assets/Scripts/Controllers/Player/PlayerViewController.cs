@@ -131,6 +131,9 @@ public class PlayerViewController : MonoBehaviour
         if (_agent == null)
             return;
 
+        if (_player.AllowOffPathMovement)
+            return;
+
         if (_player.State == CreatureState.Skill && !_skill.CanMoveDuringCast)
             return;
         else
@@ -153,7 +156,8 @@ public class PlayerViewController : MonoBehaviour
             if (NavMesh.SamplePosition(final, out var navHit, 2.0f, NavMesh.AllAreas))
                 final = navHit.position;
 
-            _agent.SetDestination(final);
+            if(_agent != null)
+                _agent.SetDestination(final);
         }
         else
         {
@@ -185,8 +189,12 @@ public class PlayerViewController : MonoBehaviour
         {
             case StopReason.StopAll:
             case StopReason.StopMoveOnly:
+                if (_player.AllowOffPathMovement)
+                    return;
+
                 _agent.enabled = true;
                 _agent.isStopped = true;
+
                 StopFollowTarget(); // 추적 종료(서버 사인에 의해)
                 _agent.ResetPath();
                 break;

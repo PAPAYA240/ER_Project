@@ -122,7 +122,7 @@ namespace Server.Game
                 Target = attackerPlayer;
         }
         // 몬스터가 때린 타겟
-        public void OnTargetHit(GameObject target)
+        public void OnTargetHit(Player target)
         {
             if (target is Creature creatureTarget)
                 _currentState?.OnHit(this, creatureTarget);

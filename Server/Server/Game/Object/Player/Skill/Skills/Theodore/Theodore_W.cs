@@ -17,20 +17,22 @@ public sealed class Theodore_W : SkillHandlerBase
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
-        p.LookAtMouse(ctx.MousePos);
+        base.OnEnter(p, ctx);
 
-        base.CreateHitbox(p, ctx);
-        SendSkillConfirmPacket(p);
+        // 패킷이 마우스보다 수락 패킷이 먼저 도착함
+        // 그래서 회전 전에 이펙트가 먼저 호출되는 문제가 생겨
+        // confirm에 isLookatMouse 플래그를 추가
+        p.LookAtMouse(ctx.MousePos, false);
+        SendSkillConfirmPacket(p, true, true);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
     {
         return;
     }
-
     public override void OnTick(Player p, SkillContext ctx)
     {
-       
+
     }
 
     public override void OnExit(Player p, SkillContext ctx)

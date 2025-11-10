@@ -823,7 +823,7 @@ namespace Server.Game
             return ObjectManager.Instance.Find(targetId);
         }
 
-        public void LookAtMouse(Vector2 mousePos)
+        public void LookAtMouse(Vector2 mousePos, bool sendPacket = true)
         {
             Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
             Vector2 dir = mousePos - myPos;
@@ -842,7 +842,8 @@ namespace Server.Game
                 Qw = rot.W
             };
 
-            SendChangeTransformPacket();
+            if(sendPacket)
+                SendChangeTransformPacket();
         }
 
         #endregion
@@ -916,7 +917,7 @@ namespace Server.Game
 
         public void SendSkillMotion(SkillMotionType type, Vector3 start, Vector3 end, bool authoritativeEnd = false,
                             float duration = 0f, string anim = default, string curveId = default,
-                            bool serverCollision = false)
+                            bool serverCollision = false, bool canFloat = false)
         {
             S_SkillMotion pkt = new S_SkillMotion
             {
@@ -932,12 +933,12 @@ namespace Server.Game
                 Anim = anim ?? "",
                 CurveId = curveId ?? "",
                 ServerCollision = serverCollision,
-                AuthoritativeEnd = authoritativeEnd
+                AuthoritativeEnd = authoritativeEnd,
             };
             Room.Broadcast(pkt);
         }
 
-        public void SendSkillConfirmPacket(bool canUse, KeyCode keyCode = KeyCode.None, bool canMoveDuringCast = false, bool sendCostPacket = true)
+        public void SendSkillConfirmPacket(bool canUse, KeyCode keyCode = KeyCode.None, bool canMoveDuringCast = false, bool sendCostPacket = true, bool sendLookatMousePacket = false)
         {
             S_SkillConfirm packet;
 
@@ -948,10 +949,11 @@ namespace Server.Game
                     ObjectId = Id,
                     CanUse = canUse,
                     SkillKey = (int)keyCode,
-                    CanMove = canMoveDuringCast
+                    CanMove = canMoveDuringCast,
+                    CanLookatMouse = sendLookatMousePacket
                 };
-               
-                if(sendCostPacket)
+
+                if (sendCostPacket)
                     SendSkillCostPacket(keyCode, GetCoolTime(keyCode));
             }
             else
@@ -961,6 +963,7 @@ namespace Server.Game
                     ObjectId = Id,
                     CanUse = canUse,
                     SkillKey = (int)keyCode,
+                    CanLookatMouse = sendLookatMousePacket,
                 };
             }
 
@@ -1051,7 +1054,7 @@ namespace Server.Game
             S_CanStopSkill pkt = new S_CanStopSkill
             {
                 ObjectId = Id,
-                CanStopSkill = canStopSkill
+                CanStopSkill = canStopSkill,
             };
             Room.Push(Room.Broadcast, pkt);
         }

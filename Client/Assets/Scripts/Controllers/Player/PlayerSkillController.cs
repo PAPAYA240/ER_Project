@@ -34,6 +34,8 @@ public class PlayerSkillController : MonoBehaviour
         public float coolTime;
     }
     private Dictionary<KeyCode, Coroutine> _coolDownCoDict = new Dictionary<KeyCode, Coroutine>();
+    
+    Coroutine _applyVericalMotion = null;
 
     // TEMP 이거 쓰나
     private Coroutine _motionCo;
@@ -106,7 +108,7 @@ public class PlayerSkillController : MonoBehaviour
 
     public void OnSkill(S_SkillMotion packet)
     {
-        if(packet.Type == SkillMotionType.Agent)
+        if (packet.Type == SkillMotionType.Agent)
         {
             PlaySkillMotion((SkillMotionType)packet.Type,
             new Vector3(packet.StartX, packet.StartY, packet.StartZ),
@@ -114,14 +116,22 @@ public class PlayerSkillController : MonoBehaviour
             packet.Duration, packet.Anim, packet.CurveId,
             packet.ServerCollision, packet.AuthoritativeEnd);
         }
-        else if(packet.Type == SkillMotionType.Transform)
+        else if (packet.Type == SkillMotionType.Transform)
         {
             ApplySkillMotion((SkillMotionType)packet.Type,
             new Vector3(packet.EndX, packet.EndY, packet.EndZ),
             packet.AuthoritativeEnd);
         }
-    }
+        else if (packet.Type == SkillMotionType.VerticalTransform)
+        {
+            if (_applyVericalMotion != null)
+                StopCoroutine(_applyVericalMotion);
 
+            Vector3 targetPos = new Vector3(packet.StartX, packet.StartY, packet.StartZ);
+            Vector3 startPos = _player.transform.position;
+            _applyVericalMotion = StartCoroutine(Co_ApplyVerticalMotion(startPos, targetPos, packet.Duration));
+        }
+    }
     public void OnSkillCollisionRequest(S_SkillCollisionRequest packet)
     {
         KeyCode key = (KeyCode)packet.SkillKey;
@@ -135,6 +145,10 @@ public class PlayerSkillController : MonoBehaviour
     public void OnSkillConfirm(S_SkillConfirm packet)
     {
         CanMoveDuringCast = packet.CanMove;
+        if (packet.CanLookatMouse)
+            _player.LookAtMouse();
+
+        _player.PlaySkillEffect((KeyCode)packet.SkillKey);
     }
 
     public void OnSkillCost(S_SkillCost packet)
@@ -202,6 +216,9 @@ public class PlayerSkillController : MonoBehaviour
     {
         if (_motionCo != null)
             StopCoroutine(_motionCo);
+
+        if (_player.AllowOffPathMovement)
+            return;
 
         //_agent.Warp(_endPosition);
         _agent.enabled = true;
@@ -328,6 +345,52 @@ public class PlayerSkillController : MonoBehaviour
         }
     }
 
+    private IEnumerator Co_ApplyVerticalMotion(Vector3 originPos, Vector3 targetPos, float duration)
+    {
+        _player.AllowOffPathMovement = true;
+
+        if (_agent.enabled)
+            _agent.enabled = false;
+
+        Vector3 startPos = transform.position;
+        float ascendDuration = duration * 0.1f;
+        float descendDuration = duration * 0.5f;
+        float timer = 0f;
+
+        while (timer < ascendDuration)
+        {
+            timer += Time.deltaTime;
+            float progress = Mathf.Clamp01(timer / ascendDuration);
+
+            float easedProgress = 1f - Mathf.Pow(1f - progress, 3f);
+
+            transform.position = Vector3.Lerp(startPos, targetPos, easedProgress); // easedProgress 사용
+            yield return null;
+        }
+        transform.position = targetPos;
+
+        yield return new WaitForSeconds(0.8f);
+
+        timer = 0f;
+        Vector3 peakPos = transform.position;
+
+        while (timer < descendDuration)
+        {
+            timer += Time.deltaTime;
+            float progress = Mathf.Clamp01(timer / descendDuration);
+
+             float easedProgress = 1f - Mathf.Pow(1f - progress, 3f);
+             transform.position = Vector3.Lerp(peakPos, originPos, easedProgress);
+            yield return null;
+        }
+        transform.position = originPos;
+
+        _agent.enabled = true;
+        _applyVericalMotion = null;
+        _agent.Warp(transform.position);
+
+        _player.AllowOffPathMovement = false;
+    }
     #region Util
     Vector3 ComputeEndBlocked(Vector3 startPos, Vector3 targetPos)
     {
