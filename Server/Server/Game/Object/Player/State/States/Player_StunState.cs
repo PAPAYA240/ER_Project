@@ -29,7 +29,7 @@ public class Player_StunState : IPlayerState
         _startPos = player.Position;
 
         // 이동이 필요한 경우
-        if (_desc.Speed > float.Epsilon && _startPos != _desc.EndPos)
+        if ((_startPos - _desc.EndPos).Length() > float.Epsilon)
         {
             _isMoving = true;
         }
@@ -60,7 +60,7 @@ public class Player_StunState : IPlayerState
             float distanceToTravel = Vector3.Distance(_startPos, _desc.EndPos);
 
             // 이동에 필요한 총 시간 계산
-            float knockbackMovementTotalTime = 0.1f;//(distanceToTravel > float.Epsilon) ? (distanceToTravel / _desc.Speed) : 0f;
+            float knockbackMovementTotalTime = (distanceToTravel > float.Epsilon) ? (distanceToTravel / _desc.Speed) : 0f;
 
             double knockbackElapsedTime = TimeUtil.UtcSec() - _startTime;
 

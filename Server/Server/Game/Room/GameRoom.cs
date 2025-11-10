@@ -580,7 +580,7 @@ namespace Server.Game
             //player.Skill.SetCooldown(KeyCode.R, 0f);
             StunStateDesc desc = new StunStateDesc();
             desc.Duration = 5;
-            desc.Speed = 17;
+            //desc.Speed = 17;
             desc.EndPos = Vector3.Zero;
             player.ChangeState(new Player_StunState(desc));
 
