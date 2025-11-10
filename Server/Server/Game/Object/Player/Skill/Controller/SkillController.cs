@@ -70,9 +70,7 @@ public sealed class SkillController
             return false;
         }
 
-        // 3) 커밋(코스트 소모 등), 상태 전환
-        _owner.CommitSkillUsage(key);
-
+        // 3) 커밋(코스트 소모 등) -> 패킷 보내는 타이밍으로 변경, 상태 전환
         if (handler is InstantHandlerBase instant)
             instant.ExecuteInstant(_owner);
         else

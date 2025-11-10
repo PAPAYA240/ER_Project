@@ -52,7 +52,7 @@ namespace Server.Game
         public override float Speed 
         {
             get { return (base.Speed + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
-            set { base.Speed = value; SendMoveSpeedPacket(base.Speed); }
+            set { base.Speed = value; /*SendMoveSpeedPacket(base.Speed);*/ }
         }
 
         public override float MaxHp 
@@ -975,7 +975,7 @@ namespace Server.Game
                 };
                
                 if(sendCostPacket)
-                    SendSkillCostPacket(keyCode, GetCoolTime(keyCode));
+                    SendSkillCostPacket(keyCode);
             }
             else
             {
@@ -1021,7 +1021,7 @@ namespace Server.Game
             {
                 ObjectId = Id,
                 SkillKey = (int)keyCode,
-                CostInfo = new CostInfo { CoolTime = coolTime, Stamina = Stamina }
+                CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina }
             };
 
             Room.Push(Session.Send, costPacket);
@@ -1029,6 +1029,8 @@ namespace Server.Game
 
         public void SendSkillCostPacket(KeyCode keyCode)
         {
+            CommitSkillUsage(keyCode);
+
             S_SkillCost costPacket = new S_SkillCost
             {
                 ObjectId = Id,
@@ -1079,15 +1081,15 @@ namespace Server.Game
             Room.Push(Room.Broadcast, pkt);
         }
 
-        public void SendMoveSpeedPacket(float moveSpeed)
-        {
-            S_MoveSpeed pkt = new S_MoveSpeed
-            {
-                ObjectId = Id,
-                MoveSpeed = moveSpeed,
-            };
-            Room.Push(Session.Send, pkt);
-        }
+        //public void SendMoveSpeedPacket(float moveSpeed)
+        //{
+        //    S_MoveSpeed pkt = new S_MoveSpeed
+        //    {
+        //        ObjectId = Id,
+        //        MoveSpeed = moveSpeed,
+        //    };
+        //    Room.Push(Session.Send, pkt);
+        //}
 
         #endregion
 
