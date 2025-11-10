@@ -86,12 +86,13 @@ public sealed class Hyunwoo_E : SkillHandlerBase
             {
                 if(_players.TryGetValue(_commitId, out KeyValuePair<Player, Vector3> tartgetKVP))
                 {
+                    // Knockback
                     Vector3 start = tartgetKVP.Value;
                     Vector3 end = prop.collisionPos;
 
                     StunStateDesc desc = new StunStateDesc();
                     desc.EndPos = end;
-                    desc.Speed = _speed;
+                    desc.Speed = _speed * 2f;
 
                     // hit the wall
                     if ((start - end).Length() - _knockbackRange < float.Epsilon)
@@ -104,6 +105,7 @@ public sealed class Hyunwoo_E : SkillHandlerBase
                 }
                 else
                 {
+                    // Hyunwoo Moving
                     _startPos = p.Position;
                     _endPos = prop.collisionPos;
 

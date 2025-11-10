@@ -26,6 +26,9 @@ public class PlayerViewController : MonoBehaviour
     private Vector3 _lastSentPos;
     private Quaternion _lastSentRot;
 
+    private int _targetId;
+    private bool _isRotating = false;
+
     // Moving (For. Target)
     private int _followTargetId = 0;
     private Coroutine _coFollow;
@@ -34,6 +37,8 @@ public class PlayerViewController : MonoBehaviour
     private GameObject _target;
 
     public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
+
+    public int TargetId { get { return _targetId; } set { _targetId = value; } }
 
     private void Awake()
     {
@@ -47,6 +52,21 @@ public class PlayerViewController : MonoBehaviour
     {
         if (!_syncing || _agent == null || _player == null)
             return;
+
+        if (_player.State == CreatureState.Attack)
+        {
+            if (_isRotating == false)
+            {
+                var targetView = Managers.Object.FindById(TargetId);
+
+                if (targetView != null)
+                {
+                    Vector3 pos = _target.transform.position;
+                    UpdateTarget(pos);
+                    Debug.Log(pos);
+                }
+            }
+        }
 
         //Vector3 pos = _player.transform.position;
         //Quaternion rot = _player.transform.rotation;
@@ -265,13 +285,15 @@ public class PlayerViewController : MonoBehaviour
         _target = Managers.Object.FindById(targetId);
         if (_target == null)
             return;
-        
+
         StartCoroutine(CoRotateToTarget());
     }
 
     private IEnumerator CoRotateToTarget()
     {
         float rotateSpeed = 15f;
+        _isRotating = true;
+
         while (_target != null)
         {
             if (_player.State == CreatureState.Moving)
@@ -291,6 +313,8 @@ public class PlayerViewController : MonoBehaviour
 
             yield return null;
         }
+
+        _isRotating = false;
     }
 
     private GameObject FindVisibleObjectById(int objectId)

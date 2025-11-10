@@ -78,13 +78,15 @@ enum MsgId {
   S_CHANGE_TRANSFORM = 67;
   S_TARGET_CHANGE = 68;
 
-  C_KEY_INPUT_FOR_TEST = 69;
-  S_SKILL_COST = 70;
+  C_SKILL_EXECUTE = 69;
+  S_SNARE = 70;
 
-  S_SKILL_COLLISION_REQUEST = 71;
-  C_CHARGING_SKILL = 72;
 
-  S_MOVE_SPEED = 73;
+  C_KEY_INPUT_FOR_TEST = 71;
+  S_SKILL_COST = 72;
+
+  S_SKILL_COLLISION_REQUEST = 73;
+  C_CHARGING_SKILL = 74;
 }
 
 enum CombatState{
@@ -333,6 +335,11 @@ message C_SkillPrepare{
 }
 
 message C_SkillCancel{
+   int32 objectId = 1;
+   int32  skillKey = 2;
+}
+
+message C_SkillExecute{
    int32 objectId = 1;
    int32  skillKey = 2;
 }
@@ -638,6 +645,14 @@ message EnvInfo{
     float rotationSpeed= 11;
 }
 
+message S_Snare
+{
+	int32 objectId = 1;
+	int32 attackerTeam = 2;
+	float duration = 3;
+	int32 attackerId = 4;
+}
+
 message ObjectInfo{
 	int32 objectId = 1;
 	string name = 2;
@@ -871,9 +886,4 @@ message S_SkillCost{
 	int32 objectId = 1;
 	int32 skillKey = 2;	
 	CostInfo costInfo = 3;
-}
-
-message S_MoveSpeed{
-	int32 objectId = 1;
-	float moveSpeed = 2;
 }
