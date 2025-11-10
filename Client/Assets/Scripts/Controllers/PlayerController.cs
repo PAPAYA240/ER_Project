@@ -99,8 +99,8 @@ public class PlayerController : CreatureController
 
     public override float Speed
     {
-        get { return (Stat.MoveSpeed + ItemStat.FixedSpeed) * (1 + ItemStat.PercentageSpeed) * 1.7f; }
-        set { Stat.MoveSpeed = value; }
+        get { return Stat.MoveSpeed;/*(Stat.MoveSpeed + ItemStat.FixedSpeed) * (1 + ItemStat.PercentageSpeed) * 1.7f;*/ }
+        set { Stat.MoveSpeed = value; _agent.speed = value; }
     }
 
     public override float FixedDefensePenetration { get { return ItemStat.FixedDefensePenetration; } }
@@ -285,6 +285,23 @@ public class PlayerController : CreatureController
     {
         Debug.Log($"Cur : {State}, Next : {packet.State}");
         State = packet.State;
+    }
+
+    public void ChangeStatus(S_ChangeStatus packet)
+    {
+        if(Speed != packet.MoveSpeed)
+            Debug.Log($"@ Change Status : Speed - {Speed}, Update - {packet.MoveSpeed}");
+        if(Attack != packet.Attack)
+            Debug.Log($"@ Change Status : Attack - {Attack}, Update - {packet.Attack}");
+        //if (Defense != packet.Defense)
+            Debug.Log($"@ Change Status : Defense - {Defense}, Update - {packet.Defense}");
+
+        Speed = packet.MoveSpeed;
+        Attack = packet.Attack;
+        //AttackSpeed = packet.AttackSpeed;
+        Defense = packet.Defense;
+        //Healing = packet.Healing;
+
     }
 
     #region Util

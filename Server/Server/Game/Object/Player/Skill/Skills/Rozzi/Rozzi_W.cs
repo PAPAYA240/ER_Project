@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using static Server.Data.DataUtils;
+using static Server.Game.GameObject;
 
 public sealed class Rozzi_W : SkillHandlerBase
 {
@@ -24,6 +25,23 @@ public sealed class Rozzi_W : SkillHandlerBase
         base.OnEnter(p, ctx);
 
         SendSkillConfirmPacket(p);
+
+        //"type": "Buff",
+        //        "stat": "speed",
+        //        "value": 120,
+        //        "duration": 0.4,
+        //        "subject": "Self"
+
+        StatusEffect statusEffect = new StatusEffect
+        {
+            type = "Buff",
+            stat = "speed",
+            value = 120,
+            duration = 0.4f,
+            subject = Subject.Self,
+        };
+
+        p.Room.Push(p.Room.AddStatusEffect, p, statusEffect, p);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

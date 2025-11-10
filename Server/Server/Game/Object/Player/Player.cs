@@ -45,14 +45,14 @@ namespace Server.Game
 
         public override float Defense
         {
-            get { return base.Defense + _totalItemStat.Defense; }
+            get { return ComposeFinal(STAT_DEFENSE, Stat.Defense) + _totalItemStat.Defense; }
             set { base.Defense = value; }
         }
 
         public override float Speed 
         {
-            get { return (base.Speed + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
-            set { base.Speed = value; /*SendMoveSpeedPacket(base.Speed);*/ }
+            get { return (ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed) + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
+            set { base.Speed = value; }
         }
 
         public override float MaxHp 
@@ -305,6 +305,7 @@ namespace Server.Game
             _stateMachine.Update(this);
             _statRegenerator.Update();
             CheckUpdateStat();
+            CheckUpdateStatus();
         }
 
         public void InitAboutItem()
@@ -1021,7 +1022,7 @@ namespace Server.Game
             {
                 ObjectId = Id,
                 SkillKey = (int)keyCode,
-                CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina }
+                CostInfo = new CostInfo { CoolTime = coolTime, Stamina = Stamina }
             };
 
             Room.Push(Session.Send, costPacket);
@@ -1046,13 +1047,12 @@ namespace Server.Game
             Session.Send(packet);
         }
 
-        public void SendMoveSyncPacket(PositionInfo targetPos, float speed = 1.0f)
+        public void SendMoveSyncPacket(PositionInfo targetPos)
         {
             S_MoveSync packet = new S_MoveSync
             {
                 ObjectId = Id,
                 TargetPos = targetPos,
-                Speed = speed,
             };
             //Room.Push(Room.Broadcast, packet);
             Room.Push(Session.Send, packet);
@@ -1112,6 +1112,28 @@ namespace Server.Game
             changePacket.Barrier = Barrier;
             //Console.WriteLine($"Barrier: {barrier}");
             Room.Push(Room.Broadcast, changePacket);
+        }
+
+        public void CheckUpdateStatus()
+        {
+            if (_isUpdatedStatus)
+            {
+                S_ChangeStatus packet = new S_ChangeStatus()
+                {
+                    ObjectId = Id,
+
+                    MoveSpeed = Speed,
+                    Attack = Attack,
+                    //AttackSpeed = 
+                    Defense = Defense,
+                    //Healing = 
+                };
+
+                Room.Push(Session.Send, packet);
+                _isUpdatedStatus = false;
+
+                Console.WriteLine($"@ Send Packet : Id - {Id}, Speed - {Speed}, Attack - {Attack}, Defense - {Defense}");
+            }
         }
         #endregion
     }

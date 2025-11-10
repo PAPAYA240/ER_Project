@@ -154,6 +154,21 @@ namespace Server.Game
             set { Stat.Defense = Math.Max(value, 0); }
         }
 
+        protected const string STAT_MOVE_SPEED = "moveSpeed";
+        protected const string STAT_ATTACK = "Attack";
+        protected const string STAT_DEFENSE = "defense";
+        protected const string STAT_ATTACK_SPEED = "AttackSpeed";
+
+        // 인스턴스별 퍼센트 누적( +0.20f = +20% )
+        protected readonly Dictionary<StatusEffect, Dictionary<string, float>> _mulByInst
+            = new Dictionary<StatusEffect, Dictionary<string, float>>();
+
+        // 스탯키별 전체 퍼센트 누적(빠른 합성용 캐시)
+        protected readonly Dictionary<string, float> _mulAccum
+            = new Dictionary<string, float>();
+
+        protected bool _isUpdatedStatus = false;
+
         public virtual CreatureState State
         {
             get { return PosInfo.State; }
@@ -368,6 +383,15 @@ namespace Server.Game
 
                         // NAYOUNGTODO : Idle로 변경해야 함
                     }
+                    else if(statusEffect.type == "Buff" || statusEffect.type == "Debuff")
+                    {
+                        // value가 20(%) 형태로 들어올 수도 있으니 0~1로 정규화
+                        float pct = statusEffect.value;
+                        if (MathF.Abs(pct) > 1f)
+                            pct *= 0.01f;
+
+                        RegisterMultipliers(statusEffect, new[] { (statusEffect.stat, pct) });
+                    }
                 }                    
             }
         }
@@ -376,9 +400,26 @@ namespace Server.Game
         {
             lock (_lock)
             {
-                return _statusEffects.RemoveWhere(se =>
-                    se.type == type &&
-                    se.stat == stat);
+                //return _statusEffects.RemoveWhere(se =>
+                //    se.type == type &&
+                //    se.stat == stat);
+
+                var toRemove = _statusEffects
+                    .Where(se => se.type == type && (stat == null || se.stat == stat))
+                    .ToList();
+
+                foreach (var se in toRemove)
+                {
+                    if (se.type == "Buff" || se.type == "Debuff")
+                        UnregisterMultipliers(se);
+                }
+
+                int removed = 0;
+                foreach (var se in toRemove)
+                    if (_statusEffects.Remove(se))
+                        removed++;
+
+                return removed;
             }
         }
 
@@ -397,8 +438,16 @@ namespace Server.Game
                     }
                 }
 
+                //if (earliest != null)
+                //    _statusEffects.Remove(earliest);
+
                 if (earliest != null)
+                {
+                    if (earliest.type == "Buff" || earliest.type == "Debuff")
+                        UnregisterMultipliers(earliest);
+
                     _statusEffects.Remove(earliest);
+                }
             }
         }
 
@@ -431,8 +480,16 @@ namespace Server.Game
 
             lock (_lock)
             {
+                //foreach (var e in expired)
+                //    _statusEffects.Remove(e);
+
                 foreach (var e in expired)
+                {
+                    if (e.type == "Buff" || e.type == "Debuff")
+                        UnregisterMultipliers(e);
+
                     _statusEffects.Remove(e);
+                }
 
                 foreach (var s in expiredBarriers)
                     _barriers.Remove(s);
@@ -504,6 +561,87 @@ namespace Server.Game
             Room.Push(Room.Broadcast, changePacket);
         }
 
+        #endregion
+
+        #region StatusEffect 연동 
+        // 최종 = base * (1 + 누적 퍼센트)
+        protected float ComposeFinal(string key, float baseVal)
+        {
+            float pct = 0;
+            if (key == STAT_MOVE_SPEED)
+            {
+                if (!_mulAccum.TryGetValue(key, out var moveSpeed))
+                {
+                    if (!_mulAccum.TryGetValue("speed", out var Speed))
+                        pct = 0;
+                    else
+                        pct = Speed;
+                }
+                else
+                    pct = moveSpeed;
+            }
+            else
+            {
+                pct = _mulAccum.TryGetValue(key, out var v) ? v : 0f;
+            }
+
+            //float pct = _mulAccum.TryGetValue(key, out var v) ? v : 0f;
+            float result = baseVal * (1f + pct);
+            //if(key == STAT_DEFENSE)
+            //    Console.WriteLine($"@ Defense Changed! : Id - {Id}, Prev - {baseVal}, Next - {result}");
+            return MathF.Max(0f, result);
+        }
+
+        // 인스턴스에 여러 스탯 %를 한 번에 등록 (스택 증가분만 호출)
+        protected void RegisterMultipliers(StatusEffect inst, IEnumerable<(string key, float delta)> mods)
+        {
+            if (!_mulByInst.TryGetValue(inst, out var map))
+                map = _mulByInst[inst] = new Dictionary<string, float>();
+
+            bool changed = false;
+
+            foreach (var (key, delta) in mods)
+            {
+                if (MathF.Abs(delta) < 1e-9f)
+                    continue;
+
+                map[key] = map.GetValueOrDefault(key) + delta;
+                _mulAccum[key] = _mulAccum.GetValueOrDefault(key) + delta;
+                changed = true;
+
+                if(inst.subject == Subject.Enemy)
+                    Console.WriteLine($"@ Register : Id - {Id}, key - {key}, value - {_mulAccum[key]}");
+            }
+
+            if (changed)
+                _isUpdatedStatus = true;
+        }
+
+        // 인스턴스 제거 시 그 인스턴스가 더했던 % 전량 제거
+        protected void UnregisterMultipliers(StatusEffect inst)
+        {
+            if (!_mulByInst.TryGetValue(inst, out var map))
+                return;
+
+            bool changed = false;
+
+            foreach (var kv in map)
+            {
+                string key = kv.Key;
+                float val = kv.Value;
+
+                _mulAccum[key] = _mulAccum.GetValueOrDefault(key) - val;
+                if (MathF.Abs(_mulAccum[key]) < 1e-6f)
+                    _mulAccum.Remove(key);
+
+                changed = true;
+            }
+
+            _mulByInst.Remove(inst);
+
+            if (changed)
+                _isUpdatedStatus = true;
+        }
         #endregion
     }
 }

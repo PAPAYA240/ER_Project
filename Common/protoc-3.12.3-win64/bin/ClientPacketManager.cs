@@ -118,7 +118,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SSkillCost, MakePacket<S_SkillCost>);
 		_handler.Add((ushort)MsgId.SSkillCost, PacketHandler.S_SkillCostHandler);		
 		_onRecv.Add((ushort)MsgId.SSkillCollisionRequest, MakePacket<S_SkillCollisionRequest>);
-		_handler.Add((ushort)MsgId.SSkillCollisionRequest, PacketHandler.S_SkillCollisionRequestHandler);
+		_handler.Add((ushort)MsgId.SSkillCollisionRequest, PacketHandler.S_SkillCollisionRequestHandler);		
+		_onRecv.Add((ushort)MsgId.SChangeStatus, MakePacket<S_ChangeStatus>);
+		_handler.Add((ushort)MsgId.SChangeStatus, PacketHandler.S_ChangeStatusHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

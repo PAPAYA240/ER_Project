@@ -87,6 +87,8 @@ enum MsgId {
 
   S_SKILL_COLLISION_REQUEST = 73;
   C_CHARGING_SKILL = 74;
+
+  S_CHANGE_STATUS = 75;
 }
 
 enum CombatState{
@@ -845,7 +847,6 @@ message C_Rest {
 message S_MoveSync {
   int32 objectId = 1;
   PositionInfo targetPos = 2;
-  float speed = 3;
 }
 
 message S_ChangeTransform{
@@ -886,4 +887,14 @@ message S_SkillCost{
 	int32 objectId = 1;
 	int32 skillKey = 2;	
 	CostInfo costInfo = 3;
+}
+
+message S_ChangeStatus{
+	int32 objectId = 1;
+
+	float moveSpeed = 2;
+	float attack = 3;
+	float attackSpeed = 4;
+	float defense = 5;
+	float healing = 6;
 }
