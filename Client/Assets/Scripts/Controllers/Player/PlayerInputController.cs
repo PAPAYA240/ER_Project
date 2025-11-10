@@ -14,7 +14,7 @@ public class PlayerInputController : MonoBehaviour
     private NavMeshAgent _agent;
 
     [SerializeField] float _attackRange = 3.0f;  
-    [SerializeField] float _stopBuffer = 1.5f;
+    [SerializeField] float _stopBuffer = 0.1f;
 
     private GameObject _target;
 

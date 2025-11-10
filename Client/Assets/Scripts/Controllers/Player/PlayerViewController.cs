@@ -92,7 +92,7 @@ public class PlayerViewController : MonoBehaviour
             IsGround = true,
             TargetPos = packet.TargetPos,
         };
-        ApplyLocalSetMoveTarget(cmd, true);
+        ApplyLocalSetMoveTarget(cmd, true, packet.Speed);
     }
 
     public void OnAnim(S_Anim packet)
@@ -126,18 +126,17 @@ public class PlayerViewController : MonoBehaviour
     }
 
     #region Moving
-    public void ApplyLocalSetMoveTarget(C_SetMoveTarget cmd, bool isServerSync = false, float attackRange = 3.0f)
+    public void ApplyLocalSetMoveTarget(C_SetMoveTarget cmd, bool isServerSync = false, float speed = 1.0f, float attackRange = 3.0f)
     {
         if (_agent == null)
             return;
 
-        if (_player.State == CreatureState.Skill )
-        {
-            if(!(_skill.CanMoveDuringCast || isServerSync))
+        if (_player.State == CreatureState.Skill && !_skill.CanMoveDuringCast)
             return;
-        }
         else
             _skill.StopSkillMotion();
+
+        _agent.speed = isServerSync ? _player.Speed * speed : _player.Speed;
 
         // 추적 코루틴 정리
         StopFollowTarget();
@@ -154,7 +153,8 @@ public class PlayerViewController : MonoBehaviour
             if (NavMesh.SamplePosition(final, out var navHit, 2.0f, NavMesh.AllAreas))
                 final = navHit.position;
 
-            _agent.SetDestination(final);
+            if(_agent != null)
+                _agent.SetDestination(final);
         }
         else
         {
@@ -188,6 +188,7 @@ public class PlayerViewController : MonoBehaviour
             case StopReason.StopMoveOnly:
                 _agent.enabled = true;
                 _agent.isStopped = true;
+
                 StopFollowTarget(); // 추적 종료(서버 사인에 의해)
                 _agent.ResetPath();
                 break;
