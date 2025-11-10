@@ -798,6 +798,10 @@ namespace Server.Game
                 packet.ObjectId = Id;
                 packet.ItemStat = _totalItemStat;
 
+                Hp += _totalItemStat.MaxHp + _totalItemStat.MaxHpPerLevel * Stat.Level;
+                Stamina += _totalItemStat.MaxStamina;
+                _isUpdatedStat = true;
+
                 GameRoom room = Room;
 
                 if (room != null)

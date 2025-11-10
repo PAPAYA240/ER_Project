@@ -80,6 +80,7 @@ public sealed class Hyunwoo_E : SkillHandlerBase
 
     public override void OnTick(Player p, SkillContext ctx)
     {
+        // process a request
         if (_requestId != _commitId)
         {
             if (TryConsumeLatest(ref _commitId, out SkillCollisionProposal prop))
@@ -144,16 +145,6 @@ public sealed class Hyunwoo_E : SkillHandlerBase
                 end: nextPos
             );
         }
-
-        //if(_players.Count > 0)
-        //{
-        //    foreach(var playerKVP in _players)
-        //    {
-        //        playerKVP.Key
-        //    }
-        //}
-
-
     }
 
     public override void OnExit(Player p, SkillContext ctx)

@@ -51,7 +51,7 @@ public static class SkillRegistry
         else if (character == CharacterType.Hyunwoo)
         {
             if (key == KeyCode.Q) return new Hyunwoo_Q();
-            //if (key == KeyCode.W) return new Hyunwoo_W();
+            if (key == KeyCode.W) return new Hyunwoo_W();
             if (key == KeyCode.E) return new Hyunwoo_E();
             if (key == KeyCode.R) return new Hyunwoo_R();
             //if (key == KeyCode.D) return new Hyunwoo_D();

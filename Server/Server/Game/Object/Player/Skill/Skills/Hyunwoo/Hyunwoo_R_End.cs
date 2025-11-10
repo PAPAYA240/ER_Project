@@ -23,7 +23,7 @@ public sealed class Hyunwoo_R_End : SkillHandlerBase
     {
         base.OnEnter(p, ctx);
 
-        SendSkillConfirmPacket(p);
+        //SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
     }
 
@@ -61,6 +61,7 @@ public sealed class Hyunwoo_R_End : SkillHandlerBase
             {
                 if (_players.TryGetValue(_commitId, out Player tartget))
                 {
+                    // knockback
                     StunStateDesc desc = new StunStateDesc();
                     desc.EndPos = prop.collisionPos;
                     desc.Duration = 0.1f;

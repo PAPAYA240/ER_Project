@@ -21,9 +21,7 @@ public sealed class Hyunwoo_R_Loop : ChargingSkillHandler
     {
         base.OnEnter(p, ctx);
 
-        //p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
         p.LookAtMouse(ctx.MousePos);
-
         _start = TimeUtil.UtcSec();
     }
 

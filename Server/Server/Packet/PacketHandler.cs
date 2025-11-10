@@ -17,7 +17,16 @@ class PacketHandler
     {
         ClientSession clientSession = session as ClientSession;
 
-        clientSession.MyPlayer = ObjectManager.Instance.Add<Player>();
+        // create hyunwoo
+        if(clientSession.MyCharacter == CharacterType.Hyunwoo)
+        {
+            clientSession.MyPlayer = ObjectManager.Instance.Add<Hyunwoo>();
+        }
+        else
+        {
+            clientSession.MyPlayer = ObjectManager.Instance.Add<Player>();
+        }
+
         {
             clientSession.MyPlayer.Info.Name = $"Player_{clientSession.MyPlayer.Info.ObjectId}";
             clientSession.MyPlayer.Info.PosInfo.State = CreatureState.Idle;
