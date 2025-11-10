@@ -39,7 +39,7 @@ namespace Server.Game
         #region Stat Property
         public override float Attack
         {
-            get { return base.Attack + _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat; }
+            get { return ComposeFinal(STAT_ATTACK, Stat.Attack) + _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat; }
             set { base.Attack = value; }
         }
 
@@ -53,6 +53,18 @@ namespace Server.Game
         {
             get { return (ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed) + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
             set { base.Speed = value; }
+        }
+
+        public override float AttackSpeed
+        {
+            get { return (ComposeFinal(STAT_ATTACK_SPEED, Stat.AttackSpeed) + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
+            set { base.AttackSpeed = value; }
+        }
+
+        public override int Healing  // TEMP
+        {
+            get { return (int)ComposeFinal(STAT_HEALING, Stat.Heal); }
+            set { base.Healing = value; }
         }
 
         public override float MaxHp 
@@ -1126,13 +1138,13 @@ namespace Server.Game
                     Attack = Attack,
                     //AttackSpeed = 
                     Defense = Defense,
-                    //Healing = 
+                    Healing = Healing,
                 };
 
                 Room.Push(Session.Send, packet);
                 _isUpdatedStatus = false;
 
-                Console.WriteLine($"@ Send Packet : Id - {Id}, Speed - {Speed}, Attack - {Attack}, Defense - {Defense}");
+                Console.WriteLine($"@ Send Packet : Id - {Id}, Speed - {Speed}, Attack - {Attack}, Defense - {Defense}, Healing - {Healing}");
             }
         }
         #endregion

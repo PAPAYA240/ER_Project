@@ -760,6 +760,11 @@ class PacketHandler
             return;
 
         pc.ChangeStatus(statusPacket);
+
+        if (pc is MyPlayerController mpc)
+        {
+            mpc.UI.PlayerInterface.UpdateStat();
+        }
     }
 
     static float GetCurrentEstimatedOneWayLatency()

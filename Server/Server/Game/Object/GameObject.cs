@@ -138,6 +138,18 @@ namespace Server.Game
             set { Stat.Attack = Math.Max(value, 0); }
         }
 
+        public virtual float AttackSpeed
+        {
+            get { return Stat.AttackSpeed; }
+            set { Stat.AttackSpeed = value; }
+        }
+
+        public virtual int Healing  // TEMP
+        {
+            get { return Stat.Heal; }
+            set { Stat.Heal = value; }
+        }
+
         public virtual float FixedDefensePenetration
         {
             get { return 0f; }
@@ -158,10 +170,11 @@ namespace Server.Game
         protected const string STAT_ATTACK = "Attack";
         protected const string STAT_DEFENSE = "defense";
         protected const string STAT_ATTACK_SPEED = "AttackSpeed";
+        protected const string STAT_HEALING = "healing";
 
         // 인스턴스별 퍼센트 누적( +0.20f = +20% )
-        protected readonly Dictionary<StatusEffect, Dictionary<string, float>> _mulByInst
-            = new Dictionary<StatusEffect, Dictionary<string, float>>();
+        protected readonly Dictionary<StatusEffect, (string key, float delta)> _mulByInst
+            = new Dictionary<StatusEffect, (string key, float delta)>();
 
         // 스탯키별 전체 퍼센트 누적(빠른 합성용 캐시)
         protected readonly Dictionary<string, float> _mulAccum
@@ -390,7 +403,9 @@ namespace Server.Game
                         if (MathF.Abs(pct) > 1f)
                             pct *= 0.01f;
 
-                        RegisterMultipliers(statusEffect, new[] { (statusEffect.stat, pct) });
+                        if (statusEffect.stat == "moveSpeed" || statusEffect.stat == "MoveSpeed" || statusEffect.stat == "speed")
+                            statusEffect.stat = STAT_MOVE_SPEED;
+                        RegisterMultiplier(statusEffect, statusEffect.stat, pct);
                     }
                 }                    
             }
@@ -411,7 +426,7 @@ namespace Server.Game
                 foreach (var se in toRemove)
                 {
                     if (se.type == "Buff" || se.type == "Debuff")
-                        UnregisterMultipliers(se);
+                        UnregisterMultiplier(se);
                 }
 
                 int removed = 0;
@@ -444,7 +459,7 @@ namespace Server.Game
                 if (earliest != null)
                 {
                     if (earliest.type == "Buff" || earliest.type == "Debuff")
-                        UnregisterMultipliers(earliest);
+                        UnregisterMultiplier(earliest);
 
                     _statusEffects.Remove(earliest);
                 }
@@ -486,7 +501,7 @@ namespace Server.Game
                 foreach (var e in expired)
                 {
                     if (e.type == "Buff" || e.type == "Debuff")
-                        UnregisterMultipliers(e);
+                        UnregisterMultiplier(e);
 
                     _statusEffects.Remove(e);
                 }
@@ -567,80 +582,55 @@ namespace Server.Game
         // 최종 = base * (1 + 누적 퍼센트)
         protected float ComposeFinal(string key, float baseVal)
         {
-            float pct = 0;
-            if (key == STAT_MOVE_SPEED)
-            {
-                if (!_mulAccum.TryGetValue(key, out var moveSpeed))
-                {
-                    if (!_mulAccum.TryGetValue("speed", out var Speed))
-                        pct = 0;
-                    else
-                        pct = Speed;
-                }
-                else
-                    pct = moveSpeed;
-            }
-            else
-            {
-                pct = _mulAccum.TryGetValue(key, out var v) ? v : 0f;
-            }
-
-            //float pct = _mulAccum.TryGetValue(key, out var v) ? v : 0f;
+            float pct = _mulAccum.TryGetValue(key, out var v) ? v : 0f;
             float result = baseVal * (1f + pct);
-            //if(key == STAT_DEFENSE)
-            //    Console.WriteLine($"@ Defense Changed! : Id - {Id}, Prev - {baseVal}, Next - {result}");
+
             return MathF.Max(0f, result);
         }
 
-        // 인스턴스에 여러 스탯 %를 한 번에 등록 (스택 증가분만 호출)
-        protected void RegisterMultipliers(StatusEffect inst, IEnumerable<(string key, float delta)> mods)
+        // 인스턴스 등록
+        protected void RegisterMultiplier(StatusEffect inst, string key, float delta)
         {
-            if (!_mulByInst.TryGetValue(inst, out var map))
-                map = _mulByInst[inst] = new Dictionary<string, float>();
+            if (MathF.Abs(delta) < 1e-9f)
+                return;
 
-            bool changed = false;
-
-            foreach (var (key, delta) in mods)
+            if (_mulByInst.TryGetValue(inst, out var old))
             {
-                if (MathF.Abs(delta) < 1e-9f)
-                    continue;
-
-                map[key] = map.GetValueOrDefault(key) + delta;
+                // 같은 인스턴스가 스택 증가 등으로 '같은 키'에 누적되는 경우만 허용 => 스킬 계속 쓰면 중첩됨 맞나이게
+                if (old.key != key)
+                {
+                    // 설계상 한 인스턴스=한 스탯이므로 키 변경은 비정상
+                    // 필요 시 여기서 Remove 후 새로 등록하는 흐름으로 교체 가능
+                    throw new InvalidOperationException("StatusEffect instance already bound to another stat key.");
+                }
+                var newDelta = old.delta + delta;
+                _mulByInst[inst] = (key, newDelta);
                 _mulAccum[key] = _mulAccum.GetValueOrDefault(key) + delta;
-                changed = true;
-
-                if(inst.subject == Subject.Enemy)
-                    Console.WriteLine($"@ Register : Id - {Id}, key - {key}, value - {_mulAccum[key]}");
+            }
+            else
+            {
+                _mulByInst[inst] = (key, delta);
+                _mulAccum[key] = _mulAccum.GetValueOrDefault(key) + delta;
             }
 
-            if (changed)
-                _isUpdatedStatus = true;
+            Console.WriteLine($"@ Register : Id - {Id}, key - {key}, value - {_mulAccum[key]}");
+            _isUpdatedStatus = true;
         }
 
         // 인스턴스 제거 시 그 인스턴스가 더했던 % 전량 제거
-        protected void UnregisterMultipliers(StatusEffect inst)
+        protected void UnregisterMultiplier(StatusEffect inst)
         {
-            if (!_mulByInst.TryGetValue(inst, out var map))
+            if (!_mulByInst.TryGetValue(inst, out var pair))
                 return;
 
-            bool changed = false;
-
-            foreach (var kv in map)
-            {
-                string key = kv.Key;
-                float val = kv.Value;
-
-                _mulAccum[key] = _mulAccum.GetValueOrDefault(key) - val;
-                if (MathF.Abs(_mulAccum[key]) < 1e-6f)
-                    _mulAccum.Remove(key);
-
-                changed = true;
-            }
-
+            var (key, delta) = pair;
             _mulByInst.Remove(inst);
 
-            if (changed)
-                _isUpdatedStatus = true;
+            _mulAccum[key] = _mulAccum.GetValueOrDefault(key) - delta;
+            if (MathF.Abs(_mulAccum[key]) < 1e-6f)
+                _mulAccum.Remove(key);
+
+            _isUpdatedStatus = true;
         }
         #endregion
     }

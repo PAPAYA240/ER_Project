@@ -40,13 +40,13 @@ public class PlayerController : CreatureController
     #region Property
     public override float Attack
     {
-        get { return base.Attack + ItemStat.AttackDamage + ItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat; }
+        get { return base.Attack;/* + ItemStat.AttackDamage + ItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat;*/ }
         set { base.Attack = value; }
     }
 
     public override float Defense
     {
-        get { return base.Defense + ItemStat.Defense; }
+        get { return base.Defense; /*+ ItemStat.Defense;*/ }
         set { base.Defense = value; }
     }
 

@@ -173,18 +173,18 @@
                 "type": "Debuff",
                 "stat": "defense",
                 "value": -9,
-                "duration": 10,
+                "duration": 3,
                 "subject": "Enemy",
                 "condition": "Hit"
               },
-              //{
-              //  "type": "Debuff",
-              //  "stat": "healing",
-              //  "value": -45,
-              //  "duration": 3,
-              //  "subject": "Enemy",
-              //  "condition": "Hit"
-              //},
+              {
+                "type": "Debuff",
+                "stat": "healing",
+                "value": -45,
+                "duration": 3,
+                "subject": "Enemy",
+                "condition": "Hit"
+              },
               {
                 "type": "Buff",
                 "stat": "moveSpeed",
