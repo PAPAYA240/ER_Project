@@ -349,7 +349,13 @@ namespace Server.Game
             _stateMachine.ChangeState(newState, this);
         }
 
+        public bool CanMove()
+        {
+            if(State == CreatureState.Stun || State == CreatureState.Dead)
+                return false;
 
+            return true;
+        }
         #endregion
 
         #region Stat
