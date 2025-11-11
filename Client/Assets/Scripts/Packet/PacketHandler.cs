@@ -688,6 +688,21 @@ class PacketHandler
         abigailCoord.DeactivateAbigailCoord();
     }
 
+    public static void S_AddYukiPyosikHandler(PacketSession session, IMessage packet)
+    {
+        S_AddYukiPyosik addYukiPyosikPkt = packet as S_AddYukiPyosik;
+
+        GameObject go = Managers.Object.FindById(addYukiPyosikPkt.ObjectId);
+        if (go == null)
+            return;
+
+        YukiPyosik yukiPyosik = go.GetComponentInChildren<YukiPyosik>();
+        if (yukiPyosik == null)
+            return;
+
+        yukiPyosik.ActivateYukiPyosik(addYukiPyosikPkt.AttackerTeam);
+    }
+
     public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)
     {
         S_OccupyBeacon occupyBeaconPkt = packet as S_OccupyBeacon;
