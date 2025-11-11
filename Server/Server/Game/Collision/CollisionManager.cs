@@ -34,6 +34,9 @@ namespace Server.Game
         // Key: ObjectId, Value: Nothing
         public ConcurrentDictionary<int, byte> HitObjs = new ConcurrentDictionary<int, byte>();
 
+        // Key: StatusEffect, Value: Count
+        public ConcurrentDictionary<StatusEffect, int> effectCnt = new ConcurrentDictionary<StatusEffect, int>();
+
         #region 추가 데이터
         public Dictionary<KeyCode, List<string>> Interactions { get; set; } = new Dictionary<KeyCode, List<string>>();
         public HashSet<Hitbox> InteractedHitboxes { get; } = new HashSet<Hitbox>();
@@ -717,6 +720,7 @@ namespace Server.Game
             {
                 effect.targetCnt = hitTargets.Count;
                 effect.attacker = hitbox.Creature;
+                int cnt = hitbox.effectCnt.AddOrUpdate(effect, 1, (_, oldValue) => oldValue + 1);
 
                 switch (effect.subject)
                 {
@@ -735,7 +739,7 @@ namespace Server.Game
                             enemy.Room.Push(enemy.Room.AddStatusEffect, enemy, effect);
                         break;
                     case Subject.T:
-                        if(effect.type == "CDR")
+                        if(cnt == 1 && effect.type == "CDR") // 쿨타임 감소는 딱 한번만 발생해야 함
                             player.Skill.Reduce(KeyCode.T, effect.value);
                         break;
                 }
@@ -1006,42 +1010,6 @@ namespace Server.Game
             _interactionManager.HandleInteraction(hitbox, target);
         }
 
-        //public void SendDrawMesh(Hitbox hitbox)
-        //{
-        //    Vector2 playerPos2D = new Vector2(hitbox.Creature.PosInfo.PosX, hitbox.Creature.PosInfo.PosZ);
-
-        //    S_Drawmesh pkt = new S_Drawmesh
-        //    {
-        //        ObjectId = hitbox.Creature.Id,
-        //        OffsetRadius = hitbox.OffsetRadius,
-        //        PosInfo = new PositionInfo
-        //        {
-        //            PosX = hitbox.PosX,
-        //            PosY = 0,
-        //            PosZ = hitbox.PosZ
-        //        },
-
-        //        RotInfo = hitbox.Rot,
-
-        //        Hitbox = hitbox.Data,
-
-        //        Forward = new PositionInfo
-        //        {
-        //            PosX = hitbox.Forward.X,
-        //            PosY = 0,
-        //            PosZ = hitbox.Forward.Y
-        //        },
-
-        //        Right = new PositionInfo
-        //        {
-        //            PosX = hitbox.Right.X,
-        //            PosY = 0,
-        //            PosZ = hitbox.Right.Y
-        //        }
-        //    };
-
-        //    hitbox.Creature.Room.Broadcast(pkt);
-        //}
         #endregion
     }
 }

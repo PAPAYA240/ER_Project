@@ -21,16 +21,32 @@ public class Player_OperateState : IPlayerState
 
         _duration = DataManager.AnimLengthInfoDict[player.Info.Player.CharType][_animName].Length;
         _startTime = TimeUtil.UtcSec();
+        player.SendStopPacket(StopReason.StopMoveOnly);
+
+        S_RotateToPos rotateToPosPkt = new S_RotateToPos();
+        rotateToPosPkt.ObjectId = player.Id;
+        rotateToPosPkt.PosX = player.Room.BeaconManager.GetBeaconPos(player.Beacon).X;
+        rotateToPosPkt.PosZ = player.Room.BeaconManager.GetBeaconPos(player.Beacon).Z;
+        player.Room.Push(player.Room.Broadcast, rotateToPosPkt);
+
+        player.Room.BeaconManager.Operate(player);
     }
 
     public void Execute(Player player)
     {
-        if(_startTime + _duration <= TimeUtil.UtcSec())
+        bool animFinished = _startTime + _duration <= TimeUtil.UtcSec();
+        bool canOccupy = player.Room.BeaconManager.IsOccupiable(player.Team, player.Beacon);
+
+        if (false == canOccupy || animFinished)
             player.ChangeState(new Player_IdleState());
+
+        if (animFinished)
+            player.Room.BeaconManager.OccupyBeacon(player);
     }
 
     public void Exit(Player player)
     {
+        player.Room.BeaconManager.ExitOperate(player);
     }
 }
 

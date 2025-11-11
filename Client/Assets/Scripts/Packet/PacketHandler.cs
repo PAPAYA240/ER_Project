@@ -759,6 +759,20 @@ class PacketHandler
         mpc.CanStopSkill = canStopSkillPkt.CanStopSkill;
     }
 
+    public static void S_RotateToPosHandler(PacketSession session, IMessage packet)
+    {
+        S_RotateToPos rotateToPosPkt = packet as S_RotateToPos;
+        GameObject go = Managers.Object.FindById(rotateToPosPkt.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<MyPlayerController>();
+        if (pc == null)
+            return;
+
+        pc.StartCoroutine(pc.CoRotateToPosition(new Vector3(rotateToPosPkt.PosX, 0, rotateToPosPkt.PosZ)));
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;
