@@ -21,6 +21,8 @@ public class DataManager
 
     public static Dictionary<CharacterType, Dictionary<KeyCode, SkillHitbox>> SkillHitboxDict { get; private set; } 
         = new Dictionary<CharacterType, Dictionary<KeyCode, SkillHitbox>>();
+    public static Dictionary<MonsterType, Dictionary<MonsterSkill, SkillHitbox>> MonstSkillHitboxDict { get; private set; }
+         = new Dictionary<MonsterType, Dictionary<MonsterSkill, SkillHitbox>>();
 
     public static Dictionary<CharacterType, Dictionary<KeyCode, SkillVariants>> SkillSpecDict { get; private set; }
             = new Dictionary<CharacterType, Dictionary<KeyCode, SkillVariants>>();
@@ -44,15 +46,16 @@ public class DataManager
         SkillSpecDict = LoadJson<Data.SkillSpecData, CharacterType, Dictionary<KeyCode, SkillVariants>>("SkillSpecData").MakeDict();
         
         IndicatorDict = LoadJson<Data.IndicatorData, CharacterType, Dictionary<KeyCode, SkillIndicatorConfig>>("IndicatorData").MakeDict();
+        SkillHitboxDict = LoadJson<Data.HitboxData, CharacterType, Dictionary<KeyCode, SkillHitbox>>("HitboxData").MakeDict();
 
         // For Effect
         MonsterSkillDict = LoadJson<Data.MonsterEffectDict, MonsterSkill, List<EffectData>>("MonsterData/EffectData/MonsterEffectData").MakeDict();
         PlayerFxDict = LoadJson<Data.PlayerEffectDict, CharacterType, Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>>("PlayerEffectData").MakeDict();
+        MonstSkillHitboxDict = LoadJson<Data.MonstHitboxData, MonsterType, Dictionary<MonsterSkill, SkillHitbox>>("MonsterData/HitboxData").MakeDict();
 
         // For Item
         JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
         ItemDict = LoadJson<Data.ItemDict, int, ItemInfoBase>("ItemData", "player", settings).MakeDict();
-
     }
 
     Loader LoadJson<Loader, Key, Value>(string path) where Loader : ILoader<Key, Value>

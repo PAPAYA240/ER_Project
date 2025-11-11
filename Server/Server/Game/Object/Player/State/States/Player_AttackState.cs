@@ -17,7 +17,6 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     // 애니메이션(프로젝트 애니 자원명/ID에 맞춰 교체)
     protected const string AnimAttackA = "ATTACK_1";
     protected const string AnimAttackB = "ATTACK_2";
-    private const string AnimRun = "RUN";
 
     // ===== 상태 필드 =====
     protected readonly float _attackRange;
@@ -30,7 +29,6 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     protected int _attackIndex;               // 0/1 → A/B 번갈이
 
     // 회전
-    private Vector3 _targetPos;
     private bool _isRotate = false;
 
     protected DateTime _swingStartUtc;
@@ -214,8 +212,6 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
                 StartSwing(player, now);
             }
         }
-
-        
     }
 
     public virtual void Exit(Player player)
@@ -247,6 +243,17 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         string animName = (_attackIndex == 0) ? AnimAttackA : AnimAttackB;
         _attackIndex = 1 - _attackIndex;
 
+        // 전투 상태 평타 칠 때마다 갱신
+        p.CombatState = CombatState.Combat;
+        p.CombatTime = 0f;
+
+        // 유키 단추
+        if (p.Info.Player.CharType == CharacterType.Yuki)
+        {
+            if (p.YukiStud > 0)
+                p.YukiStud--;
+        }
+
         // 애니 송출(서버 권한)
         p.SendAnimPacket(animName, 0.05f);
  
@@ -266,8 +273,14 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 
     public static Player_AttackState CreateAttackState(Player p, int targetId, bool chaseAllowed = true, float attackRange = DefaultAttackRange)
     {
-        if(p.Info.Player.CharType == CharacterType.Abigail)
+        if (p.Info.Player.CharType == CharacterType.Abigail)
             return new Abigail_AttackState(targetId, chaseAllowed, attackRange);
+        else if (p.Info.Player.CharType == CharacterType.Yuki)
+        {
+            return new Yuki_AttackState(targetId, chaseAllowed, attackRange);
+        }
+        else if (p.Info.Player.CharType == CharacterType.Hyunwoo)
+            return new Hyunwoo_AttackState(targetId, chaseAllowed, 1.66f);
 
         return new Player_AttackState(targetId, chaseAllowed, attackRange);
     }

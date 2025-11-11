@@ -27,6 +27,7 @@ public class PlayerController : CreatureController
 
     protected bool _isSkillDebug = true;
 
+
     // NameTag
     protected UI_PlayerNameTag _nameTag;
     public UI_PlayerNameTag NameTag { get { return _nameTag; } }
@@ -35,7 +36,6 @@ public class PlayerController : CreatureController
     Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
     public ItemStat ItemStat { get; private set; } = new ItemStat();
     protected GameObject _eqipWeapon = null;
-
 
     #region Property
     public override float Attack
@@ -131,7 +131,6 @@ public class PlayerController : CreatureController
     protected string layerName;
 
     // 화살
-    protected GameObject _projectile = null;
     protected Transform _equipTransform = null;
 
     #region KDA
@@ -324,47 +323,6 @@ public class PlayerController : CreatureController
     #endregion
 
     Dictionary<KeyCode, SkillMesh> msDict = new Dictionary<KeyCode, SkillMesh>();
-
-    #region SkillMesh
-    public void ChangeInfoSkillMesh(KeyCode keyCode, float offset = 1.0f)
-    {
-        SkillMesh currentSkillMesh = msDict[keyCode];
-
-        SkillHitbox hitbox = DataManager.SkillHitboxDict[ObjInfo.Player.CharType][keyCode];
-
-        if (System.Enum.TryParse<SkillShape>(currentSkillMesh._hitbox.Shape, out SkillShape shape))
-            currentSkillMesh.Draw(shape);
-    }
-
-    public virtual void CreateSkillMesh(KeyCode keyCode, float chargeRatio, Vector3 mousePos = new Vector3(), bool bProjectile = false)
-    {
-        SkillHitbox hitbox = DataManager.SkillHitboxDict[ObjInfo.Player.CharType][keyCode];
-        if (hitbox.EndFrame <= 0)
-            return;
-
-        GameObject go = null;
-        if (bProjectile) 
-        {
-            go = _projectile.gameObject;
-            go.SetActive(true);
-        }
-        else
-            go = gameObject;
-
-        GameObject skillMeshGO = Managers.Resource.Instantiate("Debug/SkillMesh", go.transform);
-        SkillMesh sm = skillMeshGO.GetComponent<SkillMesh>();
-        if (sm == null) return;
-
-        if (!msDict.ContainsKey(keyCode))  msDict.Add(keyCode, sm);
-        else msDict[keyCode] = sm;
-
-        if (false == hitbox.Charge)
-            chargeRatio = 1;
-
-        sm.Init(hitbox, go.transform, ObjInfo.Player.Team, chargeRatio, mousePos);     
-    }
-
-    #endregion
 
     #region NameTagAndHp
     protected void InitNameTag()

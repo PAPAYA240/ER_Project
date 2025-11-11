@@ -1,17 +1,14 @@
 ﻿using Google.Protobuf.Protocol;
-using Google.Protobuf.WellKnownTypes;
-using Server.Data;
 using Server.Game;
-using System;
-using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
 using static Server.Data.DataUtils;
 
 public sealed class Theodore_E : SkillHandlerBase
 {
-    private readonly float _followRatio = 0.4f;
+    public override bool CanMoveDuringCast => false;
+
     private readonly float _animDuration;
+    private readonly float _followRatio = 0.4f;
     private readonly float _behindOffset = 1.0f;
 
     private GameObject _target;
@@ -33,6 +30,8 @@ public sealed class Theodore_E : SkillHandlerBase
     public override void OnEnter(Player p, SkillContext ctx)
     {
         base.OnEnter(p, ctx);
+        p.LookAtMouse(ctx.MousePos);
+        SendSkillConfirmPacket(p);
 
         Projectile projectile = ObjectManager.Instance.Add<Projectile>();
         if (projectile != null)

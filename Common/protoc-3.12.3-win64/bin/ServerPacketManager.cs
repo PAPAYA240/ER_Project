@@ -71,6 +71,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.CSkillPrepare, PacketHandler.C_SkillPrepareHandler);		
 		_onRecv.Add((ushort)MsgId.CSkillCancel, MakePacket<C_SkillCancel>);
 		_handler.Add((ushort)MsgId.CSkillCancel, PacketHandler.C_SkillCancelHandler);		
+		_onRecv.Add((ushort)MsgId.CSkillExecute, MakePacket<C_SkillExecute>);
+		_handler.Add((ushort)MsgId.CSkillExecute, PacketHandler.C_SkillExecuteHandler);		
 		_onRecv.Add((ushort)MsgId.CKeyInputForTest, MakePacket<C_KeyInputForTest>);
 		_handler.Add((ushort)MsgId.CKeyInputForTest, PacketHandler.C_KeyInputForTestHandler);		
 		_onRecv.Add((ushort)MsgId.CChargingSkill, MakePacket<C_ChargingSkill>);

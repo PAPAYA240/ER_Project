@@ -28,6 +28,7 @@ namespace Server.Game
 
             InitializeSkillBehavior(monster);
 
+            monster.Room.CollManager.AddHitbox(monster, _skillData.skillType);
             monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), _skillData);
         }
 
@@ -38,6 +39,7 @@ namespace Server.Game
             if (IsSkillFinished())
             {
                 _behavior?.OnEnd(monster);
+
                 if (monster.IsInSkillRange())
                     monster.ChangeState(FSMManager.Instance.GetSkillState(monster.Info.Monster.MonsterType));
                 else
@@ -51,7 +53,9 @@ namespace Server.Game
 
         public void Exit(Monster monster)
         {
+            _behavior?.OnEnd(monster);
             _behavior = null;
+
             _skillData = null;
             _skillEndTime = 0;
             _lastUpdateTime = 0;
@@ -93,33 +97,24 @@ namespace Server.Game
 
         private static ISkillBehavior CreateBehaviorFromClassName(string behaviorClassName)
         {
-            Type behaviorType = Type.GetType(behaviorClassName);
-
-            if (behaviorType == null)
-            {
-                Console.WriteLine($"경고: 이름 '{behaviorClassName}'에 해당하는 클래스 Type을 찾을 수 없습니다.");
+            if (behaviorClassName == null)
                 return null;
-            }
+
+            Type behaviorType = Type.GetType(behaviorClassName);
+            if (behaviorType == null)
+                return null;
 
             try
             {
                 object instance = Activator.CreateInstance(behaviorType);
-                
                 if (instance is ISkillBehavior skillBehavior)
-                {
                     return skillBehavior;
-                }
-                else
-                {
-                    Console.WriteLine($"오류: 생성된 클래스 '{behaviorClassName}'는 ISkillBehavior를 구현하지 않았습니다.");
-                    return null;
-                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"클래스 인스턴스 생성 오류 (이름: {behaviorClassName}): {ex.Message}");
                 return null;
             }
+            return null;
         }
     }
     #endregion

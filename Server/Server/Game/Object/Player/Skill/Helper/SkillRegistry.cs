@@ -51,7 +51,7 @@ public static class SkillRegistry
         else if (character == CharacterType.Hyunwoo)
         {
             if (key == KeyCode.Q) return new Hyunwoo_Q();
-            //if (key == KeyCode.W) return new Hyunwoo_W();
+            if (key == KeyCode.W) return new Hyunwoo_W();
             if (key == KeyCode.E) return new Hyunwoo_E();
             if (key == KeyCode.R) return new Hyunwoo_R();
             //if (key == KeyCode.D) return new Hyunwoo_D();
@@ -66,7 +66,6 @@ public static class SkillRegistry
         {
             if (key == KeyCode.Q) return new Theodore_Charge();
         }
-
         return null;
     }
     // 다른 명령을 대체할 스킬 등록
@@ -76,6 +75,7 @@ public static class SkillRegistry
         SkillRegistry.Register<Hyunwoo_R_Short_End>("Hyunwoo_R_Short_End");
         SkillRegistry.Register<Hyunwoo_R_End>("Hyunwoo_R_End");
         SkillRegistry.Register<Hyunwoo_R_Loop>("Hyunwoo_R_Loop");
+        SkillRegistry.Register<Hyunwoo_E_End>("Hyunwoo_E_End");
     }
 
     public static void Register<T>(string key) where T : ISkill, new()

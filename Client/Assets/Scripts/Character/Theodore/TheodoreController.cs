@@ -188,7 +188,8 @@ public class UI_Indicator : MyPlayerController
     //#endregion
 
     //#region 충돌 시 조건 처리
-    //public override void OnHitboxCollision(KeyCode kc, KeyCode tkc)
+    //public override void
+    //(KeyCode kc, KeyCode tkc)
     //{
     //    base.OnHitboxCollision(kc, tkc);
 
@@ -213,7 +214,8 @@ public class UI_Indicator : MyPlayerController
     //    {
     //        MonsterController mc = target.GetComponentInChildren<MonsterController>();
     //        int level = 1; // TODO : 예비 레벨
-    //        float duration = DataManager.SkillDict[ObjInfo.Player.CharType][KeyCode.E].levels[level].effects[0].duration;
+    //        float duration = DataManager.SkillDict[ObjInfo.Player.CharType][KeyCode.E].
+    //        [level].effects[0].duration;
 
     //        Managers.FX.PlayStatusEffect(target, CharacterType.Theodore, duration);
     //    }

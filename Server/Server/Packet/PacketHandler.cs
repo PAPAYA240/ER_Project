@@ -17,7 +17,16 @@ class PacketHandler
     {
         ClientSession clientSession = session as ClientSession;
 
-        clientSession.MyPlayer = ObjectManager.Instance.Add<Player>();
+        // create hyunwoo
+        if(clientSession.MyCharacter == CharacterType.Hyunwoo)
+        {
+            clientSession.MyPlayer = ObjectManager.Instance.Add<Hyunwoo>();
+        }
+        else
+        {
+            clientSession.MyPlayer = ObjectManager.Instance.Add<Player>();
+        }
+
         {
             clientSession.MyPlayer.Info.Name = $"Player_{clientSession.MyPlayer.Info.ObjectId}";
             clientSession.MyPlayer.Info.PosInfo.State = CreatureState.Idle;
@@ -147,7 +156,19 @@ class PacketHandler
     }
     public static void C_InteractHandler(PacketSession session, IMessage packet)
     {
+        //C_Interact interactPacket = packet as C_Interact;
+        //ClientSession clientSession = session as ClientSession;
+
+        //Player player = clientSession.MyPlayer;
+        //if (player == null)
+        //    return;
+
+        //PickRoom room = RoomManager.Instance.Find(1) as PickRoom;
+        //if (room == null)
+        //    return;
+
     }
+
     public static void C_WeaponHandler(PacketSession session, IMessage packet)
     {
         ClientSession clientSession = session as ClientSession;
@@ -270,6 +291,21 @@ class PacketHandler
             return;
 
         room.Push(room.HandlerPrepareSkill, player, skillPacket);
+    }
+    public static void C_SkillExecuteHandler(PacketSession session, IMessage packet)
+    {
+        C_SkillExecute skillPacket = packet as C_SkillExecute;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleExecuteSkill, player, skillPacket);
     }
     public static void C_SkillCancelHandler(PacketSession session, IMessage packet)
     {

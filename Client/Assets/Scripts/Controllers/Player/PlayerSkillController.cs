@@ -64,7 +64,8 @@ public class PlayerSkillController : MonoBehaviour
         MakeCoolDownDict();
     }
 
-    public C_SkillInput TryCast(int skillKey, int targetId, Vector3 clickWorld)
+    // checkSkillState -> 차징 상태일 때 Skill 변경이 안돼서 추가했어요
+    public C_SkillInput TryCast(int skillKey, int targetId, Vector3 clickWorld, bool checkSkillState = true)
     {
         _key = (KeyCode)skillKey;
         _targetId = targetId;
@@ -72,13 +73,15 @@ public class PlayerSkillController : MonoBehaviour
 
         if (_coolDownDict.ContainsKey(_key))
         {
-            if (FindSkill(_key).CurLevel <= 0)
-                return null;
+            // When the skill level is 0
+            //if (FindSkill(_key).CurLevel <= 0)
+            //    return null;
 
             // 스킬을 사용하고 있는 상태가 아닐 때
-            if (_player.State == CreatureState.Skill && false == _player.CanStopSkill)
-                return null;
-        
+            //if (checkSkillState && 
+            //    /*_player.State == CreatureState.Skill &&*/ false == _player.CanStopSkill)
+            //    return null;
+
             // 쿨타임이 끝났을 때
             if (_coolDownDict[_key].isCoolDown)
                 return null;
@@ -446,6 +449,9 @@ public class PlayerSkillController : MonoBehaviour
 
     IEnumerator CoInputCooltime(KeyCode key, float time)
     {
+        if (!_coolDownDict.ContainsKey(key))
+            yield break;
+
         if (time <= 0.0f)
         {
             _coolDownDict[key].isCoolDown = false;

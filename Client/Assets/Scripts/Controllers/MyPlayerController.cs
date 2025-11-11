@@ -86,7 +86,7 @@ public class MyPlayerController : PlayerController
         var atkCmd = _input.GetAttackCommand();
         if (atkCmd != null)
         {
-            //_view.RotateAttack(atkCmd);
+            _view.TargetId = atkCmd.TargetId;
             Managers.Network.Send(atkCmd);
         }
         else

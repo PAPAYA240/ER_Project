@@ -2,6 +2,7 @@
 using Server.Game;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 using static Server.Data.DataUtils;
 
@@ -21,9 +22,8 @@ public sealed class Hyunwoo_R : ChargingSkillHandler
     {
         base.OnEnter(p, ctx);
 
-        //p.SendSkillConfirmPacket(true, ctx.Key, VariantKey.NoCollision);
+        SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
-
         _start = TimeUtil.UtcSec();
     }
 
@@ -38,9 +38,9 @@ public sealed class Hyunwoo_R : ChargingSkillHandler
 
         ISkill skillhandler;
 
-        if (p.ChargingRatio < 1)
+        if (p.ChargingRatio < 1) // short charge
             skillhandler = SkillRegistry.Create("Hyunwoo_R_Short_End");
-        else
+        else // full charge
             skillhandler = SkillRegistry.Create("Hyunwoo_R_End");
 
         p.ChangeState(new Player_SkillState(skillhandler, ctx));

@@ -1,23 +1,8 @@
 ﻿using Google.Protobuf.Protocol;
-using System.Collections;
 using UnityEngine;
 
 public class CreatureController : BaseController
 {
-    #region CC기 
-    private bool _hasCrowdControl = false;
-    public bool HasCrowdControl
-    {
-        get { return _hasCrowdControl; }
-        set
-        {
-            _hasCrowdControl = value;
-        }
-    }
-
-    #endregion
-    protected UI_TargetingMark targetingMark = null;
-
     public override StatInfo Stat
     {
         get { return base.Stat; }
@@ -132,12 +117,21 @@ public class CreatureController : BaseController
         //GameObject.Destroy(effect, 0.5f);
     }
 
+    public void Snare(S_Snare packet, CharacterType charType)
+    {
+        // Destory Proejctile
+         
+        Managers.FX.PlayStatusEffect(this.gameObject, charType, packet.Duration);
+    }
+
     public virtual void UseSkill(int skillId) {}
 
     public virtual void UseSkill(S_Skill skillPacket) {}
 
-    public virtual void OnHitboxCollision(KeyCode kc, KeyCode tkc) { }
-    public virtual void OnObjectCollision(GameObject obj, KeyCode key) { Debug.Log("타게팅!"); }
+    public virtual void OnHitboxCollision(KeyCode kc, KeyCode tkc) 
+    {
+        
+    }
     public void ChangeStat(StatInfo growth)
     {
         Stat.Attack += growth.Attack;
@@ -173,6 +167,4 @@ public class CreatureController : BaseController
 
         return true;
     }
-
-
 }

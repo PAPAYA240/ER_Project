@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using Data;
 using static Data.EffectData;
+using Google.Protobuf.Protocol;
 
 public class EffectFXManager : MonoBehaviour
 {
@@ -10,11 +11,9 @@ public class EffectFXManager : MonoBehaviour
     private Dictionary<GameObject, Coroutine> activeCoroutines = new Dictionary<GameObject, Coroutine>();
     private int fxLayer;
 
-    private PoolManager _pool = null;
 
-    public void Init(PoolManager pool)
+    public void Init()
     {
-        _pool = pool;
         LoadFxPrefabs();
         fxLayer = LayerMask.NameToLayer("FX");
     }
@@ -28,18 +27,35 @@ public class EffectFXManager : MonoBehaviour
 
         foreach (EffectData data in effectData)
         {
-            GameObject fxPrefab = _pool.GetOriginal(data.prefabName);
-            if (fxPrefab == null)
-                continue;
+            GameObject owner = Managers.Object.FindById(ownerId);
+            CreatureController ownerCreature = owner?.GetComponent<CreatureController>();
+            GameObject fxPrefab = null;
+            if (ownerCreature is PlayerController)
+            {
+                CharacterType type = ownerCreature.ObjInfo.Player.CharType;
+                fxPrefab = Managers.Resource.Load<GameObject>($"effects/prefab/{type}/{data.prefabName}");
+            }
+            else
+            {
+                fxPrefab = Managers.Resource.Load<GameObject>($"effects/prefab/Monster/{data.prefabName}");
+            }
 
-            Poolable poolable = _pool.Pop(fxPrefab, null);
-            GameObject fxObject = poolable.gameObject;
+            if (fxPrefab == null)
+            {
+                Debug.LogWarning($"FX Prefab not found: {data.prefabName}");
+                continue;
+            }
+
+            GameObject fxObject = Managers.FX.Pop(fxPrefab, null);
+            if (fxObject == null)
+            {
+                Debug.LogError($"Failed to pop FX from pool: {data.prefabName}");
+                continue;
+            }
 
             Transform copyTransform = casterTransform;
-
             if (casterTransform != null && data.attachBoneName != null)
                 copyTransform = Util.FindChildByName(casterTransform, data.attachBoneName).transform;
-
 
             fxObject.transform.SetPositionAndRotation(
                  GetSpawnPosition(ownerId, data, copyTransform, targetPos, out Transform parentTransform),
@@ -127,13 +143,11 @@ public class EffectFXManager : MonoBehaviour
                 parentTransform = casterTransform;
                 return casterTransform.position + data.position;
 
-            case EEffectTarget.Relative:
-                parentTransform = casterTransform;
-                Quaternion yawRotationOnly = Quaternion.Euler(0, casterTransform.eulerAngles.y, 0);
-                return casterTransform.position + yawRotationOnly * data.position;
-
             case EEffectTarget.Target:
                 parentTransform = null;
+                //CreatureController cc = casterTransform.GetComponent<CreatureController>();
+                //if (cc == null) return Vector3.zero;
+
                 return targetPos;
 
             case EEffectTarget.Mouse:
@@ -144,10 +158,6 @@ public class EffectFXManager : MonoBehaviour
                 PlayerController pc = go.GetComponent<PlayerController>();
                 if (pc == null) return Vector3.zero;
                 return pc.GetMouseWorldPosition();
-
-            case EEffectTarget.Ground:
-                parentTransform = null;
-                return data.position;
 
             case EEffectTarget.Shoot:
                 parentTransform = null;
@@ -163,10 +173,11 @@ public class EffectFXManager : MonoBehaviour
         switch (data.target)
         {
             case EEffectTarget.Self:
-            case EEffectTarget.Relative:
                 return casterTransform.rotation;
 
             case EEffectTarget.Target:
+                return Quaternion.identity;
+
             case EEffectTarget.Mouse:
             case EEffectTarget.Shoot:
                 return rot;
@@ -214,12 +225,11 @@ public class EffectFXManager : MonoBehaviour
     }
     private void LoadFxPrefabs()
     {
-        // 이펙트 Json 로드
         GameObject[] loadedPrefabs = Resources.LoadAll<GameObject>("effects/prefab");
         foreach (var prefab in loadedPrefabs)
-            _pool.CreatePool(prefab, 5);
-
-        Debug.Log($"총 {loadedPrefabs.Length}개의 프리팹이 로드되었습니다.");
+        {
+            Managers.FX.CreatePool(prefab, 5);
+        }
     }
 
     private void SettingLayer(GameObject obj, int newLayer)

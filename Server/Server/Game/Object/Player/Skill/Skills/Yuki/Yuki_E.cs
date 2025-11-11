@@ -15,6 +15,8 @@ public sealed class Yuki_E : SkillHandlerBase
     private float _dashRange;       // 대쉬 이동거리
     private float _speed;
 
+    private bool _isCollision = false;
+
     public Yuki_E()
     {
         _characterType = CharacterType.Yuki;
@@ -56,26 +58,18 @@ public sealed class Yuki_E : SkillHandlerBase
         return;
     }
 
-    public override void OnCollision(Player p)
+    public override void OnCollision<T>(Player p, T nearestTarget, GameObject.StatusEffect effect)
     {
-        _startPos = p.Position;
-
-        _dashRange = 1.5f;
-        _elapsed = 0f;
-
-        _endPos = _startPos + _dir * _dashRange;
-
-        float distance = Vector3.Distance(_startPos, _endPos);
-
-        _duration = distance / _speed;
-
-        SendSkillCollisionRequestPacket(p, CollisionType.Block, _startPos, _endPos);
+        _isCollision = true;
 
         return;
     }
 
     public override void OnTick(Player p, SkillContext ctx)
     {
+        if (_isCollision)
+            p.ChangeState(new Player_SkillState(new Yuki_E_Hit(_dir), ctx));
+
         if (_requestId != _commitId)
         {
             if (TryConsumeLatest(ref _commitId, out SkillCollisionProposal prop))
@@ -100,7 +94,7 @@ public sealed class Yuki_E : SkillHandlerBase
                 start: p.Position,
                 end: nextPos
             );
-        }        
+        }
 
         return;
     }

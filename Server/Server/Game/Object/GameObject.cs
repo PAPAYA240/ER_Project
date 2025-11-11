@@ -185,11 +185,6 @@ namespace Server.Game
             
         }
 
-        public virtual void OnInteract(S_Interact packet)
-        {
-            Room.Broadcast(packet);
-        }
-
         public virtual void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false, bool isBasicAttack = false)
         {
             if (Room == null || State == CreatureState.Dead || State == CreatureState.Appear)
@@ -339,7 +334,7 @@ namespace Server.Game
             public Creature attacker; // 시전자
         }
 
-        public void AddStatusEffect(StatusEffect statusEffect)
+        public void AddStatusEffect(StatusEffect statusEffect, Creature atk)
         {
             lock (_lock)
             {
@@ -361,6 +356,17 @@ namespace Server.Game
                         addAbigailCoordPkt.AttackerTeam = statusEffect.attacker.Info.Player.Team;
                         addAbigailCoordPkt.Duration = statusEffect.duration;
                         Room.Broadcast(addAbigailCoordPkt);
+                    }
+                    else if (statusEffect.type == "Snare")
+                    {
+                        S_Snare stunPacket = new S_Snare();
+                        stunPacket.ObjectId = Id;
+                        stunPacket.AttackerId = atk.Id;
+                        stunPacket.AttackerTeam = statusEffect.attacker.Info.Player.Team;
+                        stunPacket.Duration = statusEffect.duration;
+                        Room.Broadcast(stunPacket);
+
+                        // NAYOUNGTODO : Idle로 변경해야 함
                     }
                 }                    
             }

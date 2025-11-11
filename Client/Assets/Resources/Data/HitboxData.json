@@ -129,12 +129,12 @@
         "duration": 0.6,
         "maxRange": 5.5,
         "startFrame": 0,
-        "endFrame": 60,
-        "interactions": {
-          "F1": {
-            "interaction": [ "Interaction" ]
-          }
-        }
+        "endFrame": 60
+        //"interactions": {
+        //  "F1": {
+        //    "interaction": [ "Interaction" ]
+        //  }
+        //}
       },
       "R": {
         "shape": "Ray",
@@ -166,8 +166,8 @@
       "R": {
         "shape": "Sector",
         "type": "SkillStatic",
-        "startFrame": 50,
-        "endFrame": 90,
+        "startFrame": 0,
+        "endFrame": 50,
         "radius": 5,
         "angle": 180
       }

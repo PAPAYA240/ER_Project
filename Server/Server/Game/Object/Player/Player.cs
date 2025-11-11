@@ -147,6 +147,41 @@ namespace Server.Game
             }
         }
 
+        // CombatState
+        // 전투 시간 (용수야 여기야)
+        private float _combatTime = 0f;
+        private readonly float _nonCombatTime = 5f;
+        public float CombatTime
+        {
+            get { return _combatTime; }
+            set { _combatTime = value; }
+        }
+
+        private CombatState _curCombat;
+        public CombatState CombatState
+        {
+            get { return _curCombat; }
+            set { _curCombat = value; }
+        }
+
+        // 유키 단추용
+        private static readonly int MaxStud = 4;
+        private int _yukiStud_cnt = 4;
+
+        public int YukiStud
+        {
+            get { return _yukiStud_cnt; }
+            set { _yukiStud_cnt = value; }
+        }
+
+        // 유키 강화 평타용
+        private float _attactActiveTime = 0f;
+        private bool _isAttackActive = false;
+        public bool AttackActive
+        {
+            get { return _isAttackActive; }
+            set { _isAttackActive = value; }
+        }
         #region KDA
         //KDA
         public int KillAmount {  get; set; }
@@ -237,6 +272,34 @@ namespace Server.Game
             {
                 _isDeath = false;
                 _stateMachine.ChangeState(new Player_DeadState(), this);
+            }
+
+            // 일정 시간 지나면 비전투 (용수야 여기야)
+            if (CombatState == CombatState.Combat)
+            {
+                _combatTime += TimeUtil.DeltaTime;
+                if (_combatTime > _nonCombatTime)
+                {
+                    _combatTime = 0;
+
+                    Console.WriteLine($"비전투 상태");
+                    CombatState = CombatState.NonCombat;
+
+                    // 유키 단추용
+                    if (Info.Player.CharType == CharacterType.Yuki)
+                        YukiStud = MaxStud;
+                }
+            }
+
+            // 유키 강화 평타용
+            if (AttackActive == true)
+            {
+                _attactActiveTime += TimeUtil.DeltaTime;
+
+                if (_attactActiveTime > _nonCombatTime)
+                {
+                    AttackActive = false;
+                }
             }
 
             //base.Update();
@@ -625,7 +688,9 @@ namespace Server.Game
 
         public void EquipItemSet(CharacterType type, int phase)
         {
-            // �ش� ����� ������ ������ ��Ʈ�� ���̵� ����Ʈ�� ������.
+            if (!DataManager.ItemSetDict.ContainsKey(type))
+                return;
+
             List<int> itemIdList = DataManager.ItemSetDict[type][phase];
 
             foreach (int itemId in itemIdList)
@@ -735,6 +800,10 @@ namespace Server.Game
                 S_ChangeItemStat packet = new S_ChangeItemStat();
                 packet.ObjectId = Id;
                 packet.ItemStat = _totalItemStat;
+
+                Hp += _totalItemStat.MaxHp + _totalItemStat.MaxHpPerLevel * Stat.Level;
+                Stamina += _totalItemStat.MaxStamina;
+                _isUpdatedStat = true;
 
                 GameRoom room = Room;
 

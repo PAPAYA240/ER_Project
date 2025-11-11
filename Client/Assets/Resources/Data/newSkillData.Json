@@ -1022,7 +1022,7 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "DashAttack",
+                "type": "OnCollisionSingleTarget",
                 "subject": "Self",
                 "condition": "Hit"
               },
@@ -1037,7 +1037,7 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "DashAttack",
+                "type": "OnCollisionSingleTarget",
                 "subject": "Self",
                 "condition": "Hit"
               },
@@ -1052,7 +1052,7 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "DashAttack",
+                "type": "OnCollisionSingleTarget",
                 "subject": "Self",
                 "condition": "Hit"
               },
@@ -1067,7 +1067,7 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "DashAttack",
+                "type": "OnCollisionSingleTarget",
                 "subject": "Self",
                 "condition": "Hit"
               },
@@ -1082,7 +1082,7 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "DashAttack",
+                "type": "OnCollisionSingleTarget",
                 "subject": "Self",
                 "condition": "Hit"
               },
@@ -1615,8 +1615,10 @@
             "staminaCost": 60,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "Snare",
+                "duration": 0.3,
+                "subject": "Enemy",
+                "condition": "Hit"
               },
               {
                 "type": "Untargetable"
@@ -1629,8 +1631,10 @@
             "staminaCost": 70,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "Snare",
+                "duration": 0.3,
+                "subject": "Enemy",
+                "condition": "Hit"
               },
               {
                 "type": "Untargetable"
@@ -1643,8 +1647,10 @@
             "staminaCost": 80,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "Snare",
+                "duration": 0.3,
+                "subject": "Enemy",
+                "condition": "Hit"
               },
               {
                 "type": "Untargetable"
@@ -1657,8 +1663,10 @@
             "staminaCost": 90,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "Snare",
+                "duration": 0.3,
+                "subject": "Enemy",
+                "condition": "Hit"
               },
               {
                 "type": "Untargetable"
@@ -1671,8 +1679,10 @@
             "staminaCost": 100,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "Snare",
+                "duration": 0.3,
+                "subject": "Enemy",
+                "condition": "Hit"
               },
               {
                 "type": "Untargetable"
@@ -1877,64 +1887,230 @@
           "소모량": [ "100", "125", "150" ]
         }
       },
-      "F": {
-        "name": "블링크",
-        "description": "사용 시 지정한 위치로 일정 거리 순간이동합니다.",
-        "type": "Warp",
-        "maxLevel": 2,
-        "mechanics": {
-          "targetType": "NonTarget",
-          "damageType": "None"
-        },
-        "scaling": {
-          "adRatio": 0.0
-        },
-        "levels": {
-          "1": {
-            "damage": 0,
-            "cooldown": 1,
-            "staminaCost": 0,
-            "effects": [
-              {
-                "type": "Buff",
-                "stat": "speed",
-                "value": 15,
-                "duration": 2.5
-              }
-            ]
-          },
-          "2": {
-            "damage": 0,
-            "cooldown": 30,
-            "staminaCost": 0,
-            "effects": [
-              {
-                "type": "Buff",
-                "stat": "speed",
-                "value": 15,
-                "duration": 2.5
-              }
-            ]
-          }
-        },
-        "descriptionInfo": {
-          "{damage}": [
-            "<color=#FFFFFF>60</color><color=#DFC480>(+공격력의 50%)</color>",
-            "<color=#FFFFFF>120</color><color=#DFC480>(+공격력의 50%)</color>",
-            "<color=#FFFFFF>180</color><color=#DFC480>(+공격력의 50%)</color>"
-          ],
-          "{MaxHpRatio}": [
-            "<color=#FFFFFF>4%</color>",
-            "<color=#FFFFFF>7%</color>",
-            "<color=#FFFFFF>10%</color>"
+      "D": {
+      "name": "저격",
+      "description": "",
+      "skillType": "Charge",
+      "type": "Ultimate",
+      "maxLevel": 3,
+      "mechanics": {
+        "targetType": "TargetArea",
+        "damageType": "Magic"
+      },
+      "scaling": {
+        "adRatio": 0.5
+      },
+      "levels": {
+        "1": {
+          "damage": 60,
+          "cooldown": 25,
+          "staminaCost": 90,
+          "effects": [
+            {
+              "type": "Debuff",
+              "stat": "speed",
+              "value": -30,
+              "duration": 3
+            },
+            {
+              "type": "VisionShare",
+              "duration": 3
+            },
+            {
+              "type": "Debuff",
+              "stat": "speed",
+              "value": -30,
+              "duration": 1,
+              "condition": "Boom"
+            },
+            {
+              "type": "Damage",
+              "stat": "hp",
+              "value": 0.04,
+              "condition": "Boom"
+            },
+            {
+              "type": "CDR",
+              "value": 50,
+              "condition": "Boom"
+            },
+            {
+              "type": "Buff",
+              "stat": "speed",
+              "value": 30,
+              "duration": 1,
+              "condition": "Boom"
+            }
           ]
         },
-        "popupInfo": {
-          "피해량": [ "60", "120", "180" ],
-          "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
+        "2": {
+          "damage": 120,
+          "cooldown": 25,
+          "staminaCost": 90,
+          "effects": [
+            {
+              "type": "Debuff",
+              "stat": "speed",
+              "value": -30,
+              "duration": 3
+            },
+            {
+              "type": "VisionShare",
+              "duration": 3
+            },
+            {
+              "type": "Damage",
+              "stat": "hp",
+              "value": 0.07,
+              "condition": "Boom"
+            },
+            {
+              "type": "Debuff",
+              "stat": "speed",
+              "value": -30,
+              "duration": 1,
+              "condition": "Boom"
+            },
+            {
+              "type": "CDR",
+              "value": 50,
+              "condition": "Boom"
+            },
+            {
+              "type": "Buff",
+              "stat": "speed",
+              "value": 30,
+              "duration": 1,
+              "condition": "Boom"
+            }
+          ]
+        },
+        "3": {
+          "damage": 180,
+          "cooldown": 25,
+          "staminaCost": 90,
+          "effects": [
+            {
+              "type": "Debuff",
+              "stat": "speed",
+              "value": -30,
+              "duration": 3
+            },
+            {
+              "type": "VisionShare",
+              "duration": 3
+            },
+            {
+              "type": "Damage",
+              "stat": "hp",
+              "value": 0.1,
+              "condition": "Boom"
+            },
+            {
+              "type": "Debuff",
+              "stat": "speed",
+              "value": -30,
+              "duration": 1,
+              "condition": "Boom"
+            },
+            {
+              "type": "CDR",
+              "value": 50,
+              "condition": "Boom"
+            },
+            {
+              "type": "Buff",
+              "stat": "speed",
+              "value": 30,
+              "duration": 1,
+              "condition": "Boom"
+            }
+          ]
         }
+      },
+      "descriptionInfo": {
+        "{speed}": [
+          "60",
+          "70",
+          "80"
+        ],
+        "{damage}": [
+          "100",
+          "230",
+          "360"
+        ],
+        "{attackSpeed}": [
+          "40",
+          "60",
+          "80"
+        ]
+      },
+      "popupInfo": {
+        "이동 속도 감소량(%)": [ "60%", "70%", "80%" ],
+        "피해량": [ "100", "230", "360" ],
+        "공격 속도 증가량(%)": [ "40%", "60%", "80%" ],
+        "쿨다운": [ "80", "70", "60" ],
+        "소모량": [ "100", "125", "150" ]
       }
     },
+      "F": {
+      "name": "블링크",
+      "description": "사용 시 지정한 위치로 일정 거리 순간이동합니다.",
+      "type": "Warp",
+      "maxLevel": 2,
+      "mechanics": {
+        "targetType": "NonTarget",
+        "damageType": "None"
+      },
+      "scaling": {
+        "adRatio": 0.0
+      },
+      "levels": {
+        "1": {
+          "damage": 0,
+          "cooldown": 1,
+          "staminaCost": 0,
+          "effects": [
+            {
+              "type": "Buff",
+              "stat": "speed",
+              "value": 15,
+              "duration": 2.5
+            }
+          ]
+        },
+        "2": {
+          "damage": 0,
+          "cooldown": 30,
+          "staminaCost": 0,
+          "effects": [
+            {
+              "type": "Buff",
+              "stat": "speed",
+              "value": 15,
+              "duration": 2.5
+            }
+          ]
+        }
+      },
+      "descriptionInfo": {
+        "{damage}": [
+          "<color=#FFFFFF>60</color><color=#DFC480>(+공격력의 50%)</color>",
+          "<color=#FFFFFF>120</color><color=#DFC480>(+공격력의 50%)</color>",
+          "<color=#FFFFFF>180</color><color=#DFC480>(+공격력의 50%)</color>"
+        ],
+        "{MaxHpRatio}": [
+          "<color=#FFFFFF>4%</color>",
+          "<color=#FFFFFF>7%</color>",
+          "<color=#FFFFFF>10%</color>"
+        ]
+      },
+      "popupInfo": {
+        "피해량": [ "60", "120", "180" ],
+        "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
+      }
+    }
+  },
     "Abigail": {
       "T": {
         "name": "티어링 블레이드",
@@ -2810,8 +2986,8 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "40",
-          "apRatio" : "35"
+          "adRatio": "0.4",
+          "apRatio" : "0.35"
         },
         "levels": {
           "1": {
@@ -2849,8 +3025,8 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "40",
-          "apRatio": "80"
+          "adRatio": "0.4",
+          "apRatio": "0.8"
         },
         "levels": {
           "1": {
@@ -2862,13 +3038,17 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Enemy"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 8,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Self"
               }
             ]
           },
@@ -2881,13 +3061,17 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Enemy"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 9,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Self"
               }
             ]
           },
@@ -2900,13 +3084,17 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Enemy"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 10,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Self"
               }
             ]
           },
@@ -2919,13 +3107,17 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Enemy"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 11,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Self"
               }
             ]
           },
@@ -2938,13 +3130,17 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Enemy"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 12,
-                "duration": 2
+                "condition": "Hit",
+                "duration": 2,
+                "subject": "Self"
               }
             ]
           }
@@ -2974,7 +3170,7 @@
       },
       "W": {
         "name": "허세",
-        "description": "현우가 허게를 부려 <color=#FFFFFF>도그파이트</color>를 활성화하고, 2.5초 동안 방어력이 <color=#FFFFFF>{defense}</color><color=#8EA8BC>(+방어력 10 당 1)</color>증가합니다. 지속 기간동안 적에게 기본 공격을 받을 때마다 도그파이트 중접울 1 획득합니다.\n\n허세가 발동된 후 1초 동안 현우는 이동 방해 효과를 무시합니다.",
+        "description": "현우가 허세를 부려 <color=#FFFFFF>도그파이트</color>를 활성화하고, 2.5초 동안 방어력이 <color=#FFFFFF>{defense}</color><color=#8EA8BC>(+방어력 10 당 1)</color>증가합니다. 지속 기간동안 적에게 기본 공격을 받을 때마다 도그파이트 중접울 1 획득합니다.\n\n허세가 발동된 후 1초 동안 현우는 이동 방해 효과를 무시합니다.",
         "type": "Normal",
         "maxLevel": 5,
         "mechanics": {
@@ -3072,9 +3268,9 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "70",
-          "apRatio": "55",
-          "dstCurHpRatio": "5"
+          "adRatio": "0.7",
+          "apRatio": "0.55",
+          "dstCurHpRatio": "0.11"
         },
         "levels": {
           "1": {
@@ -3084,10 +3280,18 @@
             "effects": [
               {
                 "type": "Stun",
-                "duration": 1.2
+                "duration": 1.2,
+                "condition": "HitTheWall"
               },
               {
-                "type": "MoveTargetObject"
+                "type": "Stun",
+                "duration": 0.4,
+                "condition": "Hit"
+              },
+              {
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3098,10 +3302,13 @@
             "effects": [
               {
                 "type": "Stun",
-                "duration": 1.2
+                "duration": 1.2,
+                "condition": "HitTheWall"
               },
               {
-                "type": "MoveTargetObject"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3112,10 +3319,13 @@
             "effects": [
               {
                 "type": "Stun",
-                "duration": 1.2
+                "duration": 1.2,
+                "condition": "HitTheWall"
               },
               {
-                "type": "MoveTargetObject"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3126,10 +3336,13 @@
             "effects": [
               {
                 "type": "Stun",
-                "duration": 1.2
+                "duration": 1.2,
+                "condition": "HitTheWall"
               },
               {
-                "type": "MoveTargetObject"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3140,10 +3353,13 @@
             "effects": [
               {
                 "type": "Stun",
-                "duration": 1.2
+                "duration": 1.2,
+                "condition": "HitTheWall"
               },
               {
-                "type": "MoveTargetObject"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           }
@@ -3187,9 +3403,11 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -20,
-                "duration": 5
+                "condition": "Hit",
+                "duration": 5,
+                "subject": "Enemy"
               },
               {
                 "type": "MoveTargetObject",
@@ -3204,9 +3422,11 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -25,
-                "duration": 5
+                "condition": "Hit",
+                "duration": 5,
+                "subject": "Enemy"
               },
               {
                 "type": "MoveTargetObject",
@@ -3221,9 +3441,11 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -30,
-                "duration": 5
+                "condition": "Hit",
+                "duration": 5,
+                "subject": "Enemy"
               },
               {
                 "type": "MoveTargetObject",
