@@ -9,6 +9,8 @@ public class UI_PlayerHUD : UI_Scene
     public enum GameObjects
     { 
         Timer,
+        EnemyScore,
+        TeamScore,
         TurbineLeft, 
         TurbineCenter, 
         TurbineRight,
@@ -48,6 +50,8 @@ public class UI_PlayerHUD : UI_Scene
     {
         UpdateScale();
     }
+
+    #region Beacon
 
     public void CaptureTurbine(Beacon beacon ,int team)
     {
@@ -106,6 +110,27 @@ public class UI_PlayerHUD : UI_Scene
         }
     }
 
+    public void SetBeaconTimer(Beacon beacon, float Time)
+    {
+        GameObjects go = GameObjects.TurbineLeft;
+        switch (beacon)
+        {
+            case Beacon.Left:
+                go = GameObjects.TurbineLeft;
+                break;
+            case Beacon.Center:
+                go = GameObjects.TurbineCenter;
+                break;
+            case Beacon.Right:
+                go = GameObjects.TurbineRight;
+                break;
+        }
+
+        GetObject((int)go).GetComponent<UI_Turbine>().SetTimer(Time);
+    }
+
+    #endregion
+
     public void SetTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)
     {
         GetObject((int)GameObjects.Timer).GetComponent<UI_Timer>().SetTimer(phase, clientLocalTargetRealtimeSinceStartupEnd);
@@ -135,5 +160,18 @@ public class UI_PlayerHUD : UI_Scene
         yield return new WaitForSeconds(3);
 
         GetObject((int)GameObjects.KillNoti).SetActive(false);
+    }
+
+    public void SetScore(int team, int score)
+    {
+        bool isAlly = false;
+
+        if (Managers.Object.MyPlayer.ObjInfo.Player.Team == team)
+            isAlly = true;
+
+        if (isAlly)
+            GetObject((int)GameObjects.TeamScore).GetComponent<UI_ScoreBar>().CurrentScore = score;
+        else 
+            GetObject((int)GameObjects.EnemyScore).GetComponent<UI_ScoreBar>().CurrentScore = score;
     }
 }
