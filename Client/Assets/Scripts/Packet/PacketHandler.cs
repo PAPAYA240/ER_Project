@@ -699,13 +699,14 @@ class PacketHandler
     {
         S_ChangeBeaconTime changeBeaconTimePkt = packet as S_ChangeBeaconTime;
 
+        Managers.Object.MyPlayer.UI.PlayerHUD.SetBeaconTimer((Beacon)changeBeaconTimePkt.Beacon, changeBeaconTimePkt.Time);
     }
 
     public static void S_ChangeScoreHandler(PacketSession session, IMessage packet)
     {
         S_ChangeScore changeScorePkt = packet as S_ChangeScore;
 
-
+        Managers.Object.MyPlayer.UI.PlayerHUD.SetScore(changeScorePkt.Team, changeScorePkt.Score);
     }
 
     public static void S_GameOverHandler(PacketSession session, IMessage packet)

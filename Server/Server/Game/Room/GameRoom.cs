@@ -168,7 +168,7 @@ namespace Server.Game
         public PathfindInstance PathFind { get; set; }
 
         #region Score
-        private int[] _teamScores = new int[3]; // 1번, 2번 팀 사용
+        private int[] _teamScores = new int[3] { 40, 40, 40 }; // 1번, 2번 팀 사용
 
         public int ReduceScore(int team, int amount)
         {
