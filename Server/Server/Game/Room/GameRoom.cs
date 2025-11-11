@@ -167,7 +167,22 @@ namespace Server.Game
 
         public PathfindInstance PathFind { get; set; }
 
+        #region Score
+        private int[] _teamScores = new int[3]; // 1번, 2번 팀 사용
 
+        public int ReduceScore(int team, int amount)
+        {
+            int oldValue, newValue;
+            do
+            {
+                oldValue = _teamScores[team];
+                newValue = Math.Max(0, oldValue - amount);
+            } while (Interlocked.CompareExchange(ref _teamScores[team], newValue, oldValue) != oldValue);
+
+            return newValue; // 감소 후 점수 반환
+        }
+        public int GetScore(int team) { return _teamScores[team]; }
+        #endregion
 
         public void Init(int mapId)
         {
@@ -238,7 +253,9 @@ namespace Server.Game
             _collisionManager.Flush();
             _collisionManager.CheckAllCollisions(_teams, _monsters, _projectiles);
             _collisionManager.Update();
-            
+
+            _beaconManager.Update(this);
+
             BroadcastVisibleObjs();
             CheckLastPing();
         }

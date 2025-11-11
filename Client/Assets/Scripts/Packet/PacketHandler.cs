@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
@@ -690,14 +691,13 @@ class PacketHandler
     public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)
     {
         S_OccupyBeacon occupyBeaconPkt = packet as S_OccupyBeacon;
-
-
+        if(Enum.TryParse<Beacon>(occupyBeaconPkt.BeaconName, out Beacon result))
+            Managers.Object.MyPlayer.UI.PlayerHUD.CaptureTurbine(result, occupyBeaconPkt.Team);
     }
 
     public static void S_ChangeBeaconTimeHandler(PacketSession session, IMessage packet)
     {
         S_ChangeBeaconTime changeBeaconTimePkt = packet as S_ChangeBeaconTime;
-
 
     }
 
