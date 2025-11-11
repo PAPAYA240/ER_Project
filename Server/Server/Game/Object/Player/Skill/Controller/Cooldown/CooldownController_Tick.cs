@@ -3,6 +3,7 @@ using Server.Game;
 using System;
 using System.Collections.Generic;
 using static Server.Data.DataUtils;
+using static Server.Game.GameObject;
 
 public class CooldownController_Tick : ICooldownController
 {
@@ -76,8 +77,12 @@ public class CooldownController_Tick : ICooldownController
         }
         else
         {
+            float pct = value;
+            if (MathF.Abs(pct) > 1f)
+                pct *= 0.01f;
+
             float remainingSec = GetRemaining(key); 
-            float deltaSec = remainingSec * value;  
+            float deltaSec = remainingSec * pct;  
             int deltaMs = SecToMs(deltaSec);        
             e.EndTick = unchecked(e.EndTick - deltaMs);
         }

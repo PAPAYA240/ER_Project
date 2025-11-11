@@ -315,6 +315,7 @@ namespace Server.Data
         public string type;    // Buff / Debuff / Burn 등
         public string stat;    // MoveSpeed / Defense / AttackSpeed 등
         public float value;    // 수치 (%는 그냥 숫자로 저장)
+        public string valueType;    // Ratio / Flat
         public float duration; // 지속시간
         public string condition; // 옵션 (예: "HP<50%")
         public string subject; // 적용대상 Self / Ally / Enemy

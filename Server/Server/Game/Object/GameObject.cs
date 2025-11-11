@@ -168,9 +168,9 @@ namespace Server.Game
 
         protected const string STAT_MOVE_SPEED = "MoveSpeed";
         protected const string STAT_ATTACK = "Attack";
-        protected const string STAT_DEFENSE = "defense";
+        protected const string STAT_DEFENSE = "Defense";
         protected const string STAT_ATTACK_SPEED = "AttackSpeed";
-        protected const string STAT_HEALING = "healing";
+        protected const string STAT_HEALING = "Healing";
 
         // 인스턴스별 퍼센트 누적( +0.20f = +20% )
         protected readonly Dictionary<StatusEffect, (string key, float delta)> _mulByInst = new Dictionary<StatusEffect, (string key, float delta)>();
@@ -352,6 +352,7 @@ namespace Server.Game
             public float duration; // 지속시간
             public int startTick; // 시작시간
             public Subject subject; // 적용대상
+            public ValueType valueType; // Ratio or Flat
 
             public float coeff; // 스킬 계수  ex) (+스킬 증폭의 2%)
             public float ratioPerTarget; // 대상 1명 추가당 증가량 (ex: 아비게일 W: 추가로 적중한 적 하나 당 보호막량 20% 증가)
@@ -398,12 +399,19 @@ namespace Server.Game
                     }
                     else if(statusEffect.type == "Buff" || statusEffect.type == "Debuff")
                     {
-                        // value가 20(%) 형태로 들어올 수도 있으니 0~1로 정규화
-                        float pct = statusEffect.value;
-                        if (MathF.Abs(pct) > 1f)
-                            pct *= 0.01f;
+                        if(statusEffect.valueType == ValueType.Ratio)
+                        {
+                            // value가 20(%) 형태로 들어올 수도 있으니 0~1로 정규화
+                            float pct = statusEffect.value;
+                            if (MathF.Abs(pct) > 1f)
+                                pct *= 0.01f;
 
-                        RegisterMultiplier(statusEffect, statusEffect.stat, pct);
+                            RegisterMultiplier(statusEffect, statusEffect.stat, pct);
+                        }
+                        else
+                        {
+                            RegisterFlat(statusEffect, statusEffect.stat, statusEffect.value);
+                        }
                     }
                 }                    
             }
@@ -424,7 +432,13 @@ namespace Server.Game
                 foreach (var se in toRemove)
                 {
                     if (se.type == "Buff" || se.type == "Debuff")
-                        UnregisterMultiplier(se);
+                    {
+                        if(se.valueType == ValueType.Ratio)
+                            UnregisterMultiplier(se);
+                        else
+                            UnregisterFlat(se);
+                    }
+                       
                 }
 
                 int removed = 0;
@@ -457,7 +471,12 @@ namespace Server.Game
                 if (earliest != null)
                 {
                     if (earliest.type == "Buff" || earliest.type == "Debuff")
-                        UnregisterMultiplier(earliest);
+                    {
+                        if (earliest.valueType == ValueType.Ratio)
+                            UnregisterMultiplier(earliest);
+                        else
+                            UnregisterFlat(earliest);
+                    }
 
                     _statusEffects.Remove(earliest);
                 }
@@ -499,7 +518,12 @@ namespace Server.Game
                 foreach (var e in expired)
                 {
                     if (e.type == "Buff" || e.type == "Debuff")
-                        UnregisterMultiplier(e);
+                    {
+                        if (e.valueType == ValueType.Ratio)
+                            UnregisterMultiplier(e);
+                        else
+                            UnregisterFlat(e);
+                    }
 
                     _statusEffects.Remove(e);
                 }
@@ -624,7 +648,7 @@ namespace Server.Game
             _flatByInst[inst] = (key, delta);
             _flatAccum[key] = _flatAccum.GetValueOrDefault(key) + delta;
 
-            Console.WriteLine($"@ RegisterFlat : Id - {Id}, key - {key}, value - {_mulAccum[key]}");
+            Console.WriteLine($"@ RegisterFlat : Id - {Id}, key - {key}, value - {_flatAccum[key]}");
 
             _isUpdatedStatus = true;
         }

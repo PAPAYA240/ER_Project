@@ -18,9 +18,7 @@ public class PlayerController : CreatureController
     float _minDist = 3f;
     float _syncSpeed = 20f;
     Vector3 _serverPos;
-
-    // MoveSync
-    private float minDiff = 0.2f;
+    float AGENT_SPEED_DIFF = 2.0f;
 
     // Fog
     private FogOfWarVision _fogOfWarVision;
@@ -51,6 +49,12 @@ public class PlayerController : CreatureController
     }
 
     public float CriticalRatio { get { return Mathf.Min(ItemStat.CriticalRatio, 1f); } }
+
+    public virtual float Healing
+    {
+        get { return Stat.Healing; }
+        set { Stat.Healing = value; }
+    }
 
     public override float Hp
     {
@@ -100,7 +104,7 @@ public class PlayerController : CreatureController
     public override float Speed
     {
         get { return Stat.MoveSpeed;/*(Stat.MoveSpeed + ItemStat.FixedSpeed) * (1 + ItemStat.PercentageSpeed) * 1.7f;*/ }
-        set { Stat.MoveSpeed = value; _agent.speed = value; }
+        set { Stat.MoveSpeed = value; _agent.speed = value + AGENT_SPEED_DIFF; }
     }
 
     public override float FixedDefensePenetration { get { return ItemStat.FixedDefensePenetration; } }
@@ -198,7 +202,7 @@ public class PlayerController : CreatureController
 
         // NavMesh Agent
         _agent = GetComponent<NavMeshAgent>();
-        _agent.speed = Speed;
+        _agent.speed = Speed + AGENT_SPEED_DIFF;
         _agent.acceleration = 999;
         _agent.angularSpeed = 720;
         _agent.stoppingDistance = 0.1f;
@@ -300,8 +304,7 @@ public class PlayerController : CreatureController
         Attack = packet.Attack;
         //AttackSpeed = packet.AttackSpeed;
         Defense = packet.Defense;
-        //Healing = packet.Healing;
-
+        Healing = packet.Healing;
     }
 
     #region Util

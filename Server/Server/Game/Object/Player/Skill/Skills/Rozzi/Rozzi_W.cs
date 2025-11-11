@@ -27,21 +27,12 @@ public sealed class Rozzi_W : SkillHandlerBase
         SendSkillConfirmPacket(p);
 
         //"type": "Buff",
-        //        "stat": "speed",
-        //        "value": 120,
-        //        "duration": 0.4,
-        //        "subject": "Self"
+        //"stat": "speed",
+        //"value": 120,
+        //"duration": 0.4,
+        //"subject": "Self"
 
-        StatusEffect statusEffect = new StatusEffect
-        {
-            type = "Buff",
-            stat = "MoveSpeed",
-            value = 120,
-            duration = 0.4f,
-            subject = Subject.Self,
-        };
-
-        p.Room.Push(p.Room.AddStatusEffect, p, statusEffect, p);
+        p.Room.Push(p.Room.AddStatusEffect, p, GetStatusEffect(p, "MoveSpeed"), p);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

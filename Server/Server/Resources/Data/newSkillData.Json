@@ -51,8 +51,9 @@
             "staminaCost": 40,
             "effects": [
               {
-                "type": "CDR_Ratio",
-                "value": 0.4,
+                "type": "CDR",
+                "value": 40,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "subject": "Q"
               },
@@ -69,8 +70,9 @@
             "staminaCost": 45,
             "effects": [
               {
-                "type": "CDR_Ratio",
-                "value": 0.4,
+                "type": "CDR",
+                "value": 40,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "subject": "Q"
               },
@@ -87,8 +89,9 @@
             "staminaCost": 50,
             "effects": [
               {
-                "type": "CDR_Ratio",
-                "value": 0.4,
+                "type": "CDR",
+                "value": 40,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "subject": "Q"
               },
@@ -105,8 +108,9 @@
             "staminaCost": 55,
             "effects": [
               {
-                "type": "CDR_Ratio",
-                "value": 0.4,
+                "type": "CDR",
+                "value": 40,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "subject": "Q"
               },
@@ -123,8 +127,9 @@
             "staminaCost": 60,
             "effects": [
               {
-                "type": "CDR_Ratio",
-                "value": 0.4,
+                "type": "CDR",
+                "value": 40,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "subject": "Q"
               },
@@ -152,7 +157,7 @@
       },
       "W": {
         "name": "스핀샷",
-        "description": "로지가 총을 난사하여 주변의 적들에게 {damage}의 스킬 피해를 입히고, 3초 동안 방어력 {defense}%와 치유 효과 45%를 감소 시킵니다.\n로지는 난사하는 동안 이동 속도가 120% 증가하며, 적중한 대상이 있다면 쿨다운이 40% 감소합니다.",
+        "description": "로지가 총을 난사하여 주변의 적들에게 {damage}의 스킬 피해를 입히고, 3초 동안 방어력 {Defense}%와 치유 효과 45%를 감소 시킵니다.\n로지는 난사하는 동안 이동 속도가 120% 증가하며, 적중한 대상이 있다면 쿨다운이 40% 감소합니다.",
         "type": "Normal",
         "maxLevel": 5,
         "canMoveDuringCast": true,
@@ -171,16 +176,18 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
-                "value": -9,
+                "stat": "Defense",
+                "value": -11,
+                "valuetype": "Ratio",
                 "duration": 3,
                 "subject": "Enemy",
                 "condition": "Hit"
               },
               {
                 "type": "Debuff",
-                "stat": "healing",
+                "stat": "Healing",
                 "value": -45,
+                "valuetype": "Ratio",
                 "duration": 3,
                 "subject": "Enemy",
                 "condition": "Hit"
@@ -189,12 +196,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 120,
+                "valuetype": "Ratio",
                 "duration": 0.4,
                 "subject": "Self"
               },
               {
                 "type": "CDR",
-                "value": 2,
+                "value": 40,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "subject": "W"
               }
@@ -207,16 +216,18 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -12,
+                "valuetype": "Ratio",
                 "duration": 3,
                 "subject": "Enemy",
                 "condition": "Hit"
               },
               {
                 "type": "Debuff",
-                "stat": "healing",
+                "stat": "Healing",
                 "value": -45,
+                "valuetype": "Ratio",
                 "duration": 3,
                 "subject": "Enemy",
                 "condition": "Hit"
@@ -225,12 +236,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 120,
+                "valuetype": "Ratio",
                 "duration": 0.4,
                 "subject": "Self"
               },
               {
                 "type": "CDR",
-                "value": 2,
+                "value": 40,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "subject": "W"
               }
@@ -243,16 +256,18 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -13,
+                "valuetype": "Ratio",
                 "duration": 3,
                 "subject": "Enemy",
                 "condition": "Hit"
               },
               {
                 "type": "Debuff",
-                "stat": "healing",
+                "stat": "Healing",
                 "value": -45,
+                "valuetype": "Ratio",
                 "duration": 3,
                 "subject": "Enemy",
                 "condition": "Hit"
@@ -261,12 +276,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 120,
+                "valuetype": "Ratio",
                 "duration": 0.4,
                 "subject": "Self"
               },
               {
                 "type": "CDR",
-                "value": 2,
+                "value": 40,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "subject": "W"
               }
@@ -279,16 +296,18 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -14,
+                "valuetype": "Ratio",
                 "duration": 3,
                 "subject": "Enemy",
                 "condition": "Hit"
               },
               {
                 "type": "Debuff",
-                "stat": "healing",
+                "stat": "Healing",
                 "value": -45,
+                "valuetype": "Ratio",
                 "duration": 3,
                 "subject": "Enemy",
                 "condition": "Hit"
@@ -297,12 +316,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 120,
+                "valuetype": "Ratio",
                 "duration": 0.4,
                 "subject": "Self"
               },
               {
                 "type": "CDR",
-                "value": 2,
+                "value": 40,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "subject": "W"
               }
@@ -315,16 +336,18 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -15,
+                "valuetype": "Ratio",
                 "duration": 3,
                 "subject": "Enemy",
                 "condition": "Hit"
               },
               {
                 "type": "Debuff",
-                "stat": "healing",
+                "stat": "Healing",
                 "value": -45,
+                "valuetype": "Ratio",
                 "duration": 3,
                 "subject": "Enemy",
                 "condition": "Hit"
@@ -333,12 +356,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 120,
+                "valuetype": "Ratio",
                 "duration": 0.4,
                 "subject": "Self"
               },
               {
                 "type": "CDR",
-                "value": 2,
+                "value": 40,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "subject": "W"
               }
@@ -353,7 +378,7 @@
             "<color=#FFFFFF>120</color><color=#DFC480>(+공격력의 80%)</color>",
             "<color=#FFFFFF>150</color><color=#DFC480>(+공격력의 80%)</color>"
           ],
-          "{defense}": [
+          "{Defense}": [
             "<color=#FFFFFF>11%</color>",
             "<color=#FFFFFF>12%</color>",
             "<color=#FFFFFF>13%</color>",
@@ -488,7 +513,10 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -30,
-                "duration": 3
+                "valuetype": "Ratio",
+                "duration": 3,
+                "subject": "Enemy",
+                "condition": "Attach"
               },
               {
                 "type": "VisionShare",
@@ -498,24 +526,29 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -30,
+                "valuetype": "Ratio",
                 "duration": 1,
+                "subject": "Enemy",
                 "condition": "Boom"
               },
               {
                 "type": "Damage",
-                "stat": "hp",
-                "value": 0.04,
+                "stat": "MaxHp",
+                "value": 4,
+                "valuetype": "Ratio",
                 "condition": "Boom"
               },
               {
                 "type": "CDR",
                 "value": 50,
+                "valuetype": "Ratio",
                 "condition": "Boom"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 30,
+                "valuetype": "Ratio",
                 "duration": 1,
                 "condition": "Boom"
               }
@@ -530,34 +563,42 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -30,
-                "duration": 3
+                "valuetype": "Ratio",
+                "duration": 3,
+                "subject": "Enemy",
+                "condition": "Attach"
               },
               {
                 "type": "VisionShare",
                 "duration": 3
               },
               {
-                "type": "Damage",
-                "stat": "hp",
-                "value": 0.07,
-                "condition": "Boom"
-              },
-              {
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -30,
+                "valuetype": "Ratio",
                 "duration": 1,
+                "subject": "Enemy",
+                "condition": "Boom"
+              },
+              {
+                "type": "Damage",
+                "stat": "MaxHp",
+                "value": 7,
+                "valuetype": "Ratio",
                 "condition": "Boom"
               },
               {
                 "type": "CDR",
                 "value": 50,
+                "valuetype": "Ratio",
                 "condition": "Boom"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 30,
+                "valuetype": "Ratio",
                 "duration": 1,
                 "condition": "Boom"
               }
@@ -572,34 +613,42 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -30,
-                "duration": 3
+                "valuetype": "Ratio",
+                "duration": 3,
+                "subject": "Enemy",
+                "condition": "Attach"
               },
               {
                 "type": "VisionShare",
                 "duration": 3
               },
               {
-                "type": "Damage",
-                "stat": "hp",
-                "value": 0.1,
-                "condition": "Boom"
-              },
-              {
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -30,
+                "valuetype": "Ratio",
                 "duration": 1,
+                "subject": "Enemy",
+                "condition": "Boom"
+              },
+              {
+                "type": "Damage",
+                "stat": "MaxHp",
+                "value": 10,
+                "valuetype": "Ratio",
                 "condition": "Boom"
               },
               {
                 "type": "CDR",
                 "value": 50,
+                "valuetype": "Ratio",
                 "condition": "Boom"
               },
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 30,
+                "valuetype": "Ratio",
                 "duration": 1,
                 "condition": "Boom"
               }
@@ -645,69 +694,84 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 40,
-                "duration": 1
+                "valuetype": "Ratio",
+                "duration": 1,
+                "subject": "Self"
               },
               {
                 "type": "Buff",
                 "stat": "AttackSpeed",
                 "value": 70,
-                "duration": 2
+                "valuetype": "Ratio",
+                "duration": 2,
+                "condition": "Finish_Move"
               },
               {
                 "type": "Debuff",
-                "stat": "Attack",
+                "stat": "AttackSpeed",
                 "value": 0,
-                "duration": 1
+                "duration": 1,
+                "condition": "Move"
               }
             ]
           },
           "2": {
             "damage": 0,
-            "cooldown": 1,
+            "cooldown": 30,
             "staminaCost": 0,
             "effects": [
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 55,
-                "duration": 1
+                "valuetype": "Ratio",
+                "duration": 1,
+                "subject": "Self"
               },
               {
                 "type": "Buff",
                 "stat": "AttackSpeed",
                 "value": 70,
-                "duration": 2
+                "valuetype": "Ratio",
+                "duration": 2,
+                "condition": "Finish_Move"
               },
               {
                 "type": "Debuff",
-                "stat": "Attack",
+                "stat": "AttackSpeed",
                 "value": 0,
-                "duration": 1
+                "duration": 1,
+                "condition": "Move"
               }
             ]
           },
           "3": {
             "damage": 0,
-            "cooldown": 1,
+            "cooldown": 25,
             "staminaCost": 0,
             "effects": [
               {
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 70,
-                "duration": 1
+                "valuetype": "Ratio",
+                "duration": 1,
+                "subject": "Self"
               },
               {
                 "type": "Buff",
                 "stat": "AttackSpeed",
                 "value": 70,
-                "duration": 2
+                "valuetype": "Ratio",
+                "duration": 2,
+                "condition": "Finish_Move"
               },
               {
                 "type": "Debuff",
-                "stat": "Attack",
+                "stat": "AttackSpeed",
                 "value": 0,
-                "duration": 1
+                "duration": 1,
+                "condition": "Move"
               }
             ]
           }
@@ -747,12 +811,6 @@
             "cooldown": 1,
             "staminaCost": 0,
             "effects": [
-              {
-                "type": "Buff",
-                "stat": "MoveSpeed",
-                "value": 15,
-                "duration": 2.5
-              }
             ]
           },
           "2": {
@@ -764,7 +822,9 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
-                "duration": 2.5
+                "valuetype": "Ratio",
+                "duration": 2.5,
+                "subject": "Self"
               }
             ]
           }
@@ -937,7 +997,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": 10
               },
               {
@@ -954,7 +1014,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": 10
               },
               {
@@ -971,7 +1031,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": 10
               },
               {
@@ -988,7 +1048,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": 10
               },
               {
@@ -1005,7 +1065,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": 10
               },
               {
@@ -1448,14 +1508,14 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -11,
                 "duration": 3,
                 "condition": "Hit"
               },
               {
                 "type": "Debuff",
-                "stat": "healing",
+                "stat": "Healing",
                 "value": -45,
                 "duration": 3,
                 "condition": "Hit"
@@ -1479,14 +1539,14 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -12,
                 "duration": 3,
                 "condition": "Hit"
               },
               {
                 "type": "Debuff",
-                "stat": "healing",
+                "stat": "Healing",
                 "value": -45,
                 "duration": 3,
                 "condition": "Hit"
@@ -1510,14 +1570,14 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -13,
                 "duration": 3,
                 "condition": "Hit"
               },
               {
                 "type": "Debuff",
-                "stat": "healing",
+                "stat": "Healing",
                 "value": -45,
                 "duration": 3,
                 "condition": "Hit"
@@ -1541,14 +1601,14 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -14,
                 "duration": 3,
                 "condition": "Hit"
               },
               {
                 "type": "Debuff",
-                "stat": "healing",
+                "stat": "Healing",
                 "value": -45,
                 "duration": 3,
                 "condition": "Hit"
@@ -1572,14 +1632,14 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": -15,
                 "duration": 3,
                 "condition": "Hit"
               },
               {
                 "type": "Debuff",
-                "stat": "healing",
+                "stat": "Healing",
                 "value": -45,
                 "duration": 3,
                 "condition": "Hit"
@@ -1955,7 +2015,7 @@
     "Abigail": {
       "T": {
         "name": "티어링 블레이드",
-        "description": "아비게일의 다음 기본 공격이 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 40%)</color>의 추가 스킬 피해를 입히고, 대상의 방어력을 4초 동안 <color=#FFFFFF>{defense}</color>감소시킵니다.\n스킬이 적중할 때마다 <color=#FFFFFF>티어링 블레이드</color>의 쿨다운이 2초 감소합니다.\n\n이 기본 공격은 스킬 공격으로도 취급됩니다.",
+        "description": "아비게일의 다음 기본 공격이 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 40%)</color>의 추가 스킬 피해를 입히고, 대상의 방어력을 4초 동안 <color=#FFFFFF>{Defense}</color>감소시킵니다.\n스킬이 적중할 때마다 <color=#FFFFFF>티어링 블레이드</color>의 쿨다운이 2초 감소합니다.\n\n이 기본 공격은 스킬 공격으로도 취급됩니다.",
         "type": "Passive",
         "maxLevel": 3,
         "mechanics": {
@@ -1974,6 +2034,7 @@
                 "type": "Debuff",
                 "stat": "Defense",
                 "value": -5,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "duration": 4,
                 "subject": "Enemy"
@@ -1988,6 +2049,7 @@
                 "type": "Debuff",
                 "stat": "Defense",
                 "value": -10,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "duration": 4,
                 "subject": "Enemy"
@@ -2002,6 +2064,7 @@
                 "type": "Debuff",
                 "stat": "Defense",
                 "value": -15,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "duration": 4,
                 "subject": "Enemy"
@@ -2015,7 +2078,7 @@
             "65",
             "100"
           ],
-          "{defense}": [
+          "{Defense}": [
             "5",
             "10",
             "15"
@@ -2051,12 +2114,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
+                "valuetype": "Ratio",
                 "duration": 0.5,
                 "subject": "Self"
               },
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2071,12 +2136,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
+                "valuetype": "Ratio",
                 "duration": 0.5,
                 "subject": "Self"
               },
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2091,12 +2158,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
+                "valuetype": "Ratio",
                 "duration": 0.5,
                 "subject": "Self"
               },
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2111,12 +2180,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
+                "valuetype": "Ratio",
                 "duration": 0.5,
                 "subject": "Self"
               },
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2131,12 +2202,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
+                "valuetype": "Ratio",
                 "duration": 0.5,
                 "subject": "Self"
               },
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2187,12 +2260,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
+                "valuetype": "Ratio",
                 "duration": 0.5,
                 "subject": "Self"
               },
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2207,12 +2282,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
+                "valuetype": "Ratio",
                 "duration": 0.5,
                 "subject": "Self"
               },
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2227,12 +2304,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
+                "valuetype": "Ratio",
                 "duration": 0.5,
                 "subject": "Self"
               },
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2247,12 +2326,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
+                "valuetype": "Ratio",
                 "duration": 0.5,
                 "subject": "Self"
               },
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2267,12 +2348,14 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
+                "valuetype": "Ratio",
                 "duration": 0.5,
                 "subject": "Self"
               },
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2320,6 +2403,7 @@
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2350,6 +2434,7 @@
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2380,6 +2465,7 @@
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2410,6 +2496,7 @@
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2440,6 +2527,7 @@
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2495,12 +2583,14 @@
               {
                 "type": "CDR",
                 "value": 100,
+                "valuetype": "Ratio",
                 "condition": "Coord",
                 "subject": "W"
               },
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2519,12 +2609,14 @@
               {
                 "type": "CDR",
                 "value": 100,
+                "valuetype": "Ratio",
                 "condition": "Coord",
                 "subject": "W"
               },
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2543,12 +2635,14 @@
               {
                 "type": "CDR",
                 "value": 100,
+                "valuetype": "Ratio",
                 "condition": "Coord",
                 "subject": "W"
               },
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2567,12 +2661,14 @@
               {
                 "type": "CDR",
                 "value": 100,
+                "valuetype": "Ratio",
                 "condition": "Coord",
                 "subject": "W"
               },
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2591,12 +2687,14 @@
               {
                 "type": "CDR",
                 "value": 100,
+                "valuetype": "Ratio",
                 "condition": "Coord",
                 "subject": "W"
               },
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2645,6 +2743,7 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -99,
+                "valuetype": "Ratio",
                 "duration": 0.2,
                 "condition": "Hit",
                 "subject": "Enemy"
@@ -2664,6 +2763,7 @@
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2683,6 +2783,7 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -99,
+                "valuetype": "Ratio",
                 "duration": 0.2,
                 "condition": "Hit",
                 "subject": "Enemy"
@@ -2702,6 +2803,7 @@
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2721,6 +2823,7 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -99,
+                "valuetype": "Ratio",
                 "duration": 0.2,
                 "condition": "Hit",
                 "subject": "Enemy"
@@ -2740,6 +2843,7 @@
               {
                 "type": "CDR",
                 "value": 2,
+                "valuetype": "Flat",
                 "condition": "Hit",
                 "subject": "T"
               }
@@ -2776,12 +2880,6 @@
             "cooldown": 1,
             "staminaCost": 0,
             "effects": [
-              {
-                "type": "Buff",
-                "stat": "MoveSpeed",
-                "value": 15,
-                "duration": 2.5
-              }
             ]
           },
           "2": {
@@ -2793,7 +2891,9 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 15,
-                "duration": 2.5
+                "valuetype": "Ratio",
+                "duration": 2.5,
+                "subject": "Self"
               }
             ]
           }
@@ -2828,7 +2928,7 @@
         },
         "scaling": {
           "adRatio": "0.4",
-          "apRatio" : "0.35"
+          "apRatio": "0.35"
         },
         "levels": {
           "1": {
@@ -3011,7 +3111,7 @@
       },
       "W": {
         "name": "허세",
-        "description": "현우가 허세를 부려 <color=#FFFFFF>도그파이트</color>를 활성화하고, 2.5초 동안 방어력이 <color=#FFFFFF>{defense}</color><color=#8EA8BC>(+방어력 10 당 1)</color>증가합니다. 지속 기간동안 적에게 기본 공격을 받을 때마다 도그파이트 중접울 1 획득합니다.\n\n허세가 발동된 후 1초 동안 현우는 이동 방해 효과를 무시합니다.",
+        "description": "현우가 허세를 부려 <color=#FFFFFF>도그파이트</color>를 활성화하고, 2.5초 동안 방어력이 <color=#FFFFFF>{Defense}</color><color=#8EA8BC>(+방어력 10 당 1)</color>증가합니다. 지속 기간동안 적에게 기본 공격을 받을 때마다 도그파이트 중접울 1 획득합니다.\n\n허세가 발동된 후 1초 동안 현우는 이동 방해 효과를 무시합니다.",
         "type": "Normal",
         "maxLevel": 5,
         "mechanics": {
@@ -3025,7 +3125,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": 12,
                 "duration": 2.5,
                 "subject": "Self"
@@ -3038,7 +3138,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": 20,
                 "duration": 2.5,
                 "subject": "Self"
@@ -3051,7 +3151,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": 28,
                 "duration": 2.5,
                 "subject": "Self"
@@ -3064,7 +3164,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": 36,
                 "duration": 2.5,
                 "subject": "Self"
@@ -3077,7 +3177,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "defense",
+                "stat": "Defense",
                 "value": 44,
                 "duration": 2.5,
                 "subject": "Self"
@@ -3086,7 +3186,7 @@
           }
         },
         "descriptionInfo": {
-          "{defense}": [
+          "{Defense}": [
             "12",
             "20",
             "28",
@@ -3213,7 +3313,7 @@
             "185",
             "220"
           ],
-          "{curHpRatio}": ["5", "8", "11", "14", "17"]
+          "{curHpRatio}": [ "5", "8", "11", "14", "17" ]
         },
         "popupInfo": {
           "현재 체력 비례 피해량(%)": [ "5", "8", "11", "14", "17" ],
@@ -3224,7 +3324,7 @@
       },
       "R": {
         "name": "핵펀치",
-        "description": "현우가 1.2초 동안 힘을 충전한 후, 강력한 한 방을 날려 <color=#FFFFFF>{minDamage}</color><color=#DFC480>(+추가 공격력의 35%)</color><color=#CDA1C8>(+스킬 증폭의 75%)</color> ~ <color=#FFFFFF>{maxDamage}</color><color=#DFC480>(+추가 공격력의 105%)</color><color=#CDA1C8>(+스킬 증폭의 225%)</color>의 스킬 피해를 입히고 5초 동안 방어력을 {defense}% 감소시킨 후 짧게 밀쳐냅니다.\n\n최대 충전 시, 적을 범위 밖까지 밀어낸 후 0.5초 동안 기절시킵니다.",
+        "description": "현우가 1.2초 동안 힘을 충전한 후, 강력한 한 방을 날려 <color=#FFFFFF>{minDamage}</color><color=#DFC480>(+추가 공격력의 35%)</color><color=#CDA1C8>(+스킬 증폭의 75%)</color> ~ <color=#FFFFFF>{maxDamage}</color><color=#DFC480>(+추가 공격력의 105%)</color><color=#CDA1C8>(+스킬 증폭의 225%)</color>의 스킬 피해를 입히고 5초 동안 방어력을 {Defense}% 감소시킨 후 짧게 밀쳐냅니다.\n\n최대 충전 시, 적을 범위 밖까지 밀어낸 후 0.5초 동안 기절시킵니다.",
         "type": "Ultimate",
         "maxLevel": 3,
         "mechanics": {
@@ -3306,7 +3406,7 @@
             "420",
             "540"
           ],
-          "{defense}": [
+          "{Defense}": [
             "20",
             "25",
             "30"

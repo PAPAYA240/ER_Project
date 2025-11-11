@@ -50,6 +50,7 @@ namespace Server.Game
     }
 
     public enum Subject { Subject_None, Self, Ally, Enemy, Q, W, E, R, T }
+    public enum ValueType { Ratio, Flat, ValueType_None }
 
     public class CollisionManager
     {
@@ -717,6 +718,7 @@ namespace Server.Game
                                     duration = effectData.duration,
                                     value = effectData.value,
                                     subject = Enum.TryParse(effectData.subject, true, out Subject temp) ? temp : Subject.Subject_None,
+                                    valueType = Enum.TryParse(effectData.valueType, true, out ValueType type) ? type : ValueType.ValueType_None,
                                     coeff = effectData.coeff,
                                     ratioPerTarget = effectData.ratioPerTarget,
                                     maxRatio = effectData.maxRatio
@@ -771,11 +773,30 @@ namespace Server.Game
                         break;
                     case Subject.T:
                         if(effect.type == "CDR")
-                            player.Skill.Reduce(KeyCode.T, effect.value);
+                        {
+                            bool isRatio = false;
+                            if(effect.valueType == ValueType.Ratio) 
+                                isRatio = true;
+                            player.Skill.Reduce(KeyCode.T, effect.value, isRatio);
+                        }
                         break;
                     case Subject.Q:
-                        if (effect.type == "CDR_Ratio")
-                            player.Skill.Reduce(KeyCode.Q, effect.value, isRatio: true);
+                        if (effect.type == "CDR")
+                        {
+                            bool isRatio = false;
+                            if (effect.valueType == ValueType.Ratio)
+                                isRatio = true;
+                            player.Skill.Reduce(KeyCode.Q, effect.value, isRatio);
+                        }
+                        break;
+                    case Subject.W:
+                        if (effect.type == "CDR")
+                        {
+                            bool isRatio = false;
+                            if (effect.valueType == ValueType.Ratio)
+                                isRatio = true;
+                            player.Skill.Reduce(KeyCode.W, effect.value, isRatio);
+                        }
                         break;
                 }
             }
