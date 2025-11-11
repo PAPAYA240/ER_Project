@@ -36,6 +36,9 @@ public class MyPlayerController : PlayerController
     }
     public bool CanStopSkill { get; set; } = false;
 
+    float _lastOperateTime;
+    readonly float _operateLockTime = 0.1f;
+
     private void Awake()
     {
         _skill = gameObject.GetOrAddComponent<PlayerSkillController>();
@@ -88,12 +91,24 @@ public class MyPlayerController : PlayerController
         }
         else
         {
-            // 3) 우클릭 유지: 타겟 이동 or 땅 이동
-            var setMove = _input.GetSetMoveTarget();
-            if (setMove != null)
+            var operate = _input.GetOperateCommand();
+            if (operate != null)
             {
-                _view.ApplyLocalSetMoveTarget(setMove);
-                Managers.Network.Send(setMove);
+                _lastOperateTime = Time.time;
+                Managers.Network.Send(operate);
+            }
+            else
+            {
+                if(Time.time - _lastOperateTime >= _operateLockTime) // operate 명령 후 0.1초 경과했을 경우
+                {
+                    // 3) 우클릭 유지: 타겟 이동 or 땅 이동
+                    var setMove = _input.GetSetMoveTarget();
+                    if (setMove != null)
+                    {
+                        _view.ApplyLocalSetMoveTarget(setMove);
+                        Managers.Network.Send(setMove);
+                    }
+                }
             }
         }
 

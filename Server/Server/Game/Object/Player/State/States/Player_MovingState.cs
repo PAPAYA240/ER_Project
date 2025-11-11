@@ -91,6 +91,20 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
                 }
             }
         }
+        else if(player.ReservedState is Player_OperateState)
+        {
+            if(player.Room.BeaconManager.IsInRange(player.Position, player.Beacon))
+            {
+                if(player.Room.BeaconManager.IsOperatable(player.Info.Player.Team, player.Beacon))
+                {
+                    player.ChangeState(player.ReservedState);
+                    player.ReservedState = new Player_IdleState();
+                }
+                else
+                    player.ChangeState(new Player_IdleState());
+                return;
+            }
+        }
 
         // 도착 판정
         var serverPos = new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ);

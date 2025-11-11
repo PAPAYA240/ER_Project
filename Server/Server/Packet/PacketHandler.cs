@@ -55,7 +55,6 @@ class PacketHandler
         room.Push(room.EnterGame, player);
 
         C_EnterGame enterGamePkt = packet as C_EnterGame;
-        room.Push(room.AddDummyPlayers, clientSession, enterGamePkt.DummyPlayers.ToList());
     }
 
     public static void C_MoveHandler(PacketSession session, IMessage packet)
@@ -425,5 +424,23 @@ class PacketHandler
             return;
 
         room.Push(room.HandleChargingSkill, player, chargePacket);
+    }
+
+    public static void C_OperateHandler(PacketSession session, IMessage packet)
+    {
+        C_Operate operatePkt = packet as C_Operate;
+        ClientSession clientSession = session as ClientSession;
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        if (!Enum.TryParse<Server.Game.Beacon>(operatePkt.BeaconName, true, out Server.Game.Beacon beacon))
+            return;
+
+        room.Push(player.Room.HandleOperate, player, beacon, operatePkt.PosX, operatePkt.PosZ);
     }
 }

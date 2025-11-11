@@ -306,90 +306,6 @@ public class PlayerController : CreatureController
     }
     #endregion
 
-    #region Skill
-    public override void UseSkill(S_Skill skillPacket)
-    {
-        // 서버에서 스킬 사용을 허락받으면
-        if (skillPacket.CanUse)
-        {
-            //IsKeyInput = true;
-            //State = CreatureState.Skill;
-
-            //KeyCode keyCode =
-            //    (skillPacket.SkillInfo.Amplification) ? (KeyCode)skillPacket.SkillInfo.AmplifiKeyCode : (KeyCode)skillPacket.SkillInfo.KeyCode;
-
-            //ExecuteSkill(keyCode);
-
-            //if (skillPacket.ObjectId == Managers.Object.MyPlayer.Id && !skillPacket.SkillInfo.Amplification)
-            //    Managers.Object.MyPlayer.OnSkillConfirmed(skillPacket);
-
-            //if (!_isSkillDebug)
-            //    return;
-
-            //Vector3 mousePos = new Vector3(skillPacket.MousePosX, 0, skillPacket.MousePosZ);
-            //bool bProjectile = (DataManager.SkillDict[ObjInfo.Player.CharType][keyCode].type == "Projectile");
-            //if (skillPacket.SkillInfo.Amplification && bProjectile)
-            //    ChangeInfoSkillMesh(keyCode);
-            //else
-            //    CreateSkillMesh(keyCode, skillPacket.ChargeRatio, mousePos, bProjectile);
-        }
-    }
-
-    //protected void ExecuteSkill(KeyCode keyCode)
-    //{
-    //    switch (keyCode)
-    //    {
-    //        case KeyCode.Q:
-    //            Skill_Q();
-    //            break;
-    //        case KeyCode.W:
-    //            Skill_W();
-    //            break;
-    //        case KeyCode.E:
-    //            Skill_E();
-    //            break;
-    //        case KeyCode.R:
-    //            Skill_R();
-    //            break;
-    //        case KeyCode.F:
-    //            PassiveSkill();
-    //            break;
-    //    }
-    //}
-
-    // TODO : 이름 바꾸기?
-    protected virtual void Skill_Q() { }
-
-    protected virtual void Skill_W() { }
-
-    protected virtual void Skill_E() { }
-
-    protected virtual void Skill_R() { }
-    protected virtual void PassiveSkill() { }
-    public virtual void OnAttackTiming() { }
-
-    IEnumerator CoStartSkill()
-    {
-        // 대기 시간
-        IsKeyInput = true;
-        State = CreatureState.Skill;
-        yield return new WaitForSeconds(0.1f);
-        AnimatorClipInfo[] clipInfos = _animator.GetCurrentAnimatorClipInfo(0);
-        float length = 0;
-        if (clipInfos.Length > 0)
-        {
-            length = clipInfos[0].clip.length / _animator.speed;
-            Debug.Log($"Clip Name: {clipInfos[0].clip.name}, Length: {length}");
-        }
-        yield return new WaitForSeconds(length - 0.1f);
-        Debug.Log("스킬 코루틴 종료");
-
-        // TODO : TEMP
-        CheckUpdatedFlag();
-    }
-
-    #endregion
-
     #region Animation
     protected virtual void PlayAnimation(string animName, float ratio)
     {
@@ -543,12 +459,31 @@ public class PlayerController : CreatureController
 
     #endregion
 
-    #region State:Dead
-    //public virtual void OnRespawn(S_Respawn respawnPacket)
-    //{
-    //    //Hp = respawnPacket.Hp;
-    //    //Stamina = respawnPacket.Stamina;
-    //}
+    #region State:Operate
+    public IEnumerator CoRotateToPosition(Vector3 targetPos)
+    {
+        float rotateSpeed = 15f;
+
+        while (true)
+        {
+            if (State == CreatureState.Moving)
+                break;
+
+            Vector3 dir = targetPos - transform.position;
+            dir.y = 0;
+
+            if (dir.magnitude < 0.1f)
+                break;
+
+            Quaternion targetRot = Quaternion.LookRotation(dir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * rotateSpeed);
+
+            if (Quaternion.Angle(transform.rotation, targetRot) < 1f)
+                break;
+
+            yield return null;
+        }
+    }
     #endregion
 
     public void SyncPosFromServer(S_Move movePacket)

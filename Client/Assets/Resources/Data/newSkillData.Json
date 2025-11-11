@@ -3410,8 +3410,9 @@
                 "subject": "Enemy"
               },
               {
-                "type": "MoveTargetObject",
-                "condition": "FullCharge"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3429,8 +3430,9 @@
                 "subject": "Enemy"
               },
               {
-                "type": "MoveTargetObject",
-                "condition": "FullCharge"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3448,8 +3450,9 @@
                 "subject": "Enemy"
               },
               {
-                "type": "MoveTargetObject",
-                "condition": "FullCharge"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           }

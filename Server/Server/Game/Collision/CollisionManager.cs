@@ -35,6 +35,9 @@ namespace Server.Game
         // Key: ObjectId, Value: Nothing
         public ConcurrentDictionary<int, byte> HitObjs = new ConcurrentDictionary<int, byte>();
 
+        // Key: StatusEffect, Value: Count
+        public ConcurrentDictionary<StatusEffect, int> effectCnt = new ConcurrentDictionary<StatusEffect, int>();
+
         #region 추가 데이터
         public Dictionary<KeyCode, List<string>> Interactions { get; set; } = new Dictionary<KeyCode, List<string>>();
         public HashSet<Hitbox> InteractedHitboxes { get; } = new HashSet<Hitbox>();
@@ -750,6 +753,7 @@ namespace Server.Game
             {
                 effect.targetCnt = hitTargets.Count;
                 effect.attacker = hitbox.Creature;
+                int cnt = hitbox.effectCnt.AddOrUpdate(effect, 1, (_, oldValue) => oldValue + 1);
 
                 switch (effect.subject)
                 {
@@ -770,7 +774,7 @@ namespace Server.Game
                         }
                         break;
                     case Subject.T:
-                        if(effect.type == "CDR")
+                        if(cnt == 1 && effect.type == "CDR") // 쿨타임 감소는 딱 한번만 발생해야 함
                             player.Skill.Reduce(KeyCode.T, effect.value);
                         break;
                 }

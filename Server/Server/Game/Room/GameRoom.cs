@@ -23,6 +23,7 @@ namespace Server.Game
         MonsterManager _monsterManager = new MonsterManager();
         CollisionManager _collisionManager = new CollisionManager();
         EnvironmentManager _envManager = new EnvironmentManager();
+        BeaconManager _beaconManager = new BeaconManager();
 
         Dictionary<int, Dictionary<int, Player>> _teams = new Dictionary<int, Dictionary<int, Player>>();
         Dictionary<CharacterType, SkillHandler> _skillHandlers = new Dictionary<CharacterType, SkillHandler>();
@@ -162,10 +163,26 @@ namespace Server.Game
             return _monsters.TryGetValue(objectId, out monster);
         }
         public CollisionManager CollManager { get { return _collisionManager; } private set { } }
+        public BeaconManager BeaconManager { get { return _beaconManager; } private set { } }
 
         public PathfindInstance PathFind { get; set; }
 
+        #region Score
+        private int[] _teamScores = new int[3]; // 1번, 2번 팀 사용
 
+        public int ReduceScore(int team, int amount)
+        {
+            int oldValue, newValue;
+            do
+            {
+                oldValue = _teamScores[team];
+                newValue = Math.Max(0, oldValue - amount);
+            } while (Interlocked.CompareExchange(ref _teamScores[team], newValue, oldValue) != oldValue);
+
+            return newValue; // 감소 후 점수 반환
+        }
+        public int GetScore(int team) { return _teamScores[team]; }
+        #endregion
 
         public void Init(int mapId)
         {
@@ -236,7 +253,9 @@ namespace Server.Game
             _collisionManager.Flush();
             _collisionManager.CheckAllCollisions(_teams, _monsters, _projectiles);
             _collisionManager.Update();
-            
+
+            _beaconManager.Update(this);
+
             BroadcastVisibleObjs();
             CheckLastPing();
         }
@@ -586,53 +605,6 @@ namespace Server.Game
             player.Session.Send(skillLevelUpPacket);
         }
 
-        public void AddDummyPlayers(ClientSession clientSession,  List<CharacterType> dummyPlayers)
-        {
-            if (_dummyAdded)
-                return;
-
-            S_Spawn spawnPacket = new S_Spawn();
-            Random rand = new Random();
-            foreach (CharacterType charType in dummyPlayers)
-            {
-                Player dummyPlayer = ObjectManager.Instance.Add<Player>();
-                {
-                    dummyPlayer.Info.Name = $"DummyPlayer_{dummyPlayer.Id}";
-                    dummyPlayer.Info.PosInfo.State = CreatureState.Idle;
-                    dummyPlayer.Info.PosInfo.PosX = rand.Next(-4,4);
-                    dummyPlayer.Info.PosInfo.PosY = 0;
-                    dummyPlayer.Info.PosInfo.PosZ = rand.Next(-4, 4);
-                    dummyPlayer.Info.Player = new PlayerInfo();
-                    dummyPlayer.Info.Player.CharType = charType;
-                    dummyPlayer.Init();
-
-                    StatInfo stat = null;
-                    DataManager.StatDict.TryGetValue(charType, out stat);
-                    dummyPlayer.Stat.MergeFrom(stat);
-                    dummyPlayer.Hp = dummyPlayer.MaxHp;
-                    dummyPlayer.Stamina = dummyPlayer.MaxStamina;
-                    dummyPlayer.Session = clientSession;
-                    _players.TryAdd(dummyPlayer.Id, dummyPlayer);
-                    dummyPlayer.Info.Player.Team = AssignTeam();
-
-                    if (!_teams.TryGetValue(dummyPlayer.Info.Player.Team, out var teamPlayers))
-                    {
-                        teamPlayers = new Dictionary<int, Player>();
-                        _teams[dummyPlayer.Info.Player.Team] = teamPlayers;
-                    }
-                    teamPlayers.Add(dummyPlayer.Id, dummyPlayer);
-
-                    ObjectManager.Instance.RegisterTeam(dummyPlayer.Id, dummyPlayer.Info.Player.Team);
-
-                    dummyPlayer.Room = this;
-                }
-                spawnPacket.Objects.Add(dummyPlayer.Info);
-            }
-            clientSession.Send(spawnPacket);
-
-            _dummyAdded = true;
-        }
-
         #region Search
         private Weapon FindWeapon(CharacterType type)
         {
@@ -729,6 +701,38 @@ namespace Server.Game
         {
             if (player.CurrentState is Player_SkillState skillState)
                 skillState.Handler.OnCollision(player, nearTarget, effect);
+        }
+
+        public void HandleOperate(Player player, Beacon beacon, float posX, float posZ)
+        {
+            player.Beacon = beacon;
+
+            bool canOperate = BeaconManager.IsOperatable(player.Info.Player.Team, beacon);
+            bool canOccupy = BeaconManager.IsOccupiable(player.Info.Player.Team, beacon);
+            bool inRange = BeaconManager.IsInRange(player.Position, beacon);
+
+            if (canOperate && canOccupy && inRange) // 점령 가능 && 사거리 내 -> 점령
+            {
+                player.ChangeState(new Player_OperateState());
+                return;
+            }
+
+            var move = new C_Move
+            {
+                IsTargetOn = false,
+                TargetPosition = new PositionInfo
+                {
+                    PosX = posX,
+                    PosY = 0,
+                    PosZ = posZ
+                }
+            };
+
+            player.ChangeState(new Player_MovingState(move));
+            player.SendMoveSyncPacket(move.TargetPosition);
+
+            if (canOccupy) // 점령 가능하지만 사거리 밖이면 이동종료됐을 때의 상태 예약
+                player.ReservedState = new Player_OperateState();
         }
     }
 }

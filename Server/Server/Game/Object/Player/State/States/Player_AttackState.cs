@@ -266,8 +266,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         if (target == null || target.State == CreatureState.Dead)
             return;
 
-        // TODO: 실제 데미지 계산/적용 로직에 연결
-        // 예) target.OnDamaged(p, 10f);
+        target.OnDamaged(p, p.Attack, false, true);
     }
 
     public bool IsSwingActive() { return _swingActive; }
