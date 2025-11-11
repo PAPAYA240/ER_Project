@@ -36,6 +36,8 @@ namespace Server.Game
                     Hp += recoveryHp;
                     _isUpdatedStat = true;
 
+                    Skill.Reduce(Data.DataUtils.KeyCode.W, 2f);
+
                     S_CombatText packet = new S_CombatText();
                     packet.ObjectId = Id;
                     packet.Type = CombatTextType.HpRecovery;

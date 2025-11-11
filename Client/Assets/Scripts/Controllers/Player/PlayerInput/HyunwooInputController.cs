@@ -9,6 +9,7 @@ public class HyunwooInputController : PlayerInputController
     Coroutine _coCharge = null;
 
     const float _fullCharge = 1.2f;
+    const float _maxCharge = 3.2f;
 
     public override C_SkillInput GetSkillCommand()
     {
@@ -28,6 +29,7 @@ public class HyunwooInputController : PlayerInputController
                 }
                 _chargeTime = 0;
                 _coCharge = StartCoroutine(CoCharge());
+                _player.UI.PlayerInterface.SetChargingBar(DataManager.SkillDict[CharacterType.Hyunwoo][KeyCode.R].name, _fullCharge, _maxCharge);
             }
 
             return _skill.TryCast((int)key, GetAttackableUnderCursorID(), GetMouseWorldPosition());
@@ -40,6 +42,8 @@ public class HyunwooInputController : PlayerInputController
                 StopCoroutine(_coCharge);
                 _coCharge = null;
             }
+
+            _player.UI.PlayerInterface.StopChargingBar();
 
             C_ChargingSkill packet = new C_ChargingSkill();
 

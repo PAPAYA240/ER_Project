@@ -37,7 +37,8 @@ public class UI_PlayerInterface : UI_Base
         Credit,
         Equipment,
         Inventory,
-        Stat
+        Stat,
+        ChargingBar
     }
 
     //TODO 디파인으로 각 요소들을 관리?
@@ -88,6 +89,9 @@ public class UI_PlayerInterface : UI_Base
         GetObject((int)GameObjects.RSkill).GetComponent<UI_SkillBase>().OnLevelUp += OnCharSkillLevelUp;
         GetObject((int)GameObjects.TSkill).GetComponent<UI_SkillBase>().OnLevelUp += OnCharSkillLevelUp;
         GetObject((int)GameObjects.FSkill).GetComponent<UI_SkillBase>().OnLevelUp += OnTacticalSkillLevelUp;
+        
+        //ChargingBar
+        GetObject((int)GameObjects.ChargingBar).SetActive(false);
 
         //Stat
         UpdateStat();
@@ -507,6 +511,63 @@ public class UI_PlayerInterface : UI_Base
         stat.SetText(UI_Stat.Texts.CCResistanceText, (mpc.ItemStat.CCResistance * 100).ToString("F0") + "%");
         stat.SetText(UI_Stat.Texts.PenetrationText, $"{mpc.FixedDefensePenetration.ToString("F0")} | {(mpc.PercentageDefensePenetration * 100).ToString("F0")}%");
         stat.SetText(UI_Stat.Texts.LifeStealText,$"{mpc.ItemStat.LifeSteal.ToString("F0")}% | {mpc.ItemStat.Omnivamp.ToString("F0")}%");
+    }
+
+    #endregion
+
+    #region ChargingBar
+
+    private Coroutine _coChargingBar = null;
+
+    public void SetChargingBar(string skillName, float fullChargingTime, float maxChargingTime)
+    {
+        GameObject chargingBar = GetObject((int)GameObjects.ChargingBar);
+        if (chargingBar != null)
+        {
+            chargingBar.SetActive(true);
+
+            UI_ChargingBar ui = chargingBar.GetComponent<UI_ChargingBar>();
+            if (ui != null)
+            {
+                ui.SetChargingBar(skillName, fullChargingTime, maxChargingTime);
+            }
+
+            if (_coChargingBar != null)
+            {
+                StopCoroutine(_coChargingBar);
+                _coChargingBar = null;
+            }
+
+            _coChargingBar = StartCoroutine(CoChargingBar(maxChargingTime));
+        }
+    }
+
+    public void StopChargingBar()
+    {
+        GameObject chargingBar = GetObject((int)GameObjects.ChargingBar);
+        if (chargingBar != null)
+        {
+
+            UI_ChargingBar ui = chargingBar.GetComponent<UI_ChargingBar>();
+            if (ui != null)
+            {
+                ui.Stop();
+            }
+
+            if (_coChargingBar != null)
+            {
+                StopCoroutine(_coChargingBar);
+                _coChargingBar = null;
+            }
+
+            chargingBar.SetActive(false);
+        }
+    }
+
+    private IEnumerator CoChargingBar(float maxChargingTime)
+    {
+        yield return new WaitForSeconds(maxChargingTime);
+        StopChargingBar();
     }
 
     #endregion
