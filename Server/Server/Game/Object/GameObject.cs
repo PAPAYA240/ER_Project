@@ -332,6 +332,8 @@ namespace Server.Game
             public int targetCnt; // 적중한 대상 갯수
 
             public Creature attacker; // 시전자
+
+            public string condition; // 적용조건
         }
 
         public void AddStatusEffect(StatusEffect statusEffect)

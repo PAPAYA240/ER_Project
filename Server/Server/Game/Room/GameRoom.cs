@@ -446,17 +446,20 @@ namespace Server.Game
             }
 
             target.OnDamaged(player, damage);
-            AddStatusEffect(player, target, keyCode); 
         }
 
         #region StatusEffect
-        void AddStatusEffect(Player player, GameObject target, KeyCode keyCode) // 타게팅 스킬 StatusEffect 적용
+        public void AddStatusEffect(Player player, GameObject target, KeyCode keyCode, string allowedCondition) // 타게팅 스킬 StatusEffect 적용
         {
             List<StatusEffect> statusEffectList = GetStatusEffectList(player.Info.Player.CharType, keyCode, player.GetSkillLevel(keyCode));
 
             foreach (var effect in statusEffectList)
             {
+                if (effect.condition != allowedCondition)
+                    continue;
+
                 effect.attacker = player;
+
                 switch (effect.subject)
                 {
                     case Subject.Self:
@@ -506,7 +509,8 @@ namespace Server.Game
                                 subject = Enum.TryParse(effectData.subject, true, out Subject temp) ? temp : Subject.Subject_None,
                                 coeff = effectData.coeff,
                                 ratioPerTarget = effectData.ratioPerTarget,
-                                maxRatio = effectData.maxRatio
+                                maxRatio = effectData.maxRatio,
+                                condition = effectData.condition
                             };
 
                             effects.Add(newEffect);

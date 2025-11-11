@@ -38,5 +38,6 @@ public sealed class Abigail_R : Skill_Abigail
 
         SendSkillConfirmPacket(p);
         p.SendCanStopSkillPacket(false);
+        p.Room.AddStatusEffect(p, p, _keyCode, null); // 지정불가
     }
 }
