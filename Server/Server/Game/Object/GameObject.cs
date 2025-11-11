@@ -334,7 +334,7 @@ namespace Server.Game
             public Creature attacker; // 시전자
         }
 
-        public void AddStatusEffect(StatusEffect statusEffect, Creature atk)
+        public void AddStatusEffect(StatusEffect statusEffect)
         {
             lock (_lock)
             {
@@ -361,7 +361,7 @@ namespace Server.Game
                     {
                         S_Snare stunPacket = new S_Snare();
                         stunPacket.ObjectId = Id;
-                        stunPacket.AttackerId = atk.Id;
+                        stunPacket.AttackerId = statusEffect.attacker.Id;
                         stunPacket.AttackerTeam = statusEffect.attacker.Info.Player.Team;
                         stunPacket.Duration = statusEffect.duration;
                         Room.Broadcast(stunPacket);

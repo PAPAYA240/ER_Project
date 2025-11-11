@@ -681,16 +681,12 @@ namespace Server.Game
 
         #endregion
 
-        public void AddStatusEffect(Creature creature, StatusEffect statusEffect, Creature atk)
+        #region
+        public void AddStatusEffect(Creature creature, StatusEffect statusEffect)
         {
-            creature.AddStatusEffect(statusEffect, atk);
+            creature.AddStatusEffect(statusEffect);
         }
-
-        //public void BehindDash(Player player)
-        //{
-        //    if (player.CurrentState is Player_SkillState skillState)
-        //        skillState.Handler.OnCollision(player);
-        //}
+        #endregion
 
         public void CallOnCollision<T>(Player player, List<T> hitTargets, StatusEffect effect) where T : GameObject, new()
         {
