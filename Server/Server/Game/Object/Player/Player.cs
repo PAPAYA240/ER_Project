@@ -1,4 +1,5 @@
 using Google.Protobuf.Protocol;
+using Lucene.Net.Store;
 using Lucene.Net.Support;
 using Server.Data;
 using System;
@@ -61,9 +62,9 @@ namespace Server.Game
             set { base.AttackSpeed = value; }
         }
 
-        public override int Healing  // TEMP
+        public override float Healing
         {
-            get { return (int)ComposeFinal(STAT_HEALING, Stat.Heal); }
+            get { return ComposeFinal(STAT_HEALING, Stat.Healing); }
             set { base.Healing = value; }
         }
 
@@ -76,7 +77,14 @@ namespace Server.Game
         public override float Hp
         {
             get { return base.Hp; }
-            set { Stat.Hp = Math.Clamp(value, 0, MaxHp); }
+            set 
+            {
+                float diff = value - Stat.Hp;
+                if (diff > 0)
+                    Stat.Hp += diff * Healing;
+
+                Stat.Hp = Math.Clamp(Stat.Hp, 0, MaxHp);              
+            }
         }
 
         public override float HpRegen

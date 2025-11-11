@@ -35,7 +35,7 @@ public sealed class Rozzi_W : SkillHandlerBase
         StatusEffect statusEffect = new StatusEffect
         {
             type = "Buff",
-            stat = "speed",
+            stat = "MoveSpeed",
             value = 120,
             duration = 0.4f,
             subject = Subject.Self,

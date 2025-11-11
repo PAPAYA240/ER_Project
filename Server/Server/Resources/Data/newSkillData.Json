@@ -152,7 +152,7 @@
       },
       "W": {
         "name": "스핀샷",
-        "description": "로지가 총을 난사하여 주변의 적들에게 {damage}의 스킬 피해를 입히고, 3초 동안 방어력 {defense}와 치유 효과 45%를 감소 시킵니다.\n로지는 난사하는 동안 이동 속도가 120% 증가하며, 적중한 대상이 있다면 쿨다운이 40% 감소합니다.",
+        "description": "로지가 총을 난사하여 주변의 적들에게 {damage}의 스킬 피해를 입히고, 3초 동안 방어력 {defense}%와 치유 효과 45%를 감소 시킵니다.\n로지는 난사하는 동안 이동 속도가 120% 증가하며, 적중한 대상이 있다면 쿨다운이 40% 감소합니다.",
         "type": "Normal",
         "maxLevel": 5,
         "canMoveDuringCast": true,
@@ -187,7 +187,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "moveSpeed",
+                "stat": "MoveSpeed",
                 "value": 120,
                 "duration": 0.4,
                 "subject": "Self"
@@ -223,7 +223,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "moveSpeed",
+                "stat": "MoveSpeed",
                 "value": 120,
                 "duration": 0.4,
                 "subject": "Self"
@@ -259,7 +259,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 120,
                 "duration": 0.4,
                 "subject": "Self"
@@ -295,7 +295,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 120,
                 "duration": 0.4,
                 "subject": "Self"
@@ -331,7 +331,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 120,
                 "duration": 0.4,
                 "subject": "Self"
@@ -486,7 +486,7 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -30,
                 "duration": 3
               },
@@ -496,7 +496,7 @@
               },
               {
                 "type": "Debuff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -30,
                 "duration": 1,
                 "condition": "Boom"
@@ -514,7 +514,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 30,
                 "duration": 1,
                 "condition": "Boom"
@@ -528,7 +528,7 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -30,
                 "duration": 3
               },
@@ -544,7 +544,7 @@
               },
               {
                 "type": "Debuff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -30,
                 "duration": 1,
                 "condition": "Boom"
@@ -556,7 +556,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 30,
                 "duration": 1,
                 "condition": "Boom"
@@ -570,7 +570,7 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -30,
                 "duration": 3
               },
@@ -586,7 +586,7 @@
               },
               {
                 "type": "Debuff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -30,
                 "duration": 1,
                 "condition": "Boom"
@@ -598,7 +598,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 30,
                 "duration": 1,
                 "condition": "Boom"
@@ -643,7 +643,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 40,
                 "duration": 1
               },
@@ -668,7 +668,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 55,
                 "duration": 1
               },
@@ -693,7 +693,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 70,
                 "duration": 1
               },
@@ -749,7 +749,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 15,
                 "duration": 2.5
               }
@@ -762,7 +762,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 15,
                 "duration": 2.5
               }
@@ -1144,7 +1144,7 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -99,
                 "duration": 1
               }
@@ -1157,7 +1157,7 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -99,
                 "duration": 1
               }
@@ -1170,7 +1170,7 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -99,
                 "duration": 1
               }
@@ -1216,7 +1216,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 15,
                 "duration": 2.5
               }
@@ -1229,7 +1229,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 15,
                 "duration": 2.5
               }
@@ -1257,7 +1257,7 @@
     "Theodore": {
       "T": {
         "name": "에너지 프로토콜",
-        "description": "테오도르가 부쉬에서 벗어날 때 2.5초 동안 은신 상태가 되며 그동안 이동속도가 {speed}% 증가합니다. 이때, 2.5초 동안 최대 체력의 {MaxHpRatio}%만큼의 피해를 흡수하는 보호막을 획득합니다. 이동을 제외한 행동을 하면 은신 상태가 해제됩니다.\n\n테오도르가 기본 공격을 적중시키면 <color=#FFFFFF>에너지 포</color>의 쿨다운이 {CDR1}% 감소하고, <color=#FFFFFF>다른 기본 스킬</color>의 쿨다운이 {CDR2}% 감소합니다.",
+        "description": "테오도르가 부쉬에서 벗어날 때 2.5초 동안 은신 상태가 되며 그동안 이동속도가 {MoveSpeed}% 증가합니다. 이때, 2.5초 동안 최대 체력의 {MaxHpRatio}%만큼의 피해를 흡수하는 보호막을 획득합니다. 이동을 제외한 행동을 하면 은신 상태가 해제됩니다.\n\n테오도르가 기본 공격을 적중시키면 <color=#FFFFFF>에너지 포</color>의 쿨다운이 {CDR1}% 감소하고, <color=#FFFFFF>다른 기본 스킬</color>의 쿨다운이 {CDR2}% 감소합니다.",
         "type": "Passive",
         "maxLevel": 3,
         "mechanics": {
@@ -1276,7 +1276,7 @@
           }
         },
         "descriptionInfo": {
-          "{speed}": [
+          "{MoveSpeed}": [
             "5",
             "10",
             "15"
@@ -1462,7 +1462,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 120
               },
               {
@@ -1493,7 +1493,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 120
               },
               {
@@ -1524,7 +1524,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 120
               },
               {
@@ -1555,7 +1555,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 120
               },
               {
@@ -1586,7 +1586,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 120
               },
               {
@@ -1614,7 +1614,7 @@
       },
       "E": {
         "name": "스파크탄",
-        "description": "<color=#2EE635>지속 효과:</color> <color=#FFFFFF>에너지 포</color> 또는 <color=#FFFFFF>스파크탄</color> 적중 시 다음 기본 공격 사거리가 1 증가합니다.\n\n테오도르가 스파크탄을 던져 적중한 적의 이동 속도를 2초동안 {speed}% 감소시키며 4초 동안 <color=#FFFFFF>목표물</color>로 지정합니다. 테오도르는 목표물이 된 대상으로부터 시야를 제공받으며, 기본 공격 또는 스킬로 공격하면 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 60%)</color>의 스킬 피해를 입히고 {CC}초 동안 속박합니다.",
+        "description": "<color=#2EE635>지속 효과:</color> <color=#FFFFFF>에너지 포</color> 또는 <color=#FFFFFF>스파크탄</color> 적중 시 다음 기본 공격 사거리가 1 증가합니다.\n\n테오도르가 스파크탄을 던져 적중한 적의 이동 속도를 2초동안 {MoveSpeed}% 감소시키며 4초 동안 <color=#FFFFFF>목표물</color>로 지정합니다. 테오도르는 목표물이 된 대상으로부터 시야를 제공받으며, 기본 공격 또는 스킬로 공격하면 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 60%)</color>의 스킬 피해를 입히고 {CC}초 동안 속박합니다.",
         "skillType": "Charge",
         "type": "Projectile",
         "maxLevel": 5,
@@ -1698,7 +1698,7 @@
           }
         },
         "descriptionInfo": {
-          "{speed}": [
+          "{MoveSpeed}": [
             "2",
             "4",
             "6",
@@ -1730,7 +1730,7 @@
       },
       "R": {
         "name": "에너지 필드",
-        "description": "테오도르가 에너지를 최대로 끌어올려 지정한 방향으로 4초 동안 유지되는 <color=#FFFFFF>에너지 필드</color>를 생성해 같은 방향으로 이동하는 아군의 이동 속도를 <color=#FFFFFF>{speed}%</color><color=#CDA1C8>(+스킬 증폭의 2%)</color> 증가시키고, 강력한 에너지 파동을 발사하여 적에게 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 90%)</color>의 스킬 피해를 입힙니다.\n\n발사 이후, 테오도르는 <color=#FFFFFF>과충전 상태</color>가 되어, 공격속도가 8초 동안 <color=#FFFFFF>{attackSpeed}%</color> 증가하며, <color=#FFFFFF>에너지 포</color> 최대 충전 시간이 0.5초로 감소합니다.",
+        "description": "테오도르가 에너지를 최대로 끌어올려 지정한 방향으로 4초 동안 유지되는 <color=#FFFFFF>에너지 필드</color>를 생성해 같은 방향으로 이동하는 아군의 이동 속도를 <color=#FFFFFF>{MoveSpeed}%</color><color=#CDA1C8>(+스킬 증폭의 2%)</color> 증가시키고, 강력한 에너지 파동을 발사하여 적에게 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 90%)</color>의 스킬 피해를 입힙니다.\n\n발사 이후, 테오도르는 <color=#FFFFFF>과충전 상태</color>가 되어, 공격속도가 8초 동안 <color=#FFFFFF>{attackSpeed}%</color> 증가하며, <color=#FFFFFF>에너지 포</color> 최대 충전 시간이 0.5초로 감소합니다.",
         "skillType": "Charge",
         "type": "Ultimate",
         "maxLevel": 3,
@@ -1749,7 +1749,7 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -30,
                 "duration": 3
               },
@@ -1759,7 +1759,7 @@
               },
               {
                 "type": "Debuff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -30,
                 "duration": 1,
                 "condition": "Boom"
@@ -1777,7 +1777,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 30,
                 "duration": 1,
                 "condition": "Boom"
@@ -1791,7 +1791,7 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -30,
                 "duration": 3
               },
@@ -1807,7 +1807,7 @@
               },
               {
                 "type": "Debuff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -30,
                 "duration": 1,
                 "condition": "Boom"
@@ -1819,7 +1819,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 30,
                 "duration": 1,
                 "condition": "Boom"
@@ -1833,7 +1833,7 @@
             "effects": [
               {
                 "type": "Debuff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -30,
                 "duration": 3
               },
@@ -1849,7 +1849,7 @@
               },
               {
                 "type": "Debuff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -30,
                 "duration": 1,
                 "condition": "Boom"
@@ -1861,7 +1861,7 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 30,
                 "duration": 1,
                 "condition": "Boom"
@@ -1870,7 +1870,7 @@
           }
         },
         "descriptionInfo": {
-          "{speed}": [
+          "{MoveSpeed}": [
             "60",
             "70",
             "80"
@@ -1914,7 +1914,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 15,
                 "duration": 2.5
               }
@@ -1927,7 +1927,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 15,
                 "duration": 2.5
               }
@@ -2643,7 +2643,7 @@
               },
               {
                 "type": "Debuff",
-                "stat": "moveSpeed",
+                "stat": "MoveSpeed",
                 "value": -99,
                 "duration": 0.2,
                 "condition": "Hit",
@@ -2681,7 +2681,7 @@
               },
               {
                 "type": "Debuff",
-                "stat": "moveSpeed",
+                "stat": "MoveSpeed",
                 "value": -99,
                 "duration": 0.2,
                 "condition": "Hit",
@@ -2719,7 +2719,7 @@
               },
               {
                 "type": "Debuff",
-                "stat": "moveSpeed",
+                "stat": "MoveSpeed",
                 "value": -99,
                 "duration": 0.2,
                 "condition": "Hit",
@@ -2778,7 +2778,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 15,
                 "duration": 2.5
               }
@@ -2791,7 +2791,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 15,
                 "duration": 2.5
               }
@@ -2858,7 +2858,7 @@
       },
       "Q": {
         "name": "발 밟기",
-        "description": "현우가 지정한 위치를 강하게 밟아, 적에게 <color=#FFFFFF>{damage}</color><color=#DFC480>(+추가 공격력의 40%)</color><color=#CDA1C8>(+스킬 증폭의 80%)</color>의 스킬 피해를 입히고 2초 동안 이동 속도를 40% 감소시킵니다. 적에게 스킬을 적중하면, 현우의 이동 속도가 2초 동안 {speed}% 증가합니다.",
+        "description": "현우가 지정한 위치를 강하게 밟아, 적에게 <color=#FFFFFF>{damage}</color><color=#DFC480>(+추가 공격력의 40%)</color><color=#CDA1C8>(+스킬 증폭의 80%)</color>의 스킬 피해를 입히고 2초 동안 이동 속도를 40% 감소시킵니다. 적에게 스킬을 적중하면, 현우의 이동 속도가 2초 동안 {MoveSpeed}% 증가합니다.",
         "type": "Normal",
         "maxLevel": 5,
         "mechanics": {
@@ -2994,7 +2994,7 @@
             "200",
             "250"
           ],
-          "{speed}": [
+          "{MoveSpeed}": [
             "8",
             "9",
             "10",
@@ -3339,7 +3339,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 15,
                 "duration": 2.5
               }
@@ -3352,7 +3352,7 @@
             "effects": [
               {
                 "type": "Buff",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": 15,
                 "duration": 2.5
               }

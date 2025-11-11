@@ -144,10 +144,10 @@ namespace Server.Game
             set { Stat.AttackSpeed = value; }
         }
 
-        public virtual int Healing  // TEMP
+        public virtual float Healing  
         {
-            get { return Stat.Heal; }
-            set { Stat.Heal = value; }
+            get { return Stat.Healing; }
+            set { Stat.Healing = value; }
         }
 
         public virtual float FixedDefensePenetration
@@ -166,19 +166,19 @@ namespace Server.Game
             set { Stat.Defense = Math.Max(value, 0); }
         }
 
-        protected const string STAT_MOVE_SPEED = "moveSpeed";
+        protected const string STAT_MOVE_SPEED = "MoveSpeed";
         protected const string STAT_ATTACK = "Attack";
         protected const string STAT_DEFENSE = "defense";
         protected const string STAT_ATTACK_SPEED = "AttackSpeed";
         protected const string STAT_HEALING = "healing";
 
         // 인스턴스별 퍼센트 누적( +0.20f = +20% )
-        protected readonly Dictionary<StatusEffect, (string key, float delta)> _mulByInst
-            = new Dictionary<StatusEffect, (string key, float delta)>();
+        protected readonly Dictionary<StatusEffect, (string key, float delta)> _mulByInst = new Dictionary<StatusEffect, (string key, float delta)>();
+        protected readonly Dictionary<string, float> _mulAccum = new Dictionary<string, float>();
 
-        // 스탯키별 전체 퍼센트 누적(빠른 합성용 캐시)
-        protected readonly Dictionary<string, float> _mulAccum
-            = new Dictionary<string, float>();
+        // 인스턴스별 고정수치(Flat) 누적
+        private readonly Dictionary<StatusEffect, (string key, float delta)> _flatByInst = new Dictionary<StatusEffect, (string key, float delta)>();
+        private readonly Dictionary<string, float> _flatAccum = new Dictionary<string, float>();
 
         protected bool _isUpdatedStatus = false;
 
@@ -403,8 +403,6 @@ namespace Server.Game
                         if (MathF.Abs(pct) > 1f)
                             pct *= 0.01f;
 
-                        if (statusEffect.stat == "moveSpeed" || statusEffect.stat == "MoveSpeed" || statusEffect.stat == "speed")
-                            statusEffect.stat = STAT_MOVE_SPEED;
                         RegisterMultiplier(statusEffect, statusEffect.stat, pct);
                     }
                 }                    
@@ -579,16 +577,16 @@ namespace Server.Game
         #endregion
 
         #region StatusEffect 연동 
-        // 최종 = base * (1 + 누적 퍼센트)
+        // 최종 = 비율 → 고정 순 합성
         protected float ComposeFinal(string key, float baseVal)
         {
-            float pct = _mulAccum.TryGetValue(key, out var v) ? v : 0f;
-            float result = baseVal * (1f + pct);
-
+            float mul = _mulAccum.GetValueOrDefault(key);  // 비율 합
+            float flat = _flatAccum.GetValueOrDefault(key); // 고정값 합
+            float result = baseVal * (1f + mul) + flat;
             return MathF.Max(0f, result);
         }
 
-        // 인스턴스 등록
+        // 인스턴스 등록 : 비율(%) 누적
         protected void RegisterMultiplier(StatusEffect inst, string key, float delta)
         {
             if (MathF.Abs(delta) < 1e-9f)
@@ -613,11 +611,25 @@ namespace Server.Game
                 _mulAccum[key] = _mulAccum.GetValueOrDefault(key) + delta;
             }
 
-            Console.WriteLine($"@ Register : Id - {Id}, key - {key}, value - {_mulAccum[key]}");
+            Console.WriteLine($"@ RegisterMultiplier : Id - {Id}, key - {key}, value - {_mulAccum[key]}");
             _isUpdatedStatus = true;
         }
 
-        // 인스턴스 제거 시 그 인스턴스가 더했던 % 전량 제거
+        // 인스턴스 등록 : 고정수치 누적
+        protected void RegisterFlat(StatusEffect inst, string key, float delta)
+        {
+            if (MathF.Abs(delta) < 1e-9f)
+                return;
+
+            _flatByInst[inst] = (key, delta);
+            _flatAccum[key] = _flatAccum.GetValueOrDefault(key) + delta;
+
+            Console.WriteLine($"@ RegisterFlat : Id - {Id}, key - {key}, value - {_mulAccum[key]}");
+
+            _isUpdatedStatus = true;
+        }
+
+        // 인스턴스 제거 : 해당 인스턴스가 더했던 비율 제거
         protected void UnregisterMultiplier(StatusEffect inst)
         {
             if (!_mulByInst.TryGetValue(inst, out var pair))
@@ -629,6 +641,21 @@ namespace Server.Game
             _mulAccum[key] = _mulAccum.GetValueOrDefault(key) - delta;
             if (MathF.Abs(_mulAccum[key]) < 1e-6f)
                 _mulAccum.Remove(key);
+
+            _isUpdatedStatus = true;
+        }
+
+        // 인스턴스 제거 : 해당 인스턴스가 더했던 고정수치 제거
+        protected void UnregisterFlat(StatusEffect inst)
+        {
+            if (!_flatByInst.TryGetValue(inst, out var pair))
+                return;
+            var (key, delta) = pair;
+            _flatByInst.Remove(inst);
+
+            _flatAccum[key] = _flatAccum.GetValueOrDefault(key) - delta;
+            if (MathF.Abs(_flatAccum[key]) < 1e-6f)
+                _flatAccum.Remove(key);
 
             _isUpdatedStatus = true;
         }
