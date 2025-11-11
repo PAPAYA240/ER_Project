@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Numerics;
-using Google.Protobuf.Protocol;
+﻿using Google.Protobuf.Protocol;
 using Lucene.Net.Store;
 using ServerCore;
-using static System.Net.Mime.MediaTypeNames;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using System.Threading;
+using System.Threading.Tasks;
 using static Server.Game.GameObject;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.Game
 {
@@ -368,8 +369,32 @@ namespace Server.Game
 
                         // NAYOUNGTODO : Idle로 변경해야 함
                     }
-                }                    
+                    else if (statusEffect.type == "Pyosik")
+                    {
+                        S_AddYukiPyosik yukiPyosikPkt = new S_AddYukiPyosik();
+                        yukiPyosikPkt.ObjectId = Id;
+                        yukiPyosikPkt.AttackerTeam = statusEffect.attacker.Info.Player.Team;
+                        Room.Broadcast(yukiPyosikPkt);
+
+                        Player player = statusEffect.attacker as Player;
+
+                        // 유키 궁 표식 데미지
+                        int curLevel = player.GetSkillLevel(Data.DataUtils.KeyCode.R);
+                        float curAttack = player.Attack;
+                        _ = CoDelayYukiCoupDeGrace(atk, curAttack, curLevel, 1000);
+                    }
+                }
             }
+        }
+
+        // Yuki pyosik damage coroutine
+        List<float> FixedDamage = new List<float> { 0.06f, 0.1f, 0.14f };
+        private async Task CoDelayYukiCoupDeGrace(Creature atk, float curAttack, int curLevel, int delayMs)
+        {
+            await Task.Delay(delayMs);
+
+            float damage = MaxHp * (FixedDamage[curLevel - 1] + (curAttack * 0.05f) * 0.01f);
+            Room.Push(OnDamaged, atk, damage, true, false);
         }
 
         public int RemoveStatusEffects(string type, string stat = null) // 해당 종류의 상태효과 모두 제거

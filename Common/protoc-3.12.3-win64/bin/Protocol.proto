@@ -90,6 +90,8 @@ enum MsgId {
 
   C_OPERATE = 75;
   S_ROTATE_TO_POS = 76;
+  
+  S_ADD_YUKI_PYOSIK = 77;
 }
 
 enum CombatState{
@@ -573,6 +575,11 @@ message S_AddAbigailCoord{
 
 message S_RemoveAbigailCoord{
 	int32 objectId = 1;
+}
+
+message S_AddYukiPyosik{
+	int32 objectId = 1;
+	int32 attackerTeam = 2;
 }
 
 message S_OccupyBeacon{
