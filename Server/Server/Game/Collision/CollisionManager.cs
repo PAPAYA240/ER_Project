@@ -763,14 +763,14 @@ namespace Server.Game
                         else if(effect.type == "OnCollisionMultiTarget")
                             player.Room.Push(player.Room.CallOnCollision, player, hitTargets, effect);
                         else
-                            player.Room.Push(player.Room.AddStatusEffect, player, effect);
+                            player.Room.Push(player.AddStatusEffect, effect);
                         break;
                     case Subject.Ally: // 이건 아군대상 스킬에만 있을거같긴해서 생략
                         break;
                     case Subject.Enemy:
                         foreach(var enemy in hitTargets.OfType<Creature>()) // Creature 일때만
                         { 
-                            enemy.Room.Push(enemy.Room.AddStatusEffect, enemy, effect); 
+                            enemy.Room.Push(enemy.AddStatusEffect, effect); 
                         }
                         break;
                     case Subject.T:
