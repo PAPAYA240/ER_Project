@@ -207,54 +207,6 @@ public class MyPlayerController : PlayerController
     }  
     #endregion
 
-    #region Effect
-    protected GameObject FindEffect(string fxName)
-    {
-        return Managers.FX.Effect.FindEffect(ObjInfo.ObjectId, fxName);
-    }
-    // 스킬 시전 이펙트 : TODO : 나중에 키에 따른 이펙트만 지워줄 것
-    protected void RemoveAllEffect()
-    {
-        Managers.FX.RemoveAllEffect(ObjInfo.ObjectId);
-    }
-    protected void RemoveEffect(string fxName)
-    {
-        Managers.FX.Effect.RemoveEffect(ObjInfo.ObjectId, FindEffect(fxName));
-    }
-    protected List<GameObject> PlayEffect(string fxName, Vector3 position = new Vector3(), Quaternion rot = new Quaternion())
-    {
-        List<EffectData> effectList = Managers.Data.GetEffectsByPrefabName(fxName);
-    
-        return Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, transform, position, rot);
-    }
-    
-    protected override List<GameObject> PlayEffectTransform(CreatureState state, KeyCode key, EffectType type = EffectType.Caster,
-        GameObject target = null, Transform targetTransform = null)
-    {
-        List<EffectData> effectList =
-            Managers.Data.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
-    
-        List<GameObject> EffectList = null;
-    
-        // 타겟의 이펙트
-        if (type == EffectType.HitTarget && target != null)
-        {
-            EffectList = (targetTransform != null) ?
-             Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, targetTransform)
-             : Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, target.transform);
-        }
-        // 나의 이펙트
-        else if (type == EffectType.Caster)
-        {
-            EffectList = (targetTransform != null) ?
-            Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, targetTransform)
-            : Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, this.transform);
-        }
-    
-        return EffectList;
-    }
- 
-    #endregion
 
     #region Inventory, EquipItem
 
@@ -314,27 +266,27 @@ public class MyPlayerController : PlayerController
         //_isWarp = isWarp;
     }
 
-    protected Vector3 GetCursorPos()
+    public void LookAtMouse()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit, 100f))
         {
-            return new Vector3(hit.point.x, 0, hit.point.z); // 충돌 지점이 곧 월드 좌표
+            Vector3 targetPoint = hit.point;
+            targetPoint.y = transform.position.y;
+            Vector3 direction = targetPoint - transform.position;
+
+            if (direction != Vector3.zero)
+            {
+                Quaternion newRotation = Quaternion.LookRotation(direction);
+                RotInfo = newRotation;
+                SyncPos(true);
+            }
         }
-        return new Vector3(-1, -1, -1);
     }
     #endregion
 
     #region Packet
-    protected void SendFXPacket(KeyCode key)
-    {
-        //C_Fx fxPacket = new C_Fx();
-
-        //fxPacket.FxInfo = new EffectInfo() { KeyCode = (int)_keyCode };
-
-        //Managers.Network.Send(fxPacket);
-    }
 
     protected override void CheckUpdatedFlag()
     {

@@ -23,15 +23,26 @@
       "skillDuration": "3.0",
       "skillCoolTime": "0.2",
       "damage": "300",
-      "SkillBehavior": "KnockbackSkill"
-    },
+      "SkillBehavior": "KnockbackSkill",
+      "descriptionInfo": {
+        "Duration": 0.5,
+        "Speed": 5.0,
+        "Distance" :  5.0
+      }
+      },
     {
       "id": "4",
       "name": "MsSkill2",
       "skillType": "MsSkill2",
       "skillDuration": "1.08",
       "skillCoolTime": "1",
-      "damage": "300"
+      "damage": "300",
+      "SkillBehavior": "FloatSkill",
+      "descriptionInfo": {
+        "Duration": 0.5,
+        "Speed": 5.0,
+        "Distance": 5.0
+      }
     },
     {
       "id": "5",
@@ -39,7 +50,7 @@
       "skillType": "MsDroneAttack1",
       "skillDuration": "1.1",
       "skillCoolTime": "0",
-      "damage": "10"
+      "damage": "35"
     },
     {
       "id": "6",
@@ -47,7 +58,7 @@
       "skillType": "MsGammaAttack1",
       "skillDuration": "1.0",
       "skillCoolTime": "0",
-      "damage": "10"
+      "damage": "300"
     },
     {
       "id": "7",
@@ -55,7 +66,7 @@
       "skillType": "MsGammaSkill1",
       "skillDuration": "2.25",
       "skillCoolTime": "1",
-      "damage": "10"
+      "damage": "300"
     },
     {
       "id": "8",
@@ -63,7 +74,7 @@
       "skillType": "MsGammaSkill2",
       "skillDuration": "6.4",
       "skillCoolTime": "0",
-      "damage": "10"
+      "damage": "300"
     },
     {
       "id": "9",
@@ -71,7 +82,7 @@
       "skillType": "MsGammaSkill3",
       "skillDuration": "2.15",
       "skillCoolTime": "0",
-      "damage": "10"
+      "damage": "300"
     },
     {
       "id": "10",

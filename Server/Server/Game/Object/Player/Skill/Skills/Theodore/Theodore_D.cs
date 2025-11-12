@@ -28,6 +28,10 @@ public sealed class Theodore_D : SkillHandlerBase
         return;
     }
 
+    public override void OnAttack(Player p)
+    {
+        p.SendAnimPacket(ANIM_SKILL, 0.05f);
+    }
     public override void OnTick(Player p, SkillContext ctx)
     {
         //총 3발

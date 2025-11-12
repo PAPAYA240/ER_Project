@@ -134,7 +134,6 @@ public class PlayAnimatorBoolNode : AnimationControlNode
 
         if (stateInfo.normalizedTime >= 0.95f)
         {
-            monsterController.isSpawned = true;
             _animator.SetBool(paramName, false);
             return NodeStatus.Success;
         }

@@ -349,7 +349,7 @@ public class PlayerInputController : MonoBehaviour
     }
 
     // 사거리-타겟 지점 계산
-    private Vector3 GetAttackStopPosition(Vector3 from, Vector3 target)
+    protected virtual Vector3 GetAttackStopPosition(Vector3 from, Vector3 target)
     {
         Vector3 dir = target - from;
         dir.y = 0f;
@@ -363,7 +363,7 @@ public class PlayerInputController : MonoBehaviour
     }
 
     // 경로가 부분 경로면 마지막 코너를 반환
-    private Vector3 CalculateFinalDestination(Vector3 from, Vector3 desired)
+    protected virtual Vector3 CalculateFinalDestination(Vector3 from, Vector3 desired)
     {
         if (!NavMesh.SamplePosition(from, out var fromHit, 2f, NavMesh.AllAreas))
             fromHit.position = from;
@@ -406,5 +406,6 @@ public class PlayerInputController : MonoBehaviour
         return true;
     }
     #endregion
+
 }
 
