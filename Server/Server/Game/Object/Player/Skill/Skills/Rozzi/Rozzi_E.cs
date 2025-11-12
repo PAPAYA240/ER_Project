@@ -123,7 +123,9 @@ public sealed class Rozzi_E : SkillHandlerBase
                 targetPlayer.ChangeState(new Player_StunState(desc));
             }
 
-            p.Room.Push(p.Room.AttackSkillTarget, p, _target, _keyCode); 
+
+            Vector2 hitPos = new Vector2(_target.Position.X, _target.Position.Z);
+            p.Room.CollManager.AddHitbox(p, _characterType, _keyCode, hitPos);
         }
 
         _elapsed += TimeUtil.DeltaTime;

@@ -438,13 +438,6 @@ namespace Server.Game
             if (player == null)
                 return;
 
-            if (player.Info.Player.CharType == CharacterType.Rozzi && keyCode == KeyCode.E)
-            {
-                Vector2 targetPos = new Vector2(target.Position.X, target.Position.Z);
-                _collisionManager.AddHitbox(player, player.Info.Player.CharType, keyCode, targetPos);
-                return;
-            }
-
             float damage = 0f;
 
             if (target.ObjectType == GameObjectType.Player)

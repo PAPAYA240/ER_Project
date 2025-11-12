@@ -52,13 +52,13 @@ namespace Server.Game
 
         public override float Speed 
         {
-            get { return (ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed)) ; }
+            get { return ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed + _totalItemStat.FixedSpeed * (1 + _totalItemStat.PercentageSpeed)) ; }
             set { base.Speed = value; }
         }
 
         public override float AttackSpeed
         {
-            get { return (ComposeFinal(STAT_ATTACK_SPEED, Stat.AttackSpeed + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed)) ; }
+            get { return ComposeFinal(STAT_ATTACK_SPEED, Stat.AttackSpeed + _totalItemStat.FixedSpeed * (1 + _totalItemStat.PercentageSpeed)) ; }
             set { base.AttackSpeed = value; }
         }
 

@@ -18,7 +18,7 @@ public class PlayerController : CreatureController
     float _minDist = 3f;
     float _syncSpeed = 20f;
     Vector3 _serverPos;
-    float AGENT_SPEED_DIFF = 2.0f;
+    float AGENT_SPEED_RATIO = 1.7f;
 
     // Fog
     private FogOfWarVision _fogOfWarVision;
@@ -105,7 +105,7 @@ public class PlayerController : CreatureController
     public override float Speed
     {
         get { return Stat.MoveSpeed;/*(Stat.MoveSpeed + ItemStat.FixedSpeed) * (1 + ItemStat.PercentageSpeed) * 1.7f;*/ }
-        set { Stat.MoveSpeed = value; _agent.speed = value + AGENT_SPEED_DIFF; }
+        set { Stat.MoveSpeed = value; _agent.speed = value * AGENT_SPEED_RATIO; }
     }
 
     public override float FixedDefensePenetration { get { return ItemStat.FixedDefensePenetration; } }
@@ -207,7 +207,7 @@ public class PlayerController : CreatureController
 
         // NavMesh Agent
         _agent = GetComponent<NavMeshAgent>();
-        _agent.speed = Speed + AGENT_SPEED_DIFF;
+        _agent.speed = Speed * AGENT_SPEED_RATIO;
         _agent.acceleration = 999;
         _agent.angularSpeed = 720;
         _agent.stoppingDistance = 0.1f;
