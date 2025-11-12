@@ -49,6 +49,7 @@ public class Abigail_AttackState : Player_AttackState
             animName = AnimAttackT;
             p.Skill.StartCooldown(_keyCode);
             p.SendSkillCostPacket(_keyCode, p.Skill.GetCooldown(_keyCode));
+            IsPassiveAttack = false;
         }
         else
         {
