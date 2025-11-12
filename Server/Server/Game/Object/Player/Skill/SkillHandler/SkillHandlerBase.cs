@@ -147,30 +147,6 @@ public abstract class SkillHandlerBase : ISkill
         return _keyCode;
     }
 
-    protected StatusEffect GetStatusEffect(Player p, string stat)
-    {
-        var effectData = DataManager.SkillDict[_characterType][_keyCode].levels[p.GetSkillLevel(_keyCode)].effects;
-        if (effectData == null)
-            return null;
-
-        foreach (var data in effectData)
-        {
-            if(data.stat == stat)
-            {
-                StatusEffect effect = new StatusEffect();
-                effect.stat = data.stat;   
-                effect.type = data.type;    
-                effect.value = data.value;
-                effect.valueType = System.Enum.TryParse(data.valueType, true, out Server.Game.ValueType type) ? type : Server.Game.ValueType.ValueType_None;
-                effect.duration = data.duration;
-                //effect.subject = System.Enum.TryParse(data.subject, true, out Subject temp) ? temp : Subject.Subject_None;
-                return effect;
-            }
-        }
-
-        return null;
-    }
-
     // Tick 등에서 소비(가져가면 플래그 리셋)
     protected bool TryConsumeLatest(ref int requestId, out SkillCollisionProposal prop)
     {

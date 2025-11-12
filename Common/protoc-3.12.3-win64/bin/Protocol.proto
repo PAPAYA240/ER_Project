@@ -908,6 +908,7 @@ message S_ChangeStatus{
 	float attackSpeed = 4;
 	float defense = 5;
 	float healing = 6;
+}
 
 message C_Operate{
 	string beaconName = 1;

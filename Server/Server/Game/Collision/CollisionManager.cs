@@ -777,16 +777,14 @@ namespace Server.Game
                         break;
                     case Subject.T:
                         if(cnt == 1 && effect.type == "CDR") // 쿨타임 감소는 딱 한번만 발생해야 함
-                            player.Skill.Reduce(KeyCode.T, effect.value);
-                        if(effect.type == "CDR")
                             player.Skill.Reduce(KeyCode.T, effect.value, effect.valueType == ValueType.Ratio);
                         break;
                     case Subject.Q:
-                        if (effect.type == "CDR")
+                        if (cnt == 1 && effect.type == "CDR")
                             player.Skill.Reduce(KeyCode.Q, effect.value, effect.valueType == ValueType.Ratio);
                         break;
                     case Subject.W:
-                        if (effect.type == "CDR")
+                        if (cnt == 1 && effect.type == "CDR")
                             player.Skill.Reduce(KeyCode.W, effect.value, effect.valueType == ValueType.Ratio);
                         break;
                 }
