@@ -40,25 +40,25 @@ namespace Server.Game
         #region Stat Property
         public override float Attack
         {
-            get { return ComposeFinal(STAT_ATTACK, Stat.Attack) + _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat; }
+            get { return ComposeFinal(STAT_ATTACK, Stat.Attack + _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat) ; }
             set { base.Attack = value; }
         }
 
         public override float Defense
         {
-            get { return ComposeFinal(STAT_DEFENSE, Stat.Defense) + _totalItemStat.Defense; }
+            get { return ComposeFinal(STAT_DEFENSE, Stat.Defense + _totalItemStat.Defense); }
             set { base.Defense = value; }
         }
 
         public override float Speed 
         {
-            get { return (ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed) + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
+            get { return (ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed)) ; }
             set { base.Speed = value; }
         }
 
         public override float AttackSpeed
         {
-            get { return (ComposeFinal(STAT_ATTACK_SPEED, Stat.AttackSpeed) + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
+            get { return (ComposeFinal(STAT_ATTACK_SPEED, Stat.AttackSpeed + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed)) ; }
             set { base.AttackSpeed = value; }
         }
 
@@ -78,13 +78,11 @@ namespace Server.Game
         {
             get { return base.Hp; }
             set 
-            {
-                
-                float diff = value - Stat.Hp;
-                if (diff > 0)
-                    Stat.Hp += diff * Healing;
-
-                Stat.Hp = Math.Clamp(value, 0, MaxHp);              
+            {             
+                if (value > Stat.Hp)
+                    Stat.Hp = Math.Clamp(Stat.Hp + (value - Stat.Hp) * Healing, 0, MaxHp);
+                else
+                    Stat.Hp = Math.Clamp(value, 0, MaxHp);              
             }
         }
 
