@@ -278,6 +278,7 @@ namespace Server.Game
                 _players.TryAdd(gameObject.Id, player);
                 player.Info.Player.Team = AssignTeam();
                 player.Info.Player.Weapon = FindWeapon(player.Info.Player.CharType);
+                player.WeaponAttackRange = DataManager.WeaponDict[player.Info.Player.Weapon].Range;
 
                 if (!_teams.TryGetValue(player.Info.Player.Team, out var teamPlayers))
                 {
@@ -328,6 +329,7 @@ namespace Server.Game
 
                     // 시간 동기화
                     SyncTimer();
+                    player.SendChangeAttackRangePacket();
                 }
             }
             else if (type == GameObjectType.Monster)

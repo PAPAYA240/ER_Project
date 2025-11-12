@@ -13,7 +13,6 @@ public class PlayerInputController : MonoBehaviour
     protected PlayerSkillController _skill;
     private NavMeshAgent _agent;
 
-    [SerializeField] float _attackRange = 3.0f;  
     [SerializeField] float _stopBuffer = 0.1f;
 
     private GameObject _target;
@@ -358,7 +357,7 @@ public class PlayerInputController : MonoBehaviour
             return target;
         dir /= dist;
 
-        float stop = Mathf.Max(0.05f, _attackRange - _stopBuffer); 
+        float stop = Mathf.Max(0.05f, _player.AttackRange - _stopBuffer); 
         return target - dir * stop;
     }
 

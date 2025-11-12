@@ -782,6 +782,39 @@ class PacketHandler
         }
     }
 
+    public static void S_ChangeAttackRangeHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeAttackRange changeAtkRangePkt = packet as S_ChangeAttackRange;
+
+        GameObject go = Managers.Object.FindById(changeAtkRangePkt.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.AttackRange = changeAtkRangePkt.AttackRange;
+
+        if (pc is MyPlayerController mpc)
+            mpc.UI.PlayerInterface.UpdateStat();
+    }
+
+    public static void S_UntargetableHandler(PacketSession session, IMessage packet)
+    {
+        S_Untargetable untargetablePkt = packet as S_Untargetable;
+
+        GameObject go = Managers.Object.FindById(untargetablePkt.ObjectId);
+        if (go == null)
+            return;
+
+        CreatureController cc = go.GetComponentInChildren<CreatureController>();
+        if (cc == null)
+            return;
+
+        cc.Untargetable = untargetablePkt.Untargetable;  
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;

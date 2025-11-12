@@ -8,12 +8,11 @@ using static Server.Data.DataUtils;
 
 public class Yuki_AttackState : Player_AttackState
 {
-    static readonly float _tAttackRange = 2.15f;
     private const string AnimAttackT = "SKILL_Q";
     KeyCode _keyCode = KeyCode.Q;
     bool IsPassiveAttack = false;
 
-    public Yuki_AttackState(int targetId, bool chaseAllowed = true, float attackRange = DefaultAttackRange) : base(targetId, chaseAllowed, _tAttackRange)
+    public Yuki_AttackState(int targetId, bool chaseAllowed = true) : base(targetId, chaseAllowed)
     {
     }
 
@@ -56,7 +55,8 @@ public class Yuki_AttackState : Player_AttackState
         GameRoom room = p.Room;
 
         // 스킬 데미지
-        room.Push(room.AttackSkillTarget, p, target, _keyCode);
+        //if (IsPassiveAttack)
+        //    room.Push(room.AttackSkillTarget, p, target, _keyCode);
 
         // 평타 데미지
         room.Push(target.OnDamaged, p, p.Attack, false, true);

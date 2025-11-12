@@ -280,14 +280,21 @@ namespace Server.Game
             foreach (var targetKvp in targets)
             {
                 T target = targetKvp.Value;
-                if (hitbox.HitObjs.ContainsKey(targetKvp.Key) || true == hitbox.IsUsed)
+
+                if (hitbox.IsUsed)
                     continue;
 
-                if (CheckCollision(hitbox, target))
-                {
-                    hitTargets.Add(target);
-                    HandlerInteraction(hitbox, target);
-                }
+                if (hitbox.HitObjs.ContainsKey(targetKvp.Key))
+                    continue;
+
+                if (!CheckCollision(hitbox, target))
+                    continue;
+
+                if (!hitbox.HitObjs.TryAdd(targetKvp.Key, 1))
+                    continue;
+
+                hitTargets.Add(target);
+                HandlerInteraction(hitbox, target);
             }
         }
 

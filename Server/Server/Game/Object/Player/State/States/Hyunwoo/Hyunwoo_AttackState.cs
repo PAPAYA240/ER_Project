@@ -11,7 +11,7 @@ namespace Server.Game
         KeyCode _keyCode = KeyCode.T;
         bool IsPassiveAttack = false;
 
-        public Hyunwoo_AttackState(int targetId, bool chaseAllowed = true, float attackRange = 1.66f) : base(targetId, chaseAllowed, attackRange)
+        public Hyunwoo_AttackState(int targetId, bool chaseAllowed = true) : base(targetId, chaseAllowed)
         {
         }
 

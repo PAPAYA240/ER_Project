@@ -129,6 +129,25 @@ public class PlayerController : CreatureController
         }
     }
 
+    private bool _untargetable;
+    public override bool Untargetable 
+    { 
+        get => _untargetable; 
+        set 
+        {
+            if (_untargetable == value)
+                return;
+
+            _untargetable = value;
+
+            if (_untargetable)
+                _nameTag.SetNameText("대상 지정 불가", 20);
+            else
+                _nameTag.SetNameText("아비게일", 16);
+
+            _nameTag.SetHPColor(_untargetable);
+        } 
+    }
     #endregion
 
     // 레이어
@@ -298,6 +317,11 @@ public class PlayerController : CreatureController
         //AttackSpeed = packet.AttackSpeed;
         Defense = packet.Defense;
         Healing = packet.Healing;
+    }
+
+    public void ChangeAttackRange(S_ChangeAttackRange packet)
+    {
+        AttackRange = packet.AttackRange;
     }
 
     #region Util

@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 public class UI_PlayerNameTag : UI_Base
 {
-    enum Images { Hp }
+    enum Images { Hp, FillImage }
 
     enum Texts 
     { 
@@ -28,6 +29,12 @@ public class UI_PlayerNameTag : UI_Base
     static Color _red;
     static Color _green;
     static Color _blue;
+    static Color _skyBlue;
+
+    static Color _red_Dark;
+    static Color _green_Dark;
+    static Color _blue_Dark;
+    static Color _skyBlue_Dark;
 
     public override void Init()
     {
@@ -38,6 +45,12 @@ public class UI_PlayerNameTag : UI_Base
         ColorUtility.TryParseHtmlString("#D5163A", out _red);
         ColorUtility.TryParseHtmlString("#76CC22", out _green);
         ColorUtility.TryParseHtmlString("#028FEE", out _blue);
+        ColorUtility.TryParseHtmlString("#20DFFF", out _skyBlue);
+
+        _red_Dark = _red * 0.5f;
+        _green_Dark = _green * 0.5f;
+        _blue_Dark = _blue * 0.5f;
+        _skyBlue_Dark = _skyBlue * 0.5f;
 
         Camera.main.gameObject.GetOrAddComponent<CameraController>().LateUpdateAction += UpdatePosition;
     }
@@ -79,9 +92,15 @@ public class UI_PlayerNameTag : UI_Base
         GetText((int)Texts.LevelText).text = level.ToString();
     }
 
-    public void SetNameText(string name)
+    public void SetNameText(string name, float fontSize)
     {
-        GetText((int)Texts.LevelText).text = name;
+        var tmp = GetText((int)Texts.NameText);
+        if (tmp != null)
+        {
+            tmp.text = name;
+            tmp.fontSize = fontSize;
+            tmp.ForceMeshUpdate(); // TMP에 텍스트 즉시 갱신
+        }
     }
 
     public void SetTarget(GameObject target)
@@ -89,7 +108,7 @@ public class UI_PlayerNameTag : UI_Base
         _target = target;
     }
 
-    public void SetHPColor()
+    public void SetHPColor(bool darkMode = false)
     {
         if (_target == null)
             return;
@@ -99,11 +118,13 @@ public class UI_PlayerNameTag : UI_Base
             return;
 
         if (Managers.Object.MyPlayer.gameObject.transform == _target.transform)
-            GetImage((int)Images.Hp).color = _green;
-        else if(Managers.Object.MyPlayer.ObjInfo.Player.Team == targetPc.ObjInfo.Player.Team)
-            GetImage((int)Images.Hp).color = _blue;
-        else if(Managers.Object.MyPlayer.ObjInfo.Player.Team != targetPc.ObjInfo.Player.Team)
-            GetImage((int)Images.Hp).color = _red;
+            GetImage((int)Images.Hp).color = darkMode ? _green_Dark : _green;
+        else if (Managers.Object.MyPlayer.ObjInfo.Player.Team == targetPc.ObjInfo.Player.Team)
+            GetImage((int)Images.Hp).color = darkMode ? _blue_Dark: _blue;
+        else if (Managers.Object.MyPlayer.ObjInfo.Player.Team != targetPc.ObjInfo.Player.Team)
+            GetImage((int)Images.Hp).color = darkMode ? _red_Dark : _red;
+
+        GetImage((int)Images.FillImage).color = darkMode ? _skyBlue_Dark : _skyBlue;
     }
 
     public void SetHp(float newHp)

@@ -40,7 +40,7 @@ namespace Server.Game
         #region Stat Property
         public override float Attack
         {
-            get { return ComposeFinal(STAT_ATTACK, Stat.Attack) + _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat; }
+            get { return ComposeFinal(STAT_ATTACK, Stat.Attack + _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat); }
             set { base.Attack = value; }
         }
 
@@ -52,13 +52,13 @@ namespace Server.Game
 
         public override float Speed 
         {
-            get { return (ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed) + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
+            get { return ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
             set { base.Speed = value; }
         }
 
         public override float AttackSpeed
         {
-            get { return (ComposeFinal(STAT_ATTACK_SPEED, Stat.AttackSpeed) + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
+            get { return ComposeFinal(STAT_ATTACK_SPEED, Stat.AttackSpeed + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
             set { base.AttackSpeed = value; }
         }
 
@@ -323,6 +323,8 @@ namespace Server.Game
                 }
             }
 
+            UpdateAttackRange();
+
             //base.Update();
 
             TickTokens(); // ��ū ����/����
@@ -436,6 +438,27 @@ namespace Server.Game
 
                 _isUpdatedStat = false;
             }
+        }
+
+        void UpdateAttackRange()
+        {
+            float prevAttackRange = AttackRange;
+
+            switch (Info.Player.CharType)
+            {
+                case CharacterType.Yuki:
+                    // Q 활성화 되어있으면 BonusAttackRange = 0.25f
+                    break;
+                case CharacterType.Abigail:
+                    if (Skill.IsPassiveAttackReady())
+                        BonusAttackRange = 0.1f;
+                    else
+                        BonusAttackRange = 0f;
+                    break;
+            }
+
+            if (Math.Abs(prevAttackRange - AttackRange) > 0.0001f)
+                SendChangeAttackRangePacket();
         }
         #endregion
 
@@ -1109,6 +1132,22 @@ namespace Server.Game
                 CanStopSkill = canStopSkill
             };
             Room.Push(Room.Broadcast, pkt);
+        }
+
+        public void SendChangeAttackRangePacket()
+        {
+            S_ChangeAttackRange changeAtkRangePkt = new S_ChangeAttackRange();
+            changeAtkRangePkt.ObjectId = Id;
+            changeAtkRangePkt.AttackRange = AttackRange;
+            Room.Push(Session.Send, changeAtkRangePkt);
+        }
+
+        public void SendUntargetablePacket(bool IsUntargetable)
+        {
+            S_Untargetable untargetablePkt = new S_Untargetable();
+            untargetablePkt.ObjectId = Id;
+            untargetablePkt.Untargetable = IsUntargetable;
+            Room.Push(Room.Broadcast, untargetablePkt);
         }
 
         //public void SendMoveSpeedPacket(float moveSpeed)

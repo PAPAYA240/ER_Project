@@ -21,7 +21,7 @@ namespace Server.Game
 
     public class BeaconManager
     {
-        readonly float _beaconDist = 3.0f;
+        readonly float _beaconDist = 2.5f;
 
         Vector3[] _positions =
         {
