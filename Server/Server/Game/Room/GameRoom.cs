@@ -594,12 +594,12 @@ namespace Server.Game
                 return;
 
             //player.Skill.SetCooldown(KeyCode.R, 0f);
-            StunStateDesc desc = new StunStateDesc();
-            desc.Duration = 5;
-            //desc.Speed = 17;
-            desc.EndPos = Vector3.Zero;
-            player.ChangeState(new Player_StunState(desc));
-
+            //StunStateDesc desc = new StunStateDesc();
+            //desc.Duration = 5;
+            ////desc.Speed = 17;
+            //desc.EndPos = Vector3.Zero;
+            //player.ChangeState(new Player_StunState(desc));
+            player.Hp += 100f;
         }
 
         #endregion

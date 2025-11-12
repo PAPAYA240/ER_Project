@@ -53,6 +53,7 @@ namespace Server.Game
     }
 
     public enum Subject { Subject_None, Self, Ally, Enemy, Q, W, E, R, T }
+    public enum ValueType { Ratio, Flat, ValueType_None }
 
     public class CollisionManager
     {
@@ -720,6 +721,7 @@ namespace Server.Game
                                     duration = effectData.duration,
                                     value = effectData.value,
                                     subject = Enum.TryParse(effectData.subject, true, out Subject temp) ? temp : Subject.Subject_None,
+                                    valueType = Enum.TryParse(effectData.valueType, true, out ValueType type) ? type : ValueType.ValueType_None,
                                     coeff = effectData.coeff,
                                     ratioPerTarget = effectData.ratioPerTarget,
                                     maxRatio = effectData.maxRatio
@@ -775,7 +777,15 @@ namespace Server.Game
                         break;
                     case Subject.T:
                         if(cnt == 1 && effect.type == "CDR") // 쿨타임 감소는 딱 한번만 발생해야 함
-                            player.Skill.Reduce(KeyCode.T, effect.value);
+                            player.Skill.Reduce(KeyCode.T, effect.value, effect.valueType == ValueType.Ratio);
+                        break;
+                    case Subject.Q:
+                        if (cnt == 1 && effect.type == "CDR")
+                            player.Skill.Reduce(KeyCode.Q, effect.value, effect.valueType == ValueType.Ratio);
+                        break;
+                    case Subject.W:
+                        if (cnt == 1 && effect.type == "CDR")
+                            player.Skill.Reduce(KeyCode.W, effect.value, effect.valueType == ValueType.Ratio);
                         break;
                 }
             }

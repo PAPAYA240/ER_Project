@@ -88,8 +88,10 @@ enum MsgId {
   S_SKILL_COLLISION_REQUEST = 73;
   C_CHARGING_SKILL = 74;
 
-  C_OPERATE = 75;
-  S_ROTATE_TO_POS = 76;
+  S_CHANGE_STATUS = 75;
+
+  C_OPERATE = 76;
+  S_ROTATE_TO_POS = 77;
 }
 
 enum CombatState{
@@ -627,6 +629,7 @@ message StatInfo{
 	int32 exp = 12;
 	int32 level = 13;
 	int32 heal = 14;
+	float healing = 15;
 }
 
 message PlayerInfo {
@@ -855,7 +858,6 @@ message C_Rest {
 message S_MoveSync {
   int32 objectId = 1;
   PositionInfo targetPos = 2;
-  float speed = 3;
 }
 
 message S_ChangeTransform{
@@ -896,6 +898,16 @@ message S_SkillCost{
 	int32 objectId = 1;
 	int32 skillKey = 2;	
 	CostInfo costInfo = 3;
+}
+
+message S_ChangeStatus{
+	int32 objectId = 1;
+
+	float moveSpeed = 2;
+	float attack = 3;
+	float attackSpeed = 4;
+	float defense = 5;
+	float healing = 6;
 }
 
 message C_Operate{

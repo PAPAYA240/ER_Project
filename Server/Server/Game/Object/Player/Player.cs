@@ -1,4 +1,5 @@
 using Google.Protobuf.Protocol;
+using Lucene.Net.Store;
 using Lucene.Net.Support;
 using Server.Data;
 using System;
@@ -39,20 +40,32 @@ namespace Server.Game
         #region Stat Property
         public override float Attack
         {
-            get { return base.Attack + _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat; }
+            get { return ComposeFinal(STAT_ATTACK, Stat.Attack) + _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat; }
             set { base.Attack = value; }
         }
 
         public override float Defense
         {
-            get { return base.Defense + _totalItemStat.Defense; }
+            get { return ComposeFinal(STAT_DEFENSE, Stat.Defense) + _totalItemStat.Defense; }
             set { base.Defense = value; }
         }
 
         public override float Speed 
         {
-            get { return (base.Speed + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
+            get { return (ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed) + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
             set { base.Speed = value; }
+        }
+
+        public override float AttackSpeed
+        {
+            get { return (ComposeFinal(STAT_ATTACK_SPEED, Stat.AttackSpeed) + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
+            set { base.AttackSpeed = value; }
+        }
+
+        public override float Healing
+        {
+            get { return ComposeFinal(STAT_HEALING, Stat.Healing); }
+            set { base.Healing = value; }
         }
 
         public override float MaxHp 
@@ -64,7 +77,15 @@ namespace Server.Game
         public override float Hp
         {
             get { return base.Hp; }
-            set { Stat.Hp = Math.Clamp(value, 0, MaxHp); }
+            set 
+            {
+                
+                float diff = value - Stat.Hp;
+                if (diff > 0)
+                    Stat.Hp += diff * Healing;
+
+                Stat.Hp = Math.Clamp(value, 0, MaxHp);              
+            }
         }
 
         public override float HpRegen
@@ -308,6 +329,7 @@ namespace Server.Game
             _stateMachine.Update(this);
             _statRegenerator.Update();
             CheckUpdateStat();
+            CheckUpdateStatus();
         }
 
         public void InitAboutItem()
@@ -369,7 +391,13 @@ namespace Server.Game
             _stateMachine.ChangeState(newState, this);
         }
 
+        public bool CanMove()
+        {
+            if(State == CreatureState.Stun || State == CreatureState.Dead)
+                return false;
 
+            return true;
+        }
         #endregion
 
         #region Stat
@@ -805,6 +833,8 @@ namespace Server.Game
                 Stamina += _totalItemStat.MaxStamina;
                 _isUpdatedStat = true;
 
+                _isUpdatedStatus = true;
+
                 GameRoom room = Room;
 
                 if (room != null)
@@ -976,7 +1006,7 @@ namespace Server.Game
                 };
                
                 if(sendCostPacket)
-                    SendSkillCostPacket(keyCode, GetCoolTime(keyCode));
+                    SendSkillCostPacket(keyCode);
             }
             else
             {
@@ -988,7 +1018,7 @@ namespace Server.Game
                 };
             }
 
-            Session.Send(packet);
+            Room.Push(Session.Send, packet);
         }
 
         public void SendFxPacket()
@@ -1013,7 +1043,7 @@ namespace Server.Game
                 EndX = endPos.X,
                 EndZ = endPos.Z
             };
-            Session.Send(packet);
+            Room.Push(Session.Send, packet);
         }
 
         public void SendSkillCostPacket(KeyCode keyCode, float coolTime)
@@ -1025,11 +1055,13 @@ namespace Server.Game
                 CostInfo = new CostInfo { CoolTime = coolTime, Stamina = Stamina }
             };
 
-            Session.Send(costPacket);
+            Room.Push(Session.Send, costPacket);
         }
 
         public void SendSkillCostPacket(KeyCode keyCode)
         {
+            CommitSkillUsage(keyCode);
+
             S_SkillCost costPacket = new S_SkillCost
             {
                 ObjectId = Id,
@@ -1037,7 +1069,7 @@ namespace Server.Game
                 CostInfo = new CostInfo { CoolTime = GetCoolTime(keyCode), Stamina = Stamina }
             };
 
-            Session.Send(costPacket);
+            Room.Push(Session.Send, costPacket);
         }
 
         public void SendTargetChangePacket(S_TargetChange packet)
@@ -1045,16 +1077,15 @@ namespace Server.Game
             Session.Send(packet);
         }
 
-        public void SendMoveSyncPacket(PositionInfo targetPos, float speed = 1.0f)
+        public void SendMoveSyncPacket(PositionInfo targetPos)
         {
             S_MoveSync packet = new S_MoveSync
             {
                 ObjectId = Id,
                 TargetPos = targetPos,
-                Speed = speed,
             };
             //Room.Push(Room.Broadcast, packet);
-            Session.Send(packet);
+            Room.Push(Session.Send, packet);
         }
 
         public void SendChangeTransformPacket(bool isWarp = false) // 수동으로 플레이어 위치or회전 수정한 후에 보내는 패킷
@@ -1080,6 +1111,16 @@ namespace Server.Game
             Room.Push(Room.Broadcast, pkt);
         }
 
+        //public void SendMoveSpeedPacket(float moveSpeed)
+        //{
+        //    S_MoveSpeed pkt = new S_MoveSpeed
+        //    {
+        //        ObjectId = Id,
+        //        MoveSpeed = moveSpeed,
+        //    };
+        //    Room.Push(Session.Send, pkt);
+        //}
+
         #endregion
 
         #region StatusEffect(버프, 디버프), Barrier(방어막) 관련
@@ -1101,6 +1142,26 @@ namespace Server.Game
             changePacket.Barrier = Barrier;
             //Console.WriteLine($"Barrier: {barrier}");
             Room.Push(Room.Broadcast, changePacket);
+        }
+
+        public void CheckUpdateStatus()
+        {
+            if (_isUpdatedStatus)
+            {
+                S_ChangeStatus packet = new S_ChangeStatus()
+                {
+                    ObjectId = Id,
+
+                    MoveSpeed = Speed,
+                    Attack = Attack,
+                    //AttackSpeed = 
+                    Defense = Defense,
+                    Healing = Healing,
+                };
+
+                Room.Push(Session.Send, packet);
+                _isUpdatedStatus = false;
+            }
         }
         #endregion
     }
