@@ -78,11 +78,18 @@ namespace Server.Game
         {
             get { return base.Hp; }
             set 
-            {             
-                if (value > Stat.Hp)
-                    Stat.Hp = Math.Clamp(Stat.Hp + (value - Stat.Hp) * Healing, 0, MaxHp);
-                else
-                    Stat.Hp = Math.Clamp(value, 0, MaxHp);              
+            {
+                float cur = Stat.Hp;
+
+                if (value > cur) // 회복일 때만  Healing에 치유 증가/감소 반영
+                {
+                    float healAmount = (value - cur) * Healing; 
+                    Stat.Hp = Math.Clamp(cur + healAmount, 0, MaxHp);
+                }
+                else // 데미지일 때는 그대로
+                {
+                    Stat.Hp = Math.Clamp(value, 0, MaxHp);
+                }
             }
         }
 
