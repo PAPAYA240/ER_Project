@@ -46,7 +46,7 @@ namespace Server.Game
 
         public override float Defense
         {
-            get { return ComposeFinal(STAT_DEFENSE, Stat.Defense) + _totalItemStat.Defense; }
+            get { return ComposeFinal(STAT_DEFENSE, Stat.Defense + _totalItemStat.Defense); }
             set { base.Defense = value; }
         }
 
