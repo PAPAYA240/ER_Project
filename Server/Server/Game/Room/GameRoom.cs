@@ -430,6 +430,13 @@ namespace Server.Game
             if (player == null)
                 return;
 
+            if (player.Info.Player.CharType == CharacterType.Rozzi && keyCode == KeyCode.E)
+            {
+                Vector2 targetPos = new Vector2(target.Position.X, target.Position.Z);
+                _collisionManager.AddHitbox(player, player.Info.Player.CharType, keyCode, targetPos);
+                return;
+            }
+
             float damage = 0f;
 
             if (target.ObjectType == GameObjectType.Player)
@@ -446,10 +453,6 @@ namespace Server.Game
                 int removeCnt = target.RemoveStatusEffects("Coord");
                 if (removeCnt > 0) // 표식 있는 적에게 E 사용시 E 쿨타임 초기화
                     player.Skill.SetCooldown(keyCode, 0);
-            }
-            else if (player.Info.Player.CharType == CharacterType.Rozzi && keyCode == KeyCode.E)
-            {
-                
             }
 
             target.OnDamaged(player, damage);

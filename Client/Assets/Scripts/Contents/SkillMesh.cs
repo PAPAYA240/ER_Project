@@ -119,7 +119,6 @@ public class SkillMesh : MonoBehaviour
                 visualObject.transform.localPosition = new Vector3(_hitbox.RightOffset, 0, _hitbox.LookOffset);
                 DrawSector(lr, _hitbox.Radius, _hitbox.Angle);
                 break;
-
             case SkillShape.ShapeNone:
             default:
                 Destroy(visualObject);

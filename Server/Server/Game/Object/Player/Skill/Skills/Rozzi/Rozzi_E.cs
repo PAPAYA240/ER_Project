@@ -24,7 +24,7 @@ public sealed class Rozzi_E : SkillHandlerBase
     private float _behindDistance = 2.5f;
     private float _behindSpeed = 10.0f;
 
-    private float _stunDuration = 0.3f;
+    private float _stunDuration = 0.5f;
 
     private bool _isRequest;
 
@@ -35,6 +35,8 @@ public sealed class Rozzi_E : SkillHandlerBase
         _keyCode = KeyCode.E;
 
         _duration = _animDuration = GetDuration();
+
+        _hitboxCreated = false;
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
@@ -119,7 +121,9 @@ public sealed class Rozzi_E : SkillHandlerBase
                 desc.EndPos = _target.Position;
                 desc.Duration = _stunDuration;
                 targetPlayer.ChangeState(new Player_StunState(desc));
-            }            
+            }
+
+            p.Room.Push(p.Room.AttackSkillTarget, p, _target, _keyCode); 
         }
 
         _elapsed += TimeUtil.DeltaTime;

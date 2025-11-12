@@ -111,6 +111,12 @@ namespace Server.Game
                     Interactions = ConvertProtoInteractionsToKeyCodeDictionary(skillHitbox.Interactions)
                 };
 
+                if(charType == CharacterType.Rozzi && keyCode == KeyCode.E)
+                {
+                    hitbox.PosX = mousePos.X;
+                    hitbox.PosZ = mousePos.Y;
+                }
+
                 SettingPointType(hitbox);
                 _pendingHitboxes.Add(hitbox);
             }            
@@ -280,14 +286,21 @@ namespace Server.Game
             foreach (var targetKvp in targets)
             {
                 T target = targetKvp.Value;
-                if (hitbox.HitObjs.ContainsKey(targetKvp.Key) || true == hitbox.IsUsed)
+
+                if (hitbox.IsUsed)
                     continue;
 
-                if (CheckCollision(hitbox, target))
-                {
-                    hitTargets.Add(target);
-                    HandlerInteraction(hitbox, target);
-                }
+                if (hitbox.HitObjs.ContainsKey(targetKvp.Key))
+                    continue;
+
+                if (!CheckCollision(hitbox, target))
+                    continue;
+
+                if (!hitbox.HitObjs.TryAdd(targetKvp.Key, 1))
+                    continue;
+
+                hitTargets.Add(target);
+                HandlerInteraction(hitbox, target);
             }
         }
 
@@ -296,7 +309,9 @@ namespace Server.Game
             if (false == hitbox.Data.IsOneTimeUse) // 단일대상 히트박스가 아닌 경우
             {
                 foreach (T target in hitTargets)
+                {
                     ApplyDamage(hitbox, target, damageDict);                 
+                }
             }
             else
             {
@@ -504,7 +519,7 @@ namespace Server.Game
             float dmg = 0f;
             if (hitbox.Creature is Player)
             {
-               dmg = CalcDamage(hitbox.Creature, target.Stat, hitbox.KeyCode);
+                dmg = CalcDamage(hitbox.Creature, target.Stat, hitbox.KeyCode);
             }
             else if (hitbox.Creature is Monster)
             {
@@ -838,7 +853,6 @@ namespace Server.Game
                     hitbox.PosZ = hitbox.MousePos.Y;
                 }
             }
-
         }
         
         private void UpdatePosProjectile(Hitbox hitbox)
