@@ -7,6 +7,7 @@ namespace Server.Game
     public class Projectile : GameObject
     {
         public Creature Owner = null;
+        public ProjectileType ProjectileType { get; set; }
         private long _endTime = 0;
         private long _lastTickTime = 0;
         private float _speed = 15.0f;
@@ -31,6 +32,7 @@ namespace Server.Game
                 PosY = Owner.PosInfo.PosY,
                 PosZ = Owner.PosInfo.PosZ
             };
+
             Info.RotInfo = Owner.RotInfo; 
         }
 

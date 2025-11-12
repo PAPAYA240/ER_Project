@@ -344,14 +344,7 @@ namespace Server.Data
         public StatInfo stat;
         public List<MonsterSkill> skills;
         public float appearTime;
-    }
-
-    public class ProjectileInfo
-    {
-        public string name;
-        public float speed;
-        public int range;
-        public string prefab;
+        public int activePhase;
     }
 
     [Serializable]
@@ -380,6 +373,7 @@ namespace Server.Data
         public float skillDuration;
         public int damage;
         public float skillCoolTime;
+        public Dictionary<string, float> descriptionInfo;
     }
 
     [Serializable]

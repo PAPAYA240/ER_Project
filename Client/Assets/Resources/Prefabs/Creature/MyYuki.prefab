@@ -5242,10 +5242,20 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5467512429835782638}
     m_Modifications:
+    - target: {fileID: 1513831621103107031, guid: 03c32528c2dc3a740b7945a30bfd3246,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3192505433177851429, guid: 03c32528c2dc3a740b7945a30bfd3246,
         type: 3}
       propertyPath: m_Name
       value: WP_Yuki_S005_R_TwoHandSword
+      objectReference: {fileID: 0}
+    - target: {fileID: 3192505433177851429, guid: 03c32528c2dc3a740b7945a30bfd3246,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4462366977847411393, guid: 03c32528c2dc3a740b7945a30bfd3246,
         type: 3}
@@ -5296,6 +5306,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8134435206983602862, guid: 03c32528c2dc3a740b7945a30bfd3246,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8999986589741234262, guid: 03c32528c2dc3a740b7945a30bfd3246,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

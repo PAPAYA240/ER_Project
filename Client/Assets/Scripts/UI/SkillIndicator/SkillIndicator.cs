@@ -71,6 +71,19 @@ public class SkillIndicator : UI_Base
         }
     }
 
+    public Transform FindIndicatorObject(string name)
+    {
+        foreach (var keyPair in _activeSkillFuncs)
+        {
+            var value = keyPair.Key;
+            List<Action<Canvas, GameObject, string>> funcList = keyPair.Value;
+
+            var runTimeData = _skillConfigs[value.Item1][value.Item2];
+            var map = runTimeData.indicatorObject;
+            return Util.FindChildByName(map.transform, name).transform;
+        }
+        return null;
+    }
     public void DisableIndicator(CharacterType charType, KeyCode key)
     {
         var value = new ValueTuple<CharacterType, KeyCode>(charType, key);

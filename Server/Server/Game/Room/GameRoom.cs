@@ -56,6 +56,8 @@ namespace Server.Game
             CurPhase = newPhase;
             //_phaseStartTime = DateTime.UtcNow; // 페이즈 시작 시간 기록 
 
+            _monsterManager.Add(CurPhase);// 출현할 몬스터의 phase
+
             _phaseStopwatch.Restart(); // 페이즈 경과 시간 측정 시작/재시작
 
             // 현재 페이즈의 지속 시간을 가져옴
@@ -341,6 +343,12 @@ namespace Server.Game
             {
                 Projectile projectile = gameObject as Projectile;
                 projectile.Room = this;
+
+                if(projectile.Info.Projectile == null)
+                    projectile.Info.Projectile = new ProjectileInfo();
+
+                projectile.Info.Projectile.ProjectileType = projectile.ProjectileType;
+                projectile.Info.Projectile.OwnerId = projectile.Owner?.Id ?? -1;
                 _projectiles.TryAdd(gameObject.Id, projectile);
             }
             else if (type == GameObjectType.Environment)

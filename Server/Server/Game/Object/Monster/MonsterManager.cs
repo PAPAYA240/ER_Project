@@ -21,7 +21,7 @@ namespace Server.Game
 
     public class MonsterDataProcessor
     {
-        public RawMonsterList ProcessAndGetJson()
+        public RawMonsterList ProcessAndGetJson(int phase)
         {
             string basePath = ConfigManager.Config.dataPaths["monster"];
             string navFilePath = Path.Combine(basePath, "MonsterData/SpawnMonsterData.json");
@@ -38,6 +38,12 @@ namespace Server.Game
             {
                 // 정수 monsterType을 문자열로 변환
                 MonsterType monsterTypeName = rawData.monsterType;
+
+                // 페이즈대로 몬스터 호출
+                if (!DataManager.MonsterDict.TryGetValue(monsterTypeName, out MonsterData monsterStat))
+                    continue;
+                if (monsterStat.activePhase != phase)
+                    continue;
 
                 cleanedList.monsters.Add(new LoadMonsterData
                 {
@@ -59,34 +65,13 @@ namespace Server.Game
             _room = room;
 
             // MonsterData Load
-            MonsterDataProcessor processor = new MonsterDataProcessor();
-            SpawnMonstersFromJson(processor.ProcessAndGetJson());
+            //Add(0);
         }
 
-        public void Add(int monsterCnt, MonsterType type = MonsterType.MonsterNone)
+        public void Add(int phase)
         {
-            if (type == MonsterType.MonsterNone)
-                return;
-
-            for (int i = 0; i < monsterCnt; i++)
-            {
-                // 몬스터를 즉시 생성하는 Spawn 로직을 이곳에 복사합니다.
-                Monster monster = ObjectManager.Instance.Add<Monster>();
-                monster.Info.Name = $"{monster.Id} Monster";
-                monster.Info.PosInfo.State = CreatureState.Idle;
-                monster.Info.PosInfo.PosX = 0;
-                monster.Info.PosInfo.PosY = 0;
-                monster.Info.Monster.MonsterType = type;
-
-                MonsterData monsterStat = null;
-                DataManager.MonsterDict.TryGetValue(type, out monsterStat);
-                monster.Stat.MergeFrom(monsterStat.stat);
-
-                monster.Init(monster.Info.Monster.MonsterType);
-
-
-                _room.Push(_room.EnterGame, monster);
-            }
+            MonsterDataProcessor processor = new MonsterDataProcessor();
+            SpawnMonstersFromJson(processor.ProcessAndGetJson(phase));
         }
 
         public void SpawnMonstersFromJson(RawMonsterList monsterList)
@@ -115,14 +100,13 @@ namespace Server.Game
                 monster.Info.Monster.MonsterType = type;
 
                 monster.Info.Name = $"{monster.Id} {type}";
-                monster.Info.PosInfo.State = CreatureState.Idle;
+                monster.Info.PosInfo.State = CreatureState.Appear;
 
                 MonsterData monsterStat = null;
                 DataManager.MonsterDict.TryGetValue(type, out monsterStat);
                 if (monsterStat != null)
                     monster.Stat.MergeFrom(monsterStat.stat);
 
-                
                 monster.Init(monster.Info.Monster.MonsterType);
                 _room.Push(_room.EnterGame, monster);
             }
