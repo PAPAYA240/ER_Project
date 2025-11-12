@@ -507,6 +507,7 @@ namespace Server.Game
                                 duration = effectData.duration,
                                 value = effectData.value,
                                 subject = Enum.TryParse(effectData.subject, true, out Subject temp) ? temp : Subject.Subject_None,
+                                valueType = Enum.TryParse(effectData.valueType, true, out ValueType type) ? type : ValueType.ValueType_None,
                                 coeff = effectData.coeff,
                                 ratioPerTarget = effectData.ratioPerTarget,
                                 maxRatio = effectData.maxRatio,
