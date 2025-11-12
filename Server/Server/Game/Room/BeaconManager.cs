@@ -117,6 +117,7 @@ namespace Server.Game
                 return;
 
             _beacons[player.Beacon].OccupiedTeam = player.Team;
+            _beacons[player.Beacon].RemainingTime = 40f;
 
             S_OccupyBeacon occupyBeaconPkt = new S_OccupyBeacon();
             occupyBeaconPkt.Team = player.Team;

@@ -21,10 +21,11 @@ public sealed class Hyunwoo_W : InstantHandlerBase
         statusEffect.stat = skill.SkillData.levels[skill.CurLevel].effects[0].stat;
         statusEffect.value = skill.SkillData.levels[skill.CurLevel].effects[0].value;
         statusEffect.duration = skill.SkillData.levels[skill.CurLevel].effects[0].duration;
+        statusEffect.attacker = p;
         if (!Enum.TryParse<Subject>(skill.SkillData.levels[skill.CurLevel].effects[0].subject, out statusEffect.subject))
             return;
 
-        p.AddStatusEffect(statusEffect, p);
+        p.AddStatusEffect(statusEffect);
 
         SendSkillConfirmPacket(p);
     }

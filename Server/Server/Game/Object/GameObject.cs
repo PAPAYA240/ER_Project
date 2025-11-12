@@ -332,9 +332,11 @@ namespace Server.Game
             public int targetCnt; // 적중한 대상 갯수
 
             public Creature attacker; // 시전자
+
+            public string condition; // 적용조건
         }
 
-        public void AddStatusEffect(StatusEffect statusEffect, Creature atk)
+        public void AddStatusEffect(StatusEffect statusEffect)
         {
             lock (_lock)
             {
@@ -361,7 +363,7 @@ namespace Server.Game
                     {
                         S_Snare stunPacket = new S_Snare();
                         stunPacket.ObjectId = Id;
-                        stunPacket.AttackerId = atk.Id;
+                        stunPacket.AttackerId = statusEffect.attacker.Id;
                         stunPacket.AttackerTeam = statusEffect.attacker.Info.Player.Team;
                         stunPacket.Duration = statusEffect.duration;
                         Room.Broadcast(stunPacket);
