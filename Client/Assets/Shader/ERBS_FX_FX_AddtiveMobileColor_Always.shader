@@ -59,7 +59,9 @@ Shader "ERBS_FX/FX_AdditiveUI"
             float4 frag(Vertex_Stage_Output input) : SV_Target
             {
                 float4 tex = _MainTex.Sample(sampler_MainTex, input.uv);
-                return tex * _Color;
+                tex *= _Color;
+                tex.rgb *= _Color.a * 0.4;
+                return tex;
             }
 
             ENDHLSL

@@ -700,7 +700,7 @@ class PacketHandler
         if (yukiPyosik == null)
             return;
 
-        yukiPyosik.ActivateYukiPyosik(addYukiPyosikPkt.AttackerTeam);
+        yukiPyosik.ActivateYukiPyosik(go);
     }
 
     public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)

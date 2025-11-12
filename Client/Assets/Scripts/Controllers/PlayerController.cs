@@ -197,6 +197,10 @@ public class PlayerController : CreatureController
         // 체력바
         InitNameTag();
 
+        // 유키용
+        GameObject yukiPyosik = Managers.Resource.Instantiate("Effect/UIpyosik");
+        yukiPyosik.transform.SetParent(gameObject.transform);
+
         // 장비 슬롯
         InitEquipItem();
 

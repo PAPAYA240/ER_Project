@@ -63,7 +63,7 @@ public class PlayerViewController : MonoBehaviour
                 {
                     Vector3 pos = _target.transform.position;
                     UpdateTarget(pos);
-                    Debug.Log(pos);
+                    //Debug.Log(pos);
                 }
             }
         }

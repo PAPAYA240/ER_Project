@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
+using static Player_StunState;
 using static Server.Data.DataUtils;
 
 public class Yuki_AttackState : Player_AttackState
@@ -54,6 +55,22 @@ public class Yuki_AttackState : Player_AttackState
             return;
 
         GameRoom room = p.Room;
+
+        if (IsPassiveAttack)
+        {
+            Player targetPlayer = target as Player;
+
+            if (targetPlayer != null)
+            {
+                StunStateDesc desc = new StunStateDesc();
+                desc.EndPos = target.Position;
+                desc.Duration = 0.5f;
+                desc.Speed = 0f;
+
+                targetPlayer.ChangeState(new Player_StunState(desc));
+            }    
+            //room.Push(target.OnDamaged, p, p.Attack, false, true);
+        }
 
         // 평타 데미지
         room.Push(target.OnDamaged, p, p.Attack, false, true);

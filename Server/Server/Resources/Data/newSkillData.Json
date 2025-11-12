@@ -998,12 +998,10 @@
               {
                 "type": "Buff",
                 "stat": "Defense",
-                "value": 10
-              },
-              {
-                "type": "CDR",
-                "value": 3,
-                "condition": "Hit"
+                "value": 20,
+                "valuetype": "Ratio",
+                "duration": 1,
+                "subject": "Self"
               }
             ]
           },
@@ -1015,12 +1013,10 @@
               {
                 "type": "Buff",
                 "stat": "Defense",
-                "value": 10
-              },
-              {
-                "type": "CDR",
-                "value": 3,
-                "condition": "Hit"
+                "value": 20,
+                "valuetype": "Ratio",
+                "duration": 1,
+                "subject": "Self"
               }
             ]
           },
@@ -1032,12 +1028,10 @@
               {
                 "type": "Buff",
                 "stat": "Defense",
-                "value": 10
-              },
-              {
-                "type": "CDR",
-                "value": 3,
-                "condition": "Hit"
+                "value": 20,
+                "valuetype": "Ratio",
+                "duration": 1,
+                "subject": "Self"
               }
             ]
           },
@@ -1049,12 +1043,10 @@
               {
                 "type": "Buff",
                 "stat": "Defense",
-                "value": 10
-              },
-              {
-                "type": "CDR",
-                "value": 3,
-                "condition": "Hit"
+                "value": 20,
+                "valuetype": "Ratio",
+                "duration": 1,
+                "subject": "Self"
               }
             ]
           },
@@ -1066,12 +1058,10 @@
               {
                 "type": "Buff",
                 "stat": "Defense",
-                "value": 10
-              },
-              {
-                "type": "CDR",
-                "value": 3,
-                "condition": "Hit"
+                "value": 20,
+                "valuetype": "Ratio",
+                "duration": 1,
+                "subject": "Self"
               }
             ]
           }

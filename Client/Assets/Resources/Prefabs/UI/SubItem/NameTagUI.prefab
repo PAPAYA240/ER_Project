@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5054551822355142137
 RectTransform:
   m_ObjectHideFlags: 0
@@ -91,6 +91,9 @@ MonoBehaviour:
   image: {fileID: 4694134696079902882}
   frames: []
   autoHide: 1
+  _targetPos: {x: 0, y: 0, z: 0}
+  mainCamera: {fileID: 0}
+  offset: {x: 0, y: 0, z: 0}
 --- !u!1 &1231413429089666786
 GameObject:
   m_ObjectHideFlags: 0

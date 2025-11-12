@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class YukiPyosik : MonoBehaviour
 {
@@ -8,88 +9,82 @@ public class YukiPyosik : MonoBehaviour
     [SerializeField] private Image image;
 
     [Header("Sprite Animation Settings")]
-    [SerializeField] private Sprite[] frames;
+    [SerializeField] private Sprite[] _frames;
     [SerializeField] private bool autoHide = true;
 
-    private GameObject _visionGo;
-    private VisionCircle _vision;
+    [SerializeField] private GameObject _target;
+    [SerializeField] private Camera mainCamera;
 
-    private int _layer1Team;
-    private int _layer2Team;
-
-    private Coroutine _animRoutine;
+    private Coroutine _coAnimRoutine;
 
     private void Awake()
     {
-        // VisionCircle 생성 및 초기화
-        _visionGo = new GameObject("VisionCircle");
-        _vision = _visionGo.GetOrAddComponent<VisionCircle>();
-        _visionGo.transform.SetParent(GetComponentInParent<BaseController>().transform);
-        _visionGo.transform.localPosition = Vector3.zero;
-        _visionGo.transform.localRotation = Quaternion.identity;
-        _visionGo.transform.localScale = Vector3.one;
-
-        _layer1Team = LayerMask.NameToLayer("FogTeam1");
-        _layer2Team = LayerMask.NameToLayer("FogTeam2");
-
-        _vision.SetActivate(false);
-        image.enabled = false;
+        image = GetComponent<Image>();
+        if (mainCamera == null)
+            mainCamera = Camera.main;
 
         Texture2D sheet = Resources.Load<Texture2D>("effects/textures/FX_BI_Yuki_01SE");
         if (sheet == null)
         {
-            Debug.LogError($"{sheet} not found in Resources");
+            Debug.LogError($"Not found in Resources");
             return;
         }
 
-        frames = Util.Slice(sheet, 6, 6, 1);
-        if (frames == null || frames.Length == 0)
+        _frames = Util.Slice(sheet, 6, 6, 1);
+        if (_frames == null || _frames.Length == 0)
             Debug.LogError("Sprite slicing failed");
     }
 
-    public void ActivateYukiPyosik(int attackerTeam)
+    private void LateUpdate()
     {
-        // 팀별로 VisionCircle 레이어 설정
-        _visionGo.layer = (attackerTeam == 1) ? _layer1Team : _layer2Team;
+        if (_target == null)
+            return;
+
+        // 월드 좌표에서 스크린 좌표
+        Vector3 screenPos = mainCamera.WorldToScreenPoint(_target.transform.position) + new Vector3(0f, 40f, 0f);
+
+        transform.position = screenPos;
+    }
+
+    public void ActivateYukiPyosik(GameObject go)
+    {
+        _target = go;
 
         // 중복 재생 방지
-        if (_animRoutine != null)
-            StopCoroutine(_animRoutine);
+        if (_coAnimRoutine != null)
+            StopCoroutine(_coAnimRoutine);
 
-        _animRoutine = StartCoroutine(CoPlayAnimation(0.6f));
+        _coAnimRoutine = StartCoroutine(CoPlayAnimation(0.6f));
     }
 
     private IEnumerator CoPlayAnimation(float duration)
     {
         image.enabled = true;
-        _vision.SetActivate(true);
 
-        float frameTime = duration / frames.Length;
+        float frameTime = duration / _frames.Length;
 
-        for (int i = 0; i < frames.Length; i++)
+        for (int i = 0; i < _frames.Length; i++)
         {
-            image.sprite = frames[i];
+            image.sprite = _frames[i];
             yield return new WaitForSeconds(frameTime);
         }
 
         if (autoHide)
         {
             image.enabled = false;
-            _vision.SetActivate(false);
         }
 
-        _animRoutine = null;
+        _coAnimRoutine = null;
     }
 
     public void DeactivateAbigailCoord()
     {
-        if (_animRoutine != null)
+        if (_coAnimRoutine != null)
         {
-            StopCoroutine(_animRoutine);
-            _animRoutine = null;
+            StopCoroutine(_coAnimRoutine);
+            _coAnimRoutine = null;
         }
 
         image.enabled = false;
-        _vision.SetActivate(false);
     }
 }

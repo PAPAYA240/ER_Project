@@ -404,7 +404,12 @@ namespace Server.Game
                     {
                         S_AddYukiPyosik yukiPyosikPkt = new S_AddYukiPyosik();
                         yukiPyosikPkt.ObjectId = Id;
-                        yukiPyosikPkt.AttackerTeam = statusEffect.attacker.Info.Player.Team;
+                        yukiPyosikPkt.Position = new PositionInfo
+                        {
+                            PosX = PosInfo.PosX,
+                            PosY = PosInfo.PosY,
+                            PosZ = PosInfo.PosZ
+                        };
                         Room.Broadcast(yukiPyosikPkt);
 
                         Player player = statusEffect.attacker as Player;
