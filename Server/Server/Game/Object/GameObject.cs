@@ -213,6 +213,14 @@ namespace Server.Game
             
         }
 
+        public bool IsAttackable()
+        {
+            if (State == CreatureState.Dead)
+                return false;
+
+            return true;
+        }
+
         public virtual void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false, bool isBasicAttack = false)
         {
             if (Room == null || State == CreatureState.Dead || State == CreatureState.Appear)

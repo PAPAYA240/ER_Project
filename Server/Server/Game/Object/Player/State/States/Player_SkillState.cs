@@ -25,9 +25,6 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
 
     public void Enter(Player player)
     {
-        player.State = CreatureState.Skill;
-        player.SendStatePacket();
-
         int nowTick = TimeUtil.LastTick;
         _tStartTick = nowTick;
 

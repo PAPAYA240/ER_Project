@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
+using static Player_StunState;
 using static Server.Data.DataUtils;
 
 public sealed class Rozzi_E : SkillHandlerBase
@@ -15,13 +16,16 @@ public sealed class Rozzi_E : SkillHandlerBase
 
     private GameObject _target;
 
-    private float _elapsed;
-    private Vector3 _startPos, _midPos, _endPos;
+    private float _elapsed, _duration;
+    private Vector3 _startPos, _midPos, _endPos, _dir;
 
-    private float _dashDistance = 4.0f;
-    private float _behindDistance = 2.0f;
+    private float _dashDistance = 3f;
 
-    // TEMP
+    private float _behindDistance = 2.5f;
+    private float _behindSpeed = 10.0f;
+
+    private float _stunDuration = 0.3f;
+
     private bool _isRequest;
 
     public Rozzi_E()
@@ -30,7 +34,7 @@ public sealed class Rozzi_E : SkillHandlerBase
         _animName = "SKILL_E";
         _keyCode = KeyCode.E;
 
-        _animDuration = GetDuration();
+        _duration = _animDuration = GetDuration();
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
@@ -38,11 +42,14 @@ public sealed class Rozzi_E : SkillHandlerBase
         base.OnEnter(p, ctx);
 
         _target = ObjectManager.Instance.Find(ctx.TargetId);
+        if(_target == null)
+        {
 
-        _elapsed = 0.0f;
+        }
 
         _startPos = p.Position;
         _midPos = _target.Position;
+        _dir = Vector3.Normalize(_midPos - _startPos);
 
         SendSkillConfirmPacket(p);
     }
@@ -76,10 +83,13 @@ public sealed class Rozzi_E : SkillHandlerBase
             {
                 if (TryConsumeLatest(ref _commitId, out SkillCollisionProposal prop))
                 {
+                    _startPos = p.Position;
                     _endPos = prop.collisionPos;
+                    _duration = Vector3.Distance(_startPos, _endPos) / _behindSpeed + _elapsed;
                 }
             }
-            else
+            
+            if(_requestId == _commitId) 
             {
                 float endT = (t - _followRatio) / (1f - _followRatio);
                 endT = Math.Clamp(endT, 0f, 1f);
@@ -93,18 +103,32 @@ public sealed class Rozzi_E : SkillHandlerBase
         }
 
         if(!_isRequest && t >= _followRatio)
-        {
-            Vector3 dir = Vector3.Normalize(_target.Position - p.Position);
-            Vector3 requestPos = p.Position + dir * _behindDistance;
+        {          
+            Vector3 requestPos = p.Position + _dir * _behindDistance;
             SendSkillCollisionRequestPacket(p, CollisionType.Block, p.Position, requestPos);
             _isRequest = true;
+
+            p.SendSkillMotion(
+                    type: SkillMotionType.Transform,
+                    start: p.Position,
+                    end: _midPos);
+
+            if(_target is Player targetPlayer)
+            {
+                StunStateDesc desc = new StunStateDesc();
+                desc.EndPos = _target.Position;
+                desc.Duration = _stunDuration;
+                targetPlayer.ChangeState(new Player_StunState(desc));
+            }            
         }
 
         _elapsed += TimeUtil.DeltaTime;
-      
-        _finalEnd = targetPos;
+        if (_elapsed > _duration)
+        {
+            ctx.RequestFinish();
+        }
 
-        //Console.WriteLine($"targetPos : {targetPos}");
+        _finalEnd = targetPos;
 
         return;
     }
@@ -123,7 +147,8 @@ public sealed class Rozzi_E : SkillHandlerBase
     public override bool CanCast(Player p, SkillContext ctx)
     {
         _target = ObjectManager.Instance.Find(ctx.TargetId);
-        if (_target == null || (_target != null && Vector3.Distance(_target.Position, p.Position) > _dashDistance))
+        if (_target == null || !_target.IsAttackable() || /*!_target.IsUntargetable() || */
+            (_target != null && Vector3.Distance(_target.Position, p.Position) > _dashDistance))
         {
             return false;
         }

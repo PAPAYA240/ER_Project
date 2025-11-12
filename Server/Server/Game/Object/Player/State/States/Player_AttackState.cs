@@ -71,8 +71,6 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 
     public void Enter(Player player)
     {
-        player.State = CreatureState.Attack;
-        player.SendStatePacket();
         player.SendStopPacket(StopReason.StopMoveOnly);
         _swingActive = false;
         _damageApplied = false;

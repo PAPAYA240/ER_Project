@@ -10,6 +10,7 @@ using static Server.Data.DataUtils;
 using System.Threading;
 using static Server.Game.GameObject;
 using static Player_StunState;
+using System.Net.NetworkInformation;
 
 namespace Server.Game
 {
@@ -219,6 +220,8 @@ namespace Server.Game
             CurTick = Environment.TickCount;
             TimeUtil.Update(CurTick);
 
+            Flush();
+
             foreach (Projectile projectile in _projectiles.Values)
             {
                 projectile.Update();
@@ -253,7 +256,7 @@ namespace Server.Game
             foreach (var monster in _monsters.Values)
                 monster.RemoveExpiredStatusEffects();
 
-            Flush();
+            //Flush();
 
             _collisionManager.CurTick = CurTick;
             _collisionManager.Flush();
@@ -444,6 +447,10 @@ namespace Server.Game
                 if (removeCnt > 0) // 표식 있는 적에게 E 사용시 E 쿨타임 초기화
                     player.Skill.SetCooldown(keyCode, 0);
             }
+            else if (player.Info.Player.CharType == CharacterType.Rozzi && keyCode == KeyCode.E)
+            {
+                
+            }
 
             target.OnDamaged(player, damage);
         }
@@ -553,7 +560,11 @@ namespace Server.Game
             //    return;
             //}
 
-            player.PosInfo.MergeFrom(movePacket.PosInfo);
+            //player.PosInfo.PosX = movePacket.PosInfo.PosX;
+            //player.PosInfo.PosY = movePacket.PosInfo.PosY;
+            //player.PosInfo.PosZ = movePacket.PosInfo.PosZ;
+
+            player.PosInfo.SetPosInfoFromVector3(movePacket.PosInfo.ToVector());
             player.RotInfo.MergeFrom(movePacket.RotInfo);
 
             player.SendMovePacket(new PositionInfo(player.PosInfo), new RotationInfo(player.RotInfo));

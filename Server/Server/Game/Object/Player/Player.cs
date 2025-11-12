@@ -173,6 +173,7 @@ namespace Server.Game
             }
         }
 
+        #region CombatState
         // CombatState
         // 전투 시간 (용수야 여기야)
         private float _combatTime = 0f;
@@ -189,7 +190,9 @@ namespace Server.Game
             get { return _curCombat; }
             set { _curCombat = value; }
         }
+        #endregion
 
+        #region Yuki
         // 유키 단추용
         private static readonly int MaxStud = 4;
         private int _yukiStud_cnt = 4;
@@ -208,6 +211,8 @@ namespace Server.Game
             get { return _isAttackActive; }
             set { _isAttackActive = value; }
         }
+        #endregion
+
         #region KDA
         //KDA
         public int KillAmount {  get; set; }
@@ -567,7 +572,6 @@ namespace Server.Game
         #endregion
 
         #region Item
-
         private void MakeItemSlot()
         {
             for (int i = 0; i < (int)EquipItemType.End; ++i)
@@ -925,7 +929,7 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendStopPacket(StopReason reason)
+        public void SendStopPacket(StopReason reason = StopReason.StopAll)
         {
             S_Stop packet = new S_Stop()
             {
