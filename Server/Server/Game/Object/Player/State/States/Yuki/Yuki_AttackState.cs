@@ -55,9 +55,6 @@ public class Yuki_AttackState : Player_AttackState
 
         GameRoom room = p.Room;
 
-        // 스킬 데미지
-        room.Push(room.AttackSkillTarget, p, target, _keyCode);
-
         // 평타 데미지
         room.Push(target.OnDamaged, p, p.Attack, false, true);
     }
