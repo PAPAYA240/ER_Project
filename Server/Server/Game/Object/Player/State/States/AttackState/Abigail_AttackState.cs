@@ -57,7 +57,7 @@ public class Abigail_AttackState : Player_AttackState
         if (IsPassiveAttack)
         {
             room.Push(room.AttackSkillTarget, p, target, _keyCode);
-            room.Push(room.AddStatusEffect, p, target, _keyCode, (string)null); // 방깎
+            room.Push(room.AddStatusEffect, p, target, _keyCode, "Hit"); // 방깎
         }
         
         // 평타 데미지
