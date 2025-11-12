@@ -36,6 +36,7 @@ public sealed class Theodore_E : SkillHandlerBase
         Projectile projectile = ObjectManager.Instance.Add<Projectile>();
         if (projectile != null)
         {
+            projectile.ProjectileType = ProjectileType.ProjectileBall;
             projectile.Owner = p;
             projectile.Init();
             p.Room.EnterGame(projectile);

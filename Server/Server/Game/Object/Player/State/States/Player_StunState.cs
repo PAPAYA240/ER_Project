@@ -13,6 +13,8 @@ public class Player_StunState : IPlayerState
     {
         public float Duration;      // 기절 지속 시간
         public float Speed;         // 밀리는 속도
+        public bool canFloat;
+        public SkillMotionType skillMotionType = SkillMotionType.Transform;
         public Vector3 EndPos;      // 어디로. 여기 들어오는 위치는 계산이 끝났다고 가정.
     }
 
@@ -38,9 +40,8 @@ public class Player_StunState : IPlayerState
             _isMoving = false; // 이동 없음
         }
 
-        player.State = CreatureState.Stun;
-        player.SendStatePacket();
         player.SendAnimPacket("WAIT", 0.1f);
+        player.SendStopPacket();
     }
 
     public void Execute(Player player)
@@ -73,11 +74,12 @@ public class Player_StunState : IPlayerState
                 // 플레이어의 위치 업데이트 요청 (클라이언트에게 전송)
                 if (nextPos != currentPos) // 위치가 실제로 변경되었을 때만 전송
                 {
-                    player.Position = nextPos;
+                    //player.Position = nextPos;
                     player.SendSkillMotion(
-                        type: SkillMotionType.Transform,
+                        type: _desc.skillMotionType,
                         start: player.Position,
-                        end: nextPos
+                        end: nextPos,
+                        canFloat: _desc.canFloat
                     );
                     //player.SendMoveSyncPacket(player.PosInfo);
                     //player.SendMovePacket(); // 또는 특정 스킬 모션 패킷으로
@@ -90,8 +92,14 @@ public class Player_StunState : IPlayerState
                 // 플레이어를 최종 목표 위치에 정확히 안착
                 if (player.Position != _desc.EndPos)
                 {
-                    player.Position = _desc.EndPos;
-                    player.SendMoveSyncPacket(player.PosInfo);
+                    //player.Position = _desc.EndPos;
+                    //player.SendMoveSyncPacket(player.PosInfo);
+                    player.SendSkillMotion(
+                        type: SkillMotionType.Transform,
+                        start: player.Position,
+                        end: _desc.EndPos,
+                        authoritativeEnd: true
+                    );
                 }
             }
         }
@@ -99,7 +107,6 @@ public class Player_StunState : IPlayerState
 
     public void Exit(Player player)
     {
-        
     }
 }
 

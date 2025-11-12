@@ -40,7 +40,7 @@ namespace Server.Game
         #region Stat Property
         public override float Attack
         {
-            get { return ComposeFinal(STAT_ATTACK, Stat.Attack + _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat); }
+            get { return ComposeFinal(STAT_ATTACK, Stat.Attack + _totalItemStat.AttackDamage + _totalItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat) ; }
             set { base.Attack = value; }
         }
 
@@ -52,13 +52,13 @@ namespace Server.Game
 
         public override float Speed 
         {
-            get { return ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
+            get { return ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed + _totalItemStat.FixedSpeed * (1 + _totalItemStat.PercentageSpeed)) ; }
             set { base.Speed = value; }
         }
 
         public override float AttackSpeed
         {
-            get { return ComposeFinal(STAT_ATTACK_SPEED, Stat.AttackSpeed + _totalItemStat.FixedSpeed) * (1 + _totalItemStat.PercentageSpeed); }
+            get { return ComposeFinal(STAT_ATTACK_SPEED, Stat.AttackSpeed + _totalItemStat.FixedSpeed * (1 + _totalItemStat.PercentageSpeed)) ; }
             set { base.AttackSpeed = value; }
         }
 
@@ -79,12 +79,17 @@ namespace Server.Game
             get { return base.Hp; }
             set 
             {
-                
-                float diff = value - Stat.Hp;
-                if (diff > 0)
-                    Stat.Hp += diff * Healing;
+                float cur = Stat.Hp;
 
-                Stat.Hp = Math.Clamp(value, 0, MaxHp);              
+                if (value > cur) // 회복일 때만  Healing에 치유 증가/감소 반영
+                {
+                    float healAmount = (value - cur) * Healing; 
+                    Stat.Hp = Math.Clamp(cur + healAmount, 0, MaxHp);
+                }
+                else // 데미지일 때는 그대로
+                {
+                    Stat.Hp = Math.Clamp(value, 0, MaxHp);
+                }
             }
         }
 
@@ -168,6 +173,7 @@ namespace Server.Game
             }
         }
 
+        #region CombatState
         // CombatState
         // 전투 시간 (용수야 여기야)
         private float _combatTime = 0f;
@@ -184,7 +190,9 @@ namespace Server.Game
             get { return _curCombat; }
             set { _curCombat = value; }
         }
+        #endregion
 
+        #region Yuki
         // 유키 단추용
         private static readonly int MaxStud = 4;
         private int _yukiStud_cnt = 4;
@@ -203,6 +211,8 @@ namespace Server.Game
             get { return _isAttackActive; }
             set { _isAttackActive = value; }
         }
+        #endregion
+
         #region KDA
         //KDA
         public int KillAmount {  get; set; }
@@ -585,7 +595,6 @@ namespace Server.Game
         #endregion
 
         #region Item
-
         private void MakeItemSlot()
         {
             for (int i = 0; i < (int)EquipItemType.End; ++i)
@@ -900,7 +909,7 @@ namespace Server.Game
             return ObjectManager.Instance.Find(targetId);
         }
 
-        public void LookAtMouse(Vector2 mousePos)
+        public void LookAtMouse(Vector2 mousePos, bool sendPacket = true)
         {
             Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
             Vector2 dir = mousePos - myPos;
@@ -919,7 +928,8 @@ namespace Server.Game
                 Qw = rot.W
             };
 
-            SendChangeTransformPacket();
+            if(sendPacket)
+                SendChangeTransformPacket();
         }
 
         #endregion
@@ -943,7 +953,7 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendStopPacket(StopReason reason)
+        public void SendStopPacket(StopReason reason = StopReason.StopAll)
         {
             S_Stop packet = new S_Stop()
             {
@@ -993,7 +1003,7 @@ namespace Server.Game
 
         public void SendSkillMotion(SkillMotionType type, Vector3 start, Vector3 end, bool authoritativeEnd = false,
                             float duration = 0f, string anim = default, string curveId = default,
-                            bool serverCollision = false)
+                            bool serverCollision = false, bool canFloat = false)
         {
             S_SkillMotion pkt = new S_SkillMotion
             {
@@ -1009,12 +1019,12 @@ namespace Server.Game
                 Anim = anim ?? "",
                 CurveId = curveId ?? "",
                 ServerCollision = serverCollision,
-                AuthoritativeEnd = authoritativeEnd
+                AuthoritativeEnd = authoritativeEnd,
             };
             Room.Broadcast(pkt);
         }
 
-        public void SendSkillConfirmPacket(bool canUse, KeyCode keyCode = KeyCode.None, bool canMoveDuringCast = false, bool sendCostPacket = true)
+        public void SendSkillConfirmPacket(bool canUse, KeyCode keyCode = KeyCode.None, bool canMoveDuringCast = false, bool sendCostPacket = true, bool sendLookatMousePacket = false)
         {
             S_SkillConfirm packet;
 
@@ -1025,7 +1035,8 @@ namespace Server.Game
                     ObjectId = Id,
                     CanUse = canUse,
                     SkillKey = (int)keyCode,
-                    CanMove = canMoveDuringCast
+                    CanMove = canMoveDuringCast,
+                    CanLookatMouse = sendLookatMousePacket
                 };
                
                 if(sendCostPacket)
@@ -1038,6 +1049,7 @@ namespace Server.Game
                     ObjectId = Id,
                     CanUse = canUse,
                     SkillKey = (int)keyCode,
+                    CanLookatMouse = sendLookatMousePacket,
                 };
             }
 
@@ -1129,7 +1141,7 @@ namespace Server.Game
             S_CanStopSkill pkt = new S_CanStopSkill
             {
                 ObjectId = Id,
-                CanStopSkill = canStopSkill
+                CanStopSkill = canStopSkill,
             };
             Room.Push(Room.Broadcast, pkt);
         }

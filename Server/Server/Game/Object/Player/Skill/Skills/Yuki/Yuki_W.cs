@@ -20,6 +20,8 @@ public sealed class Yuki_W : SkillHandlerBase
         // TODO: 코스트/쿨타임 차감
 
         SendSkillConfirmPacket(p);
+
+        p.Room.AddStatusEffect(p, p, _keyCode, null);
         //p.LookAtMouse(ctx.MousePos);
     }
 

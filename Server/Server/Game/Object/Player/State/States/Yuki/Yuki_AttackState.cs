@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
+using static Player_StunState;
 using static Server.Data.DataUtils;
 
 public class Yuki_AttackState : Player_AttackState
@@ -54,9 +55,21 @@ public class Yuki_AttackState : Player_AttackState
 
         GameRoom room = p.Room;
 
-        // 스킬 데미지
-        //if (IsPassiveAttack)
-        //    room.Push(room.AttackSkillTarget, p, target, _keyCode);
+        if (IsPassiveAttack)
+        {
+            Player targetPlayer = target as Player;
+
+            if (targetPlayer != null)
+            {
+                StunStateDesc desc = new StunStateDesc();
+                desc.EndPos = target.Position;
+                desc.Duration = 0.5f;
+                desc.Speed = 0f;
+
+                targetPlayer.ChangeState(new Player_StunState(desc));
+            }    
+            //room.Push(target.OnDamaged, p, p.Attack, false, true);
+        }
 
         // 평타 데미지
         room.Push(target.OnDamaged, p, p.Attack, false, true);

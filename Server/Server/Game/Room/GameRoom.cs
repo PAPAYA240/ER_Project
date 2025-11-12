@@ -10,6 +10,7 @@ using static Server.Data.DataUtils;
 using System.Threading;
 using static Server.Game.GameObject;
 using static Player_StunState;
+using System.Net.NetworkInformation;
 
 namespace Server.Game
 {
@@ -55,6 +56,8 @@ namespace Server.Game
 
             CurPhase = newPhase;
             //_phaseStartTime = DateTime.UtcNow; // 페이즈 시작 시간 기록 
+
+            _monsterManager.Add(CurPhase);// 출현할 몬스터의 phase
 
             _phaseStopwatch.Restart(); // 페이즈 경과 시간 측정 시작/재시작
 
@@ -219,6 +222,8 @@ namespace Server.Game
             CurTick = Environment.TickCount;
             TimeUtil.Update(CurTick);
 
+            Flush();
+
             foreach (Projectile projectile in _projectiles.Values)
             {
                 projectile.Update();
@@ -253,7 +258,7 @@ namespace Server.Game
             foreach (var monster in _monsters.Values)
                 monster.RemoveExpiredStatusEffects();
 
-            Flush();
+            //Flush();
 
             _collisionManager.CurTick = CurTick;
             _collisionManager.Flush();
@@ -343,6 +348,12 @@ namespace Server.Game
             {
                 Projectile projectile = gameObject as Projectile;
                 projectile.Room = this;
+
+                if(projectile.Info.Projectile == null)
+                    projectile.Info.Projectile = new ProjectileInfo();
+
+                projectile.Info.Projectile.ProjectileType = projectile.ProjectileType;
+                projectile.Info.Projectile.OwnerId = projectile.Owner?.Id ?? -1;
                 _projectiles.TryAdd(gameObject.Id, projectile);
             }
             else if (type == GameObjectType.Environment)
@@ -509,6 +520,7 @@ namespace Server.Game
                                 duration = effectData.duration,
                                 value = effectData.value,
                                 subject = Enum.TryParse(effectData.subject, true, out Subject temp) ? temp : Subject.Subject_None,
+                                valueType = Enum.TryParse(effectData.valueType, true, out ValueType type) ? type : ValueType.ValueType_None,
                                 coeff = effectData.coeff,
                                 ratioPerTarget = effectData.ratioPerTarget,
                                 maxRatio = effectData.maxRatio,
@@ -554,7 +566,11 @@ namespace Server.Game
             //    return;
             //}
 
-            player.PosInfo.MergeFrom(movePacket.PosInfo);
+            //player.PosInfo.PosX = movePacket.PosInfo.PosX;
+            //player.PosInfo.PosY = movePacket.PosInfo.PosY;
+            //player.PosInfo.PosZ = movePacket.PosInfo.PosZ;
+
+            player.PosInfo.SetPosInfoFromVector3(movePacket.PosInfo.ToVector());
             player.RotInfo.MergeFrom(movePacket.RotInfo);
 
             player.SendMovePacket(new PositionInfo(player.PosInfo), new RotationInfo(player.RotInfo));

@@ -81,8 +81,12 @@
         "radius": 3
       },
       "E": {
-        "type": "SkillStatic",
-        "maxRange": 3
+        "shape": "Circle",
+        "type": "SkillPoint",
+        "radius": 1.2,
+        "maxRange": 3, // CHECK
+        "startFrame": 0, // CHECK 
+        "endFrame": 5 // CHECK
       },
       "R": {
         "shape": "Circle",
@@ -166,8 +170,8 @@
       "R": {
         "shape": "Sector",
         "type": "SkillStatic",
-        "startFrame": 0,
-        "endFrame": 50,
+        "startFrame": 35,
+        "endFrame": 40,
         "radius": 5,
         "angle": 180
       }

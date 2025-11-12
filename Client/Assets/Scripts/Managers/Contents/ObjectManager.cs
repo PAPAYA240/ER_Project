@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UIElements;
+using Google.Protobuf.WellKnownTypes;
+
 #if UNITY_EDITOR
 using UnityEditor.PackageManager.UI;
 #endif
@@ -103,19 +105,22 @@ public class ObjectManager
         mc.RotInfo = info.RotInfo;
         mc.Stat = info.StatInfo;
         mc.Hp = info.StatInfo.MaxHp;
-        mc._monsterType = info.Monster.MonsterType;
+        mc.Type = info.Monster.MonsterType;
     }
     private void AddProjectile(ObjectInfo info)
     {
         GameObject go = Managers.Object.FindById(info.ObjectId);
         if (go == null)
         {
-            go = Managers.Resource.Instantiate("Creature/Weapon/Projectile");
+            go = Managers.Resource.Instantiate($"Creature/Weapon/{info.Projectile.ProjectileType}");
             go.name = "Projectile_" + info.ObjectId;
 
             Projectile pc = go.GetComponent<Projectile>();
             pc.PosInfo = info.PosInfo;
             pc.Stat = info.StatInfo;
+            pc.Type = info.Projectile.ProjectileType;
+            pc.Owner = Managers.Object.FindById(info.Projectile.OwnerId);
+
             _objects.Add(info.ObjectId, go);
 
             go.transform.SetParent(pc.transform);
@@ -136,7 +141,7 @@ public class ObjectManager
         ec.PosInfo = info.PosInfo;
         ec.Stat = info.StatInfo;
 
-        if (Enum.TryParse(info.Name, out EnvType envEnum))
+        if (System.Enum.TryParse(info.Name, out EnvType envEnum))
             ec._envType = envEnum;
         ec.SyncPos();
     }

@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Numerics;
-using Google.Protobuf.Protocol;
+﻿using Google.Protobuf.Protocol;
 using Lucene.Net.Store;
 using ServerCore;
-using static System.Net.Mime.MediaTypeNames;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using System.Threading;
+using System.Threading.Tasks;
+using static Player_StunState;
 using static Server.Game.GameObject;
+using static Server.Game.StunState;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.Game
 {
@@ -213,6 +216,14 @@ namespace Server.Game
             
         }
 
+        public bool IsAttackable()
+        {
+            if (State == CreatureState.Dead)
+                return false;
+
+            return true;
+        }
+
         public virtual void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false, bool isBasicAttack = false)
         {
             if (Room == null || State == CreatureState.Dead || State == CreatureState.Appear)
@@ -231,7 +242,7 @@ namespace Server.Game
             }
         }
 
-        private void OnDamaged(GameObject attacker, float damage, bool isBasicAttack = false)
+        protected virtual void OnDamaged(GameObject attacker, float damage, bool isBasicAttack = false)
         {
             //배리어가 흡수할 수치 계산
             float absorbed = Math.Min(Barrier, damage);
@@ -397,11 +408,43 @@ namespace Server.Game
                         stunPacket.Duration = statusEffect.duration;
                         Room.Broadcast(stunPacket);
 
-                        // NAYOUNGTODO : Idle로 변경해야 함
+                        if (this is Player player)
+                        {
+                            player.ChangeState(new Player_StunState(new StunStateDesc
+                            {
+                                Duration = statusEffect.duration
+                            }));
+                        }
+                        else if (this is Monster monster)
+                        {
+                            monster.ChangeState(new StunState(new MonsterStunDesc
+                            {
+                                Duration = statusEffect.duration
+                            }));
+                        }
                     }
-                    else if(statusEffect.type == "Buff" || statusEffect.type == "Debuff")
+                    else if (statusEffect.type == "Pyosik")
                     {
-                        if(statusEffect.valueType == ValueType.Ratio)
+                        S_AddYukiPyosik yukiPyosikPkt = new S_AddYukiPyosik();
+                        yukiPyosikPkt.ObjectId = Id;
+                        yukiPyosikPkt.Position = new PositionInfo
+                        {
+                            PosX = PosInfo.PosX,
+                            PosY = PosInfo.PosY,
+                            PosZ = PosInfo.PosZ
+                        };
+                        Room.Broadcast(yukiPyosikPkt);
+
+                        Player player = statusEffect.attacker as Player;
+
+                        // 유키 궁 표식 데미지
+                        int curLevel = player.GetSkillLevel(Data.DataUtils.KeyCode.R);
+                        float curAttack = player.Attack;
+                        _ = CoDelayYukiCoupDeGrace(statusEffect.attacker, curAttack, curLevel, 1000);
+                    }
+                    else if (statusEffect.type == "Buff" || statusEffect.type == "Debuff")
+                    {
+                        if (statusEffect.valueType == ValueType.Ratio)
                         {
                             // value가 20(%) 형태로 들어올 수도 있으니 0~1로 정규화
                             float pct = statusEffect.value;
@@ -423,6 +466,19 @@ namespace Server.Game
                     }
                 }                    
             }
+        }
+                }
+            }
+        }
+
+        // Yuki pyosik damage coroutine
+        List<float> FixedDamage = new List<float> { 0.06f, 0.1f, 0.14f };
+        private async Task CoDelayYukiCoupDeGrace(Creature atk, float curAttack, int curLevel, int delayMs)
+        {
+            await Task.Delay(delayMs);
+
+            float damage = MaxHp * (FixedDamage[curLevel - 1] + (curAttack * 0.05f) * 0.01f);
+            Room.Push(OnDamaged, atk, damage, true, false);
         }
 
         public int RemoveStatusEffects(string type, string stat = null) // 해당 종류의 상태효과 모두 제거

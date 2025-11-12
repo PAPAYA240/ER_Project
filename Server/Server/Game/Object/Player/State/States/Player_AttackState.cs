@@ -68,8 +68,6 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 
     public virtual void Enter(Player player)
     {
-        player.State = CreatureState.Attack;
-        player.SendStatePacket();
         player.SendStopPacket(StopReason.StopMoveOnly);
         _swingActive = false;
         _damageApplied = false;
@@ -272,10 +270,10 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     {
         if (p.Info.Player.CharType == CharacterType.Abigail)
             return new Abigail_AttackState(targetId, chaseAllowed);
+        else if(p.Info.Player.CharType == CharacterType.Theodore)
+            return new Theodore_AttackState(targetId, chaseAllowed);
         else if (p.Info.Player.CharType == CharacterType.Yuki)
-        {
             return new Yuki_AttackState(targetId, chaseAllowed);
-        }
         else if (p.Info.Player.CharType == CharacterType.Hyunwoo)
             return new Hyunwoo_AttackState(targetId, chaseAllowed);
 
