@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Google.Protobuf.Protocol;
+using System.Linq;
 using UnityEngine;
 
 // 이거 쓰려면 스키닝 메시 + 아웃라인 머터리얼 + 충돌 캡슐 필요
@@ -13,6 +14,7 @@ public class HighlightEffect : MonoBehaviour
     private Texture2D _cursorEnemy;
     private bool isHighlighted = false;
 
+    public CreatureController Owner { get; set; }
     void Start()
     {
         _cursorDefault = Managers.Resource.Load<Texture2D>("Cursor/Cursor_01");
@@ -46,12 +48,18 @@ public class HighlightEffect : MonoBehaviour
             }
         }
 
+        if (Owner?.State == CreatureState.Dead)
+        {
+            OnMouseExit();
+            return;
+        }
+
         if (hitThisObject && !isHighlighted)
             OnMouseEnter();
         else if (!hitThisObject && isHighlighted)
             OnMouseExit();
     }
-    void OnMouseEnter()
+    public void OnMouseEnter()
     {
         if (myRenderers == null) return;
         isHighlighted = true;
@@ -64,7 +72,7 @@ public class HighlightEffect : MonoBehaviour
         Cursor.SetCursor(_cursorEnemy, Vector2.zero, CursorMode.Auto);
     }
 
-    void OnMouseExit()
+    public void OnMouseExit()
     {
         if (myRenderers == null) return;
         isHighlighted = false;

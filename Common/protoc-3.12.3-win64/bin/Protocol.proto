@@ -88,10 +88,17 @@ enum MsgId {
   S_SKILL_COLLISION_REQUEST = 73;
   C_CHARGING_SKILL = 74;
 
+
   S_CHANGE_STATUS = 75;
 
   C_OPERATE = 76;
   S_ROTATE_TO_POS = 77;
+
+  S_ADD_YUKI_PYOSIK = 78;
+
+  C_ATTACK_REQUEST = 79;
+
+
 }
 
 enum CombatState{
@@ -137,6 +144,10 @@ enum EnvType{
    BEACON = 5;
 }
    
+enum ProjectileType {
+	PROJECTILE_BULLET = 0;
+	PROJECTILE_BALL = 1;
+}
 enum SkillType{
 	SKILL_NONE = 0;
 	SKILL_AUTO = 1;
@@ -272,6 +283,8 @@ enum StopReason {
 enum SkillMotionType {
   agent = 0;
   transform = 1;
+  verticalTransform = 2;
+  
 }
 
 enum CollisionType {
@@ -280,6 +293,7 @@ enum CollisionType {
   PASS = 2;
   WARP = 3;
 }
+
 
 message C_Death {
 	bool isDeath = 1;
@@ -577,6 +591,11 @@ message S_RemoveAbigailCoord{
 	int32 objectId = 1;
 }
 
+message S_AddYukiPyosik{
+	int32 objectId = 1;
+	PositionInfo position = 2;
+}
+
 message S_OccupyBeacon{
 	int32 team = 1;
 	string beaconName = 2;
@@ -643,6 +662,11 @@ message MonsterInfo {
     MonsterType monsterType = 1;
 }
 
+message ProjectileInfo {
+	ProjectileType projectileType = 1;
+	int32 		  ownerId = 2;
+}
+
 message EnvInfo{
     EnvType envType = 1;
     string prefabPath = 2;
@@ -677,6 +701,7 @@ message ObjectInfo{
         PlayerInfo player = 6;
         MonsterInfo monster = 7;
         EnvInfo env = 8;
+	ProjectileInfo projectile = 9;
     	}
 }
 
@@ -771,6 +796,10 @@ message ItemStat{
     float MaxHpPerLevel = 27;                 //레벨 당 최대 체력
 }
 
+message C_AttackRequest{
+	int32 objectId = 1;
+	int32 targetId= 2;
+}
 message C_Attack {					// 우클릭 타겟 공격
 	int32 targetId = 1;
 }
@@ -802,6 +831,7 @@ message S_SkillConfirm {
   bool canUse = 2;
   int32 skillKey = 3;			
   bool canMove = 4;
+  bool canLookatMouse = 5;
   //CostInfo costInfo = 5;
   //int32 targetId = 6;
 }

@@ -18,6 +18,22 @@ public class EffectFXManager : MonoBehaviour
         fxLayer = LayerMask.NameToLayer("FX");
     }
 
+    private GameObject GetFxPrefab(int ownerId, string prefabName)
+    {
+        GameObject owner = Managers.Object.FindById(ownerId);
+        CreatureController ownerCreature = owner?.GetComponent<CreatureController>();
+        GameObject fxPrefab = null;
+        if (ownerCreature is PlayerController)
+        {
+            CharacterType type = ownerCreature.ObjInfo.Player.CharType;
+            fxPrefab = Managers.Resource.Load<GameObject>($"effects/prefab/{type}/{prefabName}");
+        }
+        else
+            fxPrefab = Managers.Resource.Load<GameObject>($"effects/prefab/Monster/{prefabName}");
+
+        return fxPrefab;
+    }
+
     public List<GameObject> PlayEffect(int ownerId, List<EffectData> effectData, Transform casterTransform, Vector3 targetPos = new Vector3(), Quaternion rot = new Quaternion())
     {
         if (effectData == null || effectData.Count == 0)
@@ -27,20 +43,8 @@ public class EffectFXManager : MonoBehaviour
 
         foreach (EffectData data in effectData)
         {
-            GameObject owner = Managers.Object.FindById(ownerId);
-            CreatureController ownerCreature = owner?.GetComponent<CreatureController>();
-            GameObject fxPrefab = null;
-            if (ownerCreature is PlayerController)
-            {
-                CharacterType type = ownerCreature.ObjInfo.Player.CharType;
-                fxPrefab = Managers.Resource.Load<GameObject>($"effects/prefab/{type}/{data.prefabName}");
-            }
-            else
-            {
-                fxPrefab = Managers.Resource.Load<GameObject>($"effects/prefab/Monster/{data.prefabName}");
-            }
-
-            if (fxPrefab == null)
+            GameObject fxPrefab = GetFxPrefab(ownerId, data.prefabName);
+            if(fxPrefab == null)
             {
                 Debug.LogWarning($"FX Prefab not found: {data.prefabName}");
                 continue;

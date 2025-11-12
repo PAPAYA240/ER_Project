@@ -13,6 +13,8 @@ public class Player_StunState : IPlayerState
     {
         public float Duration;      // 기절 지속 시간
         public float Speed;         // 밀리는 속도
+        public bool canFloat;
+        public SkillMotionType skillMotionType = SkillMotionType.Transform;
         public Vector3 EndPos;      // 어디로. 여기 들어오는 위치는 계산이 끝났다고 가정.
     }
 
@@ -74,9 +76,10 @@ public class Player_StunState : IPlayerState
                 {
                     //player.Position = nextPos;
                     player.SendSkillMotion(
-                        type: SkillMotionType.Transform,
+                        type: _desc.skillMotionType,
                         start: player.Position,
-                        end: nextPos
+                        end: nextPos,
+                        canFloat: _desc.canFloat
                     );
                     //player.SendMoveSyncPacket(player.PosInfo);
                     //player.SendMovePacket(); // 또는 특정 스킬 모션 패킷으로

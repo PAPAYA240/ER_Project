@@ -80,6 +80,9 @@ public abstract class SkillHandlerBase : ISkill
         //    authoritativeEnd: true);
     }
 
+    public virtual void OnAttack(Player p)
+    {
+    }
     public virtual void OnHit(Player p, SkillContext ctx)
     {
         
@@ -120,9 +123,9 @@ public abstract class SkillHandlerBase : ISkill
     }
     #endregion
     #region Utils
-    protected void SendSkillConfirmPacket(Player p, bool sendCostPacket = true)
+    protected void SendSkillConfirmPacket(Player p, bool sendCostPacket = true, bool sendLookatMousePacket = false)
     {
-        p.SendSkillConfirmPacket(true, _keyCode, CanMoveDuringCast, sendCostPacket);
+        p.SendSkillConfirmPacket(true, _keyCode, CanMoveDuringCast, sendCostPacket, sendLookatMousePacket);
     }
 
     protected void SendSkillCollisionRequestPacket(Player p, CollisionType type, Vector3 startPos, Vector3 targetPos)

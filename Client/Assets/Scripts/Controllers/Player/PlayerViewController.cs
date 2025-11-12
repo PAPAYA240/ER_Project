@@ -63,7 +63,7 @@ public class PlayerViewController : MonoBehaviour
                 {
                     Vector3 pos = _target.transform.position;
                     UpdateTarget(pos);
-                    Debug.Log(pos);
+                    //Debug.Log(pos);
                 }
             }
         }
@@ -151,6 +151,9 @@ public class PlayerViewController : MonoBehaviour
         if (_agent == null)
             return;
 
+        if (_player.AllowOffPathMovement)
+            return;
+
         if (_player.State == CreatureState.Skill && !_skill.CanMoveDuringCast)
             return;
         else
@@ -206,6 +209,9 @@ public class PlayerViewController : MonoBehaviour
         {
             case StopReason.StopAll:
             case StopReason.StopMoveOnly:
+                if (_player.AllowOffPathMovement)
+                    return;
+
                 _agent.enabled = true;
                 _agent.isStopped = true;
 

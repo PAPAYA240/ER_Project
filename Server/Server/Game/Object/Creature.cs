@@ -35,11 +35,6 @@ namespace Server.Game
             _pathIdx = 0;
 
             return result;
-            //    if (_path != null && _path.Count > 0)
-            //{
-            //    if (Vector3.Distance(_path[0], startPos) > 0.1f)
-            //        _path.Insert(0, startPos);
-            //}
         }
 
         public void MoveAlongPath()

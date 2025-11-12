@@ -35,7 +35,8 @@ public class MonsterSaverEditor : MonoBehaviour
     [MenuItem("Tools/> Save Monster Spawn Data")]
      public static void SaveMonsterSaveData()
      {
-         string _savePath = Application.dataPath + "/Resources/Data/MonsterData/SpawnMonsterData.json";
+         string _savePath = Application.dataPath + "/Resources/Data/a" +
+            "/SpawnMonsterData.json";
 
          GameObject SpawnPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(_path);
          SpawnPrefab.transform.position = Vector3.zero;

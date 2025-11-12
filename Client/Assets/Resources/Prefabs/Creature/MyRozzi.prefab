@@ -5913,10 +5913,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2998010065250631500}
     m_Modifications:
+    - target: {fileID: 2360301933150566791, guid: 4b41c19d72b79424d8a297a7d59e8cbb,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2360481836646555567, guid: 4b41c19d72b79424d8a297a7d59e8cbb,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2360507315359996025, guid: 4b41c19d72b79424d8a297a7d59e8cbb,
         type: 3}
       propertyPath: m_Name
       value: WP_Rozzi_S002_R_Pistol
+      objectReference: {fileID: 0}
+    - target: {fileID: 2360507315359996025, guid: 4b41c19d72b79424d8a297a7d59e8cbb,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2366601386124347778, guid: 4b41c19d72b79424d8a297a7d59e8cbb,
         type: 3}
@@ -5987,10 +6002,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8370422042065990869}
     m_Modifications:
+    - target: {fileID: 5869394398636527673, guid: c4abec2da89a87a479a60572b75ff044,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5870070195971134638, guid: c4abec2da89a87a479a60572b75ff044,
         type: 3}
       propertyPath: m_Name
       value: WP_Rozzi_S002_L_Pistol
+      objectReference: {fileID: 0}
+    - target: {fileID: 5870070195971134638, guid: c4abec2da89a87a479a60572b75ff044,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5870081061122470203, guid: c4abec2da89a87a479a60572b75ff044,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5872010592650762742, guid: c4abec2da89a87a479a60572b75ff044,
         type: 3}

@@ -13,7 +13,7 @@ namespace Server.Game
 {
     public partial class Player : Creature
     {
-        public int AttackRange { get; set; } = 3;
+        public int AttackRange { get; set; } = 6;
 
         public bool IsDead => this.State == CreatureState.Dead;
 
