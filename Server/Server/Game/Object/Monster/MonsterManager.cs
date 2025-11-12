@@ -40,10 +40,10 @@ namespace Server.Game
                 MonsterType monsterTypeName = rawData.monsterType;
 
                 // 페이즈대로 몬스터 호출
-                //if (!DataManager.MonsterDict.TryGetValue(monsterTypeName, out MonsterData monsterStat))
-                //    continue;
-                //if (monsterStat.activePhase != phase)
-                //    continue;
+                if (!DataManager.MonsterDict.TryGetValue(monsterTypeName, out MonsterData monsterStat))
+                    continue;
+                if (monsterStat.activePhase != phase)
+                    continue;
 
                 cleanedList.monsters.Add(new LoadMonsterData
                 {
