@@ -506,6 +506,16 @@ namespace Server.Game
             Room.Push(Room.Broadcast, changePacket);
         }
 
+        public bool IsUntargetable()
+        {
+            foreach (var effect in _statusEffects)
+            {
+                if (effect.type == "Untargetable")
+                    return true;
+            }
+            return false;
+        } // 대상지정불가 상태인지 아닌지
+
         #endregion
     }
 }

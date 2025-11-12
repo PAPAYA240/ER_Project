@@ -337,6 +337,9 @@ namespace Server.Game
        
         bool CheckCollision(Hitbox hitbox, GameObject go)
         {
+            if (go.IsUntargetable())
+                return false;
+
             if (!System.Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
                 return false;
 
@@ -543,6 +546,7 @@ namespace Server.Game
             info.MaxHp = target.MaxHp;
             return CalcDamage(attacker, info, keyCode);
         }
+
         public float CalcDamage(Creature attacker, Creature target)
         {
             Monster monsterAttacker = attacker as Monster;
@@ -559,6 +563,7 @@ namespace Server.Game
             else
                 return 0f;
         }
+
         public float CalcDamage(Creature attacker, StatInfo target, KeyCode keyCode)
         {
             // TODO 버프 디버프 정보도 가지고 와야함. 예를 들면 방깍 디버프 같은거 
@@ -590,6 +595,7 @@ namespace Server.Game
 
             return result;
         }
+
         void SendChangeHpPkts(Dictionary<int, Dictionary<int, Player>> teams, Dictionary<int, Dictionary<int, float>> damageDict)
         {
             foreach (var kvp in damageDict)
