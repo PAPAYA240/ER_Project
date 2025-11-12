@@ -280,6 +280,8 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     {
         if(p.Info.Player.CharType == CharacterType.Abigail)
             return new Abigail_AttackState(targetId, chaseAllowed, attackRange);
+        else if (p.Info.Player.CharType == CharacterType.Theodore)
+            return new Theodore_AttackState(targetId, chaseAllowed, attackRange);
 
         return new Player_AttackState(targetId, chaseAllowed, attackRange);
     }

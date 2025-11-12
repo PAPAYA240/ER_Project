@@ -6,6 +6,7 @@ using System.Collections;
 using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 using Google.Protobuf.WellKnownTypes;
 using TMPro;
+using UnityEngine.UIElements;
 
 public class CameraController : MonoBehaviour
 {
@@ -88,67 +89,78 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
 
         if (!_isSkillZooming)
-        {
-            if (scroll < 0f)
-            {
-                _currentStep = Mathf.Max(_currentStep - 1, 0);
-                _targetZoom = _zoomSteps[_currentStep];
-            }
-            else if (scroll > 0f)
-            {
-                _currentStep = Mathf.Min(_currentStep + 1, _zoomSteps.Length - 1);
-                _targetZoom = _zoomSteps[_currentStep];
-            }
-
-            if (_isLerpComplete)
-            {
-                _currentZoom = Mathf.MoveTowards(_currentZoom, _targetZoom, _zoomSpeed * Time.deltaTime);
-            }
-        }
+            DefaultMode();
     }
-
+   
     void LateUpdate()
     {
         if (!_isSkillZooming)
-        {
-            if (_mode == Define.CameraMode.QuaterView)
-            {
-                if (_player == null || !_player.activeSelf) // IsValid() 대신 null 또는 activeSelf 체크
-                {
-                    return;
-                }
-
-                Vector3 targetDelta = (_currentZoom <= _lastZoom) ? _nearDelta : _farDelta;
-                _delta = Vector3.MoveTowards(_delta, targetDelta, _lerpSpeed * Time.deltaTime);
-
-                if (Vector3.Distance(_delta, targetDelta) < 0.01f)
-                    _isLerpComplete = true;
-                else
-                    _isLerpComplete = false;
-
-                Vector3 zoomedOffset = _delta.normalized * _currentZoom;
-                transform.position = _player.transform.position + zoomedOffset;
-                transform.LookAt(_player.transform.position + Vector3.up);
-
-                LateUpdateAction?.Invoke();
-            }
-        }
+            LateDefaultMode();
        
     }
+
+    #region Default Mode
+    private void DefaultMode()
+    {
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        if (scroll < 0f)
+        {
+            _currentStep = Mathf.Max(_currentStep - 1, 0);
+            _targetZoom = _zoomSteps[_currentStep];
+        }
+        else if (scroll > 0f)
+        {
+            _currentStep = Mathf.Min(_currentStep + 1, _zoomSteps.Length - 1);
+            _targetZoom = _zoomSteps[_currentStep];
+        }
+
+        if (_isLerpComplete)
+        {
+            _currentZoom = Mathf.MoveTowards(_currentZoom, _targetZoom, _zoomSpeed * Time.deltaTime);
+        }
+    }
+    private void LateDefaultMode()
+    {
+        if (_mode == Define.CameraMode.QuaterView)
+        {
+            if (_player == null || !_player.activeSelf) // IsValid() 대신 null 또는 activeSelf 체크
+            {
+                return;
+            }
+
+            Vector3 targetDelta = (_currentZoom <= _lastZoom) ? _nearDelta : _farDelta;
+            _delta = Vector3.MoveTowards(_delta, targetDelta, _lerpSpeed * Time.deltaTime);
+
+            if (Vector3.Distance(_delta, targetDelta) < 0.01f)
+                _isLerpComplete = true;
+            else
+                _isLerpComplete = false;
+
+            Vector3 zoomedOffset = _delta.normalized * _currentZoom;
+            transform.position = _player.transform.position + zoomedOffset;
+            transform.LookAt(_player.transform.position + Vector3.up);
+
+            LateUpdateAction?.Invoke();
+        }
+    }
+    #endregion
+
+    #region Theodore D Skill Mode
+    const float AIM_DURATION = 0.7f;
+    const float AIM_DURATION_END = 1.5f;
+
+    private Coroutine _zoomCoroutine = null;
+    private bool _isSkillZooming = false;
+    private Vector3 _originalPosition;
+    private Quaternion _originalRotation;
 
     public void SetQuaterView(Vector3 delta)
     {
         _mode = Define.CameraMode.QuaterView;
         _farDelta = delta;
     }
-
-    private Coroutine _zoomCoroutine = null;
-    private bool _isSkillZooming = false;
-    private Vector3 _originalPosition;
-    private Quaternion _originalRotation;
 
     public void StartAimMode(Vector3 center, float zoomOutDistance)
     {
@@ -157,22 +169,22 @@ public class CameraController : MonoBehaviour
         _zoomCoroutine = StartCoroutine(CameraZoomOut(center, zoomOutDistance));
     }
 
-    const float AIM_DURATION = 0.7f;
-    const float AIM_DURATION_END = 1.5f;
+    [SerializeField] float zoomOutSpeed = 10.0f;
+    [SerializeField] float _zoomOutDistance = 10.0f;
     private IEnumerator CameraZoomOut(Vector3 center, float zoomOutDistance)
     {
+        // 플레이어가 바라보는 상태에서 조금 앞으로 당기고 그대로 멀어진다.
         _isSkillZooming = true; 
         _originalPosition = transform.position;
         _originalRotation = transform.rotation;
 
-        Vector3 directionFromCenter = (_originalPosition - center).normalized;
-        Vector3 targetPosition = center + new Vector3(
-            directionFromCenter.x,
-            zoomOutDistance,  
-            directionFromCenter.z);
+        // 위치
+        Vector3 lookDirection = center - _originalPosition;
+        Vector3 targetPosition = _originalPosition + lookDirection.normalized * zoomOutSpeed;
+        targetPosition.y += _zoomOutDistance;
+
 
         float elapsed = 0f;
-
         while (elapsed < AIM_DURATION)
         {
             elapsed += Time.deltaTime;
@@ -180,13 +192,10 @@ public class CameraController : MonoBehaviour
 
             float smoothT = Mathf.SmoothStep(0f, 1f, t);
             transform.position = Vector3.Lerp(_originalPosition, targetPosition, smoothT);
-            transform.rotation = _originalRotation;
 
             yield return null;
         }
-
         transform.position = targetPosition;
-        transform.rotation = _originalRotation;
     }
     public void EndAimMode()
     {
@@ -212,4 +221,5 @@ public class CameraController : MonoBehaviour
         _delta = _originalPosition;
         _isSkillZooming = false;
     }
+    #endregion
 }

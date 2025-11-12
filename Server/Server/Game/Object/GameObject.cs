@@ -8,6 +8,9 @@ using Lucene.Net.Store;
 using ServerCore;
 using static System.Net.Mime.MediaTypeNames;
 using static Server.Game.GameObject;
+using static Player_StunState;
+using Google.Protobuf.WellKnownTypes;
+using static Server.Game.StunState;
 
 namespace Server.Game
 {
@@ -203,7 +206,7 @@ namespace Server.Game
             }
         }
 
-        private void OnDamaged(GameObject attacker, float damage, bool isBasicAttack = false)
+        protected virtual void OnDamaged(GameObject attacker, float damage, bool isBasicAttack = false)
         {
             //배리어가 흡수할 수치 계산
             float absorbed = Math.Min(Barrier, damage);
@@ -366,7 +369,20 @@ namespace Server.Game
                         stunPacket.Duration = statusEffect.duration;
                         Room.Broadcast(stunPacket);
 
-                        // NAYOUNGTODO : Idle로 변경해야 함
+                        if (this is Player player)
+                        {
+                            player.ChangeState(new Player_StunState(new StunStateDesc
+                            {
+                                Duration = statusEffect.duration
+                            }));
+                        }
+                        else if (this is Monster monster)
+                        {
+                            monster.ChangeState(new StunState(new MonsterStunDesc
+                            {
+                                Duration = statusEffect.duration
+                            }));
+                        }
                     }
                 }                    
             }

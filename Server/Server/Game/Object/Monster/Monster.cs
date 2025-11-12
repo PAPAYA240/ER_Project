@@ -63,16 +63,15 @@ namespace Server.Game
                 DIST_TO_TARGET = 2.0f;
 
             OnAttacked += HandlerRegisterTarget;
-            ChangeState(FSMManager.Instance.GetIdleState());
         }
+        bool _appeared = false;
         public override void Update()
         {
-            //if(!_bAppear && Room.TimeStamp.TotalSeconds > 15.0f)
-            //{
-            //    _bAppear = true;
-            //    ChangeState(FSMManager.Instance.GetAppearState()); 
-            //}
-
+            if (Room != null && _appeared == false)
+            {
+                ChangeState(FSMManager.Instance.GetAppearState());
+                _appeared = true;
+            }
             _currentState?.Execute(this);
         }
 
@@ -112,6 +111,13 @@ namespace Server.Game
         #endregion
 
         #region Hit
+        protected override void OnDamaged(GameObject attacker, float damage, bool isBasicAttack = false)
+        {
+            // 
+            base.OnDamaged(attacker, damage, isBasicAttack);
+
+            OnAttacked?.Invoke(attacker);
+        }
         public void OnHit(Creature creature)
         {
             OnAttacked?.Invoke(creature);
@@ -226,7 +232,7 @@ namespace Server.Game
                 Stat.MergeFrom(monsterData.stat);
                 Hp = MaxHp;
                 _spawnPosition = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-
+                State = CreatureState.Appear;
                 if (monsterData.skills != null)
                     _skills.AddRange(monsterData.skills);
             }

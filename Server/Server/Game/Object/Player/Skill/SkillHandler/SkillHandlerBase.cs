@@ -79,6 +79,9 @@ public abstract class SkillHandlerBase : ISkill
         //    authoritativeEnd: true);
     }
 
+    public virtual void OnAttack(Player p)
+    {
+    }
     public virtual void OnHit(Player p, SkillContext ctx)
     {
         

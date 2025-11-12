@@ -519,29 +519,6 @@ public class PlayerController : CreatureController
         }
         Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, transform);
     }
-
-    // 현재 상태, 키, 타겟팅 상대에게 이펙트
-    protected virtual List<GameObject> PlayEffectTransform(CreatureState state, KeyCode key, EffectType type = EffectType.Caster,
-       GameObject target = null, Transform targetTransform = null)
-    {
-        List<EffectData> effectList = Managers.Data.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
-        List<GameObject> EffectList = null;
-        EffectList = Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, transform);
-
-        return EffectList;
-    }
-    public List<GameObject> PlayEffectAtPosition(CreatureState state, KeyCode key, Vector3 position, Quaternion rot, EffectType type = EffectType.Caster)
-    {
-        List<EffectData> effectList = Managers.Data.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
-
-        if (effectList == null || effectList.Count == 0)
-            return null;
-
-        List<GameObject> EffectList = Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, this.transform, position, rot);
-
-        return EffectList;
-    }
-
     #endregion
 
     #region State:Dead

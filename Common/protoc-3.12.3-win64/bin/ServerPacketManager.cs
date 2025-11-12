@@ -76,7 +76,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CKeyInputForTest, MakePacket<C_KeyInputForTest>);
 		_handler.Add((ushort)MsgId.CKeyInputForTest, PacketHandler.C_KeyInputForTestHandler);		
 		_onRecv.Add((ushort)MsgId.CChargingSkill, MakePacket<C_ChargingSkill>);
-		_handler.Add((ushort)MsgId.CChargingSkill, PacketHandler.C_ChargingSkillHandler);
+		_handler.Add((ushort)MsgId.CChargingSkill, PacketHandler.C_ChargingSkillHandler);		
+		_onRecv.Add((ushort)MsgId.CAttackRequest, MakePacket<C_AttackRequest>);
+		_handler.Add((ushort)MsgId.CAttackRequest, PacketHandler.C_AttackRequestHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

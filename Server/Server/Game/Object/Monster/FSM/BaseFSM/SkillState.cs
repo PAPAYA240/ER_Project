@@ -9,7 +9,6 @@ namespace Server.Game
     public class SkillState : IMonsterState
     {
         private MonsterSkillData _skillData;
-        private ISkillBehavior _behavior;
         private long _skillEndTime = 0;
         private long _lastUpdateTime = 0;
 
@@ -22,12 +21,9 @@ namespace Server.Game
                 return;
             }
 
-            _behavior = CreateBehaviorFromClassName(_skillData.SkillBehavior);
             RotateTowardTarget(monster);
 
             SetupSkill(monster);
-
-            InitializeSkillBehavior(monster);
 
             monster.Room.CollManager.AddHitbox(monster, _skillData.skillType);
             monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), _skillData);
@@ -35,12 +31,8 @@ namespace Server.Game
 
         public void Execute(Monster monster)
         {
-            _behavior?.OnUpdate(monster);
-
             if (IsSkillFinished())
             {
-                _behavior?.OnEnd(monster);
-
                 if (monster.IsInSkillRange())
                     monster.ChangeState(FSMManager.Instance.GetSkillState(monster.Info.Monster.MonsterType));
                 else
@@ -49,21 +41,20 @@ namespace Server.Game
         }
         public void OnHit(Monster monster, Creature target)
         {
-            _behavior?.OnHit(monster, target);
-
-            if (target is Player)
+            if (target is Player player)
             {
-                Player player = target as Player;
-                if (player == null) 
+                if (_skillData.descriptionInfo == null)
                     return;
-                #region
-                if (!_skillData.descriptionInfo.ContainsKey("Distance") ||
-                    !_skillData.descriptionInfo.ContainsKey("Duration") ||
-                    !_skillData.descriptionInfo.ContainsKey("Speed"))
+
+                bool forceSkillEffect =
+                    _skillData.descriptionInfo.ContainsKey("Distance") &&
+                    _skillData.descriptionInfo.ContainsKey("Duration") &&
+                    _skillData.descriptionInfo.ContainsKey("Speed");
+
+                if (!forceSkillEffect)
                     return;
 
                 StunStateDesc desc = new StunStateDesc();
-
                 Vector3 worldRight = new Vector3(1f, 0f, 0f);
                 if (_skillData.SkillBehavior == "KnockbackSkill")
                 {
@@ -82,16 +73,12 @@ namespace Server.Game
                 desc.Duration = _skillData.descriptionInfo["Duration"];
                 desc.Speed = _skillData.descriptionInfo["Speed"];
                 desc.EndPos = endPos;
-                #endregion
                 player.ChangeState(new Player_StunState(desc));
             }
         }
 
         public void Exit(Monster monster)
         {
-            _behavior?.OnEnd(monster);
-            _behavior = null;
-
             _skillData = null;
             _skillEndTime = 0;
             _lastUpdateTime = 0;
@@ -110,11 +97,7 @@ namespace Server.Game
             _skillEndTime = Environment.TickCount64 + durationInMilliseconds;
             monster._delaySkillAnimationTimer = _skillData.skillCoolTime;
         }
-        private void InitializeSkillBehavior(Monster monster)
-        {
-            _behavior = monster.CreateSkillBehavior(_skillData.SkillBehavior);
-            _behavior?.OnStart(monster, _skillData);
-        }
+      
         private void RotateTowardTarget(Monster monster)
         {
             if (monster.Target == null)
@@ -129,28 +112,6 @@ namespace Server.Game
             Vector3 direction = targetPosition - myPosition;
 
             monster.LookAtTarget(direction, elapsedTime, false);
-        }
-
-        private static ISkillBehavior CreateBehaviorFromClassName(string behaviorClassName)
-        {
-            if (behaviorClassName == null)
-                return null;
-
-            Type behaviorType = Type.GetType(behaviorClassName);
-            if (behaviorType == null)
-                return null;
-
-            try
-            {
-                object instance = Activator.CreateInstance(behaviorType);
-                if (instance is ISkillBehavior skillBehavior)
-                    return skillBehavior;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-            return null;
         }
     }
     #endregion

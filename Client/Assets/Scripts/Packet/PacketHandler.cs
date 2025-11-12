@@ -738,6 +738,11 @@ class PacketHandler
         mpc.CanStopSkill = canStopSkillPkt.CanStopSkill;
     }
 
+    public static void S_AttackHandler(PacketSession session, IMessage packet)
+    {
+    
+    }
+    
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;
