@@ -467,9 +467,6 @@ namespace Server.Game
                 }                    
             }
         }
-                }
-            }
-        }
 
         // Yuki pyosik damage coroutine
         List<float> FixedDamage = new List<float> { 0.06f, 0.1f, 0.14f };

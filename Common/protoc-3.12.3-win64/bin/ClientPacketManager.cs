@@ -124,7 +124,11 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SRotateToPos, MakePacket<S_RotateToPos>);
 		_handler.Add((ushort)MsgId.SRotateToPos, PacketHandler.S_RotateToPosHandler);		
 		_onRecv.Add((ushort)MsgId.SAddYukiPyosik, MakePacket<S_AddYukiPyosik>);
-		_handler.Add((ushort)MsgId.SAddYukiPyosik, PacketHandler.S_AddYukiPyosikHandler);
+		_handler.Add((ushort)MsgId.SAddYukiPyosik, PacketHandler.S_AddYukiPyosikHandler);		
+		_onRecv.Add((ushort)MsgId.SChangeAttackRange, MakePacket<S_ChangeAttackRange>);
+		_handler.Add((ushort)MsgId.SChangeAttackRange, PacketHandler.S_ChangeAttackRangeHandler);		
+		_onRecv.Add((ushort)MsgId.SUntargetable, MakePacket<S_Untargetable>);
+		_handler.Add((ushort)MsgId.SUntargetable, PacketHandler.S_UntargetableHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)
