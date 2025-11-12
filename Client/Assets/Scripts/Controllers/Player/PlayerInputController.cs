@@ -91,7 +91,7 @@ public class PlayerInputController : MonoBehaviour
     {
         if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving || _player.State == CreatureState.Attack)
         {
-            if (!Input.GetKeyDown(KeyCode.C) /*|| !Input.GetMouseButtonDown(1)*/)
+            if (/*!Input.GetKeyDown(KeyCode.C) ||*/ !Input.GetMouseButtonDown(1))
                 return null;
 
             int id = GetAttackableUnderCursorID();

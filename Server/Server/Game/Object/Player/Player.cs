@@ -79,11 +79,12 @@ namespace Server.Game
             get { return base.Hp; }
             set 
             {
+                
                 float diff = value - Stat.Hp;
                 if (diff > 0)
                     Stat.Hp += diff * Healing;
 
-                Stat.Hp = Math.Clamp(Stat.Hp, 0, MaxHp);              
+                Stat.Hp = Math.Clamp(value, 0, MaxHp);              
             }
         }
 
@@ -831,6 +832,8 @@ namespace Server.Game
                 Hp += _totalItemStat.MaxHp + _totalItemStat.MaxHpPerLevel * Stat.Level;
                 Stamina += _totalItemStat.MaxStamina;
                 _isUpdatedStat = true;
+
+                _isUpdatedStatus = true;
 
                 GameRoom room = Room;
 
