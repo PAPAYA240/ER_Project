@@ -82,12 +82,10 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
 
             player.ChangeState(new Player_MovingState(cmd));
             player.SendMoveSyncPacket(dest.TargetPos);
-            Console.WriteLine($"@ ChangeState : Moving - {dest.TargetPos}");
         }
         else
         {
             player.ChangeState(new Player_IdleState());
-            Console.WriteLine($"@ ChangeState : Idle");
         }
     }
 

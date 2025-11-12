@@ -773,30 +773,15 @@ namespace Server.Game
                         break;
                     case Subject.T:
                         if(effect.type == "CDR")
-                        {
-                            bool isRatio = false;
-                            if(effect.valueType == ValueType.Ratio) 
-                                isRatio = true;
-                            player.Skill.Reduce(KeyCode.T, effect.value, isRatio);
-                        }
+                            player.Skill.Reduce(KeyCode.T, effect.value, effect.valueType == ValueType.Ratio);
                         break;
                     case Subject.Q:
                         if (effect.type == "CDR")
-                        {
-                            bool isRatio = false;
-                            if (effect.valueType == ValueType.Ratio)
-                                isRatio = true;
-                            player.Skill.Reduce(KeyCode.Q, effect.value, isRatio);
-                        }
+                            player.Skill.Reduce(KeyCode.Q, effect.value, effect.valueType == ValueType.Ratio);
                         break;
                     case Subject.W:
                         if (effect.type == "CDR")
-                        {
-                            bool isRatio = false;
-                            if (effect.valueType == ValueType.Ratio)
-                                isRatio = true;
-                            player.Skill.Reduce(KeyCode.W, effect.value, isRatio);
-                        }
+                            player.Skill.Reduce(KeyCode.W, effect.value, effect.valueType == ValueType.Ratio);
                         break;
                 }
             }

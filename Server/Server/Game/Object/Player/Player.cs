@@ -1151,8 +1151,6 @@ namespace Server.Game
 
                 Room.Push(Session.Send, packet);
                 _isUpdatedStatus = false;
-
-                Console.WriteLine($"@ Send Packet : Id - {Id}, Speed - {Speed}, Attack - {Attack}, Defense - {Defense}, Healing - {Healing}");
             }
         }
         #endregion

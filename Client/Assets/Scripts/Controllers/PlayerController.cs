@@ -293,13 +293,6 @@ public class PlayerController : CreatureController
 
     public void ChangeStatus(S_ChangeStatus packet)
     {
-        if(Speed != packet.MoveSpeed)
-            Debug.Log($"@ Change Status : Speed - {Speed}, Update - {packet.MoveSpeed}");
-        if(Attack != packet.Attack)
-            Debug.Log($"@ Change Status : Attack - {Attack}, Update - {packet.Attack}");
-        //if (Defense != packet.Defense)
-            Debug.Log($"@ Change Status : Defense - {Defense}, Update - {packet.Defense}");
-
         Speed = packet.MoveSpeed;
         Attack = packet.Attack;
         //AttackSpeed = packet.AttackSpeed;

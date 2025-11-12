@@ -168,8 +168,8 @@ namespace Server.Game
 
         protected const string STAT_MOVE_SPEED = "MoveSpeed";
         protected const string STAT_ATTACK = "Attack";
-        protected const string STAT_DEFENSE = "Defense";
         protected const string STAT_ATTACK_SPEED = "AttackSpeed";
+        protected const string STAT_DEFENSE = "Defense";
         protected const string STAT_HEALING = "Healing";
 
         // 인스턴스별 퍼센트 누적( +0.20f = +20% )
@@ -635,7 +635,6 @@ namespace Server.Game
                 _mulAccum[key] = _mulAccum.GetValueOrDefault(key) + delta;
             }
 
-            Console.WriteLine($"@ RegisterMultiplier : Id - {Id}, key - {key}, value - {_mulAccum[key]}");
             _isUpdatedStatus = true;
         }
 
@@ -647,8 +646,6 @@ namespace Server.Game
 
             _flatByInst[inst] = (key, delta);
             _flatAccum[key] = _flatAccum.GetValueOrDefault(key) + delta;
-
-            Console.WriteLine($"@ RegisterFlat : Id - {Id}, key - {key}, value - {_flatAccum[key]}");
 
             _isUpdatedStatus = true;
         }
