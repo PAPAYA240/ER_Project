@@ -44,6 +44,10 @@ namespace Server.Game
             if (player == null || pkt == null)
                 return;
 
+            // 0) 플레이어가 이동할 수 있는 상태인지 확인
+            if (!player.CanMove())
+                return;
+
             // 1) 타겟 검증 → 지형 이동 정규화
             if (!pkt.IsGround)
             {

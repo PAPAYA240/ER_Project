@@ -53,6 +53,7 @@ namespace Server.Game
     }
 
     public enum Subject { Subject_None, Self, Ally, Enemy, Q, W, E, R, T }
+    public enum ValueType { Ratio, Flat, ValueType_None }
 
     public class CollisionManager
     {
@@ -720,6 +721,7 @@ namespace Server.Game
                                     duration = effectData.duration,
                                     value = effectData.value,
                                     subject = Enum.TryParse(effectData.subject, true, out Subject temp) ? temp : Subject.Subject_None,
+                                    valueType = Enum.TryParse(effectData.valueType, true, out ValueType type) ? type : ValueType.ValueType_None,
                                     coeff = effectData.coeff,
                                     ratioPerTarget = effectData.ratioPerTarget,
                                     maxRatio = effectData.maxRatio
@@ -763,19 +765,27 @@ namespace Server.Game
                         else if(effect.type == "OnCollisionMultiTarget")
                             player.Room.Push(player.Room.CallOnCollision, player, hitTargets, effect);
                         else
-                            player.Room.Push(player.Room.AddStatusEffect, player, effect, hitbox.Creature);
+                            player.Room.Push(player.AddStatusEffect, effect);
                         break;
                     case Subject.Ally: // 이건 아군대상 스킬에만 있을거같긴해서 생략
                         break;
                     case Subject.Enemy:
                         foreach(var enemy in hitTargets.OfType<Creature>()) // Creature 일때만
                         { 
-                            enemy.Room.Push(enemy.Room.AddStatusEffect, enemy, effect, hitbox.Creature); 
+                            enemy.Room.Push(enemy.AddStatusEffect, effect); 
                         }
                         break;
                     case Subject.T:
                         if(cnt == 1 && effect.type == "CDR") // 쿨타임 감소는 딱 한번만 발생해야 함
-                            player.Skill.Reduce(KeyCode.T, effect.value);
+                            player.Skill.Reduce(KeyCode.T, effect.value, effect.valueType == ValueType.Ratio);
+                        break;
+                    case Subject.Q:
+                        if (cnt == 1 && effect.type == "CDR")
+                            player.Skill.Reduce(KeyCode.Q, effect.value, effect.valueType == ValueType.Ratio);
+                        break;
+                    case Subject.W:
+                        if (cnt == 1 && effect.type == "CDR")
+                            player.Skill.Reduce(KeyCode.W, effect.value, effect.valueType == ValueType.Ratio);
                         break;
                 }
             }

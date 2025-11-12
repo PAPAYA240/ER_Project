@@ -777,6 +777,26 @@ class PacketHandler
         pc.StartCoroutine(pc.CoRotateToPosition(new Vector3(rotateToPosPkt.PosX, 0, rotateToPosPkt.PosZ)));
     }
 
+    public static void S_ChangeStatusHandler(PacketSession session, IMessage packet)
+    {
+        S_ChangeStatus statusPacket = packet as S_ChangeStatus;
+
+        GameObject go = Managers.Object.FindById(statusPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.ChangeStatus(statusPacket);
+
+        if (pc is MyPlayerController mpc)
+        {
+            mpc.UI.PlayerInterface.UpdateStat();
+        }
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;

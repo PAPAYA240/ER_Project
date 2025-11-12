@@ -116,8 +116,7 @@ public class PlayerSkillController : MonoBehaviour
         }
         else if(packet.Type == SkillMotionType.Transform)
         {
-            ApplySkillMotion((SkillMotionType)packet.Type,
-            new Vector3(packet.EndX, packet.EndY, packet.EndZ),
+            ApplySkillMotion(new Vector3(packet.EndX, packet.EndY, packet.EndZ),
             packet.AuthoritativeEnd);
         }
     }
@@ -174,23 +173,11 @@ public class PlayerSkillController : MonoBehaviour
         Vector3 targetPos = new Vector3(endX, transform.position.y, endZ);
 
         if (type == CollisionType.Block)
-        {
             collisionPos = ComputeEndBlocked(startPos, targetPos);
-            
-            Debug.Log($"EndBlocked => X : {collisionPos.x}, Z : {collisionPos.z}");
-        }
         else if (type == CollisionType.Pass)
-        {
             collisionPos = ComputeEndPass(startPos, targetPos);
-
-            Debug.Log($"EndPass => X : {collisionPos.x}, Z : {collisionPos.z}");
-        }
         else if (type == CollisionType.Clamp)
-        {
             collisionPos = ComputeClamp(startPos, targetPos);
-
-            Debug.Log($"Clamp => X : {collisionPos.x}, Z : {collisionPos.z}");
-        }
 
         packet.CollisionX = collisionPos.x;
         packet.CollisionZ = collisionPos.z;
@@ -298,7 +285,7 @@ public class PlayerSkillController : MonoBehaviour
         _player.UpdateTransform();
     }
 
-    private void ApplySkillMotion(SkillMotionType type, Vector3 targetPos, bool authoritativeEnd)
+    private void ApplySkillMotion(Vector3 targetPos, bool authoritativeEnd)
     {
         if(_agent != null || _agent.enabled)
             _agent.enabled = false;

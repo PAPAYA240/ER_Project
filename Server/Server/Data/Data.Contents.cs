@@ -305,16 +305,10 @@ namespace Server.Data
     [Serializable]
     public class EffectData // 버프 디버프 등의 상태효과
     {
-        public enum EEffectTarget
-        {
-            Self,
-            Target,
-            Ground,
-        }
-
         public string type;    // Buff / Debuff / Burn 등
         public string stat;    // MoveSpeed / Defense / AttackSpeed 등
         public float value;    // 수치 (%는 그냥 숫자로 저장)
+        public string valueType;    // Ratio / Flat
         public float duration; // 지속시간
         public string condition; // 옵션 (예: "HP<50%")
         public string subject; // 적용대상 Self / Ally / Enemy
@@ -322,26 +316,6 @@ namespace Server.Data
 
         public float ratioPerTarget; // 대상 1명 추가당 증가량 (ex: 아비게일 W: 추가로 적중한 적 하나 당 보호막량 20% 증가)
         public float maxRatio;       // 최대 증가량
-
-        //public Vector3 knockbackDistance; // 밀치기 거리
-        //public float knockbackSpeed; // 밀치는 속도
-
-        public string prefabName; // 프리팹 이름
-        public float delayTime; // 이펙트 시작 시간
-        public Vector3 position;
-        public Quaternion rotation;
-        public string sound;
-        public EEffectTarget target; // 이펙트가 표시될 위치
-
-        public EffectData(string name, EEffectTarget target, float duration, string sound, Vector3 position = default(Vector3), Quaternion rotation = default(Quaternion))
-        {
-            this.prefabName = name;
-            this.target = target;
-            this.duration = duration;
-            this.sound = sound;
-            this.position = position;
-            this.rotation = rotation;
-        }
     }
 
     [Serializable]

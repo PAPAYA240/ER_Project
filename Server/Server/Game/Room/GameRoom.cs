@@ -184,6 +184,11 @@ namespace Server.Game
         public int GetScore(int team) { return _teamScores[team]; }
         #endregion
 
+        #region StatusEffect
+        Dictionary<CharacterType, Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>> _statusEffects // Buffs & Debuffs
+            = new Dictionary<CharacterType, Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>>();
+        #endregion
+
         public void Init(int mapId)
         {
             PathFind = new PathfindInstance(0);
@@ -206,6 +211,7 @@ namespace Server.Game
 
             // Skill Register
             SkillRegistry.InitRegister();
+            SetUpStatusEffectDict(); // StatusEffectDict 초기화 
         }
 
         public override void Update()
@@ -442,6 +448,93 @@ namespace Server.Game
             target.OnDamaged(player, damage);
         }
 
+        #region StatusEffect
+        public void AddStatusEffect(Player player, GameObject target, KeyCode keyCode, string allowedCondition) // 타게팅 스킬 StatusEffect 적용
+        {
+            List<StatusEffect> statusEffectList = GetStatusEffectList(player.Info.Player.CharType, keyCode, player.GetSkillLevel(keyCode));
+
+            foreach (var effect in statusEffectList)
+            {
+                if (effect.condition != allowedCondition)
+                    continue;
+
+                effect.attacker = player;
+
+                switch (effect.subject)
+                {
+                    case Subject.Self:
+                        Push(player.AddStatusEffect, effect);
+                        break;
+                    case Subject.Ally:
+                        break;
+                    case Subject.Enemy:
+                        Push(target.AddStatusEffect, effect);
+                        break;
+                }                
+            }
+        }
+
+        void SetUpStatusEffectDict()
+        {
+            foreach (var nestedKvp in DataManager.SkillDict)
+            {
+                foreach (var kvp in nestedKvp.Value)
+                {
+                    foreach (var levelKvp in kvp.Value.levels)
+                    {
+                        if (levelKvp.Value.effects == null)
+                            continue;
+
+                        foreach (EffectData effectData in levelKvp.Value.effects)
+                        {
+                            CharacterType charType = nestedKvp.Key;
+                            KeyCode keyCode = kvp.Key;
+                            int level = levelKvp.Key;
+
+                            if (!_statusEffects.TryGetValue(charType, out var skillDict))
+                                _statusEffects[charType] = skillDict = new Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>();
+
+                            if (!skillDict.TryGetValue(keyCode, out var levelDict))
+                                skillDict[keyCode] = levelDict = new Dictionary<int, List<StatusEffect>>();
+
+                            if (!levelDict.TryGetValue(level, out var effects))
+                                levelDict[level] = effects = new List<StatusEffect>();
+
+                            StatusEffect newEffect = new StatusEffect
+                            {
+                                type = effectData.type,
+                                stat = effectData.stat,
+                                duration = effectData.duration,
+                                value = effectData.value,
+                                subject = Enum.TryParse(effectData.subject, true, out Subject temp) ? temp : Subject.Subject_None,
+                                coeff = effectData.coeff,
+                                ratioPerTarget = effectData.ratioPerTarget,
+                                maxRatio = effectData.maxRatio,
+                                condition = effectData.condition
+                            };
+
+                            effects.Add(newEffect);
+                        }
+                    }
+                }
+            }
+        }
+
+        List<StatusEffect> GetStatusEffectList(CharacterType charType, KeyCode keyCode, int skillLevel)
+        {
+            if (!_statusEffects.TryGetValue(charType, out var keyDict))
+                return null;
+
+            if (!keyDict.TryGetValue(keyCode, out var skillData))
+                return null;
+
+            if (!skillData.TryGetValue(skillLevel, out var statusEffectsList))
+                return null;
+
+            return statusEffectsList;
+        }
+        #endregion
+
         public void HandleMoveSync(Player player, C_MoveSync movePacket)
         {
             if (player == null)
@@ -501,12 +594,12 @@ namespace Server.Game
                 return;
 
             //player.Skill.SetCooldown(KeyCode.R, 0f);
-            StunStateDesc desc = new StunStateDesc();
-            desc.Duration = 5;
-            //desc.Speed = 17;
-            desc.EndPos = Vector3.Zero;
-            player.ChangeState(new Player_StunState(desc));
-
+            //StunStateDesc desc = new StunStateDesc();
+            //desc.Duration = 5;
+            ////desc.Speed = 17;
+            //desc.EndPos = Vector3.Zero;
+            //player.ChangeState(new Player_StunState(desc));
+            player.Hp += 100f;
         }
 
         #endregion
@@ -680,17 +773,6 @@ namespace Server.Game
         }
 
         #endregion
-
-        public void AddStatusEffect(Creature creature, StatusEffect statusEffect, Creature atk)
-        {
-            creature.AddStatusEffect(statusEffect, atk);
-        }
-
-        //public void BehindDash(Player player)
-        //{
-        //    if (player.CurrentState is Player_SkillState skillState)
-        //        skillState.Handler.OnCollision(player);
-        //}
 
         public void CallOnCollision<T>(Player player, List<T> hitTargets, StatusEffect effect) where T : GameObject, new()
         {

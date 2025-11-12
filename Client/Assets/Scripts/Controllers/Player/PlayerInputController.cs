@@ -14,7 +14,7 @@ public class PlayerInputController : MonoBehaviour
     private NavMeshAgent _agent;
 
     [SerializeField] float _attackRange = 3.0f;  
-    [SerializeField] float _stopBuffer = 1.5f;
+    [SerializeField] float _stopBuffer = 0.1f;
 
     private GameObject _target;
 
@@ -91,7 +91,7 @@ public class PlayerInputController : MonoBehaviour
     {
         if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving || _player.State == CreatureState.Attack)
         {
-            if (!Input.GetKeyDown(KeyCode.C) /*|| !Input.GetMouseButtonDown(1)*/)
+            if (/*!Input.GetKeyDown(KeyCode.C) ||*/ !Input.GetMouseButtonDown(1))
                 return null;
 
             int id = GetAttackableUnderCursorID();
