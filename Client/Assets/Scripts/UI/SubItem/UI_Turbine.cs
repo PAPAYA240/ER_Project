@@ -21,7 +21,7 @@ public class UI_Turbine : UI_Base
 
     public enum TurbineState { Ally, Enemy, Neutral, Off }
 
-    Coroutine _coTimer = null;
+    //Coroutine _coTimer = null;
 
     int _scoreDelay = 40;
 
@@ -58,12 +58,6 @@ public class UI_Turbine : UI_Base
         if (null == mpc)
             return;
 
-        if(_coTimer != null)
-        {
-            StopCoroutine(_coTimer);
-            _coTimer = null;
-        }
-
         if(isAlly)
         {
             //우리팀 
@@ -74,41 +68,12 @@ public class UI_Turbine : UI_Base
             //적팀
             SetImages(TurbineState.Enemy);
         }
-
-        _coTimer = StartCoroutine("CoTimer");
     }
 
-    IEnumerator CoTimer()
-    {
-        float tick = 0.05f;
-        float remainTime = _scoreDelay;
-        SetTimer(remainTime);
-        SetGauge(remainTime);
-
-        while (true)
-        {
-            yield return new WaitForSeconds(tick);
-            remainTime -= tick;
-            SetTimer(remainTime);
-            SetGauge(remainTime);
-
-            if (remainTime <= 0)
-            {
-                //TODO 점수가 오른다.
-                remainTime = _scoreDelay;
-            }
-        }
-
-    }
-
-    void SetTimer(float time)
+    public void SetTimer(float time)
     {
         GetText((int)Texts.Timer).text = time.ToString("F0");
-    }
-
-    void SetGauge(float value)
-    {
-        GetImage((int)Images.TurbineGauge).fillAmount = (_scoreDelay - value) / _scoreDelay;
+        GetImage((int)Images.TurbineGauge).fillAmount = (_scoreDelay - time) / _scoreDelay;
     }
 
     public void SetImages(TurbineState state)

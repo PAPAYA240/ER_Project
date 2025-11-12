@@ -25,7 +25,7 @@ public sealed class Hyunwoo_R_Short_End : SkillHandlerBase
     {
         base.OnEnter(p, ctx);
 
-        SendSkillConfirmPacket(p);
+        //SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
     }
 

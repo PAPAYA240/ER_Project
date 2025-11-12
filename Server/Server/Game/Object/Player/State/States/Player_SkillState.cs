@@ -14,6 +14,7 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
     private bool _didHit, _forceEnd;
 
     private Vector3? _currentDestination = null;
+    private const float DEST_CHANGE_EPS = 0.05f; // 목적지 미세변경 무시
 
     public Player_SkillState(ISkill handler, SkillContext ctx)
     {
@@ -103,6 +104,7 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
         }
         return false;
     }
+
     public void OnMoveCommand(Player player, C_Move move)
     {
         if (_handler.CanMoveDuringCast)

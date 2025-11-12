@@ -21,6 +21,7 @@ public class PlayerInputController : MonoBehaviour
     [SerializeField] private LayerMask _groundMask;
     [SerializeField] private LayerMask _monsterMask;
     [SerializeField] private LayerMask _playerMask;
+    [SerializeField] private LayerMask _beaconMask;
 
     private bool isRest = false;
 
@@ -33,12 +34,14 @@ public class PlayerInputController : MonoBehaviour
         _groundMask = 1 << LayerMask.NameToLayer("Map");
         _monsterMask = 1 << LayerMask.NameToLayer("Monster");
         _playerMask = 1 << LayerMask.NameToLayer("Player");
+        _beaconMask = 1 << LayerMask.NameToLayer("Beacon");
     }
 
     // 우클릭 유지 중 이동 의도(타겟 이동 or 땅 이동)
     public virtual C_SetMoveTarget GetSetMoveTarget()
     {
-        if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving || _player.State == CreatureState.Attack || _player.State == CreatureState.Skill)
+        if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving || _player.State == CreatureState.Attack 
+            || _player.State == CreatureState.Skill || _player.State == CreatureState.Operate)
         {
             if (!Input.GetMouseButton(1))
                 return null;
@@ -100,6 +103,55 @@ public class PlayerInputController : MonoBehaviour
                 return null;
 
             return new C_Attack { TargetId = id };
+        }
+
+        return null;
+    }
+
+    public C_Operate GetOperateCommand()
+    {
+        if(_player.State == CreatureState.Idle || _player.State == CreatureState.Moving || _player.State == CreatureState.Attack)
+        {
+            if (!Input.GetMouseButtonDown(1))
+                return null;
+
+            GameObject beacon = GetBeaconUnderCursor();
+            if (null == beacon)
+                return null;
+
+            C_Operate operatePkt = new C_Operate();
+            operatePkt.BeaconName = beacon.name;
+
+            Vector3 playerPos = _player.transform.position;
+            Vector3 beaconPos = beacon.transform.position;
+
+            Vector3 dir = (beaconPos - playerPos).normalized;
+            float distance = Vector3.Distance(playerPos, beaconPos);
+
+            Vector3 bestPos = playerPos;
+            bool found = false;
+
+            // 일정 간격으로 앞으로 이동하면서 네비메쉬 위 지점 탐색
+            for (float d = 0.5f; d <= distance; d += 0.5f)
+            {
+                Vector3 checkPos = playerPos + dir * d;
+                if (NavMesh.SamplePosition(checkPos, out NavMeshHit hit, 0.4f, NavMesh.AllAreas))
+                {
+                    bestPos = hit.position;
+                    found = true;
+                }
+            }
+
+            // 혹시 플레이어-비콘 사이에 네비 지점이 없으면 비콘 근처라도 시도
+            if (!found && NavMesh.SamplePosition(beaconPos, out NavMeshHit fallback, 3.0f, NavMesh.AllAreas))
+            {
+                bestPos = fallback.position;
+            }
+
+            operatePkt.PosX = bestPos.x;
+            operatePkt.PosZ = bestPos.z;
+
+            return operatePkt;
         }
 
         return null;
@@ -248,6 +300,17 @@ public class PlayerInputController : MonoBehaviour
             return 0;
 
         return cc.Id;
+    }
+
+    GameObject GetBeaconUnderCursor(float radius = 0.1f)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if(Physics.SphereCast(ray, radius, out RaycastHit hit, 1000f, _beaconMask))
+        {
+            return hit.collider.gameObject;
+        }
+
+        return null;
     }
 
     // 지형 클릭 시

@@ -9,6 +9,8 @@ public class UI_PlayerHUD : UI_Scene
     public enum GameObjects
     { 
         Timer,
+        EnemyScore,
+        TeamScore,
         TurbineLeft, 
         TurbineCenter, 
         TurbineRight,
@@ -49,57 +51,85 @@ public class UI_PlayerHUD : UI_Scene
         UpdateScale();
     }
 
-    public void CaptureTurbine(GameObjects go ,int team)
+    #region Beacon
+
+    public void CaptureTurbine(Beacon beacon ,int team)
     {
         bool isAlly = false;
         if (Managers.Object.MyPlayer.ObjInfo.Player.Team == team)
             isAlly = true;
 
-        switch (go)
+        GameObjects go = GameObjects.TurbineLeft;
+        switch (beacon)
         {
-            case GameObjects.TurbineLeft:
-            case GameObjects.TurbineCenter:
-            case GameObjects.TurbineRight:
-                {
-                    GetObject((int)go).GetComponent<UI_Turbine>().CaptureTurbine(isAlly);
-
-                    if (go == GameObjects.TurbineLeft)
-                    {
-                        if (isAlly)
-                        {
-                            GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetTurbineImage(UI_Minimap.Images.TurbineIconLeft, TurbineAlly);
-                        }
-                        else
-                        {
-                            GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetTurbineImage(UI_Minimap.Images.TurbineIconLeft, TurbineEnemy);
-                        }
-                    }
-                    else if (go == GameObjects.TurbineCenter)
-                    {
-                        if (isAlly)
-                        {
-                            GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetTurbineImage(UI_Minimap.Images.TurbineIconCenter, TurbineAlly);
-                        }
-                        else
-                        {
-                            GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetTurbineImage(UI_Minimap.Images.TurbineIconCenter, TurbineEnemy);
-                        }
-                    }
-                    else
-                    {
-                        if (isAlly)
-                        {
-                            GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetTurbineImage(UI_Minimap.Images.TurbineIconRight, TurbineAlly);
-                        }
-                        else
-                        {
-                            GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetTurbineImage(UI_Minimap.Images.TurbineIconRight, TurbineEnemy);
-                        }
-                    }
-                }
+            case Beacon.Left:
+                go = GameObjects.TurbineLeft;
+                break;
+            case Beacon.Center:
+                go = GameObjects.TurbineCenter;
+                break;
+            case Beacon.Right:
+                go = GameObjects.TurbineRight;
                 break;
         }
+
+        GetObject((int)go).GetComponent<UI_Turbine>().CaptureTurbine(isAlly);
+
+        if (go == GameObjects.TurbineLeft)
+        {
+            if (isAlly)
+            {
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetTurbineImage(UI_Minimap.Images.TurbineIconLeft, TurbineAlly);
+            }
+            else
+            {
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetTurbineImage(UI_Minimap.Images.TurbineIconLeft, TurbineEnemy);
+            }
+        }
+        else if (go == GameObjects.TurbineCenter)
+        {
+            if (isAlly)
+            {
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetTurbineImage(UI_Minimap.Images.TurbineIconCenter, TurbineAlly);
+            }
+            else
+            {
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetTurbineImage(UI_Minimap.Images.TurbineIconCenter, TurbineEnemy);
+            }
+        }
+        else
+        {
+            if (isAlly)
+            {
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetTurbineImage(UI_Minimap.Images.TurbineIconRight, TurbineAlly);
+            }
+            else
+            {
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetTurbineImage(UI_Minimap.Images.TurbineIconRight, TurbineEnemy);
+            }
+        }
     }
+
+    public void SetBeaconTimer(Beacon beacon, float Time)
+    {
+        GameObjects go = GameObjects.TurbineLeft;
+        switch (beacon)
+        {
+            case Beacon.Left:
+                go = GameObjects.TurbineLeft;
+                break;
+            case Beacon.Center:
+                go = GameObjects.TurbineCenter;
+                break;
+            case Beacon.Right:
+                go = GameObjects.TurbineRight;
+                break;
+        }
+
+        GetObject((int)go).GetComponent<UI_Turbine>().SetTimer(Time);
+    }
+
+    #endregion
 
     public void SetTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)
     {
@@ -130,5 +160,18 @@ public class UI_PlayerHUD : UI_Scene
         yield return new WaitForSeconds(3);
 
         GetObject((int)GameObjects.KillNoti).SetActive(false);
+    }
+
+    public void SetScore(int team, int score)
+    {
+        bool isAlly = false;
+
+        if (Managers.Object.MyPlayer.ObjInfo.Player.Team == team)
+            isAlly = true;
+
+        if (isAlly)
+            GetObject((int)GameObjects.TeamScore).GetComponent<UI_ScoreBar>().CurrentScore = score;
+        else 
+            GetObject((int)GameObjects.EnemyScore).GetComponent<UI_ScoreBar>().CurrentScore = score;
     }
 }

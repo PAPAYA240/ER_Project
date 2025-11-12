@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
@@ -690,22 +691,22 @@ class PacketHandler
     public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)
     {
         S_OccupyBeacon occupyBeaconPkt = packet as S_OccupyBeacon;
-
-
+        if(Enum.TryParse<Beacon>(occupyBeaconPkt.BeaconName, out Beacon result))
+            Managers.Object.MyPlayer.UI.PlayerHUD.CaptureTurbine(result, occupyBeaconPkt.Team);
     }
 
     public static void S_ChangeBeaconTimeHandler(PacketSession session, IMessage packet)
     {
         S_ChangeBeaconTime changeBeaconTimePkt = packet as S_ChangeBeaconTime;
 
-
+        Managers.Object.MyPlayer.UI.PlayerHUD.SetBeaconTimer((Beacon)changeBeaconTimePkt.Beacon, changeBeaconTimePkt.Time);
     }
 
     public static void S_ChangeScoreHandler(PacketSession session, IMessage packet)
     {
         S_ChangeScore changeScorePkt = packet as S_ChangeScore;
 
-
+        Managers.Object.MyPlayer.UI.PlayerHUD.SetScore(changeScorePkt.Team, changeScorePkt.Score);
     }
 
     public static void S_GameOverHandler(PacketSession session, IMessage packet)
@@ -745,6 +746,20 @@ class PacketHandler
             return;
 
         mpc.CanStopSkill = canStopSkillPkt.CanStopSkill;
+    }
+
+    public static void S_RotateToPosHandler(PacketSession session, IMessage packet)
+    {
+        S_RotateToPos rotateToPosPkt = packet as S_RotateToPos;
+        GameObject go = Managers.Object.FindById(rotateToPosPkt.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<MyPlayerController>();
+        if (pc == null)
+            return;
+
+        pc.StartCoroutine(pc.CoRotateToPosition(new Vector3(rotateToPosPkt.PosX, 0, rotateToPosPkt.PosZ)));
     }
 
     public static void S_ChangeStatusHandler(PacketSession session, IMessage packet)

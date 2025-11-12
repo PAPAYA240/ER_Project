@@ -35,6 +35,9 @@ namespace Server.Game
         // Key: ObjectId, Value: Nothing
         public ConcurrentDictionary<int, byte> HitObjs = new ConcurrentDictionary<int, byte>();
 
+        // Key: StatusEffect, Value: Count
+        public ConcurrentDictionary<StatusEffect, int> effectCnt = new ConcurrentDictionary<StatusEffect, int>();
+
         #region 추가 데이터
         public Dictionary<KeyCode, List<string>> Interactions { get; set; } = new Dictionary<KeyCode, List<string>>();
         public HashSet<Hitbox> InteractedHitboxes { get; } = new HashSet<Hitbox>();
@@ -752,6 +755,7 @@ namespace Server.Game
             {
                 effect.targetCnt = hitTargets.Count;
                 effect.attacker = hitbox.Creature;
+                int cnt = hitbox.effectCnt.AddOrUpdate(effect, 1, (_, oldValue) => oldValue + 1);
 
                 switch (effect.subject)
                 {
@@ -761,17 +765,19 @@ namespace Server.Game
                         else if(effect.type == "OnCollisionMultiTarget")
                             player.Room.Push(player.Room.CallOnCollision, player, hitTargets, effect);
                         else
-                            player.Room.Push(player.Room.AddStatusEffect, player, effect, hitbox.Creature);
+                            player.Room.Push(player.AddStatusEffect, effect);
                         break;
                     case Subject.Ally: // 이건 아군대상 스킬에만 있을거같긴해서 생략
                         break;
                     case Subject.Enemy:
                         foreach(var enemy in hitTargets.OfType<Creature>()) // Creature 일때만
                         { 
-                            enemy.Room.Push(enemy.Room.AddStatusEffect, enemy, effect, hitbox.Creature); 
+                            enemy.Room.Push(enemy.AddStatusEffect, effect); 
                         }
                         break;
                     case Subject.T:
+                        if(cnt == 1 && effect.type == "CDR") // 쿨타임 감소는 딱 한번만 발생해야 함
+                            player.Skill.Reduce(KeyCode.T, effect.value);
                         if(effect.type == "CDR")
                             player.Skill.Reduce(KeyCode.T, effect.value, effect.valueType == ValueType.Ratio);
                         break;

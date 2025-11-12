@@ -149,6 +149,9 @@ namespace Server.Game
             set { _currentState = value; }
         }
 
+        public IPlayerState ReservedState { get; set; }
+        public Beacon Beacon { get; set; }
+
         // StatRegenerator
         public bool _isUpdatedStat = false;
         private StatRegenerator _statRegenerator;
@@ -256,7 +259,7 @@ namespace Server.Game
                 _damageRecords.Add(attacker.Id, new DamageRecord(attacker.Id, damage, Room.TimeStamp)); // ���ظ� ���� ���� ���ٸ� ���� �߰�.
             }
 
-            base.OnDamaged(attacker, damage, isTrueDamage);
+            base.OnDamaged(attacker, damage, isTrueDamage, isBasicAttack);
         }
 
         #endregion
@@ -824,6 +827,10 @@ namespace Server.Game
                 S_ChangeItemStat packet = new S_ChangeItemStat();
                 packet.ObjectId = Id;
                 packet.ItemStat = _totalItemStat;
+
+                Hp += _totalItemStat.MaxHp + _totalItemStat.MaxHpPerLevel * Stat.Level;
+                Stamina += _totalItemStat.MaxStamina;
+                _isUpdatedStat = true;
 
                 GameRoom room = Room;
 

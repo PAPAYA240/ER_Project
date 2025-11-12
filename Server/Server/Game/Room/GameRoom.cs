@@ -23,6 +23,7 @@ namespace Server.Game
         MonsterManager _monsterManager = new MonsterManager();
         CollisionManager _collisionManager = new CollisionManager();
         EnvironmentManager _envManager = new EnvironmentManager();
+        BeaconManager _beaconManager = new BeaconManager();
 
         Dictionary<int, Dictionary<int, Player>> _teams = new Dictionary<int, Dictionary<int, Player>>();
         Dictionary<CharacterType, SkillHandler> _skillHandlers = new Dictionary<CharacterType, SkillHandler>();
@@ -162,10 +163,31 @@ namespace Server.Game
             return _monsters.TryGetValue(objectId, out monster);
         }
         public CollisionManager CollManager { get { return _collisionManager; } private set { } }
+        public BeaconManager BeaconManager { get { return _beaconManager; } private set { } }
 
         public PathfindInstance PathFind { get; set; }
 
+        #region Score
+        private int[] _teamScores = new int[3] { 40, 40, 40 }; // 1번, 2번 팀 사용
 
+        public int ReduceScore(int team, int amount)
+        {
+            int oldValue, newValue;
+            do
+            {
+                oldValue = _teamScores[team];
+                newValue = Math.Max(0, oldValue - amount);
+            } while (Interlocked.CompareExchange(ref _teamScores[team], newValue, oldValue) != oldValue);
+
+            return newValue; // 감소 후 점수 반환
+        }
+        public int GetScore(int team) { return _teamScores[team]; }
+        #endregion
+
+        #region StatusEffect
+        Dictionary<CharacterType, Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>> _statusEffects // Buffs & Debuffs
+            = new Dictionary<CharacterType, Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>>();
+        #endregion
 
         public void Init(int mapId)
         {
@@ -189,6 +211,7 @@ namespace Server.Game
 
             // Skill Register
             SkillRegistry.InitRegister();
+            SetUpStatusEffectDict(); // StatusEffectDict 초기화 
         }
 
         public override void Update()
@@ -236,7 +259,9 @@ namespace Server.Game
             _collisionManager.Flush();
             _collisionManager.CheckAllCollisions(_teams, _monsters, _projectiles);
             _collisionManager.Update();
-            
+
+            _beaconManager.Update(this);
+
             BroadcastVisibleObjs();
             CheckLastPing();
         }
@@ -423,6 +448,93 @@ namespace Server.Game
             target.OnDamaged(player, damage);
         }
 
+        #region StatusEffect
+        public void AddStatusEffect(Player player, GameObject target, KeyCode keyCode, string allowedCondition) // 타게팅 스킬 StatusEffect 적용
+        {
+            List<StatusEffect> statusEffectList = GetStatusEffectList(player.Info.Player.CharType, keyCode, player.GetSkillLevel(keyCode));
+
+            foreach (var effect in statusEffectList)
+            {
+                if (effect.condition != allowedCondition)
+                    continue;
+
+                effect.attacker = player;
+
+                switch (effect.subject)
+                {
+                    case Subject.Self:
+                        Push(player.AddStatusEffect, effect);
+                        break;
+                    case Subject.Ally:
+                        break;
+                    case Subject.Enemy:
+                        Push(target.AddStatusEffect, effect);
+                        break;
+                }                
+            }
+        }
+
+        void SetUpStatusEffectDict()
+        {
+            foreach (var nestedKvp in DataManager.SkillDict)
+            {
+                foreach (var kvp in nestedKvp.Value)
+                {
+                    foreach (var levelKvp in kvp.Value.levels)
+                    {
+                        if (levelKvp.Value.effects == null)
+                            continue;
+
+                        foreach (EffectData effectData in levelKvp.Value.effects)
+                        {
+                            CharacterType charType = nestedKvp.Key;
+                            KeyCode keyCode = kvp.Key;
+                            int level = levelKvp.Key;
+
+                            if (!_statusEffects.TryGetValue(charType, out var skillDict))
+                                _statusEffects[charType] = skillDict = new Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>();
+
+                            if (!skillDict.TryGetValue(keyCode, out var levelDict))
+                                skillDict[keyCode] = levelDict = new Dictionary<int, List<StatusEffect>>();
+
+                            if (!levelDict.TryGetValue(level, out var effects))
+                                levelDict[level] = effects = new List<StatusEffect>();
+
+                            StatusEffect newEffect = new StatusEffect
+                            {
+                                type = effectData.type,
+                                stat = effectData.stat,
+                                duration = effectData.duration,
+                                value = effectData.value,
+                                subject = Enum.TryParse(effectData.subject, true, out Subject temp) ? temp : Subject.Subject_None,
+                                coeff = effectData.coeff,
+                                ratioPerTarget = effectData.ratioPerTarget,
+                                maxRatio = effectData.maxRatio,
+                                condition = effectData.condition
+                            };
+
+                            effects.Add(newEffect);
+                        }
+                    }
+                }
+            }
+        }
+
+        List<StatusEffect> GetStatusEffectList(CharacterType charType, KeyCode keyCode, int skillLevel)
+        {
+            if (!_statusEffects.TryGetValue(charType, out var keyDict))
+                return null;
+
+            if (!keyDict.TryGetValue(keyCode, out var skillData))
+                return null;
+
+            if (!skillData.TryGetValue(skillLevel, out var statusEffectsList))
+                return null;
+
+            return statusEffectsList;
+        }
+        #endregion
+
         public void HandleMoveSync(Player player, C_MoveSync movePacket)
         {
             if (player == null)
@@ -586,53 +698,6 @@ namespace Server.Game
             player.Session.Send(skillLevelUpPacket);
         }
 
-        public void AddDummyPlayers(ClientSession clientSession,  List<CharacterType> dummyPlayers)
-        {
-            if (_dummyAdded)
-                return;
-
-            S_Spawn spawnPacket = new S_Spawn();
-            Random rand = new Random();
-            foreach (CharacterType charType in dummyPlayers)
-            {
-                Player dummyPlayer = ObjectManager.Instance.Add<Player>();
-                {
-                    dummyPlayer.Info.Name = $"DummyPlayer_{dummyPlayer.Id}";
-                    dummyPlayer.Info.PosInfo.State = CreatureState.Idle;
-                    dummyPlayer.Info.PosInfo.PosX = rand.Next(-4,4);
-                    dummyPlayer.Info.PosInfo.PosY = 0;
-                    dummyPlayer.Info.PosInfo.PosZ = rand.Next(-4, 4);
-                    dummyPlayer.Info.Player = new PlayerInfo();
-                    dummyPlayer.Info.Player.CharType = charType;
-                    dummyPlayer.Init();
-
-                    StatInfo stat = null;
-                    DataManager.StatDict.TryGetValue(charType, out stat);
-                    dummyPlayer.Stat.MergeFrom(stat);
-                    dummyPlayer.Hp = dummyPlayer.MaxHp;
-                    dummyPlayer.Stamina = dummyPlayer.MaxStamina;
-                    dummyPlayer.Session = clientSession;
-                    _players.TryAdd(dummyPlayer.Id, dummyPlayer);
-                    dummyPlayer.Info.Player.Team = AssignTeam();
-
-                    if (!_teams.TryGetValue(dummyPlayer.Info.Player.Team, out var teamPlayers))
-                    {
-                        teamPlayers = new Dictionary<int, Player>();
-                        _teams[dummyPlayer.Info.Player.Team] = teamPlayers;
-                    }
-                    teamPlayers.Add(dummyPlayer.Id, dummyPlayer);
-
-                    ObjectManager.Instance.RegisterTeam(dummyPlayer.Id, dummyPlayer.Info.Player.Team);
-
-                    dummyPlayer.Room = this;
-                }
-                spawnPacket.Objects.Add(dummyPlayer.Info);
-            }
-            clientSession.Send(spawnPacket);
-
-            _dummyAdded = true;
-        }
-
         #region Search
         private Weapon FindWeapon(CharacterType type)
         {
@@ -709,17 +774,6 @@ namespace Server.Game
 
         #endregion
 
-        public void AddStatusEffect(Creature creature, StatusEffect statusEffect, Creature atk)
-        {
-            creature.AddStatusEffect(statusEffect, atk);
-        }
-
-        //public void BehindDash(Player player)
-        //{
-        //    if (player.CurrentState is Player_SkillState skillState)
-        //        skillState.Handler.OnCollision(player);
-        //}
-
         public void CallOnCollision<T>(Player player, List<T> hitTargets, StatusEffect effect) where T : GameObject, new()
         {
             if (player.CurrentState is Player_SkillState skillState)
@@ -729,6 +783,38 @@ namespace Server.Game
         {
             if (player.CurrentState is Player_SkillState skillState)
                 skillState.Handler.OnCollision(player, nearTarget, effect);
+        }
+
+        public void HandleOperate(Player player, Beacon beacon, float posX, float posZ)
+        {
+            player.Beacon = beacon;
+
+            bool canOperate = BeaconManager.IsOperatable(player.Info.Player.Team, beacon);
+            bool canOccupy = BeaconManager.IsOccupiable(player.Info.Player.Team, beacon);
+            bool inRange = BeaconManager.IsInRange(player.Position, beacon);
+
+            if (canOperate && canOccupy && inRange) // 점령 가능 && 사거리 내 -> 점령
+            {
+                player.ChangeState(new Player_OperateState());
+                return;
+            }
+
+            var move = new C_Move
+            {
+                IsTargetOn = false,
+                TargetPosition = new PositionInfo
+                {
+                    PosX = posX,
+                    PosY = 0,
+                    PosZ = posZ
+                }
+            };
+
+            player.ChangeState(new Player_MovingState(move));
+            player.SendMoveSyncPacket(move.TargetPosition);
+
+            if (canOccupy) // 점령 가능하지만 사거리 밖이면 이동종료됐을 때의 상태 예약
+                player.ReservedState = new Player_OperateState();
         }
     }
 }

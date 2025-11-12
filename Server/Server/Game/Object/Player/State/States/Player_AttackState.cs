@@ -144,7 +144,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
                         new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ),
                         new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ));
                     if (distNow <= _attackRange /* + player.HitTolerance 가능 */)
-                        //ApplyHit(player, target);
+                        ApplyHit(player, target);
 
                     _damageApplied = true;
                 }
@@ -266,20 +266,21 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         if (target == null || target.State == CreatureState.Dead)
             return;
 
-        // TODO: 실제 데미지 계산/적용 로직에 연결
-        // 예) target.OnDamaged(p, 10f);
+        target.OnDamaged(p, p.Attack, false, true);
     }
 
     public bool IsSwingActive() { return _swingActive; }
 
     public static Player_AttackState CreateAttackState(Player p, int targetId, bool chaseAllowed = true, float attackRange = DefaultAttackRange)
     {
-        if(p.Info.Player.CharType == CharacterType.Abigail)
+        if (p.Info.Player.CharType == CharacterType.Abigail)
             return new Abigail_AttackState(targetId, chaseAllowed, attackRange);
         else if (p.Info.Player.CharType == CharacterType.Yuki)
         {
             return new Yuki_AttackState(targetId, chaseAllowed, attackRange);
         }
+        else if (p.Info.Player.CharType == CharacterType.Hyunwoo)
+            return new Hyunwoo_AttackState(targetId, chaseAllowed, 1.66f);
 
         return new Player_AttackState(targetId, chaseAllowed, attackRange);
     }

@@ -89,6 +89,9 @@ enum MsgId {
   C_CHARGING_SKILL = 74;
 
   S_CHANGE_STATUS = 75;
+
+  C_OPERATE = 76;
+  S_ROTATE_TO_POS = 77;
 }
 
 enum CombatState{
@@ -296,6 +299,12 @@ enum CombatTextType{
 	STAMINA_RECOVERY = 4;
 	BARRIER = 5;
 	END = 6;
+}
+
+enum Beacon{
+	Beacon_Left = 0;
+	Beacon_Center = 1;
+	Beacon_Right = 2;
 }
 
 message C_Interact {
@@ -570,6 +579,7 @@ message S_RemoveAbigailCoord{
 
 message S_OccupyBeacon{
 	int32 team = 1;
+	string beaconName = 2;
 }
 
 message S_ChangeBeaconTime{
@@ -898,4 +908,15 @@ message S_ChangeStatus{
 	float attackSpeed = 4;
 	float defense = 5;
 	float healing = 6;
+
+message C_Operate{
+	string beaconName = 1;
+	float PosX = 2;
+	float PosZ = 3;
+}
+
+message S_RotateToPos{
+	int32 objectId = 1;
+	float PosX = 2;
+	float PosZ = 3;
 }

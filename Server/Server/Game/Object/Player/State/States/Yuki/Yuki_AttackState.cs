@@ -53,10 +53,12 @@ public class Yuki_AttackState : Player_AttackState
         if (target == null || target.State == CreatureState.Dead)
             return;
 
+        GameRoom room = p.Room;
+
         // 스킬 데미지
-        p.Room.Push(p.Room.AttackSkillTarget, p, target, _keyCode);
+        room.Push(room.AttackSkillTarget, p, target, _keyCode);
 
         // 평타 데미지
-        target.OnDamaged(p, p.Attack, false, true);
+        room.Push(target.OnDamaged, p, p.Attack, false, true);
     }
 }
