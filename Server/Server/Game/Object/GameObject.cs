@@ -7,7 +7,9 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using static Player_StunState;
 using static Server.Game.GameObject;
+using static Server.Game.StunState;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.Game

@@ -1700,6 +1700,7 @@
         "name": "스파크탄",
         "description": "<color=#2EE635>지속 효과:</color> <color=#FFFFFF>에너지 포</color> 또는 <color=#FFFFFF>스파크탄</color> 적중 시 다음 기본 공격 사거리가 1 증가합니다.\n\n테오도르가 스파크탄을 던져 적중한 적의 이동 속도를 2초동안 {MoveSpeed}% 감소시키며 4초 동안 <color=#FFFFFF>목표물</color>로 지정합니다. 테오도르는 목표물이 된 대상으로부터 시야를 제공받으며, 기본 공격 또는 스킬로 공격하면 <color=#FFFFFF>{damage}</color><color=#CDA1C8>(+스킬 증폭의 60%)</color>의 스킬 피해를 입히고 {CC}초 동안 속박합니다.",
         "skillType": "Charge",
+
         "type": "Projectile",
         "maxLevel": 5,
         "mechanics": {
@@ -1716,8 +1717,10 @@
             "staminaCost": 60,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "Snare",
+                "subject": "Enemy",
+                "duration": 0.3,
+                "condition": "Hit"
               },
               {
                 "type": "Untargetable"
@@ -1730,8 +1733,10 @@
             "staminaCost": 70,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "Snare",
+                "subject": "Enemy",
+                "duration": 0.3,
+                "condition": "Hit"
               },
               {
                 "type": "Untargetable"
@@ -1744,8 +1749,10 @@
             "staminaCost": 80,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "Snare",
+                "subject": "Enemy",
+                "duration": 0.3,
+                "condition": "Hit"
               },
               {
                 "type": "Untargetable"
@@ -1758,8 +1765,10 @@
             "staminaCost": 90,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "Snare",
+                "subject": "Enemy",
+                "duration": 0.3,
+                "condition": "Hit"
               },
               {
                 "type": "Untargetable"
@@ -1772,8 +1781,10 @@
             "staminaCost": 100,
             "effects": [
               {
-                "type": "Stun",
-                "duration": 0.3
+                "type": "Snare",
+                "subject": "Enemy",
+                "duration": 0.3,
+                "condition": "Hit"
               },
               {
                 "type": "Untargetable"
