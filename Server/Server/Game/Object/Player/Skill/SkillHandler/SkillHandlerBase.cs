@@ -8,6 +8,7 @@ using System.Numerics;
 using System.Text;
 using static ISkill;
 using static Server.Data.DataUtils;
+using static Server.Game.GameObject;
 
 public abstract class SkillHandlerBase : ISkill
 {
@@ -144,17 +145,6 @@ public abstract class SkillHandlerBase : ISkill
     public KeyCode GetKeyCode()
     {
         return _keyCode;
-    }
-
-    protected SkillSpec GetSkillSpec(bool isCast = true)
-    {
-        if (!DataManager.SkillSpecDict[_characterType].ContainsKey(_keyCode))
-            return null;
-
-        if(isCast)
-            return DataManager.SkillSpecDict[_characterType][_keyCode].cast;
-        else
-            return DataManager.SkillSpecDict[_characterType][_keyCode].followup;
     }
 
     // Tick 등에서 소비(가져가면 플래그 리셋)

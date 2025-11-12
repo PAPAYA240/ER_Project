@@ -123,8 +123,7 @@ public sealed class Rozzi_E : SkillHandlerBase
     public override bool CanCast(Player p, SkillContext ctx)
     {
         _target = ObjectManager.Instance.Find(ctx.TargetId);
-        SkillSpec spec = GetSkillSpec(true);
-        if (_target == null || (_target != null && Vector3.Distance(_target.Position, p.Position) > spec.limits.baseMaxDist))
+        if (_target == null || (_target != null && Vector3.Distance(_target.Position, p.Position) > _dashDistance))
         {
             return false;
         }

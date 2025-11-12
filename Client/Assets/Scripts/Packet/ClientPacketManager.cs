@@ -119,6 +119,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SSkillCost, PacketHandler.S_SkillCostHandler);		
 		_onRecv.Add((ushort)MsgId.SSkillCollisionRequest, MakePacket<S_SkillCollisionRequest>);
 		_handler.Add((ushort)MsgId.SSkillCollisionRequest, PacketHandler.S_SkillCollisionRequestHandler);		
+		_onRecv.Add((ushort)MsgId.SChangeStatus, MakePacket<S_ChangeStatus>);
+		_handler.Add((ushort)MsgId.SChangeStatus, PacketHandler.S_ChangeStatusHandler);		
 		_onRecv.Add((ushort)MsgId.SRotateToPos, MakePacket<S_RotateToPos>);
 		_handler.Add((ushort)MsgId.SRotateToPos, PacketHandler.S_RotateToPosHandler);
 	}

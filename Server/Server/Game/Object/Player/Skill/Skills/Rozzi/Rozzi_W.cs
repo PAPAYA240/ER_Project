@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using static Server.Data.DataUtils;
+using static Server.Game.GameObject;
 
 public sealed class Rozzi_W : SkillHandlerBase
 {
@@ -24,6 +25,13 @@ public sealed class Rozzi_W : SkillHandlerBase
         base.OnEnter(p, ctx);
 
         SendSkillConfirmPacket(p);
+
+        //"type": "Buff",
+        //"stat": "speed",
+        //"value": 120,
+        //"duration": 0.4,
+        //"subject": "Self"
+        p.Room.AddStatusEffect(p, p, _keyCode, null); // 스킬 사용시 이속 버프
     }
 
     public override void OnHit(Player p, SkillContext ctx)
