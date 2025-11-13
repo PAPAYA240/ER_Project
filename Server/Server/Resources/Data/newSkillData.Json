@@ -1193,12 +1193,13 @@
             "staminaCost": 100,
             "effects": [
               {
-                "type": "DeBuff",
+                "type": "Debuff",
                 "condition": "Hit",
-                "subject": "Enemy",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -99,
-                "duration": 1
+                "valuetype": "Ratio",
+                "duration": 1,
+                "subject": "Enemy"
               },
               {
                 "type": "Pyosik",
@@ -1214,12 +1215,13 @@
             "staminaCost": 125,
             "effects": [
               {
-                "type": "DeBuff",
+                "type": "Debuff",
                 "condition": "Hit",
-                "subject": "Enemy",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -99,
-                "duration": 1
+                "valuetype": "Ratio",
+                "duration": 1,
+                "subject": "Enemy"
               },
               {
                 "type": "Pyosik",
@@ -1235,12 +1237,13 @@
             "staminaCost": 150,
             "effects": [
               {
-                "type": "DeBuff",
+                "type": "Debuff",
                 "condition": "Hit",
-                "subject": "Enemy",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -99,
-                "duration": 1
+                "valuetype": "Ratio",
+                "duration": 1,
+                "subject": "Enemy"
               },
               {
                 "type": "Pyosik",

@@ -37,8 +37,16 @@ public abstract class SkillHandlerBase : ISkill
 
     public virtual void OnEnter(Player p, SkillContext ctx)
     {
-        p.CombatState = CombatState.Combat;
-        p.CombatTime = 0f;
+        // 전투 모드
+        {
+            p.CombatState = CombatState.Combat;
+            S_CombatMode combatModePkt = new S_CombatMode();
+            combatModePkt.ObjectId = p.Id;
+            combatModePkt.CombatMode = p.CombatState;
+            p.Room.Broadcast(combatModePkt);
+            p.CombatTime = 0f;
+        }
+
         //LastSeq = 0;
         //Latest = default;
         //_collisions = default;

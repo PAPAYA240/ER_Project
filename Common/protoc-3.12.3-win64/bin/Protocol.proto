@@ -101,6 +101,8 @@ enum MsgId {
 
   S_CHANGE_ATTACK_RANGE = 80;
   S_UNTARGETABLE = 81;
+
+  S_COMBAT_MODE = 82;
 }
 
 enum CombatState{
@@ -963,4 +965,9 @@ message S_ChangeAttackRange{
 message S_Untargetable{
 	int32 objectId = 1;
 	bool untargetable = 2;
+}
+
+message S_CombatMode {
+	int32 objectId = 1;
+	CombatState combatMode = 2;
 }

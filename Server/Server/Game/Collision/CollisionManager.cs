@@ -795,9 +795,7 @@ namespace Server.Game
                         break;
                     case Subject.Enemy:
                         foreach(var enemy in hitTargets.OfType<Creature>()) // Creature 일때만
-                        { 
                             enemy.Room.Push(enemy.AddStatusEffect, effect); 
-                        }
                         break;
                     case Subject.T:
                         if(cnt == 1 && effect.type == "CDR") // 쿨타임 감소는 딱 한번만 발생해야 함
