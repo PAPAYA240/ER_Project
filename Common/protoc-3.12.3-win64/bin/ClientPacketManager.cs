@@ -130,7 +130,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SUntargetable, MakePacket<S_Untargetable>);
 		_handler.Add((ushort)MsgId.SUntargetable, PacketHandler.S_UntargetableHandler);		
 		_onRecv.Add((ushort)MsgId.SCombatMode, MakePacket<S_CombatMode>);
-		_handler.Add((ushort)MsgId.SCombatMode, PacketHandler.S_CombatModeHandler);
+		_handler.Add((ushort)MsgId.SCombatMode, PacketHandler.S_CombatModeHandler);		
+		_onRecv.Add((ushort)MsgId.SChat, MakePacket<S_Chat>);
+		_handler.Add((ushort)MsgId.SChat, PacketHandler.S_ChatHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)
