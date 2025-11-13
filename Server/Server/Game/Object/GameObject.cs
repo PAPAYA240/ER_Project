@@ -309,6 +309,13 @@ namespace Server.Game
             }
         }
 
+        public float CalcFinalDamage(GameObject attacker, float damage)
+        {
+            float finalDefense = Defense * (1f - attacker.PercentageDefensePenetration * 0.01f) - attacker.FixedDefensePenetration;
+            float finalDamage = damage * 100f / (100f + finalDefense);
+            return finalDamage;
+        }
+
         public virtual void OnHeal(GameObject go, float heal)
         {
             if (Room == null || State == CreatureState.Dead)
@@ -320,6 +327,12 @@ namespace Server.Game
             changePacket.ObjectId = Id;
             changePacket.Hp = Hp;
             Room.Broadcast(changePacket);
+
+            S_CombatText combatTextPkt = new S_CombatText();
+            combatTextPkt.ObjectId = Id;
+            combatTextPkt.Type = CombatTextType.HpRecovery;
+            combatTextPkt.Value = heal;
+            Room.Broadcast(combatTextPkt);
         }
 
         public virtual void OnDead(GameObject attacker)
@@ -653,6 +666,16 @@ namespace Server.Game
             }
             return false;
         } // 대상지정불가 상태인지 아닌지
+
+        public bool IsUnstoppable()
+        {
+            foreach (var effect in _statusEffects)
+            {
+                if (effect.type == "Unstoppable")
+                    return true;
+            }
+            return false;
+        } // 저지불가 상태인지 아닌지
 
         #endregion
 

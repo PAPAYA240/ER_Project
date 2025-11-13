@@ -69,12 +69,20 @@ public sealed class Hyunwoo_E : SkillHandlerBase
         {
             if(targetObject is Player targetPlayer)
             {
+                if (targetPlayer.IsUnstoppable())
+                    continue;
+
                 Vector3 targetPos = targetPlayer.Position;
                 Vector3 endPos = targetPos + _dir * _knockbackRange;
 
                 SendSkillCollisionRequestPacket(p, CollisionType.Block, targetPos, endPos);
                 _players.Add(_requestId, new KeyValuePair<Player, Vector3>(targetPlayer, targetPos));
             }
+        }
+
+        if (p is Hyunwoo hyunwoo)
+        {
+            hyunwoo.AddTSkillCount(1);
         }
     }
 

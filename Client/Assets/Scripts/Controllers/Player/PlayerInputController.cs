@@ -390,6 +390,9 @@ public class PlayerInputController : MonoBehaviour
         if (cc == null)
             return false;
 
+        if (cc.Untargetable)
+            return false;
+
         // 나 자신일 때
         if (cc.Id == _player.Id)
             return false;

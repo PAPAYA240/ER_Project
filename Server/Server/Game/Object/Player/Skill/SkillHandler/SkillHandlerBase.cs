@@ -33,7 +33,7 @@ public abstract class SkillHandlerBase : ISkill
     protected CharacterType _characterType;
     protected string _animName;
     protected KeyCode _keyCode;
-    protected bool _hitboxCreated = true;
+    protected bool _createHitbox = true;
 
     public virtual void OnEnter(Player p, SkillContext ctx)
     {
@@ -62,22 +62,28 @@ public abstract class SkillHandlerBase : ISkill
             p.SendStopPacket(StopReason.StopMoveOnly);
         }
 
-        if(_hitboxCreated)
+        if(_createHitbox)
             CreateHitbox(p, ctx);
     }
 
     public void CreateHitbox(Player p, SkillContext ctx)
     {
+        bool create = false;
         switch (ctx.Key)
         {
             case KeyCode.Q:
             case KeyCode.W:
             case KeyCode.E:
             case KeyCode.R:
-                p.Room.CollManager.AddHitbox(p, p.Info.Player.CharType, ctx.Key, ctx.MousePos);
+                create = true;
                 break;
-
         }
+
+        if (p.Info.Player.CharType == CharacterType.Abigail && ctx.Key == KeyCode.D)
+            create = true;
+
+        if(create)
+            p.Room.CollManager.AddHitbox(p, p.Info.Player.CharType, ctx.Key, ctx.MousePos);
     }
     public virtual void OnExit(Player p, SkillContext ctx)
     {

@@ -762,7 +762,7 @@ namespace Server.Game
 
             foreach (var kvp in _players)
             {
-                if (kvp.Key == id)
+                if (kvp.Key == id || kvp.Value.IsUntargetable())
                     continue;
                 var player = kvp.Value;
                 Vector2 playerPos = new Vector2(player.PosInfo.PosX, player.PosInfo.PosZ);

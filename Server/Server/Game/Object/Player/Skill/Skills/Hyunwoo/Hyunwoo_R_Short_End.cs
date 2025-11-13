@@ -40,6 +40,8 @@ public sealed class Hyunwoo_R_Short_End : SkillHandlerBase
         {
             if (targetObject is Player targetPlayer)
             {
+                if (targetPlayer.IsUnstoppable())
+                    continue;
 
                 Player_SkillState skillstate = p.CurrentState as Player_SkillState;
                 if (skillstate != null)
@@ -52,6 +54,11 @@ public sealed class Hyunwoo_R_Short_End : SkillHandlerBase
                     _players.Add(_requestId, targetPlayer);
                 }
             }
+        }
+
+        if (p is Hyunwoo hyunwoo)
+        {
+            hyunwoo.AddTSkillCount(1);
         }
     }
 

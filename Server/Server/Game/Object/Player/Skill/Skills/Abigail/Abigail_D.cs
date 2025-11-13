@@ -1,18 +1,17 @@
-﻿using Google.Protobuf.Protocol;
-using Server.Game;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Google.Protobuf.Protocol;
+using Server.Game;
 using static Server.Data.DataUtils;
 
-
-public sealed class Hyunwoo_E_Loop : SkillHandlerBase
+public sealed class Abigail_D : Skill_Abigail
 {
-    public Hyunwoo_E_Loop()
+    public Abigail_D()
     {
-        _characterType = CharacterType.Hyunwoo;
-        _animName = "SKILL_E_LOOP";
-        _keyCode = KeyCode.E;
+        _animName = "SKILL_D";
+        _keyCode = KeyCode.D;
+        _animDuration = GetDuration();
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
@@ -20,23 +19,20 @@ public sealed class Hyunwoo_E_Loop : SkillHandlerBase
         base.OnEnter(p, ctx);
 
         SendSkillConfirmPacket(p);
-        p.LookAtMouse(ctx.MousePos);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
     {
-
+        return;
     }
 
     public override void OnTick(Player p, SkillContext ctx)
     {
-
+        return;
     }
 
     public override void OnExit(Player p, SkillContext ctx)
     {
         base.OnExit(p, ctx);
-
     }
 }
-

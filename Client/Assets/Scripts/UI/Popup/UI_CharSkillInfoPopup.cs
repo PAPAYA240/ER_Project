@@ -37,6 +37,7 @@ public class UI_CharSkillInfoPopup : UI_Popup
     int _maxSkillLevel = 0;
 
     int _skillAcc = 0;
+    KeyCode _keyCode;
     public int SkillAcc { get { return _skillAcc; } set { _skillAcc = value; SetStaminaCool(GenerateStrStaminaCool()); } } 
     SkillData _skilldata;
     List<UI_SkillPopupLevelUpValue> _skillPopupLevelUpValues = new List<UI_SkillPopupLevelUpValue>();
@@ -73,14 +74,21 @@ public class UI_CharSkillInfoPopup : UI_Popup
         {
             _skilldata = DataManager.SkillDict[charType][code];
             _maxSkillLevel = _skilldata.maxLevel;
+            _keyCode = code;
             SetName(GenerateStrName());
             SetCode(code.ToString());
             SetStaminaCool(GenerateStrStaminaCool());
             SetDescription(GenerateDescription());
-
-            GetImage((int)Images.SkillImage).sprite = Managers.Resource.Load<Sprite>($"Sprite/SkillIcon_1{CharTypeToCode(charType)}{KeyCodeToSkillCode(code)}");
-
             InitSkillPopupLevelUpValues();
+
+            // weapon and tactical skill
+            if (code == KeyCode.D || code == KeyCode.F)
+            {
+                SetImageToDF(charType);
+            }
+            // character common skill
+            else
+                GetImage((int)Images.SkillImage).sprite = Managers.Resource.Load<Sprite>($"Sprite/SkillIcon_1{CharTypeToCode(charType)}{KeyCodeToSkillCode(code)}");
         }
     }
 
@@ -134,6 +142,39 @@ public class UI_CharSkillInfoPopup : UI_Popup
         return result;
     }
 
+    public void SetImageToDF(CharacterType charType)
+    {
+        // D
+        if (_keyCode == KeyCode.D)
+        {
+            string path = "";
+            switch (charType)
+            {
+                case CharacterType.Abigail:
+                    path = "Sprite/WSkillIcon_031";
+                    break;
+                case CharacterType.Yuki:
+                    path = "Sprite/WSkillIcon_021"; 
+                    break;
+                case CharacterType.Rozzi:
+                    path = "Sprite/WSkillIcon_051";
+                    break;
+                case CharacterType.Hyunwoo:
+                    path = "Sprite/WSkillIcon_081";
+                    break;
+                case CharacterType.Theodore:
+                    path = "Sprite/WSkillIcon_071";
+                    break;
+            }
+            GetImage((int)Images.SkillImage).sprite = Managers.Resource.Load<Sprite>(path);
+        }
+        // F
+        else
+        {
+            GetImage((int)Images.SkillImage).sprite = Managers.Resource.Load<Sprite>($"Sprite/VSkillIcon_4000000");
+        }
+    }
+
     public void SetName(string str)
     {
         GetText((int)Texts.SkillName).text = str;
@@ -175,7 +216,22 @@ public class UI_CharSkillInfoPopup : UI_Popup
     private string GenerateStrStaminaCool()
     {
         //스킬 안찍었을 때도 1레벨의 정보를 나타내기 위해 Max함수 사용
-        float cool = _skilldata.levels[Mathf.Max(CurSkillLevel, 1)].cooldown * (100f / (100f + SkillAcc));
+        float cool = 0;
+
+        switch (_keyCode)
+        {
+            case KeyCode.Q:
+            case KeyCode.W:
+            case KeyCode.E:
+            case KeyCode.R:
+            case KeyCode.T:
+                cool = _skilldata.levels[Mathf.Max(CurSkillLevel, 1)].cooldown * (100f / (100f + SkillAcc));
+                break;
+            case KeyCode.D:
+            case KeyCode.F:
+                cool = _skilldata.levels[Mathf.Max(CurSkillLevel, 1)].cooldown;
+                break;
+        }
 
         string result = $"스테미나 {_skilldata.levels[Mathf.Max(CurSkillLevel, 1)].staminaCost}\n" +
             $"쿨다운 {cool.ToString("F1")} 초";
