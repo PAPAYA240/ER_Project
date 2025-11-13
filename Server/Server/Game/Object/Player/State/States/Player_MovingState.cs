@@ -15,7 +15,6 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
     private Vector3 _targetPos; // 지형 목적지 or 최근 타겟 위치(참조용)
 
     // 사거리/도착 판정 파라미터 (필요시 테이블로 이관)
-    private const float ATTACK_RANGE = 3.0f; // 기본 평타 사거리
     private const float STOP_RANGE = 0.20f; // 지형 이동 도착 허용 반경
     private const float DEST_CHANGE_EPS = 0.05f; // 목적지 미세변경 무시
 
@@ -32,8 +31,6 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
 
     public void Enter(Player player)
     {      
-        player.State = CreatureState.Moving;
-        player.SendStatePacket();
         player.SendAnimPacket("RUN", 0.1f);
 
         if (_isTargetOn)
@@ -44,16 +41,6 @@ public class Player_MovingState : IPlayerState, IReceivesMoveCommand
 
             // 클라 네비: 타겟 추격 시작
             player.SendSetMoveTarget(isGround: false, targetId: _targetId);
-        }
-        else
-        {
-            // 클라 네비: 지형 이동 시작
-            //player.SendSetMoveTarget(isGround: true, targetId: 0, posOpt: new PositionInfo
-            //{
-            //    PosX = _targetPos.X,
-            //    PosY = _targetPos.Y,
-            //    PosZ = _targetPos.Z
-            //});
         }
     }
 

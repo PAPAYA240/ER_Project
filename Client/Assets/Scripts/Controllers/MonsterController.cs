@@ -9,17 +9,16 @@ public class MonsterController : CreatureController
     
     // 몬스터 정보
     public MonsterSkill Skill { get;  set; }
-    public MonsterType _monsterType;
-    public float _rotationSpeed = 10f;
+    public MonsterType Type { get; set; }
+
+    private float _rotationSpeed = 10f;
+    private float _agentSpeed = 6;
 
     Quaternion _nextRotation;
     public Vector3 _targetPos { get; private set; }
 
     // 애니메이션 끝났을 때 호출
     public Action<CreatureState, bool> OnStateChanged; 
-
-    // TODO : 임시 변수, 나중에 블랙 보드 만들면 없앨 부분
-    public bool isSpawned = false;
 
     // Material 
     private Renderer monsterRenderer;
@@ -28,6 +27,7 @@ public class MonsterController : CreatureController
 
     // HpBar
     protected GameObject _hpBar;
+    private bool _bMesh = false;
 
     protected override void Init()
 	{
@@ -36,10 +36,10 @@ public class MonsterController : CreatureController
         int monsterLayer = LayerMask.NameToLayer("Monster");
         SetLayerRecursively(this.gameObject, monsterLayer);
 
-        // init
         if (!Add_Component())
             return;
 
+        State = CreatureState.Appear;
         InitHpBar();
     }
 
@@ -49,7 +49,6 @@ public class MonsterController : CreatureController
         
         MeshDebug();
     }
-    private bool _bMesh = false;
     private void MeshDebug()
     {
         if (!_bMesh && State == CreatureState.Skill)
@@ -59,12 +58,12 @@ public class MonsterController : CreatureController
             SkillMesh sm = skillMeshGO.GetComponent<SkillMesh>();
             if (sm == null) return;
 
-            if (!DataManager.MonstSkillHitboxDict.ContainsKey(_monsterType))
+            if (!DataManager.MonstSkillHitboxDict.ContainsKey(Type))
                 return;
-            if (!DataManager.MonstSkillHitboxDict[_monsterType].ContainsKey(Skill))
+            if (!DataManager.MonstSkillHitboxDict[Type].ContainsKey(Skill))
                 return;
 
-            SkillHitbox hitbox = DataManager.MonstSkillHitboxDict[_monsterType][Skill];
+            SkillHitbox hitbox = DataManager.MonstSkillHitboxDict[Type][Skill];
             sm.Init(hitbox, this.transform, 0, 0, this.GetMouseWorldPosition());
         }
     }
@@ -88,6 +87,7 @@ public class MonsterController : CreatureController
     {
         if (State != CreatureState.Dead)
             State = CreatureState.Dead;
+
         Hp = 0;
     }
 
@@ -140,6 +140,8 @@ public class MonsterController : CreatureController
         if (packet.TargetPosition != null)
             _targetPos = packet.TargetPosition.ToVector();
 
+        Debug.Log($"Monster STATE : {State}");
+
         if (State == CreatureState.Skill)
             _bMesh = false;
 
@@ -157,6 +159,8 @@ public class MonsterController : CreatureController
             case CreatureState.Dead:
                 OnDeadPacket(packet);
                 break;
+            case CreatureState.Appear:
+                break;
         }
     }
     #endregion
@@ -169,6 +173,7 @@ public class MonsterController : CreatureController
             SetLayerRecursively(child.gameObject, newLayer);
     }
 
+    private HighlightEffect _highlightEffect;
     private bool Add_Component()
     {
         _agent = GetComponentInParent<NavMeshAgent>();
@@ -176,6 +181,7 @@ public class MonsterController : CreatureController
         {
             _agent.updatePosition = true;
             _agent.updateRotation = true;
+            _agent.speed = _agentSpeed;
             SyncPos(true);
         }
 
@@ -186,7 +192,8 @@ public class MonsterController : CreatureController
         _nextRotation = transform.rotation;
         originalMaterial = monsterRenderer.material;
         skillMaterial = Resources.Load<Material>("materials/effect/auraMaterial");
-        gameObject.AddComponent<HighlightEffect>();
+        _highlightEffect = gameObject.AddComponent<HighlightEffect>();
+        _highlightEffect.Owner = this;
 
         if (_animator == null)
             return false;
@@ -199,7 +206,7 @@ public class MonsterController : CreatureController
     #region 체력바
     private void InitHpBar()
     {
-        switch (_monsterType)
+        switch (Type)
         {
             case MonsterType.Alpha:
             case MonsterType.Omega:
@@ -236,7 +243,7 @@ public class MonsterController : CreatureController
 
         _hpBar.GetComponentInChildren<UI_BarTick>().SetValue(Hp);
 
-        if(_monsterType != MonsterType.Drone)
+        if(Type != MonsterType.Drone)
             _hpBar.GetComponentInChildren<UI_MonsterHpBar>().SetHpText(Hp.ToString("F0"));
     }
 

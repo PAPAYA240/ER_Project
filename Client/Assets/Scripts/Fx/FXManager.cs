@@ -33,6 +33,7 @@ public class FXManager : MonoBehaviour
         Quaternion desiredXRotation = Quaternion.Euler(-90f, 180f, 0);
         return yawRotationOnly * desiredXRotation;
     }
+
     public List<GameObject> PlayEffect(int ownerId, List<EffectData> effectData, Transform casterTransform, Vector3 targetPos = new Vector3(), Quaternion rot = new Quaternion())
     {
         return Effect.PlayEffect(ownerId, effectData, casterTransform, targetPos, GetIndicatorRotation(casterTransform));

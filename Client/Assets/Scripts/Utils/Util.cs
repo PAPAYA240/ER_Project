@@ -68,5 +68,38 @@ public class Util
         return null;
     }
 
+    // Image Slice
+    public static Sprite[] Slice(Texture2D spriteSheet, int columns, int rows, float padding)
+    {
+        if (spriteSheet == null)
+        {
+            Debug.LogError("No sprite sheet");
+            return null;
+        }
 
+        int totalWidth = spriteSheet.width;
+        int totalHeight = spriteSheet.height;
+
+        // 각 스프라이트의 크기 계산 (패딩 포함)
+        float spriteWidth = (totalWidth - (columns - 1) * padding) / columns;
+        float spriteHeight = (totalHeight - (rows - 1) * padding) / rows;
+
+        List<Sprite> frames = new List<Sprite>();
+
+        for (int y = 0; y < rows; y++)
+        {
+            for (int x = 0; x < columns; x++)
+            {
+                float posX = x * (spriteWidth + padding);
+                float posY = (rows - 1 - y) * (spriteWidth + padding);
+
+                Rect rect = new Rect(posX, posY, spriteWidth, spriteHeight);
+
+                Sprite sprite = Sprite.Create(spriteSheet, rect, new Vector2(0.5f, 0.5f), 100f);
+                frames.Add(sprite);
+            }
+        }
+
+        return frames.ToArray();
+    }
 }

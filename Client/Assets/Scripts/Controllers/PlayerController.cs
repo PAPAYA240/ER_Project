@@ -18,13 +18,14 @@ public class PlayerController : CreatureController
     float _minDist = 3f;
     float _syncSpeed = 20f;
     Vector3 _serverPos;
-    float AGENT_SPEED_DIFF = 2.0f;
+    float AGENT_SPEED_RATIO = 1.7f;
 
     // Fog
     private FogOfWarVision _fogOfWarVision;
 
     protected bool _isSkillDebug = true;
 
+    public bool AllowOffPathMovement { get; set; } = false;
 
     // NameTag
     protected UI_PlayerNameTag _nameTag;
@@ -104,7 +105,7 @@ public class PlayerController : CreatureController
     public override float Speed
     {
         get { return Stat.MoveSpeed;/*(Stat.MoveSpeed + ItemStat.FixedSpeed) * (1 + ItemStat.PercentageSpeed) * 1.7f;*/ }
-        set { Stat.MoveSpeed = value; _agent.speed = value + AGENT_SPEED_DIFF; }
+        set { Stat.MoveSpeed = value; _agent.speed = value * AGENT_SPEED_RATIO; }
     }
 
     public override float FixedDefensePenetration { get { return ItemStat.FixedDefensePenetration; } }
@@ -129,6 +130,25 @@ public class PlayerController : CreatureController
         }
     }
 
+    private bool _untargetable;
+    public override bool Untargetable 
+    { 
+        get => _untargetable; 
+        set 
+        {
+            if (_untargetable == value)
+                return;
+
+            _untargetable = value;
+
+            if (_untargetable)
+                _nameTag.SetNameText("대상 지정 불가", 20);
+            else
+                _nameTag.SetNameText("아비게일", 16);
+
+            _nameTag.SetHPColor(_untargetable);
+        } 
+    }
     #endregion
 
     // 레이어
@@ -197,12 +217,16 @@ public class PlayerController : CreatureController
         // 체력바
         InitNameTag();
 
+        // 유키용
+        GameObject yukiPyosik = Managers.Resource.Instantiate("Effect/UIpyosik");
+        yukiPyosik.transform.SetParent(gameObject.transform);
+
         // 장비 슬롯
         InitEquipItem();
 
         // NavMesh Agent
         _agent = GetComponent<NavMeshAgent>();
-        _agent.speed = Speed + AGENT_SPEED_DIFF;
+        _agent.speed = Speed * AGENT_SPEED_RATIO;
         _agent.acceleration = 999;
         _agent.angularSpeed = 720;
         _agent.stoppingDistance = 0.1f;
@@ -287,7 +311,7 @@ public class PlayerController : CreatureController
 
     public void ChangeState(S_PlayerState packet)
     {
-        Debug.Log($"Cur : {State}, Next : {packet.State}");
+        Debug.Log($"Id : {Id}, Cur : {State}, Next : {packet.State}");
         State = packet.State;
     }
 
@@ -298,6 +322,11 @@ public class PlayerController : CreatureController
         //AttackSpeed = packet.AttackSpeed;
         Defense = packet.Defense;
         Healing = packet.Healing;
+    }
+
+    public void ChangeAttackRange(S_ChangeAttackRange packet)
+    {
+        AttackRange = packet.AttackRange;
     }
 
     #region Util
@@ -447,29 +476,6 @@ public class PlayerController : CreatureController
         }
         Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, transform);
     }
-
-    // 현재 상태, 키, 타겟팅 상대에게 이펙트
-    protected virtual List<GameObject> PlayEffectTransform(CreatureState state, KeyCode key, EffectType type = EffectType.Caster,
-       GameObject target = null, Transform targetTransform = null)
-    {
-        List<EffectData> effectList = Managers.Data.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
-        List<GameObject> EffectList = null;
-        EffectList = Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, transform);
-
-        return EffectList;
-    }
-    public List<GameObject> PlayEffectAtPosition(CreatureState state, KeyCode key, Vector3 position, Quaternion rot, EffectType type = EffectType.Caster)
-    {
-        List<EffectData> effectList = Managers.Data.GetSkillEffectList(ObjInfo.Player.CharType, state, key, type);
-
-        if (effectList == null || effectList.Count == 0)
-            return null;
-
-        List<GameObject> EffectList = Managers.FX.PlayEffect(ObjInfo.ObjectId, effectList, this.transform, position, rot);
-
-        return EffectList;
-    }
-
     #endregion
 
     #region State:Operate

@@ -23,6 +23,7 @@ namespace Server.Game
             SetupSkill(monster);
 
             RotateTowardTarget(monster);
+            monster.Room.CollManager.AddHitbox(monster, _skillData.skillType);
 
             monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), _skillData);
         }

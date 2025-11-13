@@ -14,9 +14,6 @@ public class Player_DeadState : IPlayerState
 {
     public void Enter(Player player)
     {
-        player.State = CreatureState.Dead;
-        player.SendStatePacket();
-
         player.SendAnimPacket("DEAD", 0.1f);
 
         //UI

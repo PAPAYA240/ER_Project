@@ -13,7 +13,9 @@ namespace Server.Game
 {
     public partial class Player : Creature
     {
-        public int AttackRange { get; set; } = 3;
+        public float AttackRange { get { return Info.StatInfo.AttackRange + WeaponAttackRange + BonusAttackRange; } }
+        public float WeaponAttackRange { get; set; }
+        public float BonusAttackRange { get; set; }
 
         public bool IsDead => this.State == CreatureState.Dead;
 

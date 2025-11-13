@@ -9,19 +9,16 @@ namespace Server.Game
 {
     public class AppearState : IMonsterState
     {
-        private float _stateTimer = 0f;
         private float _endTime = 0f;
         public void Enter(Monster monster)
         {
-            _stateTimer = Environment.TickCount64;
-            _endTime = Environment.TickCount64 + DataManager.MonsterDict[monster.Info.Monster.MonsterType].appearTime; 
+            _endTime = Environment.TickCount64 + (DataManager.MonsterDict[monster.Info.Monster.MonsterType].appearTime * 1000); 
             monster.PushState(CreatureState.Appear, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
         }
 
         public void Execute(Monster monster)
         {
-            _stateTimer += Environment.TickCount64;
-            if (_stateTimer >= _endTime)
+            if (Environment.TickCount64 >= _endTime)
                 monster.ChangeState(new IdleState()); 
         }
 

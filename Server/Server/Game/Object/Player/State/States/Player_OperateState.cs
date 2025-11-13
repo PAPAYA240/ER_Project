@@ -15,8 +15,6 @@ public class Player_OperateState : IPlayerState
 
     public void Enter(Player player)
     {
-        player.State = CreatureState.Operate;
-        player.SendStatePacket();
         player.SendAnimPacket(_animName, 0.1f);
 
         _duration = DataManager.AnimLengthInfoDict[player.Info.Player.CharType][_animName].Length;

@@ -19,9 +19,6 @@ public class Player_RestState : IPlayerState
 
     public void Enter(Player player)
     {
-        player.State = CreatureState.Rest;
-        player.SendStatePacket();
-
         _startTime = DateTime.UtcNow;
 
         string animName;

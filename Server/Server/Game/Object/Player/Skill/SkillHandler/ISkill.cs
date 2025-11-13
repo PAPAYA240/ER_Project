@@ -26,6 +26,7 @@ public interface ISkill
 
     // 타격 타이밍(예: tHit)
     void OnHit(Player p, SkillContext ctx);
+    void OnAttack(Player p);
 
     void OnCollision<T>(Player p, List<T> targets, StatusEffect effect);
     void OnCollision<T>(Player p, T nearestTarget, StatusEffect effect);

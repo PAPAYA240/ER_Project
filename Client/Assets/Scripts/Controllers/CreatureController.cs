@@ -73,6 +73,14 @@ public class CreatureController : BaseController
         set { Stat.Defense = Mathf.Max(value, 0); }
     }
 
+    public virtual float AttackRange
+    {
+        get { return Stat.AttackRange; }
+        set { Stat.AttackRange = Mathf.Max(value, 0); }
+    }
+
+    public virtual bool Untargetable { get; set; } = false; // 대상 지정불가 상태
+
     virtual protected void UpdateHp()
     {
 
@@ -151,6 +159,9 @@ public class CreatureController : BaseController
 
         CreatureController cc = targetObject.GetComponentInChildren<CreatureController>();
         if (cc == null) 
+            return false;
+
+        if (cc.Untargetable)
             return false;
 
         // 나 자신일 때

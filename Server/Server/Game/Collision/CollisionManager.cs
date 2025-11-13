@@ -111,6 +111,12 @@ namespace Server.Game
                     Interactions = ConvertProtoInteractionsToKeyCodeDictionary(skillHitbox.Interactions)
                 };
 
+                if(charType == CharacterType.Rozzi && keyCode == KeyCode.E)
+                {
+                    hitbox.PosX = mousePos.X;
+                    hitbox.PosZ = mousePos.Y;
+                }
+
                 SettingPointType(hitbox);
                 _pendingHitboxes.Add(hitbox);
             }            
@@ -280,14 +286,21 @@ namespace Server.Game
             foreach (var targetKvp in targets)
             {
                 T target = targetKvp.Value;
-                if (hitbox.HitObjs.ContainsKey(targetKvp.Key) || true == hitbox.IsUsed)
+
+                if (hitbox.IsUsed)
                     continue;
 
-                if (CheckCollision(hitbox, target))
-                {
-                    hitTargets.Add(target);
-                    HandlerInteraction(hitbox, target);
-                }
+                if (hitbox.HitObjs.ContainsKey(targetKvp.Key))
+                    continue;
+
+                if (!CheckCollision(hitbox, target))
+                    continue;
+
+                if (!hitbox.HitObjs.TryAdd(targetKvp.Key, 1))
+                    continue;
+
+                hitTargets.Add(target);
+                HandlerInteraction(hitbox, target);
             }
         }
 
@@ -296,7 +309,9 @@ namespace Server.Game
             if (false == hitbox.Data.IsOneTimeUse) // 단일대상 히트박스가 아닌 경우
             {
                 foreach (T target in hitTargets)
+                {
                     ApplyDamage(hitbox, target, damageDict);                 
+                }
             }
             else
             {
@@ -311,9 +326,15 @@ namespace Server.Game
             if (hitbox.Creature is Monster)
             {
                 Monster monster = hitbox.Creature as Monster;
-                if (monster == null)        return;
-
-                //monster.OnTargetHit()
+                if (monster != null)
+                {
+                    foreach (T target in hitTargets)
+                    {
+                        Player p = target as Player;
+                        if (p != null)
+                            monster.OnTargetHit(p);
+                    }
+                }
             }
         }
 
@@ -338,6 +359,9 @@ namespace Server.Game
        
         bool CheckCollision(Hitbox hitbox, GameObject go)
         {
+            if (go.IsUntargetable())
+                return false;
+
             if (!System.Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
                 return false;
 
@@ -501,7 +525,7 @@ namespace Server.Game
             float dmg = 0f;
             if (hitbox.Creature is Player)
             {
-               dmg = CalcDamage(hitbox.Creature, target.Stat, hitbox.KeyCode);
+                dmg = CalcDamage(hitbox.Creature, target.Stat, hitbox.KeyCode);
             }
             else if (hitbox.Creature is Monster)
             {
@@ -512,8 +536,8 @@ namespace Server.Game
             else if (target is Monster)
             {
                 Monster monster = target as Monster;
-                monster.OnHit(hitbox.Creature);
-
+                if(monster != null)
+                    monster.OnHit(hitbox.Creature);
                 Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Creature.Id}, Target:{target.Info.Monster.MonsterType}_{target.Id}, Damage:{dmg}");
             }
             else
@@ -544,6 +568,7 @@ namespace Server.Game
             info.MaxHp = target.MaxHp;
             return CalcDamage(attacker, info, keyCode);
         }
+
         public float CalcDamage(Creature attacker, Creature target)
         {
             Monster monsterAttacker = attacker as Monster;
@@ -552,14 +577,12 @@ namespace Server.Game
             if (!DataManager.MonsterSkillDict.ContainsKey(monsterAttacker.CurrentSkill))
                 return 0f;
 
-            // 몬스터가 타겟이라면 0
             if(target is Player)
                 return DataManager.MonsterSkillDict[monsterAttacker.CurrentSkill].damage;
-            
-            // 플레이어라면 데미지 리턴
             else
                 return 0f;
         }
+
         public float CalcDamage(Creature attacker, StatInfo target, KeyCode keyCode)
         {
             // TODO 버프 디버프 정보도 가지고 와야함. 예를 들면 방깍 디버프 같은거 
@@ -591,6 +614,7 @@ namespace Server.Game
 
             return result;
         }
+
         void SendChangeHpPkts(Dictionary<int, Dictionary<int, Player>> teams, Dictionary<int, Dictionary<int, float>> damageDict)
         {
             foreach (var kvp in damageDict)
@@ -798,9 +822,23 @@ namespace Server.Game
             Hitbox hitbox = null;
             lock (_lock)
             {
+                if (!DataManager.MonstSkillHitboxDict.ContainsKey(creature.Info.Monster.MonsterType))
+                    return null;
+                if (!DataManager.MonstSkillHitboxDict[creature.Info.Monster.MonsterType].ContainsKey(skilltype))
+                    return null;
+
                 SkillHitbox skillHitbox = DataManager.MonstSkillHitboxDict[creature.Info.Monster.MonsterType][skilltype];
                 if (skillHitbox.EndFrame <= 0)
                     return null;
+
+                const float distance = 1.0f;
+                var quat = creature.RotInfo.GetQuatFromRotInfo();
+                Vector2 forward = new Vector2(
+                    2 * (quat.X * quat.Z + quat.W * quat.Y),
+                    2 * (quat.Y * quat.Z - quat.W * quat.X)
+                );
+                //float frontPosX = creature.PosInfo.PosX + forward.X * distance;
+                //float frontPosZ = creature.PosInfo.PosZ + forward.Y * distance;
 
                 hitbox = new Hitbox
                 {
@@ -810,7 +848,7 @@ namespace Server.Game
                     ChargeRatio = chargeRatio,
                     MonstType = creature.Info.Monster.MonsterType,
                     Data = skillHitbox,
-                    MousePos = targetPos,
+                    MousePos = forward,
                     OffsetPos = new Vector2(skillHitbox.RightOffset, skillHitbox.LookOffset),
                     Interactions = ConvertProtoInteractionsToKeyCodeDictionary(skillHitbox.Interactions)
                 };
@@ -832,7 +870,6 @@ namespace Server.Game
                     hitbox.PosZ = hitbox.MousePos.Y;
                 }
             }
-
         }
         
         private void UpdatePosProjectile(Hitbox hitbox)
@@ -900,7 +937,105 @@ namespace Server.Game
 
             return false;
         }
+        bool CheckMonsterCollision(Hitbox hitbox, GameObject go)
+        {
+            if (!System.Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
+                return false;
 
+            switch (shape)
+            {
+                case SkillShape.Circle:
+                    {
+                        float dx = go.PosInfo.PosX - hitbox.PosX;
+                        float dz = go.PosInfo.PosZ - hitbox.PosZ;
+                        float distanceSq = dx * dx + dz * dz;
+
+                        float hitboxRadius = hitbox.Data.Radius + hitbox.OffsetRadius;
+                        float totalRadius = hitboxRadius + go.Radius;
+
+                        return distanceSq <= totalRadius * totalRadius;
+                    }
+                case SkillShape.Ray:
+                    {
+                        Vector2 origin = new Vector2(hitbox.PosX, hitbox.PosZ);
+                        var quat = go.RotInfo.GetQuatFromRotInfo();
+                        Vector2 forward = new Vector2(
+                            2 * (quat.X * quat.Z + quat.W * quat.Y),
+                            2 * (quat.Y * quat.Z - quat.W * quat.X)
+                        );
+                        
+                        Vector2 right = new Vector2(-forward.Y, forward.X);
+                        Vector2 toTarget = new Vector2(go.PosInfo.PosX - origin.X, go.PosInfo.PosZ - origin.Y);
+
+                        float projForward = Vector2.Dot(toTarget, forward);
+                        float projRight = Vector2.Dot(toTarget, right);
+
+                        if (!Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
+                            return false;
+
+                        float range = hitbox.Data.MaxRange;
+                        if (type == SkillType.SkillTrack)
+                            range = hitbox.Data.MinRange + (hitbox.Data.MaxRange - hitbox.Data.MinRange) * hitbox.ChargeRatio;
+
+                        float halfWidth = hitbox.Data.Width * 0.5f;
+                        float clampedForward = MathF.Max(0f, MathF.Min(projForward, range));
+                        float clampedRight = MathF.Max(-halfWidth, MathF.Min(projRight, halfWidth));
+                        float deltaForward = projForward - clampedForward;
+                        float deltaRight = projRight - clampedRight;
+                        float distSq = deltaForward * deltaForward + deltaRight * deltaRight;
+
+                        return distSq <= go.Radius * go.Radius;
+                    }
+
+                case SkillShape.Sector:
+                    {
+                        Vector2 center = new Vector2(hitbox.PosX, hitbox.PosZ);
+                        Vector2 toTarget = new Vector2(go.PosInfo.PosX - center.X, go.PosInfo.PosZ - center.Y);
+
+                        var quat = go.RotInfo.GetQuatFromRotInfo();
+                        Vector2 mouseDir = new Vector2(
+                            2 * (quat.X * quat.Z + quat.W * quat.Y),
+                            2 * (quat.Y * quat.Z - quat.W * quat.X)
+                        );
+
+                        Vector2 mouseRightVec = new Vector2(mouseDir.Y, -mouseDir.X);
+
+                        if (hitbox.Data.LookOffset != 0f || hitbox.Data.RightOffset != 0f)
+                        {
+                            center += mouseDir * hitbox.Data.LookOffset;
+                            center += mouseRightVec * hitbox.Data.RightOffset;
+                        }
+
+                        toTarget = new Vector2(go.PosInfo.PosX - center.X, go.PosInfo.PosZ - center.Y);
+                        float dist = toTarget.Length();
+
+                        if (dist > hitbox.Data.Radius + go.Radius)
+                            return false;
+
+                        if (dist <= go.Radius)
+                            return true;
+
+                        Vector2 targetDir = toTarget / dist;
+                        float dot = Math.Clamp(Vector2.Dot(mouseDir, targetDir), -1f, 1f);
+                        float angleRad = MathF.Acos(dot);
+                        float halfAngleRad = (hitbox.Data.Angle * 0.5f) * (MathF.PI / 180f);
+
+                        if (angleRad <= halfAngleRad)
+                            return true;
+
+                        float sin = MathF.Sin(halfAngleRad);
+                        float cos = MathF.Cos(halfAngleRad);
+                        Vector2 leftDir = new Vector2(mouseDir.X * cos - mouseDir.Y * sin, mouseDir.X * sin + mouseDir.Y * cos);
+                        Vector2 rightDir = new Vector2(mouseDir.X * cos + mouseDir.Y * sin, -mouseDir.X * sin + mouseDir.Y * cos);
+
+                        float leftDist = MathF.Abs(toTarget.X * leftDir.Y - toTarget.Y * leftDir.X);
+                        float rightDist = MathF.Abs(toTarget.X * rightDir.Y - toTarget.Y * rightDir.X);
+
+                        return (leftDist <= go.Radius || rightDist <= go.Radius);
+                    }
+            }
+            return false;
+        }
         // 충돌체 끼리의 충돌
         void CheckCollisionHit()
         {

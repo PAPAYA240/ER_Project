@@ -1,7 +1,9 @@
 ﻿using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
 public class TheodoreInputController : PlayerInputController
@@ -12,16 +14,35 @@ public class TheodoreInputController : PlayerInputController
 
     const bool SKIP_STATE_CHECK = false;
 
-
     private float _elapsedTime = 0f;
     private KeyCode? _currentSkillKey = null;
     private Coroutine _cancelCoroutine = null;
 
+    private void Start()
+    {
+    }
+
+    protected override Vector3 GetAttackStopPosition(Vector3 from, Vector3 target)
+    {
+        Vector3 dir = target - from;
+        dir.y = 0f;
+        float dist = dir.magnitude;
+        if (dist <= Mathf.Epsilon)
+            return target;
+        dir /= dist;
+
+        float stop = Mathf.Max(0.05f, _player.AttackRange); 
+
+        return target - dir * stop;
+    }
+
+
     protected override void ChargeSkill(KeyCode key)
     {
-        _currentSkillKey = key;
-        _player.Indicator.EnableIndicator(_player.ObjInfo.Player.CharType, key);
+        if (!UseSkill(key))
+            return;
 
+        _player.Indicator.EnableIndicator(_player.ObjInfo.Player.CharType, key);
         switch (key)
         {
         case KeyCode.Q:
@@ -63,14 +84,16 @@ public class TheodoreInputController : PlayerInputController
     private const float SNIPER_ZOOM_DURATION = 10f;
     private IEnumerator SniperSkill(KeyCode key)
     {
+        _player.LookAtMouse();
+
         CameraController cc = Camera.main.gameObject.GetComponent<CameraController>();
         if (cc == null)
             yield break;
 
         SendSkillInputPacket(key);
         _player.Indicator.EnableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
-
-        Vector3 aimCenter = cc.transform.position +( _player.transform.forward * SNIPER_DISTANCE);
+        //_player.Indicator.FindIndicatorObject("Center");
+        Vector3 aimCenter = transform.position +( _player.transform.forward * SNIPER_DISTANCE);
         cc.StartAimMode(aimCenter, zoomOutDistance: SNIPER_ZOOM_DURATION);
 
         float elapsed = 0;
@@ -88,9 +111,8 @@ public class TheodoreInputController : PlayerInputController
             // 스킬 공격
             if (Input.GetMouseButtonDown(0))
             {
-                cc.EndAimMode();
+                //cc.EndAimMode();
                 SendSkillExecutePacket(key);
-                yield break;
             }
             yield return null;
         }
@@ -101,6 +123,19 @@ public class TheodoreInputController : PlayerInputController
     #endregion
 
     #region 스킬 입력 처리
+    private bool UseSkill(KeyCode key)
+    {
+        _skill.SkillDict.TryGetValue(key, out SkillBase skill);
+        if (skill == null || skill.CurLevel <= 0)
+            return false;
+        if (_skill.CoolDownDict.TryGetValue(key, out PlayerSkillController.CoolTime coolTimeInfo))
+        {
+            if (coolTimeInfo.isCoolDown)
+                return false;
+        }
+        _currentSkillKey = key;
+        return true;
+    }
     private IEnumerator InputSkill(KeyCode key, Action onConfirm, Action onCancel)
     {
         while (!Input.GetKeyUp(key) && !Input.GetMouseButtonDown(0))

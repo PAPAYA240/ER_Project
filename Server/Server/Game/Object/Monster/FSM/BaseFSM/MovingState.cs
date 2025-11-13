@@ -48,7 +48,7 @@ namespace Server.Game
                 if (monster.ReturnToSpawn)
                     monster.ReturnToSpawn = false;
 
-                monster.ChangeState(FSMManager.Instance.GetIdleState());
+                RecalculatePath(monster);
             }
         }
         public void OnHit(Monster monster, Creature target) { }

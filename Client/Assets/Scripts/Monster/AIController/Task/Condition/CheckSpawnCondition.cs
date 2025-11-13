@@ -7,6 +7,10 @@ public class CheckSpawnCondition : DecoratorNode
     {
         MonsterController monsterState = agent.GetComponent<MonsterController>();
 
-        return (monsterState?.State == CreatureState.Appear) ? NodeStatus.Success : NodeStatus.Failure;
+        if (monsterState?.State == CreatureState.Appear)
+            return NodeStatus.Success;
+        else
+            return NodeStatus.Failure;
+            //return? NodeStatus.Success : NodeStatus.Failure;
     }
 }
