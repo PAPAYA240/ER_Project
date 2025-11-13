@@ -266,24 +266,7 @@ public class MyPlayerController : PlayerController
         //_isWarp = isWarp;
     }
 
-    public void LookAtMouse()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100f))
-        {
-            Vector3 targetPoint = hit.point;
-            targetPoint.y = transform.position.y;
-            Vector3 direction = targetPoint - transform.position;
-
-            if (direction != Vector3.zero)
-            {
-                Quaternion newRotation = Quaternion.LookRotation(direction);
-                RotInfo = newRotation;
-                SyncPos(true);
-            }
-        }
-    }
+    
     #endregion
 
     #region Packet

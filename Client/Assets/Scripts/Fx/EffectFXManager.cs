@@ -151,17 +151,11 @@ public class EffectFXManager : MonoBehaviour
                 parentTransform = null;
                 //CreatureController cc = casterTransform.GetComponent<CreatureController>();
                 //if (cc == null) return Vector3.zero;
-
                 return targetPos;
 
             case EEffectTarget.Mouse:
                 parentTransform = null;
-                GameObject go = Managers.Object.FindById(id);
-                if(go == null) return Vector3.zero;
-
-                PlayerController pc = go.GetComponent<PlayerController>();
-                if (pc == null) return Vector3.zero;
-                return pc.GetMouseWorldPosition();
+                return targetPos;
 
             case EEffectTarget.Shot:
                 parentTransform = null;

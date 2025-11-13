@@ -334,8 +334,47 @@ public class PlayerController : CreatureController
     {
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
     }
+    public void PlayEffectFromServer(S_Fx packet)
+    {
+        Vector3 mousePos = new Vector3(packet.MousePosX, 0, packet.MousePosZ);
+        PlaySkillEffect((KeyCode)packet.SkillKey, mousePos);
+    }
     #endregion
+    public void LookAtMouse()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100f))
+        {
+            Vector3 targetPoint = hit.point;
+            targetPoint.y = transform.position.y;
+            Vector3 direction = targetPoint - transform.position;
 
+            if (direction != Vector3.zero)
+            {
+                Quaternion newRotation = Quaternion.LookRotation(direction);
+                RotInfo = newRotation;
+                SyncPos(true);
+            }
+        }
+    }
+
+    public void LookAtMouse(Vector2 mousePos)
+    {
+        Vector3 casterPosition = transform.position;
+
+        Vector3 targetPoint = new Vector3(mousePos.x, casterPosition.y, mousePos.y);
+
+        Vector3 direction = targetPoint - casterPosition;
+
+        if (direction != Vector3.zero)
+        {
+            Quaternion newRotation = Quaternion.LookRotation(direction);
+
+            RotInfo = newRotation;
+            SyncPos(true);
+        }
+    }
     Dictionary<KeyCode, SkillMesh> msDict = new Dictionary<KeyCode, SkillMesh>();
 
     #region NameTagAndHp
@@ -428,7 +467,7 @@ public class PlayerController : CreatureController
     #endregion
 
     #region Effect
-    public void PlaySkillEffect(KeyCode skillKey)
+    public void PlaySkillEffect(KeyCode skillKey, Vector3 fxPos)
     {
         CharacterType type = ObjInfo.Player.CharType;
         CreatureState state = CreatureState.Skill;
@@ -447,7 +486,7 @@ public class PlayerController : CreatureController
             dataList.Add(effect);
         }
 
-        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, transform);
+        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, transform, fxPos);
     }
     #endregion
 

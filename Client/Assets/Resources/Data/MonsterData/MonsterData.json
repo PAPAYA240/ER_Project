@@ -4,7 +4,6 @@
       "id": 1,
       "name": "Alpha",
       "appearTime": 6,
-      "attackType": "short",
       "activePhase": 2,
       "stat": {
         "level": 1,
@@ -22,7 +21,7 @@
     {
       "id": 2,
       "name": "Omega",
-      "attackType": "short",
+      "attackDist": "6",
       "appearTime": 6,
       "activePhase": 2,
       "stat": {
@@ -41,9 +40,9 @@
     {
       "id": 3,
       "name": "Drone",
-      "attackType": "long",
+      "attackDist": "6",
       "appearTime": 2,
-      "activePhase" :  1,
+      "activePhase": 1,
       "stat": {
         "level": 1,
         "maxHp": 200,
@@ -57,7 +56,7 @@
     {
       "id": 4,
       "name": "Gamma",
-      "attackType": "long",
+      "attackDist": "7",
       "appearTime": 2.5,
       "activePhase": 1,
       "stat": {
@@ -76,7 +75,7 @@
     {
       "id": 4,
       "name": "Turret",
-      "attackType": "long",
+      "attackDist": "10",
       "activePhase": 0,
       "stat": {
         "level": 1,

@@ -58,8 +58,8 @@ public sealed class Theodore_D : SkillHandlerBase
         CreateHitbox(p, skillstate.Ctx);
         p.SendSkillConfirmPacket(
             canUse : true,
-            keyCode : _keyCode, 
-            sendLookatMousePacket : true);
+            keyCode : _keyCode);
+        p.SendSkillEffect(mousePos : skillstate.Ctx.MousePos, keyCode: _keyCode, sendLookatMousePacket: true);
     }
     public override void OnStop(Player p)
     {

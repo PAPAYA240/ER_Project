@@ -424,6 +424,10 @@ message C_Fx{
 message S_Fx{
 	int32 objectId = 1;
 	string fxName = 2;
+	bool canLookatMouse = 3;
+	int32 skillKey = 4;
+	float mousePosX = 5;
+	float mousePosZ = 6;
 }
 
 message C_Anim{
@@ -831,7 +835,7 @@ message S_SkillConfirm {
   bool canUse = 2;
   int32 skillKey = 3;			
   bool canMove = 4;
-  bool canLookatMouse = 5;
+
   //CostInfo costInfo = 5;
   //int32 targetId = 6;
 }

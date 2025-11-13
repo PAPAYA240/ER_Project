@@ -70,18 +70,18 @@
     "Drone": {
       "MsDroneAttack1": {
         "shape": "Circle",
-        "type": "SkillTrack",
+        "type": "SkillProjectile",
         "radius": 0.5,
-        "lookOffset": 3,
+        "speed": 10,
         "startFrame": 30,
         "endFrame": 60,
         "isOneTimeUse": true
       },
       "MsDroneAttack2": {
         "shape": "Circle",
-        "type": "SkillTrack",
+        "type": "SkillProjectile",
         "radius": 0.5,
-        "lookOffset": 3,
+        "speed": 10,
         "startFrame": 30,
         "endFrame": 60,
         "isOneTimeUse": true

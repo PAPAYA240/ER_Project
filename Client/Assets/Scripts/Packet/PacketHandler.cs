@@ -376,7 +376,17 @@ class PacketHandler
 
     public static void S_FxHandler(PacketSession session, IMessage packet)
     {
-       
+        S_Fx fxPacket = packet as S_Fx;
+
+        GameObject go = Managers.Object.FindById(fxPacket.ObjectId);
+        if (go == null)
+            return;
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.LookAtMouse(new Vector2(fxPacket.MousePosX, fxPacket.MousePosZ));
+        pc.PlayEffectFromServer(fxPacket);
     }
 
     public static void S_RespawnHandler(PacketSession session, IMessage packet)
@@ -468,10 +478,13 @@ class PacketHandler
         GameObject go = Managers.Object.FindById(confirmPacket.ObjectId);
         if (go == null)
             return;
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
 
         if (Managers.Object.MyPlayer.Id == confirmPacket.ObjectId)
         {
-            if(true == confirmPacket.CanUse)
+            if (true == confirmPacket.CanUse)
                 Managers.Object.MyPlayer.OnServerUpdate(confirmPacket);
         }
     }

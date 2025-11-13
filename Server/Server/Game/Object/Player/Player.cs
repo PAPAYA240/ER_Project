@@ -2,6 +2,7 @@ using Google.Protobuf.Protocol;
 using Server.Data;
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Numerics;
 using static Server.Data.DataUtils;
 
@@ -990,12 +991,42 @@ namespace Server.Game
             Room.Broadcast(pkt);
         }
 
+        public void SendSkillEffect(Vector2 mousePos, KeyCode keyCode = KeyCode.None, bool sendLookatMousePacket = false)
+        {
+            Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
+            Vector2 dir = mousePos - myPos;
+            if (dir.LengthSquared() < 0.0001f)
+                return;
+
+            float angle = (float)Math.Atan2(dir.Y, dir.X);
+            Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle);
+
+            RotationInfo newRot = new RotationInfo
+            {
+                Qx = rot.X,
+                Qy = rot.Y,
+                Qz = rot.Z,
+                Qw = rot.W
+            };
+            RotInfo = newRot;
+
+            S_Fx fxPacket = new S_Fx
+            {
+                ObjectId = Id,
+                CanLookatMouse = sendLookatMousePacket,
+                SkillKey = (int)keyCode,
+                MousePosX = mousePos.X,
+                MousePosZ = mousePos.Y,
+            };
+
+            Room.Push(Room.Broadcast, fxPacket);
+        }
+
         public void SendSkillConfirmPacket
             (bool canUse, 
             KeyCode keyCode = KeyCode.None, 
             bool canMoveDuringCast = false, 
-            bool sendCostPacket = true, 
-            bool sendLookatMousePacket = false)
+            bool sendCostPacket = true)
         {
             S_SkillConfirm packet;
 
@@ -1007,7 +1038,6 @@ namespace Server.Game
                     CanUse = canUse,
                     SkillKey = (int)keyCode,
                     CanMove = canMoveDuringCast,
-                    CanLookatMouse = sendLookatMousePacket
                 };
                
                 if(sendCostPacket)
@@ -1020,7 +1050,6 @@ namespace Server.Game
                     ObjectId = Id,
                     CanUse = canUse,
                     SkillKey = (int)keyCode,
-                    CanLookatMouse = sendLookatMousePacket,
                 };
             }
 
