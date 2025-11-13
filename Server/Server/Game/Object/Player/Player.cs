@@ -1,10 +1,7 @@
 using Google.Protobuf.Protocol;
-using Lucene.Net.Store;
-using Lucene.Net.Support;
 using Server.Data;
 using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
 using System.Numerics;
 using static Server.Data.DataUtils;
 
@@ -386,6 +383,7 @@ namespace Server.Game
         #endregion
 
         #region State
+
         public void ChangeState(IPlayerState newState)
         {
             _stateMachine.ChangeState(newState, this);
@@ -992,7 +990,12 @@ namespace Server.Game
             Room.Broadcast(pkt);
         }
 
-        public void SendSkillConfirmPacket(bool canUse, KeyCode keyCode = KeyCode.None, bool canMoveDuringCast = false, bool sendCostPacket = true, bool sendLookatMousePacket = false)
+        public void SendSkillConfirmPacket
+            (bool canUse, 
+            KeyCode keyCode = KeyCode.None, 
+            bool canMoveDuringCast = false, 
+            bool sendCostPacket = true, 
+            bool sendLookatMousePacket = false)
         {
             S_SkillConfirm packet;
 

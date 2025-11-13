@@ -84,18 +84,16 @@ public class CameraController : MonoBehaviour
         mainCamData.cameraStack.Add(_playerCamera);  
     }
 
-
     void Update()
     {
-        if (!_isSkillZooming)
+        if (!_bSkillCam)
             DefaultMode();
     }
    
     void LateUpdate()
     {
-        if (!_isSkillZooming)
+        if (!_bSkillCam)
             LateDefaultMode();
-       
     }
 
     #region Default Mode
@@ -145,6 +143,8 @@ public class CameraController : MonoBehaviour
     #endregion
 
     #region Theodore D Skill Mode
+
+    #region Variables
     public enum ScreenEdge
     {
         Left,
@@ -153,24 +153,29 @@ public class CameraController : MonoBehaviour
         Bottom
     }
 
-   
-
+    private const float VIEWPORT_PADDING = 0.1f;
     private Coroutine _zoomCoroutine = null;
-    private bool _isSkillZooming = false;
+
+    private float heightIncrease = 12.0f;
+
+    private bool _bSkillCam = false;
+
     private Vector3 _originalPosition;
     private Quaternion _originalRotation;
-    [SerializeField] public float heightIncrease = 10.0f;
     private Vector3 _originalDelta;
-    public void StartAimMode(Transform playerTransform, ScreenEdge _direct, float smoothSpeed = 5f)
+    #endregion
+
+    public void StartAimMode(Transform playerTransform, ScreenEdge _direct)
     {
         if(_zoomCoroutine != null)
             StopCoroutine(_zoomCoroutine);
+
         _zoomCoroutine = StartCoroutine(CameraZoomOut(playerTransform, _direct));
     }
 
     private IEnumerator CameraZoomOut(Transform playerTransform, ScreenEdge targetEdge)
     {
-        _isSkillZooming = true;
+        _bSkillCam = true;
         _originalPosition = transform.position;
         _originalRotation = transform.rotation;
         _originalDelta = _delta;
@@ -179,11 +184,11 @@ public class CameraController : MonoBehaviour
         {
             case ScreenEdge.Left:
             case ScreenEdge.Right:
-                heightIncrease = 6.0f;
+                heightIncrease = 7.0f;
                 break;
             case ScreenEdge.Top:
             case ScreenEdge.Bottom:
-                heightIncrease = 8.5f;
+                heightIncrease = 10.0f;
                 break;
         }
 
@@ -193,7 +198,7 @@ public class CameraController : MonoBehaviour
 
         const float smoothFactor = 5.0f; 
         const float speed = 5.0f;
-        while (_isSkillZooming) 
+        while (_bSkillCam) 
         {
             Vector3 targetPosition = transform.position;
             targetPosition.y = targetYAxis; 
@@ -205,9 +210,6 @@ public class CameraController : MonoBehaviour
                 targetPosition,          
                 smoothFactor * Time.deltaTime 
             );
-
-            // --- 2. 스크린 경계 충돌 확인 로직 ---
-            const float VIEWPORT_PADDING = 0.1f;
 
             Vector3 viewportPos = Camera.main.WorldToViewportPoint(playerTransform.position);
             if (viewportPos.x < VIEWPORT_PADDING || viewportPos.x > (1.0f - VIEWPORT_PADDING) ||
@@ -251,7 +253,7 @@ public class CameraController : MonoBehaviour
         transform.position = _originalPosition;
         transform.rotation = _originalRotation;
         _delta = _originalDelta;
-        _isSkillZooming = false;
+        _bSkillCam = false;
     }
     #endregion
 }

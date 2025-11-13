@@ -203,9 +203,8 @@ namespace Server.Game
 
         public void HandlerChargeCancelSkill(Player player, C_SkillCancel skillPacket)
         {
-            var key = (KeyCode)skillPacket.SkillKey;
-
-            ISkill handler = SkillRegistry.Prepare(player.Info.Player.CharType, key);
+            if (player.CurrentState is IReceivesStopCommand stop)
+                stop.OnStopCommand(player, null);
         }
         public void HandleSkillCollision(Player player, C_SkillCollisionPropose skillPacket)
         {

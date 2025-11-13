@@ -364,7 +364,7 @@ namespace Data
             Self,       // 캐스터의 위치에 부착 (자식으로)
             Target,     // 아직까지 Target만 따라감
             Mouse,     // 마우스 따라감
-            Shoot       // 발사체
+            Shot       // 발사체
         }
         public string prefabName;
         public float delayTime;

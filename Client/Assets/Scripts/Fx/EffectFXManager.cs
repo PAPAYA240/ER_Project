@@ -90,7 +90,7 @@ public class EffectFXManager : MonoBehaviour
 
         activeCoroutines[fxObject] = StartCoroutine(ReturnToPoolAfterDelay(ownerId, fxObject, data.prefabName, data.delayTime, data.duration, casterTransform));
 
-        if (data.target == EEffectTarget.Shoot)
+        if (data.target == EEffectTarget.Shot)
             StartCoroutine(ControlEffect(fxObject, casterTransform.forward, data.duration));
     }
 
@@ -163,7 +163,7 @@ public class EffectFXManager : MonoBehaviour
                 if (pc == null) return Vector3.zero;
                 return pc.GetMouseWorldPosition();
 
-            case EEffectTarget.Shoot:
+            case EEffectTarget.Shot:
                 parentTransform = null;
                 return casterTransform.position + data.position;
 
@@ -183,7 +183,7 @@ public class EffectFXManager : MonoBehaviour
                 return Quaternion.identity;
 
             case EEffectTarget.Mouse:
-            case EEffectTarget.Shoot:
+            case EEffectTarget.Shot:
                 return rot;
 
             default:

@@ -125,16 +125,10 @@
         "shape": "Circle",
         "type": "SkillProjectile",
         "radius": 0.4,
-        "speed": 4,
-        "duration": 0.6,
+        "speed": 11,
         "maxRange": 5.5,
         "startFrame": 0,
         "endFrame": 60
-        //"interactions": {
-        //  "F1": {
-        //    "interaction": [ "Interaction" ]
-        //  }
-        //}
       },
       "R": {
         "shape": "Ray",
@@ -146,6 +140,15 @@
         "charge": true,
         "minRange": 5,
         "maxRange": 30
+      },
+      "D": {
+        "shape": "Circle",
+        "type": "SkillProjectile",
+        "radius": 0.8,
+        "speed": 20,
+        "maxRange": 5.5,
+        "startFrame": 0,
+        "endFrame": 42
       }
     },
     "Yuki": {

@@ -816,14 +816,11 @@ namespace Server.Game
                 if (skillHitbox.EndFrame <= 0)
                     return null;
 
-                const float distance = 1.0f;
                 var quat = creature.RotInfo.GetQuatFromRotInfo();
                 Vector2 forward = new Vector2(
                     2 * (quat.X * quat.Z + quat.W * quat.Y),
                     2 * (quat.Y * quat.Z - quat.W * quat.X)
                 );
-                //float frontPosX = creature.PosInfo.PosX + forward.X * distance;
-                //float frontPosZ = creature.PosInfo.PosZ + forward.Y * distance;
 
                 hitbox = new Hitbox
                 {
@@ -870,10 +867,9 @@ namespace Server.Game
 
                 // TODO : 움직임 속도 예시 (데이터로 변경 예정)
                 // : 움직임 플레이어에 영향 받지 못하게 고정해야 함
-                const float moveSpeed = 10;
                 Vector3 toForward = Vector3.Transform(new Vector3(0, 0, 1), rot);
                 const float TickInterval = 1.0f / 70.0f;
-                float deltaMove = moveSpeed * TickInterval;
+                float deltaMove = hitbox.Data.Speed * TickInterval;
 
                 hitbox.PosX += toForward.X * deltaMove;
                 hitbox.PosZ += toForward.Z * deltaMove;

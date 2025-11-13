@@ -446,6 +446,7 @@ public class PlayerController : CreatureController
         {
             dataList.Add(effect);
         }
+
         Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, transform);
     }
     #endregion

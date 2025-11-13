@@ -19,11 +19,14 @@ public class TheodoreInputController : PlayerInputController
     private KeyCode? _currentSkillKey = null;
     private Coroutine _cancelCoroutine = null;
 
+    // Skill D - Sniper shot
+    private const int SNIPER_SHOT_COUNT = 3;
+    private int _SniperShotIdx = 0;
+
     private void Start()
     {
         _attackRange = 6.0f;
     }
-
     protected override Vector3 GetAttackStopPosition(Vector3 from, Vector3 target)
     {
         Vector3 dir = target - from;
@@ -82,56 +85,69 @@ public class TheodoreInputController : PlayerInputController
         StartCoroutine(SniperSkill(key));
     }
 
-    // 마우스 방향의 반대편 스크린 좌가장자리를 가져옴
-    private ScreenEdge GetOppositeScreenEdgeFromPlayer()
-    {
-        Vector3 playerForward = _player.transform.forward;
-
-        if (Mathf.Abs(playerForward.x) > Mathf.Abs(playerForward.z))
-        {
-            return playerForward.x > 0 ? ScreenEdge.Right : ScreenEdge.Left;
-        }
-        else
-        {
-            return playerForward.z > 0 ? ScreenEdge.Top : ScreenEdge.Bottom;
-        }
-    }
+    
     private IEnumerator SniperSkill(KeyCode key)
     {
         _player.LookAtMouse();
 
-        CameraController cc = Camera.main.gameObject.GetComponent<CameraController>();
-        if (cc == null)
-            yield break;
-
+        // 인디케이터
         SendSkillInputPacket(key);
         _player.Indicator.EnableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
 
+        // 카메라
+        CameraController cc = Camera.main.gameObject.GetComponent<CameraController>();
+        if (cc == null)
+            yield break;
         cc.StartAimMode(_player.transform, GetOppositeScreenEdgeFromPlayer());
 
         float elapsed = 0;
         while (elapsed < SNIPER_AIM_DURATION)
         {
             elapsed += Time.deltaTime;
-            // 스킬 취소
+            // 1. 스킬 취소
             if (Input.GetMouseButtonDown(1))
             {
                 cc.EndAimMode();
                 _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
+                SendSkillCancelPacket(key);
                 yield break;
             }
 
-            // 스킬 공격
+            // 2. 스킬 공격
             if (Input.GetMouseButtonDown(0))
             {
-                //cc.EndAimMode();
                 SendSkillExecutePacket(key);
+
+                StartCoroutine(SniperShooting(key)); 
             }
             yield return null;
         }
 
         cc.EndAimMode();
         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
+    }
+
+
+    private IEnumerator SniperShooting(KeyCode key)
+    {
+        _player.Indicator.ActiveIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1, false);
+        yield return new WaitForSeconds(0.5f); 
+        ++_SniperShotIdx;
+
+        if (_SniperShotIdx >= SNIPER_SHOT_COUNT) 
+        {
+            _SniperShotIdx = 0;
+
+            CameraController cc = Camera.main.gameObject.GetComponent<CameraController>();
+            if (cc == null)
+                yield break;
+
+            cc.EndAimMode();
+            SendSkillCancelPacket(key);
+            yield break;
+        }
+
+        _player.Indicator.ActiveIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1, true);
     }
     #endregion
 
@@ -237,6 +253,15 @@ public class TheodoreInputController : PlayerInputController
         if (skillCmd != null)
             Managers.Network.Send(skillCmd);
     }
+    private void SendSkillCancelPacket(KeyCode key)
+    {
+        C_SkillCancel cancelPacket = new C_SkillCancel
+        {
+            ObjectId = _player.ObjInfo.ObjectId,
+            SkillKey = (int)key
+        };
+        Managers.Network.Send(cancelPacket);
+    }
     private void SendSkillPreparePacket(KeyCode key)
     {
         C_SkillPrepare preparePacket = new C_SkillPrepare
@@ -254,6 +279,23 @@ public class TheodoreInputController : PlayerInputController
             SkillKey = (int)key
         };
         Managers.Network.Send(executePacket);
+    }
+    #endregion
+
+    #region Utils
+    // 마우스 방향의 반대편 스크린 좌가장자리를 가져옴
+    private ScreenEdge GetOppositeScreenEdgeFromPlayer()
+    {
+        Vector3 playerForward = _player.transform.forward;
+
+        if (Mathf.Abs(playerForward.x) > Mathf.Abs(playerForward.z))
+        {
+            return playerForward.x > 0 ? ScreenEdge.Right : ScreenEdge.Left;
+        }
+        else
+        {
+            return playerForward.z > 0 ? ScreenEdge.Top : ScreenEdge.Bottom;
+        }
     }
     #endregion
 }

@@ -33,7 +33,7 @@ public abstract class SkillHandlerBase : ISkill
     protected CharacterType _characterType;
     protected string _animName;
     protected KeyCode _keyCode;
-    protected bool _hitboxCreated = true;
+    protected bool HitboxCreated { get; set; } = true;
 
     public virtual void OnEnter(Player p, SkillContext ctx)
     {
@@ -54,7 +54,7 @@ public abstract class SkillHandlerBase : ISkill
             p.SendStopPacket(StopReason.StopMoveOnly);
         }
 
-        if(_hitboxCreated)
+        if(HitboxCreated)
             CreateHitbox(p, ctx);
     }
 
@@ -66,6 +66,7 @@ public abstract class SkillHandlerBase : ISkill
             case KeyCode.W:
             case KeyCode.E:
             case KeyCode.R:
+            case KeyCode.D:
                 p.Room.CollManager.AddHitbox(p, p.Info.Player.CharType, ctx.Key, ctx.MousePos);
                 break;
 

@@ -66,7 +66,7 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
     {
         _handler.OnExit(player, Ctx);
     }
-
+     
     private void ChangeState(Player player)
     {
         if (player.Intent.TryConsume(out var dest))
