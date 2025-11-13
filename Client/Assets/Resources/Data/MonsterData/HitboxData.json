@@ -65,6 +65,27 @@
         "startFrame": 40,
         "endFrame": 60
       }
+    },
+
+    "Drone": {
+      "MsDroneAttack1": {
+        "shape": "Circle",
+        "type": "SkillTrack",
+        "radius": 0.5,
+        "lookOffset": 3,
+        "startFrame": 30,
+        "endFrame": 60,
+        "isOneTimeUse": true
+      },
+      "MsDroneAttack2": {
+        "shape": "Circle",
+        "type": "SkillTrack",
+        "radius": 0.5,
+        "lookOffset": 3,
+        "startFrame": 30,
+        "endFrame": 60,
+        "isOneTimeUse": true
+      }
     }
   }
 }

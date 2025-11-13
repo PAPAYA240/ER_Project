@@ -35,7 +35,10 @@ namespace Server.Game
                 if (monster.IsInSkillRange())
                     monster.ChangeState(FSMManager.Instance.EvaluateTargetForNextState(monster));
                 else
+                {
+                    monster.Target = null;
                     monster.ChangeState(FSMManager.Instance.GetIdleState());
+                }
             }
         }
 

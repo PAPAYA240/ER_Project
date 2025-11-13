@@ -4,9 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
 using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
-using Google.Protobuf.WellKnownTypes;
 using TMPro;
-using UnityEngine.UIElements;
 
 public class CameraController : MonoBehaviour
 {
@@ -89,7 +87,6 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
-
         if (!_isSkillZooming)
             DefaultMode();
     }
@@ -148,55 +145,80 @@ public class CameraController : MonoBehaviour
     #endregion
 
     #region Theodore D Skill Mode
-    const float AIM_DURATION = 0.7f;
-    const float AIM_DURATION_END = 1.5f;
+    public enum ScreenEdge
+    {
+        Left,
+        Right,
+        Top,
+        Bottom
+    }
+
+   
 
     private Coroutine _zoomCoroutine = null;
     private bool _isSkillZooming = false;
     private Vector3 _originalPosition;
     private Quaternion _originalRotation;
-
-    public void SetQuaterView(Vector3 delta)
-    {
-        _mode = Define.CameraMode.QuaterView;
-        _farDelta = delta;
-    }
-
-    public void StartAimMode(Vector3 center, float zoomOutDistance)
+    [SerializeField] public float heightIncrease = 10.0f;
+    private Vector3 _originalDelta;
+    public void StartAimMode(Transform playerTransform, ScreenEdge _direct, float smoothSpeed = 5f)
     {
         if(_zoomCoroutine != null)
             StopCoroutine(_zoomCoroutine);
-        _zoomCoroutine = StartCoroutine(CameraZoomOut(center, zoomOutDistance));
+        _zoomCoroutine = StartCoroutine(CameraZoomOut(playerTransform, _direct));
     }
 
-    [SerializeField] float zoomOutSpeed = 10.0f;
-    [SerializeField] float _zoomOutDistance = 10.0f;
-    private IEnumerator CameraZoomOut(Vector3 center, float zoomOutDistance)
+    private IEnumerator CameraZoomOut(Transform playerTransform, ScreenEdge targetEdge)
     {
-        // 플레이어가 바라보는 상태에서 조금 앞으로 당기고 그대로 멀어진다.
-        _isSkillZooming = true; 
+        _isSkillZooming = true;
         _originalPosition = transform.position;
         _originalRotation = transform.rotation;
+        _originalDelta = _delta;
 
-        // 위치
-        Vector3 lookDirection = center - _originalPosition;
-        Vector3 targetPosition = _originalPosition + lookDirection.normalized * zoomOutSpeed;
-        targetPosition.y += _zoomOutDistance;
-
-
-        float elapsed = 0f;
-        while (elapsed < AIM_DURATION)
+        switch (targetEdge)
         {
-            elapsed += Time.deltaTime;
-            float t = elapsed / AIM_DURATION;
+            case ScreenEdge.Left:
+            case ScreenEdge.Right:
+                heightIncrease = 6.0f;
+                break;
+            case ScreenEdge.Top:
+            case ScreenEdge.Bottom:
+                heightIncrease = 8.5f;
+                break;
+        }
 
-            float smoothT = Mathf.SmoothStep(0f, 1f, t);
-            transform.position = Vector3.Lerp(_originalPosition, targetPosition, smoothT);
+        Vector3 toTarget = new Vector3();
+        toTarget = transform.position;
+        float targetYAxis = transform.position.y + heightIncrease;
 
+        const float smoothFactor = 5.0f; 
+        const float speed = 5.0f;
+        while (_isSkillZooming) 
+        {
+            Vector3 targetPosition = transform.position;
+            targetPosition.y = targetYAxis; 
+
+            targetPosition += playerTransform.forward * speed ;
+
+            transform.position = Vector3.Lerp(
+                transform.position,      
+                targetPosition,          
+                smoothFactor * Time.deltaTime 
+            );
+
+            // --- 2. 스크린 경계 충돌 확인 로직 ---
+            const float VIEWPORT_PADDING = 0.1f;
+
+            Vector3 viewportPos = Camera.main.WorldToViewportPoint(playerTransform.position);
+            if (viewportPos.x < VIEWPORT_PADDING || viewportPos.x > (1.0f - VIEWPORT_PADDING) ||
+                viewportPos.y < VIEWPORT_PADDING || viewportPos.y > (1.0f - VIEWPORT_PADDING))
+            {
+                yield break;
+            }
             yield return null;
         }
-        transform.position = targetPosition;
     }
+
     public void EndAimMode()
     {
         if (_zoomCoroutine != null)
@@ -205,20 +227,30 @@ public class CameraController : MonoBehaviour
     }
     private IEnumerator CameraZoomIn()
     {
+        Vector3 startPosition = transform.position;
+        Quaternion startRotation = transform.rotation;
+
+        const float ZOOM_DURATION = 0.8f;
+        const float STOPPING_DISTANCE = 0.01f;
+
         float elapsed = 0f;
-        while (elapsed < 0.8f)
+
+        while (Vector3.Distance(transform.position, _originalPosition) > STOPPING_DISTANCE)
         {
             elapsed += Time.deltaTime;
-            float t = elapsed / 1.5f;
 
+            float t = elapsed / ZOOM_DURATION;
             float smoothT = Mathf.SmoothStep(0f, 1f, t);
-            transform.position = Vector3.Lerp(transform.position, _originalPosition, smoothT);
-            transform.rotation = _originalRotation;
+
+            transform.position = Vector3.Lerp(startPosition, _originalPosition, smoothT);
+            transform.rotation = Quaternion.Slerp(startRotation, _originalRotation, smoothT);
+
             yield return null;
         }
 
         transform.position = _originalPosition;
-        _delta = _originalPosition;
+        transform.rotation = _originalRotation;
+        _delta = _originalDelta;
         _isSkillZooming = false;
     }
     #endregion

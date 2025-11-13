@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
+using static CameraController;
 
 public class TheodoreInputController : PlayerInputController
 {
@@ -81,8 +82,20 @@ public class TheodoreInputController : PlayerInputController
         StartCoroutine(SniperSkill(key));
     }
 
-    private const float SNIPER_DISTANCE = 15f;
-    private const float SNIPER_ZOOM_DURATION = 10f;
+    // 마우스 방향의 반대편 스크린 좌가장자리를 가져옴
+    private ScreenEdge GetOppositeScreenEdgeFromPlayer()
+    {
+        Vector3 playerForward = _player.transform.forward;
+
+        if (Mathf.Abs(playerForward.x) > Mathf.Abs(playerForward.z))
+        {
+            return playerForward.x > 0 ? ScreenEdge.Right : ScreenEdge.Left;
+        }
+        else
+        {
+            return playerForward.z > 0 ? ScreenEdge.Top : ScreenEdge.Bottom;
+        }
+    }
     private IEnumerator SniperSkill(KeyCode key)
     {
         _player.LookAtMouse();
@@ -93,9 +106,8 @@ public class TheodoreInputController : PlayerInputController
 
         SendSkillInputPacket(key);
         _player.Indicator.EnableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
-        //_player.Indicator.FindIndicatorObject("Center");
-        Vector3 aimCenter = transform.position +( _player.transform.forward * SNIPER_DISTANCE);
-        cc.StartAimMode(aimCenter, zoomOutDistance: SNIPER_ZOOM_DURATION);
+
+        cc.StartAimMode(_player.transform, GetOppositeScreenEdgeFromPlayer());
 
         float elapsed = 0;
         while (elapsed < SNIPER_AIM_DURATION)
