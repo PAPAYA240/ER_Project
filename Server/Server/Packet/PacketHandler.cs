@@ -53,8 +53,6 @@ class PacketHandler
             
         clientSession.CurRoom = room.RoomId;
         room.Push(room.EnterGame, player);
-
-        C_EnterGame enterGamePkt = packet as C_EnterGame;
     }
 
     public static void C_MoveHandler(PacketSession session, IMessage packet)

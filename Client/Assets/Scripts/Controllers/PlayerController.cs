@@ -18,7 +18,7 @@ public class PlayerController : CreatureController
     float _minDist = 3f;
     float _syncSpeed = 20f;
     Vector3 _serverPos;
-    float AGENT_SPEED_DIFF = 2.0f;
+    float AGENT_SPEED_RATIO = 1.7f;
 
     // Fog
     private FogOfWarVision _fogOfWarVision;
@@ -105,7 +105,7 @@ public class PlayerController : CreatureController
     public override float Speed
     {
         get { return Stat.MoveSpeed;/*(Stat.MoveSpeed + ItemStat.FixedSpeed) * (1 + ItemStat.PercentageSpeed) * 1.7f;*/ }
-        set { Stat.MoveSpeed = value; _agent.speed = value + AGENT_SPEED_DIFF; }
+        set { Stat.MoveSpeed = value; _agent.speed = value * AGENT_SPEED_RATIO; }
     }
 
     public override float FixedDefensePenetration { get { return ItemStat.FixedDefensePenetration; } }
@@ -130,6 +130,25 @@ public class PlayerController : CreatureController
         }
     }
 
+    private bool _untargetable;
+    public override bool Untargetable 
+    { 
+        get => _untargetable; 
+        set 
+        {
+            if (_untargetable == value)
+                return;
+
+            _untargetable = value;
+
+            if (_untargetable)
+                _nameTag.SetNameText("대상 지정 불가", 20);
+            else
+                _nameTag.SetNameText("아비게일", 16);
+
+            _nameTag.SetHPColor(_untargetable);
+        } 
+    }
     #endregion
 
     // 레이어
@@ -207,7 +226,7 @@ public class PlayerController : CreatureController
 
         // NavMesh Agent
         _agent = GetComponent<NavMeshAgent>();
-        _agent.speed = Speed + AGENT_SPEED_DIFF;
+        _agent.speed = Speed * AGENT_SPEED_RATIO;
         _agent.acceleration = 999;
         _agent.angularSpeed = 720;
         _agent.stoppingDistance = 0.1f;
@@ -292,7 +311,7 @@ public class PlayerController : CreatureController
 
     public void ChangeState(S_PlayerState packet)
     {
-        Debug.Log($"Cur : {State}, Next : {packet.State}");
+        Debug.Log($"Id : {Id}, Cur : {State}, Next : {packet.State}");
         State = packet.State;
     }
 
@@ -303,6 +322,11 @@ public class PlayerController : CreatureController
         //AttackSpeed = packet.AttackSpeed;
         Defense = packet.Defense;
         Healing = packet.Healing;
+    }
+
+    public void ChangeAttackRange(S_ChangeAttackRange packet)
+    {
+        AttackRange = packet.AttackRange;
     }
 
     #region Util

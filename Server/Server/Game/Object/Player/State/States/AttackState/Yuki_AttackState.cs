@@ -9,12 +9,11 @@ using static Server.Data.DataUtils;
 
 public class Yuki_AttackState : Player_AttackState
 {
-    static readonly float _tAttackRange = 2.15f;
     private const string AnimAttackT = "SKILL_Q";
     KeyCode _keyCode = KeyCode.Q;
     bool IsPassiveAttack = false;
 
-    public Yuki_AttackState(int targetId, bool chaseAllowed = true, float attackRange = DefaultAttackRange) : base(targetId, chaseAllowed, _tAttackRange)
+    public Yuki_AttackState(int targetId, bool chaseAllowed = true) : base(targetId, chaseAllowed)
     {
     }
 

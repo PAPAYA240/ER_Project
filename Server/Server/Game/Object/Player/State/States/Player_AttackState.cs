@@ -8,7 +8,6 @@ using System.Text;
 public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 {
     // ===== 튜닝 파라미터(테이블화 가능) =====
-    public const float DefaultAttackRange = 3.0f;   // MyPlayerController 기본값 매칭
     protected const float WindupSeconds = 0.20f;      // 선딜(히트 타이밍까지)
     protected const float BackswingSeconds = 0.30f;   // 후딜
     private const float ReattackGapSeconds = 0.10f; // 연속 스윙 사이 최소 텀
@@ -19,7 +18,6 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     protected const string AnimAttackB = "ATTACK_2";
 
     // ===== 상태 필드 =====
-    protected readonly float _attackRange;
     protected int _targetId;
     protected bool _chaseAllowed;
     protected int? _pendingTargetId;          // 스윙 중 들어온 타겟 변경은 스윙 종료 후 반영
@@ -39,10 +37,9 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 
     // 데미지
 
-    public Player_AttackState(int targetId, bool chaseAllowed = true, float attackRange = DefaultAttackRange)
+    public Player_AttackState(int targetId, bool chaseAllowed = true)
     {
         _targetId = targetId;
-        _attackRange = MathF.Max(0.1f, attackRange);
 
         _chaseAllowed = chaseAllowed;
     }
@@ -69,10 +66,8 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         return dot >= cos;
     }
 
-    public void Enter(Player player)
+    public virtual void Enter(Player player)
     {
-        player.State = CreatureState.Attack;
-        player.SendStatePacket();
         player.SendStopPacket(StopReason.StopMoveOnly);
         _swingActive = false;
         _damageApplied = false;
@@ -130,7 +125,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         }
         else
         {
-            bool inRange = Vector3.Distance(pos, targetPos) <= _attackRange;
+            bool inRange = Vector3.Distance(pos, targetPos) <= player.AttackRange;
 
             var now = DateTime.UtcNow;
 
@@ -143,7 +138,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
                     float distNow = Vector3.Distance(
                         new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ),
                         new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ));
-                    if (distNow <= _attackRange /* + player.HitTolerance 가능 */)
+                    if (distNow <= player.AttackRange /* + player.HitTolerance 가능 */)
                         ApplyHit(player, target);
 
                     _damageApplied = true;
@@ -271,19 +266,18 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 
     public bool IsSwingActive() { return _swingActive; }
 
-    public static Player_AttackState CreateAttackState(Player p, int targetId, bool chaseAllowed = true, float attackRange = DefaultAttackRange)
+    public static Player_AttackState CreateAttackState(Player p, int targetId, bool chaseAllowed = true)
     {
         if (p.Info.Player.CharType == CharacterType.Abigail)
-            return new Abigail_AttackState(targetId, chaseAllowed, attackRange);
-        else if (p.Info.Player.CharType == CharacterType.Theodore)
-            return new Theodore_AttackState(targetId, chaseAllowed, attackRange);
+            return new Abigail_AttackState(targetId, chaseAllowed);
+        else if(p.Info.Player.CharType == CharacterType.Theodore)
+            return new Theodore_AttackState(targetId, chaseAllowed);
         else if (p.Info.Player.CharType == CharacterType.Yuki)
-            return new Yuki_AttackState(targetId, chaseAllowed, attackRange);
+            return new Yuki_AttackState(targetId, chaseAllowed);
         else if (p.Info.Player.CharType == CharacterType.Hyunwoo)
-            return new Hyunwoo_AttackState(targetId, chaseAllowed, 1.66f);
-  
+            return new Hyunwoo_AttackState(targetId, chaseAllowed);
 
-        return new Player_AttackState(targetId, chaseAllowed, attackRange);
+        return new Player_AttackState(targetId, chaseAllowed);
     }
 }
 

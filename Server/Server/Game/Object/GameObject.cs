@@ -217,6 +217,14 @@ namespace Server.Game
             
         }
 
+        public bool IsAttackable()
+        {
+            if (State == CreatureState.Dead)
+                return false;
+
+            return true;
+        }
+
         public virtual void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false, bool isBasicAttack = false)
         {
             if (Room == null || State == CreatureState.Dead || State == CreatureState.Appear)
@@ -453,7 +461,13 @@ namespace Server.Game
                             RegisterFlat(statusEffect, statusEffect.stat, statusEffect.value);
                         }
                     }
-                }
+                    else if(statusEffect.type == "Untargetable")
+                    {
+                        Player player = this as Player;
+                        if (player != null)
+                            player.SendUntargetablePacket(true);
+                    }
+                }                    
             }
         }
 
@@ -471,25 +485,12 @@ namespace Server.Game
         {
             lock (_lock)
             {
-                //return _statusEffects.RemoveWhere(se =>
-                //    se.type == type &&
-                //    se.stat == stat);
-
                 var toRemove = _statusEffects
                     .Where(se => se.type == type && (stat == null || se.stat == stat))
                     .ToList();
 
                 foreach (var se in toRemove)
-                {
-                    if (se.type == "Buff" || se.type == "Debuff")
-                    {
-                        if(se.valueType == ValueType.Ratio)
-                            UnregisterMultiplier(se);
-                        else
-                            UnregisterFlat(se);
-                    }
-                       
-                }
+                    OnStatusEffectRemove(se);
 
                 int removed = 0;
                 foreach (var se in toRemove)
@@ -515,19 +516,9 @@ namespace Server.Game
                     }
                 }
 
-                //if (earliest != null)
-                //    _statusEffects.Remove(earliest);
-
                 if (earliest != null)
                 {
-                    if (earliest.type == "Buff" || earliest.type == "Debuff")
-                    {
-                        if (earliest.valueType == ValueType.Ratio)
-                            UnregisterMultiplier(earliest);
-                        else
-                            UnregisterFlat(earliest);
-                    }
-
+                    OnStatusEffectRemove(earliest);
                     _statusEffects.Remove(earliest);
                 }
             }
@@ -562,19 +553,9 @@ namespace Server.Game
 
             lock (_lock)
             {
-                //foreach (var e in expired)
-                //    _statusEffects.Remove(e);
-
                 foreach (var e in expired)
                 {
-                    if (e.type == "Buff" || e.type == "Debuff")
-                    {
-                        if (e.valueType == ValueType.Ratio)
-                            UnregisterMultiplier(e);
-                        else
-                            UnregisterFlat(e);
-                    }
-
+                    OnStatusEffectRemove(e);
                     _statusEffects.Remove(e);
                 }
 
@@ -583,6 +564,23 @@ namespace Server.Game
 
                 if (expiredBarriers.Count > 0)
                     UpdateBarrier();
+            }
+        }
+
+        void OnStatusEffectRemove(StatusEffect statusEffect)
+        {
+            if (statusEffect.type == "Buff" || statusEffect.type == "Debuff")
+            {
+                if (statusEffect.valueType == ValueType.Ratio)
+                    UnregisterMultiplier(statusEffect);
+                else
+                    UnregisterFlat(statusEffect);
+            }
+            else if (statusEffect.type == "Untargetable")
+            {
+                Player player = this as Player;
+                if (player != null)
+                    player.SendUntargetablePacket(false);
             }
         }
 

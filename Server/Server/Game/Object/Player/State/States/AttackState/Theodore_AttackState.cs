@@ -7,12 +7,10 @@ using static Server.Data.DataUtils;
 
 public class Theodore_AttackState : Player_AttackState
 {
-    static readonly float _tAttackRange = 6.0f;
-
-    public Theodore_AttackState(int targetId, bool chaseAllowed = true, float attackRange = DefaultAttackRange) 
-        : base(targetId, chaseAllowed, _tAttackRange)
+    public Theodore_AttackState(int targetId, bool chaseAllowed = true) 
+        : base(targetId, chaseAllowed)
     {
-        attackRange = 6.0f;
+
     }
     protected override void ApplyHit(Player p, GameObject target)
     {

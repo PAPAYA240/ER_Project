@@ -20,7 +20,6 @@ public class TheodoreInputController : PlayerInputController
 
     private void Start()
     {
-        _attackRange = 6.0f;
     }
 
     protected override Vector3 GetAttackStopPosition(Vector3 from, Vector3 target)
@@ -32,7 +31,7 @@ public class TheodoreInputController : PlayerInputController
             return target;
         dir /= dist;
 
-        float stop = Mathf.Max(0.05f, _attackRange); 
+        float stop = Mathf.Max(0.05f, _player.AttackRange); 
 
         return target - dir * stop;
     }

@@ -10,6 +10,7 @@ using static Server.Data.DataUtils;
 using System.Threading;
 using static Server.Game.GameObject;
 using static Player_StunState;
+using System.Net.NetworkInformation;
 
 namespace Server.Game
 {
@@ -221,6 +222,8 @@ namespace Server.Game
             CurTick = Environment.TickCount;
             TimeUtil.Update(CurTick);
 
+            Flush();
+
             foreach (Projectile projectile in _projectiles.Values)
             {
                 projectile.Update();
@@ -255,7 +258,7 @@ namespace Server.Game
             foreach (var monster in _monsters.Values)
                 monster.RemoveExpiredStatusEffects();
 
-            Flush();
+            //Flush();
 
             _collisionManager.CurTick = CurTick;
             _collisionManager.Flush();
@@ -280,6 +283,7 @@ namespace Server.Game
                 _players.TryAdd(gameObject.Id, player);
                 player.Info.Player.Team = AssignTeam();
                 player.Info.Player.Weapon = FindWeapon(player.Info.Player.CharType);
+                player.WeaponAttackRange = DataManager.WeaponDict[player.Info.Player.Weapon].Range;
 
                 if (!_teams.TryGetValue(player.Info.Player.Team, out var teamPlayers))
                 {
@@ -330,6 +334,7 @@ namespace Server.Game
 
                     // 시간 동기화
                     SyncTimer();
+                    player.SendChangeAttackRangePacket();
                 }
             }
             else if (type == GameObjectType.Monster)
@@ -515,6 +520,7 @@ namespace Server.Game
                                 duration = effectData.duration,
                                 value = effectData.value,
                                 subject = Enum.TryParse(effectData.subject, true, out Subject temp) ? temp : Subject.Subject_None,
+                                valueType = Enum.TryParse(effectData.valueType, true, out ValueType type) ? type : ValueType.ValueType_None,
                                 coeff = effectData.coeff,
                                 ratioPerTarget = effectData.ratioPerTarget,
                                 maxRatio = effectData.maxRatio,
@@ -560,7 +566,11 @@ namespace Server.Game
             //    return;
             //}
 
-            player.PosInfo.MergeFrom(movePacket.PosInfo);
+            //player.PosInfo.PosX = movePacket.PosInfo.PosX;
+            //player.PosInfo.PosY = movePacket.PosInfo.PosY;
+            //player.PosInfo.PosZ = movePacket.PosInfo.PosZ;
+
+            player.PosInfo.SetPosInfoFromVector3(movePacket.PosInfo.ToVector());
             player.RotInfo.MergeFrom(movePacket.RotInfo);
 
             player.SendMovePacket(new PositionInfo(player.PosInfo), new RotationInfo(player.RotInfo));

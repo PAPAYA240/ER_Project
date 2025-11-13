@@ -507,7 +507,7 @@ public class UI_PlayerInterface : UI_Base
         stat.SetText(UI_Stat.Texts.HpText, (mpc.ItemStat.MaxHp + mpc.ItemStat.MaxHpPerLevel * mpc.Stat.Level).ToString("F0"));
         stat.SetText(UI_Stat.Texts.StaminaText, mpc.ItemStat.MaxStamina.ToString("F0"));
         stat.SetText(UI_Stat.Texts.VisionText, mpc.ItemStat.Vision.ToString("F2")); // TODO
-        stat.SetText(UI_Stat.Texts.AttackRangeText, mpc.ItemStat.AttackRange.ToString("F2")); //TODO
+        stat.SetText(UI_Stat.Texts.AttackRangeText, mpc.AttackRange.ToString("F2")); //TODO
         stat.SetText(UI_Stat.Texts.CCResistanceText, (mpc.ItemStat.CCResistance * 100).ToString("F0") + "%");
         stat.SetText(UI_Stat.Texts.PenetrationText, $"{mpc.FixedDefensePenetration.ToString("F0")} | {(mpc.PercentageDefensePenetration * 100).ToString("F0")}%");
         stat.SetText(UI_Stat.Texts.LifeStealText,$"{mpc.ItemStat.LifeSteal.ToString("F0")}% | {mpc.ItemStat.Omnivamp.ToString("F0")}%");

@@ -8,13 +8,28 @@ using static Server.Data.DataUtils;
 
 public class Abigail_AttackState : Player_AttackState
 {
-    static readonly float _tAttackRange = 2.15f;
     private const string AnimAttackT = "SKILL_T";
     KeyCode _keyCode = KeyCode.T;
     bool IsPassiveAttack = false;
 
-    public Abigail_AttackState(int targetId, bool chaseAllowed = true, float attackRange = DefaultAttackRange) : base(targetId, chaseAllowed, _tAttackRange)
+    public Abigail_AttackState(int targetId, bool chaseAllowed = true) : base(targetId, chaseAllowed)
     {
+    }
+
+    public override void Enter(Player player)
+    {
+        base.Enter(player);
+
+        if (player.Skill.IsPassiveAttackReady())
+        {
+            player.BonusAttackRange = 0.1f;
+            IsPassiveAttack = true;
+        }
+        else
+        {
+            player.BonusAttackRange = 0;
+            IsPassiveAttack = false;
+        }
     }
 
     protected override void StartSwing(Player p, DateTime now)
@@ -28,19 +43,18 @@ public class Abigail_AttackState : Player_AttackState
 
         // 애니 송출(서버 권한)
         string animName = AnimAttackT;
-        
-        if (p.Skill.IsPassiveAttackReady())
+
+        if (IsPassiveAttack)
         {
             animName = AnimAttackT;
             p.Skill.StartCooldown(_keyCode);
             p.SendSkillCostPacket(_keyCode, p.Skill.GetCooldown(_keyCode));
-            IsPassiveAttack = true;
+            IsPassiveAttack = false;
         }
         else
         {
             animName = (_attackIndex == 0) ? AnimAttackA : AnimAttackB;
             _attackIndex = 1 - _attackIndex;
-            IsPassiveAttack = false;
         }
 
         p.SendAnimPacket(animName, 0.05f);

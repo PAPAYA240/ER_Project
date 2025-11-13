@@ -99,6 +99,8 @@ enum MsgId {
   C_ATTACK_REQUEST = 79;
 
 
+  S_CHANGE_ATTACK_RANGE = 80;
+  S_UNTARGETABLE = 81;
 }
 
 enum CombatState{
@@ -649,6 +651,7 @@ message StatInfo{
 	int32 level = 13;
 	int32 heal = 14;
 	float healing = 15;
+	float attackRange = 16;
 }
 
 message PlayerInfo {
@@ -950,4 +953,14 @@ message S_RotateToPos{
 	int32 objectId = 1;
 	float PosX = 2;
 	float PosZ = 3;
+}
+
+message S_ChangeAttackRange{
+	int32 objectId = 1;
+	float attackRange = 2;
+}
+
+message S_Untargetable{
+	int32 objectId = 1;
+	bool untargetable = 2;
 }

@@ -40,10 +40,8 @@ public class Player_StunState : IPlayerState
             _isMoving = false; // 이동 없음
         }
 
-        player.State = CreatureState.Stun;
-        player.SendStatePacket();
         player.SendAnimPacket("WAIT", 0.1f);
-        player.SendStopPacket(StopReason.StopAll);
+        player.SendStopPacket();
     }
 
     public void Execute(Player player)
@@ -76,7 +74,7 @@ public class Player_StunState : IPlayerState
                 // 플레이어의 위치 업데이트 요청 (클라이언트에게 전송)
                 if (nextPos != currentPos) // 위치가 실제로 변경되었을 때만 전송
                 {
-                    player.Position = nextPos;
+                    //player.Position = nextPos;
                     player.SendSkillMotion(
                         type: _desc.skillMotionType,
                         start: player.Position,
@@ -94,8 +92,14 @@ public class Player_StunState : IPlayerState
                 // 플레이어를 최종 목표 위치에 정확히 안착
                 if (player.Position != _desc.EndPos)
                 {
-                    player.Position = _desc.EndPos;
-                    player.SendMoveSyncPacket(player.PosInfo);
+                    //player.Position = _desc.EndPos;
+                    //player.SendMoveSyncPacket(player.PosInfo);
+                    player.SendSkillMotion(
+                        type: SkillMotionType.Transform,
+                        start: player.Position,
+                        end: _desc.EndPos,
+                        authoritativeEnd: true
+                    );
                 }
             }
         }
@@ -103,7 +107,6 @@ public class Player_StunState : IPlayerState
 
     public void Exit(Player player)
     {
-        
     }
 }
 
