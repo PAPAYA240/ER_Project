@@ -5,12 +5,13 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Numerics;
-using static Server.Data.DataUtils;
-using System.Threading;
-using static Server.Game.GameObject;
-using static Player_StunState;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Numerics;
+using System.Threading;
+using static Player_StunState;
+using static Server.Data.DataUtils;
+using static Server.Game.GameObject;
 
 namespace Server.Game
 {
@@ -833,6 +834,19 @@ namespace Server.Game
 
             if (canOccupy) // 점령 가능하지만 사거리 밖이면 이동종료됐을 때의 상태 예약
                 player.ReservedState = new Player_OperateState();
+        }
+
+        public void HandlerChat(Player player, C_Chat chatPkt)
+        {
+            if (string.IsNullOrWhiteSpace(chatPkt.Message))
+                return;
+
+            S_Chat sendPkt = new S_Chat()
+            {
+                ObjectId = player.Id,
+                Message = chatPkt.Message
+            };
+            Push(Broadcast, sendPkt);
         }
     }
 }

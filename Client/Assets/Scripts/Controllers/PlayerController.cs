@@ -221,6 +221,10 @@ public class PlayerController : CreatureController
         GameObject yukiPyosik = Managers.Resource.Instantiate("Effect/UIpyosik");
         yukiPyosik.transform.SetParent(gameObject.transform);
 
+        // Chat
+        GameObject goChat = Managers.Resource.Instantiate("UI/Chat/ChatBackground");
+        goChat.transform.SetParent(gameObject.transform);
+
         // 장비 슬롯
         InitEquipItem();
 

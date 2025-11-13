@@ -451,4 +451,19 @@ class PacketHandler
 
         room.Push(player.Room.HandleOperate, player, beacon, operatePkt.PosX, operatePkt.PosZ);
     }
+
+    public static void C_ChatHandler(PacketSession session, IMessage packet)
+    {
+        C_Chat chatPkt = packet as C_Chat;
+        ClientSession clientSession = session as ClientSession;
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandlerChat, player, chatPkt);
+    }
 }
