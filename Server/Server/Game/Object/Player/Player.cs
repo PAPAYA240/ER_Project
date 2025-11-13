@@ -312,6 +312,10 @@ namespace Server.Game
                 }
             }
 
+            // Player Death
+            if (Hp <= 0 && State != CreatureState.Dead)
+                ChangeState(new Player_DeadState());
+
             // 유키 강화 평타용
             if (AttackActive == true)
             {

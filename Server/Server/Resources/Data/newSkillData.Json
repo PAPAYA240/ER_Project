@@ -1194,11 +1194,11 @@
             "effects": [
               {
                 "type": "DeBuff",
-                "condition": "Hit",
-                "subject": "Enemy",
                 "stat": "speed",
                 "value": -99,
-                "duration": 1
+                "valuetype": "Ratio",
+                "duration": 1,
+                "subject": "Enemy"
               },
               {
                 "type": "Pyosik",
@@ -1215,11 +1215,11 @@
             "effects": [
               {
                 "type": "DeBuff",
-                "condition": "Hit",
-                "subject": "Enemy",
                 "stat": "speed",
                 "value": -99,
-                "duration": 1
+                "valuetype": "Ratio",
+                "duration": 1,
+                "subject": "Enemy"
               },
               {
                 "type": "Pyosik",
@@ -1236,11 +1236,11 @@
             "effects": [
               {
                 "type": "DeBuff",
-                "condition": "Hit",
-                "subject": "Enemy",
                 "stat": "speed",
                 "value": -99,
-                "duration": 1
+                "valuetype": "Ratio",
+                "duration": 1,
+                "subject": "Enemy"
               },
               {
                 "type": "Pyosik",

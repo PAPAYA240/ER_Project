@@ -8,6 +8,7 @@ using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using static Player_StunState;
+using static Server.Data.DataUtils;
 using static Server.Game.GameObject;
 using static Server.Game.StunState;
 using static System.Net.Mime.MediaTypeNames;
@@ -429,10 +430,12 @@ namespace Server.Game
 
                         Player player = statusEffect.attacker as Player;
 
+                        Room.AddStatusEffect(player, this, KeyCode.R, null);
+
                         // 유키 궁 표식 데미지
                         int curLevel = player.GetSkillLevel(Data.DataUtils.KeyCode.R);
                         float curAttack = player.Attack;
-                        _ = CoDelayYukiCoupDeGrace(statusEffect.attacker, curAttack, curLevel, 1000);
+                        _ = CoDelayYukiCoupDeGrace(player, curAttack, curLevel, 1000);
                     }
                     else if (statusEffect.type == "Buff" || statusEffect.type == "Debuff")
                     {
