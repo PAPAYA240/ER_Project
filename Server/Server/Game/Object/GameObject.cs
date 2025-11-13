@@ -188,7 +188,9 @@ namespace Server.Game
         protected readonly Dictionary<string, float> _flatDebuffAccum = new Dictionary<string, float>();
 
         protected bool _isUpdatedStatus = false;
-        public void UpdateStatusFlag() => _isUpdatedStatus = true;
+        public void UpdateStatusFlag(bool isUpdated = true) => _isUpdatedStatus = isUpdated;
+        protected bool _isCcImmune = false;
+        public bool IsCcImmune { get {  return _isCcImmune; } set { _isCcImmune = value; } }
 
         public virtual CreatureState State
         {
@@ -482,6 +484,12 @@ namespace Server.Game
                         if (player != null)
                             player.SendUntargetablePacket(true);
                     }
+                    else if (statusEffect.type == "Unstoppable")
+                    {
+                        Player player = this as Player;
+                        if (player != null)
+                            UpdateUnstoppable(true);
+                    }
                 }                    
             }
         }
@@ -597,6 +605,12 @@ namespace Server.Game
                 if (player != null)
                     player.SendUntargetablePacket(false);
             }
+            else if (statusEffect.type == "Unstoppable")
+            {
+                Player player = this as Player;
+                if (player != null)
+                    UpdateUnstoppable(false);
+            }
         }
 
         public void ReduceBarrier(float damage)
@@ -671,6 +685,21 @@ namespace Server.Game
             return false;
         } // 대상지정불가 상태인지 아닌지
 
+        public bool IsUnstoppable()
+        {
+            foreach (var effect in _statusEffects)
+            {
+                if (effect.type == "Unstoppable")
+                    return true;
+            }
+            return false;
+        } // 저지불가 상태인지 아닌지
+
+        protected void UpdateUnstoppable(bool isUnStoppable)
+        {
+            IsCcImmune = isUnStoppable;
+            UpdateStatusFlag();
+        }
         #endregion
 
         #region StatusEffect 연동 
