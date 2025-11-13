@@ -324,7 +324,7 @@ namespace Server.Game
 
         public virtual void OnHeal(GameObject go, float heal)
         {
-            if (Room == null || State == CreatureState.Dead)
+            if (Room == null || State == CreatureState.Dead || heal <= 0)
                 return;
 
             Hp = Math.Min(MaxHp, Hp + heal);
