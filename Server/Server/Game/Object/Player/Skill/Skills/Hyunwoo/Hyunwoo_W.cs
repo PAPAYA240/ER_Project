@@ -16,18 +16,31 @@ public sealed class Hyunwoo_W : InstantHandlerBase
 
         Skill skill = p.GetSkill(Server.Data.DataUtils.KeyCode.W);
         
-        StatusEffect statusEffect = new StatusEffect();
-        statusEffect.type = skill.SkillData.levels[skill.CurLevel].effects[0].type;
-        statusEffect.stat = skill.SkillData.levels[skill.CurLevel].effects[0].stat;
-        statusEffect.value = skill.SkillData.levels[skill.CurLevel].effects[0].value + p.Defense * 0.1f;
-        if (!Enum.TryParse(skill.SkillData.levels[skill.CurLevel].effects[0].valueType, out statusEffect.valueType))
+        StatusEffect statusEffectDefense = new StatusEffect();
+        statusEffectDefense.type = skill.SkillData.levels[skill.CurLevel].effects[0].type;
+        statusEffectDefense.stat = skill.SkillData.levels[skill.CurLevel].effects[0].stat;
+        statusEffectDefense.value = skill.SkillData.levels[skill.CurLevel].effects[0].value + p.Defense * 0.1f;
+        if (!Enum.TryParse(skill.SkillData.levels[skill.CurLevel].effects[0].valueType, out statusEffectDefense.valueType))
             return;
-        statusEffect.duration = skill.SkillData.levels[skill.CurLevel].effects[0].duration;
-        statusEffect.attacker = p;
-        if (!Enum.TryParse<Subject>(skill.SkillData.levels[skill.CurLevel].effects[0].subject, out statusEffect.subject))
+        statusEffectDefense.duration = skill.SkillData.levels[skill.CurLevel].effects[0].duration;
+        statusEffectDefense.attacker = p;
+        if (!Enum.TryParse<Subject>(skill.SkillData.levels[skill.CurLevel].effects[0].subject, out statusEffectDefense.subject))
             return;
 
-        p.AddStatusEffect(statusEffect);
+        p.AddStatusEffect(statusEffectDefense);
+
+        StatusEffect statusEffectUnstoppable = new StatusEffect();
+        statusEffectUnstoppable.type = skill.SkillData.levels[skill.CurLevel].effects[1].type;
+        statusEffectUnstoppable.duration = skill.SkillData.levels[skill.CurLevel].effects[1].duration;
+        if (!Enum.TryParse<Subject>(skill.SkillData.levels[skill.CurLevel].effects[1].subject, out statusEffectUnstoppable.subject))
+            return;
+
+        p.AddStatusEffect(statusEffectUnstoppable);
+
+        if(p is Hyunwoo hyunwoo)
+        {
+            hyunwoo.AddTSkillCount(10);
+        }
 
         SendSkillConfirmPacket(p);
     }

@@ -35,7 +35,6 @@ public sealed class Hyunwoo_D : SkillHandlerBase
     public override void OnExit(Player p, SkillContext ctx)
     {
         base.OnExit(p, ctx);
-
     }
 }
 

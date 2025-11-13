@@ -653,6 +653,16 @@ namespace Server.Game
             return false;
         } // 대상지정불가 상태인지 아닌지
 
+        public bool IsUnstoppable()
+        {
+            foreach (var effect in _statusEffects)
+            {
+                if (effect.type == "Unstoppable")
+                    return true;
+            }
+            return false;
+        } // 저지불가 상태인지 아닌지
+
         #endregion
 
         #region StatusEffect 연동 

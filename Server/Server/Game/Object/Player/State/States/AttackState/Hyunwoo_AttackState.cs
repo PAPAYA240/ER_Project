@@ -38,7 +38,7 @@ namespace Server.Game
             
             if (hyunwoo != null)
             {
-                room.Push(hyunwoo.AddTSkillCount); // stack up T
+                room.Push(hyunwoo.AddTSkillCount, 1); // stack up T
             }
 
             // basic damage
