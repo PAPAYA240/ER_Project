@@ -17,7 +17,7 @@ namespace Server.Game
 
         protected override void ApplyHit(Player p, GameObject target)
         {
-            if (target == null || target.State == CreatureState.Dead)
+            if (target == null || target.State == CreatureState.Dead || target.IsUntargetable())
                 return;
 
             Hyunwoo hyunwoo = p as Hyunwoo;
@@ -38,7 +38,7 @@ namespace Server.Game
             
             if (hyunwoo != null)
             {
-                room.Push(hyunwoo.AddTSkillCount); // stack up T
+                room.Push(hyunwoo.AddTSkillCount, 1); // stack up T
             }
 
             // basic damage

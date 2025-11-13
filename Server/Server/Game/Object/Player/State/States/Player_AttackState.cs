@@ -91,7 +91,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
             return;
 
         GameObject target = player.FindTarget(_targetId);
-        if (target == null || target.State == CreatureState.Dead)
+        if (target == null || target.State == CreatureState.Dead || target.IsUntargetable())
         {
             // 공격 중이 아니고 pending 타겟이 있으면 교체 후 재시도
             if (!_swingActive && _pendingTargetId.HasValue)
@@ -239,8 +239,15 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         _attackIndex = 1 - _attackIndex;
 
         // 전투 상태 평타 칠 때마다 갱신
-        p.CombatState = CombatState.Combat;
-        p.CombatTime = 0f;
+        // 전투 모드
+        {
+            p.CombatState = CombatState.Combat;
+            S_CombatMode combatModePkt = new S_CombatMode();
+            combatModePkt.ObjectId = p.Id;
+            combatModePkt.CombatMode = p.CombatState;
+            p.Room.Broadcast(combatModePkt);
+            p.CombatTime = 0f;
+        }
 
         // 유키 단추
         if (p.Info.Player.CharType == CharacterType.Yuki)

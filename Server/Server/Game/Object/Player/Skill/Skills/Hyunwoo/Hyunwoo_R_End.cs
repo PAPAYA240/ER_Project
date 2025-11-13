@@ -42,6 +42,9 @@ public sealed class Hyunwoo_R_End : SkillHandlerBase
                 Player_SkillState skillstate = p.CurrentState as Player_SkillState;
                 if (skillstate != null)
                 {
+                    if (targetPlayer.IsUnstoppable())
+                        continue;
+
                     Vector3 targetPos = targetPlayer.Position;
                     Vector3 dir = (new Vector3(skillstate.Ctx.MousePos.X, 0, skillstate.Ctx.MousePos.Y) - p.Position);
                     Vector3 endPos = targetPos + Vector3.Normalize(dir) * _knockbackRange;
@@ -50,6 +53,11 @@ public sealed class Hyunwoo_R_End : SkillHandlerBase
                     _players.Add(_requestId, targetPlayer);
                 }
             }
+        }
+        
+        if(p is Hyunwoo hyunwoo)
+        {
+            hyunwoo.AddTSkillCount(1);
         }
     }
 

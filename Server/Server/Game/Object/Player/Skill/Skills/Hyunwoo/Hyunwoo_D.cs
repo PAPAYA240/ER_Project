@@ -5,14 +5,13 @@ using System.Collections.Generic;
 using System.Text;
 using static Server.Data.DataUtils;
 
-
-public sealed class Hyunwoo_E_Loop : SkillHandlerBase
+public sealed class Hyunwoo_D : SkillHandlerBase
 {
-    public Hyunwoo_E_Loop()
+    public Hyunwoo_D()
     {
         _characterType = CharacterType.Hyunwoo;
-        _animName = "SKILL_E_LOOP";
-        _keyCode = KeyCode.E;
+        _animName = "SKILL_D";
+        _keyCode = KeyCode.D;
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
@@ -36,7 +35,6 @@ public sealed class Hyunwoo_E_Loop : SkillHandlerBase
     public override void OnExit(Player p, SkillContext ctx)
     {
         base.OnExit(p, ctx);
-
     }
 }
 
