@@ -45,6 +45,9 @@ public class UI_DSkill : UI_SkillBase
         Bind<Image>(typeof(Images));
         Bind<GameObject>(typeof(GameObjects));
 
+        BindEvent(gameObject, OnMouseOverEvent, Define.UIEvent.PointerEnter);
+        BindEvent(gameObject, OnMouseExitEvent, Define.UIEvent.PointerExit);
+
         GetText((int)Texts.CooldownTimerText).text = "";
         ActivateLevelUp(DoYouActivate:false);
 

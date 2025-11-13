@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Google.Protobuf.Collections;
 using Google.Protobuf.Protocol;
@@ -37,6 +38,30 @@ namespace Server.Game
 
         // Key: StatusEffect, Value: Count
         public ConcurrentDictionary<StatusEffect, int> effectCnt = new ConcurrentDictionary<StatusEffect, int>();
+
+        public bool Omnivamp { get; set; } = false;
+
+        private float _totalDamage;
+        public float TotalDamage
+        {
+            get => _totalDamage;
+            set => _totalDamage = value;
+        }
+
+        public void AddDamage(float amount)
+        {
+            float initialValue, newValue;
+            int initialBits, newBits;
+
+            do
+            {
+                initialValue = _totalDamage;
+                newValue = initialValue + amount;
+                initialBits = BitConverter.SingleToInt32Bits(initialValue);
+                newBits = BitConverter.SingleToInt32Bits(newValue);
+            }
+            while (Interlocked.CompareExchange(ref Unsafe.As<float, int>(ref _totalDamage), newBits, initialBits) != initialBits);
+        }
 
         #region 추가 데이터
         public Dictionary<KeyCode, List<string>> Interactions { get; set; } = new Dictionary<KeyCode, List<string>>();
@@ -111,11 +136,13 @@ namespace Server.Game
                     Interactions = ConvertProtoInteractionsToKeyCodeDictionary(skillHitbox.Interactions)
                 };
 
-                if(charType == CharacterType.Rozzi && keyCode == KeyCode.E)
+                if (charType == CharacterType.Rozzi && keyCode == KeyCode.E)
                 {
                     hitbox.PosX = mousePos.X;
                     hitbox.PosZ = mousePos.Y;
                 }
+                else if (charType == CharacterType.Abigail && keyCode == KeyCode.D)
+                    hitbox.Omnivamp = true;
 
                 SettingPointType(hitbox);
                 _pendingHitboxes.Add(hitbox);
@@ -170,7 +197,15 @@ namespace Server.Game
                 foreach (Hitbox hitbox in hitboxSet)
                 {
                     if (CurTick >= hitbox.EndTick || hitbox.IsUsed)
+                    {
                         removeQueue.Add(hitbox);
+
+                        if(hitbox.CharType == CharacterType.Abigail && hitbox.KeyCode == KeyCode.D)
+                        {
+                            float healAmount = hitbox.TotalDamage * 0.8f;
+                            hitbox.Creature.Room.Push(hitbox.Creature.OnHeal, hitbox.Creature, healAmount);
+                        }                            
+                    }                        
                 }
             }
 
@@ -306,11 +341,14 @@ namespace Server.Game
 
         void HandleDamage<T>(Hitbox hitbox, List<T> hitTargets, Dictionary<int, Dictionary<int, float>> damageDict) where T : GameObject, new()
         {
+            float totalDmg = 0;
             if (false == hitbox.Data.IsOneTimeUse) // 단일대상 히트박스가 아닌 경우
             {
                 foreach (T target in hitTargets)
                 {
-                    ApplyDamage(hitbox, target, damageDict);                 
+                    float dmg = ApplyDamage(hitbox, target, damageDict);
+                    if (hitbox.Omnivamp)
+                        totalDmg += target.CalcFinalDamage(hitbox.Creature, dmg);
                 }
             }
             else
@@ -318,10 +356,14 @@ namespace Server.Game
                 T target = FindNearestTarget(hitbox, hitTargets);
                 if (target == null) return;
 
-                ApplyDamage(hitbox, target, damageDict);
-
+                float dmg = ApplyDamage(hitbox, target, damageDict);
+                if (hitbox.Omnivamp)
+                    totalDmg += target.CalcFinalDamage(hitbox.Creature, dmg);
                 hitbox.IsUsed = true;
             }
+
+            if(hitbox.Omnivamp)
+                hitbox.AddDamage(totalDmg);
 
             if (hitbox.Creature is Monster)
             {
@@ -520,7 +562,7 @@ namespace Server.Game
             return false;
         }
 
-        void ApplyDamage(Hitbox hitbox, GameObject target, Dictionary<int, Dictionary<int, float>> damageDict)
+        float ApplyDamage(Hitbox hitbox, GameObject target, Dictionary<int, Dictionary<int, float>> damageDict)
         {
             float dmg = 0f;
             if (hitbox.Creature is Player)
@@ -531,6 +573,7 @@ namespace Server.Game
             {
                 dmg = CalcDamage(hitbox.Creature, target as Creature);
             }
+
             if (target is Player)
                 Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Creature.Id}, Target:{target.Info.Player.CharType}_{target.Id}, Damage:{dmg}");
             else if (target is Monster)
@@ -558,6 +601,8 @@ namespace Server.Game
                 damageDict[target.Id][hitbox.Creature.Id] = dmg;
             }
             hitbox.HitObjs.TryAdd(target.Id, 0);
+
+            return dmg;
         }
 
         public float CalcDamage(Creature attacker, Player target, KeyCode keyCode)

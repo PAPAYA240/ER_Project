@@ -42,7 +42,7 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "100"
+          "adRatio": 100
         },
         "levels": {
           "1": {
@@ -166,7 +166,7 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "80"
+          "adRatio": 80
         },
         "levels": {
           "1": {
@@ -402,7 +402,7 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "50"
+          "adRatio": 50
         },
         "levels": {
           "1": {
@@ -501,7 +501,7 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": 0.5
+          "adRatio": 40
         },
         "levels": {
           "1": {
@@ -842,8 +842,8 @@
           ]
         },
         "popupInfo": {
-          "피해량": [ "60", "120", "180" ],
-          "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
+          "이동 거리": [ "3", "3" ],
+          "쿨다운": [ "30", "30" ]
         }
       }
     },
@@ -856,6 +856,9 @@
         "mechanics": {
           "targetType": "NonTarget",
           "damageType": "Physical"
+        },
+        "scaling": {
+          "adRatio": 35
         },
         "levels": {
           "1": {
@@ -870,9 +873,9 @@
         },
         "descriptionInfo": {
           "{damage}": [
-            "25",
-            "35",
-            "45"
+            "40",
+            "40",
+            "40"
           ]
         },
         "popupInfo": {
@@ -889,7 +892,7 @@
           "damageType": "Physical"
         },
         "scaling": {
-          "adRatio": "100"
+          "adRatio": 100
         },
         "levels": {
           "1": {
@@ -1080,7 +1083,7 @@
           "damageType": "Physical"
         },
         "scaling": {
-          "adRatio": "100"
+          "adRatio": 100
         },
         "levels": {
           "1": {
@@ -1326,8 +1329,8 @@
           ]
         },
         "popupInfo": {
-          "피해량": [ "60", "120", "180" ],
-          "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
+          "이동 거리": [ "3", "3" ],
+          "쿨다운": [ "30", "30" ]
         }
       }
     },
@@ -1343,13 +1346,10 @@
         },
         "levels": {
           "1": {
-            "damage": 55
           },
           "2": {
-            "damage": 60
           },
           "3": {
-            "damage": 65
           }
         },
         "descriptionInfo": {
@@ -1515,7 +1515,7 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "80"
+          "apRatio": 30
         },
         "levels": {
           "1": {
@@ -1701,7 +1701,7 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "50"
+          "apRatio": 65
         },
         "levels": {
           "1": {
@@ -1827,7 +1827,7 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": 0.5
+          "apRatio": 90
         },
         "levels": {
           "1": {
@@ -1993,7 +1993,7 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": 0.5
+          "adRatio": 30
         },
         "levels": {
           "1": {
@@ -2201,8 +2201,8 @@
           ]
         },
         "popupInfo": {
-          "피해량": [ "60", "120", "180" ],
-          "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
+          "이동 거리": [ "3", "3" ],
+          "쿨다운": [ "30", "30" ]
         }
       }
     },
@@ -3031,6 +3031,44 @@
           "쿨다운": [ "80", "70", "60" ]
         }
       },
+      "D": {
+        "name": "피의 나선",
+        "description": "지정한 방향으로 이동하며 도끼를 휘둘러서 범위 내의 모든 적들에게 <color=#FFFFFF>{damage}</color><color=#DFC480>(+추가 공격력의 {adRatio}%)</color><color=#CDA1C8>(+스킬 증폭의 25%)</color><color=#6F8627>(+대상 최대 체력의 6%)</color>의 스킬 피해를 입히며, 입힌 피해의 80%에 해당하는 체력을 회복합니다.",
+        "type": "Normal",
+        "maxLevel": 3,
+        "mechanics": {
+          "targetType": "NonTarget",
+          "damageType": "Magic"
+        },
+        "scaling": {
+          "adRatio": 65,
+          "apRatio": 25,
+          "dstMaxHpRatio": 6
+        },
+        "levels": {
+          "1": {
+            "damage": 50,
+            "cooldown": 7
+          },
+          "2": {
+            "damage": 75,
+            "cooldown": 6
+          },
+          "3": {
+            "damage": 100,
+            "cooldown": 5
+          }
+        },
+        "descriptionInfo": {
+          "{damage}": [ "50", "75", "100" ],
+          "{adRatio}": [ "50", "65", "80" ]
+        },
+        "popupInfo": {
+          "피해량": [ "50", "75", "100" ],
+          "추가 공격력 계수": [ "50%", "65%", "80%" ],
+          "쿨다운": [ "7", "6", "5" ]
+        }
+      },      
       "F": {
         "name": "블링크",
         "description": "사용 시 지정한 위치로 일정 거리 순간이동합니다.",
@@ -3067,21 +3105,9 @@
             ]
           }
         },
-        "descriptionInfo": {
-          "{damage}": [
-            "<color=#FFFFFF>60</color><color=#DFC480>(+공격력의 50%)</color>",
-            "<color=#FFFFFF>120</color><color=#DFC480>(+공격력의 50%)</color>",
-            "<color=#FFFFFF>180</color><color=#DFC480>(+공격력의 50%)</color>"
-          ],
-          "{MaxHpRatio}": [
-            "<color=#FFFFFF>4%</color>",
-            "<color=#FFFFFF>7%</color>",
-            "<color=#FFFFFF>10%</color>"
-          ]
-        },
         "popupInfo": {
-          "피해량": [ "60", "120", "180" ],
-          "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
+          "이동 거리": [ "3", "3" ],
+          "쿨다운": [ "30", "30" ]
         }
       }
     },
@@ -3096,8 +3122,8 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "0.4",
-          "apRatio": "0.35"
+          "adRatio": 40,
+          "apRatio": 35
         },
         "levels": {
           "1": {
@@ -3112,9 +3138,9 @@
         },
         "descriptionInfo": {
           "{damage}": [
-            "40",
-            "70",
-            "100"
+            40,
+            70,
+            100
           ],
           "{count}": [ "10", "9", "8" ],
           "{maxHpRatio}": [ "7%", "11%", "15%" ]
@@ -3135,8 +3161,8 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "0.4",
-          "apRatio": "0.8"
+          "adRatio": 40,
+          "apRatio": 80
         },
         "levels": {
           "1": {
@@ -3443,9 +3469,9 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": "0.7",
-          "apRatio": "0.55",
-          "dstCurHpRatio": "0.11"
+          "adRatio": 70,
+          "apRatio": 55,
+          "dstCurHpRatio": 11
         },
         "levels": {
           "1": {
@@ -3567,8 +3593,8 @@
           "chargeCoefficient": 2
         },
         "scaling": {
-          "adRatio": 0.35,
-          "apRatio": 0.75
+          "adRatio": 35,
+          "apRatio": 75
         },
         "levels": {
           "1": {
@@ -3661,59 +3687,50 @@
       },
       "D": {
         "name": "어퍼컷",
-        "description": "지정한 대상에게 다가가서 기본 공격 피해를 입히고, 최종 피해의 일부에 해당하는 피해와 고정피해를 추가로 입힙니다.\n어퍼컷 스킬로 입히는 피해는 치명타가 발생하지 않습니다.",
+        "description": "지정한 대상에게 다가가서 <color=#DFC480>추가 공격력의 110% * (기본 공격 증폭)</color><color=#CDA1C8>(+스킬 증폭의 30%)</color>의 기본 공격 피해를 입히고, 최종 피해의 {additionalDamage}%에 해당하는 피해와 {damage}의 고정 피해를 추가로 입힙니다. 어퍼컷 스킬로 입히는 피해는 치명타가 발생하지 않습니다.",
         "type": "WeaponSkill",
-        "maxLevel": 2,
+        "maxLevel": 3,
         "mechanics": {
           "targetType": "TargetUnit",
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": 1
+          "adRatio": 110
         },
         "levels": {
           "1": {
             "damage": 50,
             "cooldown": 1,
-            "staminaCost": 0,
-            "effects": [
-              {
-                "type": "Buff",
-                "stat": "MoveSpeed",
-                "value": 15,
-                "duration": 2.5
-              }
-            ]
+            "staminaCost": 0
           },
           "2": {
             "damage": 60,
-            "cooldown": 30,
-            "staminaCost": 0,
-            "effects": [
-              {
-                "type": "Buff",
-                "stat": "MoveSpeed",
-                "value": 15,
-                "duration": 2.5
-              }
-            ]
+            "cooldown": 7,
+            "staminaCost": 0
+
+          },
+          "3": {
+            "damage": 70,
+            "cooldown": 5,
+            "staminaCost": 0
           }
         },
         "descriptionInfo": {
-          "{damage}": [
-            "<color=#FFFFFF>60</color><color=#DFC480>(+공격력의 50%)</color>",
-            "<color=#FFFFFF>120</color><color=#DFC480>(+공격력의 50%)</color>",
-            "<color=#FFFFFF>180</color><color=#DFC480>(+공격력의 50%)</color>"
+          "{additionalDamage}": [
+            "60",
+            "80",
+            "100"
           ],
-          "{MaxHpRatio}": [
-            "<color=#FFFFFF>4%</color>",
-            "<color=#FFFFFF>7%</color>",
-            "<color=#FFFFFF>10%</color>"
+          "{damage}": [
+            "50",
+            "60",
+            "70"
           ]
         },
         "popupInfo": {
-          "피해량": [ "60", "120", "180" ],
-          "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
+          "추가 피해량": [ "60%", "80%", "100%" ],
+          "고정 피해량": [ "50", "60", "70" ],
+          "쿨다운": [ "9", "7", "5" ]
         }
       },
       "F": {
@@ -3769,8 +3786,8 @@
           ]
         },
         "popupInfo": {
-          "피해량": [ "60", "120", "180" ],
-          "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
+          "이동 거리": [ "3", "3" ],
+          "쿨다운": [ "30", "30" ]
         }
       }
     }

@@ -834,6 +834,23 @@ class PacketHandler
         //combatModePkt.CombatMode;
     }
 
+    public static void S_ChatHandler(PacketSession session, IMessage packet)
+    {
+        S_Chat chatPkt = packet as S_Chat;
+
+        GameObject go = Managers.Object.FindById(chatPkt.ObjectId);
+        if (go == null)
+            return;
+
+        ChatHandler chat = go.GetComponentInChildren<ChatHandler>();
+        if (chat == null)
+            return;
+
+        chat.EnqueueMessage(chatPkt.ObjectId, chatPkt.Message);
+
+        //combatModePkt.CombatMode;
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;

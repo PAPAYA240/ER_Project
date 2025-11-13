@@ -103,6 +103,8 @@ enum MsgId {
   S_UNTARGETABLE = 81;
 
   S_COMBAT_MODE = 82;
+  C_CHAT = 83;
+  S_CHAT = 84;
 }
 
 enum CombatState{
@@ -971,4 +973,14 @@ message S_Untargetable{
 message S_CombatMode {
 	int32 objectId = 1;
 	CombatState combatMode = 2;
+}
+
+message C_Chat {
+	int32 objectId = 1;
+	string message = 2;
+}
+
+message S_Chat {
+	int32 objectId = 1;
+	string message = 2;
 }
