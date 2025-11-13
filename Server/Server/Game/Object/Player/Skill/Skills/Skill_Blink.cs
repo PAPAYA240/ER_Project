@@ -14,6 +14,7 @@ public sealed class Skill_Blink : SkillHandlerBase
     public Skill_Blink()
     {
         _keyCode = KeyCode.F;
+        _createHitbox = false;
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
