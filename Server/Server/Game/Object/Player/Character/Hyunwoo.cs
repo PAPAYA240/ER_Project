@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.Protocol;
 using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace Server.Game
@@ -8,16 +9,17 @@ namespace Server.Game
     public class Hyunwoo : Player
     {
         public int TSkillCurrnetCount = 0;
-        public List<int> TSkillMaxCount = new List<int>{ 99, 10, 9, 8 };
+        public List<int> TSkillMaxCount = new List<int> { 99, 10, 9, 8 };
         private float _basicRecoveryAmount = 0.03f;
         private float _addtionalRecoveryAmount = 0.04f;
 
 
-        public void AddTSkillCount()
+        public void AddTSkillCount(int count)
         {
             lock (this)
             {
-                TSkillCurrnetCount = Math.Min(TSkillCurrnetCount + 1, TSkillMaxCount[_skills[Data.DataUtils.KeyCode.T].CurLevel]);
+                TSkillCurrnetCount = Math.Min(TSkillCurrnetCount + count, TSkillMaxCount[_skills[Data.DataUtils.KeyCode.T].CurLevel]);
+                Console.WriteLine($"TSkillCurrnetCount : {TSkillCurrnetCount}");
             }
         }
 

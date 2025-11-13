@@ -3174,7 +3174,7 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
-                "valuetype": "Ratio", 
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "duration": 2,
                 "subject": "Enemy"
@@ -3187,6 +3187,11 @@
                 "condition": "Hit",
                 "duration": 2,
                 "subject": "Self"
+              },
+              {
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3212,6 +3217,11 @@
                 "condition": "Hit",
                 "duration": 2,
                 "subject": "Self"
+              },
+              {
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3237,6 +3247,11 @@
                 "condition": "Hit",
                 "duration": 2,
                 "subject": "Self"
+              },
+              {
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3262,6 +3277,11 @@
                 "condition": "Hit",
                 "duration": 2,
                 "subject": "Self"
+              },
+              {
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3287,6 +3307,11 @@
                 "condition": "Hit",
                 "duration": 2,
                 "subject": "Self"
+              },
+              {
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           }
@@ -3316,7 +3341,7 @@
       },
       "W": {
         "name": "허세",
-        "description": "현우가 허세를 부려 <color=#FFFFFF>도그파이트</color>를 활성화하고, 2.5초 동안 방어력이 <color=#FFFFFF>{Defense}</color><color=#8EA8BC>(+방어력 10 당 1)</color>증가합니다. 지속 기간동안 적에게 기본 공격을 받을 때마다 도그파이트 중접울 1 획득합니다.\n\n허세가 발동된 후 1초 동안 현우는 이동 방해 효과를 무시합니다.",
+        "description": "현우가 허세를 부려 <color=#FFFFFF>도그파이트</color>를 활성화하고, 2.5초 동안 방어력이 <color=#FFFFFF>{Defense}</color><color=#8EA8BC>(+방어력 10 당 1)</color>증가합니다. 지속 기간동안 적에게 기본 공격을 받을 때마다 도그파이트 중첩을 1 획득합니다.\n\n허세가 발동된 후 1초 동안 현우는 이동 방해 효과를 무시합니다.",
         "type": "Normal",
         "maxLevel": 5,
         "mechanics": {
@@ -3338,7 +3363,7 @@
               },
               {
                 "type": "Unstoppable",
-                "duration": 1,
+                "duration": 10,
                 "subject": "Self"
               }
             ]
@@ -3658,6 +3683,54 @@
           "최대 피해량": [ "300", "420", "540" ],
           "방어력 감소량(%)": [ "20", "25", "30" ],
           "쿨다운": [ "60", "55", "50" ]
+        }
+      },
+      "D": {
+        "name": "어퍼컷",
+        "description": "지정한 대상에게 다가가서 <color=#DFC480>추가 공격력의 110% * (기본 공격 증폭)</color><color=#CDA1C8>(+스킬 증폭의 30%)</color>의 기본 공격 피해를 입히고, 최종 피해의 {additionalDamage}%에 해당하는 피해와 {damage}의 고정 피해를 추가로 입힙니다. 어퍼컷 스킬로 입히는 피해는 치명타가 발생하지 않습니다.",
+        "type": "WeaponSkill",
+        "maxLevel": 3,
+        "mechanics": {
+          "targetType": "TargetUnit",
+          "damageType": "Magic"
+        },
+        "scaling": {
+          "adRatio": 110
+        },
+        "levels": {
+          "1": {
+            "damage": 50,
+            "cooldown": 1,
+            "staminaCost": 0
+          },
+          "2": {
+            "damage": 60,
+            "cooldown": 7,
+            "staminaCost": 0
+
+          },
+          "3": {
+            "damage": 70,
+            "cooldown": 5,
+            "staminaCost": 0
+          }
+        },
+        "descriptionInfo": {
+          "{additionalDamage}": [
+            "60",
+            "80",
+            "100"
+          ],
+          "{damage}": [
+            "50",
+            "60",
+            "70"
+          ]
+        },
+        "popupInfo": {
+          "추가 피해량": [ "60%", "80%", "100%" ],
+          "고정 피해량": [ "50", "60", "70" ],
+          "쿨다운": [ "9", "7", "5" ]
         }
       },
       "F": {
