@@ -187,6 +187,7 @@ namespace Server.Game
         protected readonly Dictionary<string, float> _flatDebuffAccum = new Dictionary<string, float>();
 
         protected bool _isUpdatedStatus = false;
+        public void UpdateStatue() => _isUpdatedStatus = true;
 
         public virtual CreatureState State
         {
