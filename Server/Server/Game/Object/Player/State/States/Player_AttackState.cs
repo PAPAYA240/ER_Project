@@ -91,7 +91,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
             return;
 
         GameObject target = player.FindTarget(_targetId);
-        if (target == null || target.State == CreatureState.Dead)
+        if (target == null || target.State == CreatureState.Dead || target.IsUntargetable())
         {
             // 공격 중이 아니고 pending 타겟이 있으면 교체 후 재시도
             if (!_swingActive && _pendingTargetId.HasValue)

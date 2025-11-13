@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -40,13 +41,32 @@ public class HighlightEffect : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         bool hitThisObject = false;
 
-        if (Physics.Raycast(ray, out RaycastHit hit, 100.0f))
+        RaycastHit[] hits = Physics.RaycastAll(ray, 100.0f);
+        Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+
+        foreach (RaycastHit hit in hits)
         {
-            if (hit.collider.gameObject == this.gameObject)
-            {
-                hitThisObject = true;
-            }
+            GameObject go = hit.collider.gameObject;
+            if (go == null)
+                continue;
+            if (go != this.gameObject)
+                continue;
+            CreatureController cc = go.GetComponentInChildren<CreatureController>();
+            if (cc == null)
+                continue;
+            if (cc.Untargetable)
+                continue;
+
+            hitThisObject = true;
         }
+
+        //if (Physics.Raycast(ray, out RaycastHit hit, 100.0f))
+        //{
+        //    if (hit.collider.gameObject == this.gameObject)
+        //    {
+        //        hitThisObject = true;
+        //    }
+        //}
 
         if (Owner?.State == CreatureState.Dead)
         {

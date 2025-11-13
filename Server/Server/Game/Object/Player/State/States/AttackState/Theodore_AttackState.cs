@@ -14,7 +14,7 @@ public class Theodore_AttackState : Player_AttackState
     }
     protected override void ApplyHit(Player p, GameObject target)
     {
-        if (target == null || target.State == CreatureState.Dead)
+        if (target == null || target.State == CreatureState.Dead || target.IsUntargetable())
             return;
 
         Projectile projectile = ObjectManager.Instance.Add<Projectile>();
