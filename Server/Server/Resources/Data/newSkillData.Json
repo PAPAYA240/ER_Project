@@ -1193,12 +1193,13 @@
             "staminaCost": 100,
             "effects": [
               {
-                "type": "DeBuff",
+                "type": "Debuff",
                 "condition": "Hit",
-                "subject": "Enemy",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -99,
-                "duration": 1
+                "valuetype": "Ratio",
+                "duration": 1,
+                "subject": "Enemy"
               },
               {
                 "type": "Pyosik",
@@ -1214,12 +1215,13 @@
             "staminaCost": 125,
             "effects": [
               {
-                "type": "DeBuff",
+                "type": "Debuff",
                 "condition": "Hit",
-                "subject": "Enemy",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -99,
-                "duration": 1
+                "valuetype": "Ratio",
+                "duration": 1,
+                "subject": "Enemy"
               },
               {
                 "type": "Pyosik",
@@ -1235,12 +1237,13 @@
             "staminaCost": 150,
             "effects": [
               {
-                "type": "DeBuff",
+                "type": "Debuff",
                 "condition": "Hit",
-                "subject": "Enemy",
-                "stat": "speed",
+                "stat": "MoveSpeed",
                 "value": -99,
-                "duration": 1
+                "valuetype": "Ratio",
+                "duration": 1,
+                "subject": "Enemy"
               },
               {
                 "type": "Pyosik",
@@ -3145,6 +3148,7 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
+                "valuetype": "Ratio", 
                 "condition": "Hit",
                 "duration": 2,
                 "subject": "Enemy"
@@ -3153,6 +3157,7 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 8,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "duration": 2,
                 "subject": "Self"
@@ -3168,6 +3173,7 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "duration": 2,
                 "subject": "Enemy"
@@ -3176,6 +3182,7 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 9,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "duration": 2,
                 "subject": "Self"
@@ -3191,6 +3198,7 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "duration": 2,
                 "subject": "Enemy"
@@ -3199,6 +3207,7 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 10,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "duration": 2,
                 "subject": "Self"
@@ -3214,6 +3223,7 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "duration": 2,
                 "subject": "Enemy"
@@ -3222,6 +3232,7 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 11,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "duration": 2,
                 "subject": "Self"
@@ -3237,6 +3248,7 @@
                 "type": "Debuff",
                 "stat": "MoveSpeed",
                 "value": -40,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "duration": 2,
                 "subject": "Enemy"
@@ -3245,6 +3257,7 @@
                 "type": "Buff",
                 "stat": "MoveSpeed",
                 "value": 12,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "duration": 2,
                 "subject": "Self"
@@ -3293,7 +3306,13 @@
                 "type": "Buff",
                 "stat": "Defense",
                 "value": 12,
+                "valuetype": "Flat",
                 "duration": 2.5,
+                "subject": "Self"
+              },
+              {
+                "type": "Unstoppable",
+                "duration": 1,
                 "subject": "Self"
               }
             ]
@@ -3306,7 +3325,13 @@
                 "type": "Buff",
                 "stat": "Defense",
                 "value": 20,
+                "valuetype": "Flat",
                 "duration": 2.5,
+                "subject": "Self"
+              },
+              {
+                "type": "Unstoppable",
+                "duration": 1,
                 "subject": "Self"
               }
             ]
@@ -3319,7 +3344,13 @@
                 "type": "Buff",
                 "stat": "Defense",
                 "value": 28,
+                "valuetype": "Flat",
                 "duration": 2.5,
+                "subject": "Self"
+              },
+              {
+                "type": "Unstoppable",
+                "duration": 1,
                 "subject": "Self"
               }
             ]
@@ -3332,7 +3363,13 @@
                 "type": "Buff",
                 "stat": "Defense",
                 "value": 36,
+                "valuetype": "Flat",
                 "duration": 2.5,
+                "subject": "Self"
+              },
+              {
+                "type": "Unstoppable",
+                "duration": 1,
                 "subject": "Self"
               }
             ]
@@ -3345,7 +3382,13 @@
                 "type": "Buff",
                 "stat": "Defense",
                 "value": 44,
+                "valuetype": "Flat",
                 "duration": 2.5,
+                "subject": "Self"
+              },
+              {
+                "type": "Unstoppable",
+                "duration": 1,
                 "subject": "Self"
               }
             ]
@@ -3512,13 +3555,15 @@
                 "type": "Debuff",
                 "stat": "Defense",
                 "value": -20,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "duration": 5,
                 "subject": "Enemy"
               },
               {
-                "type": "MoveTargetObject",
-                "condition": "FullCharge"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3531,13 +3576,15 @@
                 "type": "Debuff",
                 "stat": "Defense",
                 "value": -25,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "duration": 5,
                 "subject": "Enemy"
               },
               {
-                "type": "MoveTargetObject",
-                "condition": "FullCharge"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           },
@@ -3550,13 +3597,15 @@
                 "type": "Debuff",
                 "stat": "Defense",
                 "value": -30,
+                "valuetype": "Ratio",
                 "condition": "Hit",
                 "duration": 5,
                 "subject": "Enemy"
               },
               {
-                "type": "MoveTargetObject",
-                "condition": "FullCharge"
+                "type": "OnCollisionMultiTarget",
+                "subject": "Self",
+                "condition": "Hit"
               }
             ]
           }

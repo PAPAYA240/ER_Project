@@ -823,6 +823,17 @@ class PacketHandler
         cc.Untargetable = untargetablePkt.Untargetable;  
     }
 
+    public static void S_CombatModeHandler(PacketSession session, IMessage packet)
+    {
+        S_CombatMode combatModePkt = packet as S_CombatMode;
+
+        GameObject go = Managers.Object.FindById(combatModePkt.ObjectId);
+        if (go == null)
+            return;
+
+        //combatModePkt.CombatMode;
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;

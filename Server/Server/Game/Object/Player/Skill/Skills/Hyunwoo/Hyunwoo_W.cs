@@ -19,7 +19,9 @@ public sealed class Hyunwoo_W : InstantHandlerBase
         StatusEffect statusEffect = new StatusEffect();
         statusEffect.type = skill.SkillData.levels[skill.CurLevel].effects[0].type;
         statusEffect.stat = skill.SkillData.levels[skill.CurLevel].effects[0].stat;
-        statusEffect.value = skill.SkillData.levels[skill.CurLevel].effects[0].value;
+        statusEffect.value = skill.SkillData.levels[skill.CurLevel].effects[0].value + p.Defense * 0.1f;
+        if (!Enum.TryParse(skill.SkillData.levels[skill.CurLevel].effects[0].valueType, out statusEffect.valueType))
+            return;
         statusEffect.duration = skill.SkillData.levels[skill.CurLevel].effects[0].duration;
         statusEffect.attacker = p;
         if (!Enum.TryParse<Subject>(skill.SkillData.levels[skill.CurLevel].effects[0].subject, out statusEffect.subject))
