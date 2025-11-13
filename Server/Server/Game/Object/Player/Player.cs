@@ -52,7 +52,7 @@ namespace Server.Game
 
         public override float Speed 
         {
-            get { return ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed + _totalItemStat.FixedSpeed * (1 + _totalItemStat.PercentageSpeed)) ; }
+            get { return ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed + _totalItemStat.FixedSpeed * (1 + _totalItemStat.PercentageSpeed)/*, ignoreDebuff: IsCcImmune*/) ; }
             set { base.Speed = value; }
         }
 

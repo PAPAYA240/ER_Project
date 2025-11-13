@@ -19,8 +19,17 @@ public sealed class Rozzi_R : SkillHandlerBase
     public override void OnEnter(Player p, SkillContext ctx)
     {
         base.OnEnter(p, ctx);
-
+        p.LookAtMouse(ctx.MousePos);
         SendSkillConfirmPacket(p);
+
+        Projectile projectile = ObjectManager.Instance.Add<Projectile>();
+        if (projectile != null)
+        {
+            projectile.ProjectileType = ProjectileType.ProjectileRozziSkill04Bullet;
+            projectile.Owner = p;
+            projectile.Init();
+            p.Room.EnterGame(projectile);
+        }
     }
 
     public override void OnHit(Player p, SkillContext ctx)

@@ -177,11 +177,14 @@ namespace Server.Game
 
         // 인스턴스별 퍼센트 누적( +0.20f = +20% )
         protected readonly Dictionary<StatusEffect, (string key, float delta)> _mulByInst = new Dictionary<StatusEffect, (string key, float delta)>();
-        protected readonly Dictionary<string, float> _mulAccum = new Dictionary<string, float>();
+        // key : effects.stat
+        protected readonly Dictionary<string, float> _mulBuffAccum = new Dictionary<string, float>(); // 버프 전용
+        protected readonly Dictionary<string, float> _mulDebuffAccum = new Dictionary<string, float>(); // 디버프 전용
 
         // 인스턴스별 고정수치(Flat) 누적
-        private readonly Dictionary<StatusEffect, (string key, float delta)> _flatByInst = new Dictionary<StatusEffect, (string key, float delta)>();
-        private readonly Dictionary<string, float> _flatAccum = new Dictionary<string, float>();
+        protected readonly Dictionary<StatusEffect, (string key, float delta)> _flatByInst = new Dictionary<StatusEffect, (string key, float delta)>();
+        protected readonly Dictionary<string, float> _flatBuffAccum = new Dictionary<string, float>();
+        protected readonly Dictionary<string, float> _flatDebuffAccum = new Dictionary<string, float>();
 
         protected bool _isUpdatedStatus = false;
 
@@ -657,11 +660,15 @@ namespace Server.Game
 
         #region StatusEffect 연동 
         // 최종 = 비율 → 고정 순 합성
-        protected float ComposeFinal(string key, float baseVal)
+        protected float ComposeFinal(string key, float baseVal, bool ignoreDebuff = false)
         {
-            float mul = _mulAccum.GetValueOrDefault(key);  // 비율 합
-            float flat = _flatAccum.GetValueOrDefault(key); // 고정값 합
-            float result = baseVal * (1f + mul) + flat;
+            float mulBuff = _mulBuffAccum.GetValueOrDefault(key);
+            float mulDebuff = ignoreDebuff ? 0f : _mulDebuffAccum.GetValueOrDefault(key);
+
+            float flatBuff = _flatBuffAccum.GetValueOrDefault(key);
+            float flatDebuff = ignoreDebuff ? 0f : _flatDebuffAccum.GetValueOrDefault(key);
+
+            float result = baseVal * (1f + mulBuff + mulDebuff) + flatBuff + flatDebuff;
             return MathF.Max(0f, result);
         }
 
@@ -671,24 +678,12 @@ namespace Server.Game
             if (MathF.Abs(delta) < 1e-9f)
                 return;
 
-            if (_mulByInst.TryGetValue(inst, out var old))
-            {
-                // 같은 인스턴스가 스택 증가 등으로 '같은 키'에 누적되는 경우만 허용 => 스킬 계속 쓰면 중첩됨 맞나이게
-                if (old.key != key)
-                {
-                    // 설계상 한 인스턴스=한 스탯이므로 키 변경은 비정상
-                    // 필요 시 여기서 Remove 후 새로 등록하는 흐름으로 교체 가능
-                    throw new InvalidOperationException("StatusEffect instance already bound to another stat key.");
-                }
-                var newDelta = old.delta + delta;
-                _mulByInst[inst] = (key, newDelta);
-                _mulAccum[key] = _mulAccum.GetValueOrDefault(key) + delta;
-            }
-            else
-            {
-                _mulByInst[inst] = (key, delta);
-                _mulAccum[key] = _mulAccum.GetValueOrDefault(key) + delta;
-            }
+            _mulByInst[inst] = (key, delta);
+
+            if (inst.type == "Buff")
+                _mulBuffAccum[key] = _mulBuffAccum.GetValueOrDefault(key) + delta;
+            else if (inst.type == "Debuff")
+                _mulDebuffAccum[key] = _mulDebuffAccum.GetValueOrDefault(key) + delta;
 
             _isUpdatedStatus = true;
         }
@@ -700,7 +695,11 @@ namespace Server.Game
                 return;
 
             _flatByInst[inst] = (key, delta);
-            _flatAccum[key] = _flatAccum.GetValueOrDefault(key) + delta;
+
+            if (inst.type == "Buff")
+                _flatBuffAccum[key] = _flatBuffAccum.GetValueOrDefault(key) + delta;
+            else if (inst.type == "Debuff")
+                _flatDebuffAccum[key] = _flatDebuffAccum.GetValueOrDefault(key) + delta;
 
             _isUpdatedStatus = true;
         }
@@ -714,9 +713,18 @@ namespace Server.Game
             var (key, delta) = pair;
             _mulByInst.Remove(inst);
 
-            _mulAccum[key] = _mulAccum.GetValueOrDefault(key) - delta;
-            if (MathF.Abs(_mulAccum[key]) < 1e-6f)
-                _mulAccum.Remove(key);
+            if (inst.type == "Buff")
+            {
+                _mulBuffAccum[key] = _mulBuffAccum.GetValueOrDefault(key) - delta;
+                if (MathF.Abs(_mulBuffAccum[key]) < 1e-6f)
+                    _mulBuffAccum.Remove(key);
+            }
+            else if (inst.type == "Debuff")
+            {
+                _mulDebuffAccum[key] = _mulDebuffAccum.GetValueOrDefault(key) - delta;
+                if (MathF.Abs(_mulDebuffAccum[key]) < 1e-6f)
+                    _mulDebuffAccum.Remove(key);
+            }
 
             _isUpdatedStatus = true;
         }
@@ -726,12 +734,22 @@ namespace Server.Game
         {
             if (!_flatByInst.TryGetValue(inst, out var pair))
                 return;
+
             var (key, delta) = pair;
             _flatByInst.Remove(inst);
 
-            _flatAccum[key] = _flatAccum.GetValueOrDefault(key) - delta;
-            if (MathF.Abs(_flatAccum[key]) < 1e-6f)
-                _flatAccum.Remove(key);
+            if (inst.type == "Buff")
+            {
+                _flatBuffAccum[key] = _flatBuffAccum.GetValueOrDefault(key) - delta;
+                if (MathF.Abs(_flatBuffAccum[key]) < 1e-6f)
+                    _flatBuffAccum.Remove(key);
+            }
+            else if (inst.type == "Debuff")
+            {
+                _flatDebuffAccum[key] = _flatDebuffAccum.GetValueOrDefault(key) - delta;
+                if (MathF.Abs(_flatDebuffAccum[key]) < 1e-6f)
+                    _flatDebuffAccum.Remove(key);
+            }
 
             _isUpdatedStatus = true;
         }
