@@ -1193,8 +1193,9 @@
             "staminaCost": 100,
             "effects": [
               {
-                "type": "DeBuff",
-                "stat": "speed",
+                "type": "Debuff",
+                "condition": "Hit",
+                "stat": "MoveSpeed",
                 "value": -99,
                 "valuetype": "Ratio",
                 "duration": 1,
@@ -1214,8 +1215,9 @@
             "staminaCost": 125,
             "effects": [
               {
-                "type": "DeBuff",
-                "stat": "speed",
+                "type": "Debuff",
+                "condition": "Hit",
+                "stat": "MoveSpeed",
                 "value": -99,
                 "valuetype": "Ratio",
                 "duration": 1,
@@ -1235,8 +1237,9 @@
             "staminaCost": 150,
             "effects": [
               {
-                "type": "DeBuff",
-                "stat": "speed",
+                "type": "Debuff",
+                "condition": "Hit",
+                "stat": "MoveSpeed",
                 "value": -99,
                 "valuetype": "Ratio",
                 "duration": 1,

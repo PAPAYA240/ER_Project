@@ -438,8 +438,6 @@ namespace Server.Game
 
                         Player player = statusEffect.attacker as Player;
 
-                        Room.AddStatusEffect(player, this, KeyCode.R, null);
-
                         // 유키 궁 표식 데미지
                         int curLevel = player.GetSkillLevel(Data.DataUtils.KeyCode.R);
                         float curAttack = player.Attack;

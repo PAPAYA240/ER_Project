@@ -315,6 +315,10 @@ namespace Server.Game
 
                     Console.WriteLine($"비전투 상태");
                     CombatState = CombatState.NonCombat;
+                    S_CombatMode combatModePkt = new S_CombatMode();
+                    combatModePkt.ObjectId = Id;
+                    combatModePkt.CombatMode = CombatState;
+                    Room.Broadcast(combatModePkt);
 
                     // 유키 단추용
                     if (Info.Player.CharType == CharacterType.Yuki)
