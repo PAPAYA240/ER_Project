@@ -873,7 +873,7 @@ namespace Server.Game
                 Stamina += _totalItemStat.MaxStamina;
                 _isUpdatedStat = true;
 
-                _isUpdatedStatus = true;
+                UpdateStatusFlag();
 
                 GameRoom room = Room;
 

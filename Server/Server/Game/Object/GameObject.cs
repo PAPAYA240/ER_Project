@@ -3,12 +3,12 @@ using Lucene.Net.Store;
 using ServerCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using static Player_StunState;
-using static Server.Data.DataUtils;
 using static Server.Game.GameObject;
 using static Server.Game.StunState;
 using static System.Net.Mime.MediaTypeNames;
@@ -188,7 +188,7 @@ namespace Server.Game
         protected readonly Dictionary<string, float> _flatDebuffAccum = new Dictionary<string, float>();
 
         protected bool _isUpdatedStatus = false;
-        public void UpdateStatue() => _isUpdatedStatus = true;
+        public void UpdateStatusFlag() => _isUpdatedStatus = true;
 
         public virtual CreatureState State
         {
@@ -445,7 +445,7 @@ namespace Server.Game
                         // 유키 궁 표식 데미지
                         int curLevel = player.GetSkillLevel(Data.DataUtils.KeyCode.R);
                         float curAttack = player.Attack;
-                        _ = CoDelayYukiCoupDeGrace(player, curAttack, curLevel, 1000);
+                        _ = CoDelayYukiCoupDeGrace(statusEffect.attacker, curAttack, curLevel, 1000);
                     }
                     else if (statusEffect.type == "Buff" || statusEffect.type == "Debuff")
                     {
@@ -658,16 +658,6 @@ namespace Server.Game
             return false;
         } // 대상지정불가 상태인지 아닌지
 
-        public bool IsUnstoppable()
-        {
-            foreach (var effect in _statusEffects)
-            {
-                if (effect.type == "Unstoppable")
-                    return true;
-            }
-            return false;
-        } // 저지불가 상태인지 아닌지
-
         #endregion
 
         #region StatusEffect 연동 
@@ -697,7 +687,7 @@ namespace Server.Game
             else if (inst.type == "Debuff")
                 _mulDebuffAccum[key] = _mulDebuffAccum.GetValueOrDefault(key) + delta;
 
-            _isUpdatedStatus = true;
+            UpdateStatusFlag();
         }
 
         // 인스턴스 등록 : 고정수치 누적
@@ -713,7 +703,7 @@ namespace Server.Game
             else if (inst.type == "Debuff")
                 _flatDebuffAccum[key] = _flatDebuffAccum.GetValueOrDefault(key) + delta;
 
-            _isUpdatedStatus = true;
+            UpdateStatusFlag();
         }
 
         // 인스턴스 제거 : 해당 인스턴스가 더했던 비율 제거
@@ -738,7 +728,7 @@ namespace Server.Game
                     _mulDebuffAccum.Remove(key);
             }
 
-            _isUpdatedStatus = true;
+            UpdateStatusFlag();
         }
 
         // 인스턴스 제거 : 해당 인스턴스가 더했던 고정수치 제거
@@ -763,7 +753,7 @@ namespace Server.Game
                     _flatDebuffAccum.Remove(key);
             }
 
-            _isUpdatedStatus = true;
+            UpdateStatusFlag();
         }
         #endregion
     }
