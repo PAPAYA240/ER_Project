@@ -17,7 +17,7 @@ namespace Server.Game
             ObjectType = GameObjectType.Projectile;
         }
         
-        public void Init()
+        public virtual void Init()
         {
             if (Owner == null)
                 return;
@@ -66,22 +66,27 @@ namespace Server.Game
 
             Info.PosInfo.SetPosInfoFromVector3(newPosition);
             Info.PosInfo.PosY = 1.5f;
-            MovingBroadcast();
+            //MovingBroadcast();
+            SendMovePacket(PosInfo, RotInfo);
+
+            Console.WriteLine($"@ Moving - {PosInfo.PosX}, {PosInfo.PosZ}");
         }
-        private bool Deactivation()
+
+        protected virtual bool Deactivation()
         {
             // 경과 시간 or 충돌을 했을 경우에 비활성화
             return (Environment.TickCount64 >= _endTime);
         }
-        private void MovingBroadcast()
-        {
-            S_Move packet = new S_Move
-            {
-                ObjectId = base.Id,
-                PosInfo = PosInfo,
-                RotInfo = RotInfo
-            };
-            base.Room?.Push(Room.Broadcast, packet);
-        }
+
+        //protected void MovingBroadcast()
+        //{
+        //    S_Move packet = new S_Move
+        //    {
+        //        ObjectId = base.Id,
+        //        PosInfo = PosInfo,
+        //        RotInfo = RotInfo
+        //    };
+        //    base.Room?.Push(Room.Broadcast, packet);
+        //}
     }
 }

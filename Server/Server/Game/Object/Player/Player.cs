@@ -359,6 +359,7 @@ namespace Server.Game
             MakeInventory();
         }
         #endregion
+
         #region State : Dead
         public void OnDestroy()
         {
@@ -983,18 +984,6 @@ namespace Server.Game
                     Ratio = ratio
                 }
             };
-            Room.Push(Room.Broadcast, packet);
-        }
-
-        public void SendMovePacket(PositionInfo posInfo, RotationInfo rotInfo)
-        {
-            S_Move packet = new S_Move()
-            {
-                ObjectId = Id,
-                PosInfo = posInfo,
-                RotInfo = rotInfo
-            };
-
             Room.Push(Room.Broadcast, packet);
         }
 

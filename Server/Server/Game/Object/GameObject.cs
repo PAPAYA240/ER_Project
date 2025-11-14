@@ -17,6 +17,7 @@ namespace Server.Game
 {
     public class GameObject
     {
+        #region Player Info
         public GameObjectType ObjectType { get; protected set; } = GameObjectType.None;
         public int Id
         {
@@ -217,12 +218,11 @@ namespace Server.Game
             get { return Info.Player.Team; }
             set { Info.Player.Team = value; }
         }
+        #endregion
 
-        public virtual void Update()
-        {
-            
-        }
+        public virtual void Update() { }
 
+        #region Damage
         public bool IsAttackable()
         {
             if (State == CreatureState.Dead)
@@ -321,7 +321,9 @@ namespace Server.Game
             float finalDamage = damage * 100f / (100f + finalDefense);
             return finalDamage;
         }
+        #endregion
 
+        #region State
         public virtual void OnHeal(GameObject go, float heal)
         {
             if (Room == null || State == CreatureState.Dead || heal <= 0)
@@ -367,6 +369,7 @@ namespace Server.Game
 
             room.EnterGame(this);
         }
+        #endregion
 
         #region StatusEffect(버프, 디버프), Barrier(방어막) 관련
 
@@ -796,6 +799,20 @@ namespace Server.Game
             }
 
             UpdateStatusFlag();
+        }
+        #endregion
+
+        #region Packet
+        public void SendMovePacket(PositionInfo posInfo, RotationInfo rotInfo)
+        {
+            S_Move packet = new S_Move()
+            {
+                ObjectId = Id,
+                PosInfo = posInfo,
+                RotInfo = rotInfo
+            };
+
+            Room?.Push(Room.Broadcast, packet);
         }
         #endregion
     }

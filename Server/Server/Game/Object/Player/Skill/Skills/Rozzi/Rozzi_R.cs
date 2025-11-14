@@ -25,10 +25,10 @@ public sealed class Rozzi_R : SkillHandlerBase
         Projectile projectile = ObjectManager.Instance.Add<Projectile>();
         if (projectile != null)
         {
-            projectile.ProjectileType = ProjectileType.ProjectileRozziSkill04Bullet;
+            projectile.ProjectileType = ProjectileType.ProjectileRozziR;
             projectile.Owner = p;
             projectile.Init();
-            p.Room.EnterGame(projectile);
+            p.Room.Push(p.Room.EnterGame, projectile);
         }
     }
 
