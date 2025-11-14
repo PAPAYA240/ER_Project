@@ -112,6 +112,7 @@ namespace Server.Game
                     Interactions = ConvertProtoInteractionsToKeyCodeDictionary(skillHitbox.Interactions)
                 };
 
+
                 SettingPointType(hitbox);
                 _pendingHitboxes.Add(hitbox);
             }            
@@ -190,11 +191,11 @@ namespace Server.Game
                     if (hitbox.Creature == null || hitbox.Data == null)
                         continue;
                     if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
-                        continue;
+                        continue;                      
                     if (type != SkillType.SkillTrack)
                         continue;
 
-                    Quaternion rot = new Quaternion(
+                        Quaternion rot = new Quaternion(
                         hitbox.Creature.RotInfo.Qx,
                         hitbox.Creature.RotInfo.Qy,
                         hitbox.Creature.RotInfo.Qz,
@@ -207,7 +208,6 @@ namespace Server.Game
 
                     hitbox.PosX = hitbox.Creature.PosInfo.PosX + rotatedOffset.X;
                     hitbox.PosZ = hitbox.Creature.PosInfo.PosZ + rotatedOffset.Z;
-
                 }
             }
         }
@@ -297,7 +297,7 @@ namespace Server.Game
             if (false == hitbox.Data.IsOneTimeUse) // 단일대상 히트박스가 아닌 경우
             {
                 foreach (T target in hitTargets)
-                    ApplyDamage(hitbox, target, damageDict);                 
+                    ApplyDamage(hitbox, target, damageDict);
             }
             else
             {
@@ -306,24 +306,26 @@ namespace Server.Game
 
                 ApplyDamage(hitbox, target, damageDict);
 
-                hitbox.IsUsed = true;
-            }
-
-            if (hitbox.Creature is Monster)
-            {
-                Monster monster = hitbox.Creature as Monster;
-                if (monster != null)
+                // 때렸을 때 바로 사라져야 하는 경우
+                if (hitbox.Creature is Monster)
                 {
-                    foreach (T target in hitTargets)
-                    {
-                        Player p = target as Player;
-                        if (p != null)
-                            monster.OnTargetHit(p);
-                    }
+                    // 몬스터는 상대가 플레이어인 경우에만 사라진다.
+                    if (target is Player)
+                        hitbox.IsUsed = true;
+                }
+                else
+                {
+                    // 같은 팀을 때렸을 때 제외한다
+                    if (ObjectManager.Instance.GetTeam(hitbox.Creature.Id) != 
+                        ObjectManager.Instance.GetTeam(target.Id))
+                        hitbox.IsUsed = true;
                 }
             }
+
+            CheckAndApplyMonsterHit<T>(hitbox, hitTargets);
         }
 
+       
         T FindNearestTarget<T>(Hitbox hitbox, List<T> targets) where T : GameObject, new()
         {
             T nearestTarget = null;
@@ -818,10 +820,9 @@ namespace Server.Game
                     return null;
 
                 var quat = creature.RotInfo.GetQuatFromRotInfo();
-                Vector2 forward = new Vector2(
-                    2 * (quat.X * quat.Z + quat.W * quat.Y),
-                    2 * (quat.Y * quat.Z - quat.W * quat.X)
-                );
+                Vector3 LocalForward = new Vector3(0, 0, 1);
+                Vector3 forward3D = Vector3.Transform(LocalForward, quat);
+                Vector2 forward = new Vector2(forward3D.X, forward3D.Z);
 
                 hitbox = new Hitbox
                 {
@@ -860,18 +861,7 @@ namespace Server.Game
         {
             if (Enum.TryParse<SkillType>(hitbox.Data.Type, out var type) && type == SkillType.SkillProjectile)
             {
-                Quaternion rot;
-
-                // 몬스터는 초기 회전 사용, 플레이어는 현재 회전 사용
-                if (hitbox.Creature is Monster)
-                    rot = hitbox.InitialRotation;
-                else
-                    rot = new Quaternion(
-                      hitbox.Creature.RotInfo.Qx,
-                      hitbox.Creature.RotInfo.Qy,
-                      hitbox.Creature.RotInfo.Qz,
-                      hitbox.Creature.RotInfo.Qw
-                    );
+                Quaternion rot = hitbox.Creature.RotInfo.GetQuatFromRotInfo();
 
                 Vector3 toForward = Vector3.Transform(new Vector3(0, 0, 1), rot);
                 const float TickInterval = 1.0f / 70.0f;
@@ -1002,6 +992,25 @@ namespace Server.Game
 
             return true;
         }
+
+        // 몬스터에게 맞았다면 처리
+        void CheckAndApplyMonsterHit<T>(Hitbox hitbox, List<T> hitTargets)
+        {
+            if (hitbox.Creature is Monster)
+            {
+                Monster monster = hitbox.Creature as Monster;
+                if (monster != null)
+                {
+                    foreach (T target in hitTargets)
+                    {
+                        Player p = target as Player;
+                        if (p != null)
+                            monster.OnTargetHit(p);
+                    }
+                }
+            }
+        }
+
         private readonly object _hitboxesLock = new object();
         public void AddInteractedHitbox(Hitbox other, Hitbox my)
         {
