@@ -15,7 +15,7 @@ public sealed class Hyunwoo_D : SkillHandlerBase
     private float _dashRange = 1.35f;
     private float _distanceToTarget;
     private float _moveDuration = 1f / 6f;
-    private float _stateDuration = 13f / 15f;
+    private float _stateDuration = 1f / 3f;
     private float _elapsed;
 
     private Vector3 _dir;
@@ -32,6 +32,9 @@ public sealed class Hyunwoo_D : SkillHandlerBase
     public override void OnEnter(Player p, SkillContext ctx)
     {
         base.OnEnter(p, ctx);
+
+        // TODO Attack Speed based duration
+        //_stateDuration = p.AttackSpeed;
 
         _dir = _target.Position - p.Position;
         _dir.Y = 0;
@@ -53,9 +56,15 @@ public sealed class Hyunwoo_D : SkillHandlerBase
 
         // Request collision position to client
         SendSkillCollisionRequestPacket(p, CollisionType.Block, p.Position, _endPos);
-        p.SendSkillCostPacket(_keyCode);
 
+        p.Room.AttackSkillTarget(p, _target, _keyCode);
+        p.SendSkillCostPacket(_keyCode);
         p.LookAtMouse(ctx.MousePos);
+
+        if(p is Hyunwoo hyunwoo)
+        {
+            hyunwoo.AddTSkillCount(1);
+        }
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -89,7 +98,9 @@ public sealed class Hyunwoo_D : SkillHandlerBase
             _elapsed += TimeUtil.DeltaTime;
             if (_elapsed > _stateDuration)
             {
-                ctx.RequestFinish();
+                p.ChangeState(new Hyunwoo_AttackState(_target.Id));
+
+                //ctx.RequestFinish();
             }
         }
     }

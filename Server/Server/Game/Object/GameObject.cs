@@ -478,6 +478,12 @@ namespace Server.Game
                         if (player != null)
                             player.SendUntargetablePacket(true);
                     }
+                    else if(statusEffect.type == "Unstoppable")
+                    {
+                        Player player = this as Player;
+                        if (player != null)
+                            player.SendUnstoppablePacket(true);
+                    }
                 }                    
             }
         }
@@ -592,6 +598,12 @@ namespace Server.Game
                 Player player = this as Player;
                 if (player != null)
                     player.SendUntargetablePacket(false);
+            }
+            else if (statusEffect.type == "Unstoppable")
+            {
+                Player player = this as Player;
+                if (player != null)
+                    player.SendUnstoppablePacket(false);
             }
         }
 

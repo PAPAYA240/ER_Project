@@ -372,7 +372,11 @@ namespace Server.Game
                 foreach (Player p in _players.Values)
                 {
                     if (p.Id != gameObject.Id)
+                    {
                         p.Session.Send(spawnPacket);
+                    }
+
+                    //p.SendItemStat();
                 }
             }
         }

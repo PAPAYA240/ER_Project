@@ -883,6 +883,18 @@ namespace Server.Game
             }
         }
 
+        public void SendItemStat()
+        {
+            S_ChangeItemStat packet = new S_ChangeItemStat();
+            packet.ObjectId = Id;
+            packet.ItemStat = _totalItemStat;
+
+            GameRoom room = Room;
+
+            if (room != null)
+                room.Broadcast(packet);
+        }
+
         #endregion
 
         #region Level
@@ -1168,6 +1180,14 @@ namespace Server.Game
             untargetablePkt.ObjectId = Id;
             untargetablePkt.Untargetable = IsUntargetable;
             Room.Push(Room.Broadcast, untargetablePkt);
+        }
+
+        public void SendUnstoppablePacket(bool IsUnstoppalble)
+        {
+            S_Unstoppable unstoppablePkt = new S_Unstoppable();
+            unstoppablePkt.ObjectId = Id;
+            unstoppablePkt.Unstoppable = IsUnstoppalble;
+            Room.Push(Room.Broadcast, unstoppablePkt);
         }
 
         //public void SendMoveSpeedPacket(float moveSpeed)

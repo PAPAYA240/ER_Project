@@ -823,14 +823,40 @@ class PacketHandler
         cc.Untargetable = untargetablePkt.Untargetable;  
     }
 
+    public static void S_UnstoppableHandler(PacketSession session, IMessage packet)
+    {
+        S_Unstoppable unstoppablePkt = packet as S_Unstoppable;
+
+        GameObject go = Managers.Object.FindById(unstoppablePkt.ObjectId);
+        if (go == null)
+            return;
+
+        CreatureController cc = go.GetComponentInChildren<CreatureController>();
+        if (cc == null)
+            return;
+
+        cc.Unstoppable = unstoppablePkt.Unstoppable;  
+    }
+
     public static void S_CombatModeHandler(PacketSession session, IMessage packet)
     {
         S_CombatMode combatModePkt = packet as S_CombatMode;
 
-        GameObject go = Managers.Object.FindById(combatModePkt.ObjectId);
-        if (go == null)
-            return;
+        switch (combatModePkt.CombatMode)
+        {
+            case CombatState.Combat:
+                Managers.Object.MyPlayer.UI.PlayerInterface.ActivateCombatImg(true);
+                break;
+            case CombatState.NonCombat:
+                Managers.Object.MyPlayer.UI.PlayerInterface.ActivateCombatImg(false);
+                break;
+        }
 
+        //GameObject go = Managers.Object.FindById(combatModePkt.ObjectId);
+        //if (go == null)
+        //    return;
+
+        
         //combatModePkt.CombatMode;
     }
 

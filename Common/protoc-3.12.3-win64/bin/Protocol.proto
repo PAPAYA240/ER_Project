@@ -105,6 +105,8 @@ enum MsgId {
   S_COMBAT_MODE = 82;
   C_CHAT = 83;
   S_CHAT = 84;
+
+  S_UNSTOPPABLE = 85;
 }
 
 enum CombatState{
@@ -982,4 +984,9 @@ message C_Chat {
 message S_Chat {
 	int32 objectId = 1;
 	string message = 2;
+}
+
+message S_Unstoppable{
+	int32 objectId = 1;
+	bool unstoppable = 2;
 }

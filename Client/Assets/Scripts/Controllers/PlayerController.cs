@@ -142,11 +142,28 @@ public class PlayerController : CreatureController
             _untargetable = value;
 
             if (_untargetable)
-                _nameTag.SetNameText("대상 지정 불가", 20);
+                _nameTag.SetUntargetable();
             else
                 _nameTag.SetNameText("아비게일", 16);
 
             _nameTag.SetHPColor(_untargetable);
+        } 
+    }
+    private bool _unstoppable;
+    public override bool Unstoppable 
+    {
+        get { return _unstoppable; }
+        set 
+        {
+            if (_unstoppable == value)
+                return;
+
+            _unstoppable = value;
+
+            if (_unstoppable)
+                _nameTag.SetUnstoppable();
+            else
+                _nameTag.SetNameText("UserName", 16);
         } 
     }
     #endregion
