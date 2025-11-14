@@ -121,6 +121,9 @@ public class ObjectManager
             pc.Type = info.Projectile.ProjectileType;
             pc.Owner = Managers.Object.FindById(info.Projectile.OwnerId);
 
+            Transform parent = GetOrCreateParent("@ Projectiles");
+            pc.transform.SetParent(parent);
+
             _objects.Add(info.ObjectId, go);
 
             go.transform.SetParent(pc.transform);
@@ -197,7 +200,20 @@ public class ObjectManager
         }
     }
 
-	public void Remove(int id)
+    private Transform GetOrCreateParent(string name)
+    {
+        Transform root = GameObject.Find(name)?.transform;
+
+        if (root == null)
+        {
+            GameObject newRoot = new GameObject(name);
+            root = newRoot.transform;
+        }
+
+        return root;
+    }
+
+    public void Remove(int id)
 	{
 		GameObject go = FindById(id);
 		if (go == null)

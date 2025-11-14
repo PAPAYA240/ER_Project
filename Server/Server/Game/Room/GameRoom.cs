@@ -736,12 +736,17 @@ namespace Server.Game
 
             return Weapon.Pistol;
         }
-        public Projectile FindProjectile(Creature owner)
+        public Projectile FindProjectile(Creature owner, ProjectileType type = ProjectileType.ProjectileNone)
         {
             foreach (Projectile projectile in _projectiles.Values)
             {
                 if (projectile.Owner == owner)
+                {
+                    if(type != ProjectileType.ProjectileNone && type != projectile.ProjectileType)
+                        continue;
+
                     return projectile;
+                }
             }
             return null;
         }

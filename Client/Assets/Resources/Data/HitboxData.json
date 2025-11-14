@@ -89,17 +89,19 @@
         "shape": "Circle",
         "type": "SkillPoint",
         "radius": 1.2,
-        "maxRange": 3, // CHECK
-        "startFrame": 0, // CHECK 
-        "endFrame": 5 // CHECK
+        "maxRange": 3, 
+        "startFrame": 0, 
+        "endFrame": 5 
       },
       "R": {
         "shape": "Circle",
         "type": "SkillProjectile",
-        "radius": 0.3,
-        "speed": 4,
-        "duration": 0.6,
-        "maxRange": 5.5
+        "radius": 0.6,
+        "speed": 10,
+        "duration": 0.2,
+        "maxRange": 5.5,
+        "startFrame": 0,
+        "endFrame": 60 // Temp
       }
     },
     "Theodore": {

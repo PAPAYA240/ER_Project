@@ -67,9 +67,7 @@ namespace Server.Game
             Info.PosInfo.SetPosInfoFromVector3(newPosition);
             Info.PosInfo.PosY = 1.5f;
             //MovingBroadcast();
-            SendMovePacket(PosInfo, RotInfo);
-
-            Console.WriteLine($"@ Moving - {PosInfo.PosX}, {PosInfo.PosZ}");
+            SendMovePacket(PosInfo, RotInfo);           
         }
 
         protected virtual bool Deactivation()

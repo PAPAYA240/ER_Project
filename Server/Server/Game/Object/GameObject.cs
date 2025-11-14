@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using Lucene.Net.Store;
 using ServerCore;
 using System;
@@ -27,6 +28,8 @@ namespace Server.Game
 
         public GameRoom Room { get; set; }
 
+        public CharacterType CharType => Info.Player.CharType;
+        
         ObjectInfo _objectInfo = new ObjectInfo()
         {
             StatInfo = new StatInfo(),
@@ -192,6 +195,8 @@ namespace Server.Game
         public void UpdateStatusFlag(bool isUpdated = true) => _isUpdatedStatus = isUpdated;
         protected bool _isCcImmune = false;
         public bool IsCcImmune { get {  return _isCcImmune; } set { _isCcImmune = value; } }
+
+        public bool IsDead => State == CreatureState.Dead;
 
         public virtual CreatureState State
         {

@@ -9,6 +9,9 @@ using static Server.Data.DataUtils;
 
 public sealed class Rozzi_R : SkillHandlerBase
 {
+    private float _elapsed = 0.0f;
+    private float _StopSkillTime = 0.45f;
+
     public Rozzi_R()
     {
         _characterType = CharacterType.Rozzi;
@@ -22,7 +25,7 @@ public sealed class Rozzi_R : SkillHandlerBase
         p.LookAtMouse(ctx.MousePos);
         SendSkillConfirmPacket(p);
 
-        Projectile projectile = ObjectManager.Instance.Add<Projectile>();
+        Projectile_Rozzi_R projectile = ObjectManager.Instance.Add<Projectile_Rozzi_R>();
         if (projectile != null)
         {
             projectile.ProjectileType = ProjectileType.ProjectileRozziR;
@@ -32,19 +35,17 @@ public sealed class Rozzi_R : SkillHandlerBase
         }
     }
 
-    public override void OnHit(Player p, SkillContext ctx)
-    {
-        return;
-    }
-
     public override void OnTick(Player p, SkillContext ctx)
     {
-        return;
-    }
+        if (CanStopSkill)
+            return;
 
-    public override void OnExit(Player p, SkillContext ctx)
-    {
-        base.OnExit(p, ctx);
+        _elapsed += TimeUtil.DeltaTime;
+        if (_elapsed >= _StopSkillTime)
+        {
+            CanStopSkill = true;
+            p.SendCanStopSkillPacket(CanStopSkill);
+        }
     }
 }
 

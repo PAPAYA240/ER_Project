@@ -136,7 +136,7 @@ namespace Server.Game
                     Interactions = ConvertProtoInteractionsToKeyCodeDictionary(skillHitbox.Interactions)
                 };
 
-                if (charType == CharacterType.Rozzi && keyCode == KeyCode.E)
+                if (charType == CharacterType.Rozzi && (keyCode == KeyCode.E || keyCode == KeyCode.F2))
                 {
                     hitbox.PosX = mousePos.X;
                     hitbox.PosZ = mousePos.Y;
@@ -283,6 +283,24 @@ namespace Server.Game
 
                     if(hitPlayers.Count > 0)
                     {
+                        if(hitbox.CharType == CharacterType.Rozzi)
+                        {
+                            Projectile_Rozzi_R pj = hitbox.Creature.Room.FindProjectile(hitbox.Creature, ProjectileType.ProjectileRozziR) as Projectile_Rozzi_R;
+                            if (pj != null)
+                            {
+                                if (hitbox.KeyCode == KeyCode.R)
+                                {
+                                    pj.OnProjectileHit(hitPlayers.First());
+                                    continue;
+                                }
+                                else if(pj.Target != null && hitPlayers.Contains(pj.Target as Player))                                   
+                                    pj.RegisterOwnerHit(isSkillHit: true);
+                            }
+
+                            if (hitbox.KeyCode == KeyCode.F2)
+                                hitbox.KeyCode = KeyCode.R;
+                        }
+
                         HandleDamage<Player>(hitbox, hitPlayers, damageDict);
                         HandleStatusEffects<Player>(hitbox, hitPlayers);
                     }
@@ -733,6 +751,9 @@ namespace Server.Game
             {
                 Player target = targetKvp.Value;
                 if (hitbox.HitObjs.ContainsKey(targetKvp.Key) || true == hitbox.IsUsed)
+                    continue;
+
+                if (hitbox.Creature.CharType == CharacterType.Rozzi)
                     continue;
 
                 if (CheckCollision(hitbox, target))
