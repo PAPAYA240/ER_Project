@@ -3,7 +3,6 @@ using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using System.Collections.Generic;
 using UnityEngine;
-using static Data.SkillEffectList;
 
 public class MyPlayerController : PlayerController
 {
@@ -39,7 +38,7 @@ public class MyPlayerController : PlayerController
     float _lastOperateTime;
     readonly float _operateLockTime = 0.1f;
 
-    public int CurPhase { get; set; } = 0;
+    public int CurPhase { get; set; } = 999;
 
     private void Awake()
     {

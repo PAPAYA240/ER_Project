@@ -1,5 +1,4 @@
 ﻿using TMPro;
-using Google.Protobuf.Protocol;
 using System.Collections;
 using UnityEngine;
 
@@ -43,8 +42,13 @@ public class UI_AppearMonsterBar : UI_Base
     }
     public void Active(int phase)
     {
-        // 몬스터 바인줄 알았음 ㅎ
-        if (1 == phase)
+        // 몬스터만 쓰는 바인줄 알았음 ㅎ
+        if (GetText((int)Texts.Text) == null)
+            return;
+
+        if (0 == phase)
+            GetText((int)Texts.Text).text = "실험을 곧 시작합니다.";
+        else if (1 == phase)
             GetText((int)Texts.Text).text = "전투 지역이 개방되었습니다.";
         else if (2 == phase)
             GetText((int)Texts.Text).text = "오메가가 출현했습니다.";

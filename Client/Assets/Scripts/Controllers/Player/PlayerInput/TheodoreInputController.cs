@@ -9,7 +9,7 @@ using static CameraController;
 
 public class TheodoreInputController : PlayerInputController
 {
-    private const float EFFECT_DURATION = 10f;
+    private const float EFFECT_DURATION = 4f;
     private const float CANCEL_DURATION = 0.5f;
     private const float SNIPER_AIM_DURATION = 10f;
 
@@ -66,9 +66,9 @@ public class TheodoreInputController : PlayerInputController
                     onCancel: () => CancelSkill(key)));
                 }
                 break;
-         case KeyCode.W:
-         case KeyCode.E:
          case KeyCode.R:
+         case KeyCode.W:
+            case KeyCode.E:
                 {
                     StartCoroutine(InputSkill(key,
                     onConfirm: () => ExecuteSkill(key),
@@ -81,6 +81,8 @@ public class TheodoreInputController : PlayerInputController
     private void ExecuteSkill(KeyCode key)
     {
         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
+        _player.UI.PlayerInterface.StopChargingBar();
+
         SendSkillInputPacket(key);
         _currentSkillKey = null;
     }
@@ -172,6 +174,9 @@ public class TheodoreInputController : PlayerInputController
     }
     private IEnumerator InputSkill(KeyCode key, Action onConfirm, Action onCancel)
     {
+        if(key == KeyCode.R)
+            _player.UI.PlayerInterface.SetChargingBar(DataManager.SkillDict[CharacterType.Theodore][key].name, 1.5f, 3);
+
         while (!Input.GetKeyUp(key) && !Input.GetMouseButtonDown(0))
         {
             if (Input.GetMouseButtonDown(1))
@@ -186,6 +191,7 @@ public class TheodoreInputController : PlayerInputController
 
     private IEnumerator ChargingSkill(KeyCode key, Action onCancel)
     {
+        _player.UI.PlayerInterface.SetChargingBar(DataManager.SkillDict[CharacterType.Theodore][key].name, 1.5f, EFFECT_DURATION);
         _player.Speed -= SKILL_CHARGE_SPEED;
 
         SendSkillPreparePacket(key);
@@ -205,6 +211,8 @@ public class TheodoreInputController : PlayerInputController
     private void CancelSkill(KeyCode key)
     {
         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
+        _player.UI.PlayerInterface.StopChargingBar();
+
         _elapsedTime = 0;
         _currentSkillKey = null;
     }
@@ -215,6 +223,7 @@ public class TheodoreInputController : PlayerInputController
     {
         if (_cancelCoroutine != null)
             return null;
+
 
         // 스킬 키 + 우클릭 동시 입력 시 쿨다운 시작
         if (_currentSkillKey != null &&
