@@ -650,6 +650,12 @@ class PacketHandler
 
         if(Managers.Object.MyPlayer != null)
         {
+            if (Managers.Object.MyPlayer.CurPhase != syncTimerPacket.Phase)
+            {
+                // CurPhase : 현재 페이즈를 어디서 가져올 지 몰라서 일단 MyPlayer에 넣어둠...
+                Managers.Object.MyPlayer.CurPhase = syncTimerPacket.Phase;
+                Managers.Object.MyPlayer.UI.ActiveAppearMonsterBar(syncTimerPacket.Phase);
+            }
             Managers.Object.MyPlayer.UI.SetTimer(syncTimerPacket.Phase, clientLocalTargetRealtimeSinceStartupEnd);
         }
     }

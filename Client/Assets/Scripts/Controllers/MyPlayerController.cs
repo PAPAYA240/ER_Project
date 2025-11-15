@@ -39,6 +39,8 @@ public class MyPlayerController : PlayerController
     float _lastOperateTime;
     readonly float _operateLockTime = 0.1f;
 
+    public int CurPhase { get; set; } = 0;
+
     private void Awake()
     {
         _skill = gameObject.GetOrAddComponent<PlayerSkillController>();
