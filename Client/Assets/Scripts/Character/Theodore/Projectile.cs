@@ -28,6 +28,7 @@ public class Projectile : BaseController
         if (cc == null) return;
 
         GameObjectType objectType = ObjectManager.GetObjectTypeById(cc.Id);
+
         if (objectType == GameObjectType.Player)
         {
             PlayerController player = other.gameObject.GetComponent<PlayerController>();

@@ -2,23 +2,6 @@
   "effects": {
     "Theodore": {
       "Skill": {
-        "Z": {
-          "Caster": [
-            {
-              "prefabName": "FX_NormalAttack",
-              "target": "Self",
-              "duration": 1,
-              "attachBoneName": "ShotPoint",
-              "delayTime": 0,
-              "position": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              }
-            }
-          ],
-          "HitTarget": []
-        },
         "Q": {
           "Caster": [
             {
@@ -26,6 +9,17 @@
               "target": "Self",
               "duration": 5.0,
               "attachBoneName": "ShotPoint"
+            },
+            {
+              "prefabName": "FX_linoleum",
+              "target": "Self",
+              "delayTime": 0.3,
+              "duration": 0.8,
+              "position": {
+                "x": 0,
+                "y": 0,
+                "z": 4.0
+              }
             }
           ],
           "HitTarget": [
@@ -41,6 +35,17 @@
               "target": "Self",
               "duration": 2.5,
               "attachBoneName": "ShotPoint"
+            },
+            {
+              "prefabName": "FX_Shield_linoleum",
+              "target": "Target",
+              "delayTime": 0.4,
+              "duration": 0.8,
+              "position": {
+                "x": 0,
+                "y": 0,
+                "z": 4.4
+              }
             },
             {
               "prefabName": "FX_QSkill_Indicator",
@@ -70,6 +75,22 @@
         },
         "E": {
           "Caster": [],
+          "HitTarget": []
+        },
+        "R": {
+          "Caster": [
+            {
+              "prefabName": "FX_RSkill_linoleum",
+              "target": "Self",
+              "delayTime": 0.5,
+              "duration": 2,
+              "position": {
+                "x": 0,
+                "y": 0,
+                "z": 6
+              }
+            }
+          ],
           "HitTarget": []
         },
         "D": {

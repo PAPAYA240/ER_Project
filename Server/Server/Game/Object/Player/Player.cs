@@ -991,7 +991,14 @@ namespace Server.Game
             Room.Broadcast(pkt);
         }
 
-        public void SendSkillEffect(Vector2 mousePos, KeyCode keyCode = KeyCode.None, bool sendLookatMousePacket = false)
+        public void SendSkillEffect(
+            Vector2 mousePos,
+            KeyCode keyCode = KeyCode.None, 
+            bool sendLookatMousePacket = false,
+            Vector3 targetPos = new Vector3(),
+            Quaternion targetRot = default(Quaternion),
+            string type = "Caster", 
+            string name = "")
         {
             Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
             Vector2 dir = mousePos - myPos;
@@ -1017,6 +1024,10 @@ namespace Server.Game
                 SkillKey = (int)keyCode,
                 MousePosX = mousePos.X,
                 MousePosZ = mousePos.Y,
+                TargetPosition = new PositionInfo { PosX = targetPos.X, PosY = targetPos.Y, PosZ = targetPos.Z },
+                TargetRotation = new RotationInfo { Qx = targetRot.X, Qy = targetRot.Y, Qz = targetRot.Z, Qw = targetRot.W },
+                Type = type,
+                FxName = name
             };
 
             Room.Push(Room.Broadcast, fxPacket);

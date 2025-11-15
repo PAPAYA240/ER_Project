@@ -23,8 +23,13 @@ public class TheodoreInputController : PlayerInputController
     private const int SNIPER_SHOT_COUNT = 3;
     private int _SniperShotIdx = 0;
 
+    // Skill Q - Speed
+    float _originSpeed = 0f;
+    const float SKILL_CHARGE_SPEED = 2.5f;
+
     private void Start()
     {
+        _originSpeed = _player.Speed;
         _attackRange = 6.0f;
     }
     protected override Vector3 GetAttackStopPosition(Vector3 from, Vector3 target)
@@ -181,8 +186,9 @@ public class TheodoreInputController : PlayerInputController
 
     private IEnumerator ChargingSkill(KeyCode key, Action onCancel)
     {
-        SendSkillPreparePacket(key);
+        _player.Speed -= SKILL_CHARGE_SPEED;
 
+        SendSkillPreparePacket(key);
         while (Input.GetKey(key) &&  _elapsedTime < EFFECT_DURATION)
         {
             _elapsedTime += Time.deltaTime;
@@ -194,6 +200,7 @@ public class TheodoreInputController : PlayerInputController
         {
             SendSkillInputPacket(key, SKIP_STATE_CHECK);
         }
+        _player.Speed = _originSpeed;
     }
     private void CancelSkill(KeyCode key)
     {
@@ -273,10 +280,13 @@ public class TheodoreInputController : PlayerInputController
     }
     private void SendSkillExecutePacket(KeyCode key)
     {
+        Vector2 mousePos = _player.GetMousePos();
         C_SkillExecute executePacket = new C_SkillExecute
         {
             ObjectId = _player.ObjInfo.ObjectId,
-            SkillKey = (int)key
+            SkillKey = (int)key,
+            MousePosX = mousePos.x,
+            MousePosZ = mousePos.y
         };
         Managers.Network.Send(executePacket);
     }

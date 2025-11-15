@@ -49,17 +49,24 @@ public sealed class Theodore_D : SkillHandlerBase
     }
     public override void OnAttack(Player p)
     {
-        // Animation
+        Player_SkillState skillstate = p.CurrentState as Player_SkillState;
+        p.LookAtMouse(skillstate.Ctx.MousePos);
+        
+        // > Animation
         _animName = ANIM_SKILL;
         p.SendAnimPacket(_animName, 0.05f);
 
-        // Skill
-        Player_SkillState skillstate = p.CurrentState as Player_SkillState;
+        // > Skill
         CreateHitbox(p, skillstate.Ctx);
         p.SendSkillConfirmPacket(
             canUse : true,
             keyCode : _keyCode);
-        p.SendSkillEffect(mousePos : skillstate.Ctx.MousePos, keyCode: _keyCode, sendLookatMousePacket: true);
+
+        // > Effect
+        p.SendSkillEffect(
+            mousePos : skillstate.Ctx.MousePos, 
+            keyCode: _keyCode, 
+            sendLookatMousePacket: true);
     }
     public override void OnStop(Player p)
     {

@@ -242,17 +242,6 @@ class PacketHandler
 
         GameObjectType objectType = ObjectManager.GetObjectTypeById(creature.Id);
 
-        //// 오브젝트 충돌
-        //if ((KeyCode)interactPacket.TargetKeyCode == KeyCode.F1)
-        //{
-        //    if (objectType == GameObjectType.Player)
-        //    {
-        //        KeyCode mkey = (KeyCode)interactPacket.KeyCode; // Hitbox 키코드
-        //        GameObject target = Managers.Object.FindById(interactPacket.TargetId); // 공격한 타겟
-
-        //        MonsterController mc = target.GetComponentInChildren<MonsterController>();
-        //    }
-        //}
         // Hitbox 충돌
        if (objectType == GameObjectType.Player)
        {
@@ -377,16 +366,17 @@ class PacketHandler
     public static void S_FxHandler(PacketSession session, IMessage packet)
     {
         S_Fx fxPacket = packet as S_Fx;
-
         GameObject go = Managers.Object.FindById(fxPacket.ObjectId);
-        if (go == null)
-            return;
+        if (go == null)     return;
         PlayerController pc = go.GetComponent<PlayerController>();
-        if (pc == null)
-            return;
+        if (pc == null)      return;
 
-        pc.LookAtMouse(new Vector2(fxPacket.MousePosX, fxPacket.MousePosZ));
-        pc.PlayEffectFromServer(fxPacket);
+        Vector3 mousePos = new Vector3(fxPacket.MousePosX, 0, fxPacket.MousePosZ);
+        Vector3 targetPos = fxPacket.TargetPosition.ToVector();
+        Quaternion targetRot = fxPacket.TargetRotation;
+
+        pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));
+        pc.PlayEffectFromServer(fxPacket, mousePos, targetPos, targetRot);
     }
 
     public static void S_RespawnHandler(PacketSession session, IMessage packet)

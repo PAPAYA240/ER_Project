@@ -367,6 +367,8 @@ message C_SkillCancel{
 message C_SkillExecute{
    int32 objectId = 1;
    int32  skillKey = 2;
+   float mousePosX = 3;
+   float mousePosZ = 4;
 }
 
 message S_Spawn {
@@ -423,11 +425,14 @@ message C_Fx{
 
 message S_Fx{
 	int32 objectId = 1;
-	string fxName = 2;
+	string fxName = 2; 
 	bool canLookatMouse = 3;
 	int32 skillKey = 4;
-	float mousePosX = 5;
+	float mousePosX = 5; 
 	float mousePosZ = 6;
+	PositionInfo targetPosition = 7; // type = Target 시, 타게팅 위치
+	RotationInfo targetRotation = 8; // type = Target 시, 타게팅 회전
+	string type = 9; // Caster, HitTarget, Select 중 하나, 기본은 Caster
 }
 
 message C_Anim{

@@ -122,8 +122,6 @@ public class ObjectManager
             pc.Owner = Managers.Object.FindById(info.Projectile.OwnerId);
 
             _objects.Add(info.ObjectId, go);
-
-            go.transform.SetParent(pc.transform);
             pc.SyncPos();
         }
     }

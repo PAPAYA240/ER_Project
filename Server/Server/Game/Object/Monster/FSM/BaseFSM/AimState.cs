@@ -13,6 +13,7 @@ namespace Server.Game
 
         public void Enter(Monster monster)
         {
+                Console.WriteLine("스킬 시작");
             _skillData = monster.CastRandomSkill();
             if (_skillData == null)
             {
@@ -32,6 +33,7 @@ namespace Server.Game
         {
             if (IsSkillFinished())
             {
+                Console.WriteLine("스킬 끝 ");
                 if (monster.IsInSkillRange())
                     monster.ChangeState(FSMManager.Instance.EvaluateTargetForNextState(monster));
                 else

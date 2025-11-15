@@ -38,12 +38,24 @@ public class FXManager : MonoBehaviour
         (int ownerId,                           // owner ID
         List<EffectData> effectData,       // Effect List
         Transform casterTransform,        // 대상 transform
-        Vector3 targetPos = new Vector3(), // 이펙트 목표 위치
-        Quaternion rot = new Quaternion() // 이펙트 회전 값
+        Vector3 mousePos                   // 마우스 위치
         )
     {
-         return Effect.PlayEffect(ownerId, effectData, casterTransform, targetPos, GetPlayerRotation(casterTransform));
+        return Effect.PlayEffect(ownerId, effectData, casterTransform, mousePos, new Vector3(), GetPlayerRotation(casterTransform));
     }
+
+    public List<GameObject> PlayEffect
+       (int ownerId,                           // owner ID
+       List<EffectData> effectData,       // Effect List
+       Transform casterTransform,        // 대상 transform
+       Vector3 mousePos,                   // 마우스 위치
+       Vector3 targetPos,                  // 이펙트 목표 위치
+       Quaternion rot = default(Quaternion)// 이펙트 회전 값
+       )
+    {
+        return Effect.PlayEffect(ownerId, effectData, casterTransform, mousePos, targetPos, rot);
+    }
+
 
     public void PlayStatusEffect(GameObject target, CharacterType charType, float duration)
     {

@@ -130,7 +130,6 @@ public class CreatureController : BaseController
 
     public virtual void OnHitboxCollision(KeyCode kc, KeyCode tkc) 
     {
-        
     }
     public void ChangeStat(StatInfo growth)
     {

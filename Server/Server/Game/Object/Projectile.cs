@@ -32,8 +32,13 @@ namespace Server.Game
                 PosY = Owner.PosInfo.PosY,
                 PosZ = Owner.PosInfo.PosZ
             };
-
-            Info.RotInfo = Owner.RotInfo; 
+            Info.RotInfo = new RotationInfo
+            {
+                Qx = Owner.RotInfo.Qx,
+                Qy = Owner.RotInfo.Qy,
+                Qz = Owner.RotInfo.Qz,
+                Qw = Owner.RotInfo.Qw
+            };
         }
 
         public override void Update()

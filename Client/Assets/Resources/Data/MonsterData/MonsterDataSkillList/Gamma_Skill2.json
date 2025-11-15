@@ -14,12 +14,11 @@
       "Type": "ParallelNode",
       "Children": [
         {
-          "Name": "Skill02",
+          "Name": "SKILL2",
           "Type": "PlayAnimation",
           "Properties": {
             "animName": "SKILL2",
             "chainAnimNames": [
-              "SKILL2",
               "SKILL2_LOOP",
               "SKILL2_END"
             ]

@@ -1038,7 +1038,7 @@ namespace Server.Game
 
             switch (shape)
             {
-                case SkillShape.Ray:
+                case SkillShape.Ray: // Theodore Ray - Point 개인용
                     {
                         Vector2 myPosition = hitbox.trackingHitbox.MousePos;
                         Vector2 fixedtoTarget = new Vector2(hitbox.FixedPosition.X, hitbox.FixedPosition.Z);
