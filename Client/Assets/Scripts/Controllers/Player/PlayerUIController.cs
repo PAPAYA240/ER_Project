@@ -36,10 +36,6 @@ public class PlayerUIController : MonoBehaviour
         _skillDict = _skill.SkillDict;
         _coolDownDict = _skill.CoolDownDict;
 
-        // Chat
-        GameObject goChat = Managers.Resource.Instantiate("UI/Chat/ChatBackground");
-        goChat.transform.SetParent(gameObject.transform);
-
         //UI
         GameObject go = Managers.Resource.Instantiate("UI/Scene/PlayerHUD");
         go.transform.SetParent(gameObject.transform);
