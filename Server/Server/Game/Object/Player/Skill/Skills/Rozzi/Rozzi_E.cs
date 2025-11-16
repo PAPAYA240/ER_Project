@@ -115,17 +115,9 @@ public sealed class Rozzi_E : SkillHandlerBase
                     start: p.Position,
                     end: _midPos);
 
-            if(_target is Player targetPlayer)
-            {
-                StunStateDesc desc = new StunStateDesc();
-                desc.EndPos = _target.Position;
-                desc.Duration = _stunDuration;
-                targetPlayer.ChangeState(new Player_StunState(desc));
-            }
 
-
-            Vector2 hitPos = new Vector2(_target.Position.X, _target.Position.Z);
-            p.Room.CollManager.AddHitbox(p, _characterType, _keyCode, hitPos);
+            MakeTargetPlayerStun();
+            AddHitBox(p);
         }
 
         _elapsed += TimeUtil.DeltaTime;
@@ -160,6 +152,23 @@ public sealed class Rozzi_E : SkillHandlerBase
         }
 
         return true;
+    }
+
+    private void MakeTargetPlayerStun()
+    {
+        if (_target is Player targetPlayer)
+        {
+            StunStateDesc desc = new StunStateDesc();
+            desc.EndPos = _target.Position;
+            desc.Duration = _stunDuration;
+            targetPlayer.ChangeState(new Player_StunState(desc));
+        }
+    }
+
+    private void AddHitBox(Player p)
+    {
+        Vector2 hitPos = new Vector2(_target.Position.X, _target.Position.Z);
+        p.Room.CollManager.AddHitbox(p, _characterType, _keyCode, hitPos);
     }
 }
 

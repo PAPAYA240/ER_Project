@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Numerics;
+using System.Reflection.Metadata.Ecma335;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -52,7 +53,7 @@ namespace Server.Game
 
         public override float Speed 
         {
-            get { return ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed + _totalItemStat.FixedSpeed * (1 + _totalItemStat.PercentageSpeed)) ; }
+            get { return ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed + _totalItemStat.FixedSpeed * (1 + _totalItemStat.PercentageSpeed), ignoreDebuff: IsCcImmune) ; }
             set { base.Speed = value; }
         }
 
@@ -358,6 +359,7 @@ namespace Server.Game
             MakeInventory();
         }
         #endregion
+
         #region State : Dead
         public void OnDestroy()
         {
@@ -873,7 +875,7 @@ namespace Server.Game
                 Stamina += _totalItemStat.MaxStamina;
                 _isUpdatedStat = true;
 
-                _isUpdatedStatus = true;
+                UpdateStatusFlag();
 
                 GameRoom room = Room;
 
@@ -982,18 +984,6 @@ namespace Server.Game
                     Ratio = ratio
                 }
             };
-            Room.Push(Room.Broadcast, packet);
-        }
-
-        public void SendMovePacket(PositionInfo posInfo, RotationInfo rotInfo)
-        {
-            S_Move packet = new S_Move()
-            {
-                ObjectId = Id,
-                PosInfo = posInfo,
-                RotInfo = rotInfo
-            };
-
             Room.Push(Room.Broadcast, packet);
         }
 
@@ -1221,6 +1211,22 @@ namespace Server.Game
                 Room.Push(Session.Send, packet);
                 _isUpdatedStatus = false;
             }
+        }
+
+        public void SendUpdateStatusPacket(bool IsUnStoppable)
+        {
+            S_ChangeStatus packet = new S_ChangeStatus()
+            {
+                ObjectId = Id,
+
+                MoveSpeed = Speed,
+                Attack = Attack,
+                //AttackSpeed = 
+                Defense = Defense,
+                Healing = Healing,
+            };
+
+            Room.Push(Session.Send, packet);
         }
         #endregion
     }

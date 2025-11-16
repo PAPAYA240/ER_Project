@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
+using static Server.Data.DataUtils;
 
 public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 {
@@ -269,6 +270,13 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
             return;
 
         target.OnDamaged(p, p.Attack, false, true);
+
+        if (p.CharType == CharacterType.Rozzi)
+        {
+            Projectile_Rozzi_R pj = p.Room.FindProjectile(p, ProjectileType.ProjectileRozziR) as Projectile_Rozzi_R;
+            if (pj != null && pj.Target != null && pj.Target == target)
+                pj.RegisterOwnerHit(isSkillHit: false);
+        }
     }
 
     public bool IsSwingActive() { return _swingActive; }

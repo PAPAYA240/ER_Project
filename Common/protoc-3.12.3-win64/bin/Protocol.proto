@@ -151,8 +151,10 @@ enum EnvType{
 }
    
 enum ProjectileType {
-	PROJECTILE_BULLET = 0;
-	PROJECTILE_BALL = 1;
+	PROJECTILE_NONE = 0;
+	PROJECTILE_BULLET = 1;
+	PROJECTILE_BALL = 2;
+	PROJECTILE_ROZZI_R = 3;
 }
 enum SkillType{
 	SKILL_NONE = 0;

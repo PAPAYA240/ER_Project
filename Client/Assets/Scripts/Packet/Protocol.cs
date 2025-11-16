@@ -278,8 +278,9 @@ namespace Google.Protobuf.Protocol {
             "Eg8KC0VOVklST05NRU5UEAQqfQoHRW52VHlwZRIMCghFTlZfTk9ORRAAEg0K",
             "CUhFQUxfUEFDSxABEhUKEURFVklDRV9TUEFXTlBPSU5UEAISGgoWQUNDQk9V",
             "TkRBUllfU1BBV05QT0lOVBADEhYKEkJBUlJJRVJfU1BBV05QT0lOVBAEEgoK",
-            "BkJFQUNPThAFKjwKDlByb2plY3RpbGVUeXBlEhUKEVBST0pFQ1RJTEVfQlVM",
-            "TEVUEAASEwoPUFJPSkVDVElMRV9CQUxMEAEqdQoJU2tpbGxUeXBlEg4KClNL",
+            "BkJFQUNPThAFKmkKDlByb2plY3RpbGVUeXBlEhMKD1BST0pFQ1RJTEVfTk9O",
+            "RRAAEhUKEVBST0pFQ1RJTEVfQlVMTEVUEAESEwoPUFJPSkVDVElMRV9CQUxM",
+            "EAISFgoSUFJPSkVDVElMRV9ST1paSV9SEAMqdQoJU2tpbGxUeXBlEg4KClNL",
             "SUxMX05PTkUQABIOCgpTS0lMTF9BVVRPEAESFAoQU0tJTExfUFJPSkVDVElM",
             "RRACEhAKDFNLSUxMX1NUQVRJQxADEg8KC1NLSUxMX1RSQUNLEAQSDwoLU0tJ",
             "TExfUE9JTlQQBSr/AQoMTW9uc3RlclNraWxsEgsKB01TX05PTkUQABIOCgpN",
@@ -568,8 +569,10 @@ namespace Google.Protobuf.Protocol {
   }
 
   public enum ProjectileType {
-    [pbr::OriginalName("PROJECTILE_BULLET")] ProjectileBullet = 0,
-    [pbr::OriginalName("PROJECTILE_BALL")] ProjectileBall = 1,
+    [pbr::OriginalName("PROJECTILE_NONE")] ProjectileNone = 0,
+    [pbr::OriginalName("PROJECTILE_BULLET")] ProjectileBullet = 1,
+    [pbr::OriginalName("PROJECTILE_BALL")] ProjectileBall = 2,
+    [pbr::OriginalName("PROJECTILE_ROZZI_R")] ProjectileRozziR = 3,
   }
 
   public enum SkillType {
@@ -11573,7 +11576,7 @@ namespace Google.Protobuf.Protocol {
 
     /// <summary>Field number for the "projectileType" field.</summary>
     public const int ProjectileTypeFieldNumber = 1;
-    private global::Google.Protobuf.Protocol.ProjectileType projectileType_ = global::Google.Protobuf.Protocol.ProjectileType.ProjectileBullet;
+    private global::Google.Protobuf.Protocol.ProjectileType projectileType_ = global::Google.Protobuf.Protocol.ProjectileType.ProjectileNone;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Google.Protobuf.Protocol.ProjectileType ProjectileType {
       get { return projectileType_; }
@@ -11614,7 +11617,7 @@ namespace Google.Protobuf.Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (ProjectileType != global::Google.Protobuf.Protocol.ProjectileType.ProjectileBullet) hash ^= ProjectileType.GetHashCode();
+      if (ProjectileType != global::Google.Protobuf.Protocol.ProjectileType.ProjectileNone) hash ^= ProjectileType.GetHashCode();
       if (OwnerId != 0) hash ^= OwnerId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -11629,7 +11632,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (ProjectileType != global::Google.Protobuf.Protocol.ProjectileType.ProjectileBullet) {
+      if (ProjectileType != global::Google.Protobuf.Protocol.ProjectileType.ProjectileNone) {
         output.WriteRawTag(8);
         output.WriteEnum((int) ProjectileType);
       }
@@ -11645,7 +11648,7 @@ namespace Google.Protobuf.Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (ProjectileType != global::Google.Protobuf.Protocol.ProjectileType.ProjectileBullet) {
+      if (ProjectileType != global::Google.Protobuf.Protocol.ProjectileType.ProjectileNone) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) ProjectileType);
       }
       if (OwnerId != 0) {
@@ -11662,7 +11665,7 @@ namespace Google.Protobuf.Protocol {
       if (other == null) {
         return;
       }
-      if (other.ProjectileType != global::Google.Protobuf.Protocol.ProjectileType.ProjectileBullet) {
+      if (other.ProjectileType != global::Google.Protobuf.Protocol.ProjectileType.ProjectileNone) {
         ProjectileType = other.ProjectileType;
       }
       if (other.OwnerId != 0) {
