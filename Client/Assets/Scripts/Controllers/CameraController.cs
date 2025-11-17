@@ -82,8 +82,8 @@ public class CameraController : MonoBehaviour
         var playerCamData = _playerCamera.gameObject.GetOrAddComponent<UniversalAdditionalCameraData>();
         playerCamData.renderType = CameraRenderType.Overlay;
 
-        mainCamData.cameraStack.Add(_uiCamera);     
-        mainCamData.cameraStack.Add(_playerCamera);  
+        mainCamData.cameraStack.Add(_uiCamera);
+        mainCamData.cameraStack.Add(_playerCamera);
     }
 
 

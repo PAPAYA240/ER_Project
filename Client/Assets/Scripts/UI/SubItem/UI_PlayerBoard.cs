@@ -38,6 +38,8 @@ public class UI_PlayerBoard : UI_Base
     // 아이템
     // 배경 색
 
+    public int UID {  get; set; }
+
     public override void Init()
     {
         Bind<Image>(typeof(Images));
