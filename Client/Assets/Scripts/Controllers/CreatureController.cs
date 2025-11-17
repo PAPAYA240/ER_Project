@@ -139,7 +139,6 @@ public class CreatureController : BaseController
 
     public virtual void OnHitboxCollision(KeyCode kc, KeyCode tkc) 
     {
-        
     }
     public void ChangeStat(StatInfo growth)
     {
@@ -179,4 +178,25 @@ public class CreatureController : BaseController
 
         return true;
     }
+
+    #region Shader
+    // 벽 파란색 막기
+    protected void UnActiveShaderXRay()
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+
+        foreach (Renderer renderer in renderers)
+        {
+            foreach (Material mat in renderer.materials)
+            {
+                if (mat.HasProperty("_OccludedColor"))
+                {
+                    Color occludedColor = mat.GetColor("_OccludedColor");
+                    occludedColor.a = 0f; 
+                    mat.SetColor("_OccludedColor", occludedColor);
+                }
+            }
+        }
+    }
+    #endregion
 }

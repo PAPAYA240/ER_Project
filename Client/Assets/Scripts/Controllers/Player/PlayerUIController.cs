@@ -16,6 +16,7 @@ public class PlayerUIController : MonoBehaviour
     private MyPlayerController _player;
     private PlayerSkillController _skill;
 
+    private UI_AppearMonsterBar _appearMonsterBar;
     public UI_PlayerHUD PlayerHUD;
     public UI_PlayerInterface PlayerInterface { get; protected set; }
 
@@ -36,10 +37,6 @@ public class PlayerUIController : MonoBehaviour
         _skillDict = _skill.SkillDict;
         _coolDownDict = _skill.CoolDownDict;
 
-        // Chat
-        GameObject goChat = Managers.Resource.Instantiate("UI/Chat/ChatBackground");
-        goChat.transform.SetParent(gameObject.transform);
-
         //UI
         GameObject go = Managers.Resource.Instantiate("UI/Scene/PlayerHUD");
         go.transform.SetParent(gameObject.transform);
@@ -55,6 +52,10 @@ public class PlayerUIController : MonoBehaviour
 
         UI_Minimap minimap = _player.GetComponentInChildren<UI_Minimap>();
         minimap.ActivatePlayerIcon(UI_MinimapCharIcon.IconType.MyPlayer, _player);
+
+        GameObject appearMonsterBar = Managers.Resource.Instantiate("UI/SubItem/MonsterAppearBar");
+        if(appearMonsterBar != null)
+            _appearMonsterBar = appearMonsterBar.GetComponentInChildren<UI_AppearMonsterBar>();
 
         //쿨타임 설정
         UpdateSkillMaxCool();
@@ -287,6 +288,11 @@ public class PlayerUIController : MonoBehaviour
         PlayerHUD.NotifyKill(attPc, diePc);
     }
 
+    public void ActiveAppearMonsterBar(int phase)
+    {
+        if (_appearMonsterBar != null)
+            _appearMonsterBar.Active(phase);
+    }
     #region Inventory
     private void MakeInventory()
     {

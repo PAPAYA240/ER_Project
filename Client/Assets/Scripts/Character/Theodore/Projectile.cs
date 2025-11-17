@@ -21,6 +21,9 @@ public class Projectile : BaseController
 
     void OnTriggerEnter(Collider other)
     {
+        if (Type == ProjectileType.ProjectileRozziR)
+            return;
+
         // 스크린 활용 시 모든 몬스터와 플레이어도 맞게 할 수 있음
         bool bDestroy = false;
 
@@ -28,6 +31,7 @@ public class Projectile : BaseController
         if (cc == null) return;
 
         GameObjectType objectType = ObjectManager.GetObjectTypeById(cc.Id);
+
         if (objectType == GameObjectType.Player)
         {
             PlayerController player = other.gameObject.GetComponent<PlayerController>();

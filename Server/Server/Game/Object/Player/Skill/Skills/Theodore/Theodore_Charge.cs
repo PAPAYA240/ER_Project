@@ -18,7 +18,7 @@ public sealed class Theodore_Charge : SkillHandlerBase
     }
     public override void OnEnter(Player p, SkillContext ctx)
     {
-        _createHitbox = false;
+        HitboxCreated = false;
         base.OnEnter(p, ctx);
         SendSkillConfirmPacket(p);
     }

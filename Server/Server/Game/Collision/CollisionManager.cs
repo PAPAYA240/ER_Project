@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Threading;
 using Google.Protobuf.Collections;
 using Google.Protobuf.Protocol;
@@ -28,8 +29,8 @@ namespace Server.Game
         public int Team { get; set; }
 
         public SkillHitbox Data { get; set; }
-        public int StartTick { get; set; } // Skill Start Time
-        public int EndTick { get; set; } // Skill End Time
+        public long StartTick { get; set; } // Skill Start Time
+        public long EndTick { get; set; } // Skill End Time
 
         public bool IsUsed { get; set; } = false;
 
@@ -74,6 +75,7 @@ namespace Server.Game
         public bool IsInteracted = true;
         public float OffsetRadius = 0;
         public Vector3 FixedPosition = new Vector3();
+        public Quaternion InitialRotation { get; set; }
         #endregion
     }
 
@@ -100,7 +102,12 @@ namespace Server.Game
         Dictionary<CharacterType, Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>> _statusEffects // Buffs & Debuffs
             = new Dictionary<CharacterType, Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>>();
 
-        public int CurTick { get; set; }
+        private long _curTick;
+        public long CurTick
+        {
+            get => Interlocked.Read(ref _curTick);
+            set => Interlocked.Exchange(ref _curTick, value);
+        }
 
         public void Init()
         {
@@ -136,7 +143,7 @@ namespace Server.Game
                     Interactions = ConvertProtoInteractionsToKeyCodeDictionary(skillHitbox.Interactions)
                 };
 
-                if (charType == CharacterType.Rozzi && keyCode == KeyCode.E)
+                if (charType == CharacterType.Rozzi && (keyCode == KeyCode.E || keyCode == KeyCode.F2))
                 {
                     hitbox.PosX = mousePos.X;
                     hitbox.PosZ = mousePos.Y;
@@ -230,11 +237,11 @@ namespace Server.Game
                     if (hitbox.Creature == null || hitbox.Data == null)
                         continue;
                     if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
-                        continue;
+                        continue;                      
                     if (type != SkillType.SkillTrack)
                         continue;
 
-                    Quaternion rot = new Quaternion(
+                        Quaternion rot = new Quaternion(
                         hitbox.Creature.RotInfo.Qx,
                         hitbox.Creature.RotInfo.Qy,
                         hitbox.Creature.RotInfo.Qz,
@@ -247,7 +254,6 @@ namespace Server.Game
 
                     hitbox.PosX = hitbox.Creature.PosInfo.PosX + rotatedOffset.X;
                     hitbox.PosZ = hitbox.Creature.PosInfo.PosZ + rotatedOffset.Z;
-
                 }
             }
         }
@@ -283,6 +289,24 @@ namespace Server.Game
 
                     if(hitPlayers.Count > 0)
                     {
+                        if(hitbox.CharType == CharacterType.Rozzi)
+                        {
+                            Projectile_Rozzi_R pj = hitbox.Creature.Room.FindProjectile(hitbox.Creature, ProjectileType.ProjectileRozziR) as Projectile_Rozzi_R;
+                            if (pj != null)
+                            {
+                                if (hitbox.KeyCode == KeyCode.R)
+                                {
+                                    pj.OnProjectileHit(hitPlayers.First());
+                                    continue;
+                                }
+                                else if(pj.Target != null && hitPlayers.Contains(pj.Target as Player))                                   
+                                    pj.RegisterOwnerHit(isSkillHit: true);
+                            }
+
+                            if (hitbox.KeyCode == KeyCode.F2)
+                                hitbox.KeyCode = KeyCode.R;
+                        }
+
                         HandleDamage<Player>(hitbox, hitPlayers, damageDict);
                         HandleStatusEffects<Player>(hitbox, hitPlayers);
                     }
@@ -359,27 +383,21 @@ namespace Server.Game
                 float dmg = ApplyDamage(hitbox, target, damageDict);
                 if (hitbox.Omnivamp)
                     totalDmg += target.CalcFinalDamage(hitbox.Creature, dmg);
-                hitbox.IsUsed = true;
+
+                if (hitbox.Creature is Monster)
+                {
+                    if (target is Player)
+                        hitbox.IsUsed = true;
+                }
+                else
+                     hitbox.IsUsed = true;
             }
 
             if(hitbox.Omnivamp)
                 hitbox.AddDamage(totalDmg);
-
-            if (hitbox.Creature is Monster)
-            {
-                Monster monster = hitbox.Creature as Monster;
-                if (monster != null)
-                {
-                    foreach (T target in hitTargets)
-                    {
-                        Player p = target as Player;
-                        if (p != null)
-                            monster.OnTargetHit(p);
-                    }
-                }
-            }
         }
 
+       
         T FindNearestTarget<T>(Hitbox hitbox, List<T> targets) where T : GameObject, new()
         {
             T nearestTarget = null;
@@ -735,6 +753,9 @@ namespace Server.Game
                 if (hitbox.HitObjs.ContainsKey(targetKvp.Key) || true == hitbox.IsUsed)
                     continue;
 
+                if (hitbox.Creature.CharType == CharacterType.Rozzi)
+                    continue;
+
                 if (CheckCollision(hitbox, target))
                 {
                     Player skillOwner = hitbox.Creature as Player;
@@ -874,14 +895,10 @@ namespace Server.Game
                 if (skillHitbox.EndFrame <= 0)
                     return null;
 
-                const float distance = 1.0f;
                 var quat = creature.RotInfo.GetQuatFromRotInfo();
-                Vector2 forward = new Vector2(
-                    2 * (quat.X * quat.Z + quat.W * quat.Y),
-                    2 * (quat.Y * quat.Z - quat.W * quat.X)
-                );
-                //float frontPosX = creature.PosInfo.PosX + forward.X * distance;
-                //float frontPosZ = creature.PosInfo.PosZ + forward.Y * distance;
+                Vector3 LocalForward = new Vector3(0, 0, 1);
+                Vector3 forward3D = Vector3.Transform(LocalForward, quat);
+                Vector2 forward = new Vector2(forward3D.X, forward3D.Z);
 
                 hitbox = new Hitbox
                 {
@@ -892,6 +909,7 @@ namespace Server.Game
                     MonstType = creature.Info.Monster.MonsterType,
                     Data = skillHitbox,
                     MousePos = forward,
+                    InitialRotation = quat,
                     OffsetPos = new Vector2(skillHitbox.RightOffset, skillHitbox.LookOffset),
                     Interactions = ConvertProtoInteractionsToKeyCodeDictionary(skillHitbox.Interactions)
                 };
@@ -919,19 +937,11 @@ namespace Server.Game
         {
             if (Enum.TryParse<SkillType>(hitbox.Data.Type, out var type) && type == SkillType.SkillProjectile)
             {
-                Quaternion rot = new Quaternion(
-                  hitbox.Creature.RotInfo.Qx,
-                  hitbox.Creature.RotInfo.Qy,
-                  hitbox.Creature.RotInfo.Qz,
-                  hitbox.Creature.RotInfo.Qw
-                );
+                Quaternion rot = hitbox.Creature.RotInfo.GetQuatFromRotInfo();
 
-                // TODO : 움직임 속도 예시 (데이터로 변경 예정)
-                // : 움직임 플레이어에 영향 받지 못하게 고정해야 함
-                const float moveSpeed = 10;
                 Vector3 toForward = Vector3.Transform(new Vector3(0, 0, 1), rot);
                 const float TickInterval = 1.0f / 70.0f;
-                float deltaMove = moveSpeed * TickInterval;
+                float deltaMove = hitbox.Data.Speed * TickInterval;
 
                 hitbox.PosX += toForward.X * deltaMove;
                 hitbox.PosZ += toForward.Z * deltaMove;
@@ -980,105 +990,7 @@ namespace Server.Game
 
             return false;
         }
-        bool CheckMonsterCollision(Hitbox hitbox, GameObject go)
-        {
-            if (!System.Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
-                return false;
 
-            switch (shape)
-            {
-                case SkillShape.Circle:
-                    {
-                        float dx = go.PosInfo.PosX - hitbox.PosX;
-                        float dz = go.PosInfo.PosZ - hitbox.PosZ;
-                        float distanceSq = dx * dx + dz * dz;
-
-                        float hitboxRadius = hitbox.Data.Radius + hitbox.OffsetRadius;
-                        float totalRadius = hitboxRadius + go.Radius;
-
-                        return distanceSq <= totalRadius * totalRadius;
-                    }
-                case SkillShape.Ray:
-                    {
-                        Vector2 origin = new Vector2(hitbox.PosX, hitbox.PosZ);
-                        var quat = go.RotInfo.GetQuatFromRotInfo();
-                        Vector2 forward = new Vector2(
-                            2 * (quat.X * quat.Z + quat.W * quat.Y),
-                            2 * (quat.Y * quat.Z - quat.W * quat.X)
-                        );
-                        
-                        Vector2 right = new Vector2(-forward.Y, forward.X);
-                        Vector2 toTarget = new Vector2(go.PosInfo.PosX - origin.X, go.PosInfo.PosZ - origin.Y);
-
-                        float projForward = Vector2.Dot(toTarget, forward);
-                        float projRight = Vector2.Dot(toTarget, right);
-
-                        if (!Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
-                            return false;
-
-                        float range = hitbox.Data.MaxRange;
-                        if (type == SkillType.SkillTrack)
-                            range = hitbox.Data.MinRange + (hitbox.Data.MaxRange - hitbox.Data.MinRange) * hitbox.ChargeRatio;
-
-                        float halfWidth = hitbox.Data.Width * 0.5f;
-                        float clampedForward = MathF.Max(0f, MathF.Min(projForward, range));
-                        float clampedRight = MathF.Max(-halfWidth, MathF.Min(projRight, halfWidth));
-                        float deltaForward = projForward - clampedForward;
-                        float deltaRight = projRight - clampedRight;
-                        float distSq = deltaForward * deltaForward + deltaRight * deltaRight;
-
-                        return distSq <= go.Radius * go.Radius;
-                    }
-
-                case SkillShape.Sector:
-                    {
-                        Vector2 center = new Vector2(hitbox.PosX, hitbox.PosZ);
-                        Vector2 toTarget = new Vector2(go.PosInfo.PosX - center.X, go.PosInfo.PosZ - center.Y);
-
-                        var quat = go.RotInfo.GetQuatFromRotInfo();
-                        Vector2 mouseDir = new Vector2(
-                            2 * (quat.X * quat.Z + quat.W * quat.Y),
-                            2 * (quat.Y * quat.Z - quat.W * quat.X)
-                        );
-
-                        Vector2 mouseRightVec = new Vector2(mouseDir.Y, -mouseDir.X);
-
-                        if (hitbox.Data.LookOffset != 0f || hitbox.Data.RightOffset != 0f)
-                        {
-                            center += mouseDir * hitbox.Data.LookOffset;
-                            center += mouseRightVec * hitbox.Data.RightOffset;
-                        }
-
-                        toTarget = new Vector2(go.PosInfo.PosX - center.X, go.PosInfo.PosZ - center.Y);
-                        float dist = toTarget.Length();
-
-                        if (dist > hitbox.Data.Radius + go.Radius)
-                            return false;
-
-                        if (dist <= go.Radius)
-                            return true;
-
-                        Vector2 targetDir = toTarget / dist;
-                        float dot = Math.Clamp(Vector2.Dot(mouseDir, targetDir), -1f, 1f);
-                        float angleRad = MathF.Acos(dot);
-                        float halfAngleRad = (hitbox.Data.Angle * 0.5f) * (MathF.PI / 180f);
-
-                        if (angleRad <= halfAngleRad)
-                            return true;
-
-                        float sin = MathF.Sin(halfAngleRad);
-                        float cos = MathF.Cos(halfAngleRad);
-                        Vector2 leftDir = new Vector2(mouseDir.X * cos - mouseDir.Y * sin, mouseDir.X * sin + mouseDir.Y * cos);
-                        Vector2 rightDir = new Vector2(mouseDir.X * cos + mouseDir.Y * sin, -mouseDir.X * sin + mouseDir.Y * cos);
-
-                        float leftDist = MathF.Abs(toTarget.X * leftDir.Y - toTarget.Y * leftDir.X);
-                        float rightDist = MathF.Abs(toTarget.X * rightDir.Y - toTarget.Y * rightDir.X);
-
-                        return (leftDist <= go.Radius || rightDist <= go.Radius);
-                    }
-            }
-            return false;
-        }
         // 충돌체 끼리의 충돌
         void CheckCollisionHit()
         {
@@ -1156,6 +1068,25 @@ namespace Server.Game
 
             return true;
         }
+
+        // 몬스터에게 맞았다면 처리
+        void CheckAndApplyMonsterHit<T>(Hitbox hitbox, List<T> hitTargets)
+        {
+            if (hitbox.Creature is Monster)
+            {
+                Monster monster = hitbox.Creature as Monster;
+                if (monster != null)
+                {
+                    foreach (T target in hitTargets)
+                    {
+                        Player p = target as Player;
+                        if (p != null)
+                            monster.OnTargetHit(p);
+                    }
+                }
+            }
+        }
+
         private readonly object _hitboxesLock = new object();
         public void AddInteractedHitbox(Hitbox other, Hitbox my)
         {
@@ -1183,7 +1114,7 @@ namespace Server.Game
 
             switch (shape)
             {
-                case SkillShape.Ray:
+                case SkillShape.Ray: // Theodore Ray - Point 개인용
                     {
                         Vector2 myPosition = hitbox.trackingHitbox.MousePos;
                         Vector2 fixedtoTarget = new Vector2(hitbox.FixedPosition.X, hitbox.FixedPosition.Z);

@@ -17,8 +17,6 @@ namespace Server.Game
         public float WeaponAttackRange { get; set; }
         public float BonusAttackRange { get; set; }
 
-        public bool IsDead => this.State == CreatureState.Dead;
-
         // �̵� ����
         public void StopMove()
         {

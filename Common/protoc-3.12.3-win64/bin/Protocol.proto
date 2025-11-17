@@ -153,8 +153,10 @@ enum EnvType{
 }
    
 enum ProjectileType {
-	PROJECTILE_BULLET = 0;
-	PROJECTILE_BALL = 1;
+	PROJECTILE_NONE = 0;
+	PROJECTILE_BULLET = 1;
+	PROJECTILE_BALL = 2;
+	PROJECTILE_ROZZI_R = 3;
 }
 enum SkillType{
 	SKILL_NONE = 0;
@@ -375,6 +377,8 @@ message C_SkillCancel{
 message C_SkillExecute{
    int32 objectId = 1;
    int32  skillKey = 2;
+   float mousePosX = 3;
+   float mousePosZ = 4;
 }
 
 message S_Spawn {
@@ -431,7 +435,14 @@ message C_Fx{
 
 message S_Fx{
 	int32 objectId = 1;
-	string fxName = 2;
+	string fxName = 2; 
+	bool canLookatMouse = 3;
+	int32 skillKey = 4;
+	float mousePosX = 5; 
+	float mousePosZ = 6;
+	PositionInfo targetPosition = 7; // type = Target 시, 타게팅 위치
+	RotationInfo targetRotation = 8; // type = Target 시, 타게팅 회전
+	string type = 9; // Caster, HitTarget, Select 중 하나, 기본은 Caster
 }
 
 message C_Anim{
@@ -575,7 +586,7 @@ message S_ChangeKDA{
 
 message S_SyncTimer{
 	int32 phase = 1;
-	int64 currentTimestamp = 2;
+	int64 currentTick = 2;
 	int64 phaseEndTime = 3;
 }
 
@@ -840,7 +851,7 @@ message S_SkillConfirm {
   bool canUse = 2;
   int32 skillKey = 3;			
   bool canMove = 4;
-  bool canLookatMouse = 5;
+
   //CostInfo costInfo = 5;
   //int32 targetId = 6;
 }

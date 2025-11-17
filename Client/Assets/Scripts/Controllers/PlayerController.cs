@@ -15,8 +15,8 @@ public class PlayerController : CreatureController
     int _maxAtkCount = 2;
 
     // SyncPos
-    float _minDist = 3f;
-    float _syncSpeed = 20f;
+    //float _minDist = 3f;
+    //float _syncSpeed = 20f;
     Vector3 _serverPos;
     float AGENT_SPEED_RATIO = 1.7f;
 
@@ -386,8 +386,62 @@ public class PlayerController : CreatureController
     {
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
     }
-    #endregion
+    public void PlayEffectFromServer(S_Fx packet, Vector3 mousePos, Vector3 targetPos = new Vector3(), Quaternion targetRot = default(Quaternion))
+    {
+        if (packet.Type == "Caster")
+            PlaySkillEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot);
 
+        else if(packet.Type == "Select")
+            PlaySelectEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot, packet.FxName);
+    }
+    #endregion
+    public void LookAtMouse()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100f))
+        {
+            Vector3 targetPoint = hit.point;
+            targetPoint.y = transform.position.y;
+            Vector3 direction = targetPoint - transform.position;
+
+            if (direction != Vector3.zero)
+            {
+                Quaternion newRotation = Quaternion.LookRotation(direction);
+                RotInfo = newRotation;
+                SyncPos(true);
+            }
+        }
+    }
+
+    public Vector2 GetMousePos()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100f))
+        {
+            Vector3 targetPoint = hit.point;
+            return new Vector2(targetPoint.x, targetPoint.z);
+        }
+        return Vector2.zero;
+    }
+
+    public void LookAtMouse(Vector2 mousePos)
+    {
+        Vector3 casterPosition = transform.position;
+
+        Vector3 targetPoint = new Vector3(mousePos.x, casterPosition.y, mousePos.y);
+
+        Vector3 direction = targetPoint - casterPosition;
+
+        if (direction != Vector3.zero)
+        {
+            Quaternion newRotation = Quaternion.LookRotation(direction);
+
+            RotInfo = newRotation;
+            SyncPos(true);
+        }
+    }
     Dictionary<KeyCode, SkillMesh> msDict = new Dictionary<KeyCode, SkillMesh>();
 
     #region NameTagAndHp
@@ -480,7 +534,8 @@ public class PlayerController : CreatureController
     #endregion
 
     #region Effect
-    public void PlaySkillEffect(KeyCode skillKey)
+    // 기본 스킬 이펙트 호출 : Caster Type
+    public void PlaySkillEffect(KeyCode skillKey, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot = default(Quaternion))
     {
         CharacterType type = ObjInfo.Player.CharType;
         CreatureState state = CreatureState.Skill;
@@ -498,7 +553,32 @@ public class PlayerController : CreatureController
         {
             dataList.Add(effect);
         }
-        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, transform);
+
+        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, transform, mousePos);
+    }
+
+    // 직접 선택해서 호출하는 이펙트 : Type Select
+    public void PlaySelectEffect(KeyCode skillKey, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot, string fxName)
+    {
+        CharacterType type = ObjInfo.Player.CharType;
+        CreatureState state = CreatureState.Skill;
+
+        if (!DataManager.PlayerFxDict.ContainsKey(type))
+            return;
+        if (!DataManager.PlayerFxDict[type].ContainsKey(state))
+            return;
+        if (!DataManager.PlayerFxDict[type][state].ContainsKey(skillKey))
+            return;
+
+        SkillEffectList myEffectList = DataManager.PlayerFxDict[type][state][skillKey];
+        List<EffectData> dataList = new List<EffectData>();
+        foreach (EffectData effect in myEffectList.Select)
+        {
+            if(fxName == effect.prefabName)
+                dataList.Add(effect);
+        }
+
+        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, transform, mousePos, targetPos, targetRot);
     }
     #endregion
 

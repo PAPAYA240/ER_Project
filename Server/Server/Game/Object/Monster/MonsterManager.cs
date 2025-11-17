@@ -23,8 +23,8 @@ namespace Server.Game
     {
         public RawMonsterList ProcessAndGetJson(int phase)
         {
-            string basePath = ConfigManager.Config.dataPaths["monster"];
-            string navFilePath = Path.Combine(basePath, "MonsterData/SpawnMonsterData.json");
+            string basePath = ConfigManager.Config.dataPaths["player"];
+            string navFilePath = Path.Combine(basePath, "SpawnMonsterData.json");
             string rawJson = File.ReadAllText(navFilePath);
 
             // 2. 원본 JSON을 C# 객체로 역직렬화
@@ -68,14 +68,16 @@ namespace Server.Game
             //Add(0);
         }
 
-        public void Add(int phase)
+        public void Add(int phase, Room room)
         {
             MonsterDataProcessor processor = new MonsterDataProcessor();
-            SpawnMonstersFromJson(processor.ProcessAndGetJson(phase));
+            SpawnMonstersFromJson(processor.ProcessAndGetJson(phase), room);
         }
 
-        public void SpawnMonstersFromJson(RawMonsterList monsterList)
+        public void SpawnMonstersFromJson(RawMonsterList monsterList, Room room)
         {
+            _room = room as GameRoom;
+
             if (_room == null || monsterList == null)
                 return;
 

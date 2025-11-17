@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine.UIElements;
 using Google.Protobuf.WellKnownTypes;
 using static UnityEngine.UI.GridLayoutGroup;
+using UnityEngine.InputSystem;
 
 
 public class IndicatorRunTimeData
@@ -29,7 +30,11 @@ public class SkillIndicator : UI_Base
     private Dictionary<ValueTuple<CharacterType, KeyCode>, List<Action<Canvas, GameObject, string>>> _activeSkillFuncs
     = new Dictionary<ValueTuple<CharacterType, KeyCode>, List<Action<Canvas, GameObject, string>>>();
 
+    private PlayerController _owner;
     private bool _bInitSetting = false;
+
+    private bool _setupAiming = false;
+    private Quaternion _fixedPlayerForward = default(Quaternion);
 
     public override void Init()
     {
@@ -51,6 +56,8 @@ public class SkillIndicator : UI_Base
                 func.Invoke(canvas, map, prefab);
         }
     }
+  
+
     public void EnableIndicator(CharacterType charType, KeyCode key)
     {
         if (_skillConfigs.ContainsKey(charType) && _skillConfigs[charType].ContainsKey(key))
@@ -87,7 +94,7 @@ public class SkillIndicator : UI_Base
     public void DisableIndicator(CharacterType charType, KeyCode key)
     {
         var value = new ValueTuple<CharacterType, KeyCode>(charType, key);
-        if(_activeSkillFuncs.ContainsKey(value))
+        if (_activeSkillFuncs.ContainsKey(value))
         {
             var canvas = _skillConfigs[charType][key].canvas;
             if (canvas != null)
@@ -100,13 +107,15 @@ public class SkillIndicator : UI_Base
         DisableSkillType(charType, key);
     }
 
-    private void DisableSkillType(CharacterType charType, KeyCode key)
+    // 시각적으로만 활성화/비활성화
+    public void ActiveIndicator(CharacterType charType, KeyCode key, bool bActive)
     {
-        if (key == KeyCode.F1)
+        var value = new ValueTuple<CharacterType, KeyCode>(charType, key);
+        if (_activeSkillFuncs.ContainsKey(value))
         {
-            inti = false;
-            var runTimeData = _skillConfigs[charType][key];
-            SkillDReset(runTimeData.indicatorObject);
+            var canvas = _skillConfigs[charType][key].canvas;
+            if (canvas != null)
+                canvas.enabled = bActive;
         }
     }
 
@@ -130,32 +139,77 @@ public class SkillIndicator : UI_Base
         map.transform.rotation = Quaternion.Lerp(atMouse, map.transform.rotation, 0);
     }
 
-
-
-
-
-
     #region Theodore Action
-    bool inti = false;
+    // 테오도르 개인 스킬 취소 함수
+    private void DisableSkillType(CharacterType charType, KeyCode key, bool finalDeactivation = true)
+    {
+        if (key == KeyCode.F1)
+        {
+            var runTimeData = _skillConfigs[charType][key];
+            SkillDReset(runTimeData.indicatorObject);
+            _setupAiming = false;
+        }
+    }
+
+
     private void ObjectAimAtMousePosition(Canvas canvas, GameObject map, string prefabName)
     {
-        Vector3 position = GetMousePosition();
-        if(!inti)
-        {
-            inti = true;
-            Quaternion targetRotation = Quaternion.LookRotation(position - transform.position);
-            targetRotation.eulerAngles = new Vector3(0, targetRotation.eulerAngles.y, targetRotation.eulerAngles.z);
-            map.transform.rotation = Quaternion.Lerp(targetRotation, map.transform.rotation, 0);
-        }
+       if(!_setupAiming)
+       {
+           _setupAiming = true;
+            _fixedPlayerForward = Quaternion.LookRotation(_owner.transform.forward);
+       }
 
+        map.transform.rotation = _fixedPlayerForward;
+
+        // 무조건 플레이어가 바라보는 방향대로 
+        Vector3 position = GetMousePosition();
         Quaternion atMouse = Quaternion.LookRotation(position - transform.position);
         atMouse.eulerAngles = new Vector3(0, atMouse.eulerAngles.y, atMouse.eulerAngles.z);
 
         GameObject aimObject = Util.FindChildByName(map.transform, prefabName);
-        aimObject.transform.rotation = Quaternion.Lerp(atMouse, map.transform.rotation, 0);
+        aimObject.transform.rotation = Quaternion.Lerp(atMouse, aimObject.transform.rotation, 0);
+
+        // 화살 제한 : 위치가 L보다 커야 하고 R보다 작아야 함 
+        Vector3 aimPos = aimObject.transform.rotation.eulerAngles;
+        Vector3 rotationYAxis = Vector3.up;
+        Vector3 centerForward = map.transform.forward; // 기준 방향
+        Vector3 targetForward = aimObject.transform.right; // 목표 방향
+
+        Vector3 LLimitPos = Util.FindChildByName(map.transform, "L_Line").transform.right;
+        Vector3 RLimitPos = Util.FindChildByName(map.transform, "R_Line").transform.right;
+
+        float currentAngle = Vector3.SignedAngle(centerForward, targetForward, rotationYAxis); 
+        float LAngle = Vector3.SignedAngle(centerForward, LLimitPos, rotationYAxis); 
+        float RAngle = Vector3.SignedAngle(centerForward, RLimitPos, rotationYAxis); 
+
+        // 제한 범위 내에 넘어가지 않았다면
+        if (currentAngle >= LAngle && currentAngle <= RAngle)
+        {
+            Debug.Log("넘어가지 않음");
+        }
+        // 넘어갔다면?
+        else
+        {
+            Debug.Log("넘어감");
+            float clampedAngle 
+                = Mathf.Clamp(currentAngle, LAngle, RAngle);
+
+            Quaternion angleAdjustment 
+                = Quaternion.AngleAxis(clampedAngle, rotationYAxis);
+
+            Vector3 newRightDirection 
+                = angleAdjustment * centerForward;
+
+            Vector3 finalForward 
+                = Quaternion.AngleAxis(-90f, rotationYAxis) * newRightDirection;
+
+            Quaternion clampedRotation 
+                = Quaternion.LookRotation(finalForward, rotationYAxis);
+
+            aimObject.transform.rotation = clampedRotation;
+        }
     }
-
-
 
     private const float SCALE_SPEED = 1.5f;
     private Vector3 _targetScaled = new Vector3();
@@ -254,7 +308,6 @@ public class SkillIndicator : UI_Base
     #endregion
 
     #region Utils
-    PlayerController _owner;
     private void LoadData()
     {
         ICollection<CharacterType> allCharacts = DataManager.IndicatorDict.Keys;

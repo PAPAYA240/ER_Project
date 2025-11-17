@@ -30,7 +30,7 @@ class StatRegenerator
         if (!_enabled)
             return;
 
-        _elapsedMs += TimeUtil.DeltaTime * 1000f;
+        _elapsedMs += TimeUtil.Instance.DeltaTime * 1000f;
 
         // interval을 초과한 만큼 틱을 여러 번 처리(로딩/일시정지 후 catch-up)
         while (_elapsedMs >= _intervalMs)

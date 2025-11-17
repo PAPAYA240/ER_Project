@@ -1,10 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
-using Google.Protobuf.WellKnownTypes;
 using Server.Game;
-using System;
-using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
 using static Server.Data.DataUtils;
 
 public sealed class Skill_Blink : SkillHandlerBase
@@ -14,7 +10,7 @@ public sealed class Skill_Blink : SkillHandlerBase
     public Skill_Blink()
     {
         _keyCode = KeyCode.F;
-        _createHitbox = false;
+        HitboxCreated = false;
     }
 
     public override void OnEnter(Player p, SkillContext ctx)

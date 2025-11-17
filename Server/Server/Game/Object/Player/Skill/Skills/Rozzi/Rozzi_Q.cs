@@ -39,7 +39,7 @@ public sealed class Rozzi_Q : SkillHandlerBase
         if (CanStopSkill)
             return;
 
-        _elapsed += TimeUtil.DeltaTime;
+        _elapsed += TimeUtil.Instance.DeltaTime;
         if (_elapsed >= _StopSkillTime)
         {
             CanStopSkill = true;

@@ -11,11 +11,12 @@ public class MonsterController : CreatureController
     public MonsterSkill Skill { get;  set; }
     public MonsterType Type { get; set; }
 
+ 
+    public Vector3 TargetPosition { get; private set; }
+
+    private Quaternion _targetRotation;
     private float _rotationSpeed = 10f;
     private float _agentSpeed = 6;
-
-    Quaternion _nextRotation;
-    public Vector3 _targetPos { get; private set; }
 
     // 애니메이션 끝났을 때 호출
     public Action<CreatureState, bool> OnStateChanged; 
@@ -41,11 +42,12 @@ public class MonsterController : CreatureController
 
         State = CreatureState.Appear;
         InitHpBar();
+        UnActiveShaderXRay();
     }
 
     protected override void UpdateController()
     {
-        transform.rotation = Quaternion.Slerp(transform.rotation, _nextRotation, Time.deltaTime * _rotationSpeed);
+        transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, Time.deltaTime * _rotationSpeed);
         
         MeshDebug();
     }
@@ -88,6 +90,9 @@ public class MonsterController : CreatureController
         if (State != CreatureState.Dead)
             State = CreatureState.Dead;
 
+        if(_hpBar)
+            _hpBar.SetActive(false);
+
         Hp = 0;
     }
 
@@ -103,7 +108,7 @@ public class MonsterController : CreatureController
             _agent.SetDestination(packet.PosInfo.ToVector());
 
         if (packet.RotInfo != null)
-            _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
+            _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
 
         Skill = MonsterSkill.MsNone;
 
@@ -116,7 +121,7 @@ public class MonsterController : CreatureController
              _agent.SetDestination(packet.PosInfo.ToVector());
 
         if(packet.RotInfo != null)
-            _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
+            _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
 
     public void OnSkillPacket(S_State packet)
@@ -130,7 +135,7 @@ public class MonsterController : CreatureController
         }
 
         if(packet.RotInfo != null)
-            _nextRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
+            _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
         OnStateChanged?.Invoke(State, false);
     }
 
@@ -138,12 +143,13 @@ public class MonsterController : CreatureController
     {
         State = packet.MyState;
         if (packet.TargetPosition != null)
-            _targetPos = packet.TargetPosition.ToVector();
-
-        Debug.Log($"Monster STATE : {State}");
+            TargetPosition = packet.TargetPosition.ToVector();
 
         if (State == CreatureState.Skill)
             _bMesh = false;
+
+        if(Type == MonsterType.Turret)
+            Debug.Log($"Turret STATE : {State}");
 
         switch (State)
         {
@@ -189,7 +195,7 @@ public class MonsterController : CreatureController
         if (monsterRenderer == null)
             return false;
 
-        _nextRotation = transform.rotation;
+        _targetRotation = transform.rotation;
         originalMaterial = monsterRenderer.material;
         skillMaterial = Resources.Load<Material>("materials/effect/auraMaterial");
         _highlightEffect = gameObject.AddComponent<HighlightEffect>();
@@ -257,6 +263,13 @@ public class MonsterController : CreatureController
         _hpBar.GetComponentInChildren<UI_BarTick>().SetMaxValue(MaxHp);
     }
 
+    #endregion
+
+    #region 유틸
+    public Vector3 GetTargetForwardVector()
+    {
+        return _targetRotation * Vector3.forward;
+    }
     #endregion
 }
 

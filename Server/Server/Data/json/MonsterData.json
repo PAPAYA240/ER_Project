@@ -1,0 +1,86 @@
+{
+  "monsters": [
+    {
+      "id": 1,
+      "name": "Alpha",
+      "appearTime": 6,
+      "activePhase": 2,
+      "stat": {
+        "level": 1,
+        "maxHp": 8000,
+        "speed": 5.0
+      },
+      "skills": [
+        "MsAttack1",
+        "MsAttack2",
+        "MsSkill1",
+        "MsSkill2"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Omega",
+      "attackDist": "6",
+      "appearTime": 6,
+      "activePhase": 2,
+      "stat": {
+        "level": 1,
+        "maxHp": 500,
+        "speed": 5.0
+      },
+      "skills": [
+        "MsAttack1",
+        "MsAttack2",
+        "MsSkill1",
+        "MsSkill2"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Drone",
+      "attackDist": "6",
+      "appearTime": 2,
+      "activePhase": 1,
+      "stat": {
+        "level": 1,
+        "maxHp": 200,
+        "speed": 5.0
+      },
+      "skills": [
+        "MsDroneAttack1"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Gamma",
+      "attackDist": "7",
+      "appearTime": 2.5,
+      "activePhase": 1,
+      "stat": {
+        "level": 1,
+        "maxHp": 25000,
+        "speed": 5.0
+      },
+      "skills": [
+        "MsGammaAttack1",
+        "MsGammaSkill1",
+        "MsGammaSkill2",
+        "MsGammaSkill3"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Turret",
+      "attackDist": "10",
+      "activePhase": 0,
+      "stat": {
+        "level": 1,
+        "maxHp": 1000,
+        "speed": 5.0
+      },
+      "skills": [
+        "MsTurretAttack"
+      ]
+    }
+  ]
+}

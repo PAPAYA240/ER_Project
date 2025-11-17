@@ -3,7 +3,6 @@ using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using System.Collections.Generic;
 using UnityEngine;
-using static Data.SkillEffectList;
 
 public class MyPlayerController : PlayerController
 {
@@ -39,6 +38,12 @@ public class MyPlayerController : PlayerController
     float _lastOperateTime;
     readonly float _operateLockTime = 0.1f;
 
+    public int CurPhase { get; set; } = 999;
+
+    [Header("X-Ray Settings")]
+    [SerializeField] private int playerWeaponStencilID = 100;
+    [SerializeField] private bool disablePlayerWeaponXRay = true;
+
     private void Awake()
     {
         _skill = gameObject.GetOrAddComponent<PlayerSkillController>();
@@ -73,6 +78,8 @@ public class MyPlayerController : PlayerController
             string fogLayerName = $"FogTeam{ObjInfo.Player.Team}";
             fogCamGo.GetComponent<Camera>().cullingMask |= (1 << LayerMask.NameToLayer(fogLayerName));
         }
+
+        InitializeXRay();
     }
 
     private void Update()
@@ -204,13 +211,114 @@ public class MyPlayerController : PlayerController
         if (UI.PlayerInterface == null)
             return;
         UI.PlayerInterface.Equip(DataManager.ItemDict[itemId] as EquipItemInfo);
-    }  
+    }
     #endregion
 
+    #region Shader
+    void InitializeXRay()
+    {
+        if (disablePlayerWeaponXRay)
+            SetupPlayerWeaponXRay();
+    }
 
-    #region Inventory, EquipItem
+    void SetupPlayerWeaponXRay()
+    {
+        // Player 본체
+        SetXRayGroup(gameObject, playerWeaponStencilID);
 
-    public void ChangeInventory(S_ChangeInventory packet)
+        // 현재 장착된 무기
+        if (_eqipWeapon != null)
+        {
+            SetXRayGroup(_eqipWeapon, playerWeaponStencilID);
+        }
+    }
+    void SetXRayGroup(GameObject root, int stencilID)
+    {
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+
+        foreach (Renderer renderer in renderers)
+        {
+            foreach (Material mat in renderer.materials)
+            {
+                if (mat.shader.name.Contains("Toon_DoubleShadeWithFeather"))
+                {
+                    if (mat.HasProperty("_StencilRef"))
+                    {
+                        mat.SetInt("_StencilRef", stencilID);
+                        mat.SetInt("_StencilComp", (int)UnityEngine.Rendering.CompareFunction.Always);
+                        mat.SetInt("_StencilOp", (int)UnityEngine.Rendering.StencilOp.Replace);
+                    }
+                }
+            }
+        }
+    }
+
+    // 무기 교체 시 호출 (기존 EquipWeapon 메서드에 추가)
+    void OnWeaponEquipped(GameObject newWeapon)
+    {
+        if (newWeapon != null && disablePlayerWeaponXRay)
+        {
+            SetXRayGroup(newWeapon, playerWeaponStencilID);
+        }
+    }
+
+    // Player와 Weapon의 X-Ray 효과 끄기/켜기
+    public void SetPlayerWeaponXRayEnabled(bool enabled)
+    {
+        float alpha = enabled ? 0.5f : 0f;
+
+        SetOccludedColorAlpha(gameObject, alpha);
+
+        if (_eqipWeapon != null)
+        {
+            SetOccludedColorAlpha(_eqipWeapon, alpha);
+        }
+    }
+
+    void SetOccludedColorAlpha(GameObject root, float alpha)
+    {
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+
+        foreach (Renderer renderer in renderers)
+        {
+            foreach (Material mat in renderer.materials)
+            {
+                if (mat.HasProperty("_OccludedColor"))
+                {
+                    Color occludedColor = mat.GetColor("_OccludedColor");
+                    occludedColor.a = alpha;
+                    mat.SetColor("_OccludedColor", occludedColor);
+                }
+            }
+        }
+    }
+
+    void SetupRenderingLayer()
+    {
+        uint playerLayer = 1u << 1; // Layer 1
+
+        SetRenderingLayerMask(gameObject, playerLayer);
+
+        if (_eqipWeapon != null)
+        {
+            SetRenderingLayerMask(_eqipWeapon, playerLayer);
+        }
+    }
+
+    void SetRenderingLayerMask(GameObject root, uint layerMask)
+    {
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.renderingLayerMask = layerMask;
+        }
+    }
+#endregion
+
+#region Inventory, EquipItem
+
+public void ChangeInventory(S_ChangeInventory packet)
     {
         foreach (var change in packet.Changes)
         {
@@ -266,24 +374,7 @@ public class MyPlayerController : PlayerController
         //_isWarp = isWarp;
     }
 
-    public void LookAtMouse()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100f))
-        {
-            Vector3 targetPoint = hit.point;
-            targetPoint.y = transform.position.y;
-            Vector3 direction = targetPoint - transform.position;
-
-            if (direction != Vector3.zero)
-            {
-                Quaternion newRotation = Quaternion.LookRotation(direction);
-                RotInfo = newRotation;
-                SyncPos(true);
-            }
-        }
-    }
+    
     #endregion
 
     #region Packet

@@ -16,21 +16,6 @@ public sealed class Abigail_R : Skill_Abigail
         StopSkillTime = 0.733f; // 26프레임 * 30FPS
     }
 
-    public override void OnTick(Player p, SkillContext ctx)
-    {
-        if (CanStopSkill)
-            return;
-
-        float t = _elapsed / _animDuration;
-        _elapsed += TimeUtil.DeltaTime;
-
-        if (_elapsed >= StopSkillTime)
-        {
-            CanStopSkill = true;
-            p.SendCanStopSkillPacket(CanStopSkill);
-        }
-    }
-
     public override void OnEnter(Player p, SkillContext ctx)
     {
         base.OnEnter(p, ctx);
@@ -39,5 +24,19 @@ public sealed class Abigail_R : Skill_Abigail
         SendSkillConfirmPacket(p);
         p.SendCanStopSkillPacket(false);
         p.Room.AddStatusEffect(p, p, _keyCode, null); // 지정불가
+    }
+
+    public override void OnTick(Player p, SkillContext ctx)
+    {
+        if (CanStopSkill)
+            return;
+
+        _elapsed += TimeUtil.Instance.DeltaTime;
+
+        if (_elapsed >= StopSkillTime)
+        {
+            CanStopSkill = true;
+            p.SendCanStopSkillPacket(CanStopSkill);
+        }
     }
 }

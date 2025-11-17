@@ -1,11 +1,10 @@
 using Google.Protobuf.Protocol;
-using Lucene.Net.Store;
-using Lucene.Net.Support;
 using Server.Data;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Numerics;
+using System.Reflection.Metadata.Ecma335;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -52,13 +51,13 @@ namespace Server.Game
 
         public override float Speed 
         {
-            get { return ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed + _totalItemStat.FixedSpeed * (1 + _totalItemStat.PercentageSpeed)) ; }
+            get { return ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed + _totalItemStat.FixedSpeed * (1 + _totalItemStat.PercentageSpeed), ignoreDebuff: IsCcImmune) ; }
             set { base.Speed = value; }
         }
 
         public override float AttackSpeed
         {
-            get { return ComposeFinal(STAT_ATTACK_SPEED, Stat.AttackSpeed + _totalItemStat.FixedSpeed * (1 + _totalItemStat.PercentageSpeed)) ; }
+            get { return ComposeFinal(STAT_ATTACK_SPEED, (Stat.AttackSpeed + DataManager.WeaponDict[Info.Player.Weapon].AttackSpeed) * (1 + _totalItemStat.AttackSpeed)) ; }
             set { base.AttackSpeed = value; }
         }
 
@@ -219,7 +218,7 @@ namespace Server.Game
         public int DeathAmount { get; set; }
         public int AsistAmount { get; set; }
 
-        private int AsistTime = 15;
+        private const int AsistTimeMs = 15 * 1000; // 15초 → 밀리초로 저장
 
         private Dictionary<int, DamageRecord> _damageRecords = new Dictionary<int, DamageRecord>();
 
@@ -227,13 +226,13 @@ namespace Server.Game
         { 
             public int Id;
             public float Damage;
-            public TimeSpan TimeStamp;
+            public long Tick;   // TimeSpan 대신 long(밀리초 tick)
 
-            public DamageRecord(int id, float damage, TimeSpan timeStamp)
+            public DamageRecord(int id, float damage, long tick)
             {
                 Id = id;
                 Damage = damage;
-                TimeStamp = timeStamp;
+                Tick = tick;
             }
         }
 
@@ -241,15 +240,22 @@ namespace Server.Game
         {
             if (null == Room) return;
 
+            long now = Room.CurTick;
+
+            // 지워야 하는 요소 수집
+            List<int> toRemove = new List<int>();
+
             foreach (var record in _damageRecords.Values)
             {
-                TimeSpan damageTime = Room.TimeStamp - record.TimeStamp;
+                long delta = unchecked(now - record.Tick);
 
-                if(damageTime.TotalSeconds > AsistTime)
-                {
-                    _damageRecords.Remove(record.Id);
-                }
+                if (delta > AsistTimeMs)
+                    toRemove.Add(record.Id);
             }
+
+            // 실제 삭제
+            foreach (int id in toRemove)
+                _damageRecords.Remove(id);
         }
 
         public override void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false, bool isBasicAttack = false)
@@ -259,20 +265,20 @@ namespace Server.Game
 
             UpdateDamageRecords();
 
-            // �ױ� ���� �߰��Ϸ��� ������ �̷��� ��.
-            if (_damageRecords.TryGetValue(attacker.Id, out DamageRecord damageRecord)) // �̹� �ش� �÷��̾�� �������� �Ծ��ٸ� �ð��� �ֽ�ȭ.
+            long now = Room.CurTick;
+
+            if (_damageRecords.TryGetValue(attacker.Id, out DamageRecord damageRecord))
             {
                 damageRecord.Damage += damage;
-                damageRecord.TimeStamp = Room.TimeStamp;
+                damageRecord.Tick = now;  // 마지막 데미지 시각 갱신
             }
             else
             {
-                _damageRecords.Add(attacker.Id, new DamageRecord(attacker.Id, damage, Room.TimeStamp)); // ���ظ� ���� ���� ���ٸ� ���� �߰�.
+                _damageRecords.Add(attacker.Id, new DamageRecord(attacker.Id, damage, now));
             }
 
             base.OnDamaged(attacker, damage, isTrueDamage, isBasicAttack);
         }
-
         #endregion
 
         public Player()
@@ -308,7 +314,7 @@ namespace Server.Game
             // 일정 시간 지나면 비전투 (용수야 여기야)
             if (CombatState == CombatState.Combat)
             {
-                _combatTime += TimeUtil.DeltaTime;
+                _combatTime += TimeUtil.Instance.DeltaTime;
                 if (_combatTime > _nonCombatTime)
                 {
                     _combatTime = 0;
@@ -333,7 +339,7 @@ namespace Server.Game
             // 유키 강화 평타용
             if (AttackActive == true)
             {
-                _attactActiveTime += TimeUtil.DeltaTime;
+                _attactActiveTime += TimeUtil.Instance.DeltaTime;
 
                 if (_attactActiveTime > _nonCombatTime)
                 {
@@ -358,6 +364,7 @@ namespace Server.Game
             MakeInventory();
         }
         #endregion
+
         #region State : Dead
         public void OnDestroy()
         {
@@ -406,6 +413,7 @@ namespace Server.Game
         #endregion
 
         #region State
+
         public void ChangeState(IPlayerState newState)
         {
             _stateMachine.ChangeState(newState, this);
@@ -873,7 +881,7 @@ namespace Server.Game
                 Stamina += _totalItemStat.MaxStamina;
                 _isUpdatedStat = true;
 
-                _isUpdatedStatus = true;
+                UpdateStatusFlag();
 
                 GameRoom room = Room;
 
@@ -997,18 +1005,6 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendMovePacket(PositionInfo posInfo, RotationInfo rotInfo)
-        {
-            S_Move packet = new S_Move()
-            {
-                ObjectId = Id,
-                PosInfo = posInfo,
-                RotInfo = rotInfo
-            };
-
-            Room.Push(Room.Broadcast, packet);
-        }
-
         public void SendSetMoveTarget(bool isGround, int targetId, PositionInfo posOpt = null)
         {
             S_SetMoveTarget packet = new S_SetMoveTarget
@@ -1044,7 +1040,53 @@ namespace Server.Game
             Room.Broadcast(pkt);
         }
 
-        public void SendSkillConfirmPacket(bool canUse, KeyCode keyCode = KeyCode.None, bool canMoveDuringCast = false, bool sendCostPacket = true, bool sendLookatMousePacket = false)
+        public void SendSkillEffect(
+            Vector2 mousePos,
+            KeyCode keyCode = KeyCode.None, 
+            bool sendLookatMousePacket = false,
+            Vector3 targetPos = new Vector3(),
+            Quaternion targetRot = default(Quaternion),
+            string type = "Caster", 
+            string name = "")
+        {
+            Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
+            Vector2 dir = mousePos - myPos;
+            if (dir.LengthSquared() < 0.0001f)
+                return;
+
+            float angle = (float)Math.Atan2(dir.Y, dir.X);
+            Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle);
+
+            RotationInfo newRot = new RotationInfo
+            {
+                Qx = rot.X,
+                Qy = rot.Y,
+                Qz = rot.Z,
+                Qw = rot.W
+            };
+            RotInfo = newRot;
+
+            S_Fx fxPacket = new S_Fx
+            {
+                ObjectId = Id,
+                CanLookatMouse = sendLookatMousePacket,
+                SkillKey = (int)keyCode,
+                MousePosX = mousePos.X,
+                MousePosZ = mousePos.Y,
+                TargetPosition = new PositionInfo { PosX = targetPos.X, PosY = targetPos.Y, PosZ = targetPos.Z },
+                TargetRotation = new RotationInfo { Qx = targetRot.X, Qy = targetRot.Y, Qz = targetRot.Z, Qw = targetRot.W },
+                Type = type,
+                FxName = name
+            };
+
+            Room.Push(Room.Broadcast, fxPacket);
+        }
+
+        public void SendSkillConfirmPacket
+            (bool canUse, 
+            KeyCode keyCode = KeyCode.None, 
+            bool canMoveDuringCast = false, 
+            bool sendCostPacket = true)
         {
             S_SkillConfirm packet;
 
@@ -1056,7 +1098,6 @@ namespace Server.Game
                     CanUse = canUse,
                     SkillKey = (int)keyCode,
                     CanMove = canMoveDuringCast,
-                    CanLookatMouse = sendLookatMousePacket
                 };
                
                 if(sendCostPacket)
@@ -1069,7 +1110,6 @@ namespace Server.Game
                     ObjectId = Id,
                     CanUse = canUse,
                     SkillKey = (int)keyCode,
-                    CanLookatMouse = sendLookatMousePacket,
                 };
             }
 
@@ -1241,6 +1281,22 @@ namespace Server.Game
                 Room.Push(Session.Send, packet);
                 _isUpdatedStatus = false;
             }
+        }
+
+        public void SendUpdateStatusPacket(bool IsUnStoppable)
+        {
+            S_ChangeStatus packet = new S_ChangeStatus()
+            {
+                ObjectId = Id,
+
+                MoveSpeed = Speed,
+                Attack = Attack,
+                //AttackSpeed = 
+                Defense = Defense,
+                Healing = Healing,
+            };
+
+            Room.Push(Session.Send, packet);
         }
         #endregion
     }
