@@ -232,8 +232,8 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         _damageApplied = false;
 
         _swingStartUtc = now;
-        _hitMomentUtc = now.AddSeconds(WindupSeconds);
-        _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds);
+        _hitMomentUtc = now.AddSeconds(WindupSeconds * p.AttackSpeed);
+        _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds * p.AttackSpeed);
 
         // A/B 번갈이
         string animName = (_attackIndex == 0) ? AnimAttackA : AnimAttackB;

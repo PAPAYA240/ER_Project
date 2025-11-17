@@ -365,6 +365,15 @@ public class PlayerController : CreatureController
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
+
+        if (animInfo.IsChangeSpeed == true)
+            _animator.SetFloat("AttackSpeed", animInfo.Speed);
+    }
+
+    public void ChangeSpeed(string paramName, float speed)
+    {
+        _animator.SetFloat(paramName, speed);
+        Debug.Log(speed);
     }
     #endregion
 

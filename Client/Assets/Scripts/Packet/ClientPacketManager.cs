@@ -132,7 +132,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SCombatMode, MakePacket<S_CombatMode>);
 		_handler.Add((ushort)MsgId.SCombatMode, PacketHandler.S_CombatModeHandler);		
 		_onRecv.Add((ushort)MsgId.SChat, MakePacket<S_Chat>);
-		_handler.Add((ushort)MsgId.SChat, PacketHandler.S_ChatHandler);
+		_handler.Add((ushort)MsgId.SChat, PacketHandler.S_ChatHandler);		
+		_onRecv.Add((ushort)MsgId.SAnimSpeed, MakePacket<S_AnimSpeed>);
+		_handler.Add((ushort)MsgId.SAnimSpeed, PacketHandler.S_AnimSpeedHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

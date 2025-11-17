@@ -105,6 +105,7 @@ enum MsgId {
   S_COMBAT_MODE = 82;
   C_CHAT = 83;
   S_CHAT = 84;
+  S_ANIM_SPEED = 85;
 }
 
 enum CombatState{
@@ -725,6 +726,8 @@ message PickScenePlayerInfo{
 message AnimInfo{
 	string name = 1;
 	float ratio = 2;
+	float speed = 3;
+	bool isChangeSpeed = 4;
 }
 
 message WeaponMasteryInfo{
@@ -984,4 +987,10 @@ message C_Chat {
 message S_Chat {
 	int32 objectId = 1;
 	string message = 2;
+}
+
+message S_AnimSpeed {
+	int32 objectId = 1;
+	string name = 2;
+	float speed = 3;
 }

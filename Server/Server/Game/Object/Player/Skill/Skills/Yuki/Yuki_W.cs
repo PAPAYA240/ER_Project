@@ -22,6 +22,8 @@ public sealed class Yuki_W : SkillHandlerBase
         SendSkillConfirmPacket(p);
 
         p.Room.AddStatusEffect(p, p, _keyCode, null);
+
+        Console.WriteLine("두번 들어옴?");
         //p.LookAtMouse(ctx.MousePos);
     }
 
@@ -39,7 +41,9 @@ public sealed class Yuki_W : SkillHandlerBase
     public override void OnExit(Player p, SkillContext ctx)
     {
         p.YukiStud = 4;
-        Console.WriteLine($"유키 단추 : {p.YukiStud}");
+        Console.WriteLine($"유키 단추 두번들어오나? : {p.YukiStud}");
+        _ = p.CoChangeSpeed("AttackSpeed", p.AttackSpeed, 1f, 3f);
+
         base.OnExit(p, ctx);
     }
 }

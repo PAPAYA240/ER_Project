@@ -89,7 +89,6 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
-
         if (!_isSkillZooming)
             DefaultMode();
     }

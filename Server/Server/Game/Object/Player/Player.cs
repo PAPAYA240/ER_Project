@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
+using System.Threading.Tasks;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -905,6 +906,16 @@ namespace Server.Game
         }
         #endregion
 
+        public async Task CoChangeSpeed(string paramName, float speed, float ratio, float duration)
+        {
+            float calSpeed = speed + (speed * ratio);
+            SendDurationSpeedPacket(paramName, speed);
+
+            await Task.Delay((int)(duration * 1000));
+
+            SendDurationSpeedPacket(paramName, speed);
+        }
+
         #region Util
         public bool CanAttack()
         {
@@ -973,7 +984,7 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendAnimPacket(string animName, float ratio)
+        public void SendAnimPacket(string animName, float ratio, float speed = 0, bool isChangeSpeed = false)
         {
             S_Anim packet = new S_Anim()
             { 
@@ -981,7 +992,9 @@ namespace Server.Game
                 AnimInfo = new AnimInfo()
                 {
                     Name = animName,
-                    Ratio = ratio
+                    Ratio = ratio,
+                    Speed = speed,
+                    IsChangeSpeed = isChangeSpeed
                 }
             };
             Room.Push(Room.Broadcast, packet);
@@ -1158,6 +1171,16 @@ namespace Server.Game
             untargetablePkt.ObjectId = Id;
             untargetablePkt.Untargetable = IsUntargetable;
             Room.Push(Room.Broadcast, untargetablePkt);
+        }
+
+        public void SendDurationSpeedPacket(string name, float speed)
+        {
+            S_AnimSpeed speedPkt = new S_AnimSpeed();
+            speedPkt.ObjectId = Id;
+            speedPkt.Name = name;
+            speedPkt.Speed = speed;
+
+            Room.Push(Room.Broadcast, speedPkt);
         }
 
         //public void SendMoveSpeedPacket(float moveSpeed)

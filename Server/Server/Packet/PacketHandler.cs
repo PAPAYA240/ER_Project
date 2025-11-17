@@ -331,8 +331,6 @@ class PacketHandler
         room.Push(room.HandlerChargeCancelSkill, player, skillPacket);
     }
 
-
-
     public static void C_EnvRequestHandler(PacketSession session, IMessage packet)
     {
         ClientSession clientSession = session as ClientSession;
