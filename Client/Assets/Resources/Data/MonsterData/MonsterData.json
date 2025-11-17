@@ -4,12 +4,10 @@
       "id": 1,
       "name": "Alpha",
       "appearTime": 6,
-      "attackType": "short",
       "activePhase": 2,
       "stat": {
         "level": 1,
         "maxHp": 8000,
-        "attack": 300,
         "speed": 5.0
       },
       "skills": [
@@ -22,13 +20,12 @@
     {
       "id": 2,
       "name": "Omega",
-      "attackType": "short",
+      "attackDist": "6",
       "appearTime": 6,
       "activePhase": 2,
       "stat": {
         "level": 1,
         "maxHp": 500,
-        "attack": 15,
         "speed": 5.0
       },
       "skills": [
@@ -41,13 +38,12 @@
     {
       "id": 3,
       "name": "Drone",
-      "attackType": "long",
+      "attackDist": "6",
       "appearTime": 2,
-      "activePhase" :  3,
+      "activePhase": 1,
       "stat": {
         "level": 1,
         "maxHp": 200,
-        "attack": 5,
         "speed": 5.0
       },
       "skills": [
@@ -57,13 +53,12 @@
     {
       "id": 4,
       "name": "Gamma",
-      "attackType": "long",
+      "attackDist": "7",
       "appearTime": 2.5,
       "activePhase": 1,
       "stat": {
         "level": 1,
-        "maxHp": 2000,
-        "attack": 15,
+        "maxHp": 25000,
         "speed": 5.0
       },
       "skills": [
@@ -76,12 +71,11 @@
     {
       "id": 4,
       "name": "Turret",
-      "attackType": "long",
+      "attackDist": "10",
       "activePhase": 0,
       "stat": {
         "level": 1,
         "maxHp": 1000,
-        "attack": 0,
         "speed": 5.0
       },
       "skills": [

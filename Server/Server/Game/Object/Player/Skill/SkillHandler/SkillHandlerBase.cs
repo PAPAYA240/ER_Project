@@ -33,7 +33,7 @@ public abstract class SkillHandlerBase : ISkill
     protected CharacterType _characterType;
     protected string _animName;
     protected KeyCode _keyCode;
-    protected bool _createHitbox = true;
+    protected bool HitboxCreated { get; set; } = true;
 
     public virtual void OnEnter(Player p, SkillContext ctx)
     {
@@ -62,7 +62,7 @@ public abstract class SkillHandlerBase : ISkill
             p.SendStopPacket(StopReason.StopMoveOnly);
         }
 
-        if(_createHitbox)
+        if(HitboxCreated)
             CreateHitbox(p, ctx);
     }
 
@@ -75,7 +75,8 @@ public abstract class SkillHandlerBase : ISkill
             case KeyCode.W:
             case KeyCode.E:
             case KeyCode.R:
-                create = true;
+            case KeyCode.D:
+                p.Room.CollManager.AddHitbox(p, p.Info.Player.CharType, ctx.Key, ctx.MousePos);
                 break;
         }
 
@@ -137,9 +138,9 @@ public abstract class SkillHandlerBase : ISkill
     }
     #endregion
     #region Utils
-    protected void SendSkillConfirmPacket(Player p, bool sendCostPacket = true, bool sendLookatMousePacket = false)
+    protected void SendSkillConfirmPacket(Player p, bool sendCostPacket = true)
     {
-        p.SendSkillConfirmPacket(true, _keyCode, CanMoveDuringCast, sendCostPacket, sendLookatMousePacket);
+        p.SendSkillConfirmPacket(true, _keyCode, CanMoveDuringCast, sendCostPacket);
     }
 
     protected void SendSkillCollisionRequestPacket(Player p, CollisionType type, Vector3 startPos, Vector3 targetPos)

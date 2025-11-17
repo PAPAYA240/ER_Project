@@ -67,11 +67,11 @@ public class UI_Timer : UI_Base
         while (Time.realtimeSinceStartup < clientLocalTargetRealtimeSinceStartupEnd)
         {
             float remainingDuration = clientLocalTargetRealtimeSinceStartupEnd - Time.realtimeSinceStartup;
-            SetTimer(Mathf.Max(0, Mathf.CeilToInt(remainingDuration))); // À½¼ö ¹æÁö ¹× ¿Ã¸² Ã³¸®
-            yield return null; // ¸Å ÇÁ·¹ÀÓ ¾÷µ¥ÀÌÆ®
+            SetTimer(Mathf.Max(0, Mathf.CeilToInt(remainingDuration))); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ã¸ï¿½ Ã³ï¿½ï¿½
+            yield return null; // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
         }
 
-        SetTimer(0); // Å¸ÀÌ¸Ó Á¾·á ½Ã 0À¸·Î ¼³Á¤
+        SetTimer(0); // Å¸ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         Debug.Log($"Phase {phase} Synced Timer Finished!");
     }
 

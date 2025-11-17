@@ -12,8 +12,6 @@ public class UI_Indicator : MyPlayerController
     private GameObject _skillTarget;
     private Renderer _myRenderer;
 
-    private float _elapsedTime = 0f;
-
     //protected override void Init()
     //{
     //    if (!Add_Material())  return;

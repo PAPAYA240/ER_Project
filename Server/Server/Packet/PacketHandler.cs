@@ -332,7 +332,6 @@ class PacketHandler
     }
 
 
-
     public static void C_EnvRequestHandler(PacketSession session, IMessage packet)
     {
         ClientSession clientSession = session as ClientSession;

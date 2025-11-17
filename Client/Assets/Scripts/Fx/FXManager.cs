@@ -26,7 +26,7 @@ public class FXManager : MonoBehaviour
         UI = uiGO.AddComponent<UIFXManager>();
         UI.Init();
     }
-    public Quaternion GetIndicatorRotation(Transform casterTransform)
+    private Quaternion GetPlayerRotation(Transform casterTransform)
     {
         float playerYaw = casterTransform.rotation.eulerAngles.y;
         Quaternion yawRotationOnly = Quaternion.Euler(0, playerYaw, 0);
@@ -34,10 +34,28 @@ public class FXManager : MonoBehaviour
         return yawRotationOnly * desiredXRotation;
     }
 
-    public List<GameObject> PlayEffect(int ownerId, List<EffectData> effectData, Transform casterTransform, Vector3 targetPos = new Vector3(), Quaternion rot = new Quaternion())
+    public List<GameObject> PlayEffect
+        (int ownerId,                           // owner ID
+        List<EffectData> effectData,       // Effect List
+        Transform casterTransform,        // 대상 transform
+        Vector3 mousePos                   // 마우스 위치
+        )
     {
-        return Effect.PlayEffect(ownerId, effectData, casterTransform, targetPos, GetIndicatorRotation(casterTransform));
+        return Effect.PlayEffect(ownerId, effectData, casterTransform, mousePos, new Vector3(), GetPlayerRotation(casterTransform));
     }
+
+    public List<GameObject> PlayEffect
+       (int ownerId,                           // owner ID
+       List<EffectData> effectData,       // Effect List
+       Transform casterTransform,        // 대상 transform
+       Vector3 mousePos,                   // 마우스 위치
+       Vector3 targetPos,                  // 이펙트 목표 위치
+       Quaternion rot = default(Quaternion)// 이펙트 회전 값
+       )
+    {
+        return Effect.PlayEffect(ownerId, effectData, casterTransform, mousePos, targetPos, rot);
+    }
+
 
     public void PlayStatusEffect(GameObject target, CharacterType charType, float duration)
     {

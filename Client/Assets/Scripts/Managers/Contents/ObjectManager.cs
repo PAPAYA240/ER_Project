@@ -125,8 +125,6 @@ public class ObjectManager
             pc.transform.SetParent(parent);
 
             _objects.Add(info.ObjectId, go);
-
-            go.transform.SetParent(pc.transform);
             pc.SyncPos();
         }
     }

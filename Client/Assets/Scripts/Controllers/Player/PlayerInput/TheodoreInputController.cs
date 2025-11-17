@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
+using static CameraController;
 
 public class TheodoreInputController : PlayerInputController
 {
-    private const float EFFECT_DURATION = 10f;
+    private const float EFFECT_DURATION = 4f;
     private const float CANCEL_DURATION = 0.5f;
     private const float SNIPER_AIM_DURATION = 10f;
 
@@ -18,10 +19,19 @@ public class TheodoreInputController : PlayerInputController
     private KeyCode? _currentSkillKey = null;
     private Coroutine _cancelCoroutine = null;
 
+    // Skill D - Sniper shot
+    private const int SNIPER_SHOT_COUNT = 3;
+    private int _SniperShotIdx = 0;
+
+    // Skill Q - Speed
+    float _originSpeed = 0f;
+    const float SKILL_CHARGE_SPEED = 2.5f;
+
     private void Start()
     {
+        _originSpeed = _player.Speed;
+        _attackRange = 6.0f;
     }
-
     protected override Vector3 GetAttackStopPosition(Vector3 from, Vector3 target)
     {
         Vector3 dir = target - from;
@@ -56,9 +66,9 @@ public class TheodoreInputController : PlayerInputController
                     onCancel: () => CancelSkill(key)));
                 }
                 break;
-         case KeyCode.W:
-         case KeyCode.E:
          case KeyCode.R:
+         case KeyCode.W:
+            case KeyCode.E:
                 {
                     StartCoroutine(InputSkill(key,
                     onConfirm: () => ExecuteSkill(key),
@@ -71,6 +81,8 @@ public class TheodoreInputController : PlayerInputController
     private void ExecuteSkill(KeyCode key)
     {
         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
+        _player.UI.PlayerInterface.StopChargingBar();
+
         SendSkillInputPacket(key);
         _currentSkillKey = null;
     }
@@ -80,45 +92,69 @@ public class TheodoreInputController : PlayerInputController
         StartCoroutine(SniperSkill(key));
     }
 
-    private const float SNIPER_DISTANCE = 15f;
-    private const float SNIPER_ZOOM_DURATION = 10f;
+    
     private IEnumerator SniperSkill(KeyCode key)
     {
         _player.LookAtMouse();
 
+        // 인디케이터
+        SendSkillInputPacket(key);
+        _player.Indicator.EnableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
+
+        // 카메라
         CameraController cc = Camera.main.gameObject.GetComponent<CameraController>();
         if (cc == null)
             yield break;
-
-        SendSkillInputPacket(key);
-        _player.Indicator.EnableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
-        //_player.Indicator.FindIndicatorObject("Center");
-        Vector3 aimCenter = transform.position +( _player.transform.forward * SNIPER_DISTANCE);
-        cc.StartAimMode(aimCenter, zoomOutDistance: SNIPER_ZOOM_DURATION);
+        cc.StartAimMode(_player.transform, GetOppositeScreenEdgeFromPlayer());
 
         float elapsed = 0;
         while (elapsed < SNIPER_AIM_DURATION)
         {
             elapsed += Time.deltaTime;
-            // 스킬 취소
+            // 1. 스킬 취소
             if (Input.GetMouseButtonDown(1))
             {
                 cc.EndAimMode();
                 _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
+                SendSkillCancelPacket(key);
                 yield break;
             }
 
-            // 스킬 공격
+            // 2. 스킬 공격
             if (Input.GetMouseButtonDown(0))
             {
-                //cc.EndAimMode();
                 SendSkillExecutePacket(key);
+
+                StartCoroutine(SniperShooting(key)); 
             }
             yield return null;
         }
 
         cc.EndAimMode();
         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
+    }
+
+
+    private IEnumerator SniperShooting(KeyCode key)
+    {
+        _player.Indicator.ActiveIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1, false);
+        yield return new WaitForSeconds(0.5f); 
+        ++_SniperShotIdx;
+
+        if (_SniperShotIdx >= SNIPER_SHOT_COUNT) 
+        {
+            _SniperShotIdx = 0;
+
+            CameraController cc = Camera.main.gameObject.GetComponent<CameraController>();
+            if (cc == null)
+                yield break;
+
+            cc.EndAimMode();
+            SendSkillCancelPacket(key);
+            yield break;
+        }
+
+        _player.Indicator.ActiveIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1, true);
     }
     #endregion
 
@@ -138,6 +174,9 @@ public class TheodoreInputController : PlayerInputController
     }
     private IEnumerator InputSkill(KeyCode key, Action onConfirm, Action onCancel)
     {
+        if(key == KeyCode.R)
+            _player.UI.PlayerInterface.SetChargingBar(DataManager.SkillDict[CharacterType.Theodore][key].name, 1.5f, 3);
+
         while (!Input.GetKeyUp(key) && !Input.GetMouseButtonDown(0))
         {
             if (Input.GetMouseButtonDown(1))
@@ -152,8 +191,10 @@ public class TheodoreInputController : PlayerInputController
 
     private IEnumerator ChargingSkill(KeyCode key, Action onCancel)
     {
-        SendSkillPreparePacket(key);
+        _player.UI.PlayerInterface.SetChargingBar(DataManager.SkillDict[CharacterType.Theodore][key].name, 1.5f, EFFECT_DURATION);
+        _player.Speed -= SKILL_CHARGE_SPEED;
 
+        SendSkillPreparePacket(key);
         while (Input.GetKey(key) &&  _elapsedTime < EFFECT_DURATION)
         {
             _elapsedTime += Time.deltaTime;
@@ -165,10 +206,13 @@ public class TheodoreInputController : PlayerInputController
         {
             SendSkillInputPacket(key, SKIP_STATE_CHECK);
         }
+        _player.Speed = _originSpeed;
     }
     private void CancelSkill(KeyCode key)
     {
         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
+        _player.UI.PlayerInterface.StopChargingBar();
+
         _elapsedTime = 0;
         _currentSkillKey = null;
     }
@@ -179,6 +223,7 @@ public class TheodoreInputController : PlayerInputController
     {
         if (_cancelCoroutine != null)
             return null;
+
 
         // 스킬 키 + 우클릭 동시 입력 시 쿨다운 시작
         if (_currentSkillKey != null &&
@@ -224,6 +269,15 @@ public class TheodoreInputController : PlayerInputController
         if (skillCmd != null)
             Managers.Network.Send(skillCmd);
     }
+    private void SendSkillCancelPacket(KeyCode key)
+    {
+        C_SkillCancel cancelPacket = new C_SkillCancel
+        {
+            ObjectId = _player.ObjInfo.ObjectId,
+            SkillKey = (int)key
+        };
+        Managers.Network.Send(cancelPacket);
+    }
     private void SendSkillPreparePacket(KeyCode key)
     {
         C_SkillPrepare preparePacket = new C_SkillPrepare
@@ -235,12 +289,32 @@ public class TheodoreInputController : PlayerInputController
     }
     private void SendSkillExecutePacket(KeyCode key)
     {
+        Vector2 mousePos = _player.GetMousePos();
         C_SkillExecute executePacket = new C_SkillExecute
         {
             ObjectId = _player.ObjInfo.ObjectId,
-            SkillKey = (int)key
+            SkillKey = (int)key,
+            MousePosX = mousePos.x,
+            MousePosZ = mousePos.y
         };
         Managers.Network.Send(executePacket);
+    }
+    #endregion
+
+    #region Utils
+    // 마우스 방향의 반대편 스크린 좌가장자리를 가져옴
+    private ScreenEdge GetOppositeScreenEdgeFromPlayer()
+    {
+        Vector3 playerForward = _player.transform.forward;
+
+        if (Mathf.Abs(playerForward.x) > Mathf.Abs(playerForward.z))
+        {
+            return playerForward.x > 0 ? ScreenEdge.Right : ScreenEdge.Left;
+        }
+        else
+        {
+            return playerForward.z > 0 ? ScreenEdge.Top : ScreenEdge.Bottom;
+        }
     }
     #endregion
 }
