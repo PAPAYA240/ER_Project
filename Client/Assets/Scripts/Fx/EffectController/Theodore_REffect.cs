@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class EffectController : MonoBehaviour
+public class Theodore_REffect : MonoBehaviour
 {
     [SerializeField] public Renderer effectRenderer;
 
@@ -38,6 +38,4 @@ public class EffectController : MonoBehaviour
             _isActive = true;
         }
     }
-
-
 }

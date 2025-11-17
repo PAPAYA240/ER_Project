@@ -28,7 +28,6 @@ public abstract class AnimationControlNode : ActionNode, IStateChangeListener
         if (monsterController == null)
             monsterController = owner.GetComponentInChildren<MonsterController>();
 
-
         if (_animator == null)
             _animator = owner.GetComponentInChildren<Animator>();
 

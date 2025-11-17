@@ -17,13 +17,13 @@ public class PlayEffectNode : ActionNode, IStateChangeListener
              Transform handL = Util.FindChildByName(monster.transform, "Fx_Hand_L").transform;
 
              if (DataManager.MonsterSkillDict.TryGetValue(monster.Skill, out List<EffectData> data))
-                 Managers.FX.PlayEffect(monster.ObjInfo.ObjectId, data, monster.transform, monster._targetPos, monster._targetPos, monster.transform.rotation);
+                 Managers.FX.PlayEffect(monster.ObjInfo.ObjectId, data, monster.transform, monster.TargetPosition, monster.TargetPosition, monster.transform.rotation);
          }
          else
          {
              if (DataManager.MonsterSkillDict.TryGetValue(monster.Skill, out List<EffectData> data))
              {
-                 Managers.FX.PlayEffect(monster.ObjInfo.ObjectId, data, monster.transform, monster._targetPos, monster._targetPos);
+                 Managers.FX.PlayEffect(monster.ObjInfo.ObjectId, data, monster.transform, monster.TargetPosition, monster.TargetPosition);
              }
          }
          return NodeStatus.Success;

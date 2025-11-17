@@ -4,6 +4,7 @@ using UnityEngine;
 using Data;
 using static Data.EffectData;
 using Google.Protobuf.Protocol;
+using UnityEditor.Sprites;
 
 public class EffectFXManager : MonoBehaviour
 {
@@ -63,6 +64,7 @@ public class EffectFXManager : MonoBehaviour
                 continue;
             }
 
+            // CasterTransform 부모 설정
             Transform copyTransform = casterTransform;
             if (casterTransform != null && data.attachBoneName != null)
             {
@@ -77,7 +79,7 @@ public class EffectFXManager : MonoBehaviour
 
             if (data.target == EEffectTarget.Self)
             {
-                fxObject.transform.SetParent(casterTransform);
+                fxObject.transform.SetParent(copyTransform);
                 fxObject.transform.localPosition = data.position;
                 fxObject.transform.localRotation = Quaternion.identity;
             }
@@ -113,7 +115,21 @@ public class EffectFXManager : MonoBehaviour
         activeCoroutines[fxObject] = StartCoroutine(ReturnToPoolAfterDelay(ownerId, fxObject, data.prefabName, data.delayTime, data.duration, casterTransform));
 
         if (data.target == EEffectTarget.Shot)
-            StartCoroutine(ControlEffect(fxObject, casterTransform.forward, data.duration));
+        {
+            GameObject go = Managers.Object.FindById(ownerId);
+            BaseController bc = go.GetComponentInChildren<BaseController>();
+            if (bc == null)
+                return;
+            GameObjectType objectType = ObjectManager.GetObjectTypeById(bc.Id);
+
+            if (objectType == GameObjectType.Monster)
+            {
+                MonsterController mc = bc as MonsterController;
+                StartCoroutine(ControlEffect(fxObject, mc.GetTargetForwardVector(), data.duration));
+            }
+            else
+                StartCoroutine(ControlEffect(fxObject, casterTransform.forward, data.duration));
+        }
     }
 
     #region Shooting
@@ -144,6 +160,9 @@ public class EffectFXManager : MonoBehaviour
 
     public void StopAndReturnEffect(GameObject effect)
     {
+        if (effect == null)
+            return;
+
         if (activeCoroutines.ContainsKey(effect))
         {
             effect.SetActive(false);
@@ -153,9 +172,11 @@ public class EffectFXManager : MonoBehaviour
     }
     private IEnumerator ReturnToPoolAfterDelay(int ownerId, GameObject fxObject, string prefabName, float delayTime, float duration, Transform casterTransform)
     {
+        if (fxObject == null)
+            yield break;
+
         yield return new WaitForSeconds(delayTime);
-        if (fxObject != null) 
-            fxObject.SetActive(true);
+        fxObject.SetActive(true);
 
         yield return new WaitForSeconds(duration);
         RemoveEffect(ownerId, fxObject);
