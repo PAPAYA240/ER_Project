@@ -19,7 +19,7 @@ public class NetworkManager
 	public void Init()
 	{
 		// DNS (Domain Name System)
-		string host = Dns.GetHostName();
+		//string host = Dns.GetHostName();
         //IPHostEntry ipHost = Dns.GetHostEntry(host);
         //IPAddress ipAddr = ipHost.AddressList[0];
         IPAddress ipAddr = IPAddress.Parse("129.154.59.53"); // Public IP
