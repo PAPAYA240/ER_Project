@@ -242,17 +242,6 @@ class PacketHandler
 
         GameObjectType objectType = ObjectManager.GetObjectTypeById(creature.Id);
 
-        //// 오브젝트 충돌
-        //if ((KeyCode)interactPacket.TargetKeyCode == KeyCode.F1)
-        //{
-        //    if (objectType == GameObjectType.Player)
-        //    {
-        //        KeyCode mkey = (KeyCode)interactPacket.KeyCode; // Hitbox 키코드
-        //        GameObject target = Managers.Object.FindById(interactPacket.TargetId); // 공격한 타겟
-
-        //        MonsterController mc = target.GetComponentInChildren<MonsterController>();
-        //    }
-        //}
         // Hitbox 충돌
        if (objectType == GameObjectType.Player)
        {
@@ -376,7 +365,18 @@ class PacketHandler
 
     public static void S_FxHandler(PacketSession session, IMessage packet)
     {
-       
+        S_Fx fxPacket = packet as S_Fx;
+        GameObject go = Managers.Object.FindById(fxPacket.ObjectId);
+        if (go == null)     return;
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)      return;
+
+        Vector3 mousePos = new Vector3(fxPacket.MousePosX, 0, fxPacket.MousePosZ);
+        Vector3 targetPos = fxPacket.TargetPosition.ToVector();
+        Quaternion targetRot = fxPacket.TargetRotation;
+
+        pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));
+        pc.PlayEffectFromServer(fxPacket, mousePos, targetPos, targetRot);
     }
 
     public static void S_RespawnHandler(PacketSession session, IMessage packet)
@@ -468,10 +468,13 @@ class PacketHandler
         GameObject go = Managers.Object.FindById(confirmPacket.ObjectId);
         if (go == null)
             return;
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
 
         if (Managers.Object.MyPlayer.Id == confirmPacket.ObjectId)
         {
-            if(true == confirmPacket.CanUse)
+            if (true == confirmPacket.CanUse)
                 Managers.Object.MyPlayer.OnServerUpdate(confirmPacket);
         }
     }
@@ -647,6 +650,12 @@ class PacketHandler
 
         if(Managers.Object.MyPlayer != null)
         {
+            if (Managers.Object.MyPlayer.CurPhase != syncTimerPacket.Phase)
+            {
+                // CurPhase : 현재 페이즈를 어디서 가져올 지 몰라서 일단 MyPlayer에 넣어둠...
+                Managers.Object.MyPlayer.CurPhase = syncTimerPacket.Phase;
+                Managers.Object.MyPlayer.UI.ActiveAppearMonsterBar(syncTimerPacket.Phase);
+            }
             Managers.Object.MyPlayer.UI.SetTimer(syncTimerPacket.Phase, clientLocalTargetRealtimeSinceStartupEnd);
         }
     }

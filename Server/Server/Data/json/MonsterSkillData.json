@@ -26,7 +26,7 @@
       "SkillBehavior": "KnockbackSkill",
       "descriptionInfo": {
         "Duration": 0.5,
-        "Speed": 5.0,
+        "Speed": 10.0,
         "Distance" :  5.0
       }
       },
@@ -64,15 +64,15 @@
       "id": "7",
       "name": "MsGammaSkill1",
       "skillType": "MsGammaSkill1",
-      "skillDuration": "2.25",
-      "skillCoolTime": "1",
+      "skillDuration": "2.5",
+      "skillCoolTime": "0.5",
       "damage": "300"
     },
     {
       "id": "8",
       "name": "MsGammaSkill2",
       "skillType": "MsGammaSkill2",
-      "skillDuration": "6.4",
+      "skillDuration": "7.0",
       "skillCoolTime": "0",
       "damage": "300"
     },
@@ -90,7 +90,7 @@
       "skillType": "MsTurretAttack",
       "skillDuration": "1.15",
       "skillCoolTime": "0.2",
-      "damage": "10"
+      "damage": "500"
     }
   ]
 } 

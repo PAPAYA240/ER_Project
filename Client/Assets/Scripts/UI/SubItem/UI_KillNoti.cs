@@ -37,7 +37,7 @@ public class UI_KillNoti : UI_Base
     {
         if (attPc == null || diePc == null) return; 
 
-        //TODO ÀÌ¸§ ¹Ù²Ù±â.
+        //TODO ï¿½Ì¸ï¿½ ï¿½Ù²Ù±ï¿½.
 
         GetImage((int)Images.KillCharImg).sprite = Managers.Resource.Load<Sprite>($"Sprite/CharResult_{attPc.ObjInfo.Player.CharType.ToString()}_S000");
         GetImage((int)Images.DeathCharImg).sprite = Managers.Resource.Load<Sprite>($"Sprite/CharResult_{diePc.ObjInfo.Player.CharType.ToString()}_S000");

@@ -26,6 +26,7 @@ namespace Server.Game
 
             else if (monster.Target == null)
                 ExecuteIdle(monster);
+
         }
         private void ExecuteActive(Monster monster)
         {

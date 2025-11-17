@@ -38,7 +38,8 @@ namespace Server.Data
             D = 100,  // UnityEngine.KeyCode.D
             F = 102,  // UnityEngine.KeyCode.F
             T = 116,  // UnityEngine.KeyCode.T
-            F1 = 282
+            F1 = 282,
+            F2 = 283,
         }
     }
 }

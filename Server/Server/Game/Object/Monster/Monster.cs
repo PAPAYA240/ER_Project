@@ -57,11 +57,7 @@ namespace Server.Game
             if (!LoadMonsterData(type))
                 return;
 
-            if (DataManager.MonsterDict[type].attackType == "long")
-                DIST_TO_TARGET = 5.0f;
-            else
-                DIST_TO_TARGET = 2.0f;
-
+           DIST_TO_TARGET = DataManager.MonsterDict[type].attackDist;
             OnAttacked += HandlerRegisterTarget;
         }
         bool _appeared = false;

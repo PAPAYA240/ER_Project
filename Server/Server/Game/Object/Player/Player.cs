@@ -1,11 +1,10 @@
 using Google.Protobuf.Protocol;
-using Lucene.Net.Store;
-using Lucene.Net.Support;
 using Server.Data;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Numerics;
+using System.Reflection.Metadata.Ecma335;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -52,7 +51,7 @@ namespace Server.Game
 
         public override float Speed 
         {
-            get { return ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed + _totalItemStat.AttackSpeed * (1 + _totalItemStat.PercentageSpeed)) ; }
+            get { return ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed + _totalItemStat.FixedSpeed * (1 + _totalItemStat.PercentageSpeed), ignoreDebuff: IsCcImmune) ; }
             set { base.Speed = value; }
         }
 
@@ -365,6 +364,7 @@ namespace Server.Game
             MakeInventory();
         }
         #endregion
+
         #region State : Dead
         public void OnDestroy()
         {
@@ -413,6 +413,7 @@ namespace Server.Game
         #endregion
 
         #region State
+
         public void ChangeState(IPlayerState newState)
         {
             _stateMachine.ChangeState(newState, this);
@@ -880,7 +881,7 @@ namespace Server.Game
                 Stamina += _totalItemStat.MaxStamina;
                 _isUpdatedStat = true;
 
-                _isUpdatedStatus = true;
+                UpdateStatusFlag();
 
                 GameRoom room = Room;
 
@@ -992,18 +993,6 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendMovePacket(PositionInfo posInfo, RotationInfo rotInfo)
-        {
-            S_Move packet = new S_Move()
-            {
-                ObjectId = Id,
-                PosInfo = posInfo,
-                RotInfo = rotInfo
-            };
-
-            Room.Push(Room.Broadcast, packet);
-        }
-
         public void SendSetMoveTarget(bool isGround, int targetId, PositionInfo posOpt = null)
         {
             S_SetMoveTarget packet = new S_SetMoveTarget
@@ -1039,7 +1028,53 @@ namespace Server.Game
             Room.Broadcast(pkt);
         }
 
-        public void SendSkillConfirmPacket(bool canUse, KeyCode keyCode = KeyCode.None, bool canMoveDuringCast = false, bool sendCostPacket = true, bool sendLookatMousePacket = false)
+        public void SendSkillEffect(
+            Vector2 mousePos,
+            KeyCode keyCode = KeyCode.None, 
+            bool sendLookatMousePacket = false,
+            Vector3 targetPos = new Vector3(),
+            Quaternion targetRot = default(Quaternion),
+            string type = "Caster", 
+            string name = "")
+        {
+            Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
+            Vector2 dir = mousePos - myPos;
+            if (dir.LengthSquared() < 0.0001f)
+                return;
+
+            float angle = (float)Math.Atan2(dir.Y, dir.X);
+            Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle);
+
+            RotationInfo newRot = new RotationInfo
+            {
+                Qx = rot.X,
+                Qy = rot.Y,
+                Qz = rot.Z,
+                Qw = rot.W
+            };
+            RotInfo = newRot;
+
+            S_Fx fxPacket = new S_Fx
+            {
+                ObjectId = Id,
+                CanLookatMouse = sendLookatMousePacket,
+                SkillKey = (int)keyCode,
+                MousePosX = mousePos.X,
+                MousePosZ = mousePos.Y,
+                TargetPosition = new PositionInfo { PosX = targetPos.X, PosY = targetPos.Y, PosZ = targetPos.Z },
+                TargetRotation = new RotationInfo { Qx = targetRot.X, Qy = targetRot.Y, Qz = targetRot.Z, Qw = targetRot.W },
+                Type = type,
+                FxName = name
+            };
+
+            Room.Push(Room.Broadcast, fxPacket);
+        }
+
+        public void SendSkillConfirmPacket
+            (bool canUse, 
+            KeyCode keyCode = KeyCode.None, 
+            bool canMoveDuringCast = false, 
+            bool sendCostPacket = true)
         {
             S_SkillConfirm packet;
 
@@ -1051,7 +1086,6 @@ namespace Server.Game
                     CanUse = canUse,
                     SkillKey = (int)keyCode,
                     CanMove = canMoveDuringCast,
-                    CanLookatMouse = sendLookatMousePacket
                 };
                
                 if(sendCostPacket)
@@ -1064,7 +1098,6 @@ namespace Server.Game
                     ObjectId = Id,
                     CanUse = canUse,
                     SkillKey = (int)keyCode,
-                    CanLookatMouse = sendLookatMousePacket,
                 };
             }
 
@@ -1228,6 +1261,22 @@ namespace Server.Game
                 Room.Push(Session.Send, packet);
                 _isUpdatedStatus = false;
             }
+        }
+
+        public void SendUpdateStatusPacket(bool IsUnStoppable)
+        {
+            S_ChangeStatus packet = new S_ChangeStatus()
+            {
+                ObjectId = Id,
+
+                MoveSpeed = Speed,
+                Attack = Attack,
+                //AttackSpeed = 
+                Defense = Defense,
+                Healing = Healing,
+            };
+
+            Room.Push(Session.Send, packet);
         }
         #endregion
     }
