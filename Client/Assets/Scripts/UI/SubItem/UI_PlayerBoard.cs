@@ -24,7 +24,7 @@ public class UI_PlayerBoard : UI_Base
     public enum GameObjects
     {
         Weapon,
-        Armor,
+        Body,
         Head,
         Arm,
         Leg
@@ -38,7 +38,7 @@ public class UI_PlayerBoard : UI_Base
     // 아이템
     // 배경 색
 
-    public int UID {  get; set; }
+    private PlayerController _targetPc;
 
     public override void Init()
     {
@@ -120,6 +120,36 @@ public class UI_PlayerBoard : UI_Base
 
     public void SetEquipItem(GameObjects go, int itemId)
     {
+        if (itemId == 0)
+            return;
         GetObject((int)go).GetComponent<UI_EquipItemSlot>().SetItem(DataManager.ItemDict[itemId] as EquipItemInfo);
+    }
+
+    public void SetTarget(PlayerController pc)
+    {
+        _targetPc = pc;
+    }
+
+    public void UpdatePlayerBoard()
+    {
+        if (_targetPc == null)
+            return;
+
+        SetCharImage(_targetPc.ObjInfo.Player.CharType.ToString());
+        SetBgColor(_targetPc.ObjInfo.Player.Team);
+        SetKDA(_targetPc.KillAmount, _targetPc.DeathAmount, _targetPc.AsistAmount);
+
+        if(_targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Weapon] != null)
+            SetEquipItem(GameObjects.Weapon, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Weapon].Id);
+        if (_targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Head] != null)
+            SetEquipItem(GameObjects.Head, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Head].Id);
+        if (_targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Arm] != null)
+            SetEquipItem(GameObjects.Arm, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Arm].Id);
+        if (_targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Leg] != null) 
+            SetEquipItem(GameObjects.Leg, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Leg].Id);
+        if (_targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Body] != null) 
+            SetEquipItem(GameObjects.Body, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Body].Id);
+
+        SetLevelText(_targetPc.ObjInfo.StatInfo.Level);
     }
 }

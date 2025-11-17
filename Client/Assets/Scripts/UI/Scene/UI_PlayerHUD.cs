@@ -16,7 +16,8 @@ public class UI_PlayerHUD : UI_Scene
         TurbineRight,
         Minimap,
         KDA,
-        KillNoti
+        KillNoti,
+        BattleBoard
     }
 
 
@@ -39,6 +40,7 @@ public class UI_PlayerHUD : UI_Scene
         Bind<GameObject>(typeof(GameObjects));
 
         GetObject((int)GameObjects.KillNoti).SetActive(false);
+        GetObject((int)GameObjects.BattleBoard).SetActive(false);
     }
 
     private void Start()
@@ -49,6 +51,15 @@ public class UI_PlayerHUD : UI_Scene
     void Update()
     {
         UpdateScale();
+
+        if(Input.GetKeyDown(KeyCode.Tab))
+        {
+            GetObject((int)GameObjects.BattleBoard).SetActive(true);
+        }
+        if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            GetObject((int)GameObjects.BattleBoard).SetActive(false);
+        }
     }
 
     #region Beacon
@@ -173,5 +184,10 @@ public class UI_PlayerHUD : UI_Scene
             GetObject((int)GameObjects.TeamScore).GetComponent<UI_ScoreBar>().CurrentScore = score;
         else 
             GetObject((int)GameObjects.EnemyScore).GetComponent<UI_ScoreBar>().CurrentScore = score;
+    }
+
+    public void AddPlayerBoardToBattleBoard(PlayerController pc)
+    {
+        GetObject((int)GameObjects.BattleBoard).AddComponent<UI_BattleBoard>().AddPlayer(pc);
     }
 }
