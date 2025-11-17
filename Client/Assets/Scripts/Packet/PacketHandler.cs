@@ -363,6 +363,7 @@ class PacketHandler
             mpc.UI.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
             mpc.UpdateLevel();
             mpc.UI.PlayerInterface.UpdateStat();
+            Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(mpc.Id);
             return;
         }
 
@@ -371,6 +372,7 @@ class PacketHandler
         if(null !=  pc)
         {
             pc.SetNameTagLevel();
+            Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(pc.Id);
         }
     }
 
@@ -557,6 +559,8 @@ class PacketHandler
             return;
 
         pc.EquipItem(changeEquipPacket.ItemId);
+
+        Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(pc.Id);
     }
     public static void S_EnvRequestHandler(PacketSession session, IMessage packet)
     {
@@ -608,6 +612,7 @@ class PacketHandler
                 if (pc != null)
                 {
                     pc.SetKDA(info.Kill, info.Death, info.Asist);
+                    Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(pc.Id);
                     //Debug.Log($"{pc.Id} {pc.name} K: {pc.KillAmount} D: {pc.DeathAmount} A: {pc.AsistAmount}");
                 }
             }               

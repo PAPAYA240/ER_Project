@@ -43,6 +43,8 @@ public class UI_BattleBoard : UI_Base
         ui.SetNameText(pc.NickName);
         ui.UpdatePlayerBoard();
 
+        
+
         // Allies
         if (Managers.Object.MyPlayer.ObjInfo.Player.Team == pc.ObjInfo.Player.Team)
         {
@@ -61,6 +63,7 @@ public class UI_BattleBoard : UI_Base
 
     public void UpdatePlayerBoard(int id)
     {
+
         if(_allies.TryGetValue(id, out GameObject ally))
         {
             ally.GetComponent<UI_PlayerBoard>().UpdatePlayerBoard();

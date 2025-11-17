@@ -188,6 +188,15 @@ public class UI_PlayerHUD : UI_Scene
 
     public void AddPlayerBoardToBattleBoard(PlayerController pc)
     {
-        GetObject((int)GameObjects.BattleBoard).AddComponent<UI_BattleBoard>().AddPlayer(pc);
+        //GetObject((int)GameObjects.BattleBoard).SetActive(true);
+        GetObject((int)GameObjects.BattleBoard).GetComponent<UI_BattleBoard>().AddPlayer(pc);
+        //GetObject((int)GameObjects.BattleBoard).SetActive(false);
+    }
+
+    public void UpdateBattleBoard(int id)
+    {
+        //GetObject((int)GameObjects.BattleBoard).SetActive(true);
+        GetObject((int)GameObjects.BattleBoard).GetComponent<UI_BattleBoard>().UpdatePlayerBoard(id);
+        //GetObject((int)GameObjects.BattleBoard).SetActive(false);
     }
 }

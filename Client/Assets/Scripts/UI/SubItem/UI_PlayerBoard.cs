@@ -133,22 +133,21 @@ public class UI_PlayerBoard : UI_Base
     public void UpdatePlayerBoard()
     {
         if (_targetPc == null)
+        {
+            Debug.Log("_targetPc == null");
             return;
+        }
 
         SetCharImage(_targetPc.ObjInfo.Player.CharType.ToString());
         SetBgColor(_targetPc.ObjInfo.Player.Team);
         SetKDA(_targetPc.KillAmount, _targetPc.DeathAmount, _targetPc.AsistAmount);
 
-        if(_targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Weapon] != null)
-            SetEquipItem(GameObjects.Weapon, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Weapon].Id);
-        if (_targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Head] != null)
-            SetEquipItem(GameObjects.Head, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Head].Id);
-        if (_targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Arm] != null)
-            SetEquipItem(GameObjects.Arm, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Arm].Id);
-        if (_targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Leg] != null) 
-            SetEquipItem(GameObjects.Leg, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Leg].Id);
-        if (_targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Body] != null) 
-            SetEquipItem(GameObjects.Body, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Body].Id);
+        
+        SetEquipItem(GameObjects.Weapon, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Weapon].Id);
+        SetEquipItem(GameObjects.Head, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Head].Id);
+        SetEquipItem(GameObjects.Arm, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Arm].Id);
+        SetEquipItem(GameObjects.Leg, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Leg].Id);
+        SetEquipItem(GameObjects.Body, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Body].Id);
 
         SetLevelText(_targetPc.ObjInfo.StatInfo.Level);
     }
