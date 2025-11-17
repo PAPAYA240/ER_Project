@@ -179,6 +179,9 @@ public class Env_HealPack : EnvController
     #region Interaction
     protected override void TryHandleInteraction()
     {
+        if (_triggerCreature == null)
+            return;
+
         PlayerController player = _triggerCreature.GetComponent<PlayerController>();
         if (player == null)
             return;
