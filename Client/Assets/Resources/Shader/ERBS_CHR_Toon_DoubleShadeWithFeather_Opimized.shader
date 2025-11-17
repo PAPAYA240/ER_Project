@@ -98,7 +98,7 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_Opimized" {
 		Tags { "RenderType"="Opaque" "Queue"="Geometry" "RenderPipeline"="UniversalPipeline" }
 		LOD 200
 
-		// Pass 1: 가려진 부분 (X-Ray - 파란색)
+		// Pass 1: 가려진 부분
 		Pass {
 			Name "OccludedPass"
 			Tags { "LightMode" = "SRPDefaultUnlit" }
@@ -108,10 +108,9 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_Opimized" {
 			Blend SrcAlpha OneMinusSrcAlpha
 			Cull Back
 			
-			// Stencil: 같은 그룹(같은 StencilRef)이면 렌더링 안 함
 			Stencil {
 				Ref [_StencilRef]
-				Comp NotEqual  // Stencil 값이 다를 때만 그리기
+				Comp NotEqual  
 				ReadMask [_StencilReadMask]
 			}
 			
@@ -144,7 +143,7 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_Opimized" {
 			ENDHLSL
 		}
 
-		// Pass 2: 보이는 부분 (일반 렌더링)
+		// Pass 2: 보이는 부분
 		Pass {
 			Name "ForwardLit"
 			Tags { "LightMode" = "UniversalForward" }
@@ -153,7 +152,6 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_Opimized" {
 			ZTest LEqual
 			Cull Back
 			
-			// Stencil: 그룹 ID 쓰기
 			Stencil {
 				Ref [_StencilRef]
 				Comp [_StencilComp]
@@ -221,24 +219,33 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_Opimized" {
 			}
 
 			half4 frag(Varyings input) : SV_Target {
-				// 기본 텍스처 샘플링
 				half4 baseColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv) * _BaseColor;
 				
-				// 조명 계산
 				Light mainLight = GetMainLight();
 				half3 normalWS = normalize(input.normalWS);
 				half NdotL = dot(normalWS, mainLight.direction);
-				half lightIntensity = saturate(NdotL * 0.5 + 0.5);
 				
-				// 툰 셰이딩 스텝
-				half toonStep = smoothstep(_BaseColor_Step - _BaseShade_Feather, _BaseColor_Step + _BaseShade_Feather, lightIntensity);
+				// 툰 셰이딩 
+				half lightIntensity = NdotL * 0.5 + 0.5;
+				half toonStep = step(_BaseColor_Step, lightIntensity);
 				
-				// 1st Shade 색상
+				if (_BaseShade_Feather > 0.0001)
+				{
+					toonStep = smoothstep(_BaseColor_Step - _BaseShade_Feather * 0.5, 
+					                      _BaseColor_Step + _BaseShade_Feather * 0.5, 
+					                      lightIntensity);
+				}
+				
 				half4 shadeMap = _Use_BaseAs1st > 0.5 ? baseColor : SAMPLE_TEXTURE2D(_1st_ShadeMap, sampler_1st_ShadeMap, input.uv);
 				half4 firstShade = shadeMap * _1st_ShadeColor;
 				
-				// 2nd Shade 색상
-				half shade2Step = smoothstep(_ShadeColor_Step - _1st2nd_Shades_Feather, _ShadeColor_Step + _1st2nd_Shades_Feather, lightIntensity);
+				half shade2Step = step(_ShadeColor_Step, lightIntensity);
+				if (_1st2nd_Shades_Feather > 0.0001)
+				{
+					shade2Step = smoothstep(_ShadeColor_Step - _1st2nd_Shades_Feather * 0.5, 
+					                        _ShadeColor_Step + _1st2nd_Shades_Feather * 0.5, 
+					                        lightIntensity);
+				}
 				half4 secondShade = shadeMap * _2nd_ShadeColor;
 				
 				// 셰이드 믹스
@@ -246,18 +253,16 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_Opimized" {
 				half4 finalColor = lerp(shadedColor, baseColor, toonStep);
 				
 				// 조명 적용
-				half3 lighting = mainLight.color * _Unlit_Intensity;
-				finalColor.rgb *= lighting;
+				finalColor.rgb *= _Unlit_Intensity;
 				
-				// GI 추가
-				half3 ambient = half3(unity_SHAr.w, unity_SHAg.w, unity_SHAb.w) * _GI_Intensity;
+				half3 ambient = half3(unity_SHAr.w, unity_SHAg.w, unity_SHAb.w) * _GI_Intensity * 0.3;
 				finalColor.rgb += ambient * baseColor.rgb;
 				
 				// Emissive
 				half4 emissive = SAMPLE_TEXTURE2D(_Emissive_Tex, sampler_Emissive_Tex, input.uv) * _Emissive_Color;
 				finalColor.rgb += emissive.rgb;
 				
-				// Overlay Color (마스크 효과용)
+				// Overlay Color
 				half maskValue = saturate((_CurrPos - _AddValOffset) * 10.0);
 				finalColor.rgb = lerp(finalColor.rgb, _OverColor.rgb, _OverColor.a * maskValue);
 				
