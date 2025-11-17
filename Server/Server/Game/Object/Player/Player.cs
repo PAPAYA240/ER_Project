@@ -1222,11 +1222,11 @@ namespace Server.Game
             Room.Push(Room.Broadcast, untargetablePkt);
         }
 
-        public void SendUnstoppablePacket(bool IsUnstoppalble)
+        public void SendUnstoppablePacket(bool IsUnstoppable)
         {
             S_Unstoppable unstoppablePkt = new S_Unstoppable();
             unstoppablePkt.ObjectId = Id;
-            unstoppablePkt.Unstoppable = IsUnstoppalble;
+            unstoppablePkt.Unstoppable = IsUnstoppable;
             Room.Push(Room.Broadcast, unstoppablePkt);
         }
 

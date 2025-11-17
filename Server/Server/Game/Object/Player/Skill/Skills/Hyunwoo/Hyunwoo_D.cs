@@ -95,7 +95,7 @@ public sealed class Hyunwoo_D : SkillHandlerBase
 
             _finalEnd = targetPos;
 
-            _elapsed += TimeUtil.DeltaTime;
+            _elapsed += TimeUtil.Instance.DeltaTime;
             if (_elapsed > _stateDuration)
             {
                 p.ChangeState(new Hyunwoo_AttackState(_target.Id));

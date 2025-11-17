@@ -56,11 +56,10 @@ public class CameraController : MonoBehaviour
         mainCamData.cameraStack.Clear();
         _mainCamera.clearFlags = CameraClearFlags.SolidColor;
 
-        int myTeamFogLayer = LayerMask.NameToLayer("FogTeam1"); // TODO: 실제 팀으로 변경
         int uiLayer = LayerMask.NameToLayer("IndicatorUI");
 
         int everythingMask = ~0;
-        int layersToExclude = (1 << uiLayer) | (1 << myTeamFogLayer);
+        int layersToExclude = (1 << uiLayer) | (1 << LayerMask.NameToLayer("FogTeam1")) | (1 << LayerMask.NameToLayer("FogTeam2"));
         _mainCamera.cullingMask = everythingMask & ~layersToExclude;
 
         mainCamData.requiresDepthTexture = true;

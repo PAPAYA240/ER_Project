@@ -496,7 +496,10 @@ namespace Server.Game
                     {
                         Player player = this as Player;
                         if (player != null)
+                        {
                             UpdateUnstoppable(true);
+                            player.SendUnstoppablePacket(true);
+                        }
                     }
                 }                    
             }
@@ -617,7 +620,10 @@ namespace Server.Game
             {
                 Player player = this as Player;
                 if (player != null)
+                {
                     UpdateUnstoppable(false);
+                    player.SendUnstoppablePacket(false);
+                }
             }
         }
 
