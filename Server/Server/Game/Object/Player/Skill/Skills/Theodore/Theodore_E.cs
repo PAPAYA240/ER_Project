@@ -8,15 +8,15 @@ public sealed class Theodore_E : SkillHandlerBase
     public override bool CanMoveDuringCast => false;
 
     private readonly float _animDuration;
-    private readonly float _followRatio = 0.4f;
-    private readonly float _behindOffset = 1.0f;
+    //private readonly float _followRatio = 0.4f;
+    //private readonly float _behindOffset = 1.0f;
 
-    private GameObject _target;
+    //private GameObject _target;
 
-    private float _elapsed;
-    private Vector3 _startPos, _midPos;
+    //private float _elapsed;
+    //private Vector3 _startPos, _midPos;
 
-    private bool _canUse = true;
+    //private bool _canUse = true;
 
     public Theodore_E()
     {

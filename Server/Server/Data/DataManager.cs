@@ -51,7 +51,7 @@ namespace Server.Data
             // For PlayerData
             StatDict = LoadJson<Data.StatData, CharacterType, StatInfo>("StatData", "player").MakeDict();
             ExpDict = LoadJson<Data.ExpData, int, int>("ExpData", "player").MakeDict();
-            SkillDict = LoadJson<Data.GameData, CharacterType, Dictionary<KeyCode, SkillData>>("newSkillData", "player").MakeDict();
+            SkillDict = LoadJson<Data.GameData, CharacterType, Dictionary<KeyCode, SkillData>>("SkillData", "player").MakeDict();
             SkillSpecDict = LoadJson<Data.SkillSpecData, CharacterType, Dictionary<KeyCode, SkillVariants>>("SkillSpecData", "player").MakeDict();
             SkillHitboxDict = LoadJson<Data.HitboxData, CharacterType, Dictionary<KeyCode, SkillHitbox>>("HitboxData", "player").MakeDict();
             StatGrowthDict = LoadJson<Data.StatGrowthData, CharacterType, StatInfo>("StatGrowthData", "player").MakeDict();
@@ -60,12 +60,12 @@ namespace Server.Data
             AnimLengthInfoDict = LoadJson<Data.AnimationInfosData, CharacterType, Dictionary<string, AnimLengthInfo>>("AnimationInfos", "player").MakeDict();
 
             // For MonsterData
-            MonsterDict = LoadJson<Data.MonsterDict, MonsterType, Data.MonsterData>("MonsterData/MonsterData", "monster").MakeDict();
-            MonsterSkillDict = LoadJson<Data.MonsterSkillDict, MonsterSkill, Data.MonsterSkillData>("MonsterData/MonsterSkillData", "monster").MakeDict();
-            MonstSkillHitboxDict = LoadJson<Data.MonstHitboxData, MonsterType, Dictionary<MonsterSkill, SkillHitbox>>("MonsterData/HitboxData", "monster").MakeDict();
+            MonsterDict = LoadJson<Data.MonsterDict, MonsterType, Data.MonsterData>("MonsterData", "player").MakeDict();
+            MonsterSkillDict = LoadJson<Data.MonsterSkillDict, MonsterSkill, Data.MonsterSkillData>("MonsterSkillData", "player").MakeDict();
+            MonstSkillHitboxDict = LoadJson<Data.MonstHitboxData, MonsterType, Dictionary<MonsterSkill, SkillHitbox>>("MonsterHitboxData", "player").MakeDict();
 
             // For EnvironmentData
-            EnvDict = LoadJson<Data.EnvObjectData, EnvType, EnvInfo>("Env/EnvData", "monster").MakeDict();
+            EnvDict = LoadJson<Data.EnvObjectData, EnvType, EnvInfo>("EnvData", "player").MakeDict();
 
             // For Item
             JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };

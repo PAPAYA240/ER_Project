@@ -8,21 +8,21 @@ using static Server.Game.GameObject;
 public class CooldownController_Tick : ICooldownController
 {
     private readonly Player _owner;
-    private readonly Func<int> _nowTick;
+    private readonly Func<long> _nowTick;
 
     private readonly Dictionary<KeyCode, CoolTime> _coolDownDict = new Dictionary<KeyCode, CoolTime>();
     class CoolTime
     {
-        public int EndTick;         // 논리용 절대 종료 tick(ms)
+        public long EndTick;         // 논리용 절대 종료 tick(ms)
         public bool Fired;          // 이번 사이클 Ready 이벤트 발사 여부(중복 방지)
     }
 
-    public event Action<KeyCode> OnReady;
+    //public event Action<KeyCode> OnReady;
 
-    public CooldownController_Tick(Player owner, Func<int> nowTickProvider = null)
+    public CooldownController_Tick(Player owner, Func<long> nowTickProvider = null)
     {
         _owner = owner;
-        _nowTick = nowTickProvider ?? (() => (int)TimeUtil.LastTick);
+        _nowTick = nowTickProvider ?? (() => TimeUtil.Instance.LastTick);
     }
 
     public bool IsReady(KeyCode key)
@@ -31,7 +31,7 @@ public class CooldownController_Tick : ICooldownController
             return true; // 엔트리 없음 = 준비됨
 
         // now >= end 이면 준비됨 (래핑 안전)
-        return TimeUtil.IsPastOrNow(TimeUtil.LastTick, e.EndTick);
+        return TimeUtil.Instance.IsPastOrNow(e.EndTick);
     }
 
     public float GetRemaining(KeyCode key)
@@ -40,22 +40,22 @@ public class CooldownController_Tick : ICooldownController
             return 0f; // 없음 = 0초
 
         // 과거/현재(끝난 상태)이면 0 
-        if (TimeUtil.IsPastOrNow(TimeUtil.LastTick, e.EndTick))
+        if (TimeUtil.Instance.IsPastOrNow(e.EndTick))
             return 0f;
 
         // 미래인 경우에만 남은 초 계산
-        return TimeUtil.RemainingSec(e.EndTick);
+        return TimeUtil.Instance.RemainingSec(e.EndTick);
     }
 
     // 쿨타임 시작. startTick=null이면 지금(LastTick)부터
     public void Start(KeyCode key, float durationSec, int? startTick = null)
     {
-        int now = TimeUtil.LastTick;
-        int start = startTick ?? now;
-        if (TimeUtil.IsPastOrNow(now, start))
+        long now = TimeUtil.Instance.LastTick;
+        long start = startTick ?? now;
+        if (TimeUtil.Instance.IsPastOrNow(start))
             start = now;
 
-        int end = unchecked(start + SecToMs(durationSec));
+        long end = unchecked(start + SecToMs(durationSec));
 
         var e = GetOrCreate(key);
         e.EndTick = end;
@@ -93,7 +93,7 @@ public class CooldownController_Tick : ICooldownController
     // 남은 시간을 강제 설정(초). 0 이하면 즉시 Ready
     public void SetRemaining(KeyCode key, float seconds)
     {
-        int now = TimeUtil.LastTick;
+        long now = TimeUtil.Instance.LastTick;
 
         var e = GetOrCreate(key);
         e.Fired = false;

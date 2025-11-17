@@ -636,7 +636,7 @@ class PacketHandler
 
         float oneWayLatencySeconds = GetCurrentEstimatedOneWayLatency(); 
 
-        long compensatedServerCurrentTimeMs = syncTimerPacket.CurrentTimestamp + (long)(oneWayLatencySeconds * 1000);
+        long compensatedServerCurrentTimeMs = syncTimerPacket.CurrentTick + (long)(oneWayLatencySeconds * 1000);
         long compensatedPhaseServerEndTimeMs = syncTimerPacket.PhaseEndTime + (long)(oneWayLatencySeconds * 1000);
 
         // 서버가 생각하는 남은 시간 (밀리초)

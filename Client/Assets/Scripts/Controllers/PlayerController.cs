@@ -15,8 +15,8 @@ public class PlayerController : CreatureController
     int _maxAtkCount = 2;
 
     // SyncPos
-    float _minDist = 3f;
-    float _syncSpeed = 20f;
+    //float _minDist = 3f;
+    //float _syncSpeed = 20f;
     Vector3 _serverPos;
     float AGENT_SPEED_RATIO = 1.7f;
 

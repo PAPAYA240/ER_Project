@@ -2,38 +2,53 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
 
-public static class TimeUtil
+public sealed class TimeUtil
 {
+    private static readonly Lazy<TimeUtil> _instance = new Lazy<TimeUtil>(() => new TimeUtil());
+    public static TimeUtil Instance => _instance.Value;
+
+    // atomic long, int 비트 변환으로 float DeltaTime 처리
+    private long _lastTick;
+    private int _deltaBits;
+    private TimeUtil() { }
+
     // 현재 UTC 시각을 초 단위(double)로 반환
     public static double UtcSec()
         => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000.0;
 
-    public static float DeltaTime { get; private set; }
-    public static int LastTick { get; private set; }
+    public float DeltaTime => BitConverter.Int32BitsToSingle(Interlocked.CompareExchange(ref _deltaBits, 0, 0));
+    public long LastTick => Interlocked.Read(ref _lastTick);
 
-    public static void Update(int curTick)
+    public void Update(long curTick)
     {
-        if(LastTick == 0)
+        long last = Interlocked.Read(ref _lastTick);
+
+        if (last == 0)
         {
-            LastTick = curTick;
-            DeltaTime = 0f;
+            Interlocked.Exchange(ref _lastTick, curTick);
+            Interlocked.Exchange(ref _deltaBits, BitConverter.SingleToInt32Bits(0f));
             return;
         }
 
-        uint deltaMs = (uint)curTick - (uint)LastTick;
-        DeltaTime = deltaMs / 1000f;
-        LastTick = curTick;
+        long deltaMs = unchecked(curTick - last);
+        Interlocked.Exchange(ref _deltaBits, BitConverter.SingleToInt32Bits(deltaMs / 1000f));
+        Interlocked.Exchange(ref _lastTick, curTick);
     }
 
     // 남은 시간(초) 계산
-    public static float RemainingSec(int endTick)
+    public float RemainingSec(long endTick)
     {
-        uint deltaMs = (uint)endTick - (uint)LastTick; // 음수면 큰 양수로 자동 래핑
+        long last = Interlocked.Read(ref _lastTick); // atomic 읽기
+        long deltaMs = unchecked(endTick - last);   // 래핑 안전
         return deltaMs / 1000f;
     }
 
     // now ≥ target 비교(래핑 안전)
-    public static bool IsPastOrNow(int now, int target)
-        => unchecked(now - target) >= 0;
+    public bool IsPastOrNow(long target)
+    {
+        long now = Interlocked.Read(ref _lastTick); // atomic 읽기
+        return unchecked(now - target) >= 0;
+    }
 }

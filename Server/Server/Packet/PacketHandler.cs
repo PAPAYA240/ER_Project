@@ -17,8 +17,15 @@ class PacketHandler
     {
         ClientSession clientSession = session as ClientSession;
 
+        GameRoom room = RoomManager.Instance.Find(2) as GameRoom;
+        if (room == null)
+            return;
+
+        if (ObjectManager.Instance.GetPlayerCount() == 0)
+            room.StartGame();
+
         // create hyunwoo
-        if(clientSession.MyCharacter == CharacterType.Hyunwoo)
+        if (clientSession.MyCharacter == CharacterType.Hyunwoo)
         {
             clientSession.MyPlayer = ObjectManager.Instance.Add<Hyunwoo>();
         }
@@ -47,10 +54,6 @@ class PacketHandler
         if (player == null)
             return;
 
-        GameRoom room = RoomManager.Instance.Find(2) as GameRoom;
-        if (room == null)
-            return;
-            
         clientSession.CurRoom = room.RoomId;
         room.Push(room.EnterGame, player);
     }

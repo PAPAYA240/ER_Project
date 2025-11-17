@@ -573,7 +573,7 @@ message S_ChangeKDA{
 
 message S_SyncTimer{
 	int32 phase = 1;
-	int64 currentTimestamp = 2;
+	int64 currentTick = 2;
 	int64 phaseEndTime = 3;
 }
 

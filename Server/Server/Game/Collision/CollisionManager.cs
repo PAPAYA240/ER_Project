@@ -28,8 +28,8 @@ namespace Server.Game
         public int Team { get; set; }
 
         public SkillHitbox Data { get; set; }
-        public int StartTick { get; set; } // Skill Start Time
-        public int EndTick { get; set; } // Skill End Time
+        public long StartTick { get; set; } // Skill Start Time
+        public long EndTick { get; set; } // Skill End Time
 
         public bool IsUsed { get; set; } = false;
 
@@ -100,7 +100,12 @@ namespace Server.Game
         Dictionary<CharacterType, Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>> _statusEffects // Buffs & Debuffs
             = new Dictionary<CharacterType, Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>>();
 
-        public int CurTick { get; set; }
+        private long _curTick;
+        public long CurTick
+        {
+            get => Interlocked.Read(ref _curTick);
+            set => Interlocked.Exchange(ref _curTick, value);
+        }
 
         public void Init()
         {
@@ -874,7 +879,7 @@ namespace Server.Game
                 if (skillHitbox.EndFrame <= 0)
                     return null;
 
-                const float distance = 1.0f;
+                //const float distance = 1.0f;
                 var quat = creature.RotInfo.GetQuatFromRotInfo();
                 Vector2 forward = new Vector2(
                     2 * (quat.X * quat.Z + quat.W * quat.Y),

@@ -25,8 +25,8 @@ namespace Server.Game
     {
         public RawEnvList ProcessAndGetJson()
         {
-            string basePath = ConfigManager.Config.dataPaths["monster"];
-            string navFilePath = Path.Combine(basePath, "Env/SpawnEnvData.json");
+            string basePath = ConfigManager.Config.dataPaths["player"];
+            string navFilePath = Path.Combine(basePath, "SpawnEnvData.json");
             string rawJson = File.ReadAllText(navFilePath);
 
             // 2. 원본 JSON을 C# 객체로 역직렬화
@@ -57,8 +57,6 @@ namespace Server.Game
     public class EnvironmentManager
     {
         GameRoom _room;
-        private static EnvironmentManager _instance;
-        public static EnvironmentManager Instance => _instance;
 
         public void Init(GameRoom room)
         {

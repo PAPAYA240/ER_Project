@@ -23,8 +23,8 @@ namespace Server.Game
     {
         public RawMonsterList ProcessAndGetJson(int phase)
         {
-            string basePath = ConfigManager.Config.dataPaths["monster"];
-            string navFilePath = Path.Combine(basePath, "MonsterData/SpawnMonsterData.json");
+            string basePath = ConfigManager.Config.dataPaths["player"];
+            string navFilePath = Path.Combine(basePath, "SpawnMonsterData.json");
             string rawJson = File.ReadAllText(navFilePath);
 
             // 2. 원본 JSON을 C# 객체로 역직렬화

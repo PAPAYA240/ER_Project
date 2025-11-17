@@ -128,7 +128,7 @@ public sealed class Rozzi_E : SkillHandlerBase
             p.Room.CollManager.AddHitbox(p, _characterType, _keyCode, hitPos);
         }
 
-        _elapsed += TimeUtil.DeltaTime;
+        _elapsed += TimeUtil.Instance.DeltaTime;
         if (_elapsed > _duration)
         {
             ctx.RequestFinish();

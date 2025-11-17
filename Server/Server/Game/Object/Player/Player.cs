@@ -52,13 +52,13 @@ namespace Server.Game
 
         public override float Speed 
         {
-            get { return ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed + _totalItemStat.FixedSpeed * (1 + _totalItemStat.PercentageSpeed)) ; }
+            get { return ComposeFinal(STAT_MOVE_SPEED, Stat.MoveSpeed + _totalItemStat.AttackSpeed * (1 + _totalItemStat.PercentageSpeed)) ; }
             set { base.Speed = value; }
         }
 
         public override float AttackSpeed
         {
-            get { return ComposeFinal(STAT_ATTACK_SPEED, Stat.AttackSpeed + _totalItemStat.FixedSpeed * (1 + _totalItemStat.PercentageSpeed)) ; }
+            get { return ComposeFinal(STAT_ATTACK_SPEED, (Stat.AttackSpeed + DataManager.WeaponDict[Info.Player.Weapon].AttackSpeed) * (1 + _totalItemStat.AttackSpeed)) ; }
             set { base.AttackSpeed = value; }
         }
 
@@ -219,7 +219,7 @@ namespace Server.Game
         public int DeathAmount { get; set; }
         public int AsistAmount { get; set; }
 
-        private int AsistTime = 15;
+        private const int AsistTimeMs = 15 * 1000; // 15초 → 밀리초로 저장
 
         private Dictionary<int, DamageRecord> _damageRecords = new Dictionary<int, DamageRecord>();
 
@@ -227,13 +227,13 @@ namespace Server.Game
         { 
             public int Id;
             public float Damage;
-            public TimeSpan TimeStamp;
+            public long Tick;   // TimeSpan 대신 long(밀리초 tick)
 
-            public DamageRecord(int id, float damage, TimeSpan timeStamp)
+            public DamageRecord(int id, float damage, long tick)
             {
                 Id = id;
                 Damage = damage;
-                TimeStamp = timeStamp;
+                Tick = tick;
             }
         }
 
@@ -241,15 +241,22 @@ namespace Server.Game
         {
             if (null == Room) return;
 
+            long now = Room.CurTick;
+
+            // 지워야 하는 요소 수집
+            List<int> toRemove = new List<int>();
+
             foreach (var record in _damageRecords.Values)
             {
-                TimeSpan damageTime = Room.TimeStamp - record.TimeStamp;
+                long delta = unchecked(now - record.Tick);
 
-                if(damageTime.TotalSeconds > AsistTime)
-                {
-                    _damageRecords.Remove(record.Id);
-                }
+                if (delta > AsistTimeMs)
+                    toRemove.Add(record.Id);
             }
+
+            // 실제 삭제
+            foreach (int id in toRemove)
+                _damageRecords.Remove(id);
         }
 
         public override void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false, bool isBasicAttack = false)
@@ -259,20 +266,20 @@ namespace Server.Game
 
             UpdateDamageRecords();
 
-            // �ױ� ���� �߰��Ϸ��� ������ �̷��� ��.
-            if (_damageRecords.TryGetValue(attacker.Id, out DamageRecord damageRecord)) // �̹� �ش� �÷��̾�� �������� �Ծ��ٸ� �ð��� �ֽ�ȭ.
+            long now = Room.CurTick;
+
+            if (_damageRecords.TryGetValue(attacker.Id, out DamageRecord damageRecord))
             {
                 damageRecord.Damage += damage;
-                damageRecord.TimeStamp = Room.TimeStamp;
+                damageRecord.Tick = now;  // 마지막 데미지 시각 갱신
             }
             else
             {
-                _damageRecords.Add(attacker.Id, new DamageRecord(attacker.Id, damage, Room.TimeStamp)); // ���ظ� ���� ���� ���ٸ� ���� �߰�.
+                _damageRecords.Add(attacker.Id, new DamageRecord(attacker.Id, damage, now));
             }
 
             base.OnDamaged(attacker, damage, isTrueDamage, isBasicAttack);
         }
-
         #endregion
 
         public Player()
@@ -308,7 +315,7 @@ namespace Server.Game
             // 일정 시간 지나면 비전투 (용수야 여기야)
             if (CombatState == CombatState.Combat)
             {
-                _combatTime += TimeUtil.DeltaTime;
+                _combatTime += TimeUtil.Instance.DeltaTime;
                 if (_combatTime > _nonCombatTime)
                 {
                     _combatTime = 0;
@@ -333,7 +340,7 @@ namespace Server.Game
             // 유키 강화 평타용
             if (AttackActive == true)
             {
-                _attactActiveTime += TimeUtil.DeltaTime;
+                _attactActiveTime += TimeUtil.Instance.DeltaTime;
 
                 if (_attactActiveTime > _nonCombatTime)
                 {

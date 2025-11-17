@@ -10,8 +10,10 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
     public ISkill Handler {  get { return _handler; } }
     public readonly SkillContext Ctx;
 
-    private int _tStartTick, _tHitTick, _tEndTick;
-    private bool _didHit, _forceEnd;
+    private long _tStartTick, _tEndTick;
+    //private long _tHitTick;
+    //private bool _didHit;
+    private bool _forceEnd;
 
     private Vector3? _currentDestination = null;
     private const float DEST_CHANGE_EPS = 0.05f; // 목적지 미세변경 무시
@@ -25,8 +27,7 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
 
     public void Enter(Player player)
     {
-        int nowTick = TimeUtil.LastTick;
-        _tStartTick = nowTick;
+        _tStartTick = TimeUtil.Instance.LastTick;
 
         float durSec = _handler.GetDuration();
         _tEndTick = unchecked(_tStartTick + (int)MathF.Round(durSec * 1000f));
@@ -39,19 +40,17 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
 
     public void Execute(Player player)
     {
-        int now = TimeUtil.LastTick;
-
-        if (_forceEnd || TimeUtil.IsPastOrNow(now, _tEndTick))
+        if (_forceEnd || TimeUtil.Instance.IsPastOrNow(_tEndTick))
         {
             ChangeState(player);
             return;
         }
 
-        if (!_didHit && TimeUtil.IsPastOrNow(now, _tHitTick))
-        {
-            _handler.OnHit(player, Ctx);
-            _didHit = true;
-        }
+        //if (!_didHit && TimeUtil.Instance.IsPastOrNow(_tHitTick))
+        //{
+        //    _handler.OnHit(player, Ctx);
+        //    _didHit = true;
+        //}
 
         if(HandleMovementCompletion(player))
             OnStopCommand(player, null);

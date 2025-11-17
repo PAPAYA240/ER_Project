@@ -7,7 +7,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml.XPath;
 using Google.Protobuf.Protocol;
-using Lucene.Net.Messages;
 using Lucene.Net.Support;
 using Server.Game;
 using static Lucene.Net.Util.AttributeSource;

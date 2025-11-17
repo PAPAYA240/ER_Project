@@ -375,7 +375,7 @@ namespace Server.Game
             public string stat;
             public float value; // ex) 둔화량 20퍼 or 이동속도 증가 20퍼
             public float duration; // 지속시간
-            public int startTick; // 시작시간
+            public long startTick; // 시작시간
             public Subject subject; // 적용대상
             public ValueType valueType; // Ratio or Flat
 
