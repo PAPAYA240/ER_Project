@@ -1,4 +1,6 @@
 using Google.Protobuf;
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class UI_BattleBoard : UI_Base
@@ -9,8 +11,8 @@ public class UI_BattleBoard : UI_Base
         Enemies
     }
 
-    private int _alliesCount;
-    private int _enemiesCount;
+    Dictionary<int, GameObject> _allies = new Dictionary<int, GameObject>();
+    Dictionary<int, GameObject> _enemies = new Dictionary<int, GameObject>();
 
 
     public override void Init()
