@@ -42,13 +42,13 @@ public class CameraController : MonoBehaviour
         if (GetComponent<PhysicsRaycaster>() == null)
             gameObject.AddComponent<PhysicsRaycaster>();
 
-        SetupLayerCameras_URP(); 
-
         _currentZoom = _zoomSteps[_currentStep];
         _targetZoom = _currentZoom;
         _lastZoom = _zoomSteps[_zoomSteps.Length - 1];
         _zoomSpeed = 8f;
         _lerpSpeed = 16f;
+
+        SetupLayerCameras_URP();
     }
 
     void SetupLayerCameras_URP()
@@ -82,8 +82,8 @@ public class CameraController : MonoBehaviour
         var playerCamData = _playerCamera.gameObject.GetOrAddComponent<UniversalAdditionalCameraData>();
         playerCamData.renderType = CameraRenderType.Overlay;
 
+        mainCamData.cameraStack.Add(_playerCamera);
         mainCamData.cameraStack.Add(_uiCamera);     
-        mainCamData.cameraStack.Add(_playerCamera);  
     }
 
 

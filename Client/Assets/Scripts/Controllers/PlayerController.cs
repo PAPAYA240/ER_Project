@@ -282,8 +282,8 @@ public class PlayerController : CreatureController
     protected override void UpdateController()
     {
         base.UpdateController();
-
-        //if (ObjectType == Define.Object.OtherPlayer)
+        
+        //if (Id != Managers.Object.MyPlayer.Id)
         //{
         //    float dist = Vector3.Distance(transform.position, _serverPos);
         //    if (dist > _minDist)

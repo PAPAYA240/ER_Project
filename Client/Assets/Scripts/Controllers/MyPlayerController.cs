@@ -3,7 +3,6 @@ using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using System.Collections.Generic;
 using UnityEngine;
-using static Data.SkillEffectList;
 
 public class MyPlayerController : PlayerController
 {
