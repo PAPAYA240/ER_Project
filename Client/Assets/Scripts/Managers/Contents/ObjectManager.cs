@@ -90,6 +90,7 @@ public class ObjectManager
             else
                 Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.TeamPlayer, pc);
 
+            Managers.Object.MyPlayer.SetxRayFromPlayer(go);
             MyPlayer.UI.PlayerHUD.AddPlayerBoardToBattleBoard(pc);
         }
     }
