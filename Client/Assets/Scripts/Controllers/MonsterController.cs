@@ -42,6 +42,7 @@ public class MonsterController : CreatureController
 
         State = CreatureState.Appear;
         InitHpBar();
+        UnActiveShaderXRay();
     }
 
     protected override void UpdateController()
