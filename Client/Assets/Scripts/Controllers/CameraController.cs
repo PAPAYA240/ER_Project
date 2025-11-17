@@ -54,34 +54,29 @@ public class CameraController : MonoBehaviour
         var mainCamData = _mainCamera.gameObject.GetOrAddComponent<UniversalAdditionalCameraData>();
         mainCamData.renderType = CameraRenderType.Base;
         mainCamData.cameraStack.Clear();
-        _mainCamera.clearFlags = CameraClearFlags.SolidColor; 
-        _mainCamera.cullingMask = (1 << LayerMask.NameToLayer("Map"));
+        _mainCamera.clearFlags = CameraClearFlags.SolidColor;
+
+        int myTeamFogLayer = LayerMask.NameToLayer("FogTeam1"); // TODO: 실제 팀으로 변경
+        int uiLayer = LayerMask.NameToLayer("IndicatorUI");
+
+        int everythingMask = ~0;
+        int layersToExclude = (1 << uiLayer) | (1 << myTeamFogLayer);
+        _mainCamera.cullingMask = everythingMask & ~layersToExclude;
+
+        mainCamData.requiresDepthTexture = true;
 
         GameObject uiCamObj = new GameObject("UICamera");
         uiCamObj.transform.SetParent(this.transform);
         _uiCamera = uiCamObj.AddComponent<Camera>();
         _uiCamera.CopyFrom(_mainCamera);
         _uiCamera.clearFlags = CameraClearFlags.Nothing;
-        _uiCamera.cullingMask = (1 << LayerMask.NameToLayer("IndicatorUI"));
+        _uiCamera.cullingMask = (1 << uiLayer);
+        _uiCamera.depth = 10;
 
         var uiCamData = _uiCamera.gameObject.GetOrAddComponent<UniversalAdditionalCameraData>();
         uiCamData.renderType = CameraRenderType.Overlay;
 
-        GameObject playerCamObj = new GameObject("PlayerCamera");
-        playerCamObj.transform.SetParent(this.transform);
-        var _playerCamera = playerCamObj.AddComponent<Camera>();
-        _playerCamera.CopyFrom(_mainCamera);
-        _playerCamera.clearFlags = CameraClearFlags.Nothing;
-
-        int everythingMask = ~0;
-        int layersToExclude = (1 << LayerMask.NameToLayer("Map")) | (1 << LayerMask.NameToLayer("IndicatorUI")) | (1 << LayerMask.NameToLayer("FogTeam1")) | (1 << LayerMask.NameToLayer("FogTeam2"));
-        _playerCamera.cullingMask = everythingMask & ~layersToExclude;
-
-        var playerCamData = _playerCamera.gameObject.GetOrAddComponent<UniversalAdditionalCameraData>();
-        playerCamData.renderType = CameraRenderType.Overlay;
-
-        mainCamData.cameraStack.Add(_uiCamera);     
-        mainCamData.cameraStack.Add(_playerCamera);  
+        mainCamData.cameraStack.Add(_uiCamera);
     }
 
     void Update()
