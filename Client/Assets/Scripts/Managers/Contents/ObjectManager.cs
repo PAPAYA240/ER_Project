@@ -71,6 +71,7 @@ public class ObjectManager
         else
         {
             GameObject go = Managers.Resource.Instantiate($"Creature/{info.Player.CharType}");
+            if (go == null) Debug.LogError($"Failed to instantiate {info.Player.CharType}");
             go.name = info.Name;
             _objects.Add(info.ObjectId, go);
 
@@ -79,6 +80,8 @@ public class ObjectManager
             pc.ObjInfo = info;
             pc.Id = info.ObjectId;
             pc.SyncPos();
+            pc.Hp = info.StatInfo.MaxHp;
+            pc.Stamina = info.StatInfo.MaxStamina;
             pc.ManualInit();
 
             if (MyPlayer.ObjInfo.Player.Team != pc.ObjInfo.Player.Team)

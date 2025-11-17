@@ -429,6 +429,9 @@ namespace Server.Game
        
         bool CheckCollision(Hitbox hitbox, GameObject go)
         {
+            if (go.IsDead)
+                return false;
+
             if (go.IsUntargetable())
                 return false;
 

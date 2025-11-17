@@ -23,7 +23,7 @@ public class Theodore_AttackState : Player_AttackState
             projectile.ProjectileType = ProjectileType.ProjectileBullet;
             projectile.Owner = p;
             projectile.Init();
-            p.Room.EnterGame(projectile);
+            p.Room.Push(p.Room.EnterGame, projectile);
         }
     }
 }

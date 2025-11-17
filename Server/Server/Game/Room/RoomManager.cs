@@ -13,11 +13,11 @@ namespace Server.Game
         Dictionary<int, Room> _rooms = new Dictionary<int, Room>();
         int _roomId = 1;
 
-        public GameRoom AddGameRoom(int mapId)
+        public GameRoom AddGameRoom()
         {
             GameRoom room = new GameRoom();
 
-            room.Push(room.Init, mapId);
+            room.Push(room.Init);
 
             lock (_lock)
             {
@@ -57,10 +57,13 @@ namespace Server.Game
             }
         }
 
-        public Room Find(int roomId)
+        public Room Find(int roomId = 0)
         {
             lock (_lock)
             {
+                if (roomId == 0)
+                    roomId = _roomId - 1;
+
                 Room room = null;
                 if (_rooms.TryGetValue(roomId, out room))
                     return room;

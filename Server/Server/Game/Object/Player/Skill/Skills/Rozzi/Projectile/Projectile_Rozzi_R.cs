@@ -89,7 +89,7 @@ public class Projectile_Rozzi_R : Projectile
                 if (Deactivation())
                 {
                     Console.WriteLine("@ Leave Game : Projectile_Rozzi_R (timeout while Flying)");
-                    Room.LeaveGame(Id);
+                    Room.Push(Room.LeaveGame, Id);
                     return;
                 }
 
@@ -251,7 +251,7 @@ public class Projectile_Rozzi_R : Projectile
 
         // 마지막으로 투사체 제거
         Console.WriteLine($"@ Rozzi R Bomb Explode (early:{early})");
-        Room.LeaveGame(Id);
+        Room.Push(Room.LeaveGame, Id);
     }
 
     public void ApplyExplosionDamage()

@@ -17,12 +17,14 @@ class PacketHandler
     {
         ClientSession clientSession = session as ClientSession;
 
-        GameRoom room = RoomManager.Instance.Find(2) as GameRoom;
+        if (ObjectManager.Instance.GetPlayerCount() == 0)
+            RoomManager.Instance.AddGameRoom();
+
+        GameRoom room = RoomManager.Instance.Find() as GameRoom;
         if (room == null)
             return;
 
-        if (ObjectManager.Instance.GetPlayerCount() == 0)
-            room.StartGame();
+
 
         // create hyunwoo
         if (clientSession.MyCharacter == CharacterType.Hyunwoo)

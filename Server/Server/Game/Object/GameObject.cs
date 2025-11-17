@@ -359,7 +359,7 @@ namespace Server.Game
             Room.Broadcast(diePacket);
 
             GameRoom room = Room;
-            room.LeaveGame(Id);
+            room.Push(room.LeaveGame, Id);
 
             Hp = MaxHp;
             Stamina = MaxStamina;
@@ -372,7 +372,7 @@ namespace Server.Game
             RotInfo.Qz = 0;
             RotInfo.Qw = 1;
 
-            room.EnterGame(this);
+            room.Push(room.EnterGame, this);
         }
         #endregion
 

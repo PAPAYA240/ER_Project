@@ -37,7 +37,6 @@ namespace Server
 			DataManager.LoadData();
 
 			RoomManager.Instance.AddPickRoom();
-            RoomManager.Instance.AddGameRoom(1);
 			
             // DNS (Domain Name System)
             //string host = Dns.GetHostName();

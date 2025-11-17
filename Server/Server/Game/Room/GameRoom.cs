@@ -44,19 +44,19 @@ namespace Server.Game
 
         #region Phase, Time
 
-        private bool _gameStarted = false;
         private long _startTick;         // 게임 시작 기준 Tick
         private long _phaseStartTick;    // 현재 페이즈 시작 Tick
         private long _phaseEndTick;      // 현재 페이즈 종료 Tick
 
-        public int CurPhase { get; private set; } = 5;
+        public int CurPhase { get; private set; } = 0;
 
-        public void StartGame()
+        public void StartPhase()
         {
-            _gameStarted = true;
             _startTick = CurTick;
             _phaseStartTick = _startTick;
             ChangePhase(0);
+            if (DataManager.PhaseDict.TryGetValue(0, out int durationSec))
+                _phaseEndTick = CurTick + durationSec * 1000L;
         }
 
         public long GameElapsedMs => CurTick - _startTick;
@@ -64,9 +64,6 @@ namespace Server.Game
 
         public void ChangePhase(int newPhase)
         {
-            if (CurPhase == newPhase)
-                return;
-
             CurPhase = newPhase;
             _phaseStartTick = CurTick;
 
@@ -142,7 +139,7 @@ namespace Server.Game
             = new Dictionary<CharacterType, Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>>();
         #endregion
 
-        public void Init(int mapId)
+        public void Init()
         {
             PathFind = new PathfindInstance(0);
             // Spawn Monster
@@ -158,16 +155,16 @@ namespace Server.Game
             // Skill Register
             SkillRegistry.InitRegister();
             SetUpStatusEffectDict(); // StatusEffectDict 초기화 
+
+            StartPhase();
         }
 
         public override void Update()
         {
             CurTick = Environment.TickCount64;
-            if (!_gameStarted)
-                return;
-
             TimeUtil.Instance.Update(CurTick);
-            if (CurTick >= _phaseEndTick)
+
+            if (_phaseEndTick > 0 && CurTick >= _phaseEndTick)
                 ChangePhase(CurPhase + 1);
 
             Flush();
@@ -335,6 +332,7 @@ namespace Server.Game
                     return;
                 var myTeam = _teams[player.Info.Player.Team];
                 myTeam.Remove(player.Id);
+                ObjectManager.Instance.Remove(player.Id);
 
                 player.Room = null;
                 player.OnDestroy();
@@ -344,6 +342,9 @@ namespace Server.Game
                     S_LeaveGame leavePacket = new S_LeaveGame();
                     player.Session.Send(leavePacket);
                 }
+
+                if (_players.IsEmpty)
+                    RoomManager.Instance.Remove(RoomId);
             }
             else if (type == GameObjectType.Monster)
             {
@@ -351,6 +352,7 @@ namespace Server.Game
                 if (_monsters.Remove(objectId, out monster) == false)
                     return;
 
+                ObjectManager.Instance.Remove(objectId);
                 monster.Room = null;
                 _monsterManager.Add(-1);
             }

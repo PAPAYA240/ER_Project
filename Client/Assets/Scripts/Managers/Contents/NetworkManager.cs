@@ -20,9 +20,11 @@ public class NetworkManager
 	{
 		// DNS (Domain Name System)
 		//string host = Dns.GetHostName();
-        //IPHostEntry ipHost = Dns.GetHostEntry(host);
-        //IPAddress ipAddr = ipHost.AddressList[0];
-        IPAddress ipAddr = IPAddress.Parse("129.154.59.53"); // Public IP
+		//IPHostEntry ipHost = Dns.GetHostEntry(host);
+		//IPAddress ipAddr = ipHost.AddressList[0];
+
+        IPAddress ipAddr = IPAddress.Loopback;
+        //IPAddress ipAddr = IPAddress.Parse("129.154.59.53"); // Public IP
         IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
 
 		Connector connector = new Connector();
