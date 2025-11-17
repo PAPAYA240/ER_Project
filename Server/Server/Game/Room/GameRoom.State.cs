@@ -35,6 +35,7 @@ namespace Server.Game
                 return;
             }
 
+            Console.WriteLine($"@ Attack Packet!!");
             player.ChangeState(Player_AttackState.CreateAttackState(player, pkt.TargetId, chaseAllowed: true));
         }
 
@@ -129,8 +130,35 @@ namespace Server.Game
                 return;
             }
 
-            // 5) 그 외에는 새로 Moving으로 진입
-            player.ChangeState(new Player_MovingState(move));
+            // 5-1) 평타 대상이 있고, 사거리 안일 때
+            if(!pkt.IsGround && Vector3.Distance(player.Position, pkt.TargetPos.ToVector()) <= player.AttackRange)
+            {
+                // 이미 공격 상태면
+                if(player.CurrentState is Player_AttackState attack)
+                {
+                    // 대상이 다르면 : 타겟만 변경
+                    if (attack._targetId != pkt.TargetId)
+                    {
+                        attack.ChangeTarget(pkt.TargetId);
+                        Console.WriteLine($"@ Moving Packet!! -> attack.ChangeTarget");
+                        return;
+                    }
+                    // 대상이 같으면 무시
+                    else
+                        return;
+                }
+                else
+                {
+                    player.ChangeState(Player_AttackState.CreateAttackState(player, pkt.TargetId, chaseAllowed: true));
+                    return;
+                }                  
+            }
+            else
+            {
+                // 6) 그 외에는 새로 Moving으로 진입
+                Console.WriteLine($"@ Moving Packet!! -> Moving");
+                player.ChangeState(new Player_MovingState(move));
+            }          
         }
 
         public void HandleSkill(Player player, C_SkillInput skillPacket)

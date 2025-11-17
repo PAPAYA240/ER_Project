@@ -19,7 +19,8 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     protected const string AnimAttackB = "ATTACK_2";
 
     // ===== 상태 필드 =====
-    protected int _targetId;
+    //public int TargetId => TargetId;
+    public int _targetId;
     protected bool _chaseAllowed;
     protected int? _pendingTargetId;          // 스윙 중 들어온 타겟 변경은 스윙 종료 후 반영
 
@@ -84,6 +85,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         _comboResetDeadlineUtc = default;
 
         //StartSwing(player, now);
+        Console.WriteLine("@ Attack Enter");
     }
 
     public void Execute(Player player)
@@ -91,6 +93,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         if (player == null || player.Room == null || !player.CanAttack())
             return;
 
+        Console.WriteLine("@ Attack Execute");
         GameObject target = player.FindTarget(_targetId);
         if (target == null || target.State == CreatureState.Dead || target.IsUntargetable())
         {
@@ -198,6 +201,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
                         PosZ = targetPos.Z
                     }
                 };
+                Console.WriteLine($"@ Attack -> Moving : 사거리 밖");
                 player.ChangeState(new Player_MovingState(move));
                 return;
             }
@@ -214,6 +218,8 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     {
         _swingActive = false;
         _pendingTargetId = null;
+
+        Console.WriteLine("@ Attack Exit");
     }
 
     // 외부에서 타겟 변경을 요청할 때 호출(스윙 진행 중이면 종료 후에 반영)
