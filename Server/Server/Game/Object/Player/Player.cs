@@ -258,6 +258,23 @@ namespace Server.Game
                 _damageRecords.Remove(id);
         }
 
+        public int GetLastAttackerId()
+        {
+            int result = 0;
+            long lastTick = 0;
+
+            foreach(var recordKVP in _damageRecords)
+            {
+                if(lastTick < recordKVP.Value.Tick)
+                {
+                    lastTick = recordKVP.Value.Tick;
+                    result = recordKVP.Key;
+                }
+            }
+
+            return result;
+        }
+
         public override void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false, bool isBasicAttack = false)
         {
             if (Room == null || State == CreatureState.Dead)
