@@ -29,8 +29,8 @@ public class TheodoreInputController : PlayerInputController
 
     private void Start()
     {
+        _player.AttackRange = 6.0f;
         _originSpeed = _player.Speed;
-        _attackRange = 6.0f;
     }
     protected override Vector3 GetAttackStopPosition(Vector3 from, Vector3 target)
     {
