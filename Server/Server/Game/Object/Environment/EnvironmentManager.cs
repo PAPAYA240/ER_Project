@@ -65,12 +65,13 @@ namespace Server.Game
             SpawnObjectFromJson(processor.ProcessAndGetJson());
         }
 
-        public void GiveRewardToPlayer(int playerId, EnvType envType)
+        public void GiveRewardToPlayer(Player player, EnvType envType)
         {
             // 플레이어에게 보상 지급
             switch (envType)
             {
                 case EnvType.HealPack:
+                    player.Room.Push(player.OnHeal, player, 650f);
                     break;
 
                 default:

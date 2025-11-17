@@ -383,28 +383,18 @@ namespace Server.Game
                 float dmg = ApplyDamage(hitbox, target, damageDict);
                 if (hitbox.Omnivamp)
                     totalDmg += target.CalcFinalDamage(hitbox.Creature, dmg);
-                hitbox.IsUsed = true;
 
-                // 때렸을 때 바로 사라져야 하는 경우
                 if (hitbox.Creature is Monster)
                 {
-                    // 몬스터는 상대가 플레이어인 경우에만 사라진다.
                     if (target is Player)
                         hitbox.IsUsed = true;
                 }
                 else
-                {
-                    // 같은 팀을 때렸을 때 제외한다
-                    if (ObjectManager.Instance.GetTeam(hitbox.Creature.Id) !=
-                        ObjectManager.Instance.GetTeam(target.Id))
-                        hitbox.IsUsed = true;
-                }
+                     hitbox.IsUsed = true;
             }
 
             if(hitbox.Omnivamp)
                 hitbox.AddDamage(totalDmg);
-
-            
         }
 
        

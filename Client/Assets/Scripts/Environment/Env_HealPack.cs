@@ -188,7 +188,6 @@ public class Env_HealPack : EnvController
         _isActive = false;
         _currentTimer = _respawnTime;
 
-        player.Hp += HEAL_AMOUNT;
         UpdateVisuals(false);
     }
 

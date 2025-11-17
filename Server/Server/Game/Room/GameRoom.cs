@@ -80,7 +80,7 @@ namespace Server.Game
                 _phaseEndTick = long.MaxValue; // 지속시간 정의 안되면 수동 종료
             }
 
-            _monsterManager.Add(CurPhase);
+            _monsterManager.Add(CurPhase, this);
 
             // 클라이언트 동기화
             SyncTimer();
@@ -145,9 +145,7 @@ namespace Server.Game
         public void Init(int mapId)
         {
             PathFind = new PathfindInstance(0);
-            // Spawn Monster
-            _monsterManager.Init(this);
-             
+
             // Spawn Env
             _envManager.Init(this);
 
@@ -352,7 +350,7 @@ namespace Server.Game
                     return;
 
                 monster.Room = null;
-                _monsterManager.Add(-1);
+                _monsterManager.Add(-1, this);
             }
             else if (type == GameObjectType.Projectile)
             {

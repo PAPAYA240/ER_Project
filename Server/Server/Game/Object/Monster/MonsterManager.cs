@@ -68,14 +68,16 @@ namespace Server.Game
             //Add(0);
         }
 
-        public void Add(int phase)
+        public void Add(int phase, Room room)
         {
             MonsterDataProcessor processor = new MonsterDataProcessor();
-            SpawnMonstersFromJson(processor.ProcessAndGetJson(phase));
+            SpawnMonstersFromJson(processor.ProcessAndGetJson(phase), room);
         }
 
-        public void SpawnMonstersFromJson(RawMonsterList monsterList)
+        public void SpawnMonstersFromJson(RawMonsterList monsterList, Room room)
         {
+            _room = room as GameRoom;
+
             if (_room == null || monsterList == null)
                 return;
 

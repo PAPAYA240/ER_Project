@@ -89,6 +89,9 @@ public class MonsterController : CreatureController
         if (State != CreatureState.Dead)
             State = CreatureState.Dead;
 
+        if(_hpBar)
+            _hpBar.SetActive(false);
+
         Hp = 0;
     }
 

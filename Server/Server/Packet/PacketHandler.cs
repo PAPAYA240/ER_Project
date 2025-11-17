@@ -349,7 +349,7 @@ class PacketHandler
         if (room == null)
             return;
         // 보상
-        room.GetEnvManager?.GiveRewardToPlayer(envPacket.ObjectId, envPacket.EnvType);
+        room.GetEnvManager?.GiveRewardToPlayer(player, envPacket.EnvType);
      
         S_EnvRequest sendPacket = new S_EnvRequest()
         {
