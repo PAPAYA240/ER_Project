@@ -905,7 +905,6 @@ namespace Server.Game
                 if (skillHitbox.EndFrame <= 0)
                     return null;
 
-                const float distance = 1.0f;
                 var quat = creature.RotInfo.GetQuatFromRotInfo();
                 Vector3 LocalForward = new Vector3(0, 0, 1);
                 Vector3 forward3D = Vector3.Transform(LocalForward, quat);

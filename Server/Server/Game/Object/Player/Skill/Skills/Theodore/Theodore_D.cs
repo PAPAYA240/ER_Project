@@ -40,7 +40,7 @@ public sealed class Theodore_D : SkillHandlerBase
     {
         if (_isEnding)
         {
-            _timeElapsed += TimeUtil.DeltaTime;
+            _timeElapsed += TimeUtil.Instance.DeltaTime;
             if (_timeElapsed >= _tAnimEnd)
             {
                 p.ChangeState(new Player_IdleState());
