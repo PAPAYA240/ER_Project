@@ -31,85 +31,70 @@ namespace Server.Game
         Dictionary<CharacterType, SkillHandler> _skillHandlers = new Dictionary<CharacterType, SkillHandler>();
 
         bool _teamToggle = false;
-        bool _dummyAdded = true;    // TEMP : Dummy
 
         public EnvironmentManager GetEnvManager { get { return _envManager; } private set { _envManager = value; } }
 
-        public int CurTick { get; set; }
+        private long _curTick;
+
+        public long CurTick
+        {
+            get => Interlocked.Read(ref _curTick);
+            set => Interlocked.Exchange(ref _curTick, value);
+        }
 
         #region Phase, Time
 
-        public TimeSpan TimeStamp { get { return _timeStampStopwatch.Elapsed; } }
+        private bool _gameStarted = false;
+        private long _startTick;         // 게임 시작 기준 Tick
+        private long _phaseStartTick;    // 현재 페이즈 시작 Tick
+        private long _phaseEndTick;      // 현재 페이즈 종료 Tick
 
-        //private DateTime _timeStamp; // 게임이 시작된 시간
-        private Stopwatch _timeStampStopwatch; // 게임 시작부터 얼마나 시간이 흘렀는지 측정하는 스톱워치
-
-        //private DateTime _phaseStartTime; // 현재 페이즈가 시작된 시간
-        private Stopwatch _phaseStopwatch; // 현재 페이즈가 얼마나 진행되었는가를 측정하는 스톱워치
-        private Timer _phaseTransitionTimer; // 페이즈 전환을 예약하는 타이머
-        private Timer _syncTimer; // 일정 주기마다 싱크 타이머를 호출하는 타이머
         public int CurPhase { get; private set; } = 5;
+
+        public void StartGame()
+        {
+            _gameStarted = true;
+            _startTick = CurTick;
+            _phaseStartTick = _startTick;
+            ChangePhase(0);
+        }
+
+        public long GameElapsedMs => CurTick - _startTick;
+        public long PhaseElapsedMs => CurTick - _phaseStartTick;
 
         public void ChangePhase(int newPhase)
         {
-            if (CurPhase == newPhase) 
-                return; 
+            if (CurPhase == newPhase)
+                return;
 
             CurPhase = newPhase;
-            //_phaseStartTime = DateTime.UtcNow; // 페이즈 시작 시간 기록 
+            _phaseStartTick = CurTick;
 
-            _monsterManager.Add(CurPhase);// 출현할 몬스터의 phase
-
-            _phaseStopwatch.Restart(); // 페이즈 경과 시간 측정 시작/재시작
-
-            // 현재 페이즈의 지속 시간을 가져옴
-            int duration;
-            if (DataManager.PhaseDict.TryGetValue(newPhase, out duration))
+            // 페이즈 지속 시간 가져오기
+            if (DataManager.PhaseDict.TryGetValue(newPhase, out int durationSec))
             {
-                // 다음 페이즈 전환을 위한 타이머 설정
-                // 이전 타이머가 있으면 Dispose 후 새로 생성
-
-                TimeSpan newPhaseDuration = TimeSpan.FromSeconds(duration);
-
-                _phaseTransitionTimer?.Dispose();
-                _phaseTransitionTimer = new Timer(OnPhaseTimerElapsed, null, (int)newPhaseDuration.TotalMilliseconds, Timeout.Infinite); // 한 번만 실행되도록 설정
+                _phaseEndTick = CurTick + durationSec * 1000L;
             }
             else
             {
-                // 지속 시간이 정의되지 않은 페이즈 (수동 전환 필요)
-                _phaseTransitionTimer?.Dispose(); // 혹시 모를 이전 타이머 정리
+                _phaseEndTick = long.MaxValue; // 지속시간 정의 안되면 수동 종료
             }
 
-            // 클라이언트들에게 페이즈 변경 사실을 통보 (네트워크 전송)
+            _monsterManager.Add(CurPhase, this);
+
+            // 클라이언트 동기화
             SyncTimer();
 
             Console.WriteLine($"Phase Change : {CurPhase}");
 
-            // 특별한 페이즈에 대한 추가 로직
+            // 특별한 페이즈 로직
             switch (newPhase)
             {
-                case 0:
-                    // 게임 시작 시 필요한 초기화 (예: 맵 생성, 플레이어 스폰)
-                    break;
                 case 1:
-                    {
-                        foreach (var p in _players)
-                            Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
-                    }
-                    break;
                 case 2:
-                    {
-                        foreach (var p in _players)
-                            Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
-                    }
-                    break;
                 case 3:
-                    {
-                        foreach (var p in _players)
-                            Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
-                    }
-                    break;
-                case 4:
+                    foreach (var p in _players)
+                        Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
                     break;
             }
         }
@@ -119,46 +104,10 @@ namespace Server.Game
             S_SyncTimer syncTimerPacket = new S_SyncTimer();
 
             syncTimerPacket.Phase = CurPhase;
-            syncTimerPacket.CurrentTimestamp = System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(); 
-            syncTimerPacket.PhaseEndTime = CalculatePhaseServerEndTime(CurPhase); 
+            syncTimerPacket.CurrentTick = CurTick; 
+            syncTimerPacket.PhaseEndTime = _phaseEndTick; 
 
             Push(Broadcast, syncTimerPacket);
-        }
-
-        private long CalculatePhaseServerEndTime(int phase)
-        {
-            return System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + (long)GetRemainingPhaseTime().TotalMilliseconds;
-        }
-
-
-        public TimeSpan GetRemainingPhaseTime()
-        {
-            // 페이즈 지속 시간이 정의되지 않았다면 남은 시간 없음으로 처리
-            if (!DataManager.PhaseDict.TryGetValue(CurPhase, out int totalDuration))
-            {
-                return TimeSpan.Zero;
-            }
-
-            // 스톱워치로 측정한 경과 시간
-            TimeSpan elapsedTime = _phaseStopwatch.Elapsed;
-            TimeSpan remainingTime = TimeSpan.FromSeconds(totalDuration) - elapsedTime;
-
-            return remainingTime.TotalSeconds > 0 ? remainingTime : TimeSpan.Zero;
-        }
-
-        private void OnPhaseTimerElapsed(object state)
-        {
-            int nextPhase = CurPhase + 1;
-            if (nextPhase != 5)
-            {
-                ChangePhase(nextPhase);
-            }
-            else
-            {
-                //모든 페이즈 종료
-                _phaseTransitionTimer?.Dispose();
-                _phaseStopwatch.Stop();
-            }
         }
         #endregion
 
@@ -196,18 +145,9 @@ namespace Server.Game
         public void Init(int mapId)
         {
             PathFind = new PathfindInstance(0);
-            // Spawn Monster
-            _monsterManager.Init(this);
-             
+
             // Spawn Env
             _envManager.Init(this);
-
-            // Timer
-            _timeStampStopwatch = new Stopwatch(); 
-            _timeStampStopwatch.Restart(); // 게임 시간 측정 시작.
-            _phaseStopwatch = new Stopwatch();
-            ChangePhase(0);
-            _syncTimer = new Timer(SyncTimer, null, TimeSpan.Zero, TimeSpan.FromSeconds(5)); //주기적으로 동기화
 
             _skillHandlers[CharacterType.Theodore] = new TheodoreSkillHandler();
 
@@ -220,8 +160,13 @@ namespace Server.Game
 
         public override void Update()
         {
-            CurTick = Environment.TickCount;
-            TimeUtil.Update(CurTick);
+            CurTick = Environment.TickCount64;
+            if (!_gameStarted)
+                return;
+
+            TimeUtil.Instance.Update(CurTick);
+            if (CurTick >= _phaseEndTick)
+                ChangePhase(CurPhase + 1);
 
             Flush();
 
@@ -372,7 +317,11 @@ namespace Server.Game
                 foreach (Player p in _players.Values)
                 {
                     if (p.Id != gameObject.Id)
+                    {
                         p.Session.Send(spawnPacket);
+                    }
+
+                    //p.SendItemStat();
                 }
             }
         }
@@ -405,7 +354,7 @@ namespace Server.Game
                     return;
 
                 monster.Room = null;
-                _monsterManager.Add(-1);
+                _monsterManager.Add(-1, this);
             }
             else if (type == GameObjectType.Projectile)
             {

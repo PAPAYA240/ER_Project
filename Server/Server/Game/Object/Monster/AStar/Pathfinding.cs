@@ -11,7 +11,7 @@ namespace Server.Game
         private static NavMeshExportData _navMeshData;
         private static List<Node> _triangleNodes;
 
-        readonly PriorityQueue<Node, float> _open;
+        readonly ServerCore.PriorityQueue<Node, float> _open;
         readonly Dictionary<int, float> _gScore;
 
         readonly private Dictionary<(int, int), List<Node>> _spatialGrid;
@@ -22,7 +22,7 @@ namespace Server.Game
             _spatialGrid = new Dictionary<(int, int), List<Node>>();
             _triangleNodes = triangle;
             _navMeshData = nav;
-            _open = new PriorityQueue<Node, float>();
+            _open = new ServerCore.PriorityQueue<Node, float>();
             _gScore = new Dictionary<int, float>();
 
             BuildSpatialGrid();

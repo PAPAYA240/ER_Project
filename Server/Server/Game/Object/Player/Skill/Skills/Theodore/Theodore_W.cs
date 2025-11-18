@@ -22,8 +22,8 @@ public sealed class Theodore_W : SkillHandlerBase
         // 패킷이 마우스보다 수락 패킷이 먼저 도착함
         // 그래서 회전 전에 이펙트가 먼저 호출되는 문제가 생겨
         // confirm에 isLookatMouse 플래그를 추가
-        p.LookAtMouse(ctx.MousePos, false);
-        SendSkillConfirmPacket(p, true, true);
+        SendSkillConfirmPacket(p, true);
+        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode, sendLookatMousePacket: true);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

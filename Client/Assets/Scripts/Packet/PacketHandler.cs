@@ -242,17 +242,6 @@ class PacketHandler
 
         GameObjectType objectType = ObjectManager.GetObjectTypeById(creature.Id);
 
-        //// 오브젝트 충돌
-        //if ((KeyCode)interactPacket.TargetKeyCode == KeyCode.F1)
-        //{
-        //    if (objectType == GameObjectType.Player)
-        //    {
-        //        KeyCode mkey = (KeyCode)interactPacket.KeyCode; // Hitbox 키코드
-        //        GameObject target = Managers.Object.FindById(interactPacket.TargetId); // 공격한 타겟
-
-        //        MonsterController mc = target.GetComponentInChildren<MonsterController>();
-        //    }
-        //}
         // Hitbox 충돌
        if (objectType == GameObjectType.Player)
        {
@@ -363,6 +352,7 @@ class PacketHandler
             mpc.UI.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
             mpc.UpdateLevel();
             mpc.UI.PlayerInterface.UpdateStat();
+            Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(mpc.Id);
             return;
         }
 
@@ -371,12 +361,24 @@ class PacketHandler
         if(null !=  pc)
         {
             pc.SetNameTagLevel();
+            Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(pc.Id);
         }
     }
 
     public static void S_FxHandler(PacketSession session, IMessage packet)
     {
-       
+        S_Fx fxPacket = packet as S_Fx;
+        GameObject go = Managers.Object.FindById(fxPacket.ObjectId);
+        if (go == null)     return;
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)      return;
+
+        Vector3 mousePos = new Vector3(fxPacket.MousePosX, 0, fxPacket.MousePosZ);
+        Vector3 targetPos = fxPacket.TargetPosition.ToVector();
+        Quaternion targetRot = fxPacket.TargetRotation;
+
+        pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));
+        pc.PlayEffectFromServer(fxPacket, mousePos, targetPos, targetRot);
     }
 
     public static void S_RespawnHandler(PacketSession session, IMessage packet)
@@ -468,10 +470,13 @@ class PacketHandler
         GameObject go = Managers.Object.FindById(confirmPacket.ObjectId);
         if (go == null)
             return;
+        PlayerController pc = go.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
 
         if (Managers.Object.MyPlayer.Id == confirmPacket.ObjectId)
         {
-            if(true == confirmPacket.CanUse)
+            if (true == confirmPacket.CanUse)
                 Managers.Object.MyPlayer.OnServerUpdate(confirmPacket);
         }
     }
@@ -557,6 +562,8 @@ class PacketHandler
             return;
 
         pc.EquipItem(changeEquipPacket.ItemId);
+
+        Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(pc.Id);
     }
     public static void S_EnvRequestHandler(PacketSession session, IMessage packet)
     {
@@ -608,6 +615,7 @@ class PacketHandler
                 if (pc != null)
                 {
                     pc.SetKDA(info.Kill, info.Death, info.Asist);
+                    Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(pc.Id);
                     //Debug.Log($"{pc.Id} {pc.name} K: {pc.KillAmount} D: {pc.DeathAmount} A: {pc.AsistAmount}");
                 }
             }               
@@ -636,7 +644,7 @@ class PacketHandler
 
         float oneWayLatencySeconds = GetCurrentEstimatedOneWayLatency(); 
 
-        long compensatedServerCurrentTimeMs = syncTimerPacket.CurrentTimestamp + (long)(oneWayLatencySeconds * 1000);
+        long compensatedServerCurrentTimeMs = syncTimerPacket.CurrentTick + (long)(oneWayLatencySeconds * 1000);
         long compensatedPhaseServerEndTimeMs = syncTimerPacket.PhaseEndTime + (long)(oneWayLatencySeconds * 1000);
 
         // 서버가 생각하는 남은 시간 (밀리초)
@@ -647,6 +655,12 @@ class PacketHandler
 
         if(Managers.Object.MyPlayer != null)
         {
+            if (Managers.Object.MyPlayer.CurPhase != syncTimerPacket.Phase)
+            {
+                // CurPhase : 현재 페이즈를 어디서 가져올 지 몰라서 일단 MyPlayer에 넣어둠...
+                Managers.Object.MyPlayer.CurPhase = syncTimerPacket.Phase;
+                Managers.Object.MyPlayer.UI.ActiveAppearMonsterBar(syncTimerPacket.Phase);
+            }
             Managers.Object.MyPlayer.UI.SetTimer(syncTimerPacket.Phase, clientLocalTargetRealtimeSinceStartupEnd);
         }
     }
@@ -823,14 +837,40 @@ class PacketHandler
         cc.Untargetable = untargetablePkt.Untargetable;  
     }
 
+    public static void S_UnstoppableHandler(PacketSession session, IMessage packet)
+    {
+        S_Unstoppable unstoppablePkt = packet as S_Unstoppable;
+
+        GameObject go = Managers.Object.FindById(unstoppablePkt.ObjectId);
+        if (go == null)
+            return;
+
+        CreatureController cc = go.GetComponentInChildren<CreatureController>();
+        if (cc == null)
+            return;
+
+        cc.Unstoppable = unstoppablePkt.Unstoppable;  
+    }
+
     public static void S_CombatModeHandler(PacketSession session, IMessage packet)
     {
         S_CombatMode combatModePkt = packet as S_CombatMode;
 
-        GameObject go = Managers.Object.FindById(combatModePkt.ObjectId);
-        if (go == null)
-            return;
+        switch (combatModePkt.CombatMode)
+        {
+            case CombatState.Combat:
+                Managers.Object.MyPlayer.UI.PlayerInterface.ActivateCombatImg(true);
+                break;
+            case CombatState.NonCombat:
+                Managers.Object.MyPlayer.UI.PlayerInterface.ActivateCombatImg(false);
+                break;
+        }
 
+        //GameObject go = Managers.Object.FindById(combatModePkt.ObjectId);
+        //if (go == null)
+        //    return;
+
+        
         //combatModePkt.CombatMode;
     }
 

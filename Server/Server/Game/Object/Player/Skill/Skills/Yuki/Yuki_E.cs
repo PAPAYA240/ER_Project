@@ -81,7 +81,7 @@ public sealed class Yuki_E : SkillHandlerBase
 
         if(_requestId == _commitId)
         {
-            _elapsed += TimeUtil.DeltaTime;
+            _elapsed += TimeUtil.Instance.DeltaTime;
 
             if (_elapsed < _duration)
             {

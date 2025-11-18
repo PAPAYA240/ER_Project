@@ -19,7 +19,7 @@ namespace Server.Game
             lock (this)
             {
                 TSkillCurrnetCount = Math.Min(TSkillCurrnetCount + count, TSkillMaxCount[_skills[Data.DataUtils.KeyCode.T].CurLevel]);
-                Console.WriteLine($"TSkillCurrnetCount : {TSkillCurrnetCount}");
+                //Console.WriteLine($"TSkillCurrnetCount : {TSkillCurrnetCount}");
             }
         }
 

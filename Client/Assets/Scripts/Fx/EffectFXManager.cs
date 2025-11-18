@@ -4,6 +4,7 @@ using UnityEngine;
 using Data;
 using static Data.EffectData;
 using Google.Protobuf.Protocol;
+using UnityEditor.Sprites;
 
 public class EffectFXManager : MonoBehaviour
 {
@@ -34,7 +35,13 @@ public class EffectFXManager : MonoBehaviour
         return fxPrefab;
     }
 
-    public List<GameObject> PlayEffect(int ownerId, List<EffectData> effectData, Transform casterTransform, Vector3 targetPos = new Vector3(), Quaternion rot = new Quaternion())
+    public List<GameObject> PlayEffect
+        (int ownerId, 
+        List<EffectData> effectData, 
+        Transform casterTransform,
+        Vector3 mousePos,
+        Vector3 targetPos, 
+        Quaternion rot = new Quaternion())
     {
         if (effectData == null || effectData.Count == 0)
             return null;
@@ -57,15 +64,32 @@ public class EffectFXManager : MonoBehaviour
                 continue;
             }
 
+            // CasterTransform 부모 설정
             Transform copyTransform = casterTransform;
             if (casterTransform != null && data.attachBoneName != null)
+            {
                 copyTransform = Util.FindChildByName(casterTransform, data.attachBoneName).transform;
+            }
 
-            fxObject.transform.SetPositionAndRotation(
-                 GetSpawnPosition(ownerId, data, copyTransform, targetPos, out Transform parentTransform),
-                 GetSpawnRotation(data, copyTransform, targetPos, rot));
-            fxObject.transform.SetParent(parentTransform);
+            // Transform 설정
+            Quaternion spawnRot
+                = GetSpawnRotation(data, copyTransform, rot);
+            Vector3 spawnPos 
+                = GetSpawnPosition(ownerId, data, copyTransform, mousePos, targetPos, spawnRot, out Transform parentTransform);
 
+            if (data.target == EEffectTarget.Self)
+            {
+                fxObject.transform.SetParent(copyTransform);
+                fxObject.transform.localPosition = data.position;
+                fxObject.transform.localRotation = Quaternion.identity;
+            }
+            else
+            {
+                fxObject.transform.SetParent(null);
+                fxObject.transform.SetPositionAndRotation(spawnPos, spawnRot);
+            }
+
+            // Moving 동작
             SettingLayer(fxObject, fxLayer);
             StartEffectLogic(ownerId, fxObject, data, copyTransform);
             effectList.Add(fxObject);
@@ -90,8 +114,22 @@ public class EffectFXManager : MonoBehaviour
 
         activeCoroutines[fxObject] = StartCoroutine(ReturnToPoolAfterDelay(ownerId, fxObject, data.prefabName, data.delayTime, data.duration, casterTransform));
 
-        if (data.target == EEffectTarget.Shoot)
-            StartCoroutine(ControlEffect(fxObject, casterTransform.forward, data.duration));
+        if (data.target == EEffectTarget.Shot)
+        {
+            GameObject go = Managers.Object.FindById(ownerId);
+            BaseController bc = go.GetComponentInChildren<BaseController>();
+            if (bc == null)
+                return;
+            GameObjectType objectType = ObjectManager.GetObjectTypeById(bc.Id);
+
+            if (objectType == GameObjectType.Monster)
+            {
+                MonsterController mc = bc as MonsterController;
+                StartCoroutine(ControlEffect(fxObject, mc.GetTargetForwardVector(), data.duration));
+            }
+            else
+                StartCoroutine(ControlEffect(fxObject, casterTransform.forward, data.duration));
+        }
     }
 
     #region Shooting
@@ -122,16 +160,23 @@ public class EffectFXManager : MonoBehaviour
 
     public void StopAndReturnEffect(GameObject effect)
     {
+        if (effect == null)
+            return;
+
         if (activeCoroutines.ContainsKey(effect))
         {
+            effect.SetActive(false);
             StopCoroutine(activeCoroutines[effect]);
             activeCoroutines.Remove(effect);
         }
     }
     private IEnumerator ReturnToPoolAfterDelay(int ownerId, GameObject fxObject, string prefabName, float delayTime, float duration, Transform casterTransform)
     {
+        if (fxObject == null)
+            yield break;
+
         yield return new WaitForSeconds(delayTime);
-        if (fxObject) fxObject.SetActive(true);
+        fxObject.SetActive(true);
 
         yield return new WaitForSeconds(duration);
         RemoveEffect(ownerId, fxObject);
@@ -139,7 +184,7 @@ public class EffectFXManager : MonoBehaviour
     #endregion
 
     #region Transform Helpers
-    private Vector3 GetSpawnPosition(int id, EffectData data, Transform casterTransform, Vector3 targetPos, out Transform parentTransform)
+    private Vector3 GetSpawnPosition(int id, EffectData data, Transform casterTransform, Vector3 mousePos, Vector3 targetPos, Quaternion spawnRot, out Transform parentTransform)
     {
         switch (data.target)
         {
@@ -149,21 +194,14 @@ public class EffectFXManager : MonoBehaviour
 
             case EEffectTarget.Target:
                 parentTransform = null;
-                //CreatureController cc = casterTransform.GetComponent<CreatureController>();
-                //if (cc == null) return Vector3.zero;
-
-                return targetPos;
+                Vector3 worldOffset = spawnRot * data.position;
+                return targetPos + worldOffset;
 
             case EEffectTarget.Mouse:
                 parentTransform = null;
-                GameObject go = Managers.Object.FindById(id);
-                if(go == null) return Vector3.zero;
+                return mousePos;
 
-                PlayerController pc = go.GetComponent<PlayerController>();
-                if (pc == null) return Vector3.zero;
-                return pc.GetMouseWorldPosition();
-
-            case EEffectTarget.Shoot:
+            case EEffectTarget.Shot:
                 parentTransform = null;
                 return casterTransform.position + data.position;
 
@@ -172,7 +210,7 @@ public class EffectFXManager : MonoBehaviour
                 return Vector3.zero;
         }
     }
-    private Quaternion GetSpawnRotation(EffectData data, Transform casterTransform, Vector3 targetPos, Quaternion rot)
+    private Quaternion GetSpawnRotation(EffectData data, Transform casterTransform, Quaternion rot)
     {
         switch (data.target)
         {
@@ -180,10 +218,10 @@ public class EffectFXManager : MonoBehaviour
                 return casterTransform.rotation;
 
             case EEffectTarget.Target:
-                return Quaternion.identity;
+                return rot;
 
             case EEffectTarget.Mouse:
-            case EEffectTarget.Shoot:
+            case EEffectTarget.Shot:
                 return rot;
 
             default:

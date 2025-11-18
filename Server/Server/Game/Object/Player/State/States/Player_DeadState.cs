@@ -35,7 +35,7 @@ public class Player_DeadState : IPlayerState
     {
         S_Die diePacket = new S_Die();
         diePacket.ObjectId = player.Id;
-        //diePacket.AttackerId = attacker.Id;
+        diePacket.AttackerId = player.GetLastAttackerId();
 
         diePacket.RespawnTime = DataManager.RespawnDict[player.Stat.Level];
         _ = CoRespawnTime(player, diePacket.RespawnTime);

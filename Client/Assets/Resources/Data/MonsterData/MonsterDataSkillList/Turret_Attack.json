@@ -3,7 +3,7 @@
   "Type": "SequenceNode",
   "Children": [
     {
-      "Name": "CheckWKey",
+      "Name": "MsTurretAttack",
       "Type": "IsKeyPressedNode",
       "Properties": {
         "skillId": "MsTurretAttack"
@@ -14,12 +14,15 @@
       "Type": "ParallelNode",
       "Children": [
         {
-          "Name": "TurretAttack",
-          "Type": "PlayAnimatorTriggerNode",
+          "Name": "DroneAttack1",
+          "Type": "PlayAnimation",
           "Properties": {
-            "triggerName": "tAttack01",
-            "animationStateName": "Turret_atk01"
+            "animName": "ATTACK"
           }
+        },
+        {
+          "Name": "FX_Attack",
+          "Type": "PlayEffectNode"
         }
       ]
     }
