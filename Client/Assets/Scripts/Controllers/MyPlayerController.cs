@@ -151,15 +151,6 @@ public class MyPlayerController : PlayerController
         if (tempCmd != null)
             Managers.Network.Send(tempCmd);
 
-        //if (_agent.hasPath)
-        //{
-        //    if (_agent.velocity.sqrMagnitude > 0.01f)
-        //    {
-        //        Quaternion targetRot = Quaternion.LookRotation(_agent.velocity.normalized);
-        //        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 20f);
-        //    }
-        //}
-
         CheckUpdatedFlag();
     }
 
@@ -180,8 +171,6 @@ public class MyPlayerController : PlayerController
     }
     
     // 서버 응답 전달
-    //public void OnServerUpdate(S_Idle packet) => _view.OnIdle(packet);
-    public void OnServerUpdate(S_Move packet) => _view.OnMove(packet);
     public void OnServerUpdate(S_MoveSync packet) => _view.OnMoveSync(packet);
     public void OnServerUpdate(S_Anim packet) => _view.OnAnim(packet);
     public void OnServerUpdate(S_ChangeHp packet) => _view.OnHpChanged(packet);
@@ -219,11 +208,8 @@ public class MyPlayerController : PlayerController
     }
     #endregion
 
-
-
-#region Inventory, EquipItem
-
-public void ChangeInventory(S_ChangeInventory packet)
+    #region Inventory, EquipItem    
+    public void ChangeInventory(S_ChangeInventory packet)
     {
         foreach (var change in packet.Changes)
         {
@@ -252,7 +238,7 @@ public void ChangeInventory(S_ChangeInventory packet)
                             continue;
                         }
                         consumableItem.Count = change.Count;
-    
+
                         _inventory[change.InventoryIndex] = consumableItem;
                     }
                 }
@@ -277,13 +263,10 @@ public void ChangeInventory(S_ChangeInventory packet)
         RotInfo = transform.rotation;
         _updated = true;
         //_isWarp = isWarp;
-    }
-
-    
+    }    
     #endregion
 
     #region Packet
-
     protected override void CheckUpdatedFlag()
     {
         if (_updated)
@@ -300,7 +283,6 @@ public void ChangeInventory(S_ChangeInventory packet)
     {
         Managers.Network.Send(packet);
     }
-
     #endregion
 
     protected override void UpdateHp() { base.UpdateHp(); _UI.UpdateHp(); }
@@ -309,29 +291,4 @@ public void ChangeInventory(S_ChangeInventory packet)
     protected override void UpdateMaxStamina() { base.UpdateMaxStamina(); _UI.UpdateMaxStamina(); }
     public void UpdateLevel() { _UI.UpdateLevel(); }
     public void UpdateCool() { _UI.UpdateCool(); }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //protected KeyCode _keyCode = KeyCode.None;
-    //protected bool _isUseSkill = false;
-    //protected float _attackRange = 3.0f; // Temp
-    //protected virtual void UpdateSkillKeyInput() { }
-    //protected GameObject TryGetAttackableObject(float radius = 0.1f) { return null; }
-    //protected int SkillTargetId { get; set; }
-    //protected void SetSkillInput(KeyCode keyCode) { }
-    //protected void SetMovementState() { }
-    //protected void SendFXPacket(KeyCode key) { }
-    //protected virtual void ResetCharacterState() { }
-    //public virtual void OnSkillConfirmed(S_Skill skillPacket) { }
-    //protected virtual void GetMouseInput(int mouseButton) { }
-    //protected void ResetTarget() { }
-    //protected void ResetCoroutine(Coroutine coroutine) { }
-    //public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
-    //protected void LookAtTarget(Vector3 targetPos, bool snapToTarget = false, float speed = 20.0f) { }
-    //protected void LookAtMouse() { }
-    //protected Vector3 GetTargetPos(float range, bool isMaxDistance = true) { return Vector3.zero; }
-    //protected Vector3 GetReachablePosition(Vector3 startPos, Vector3 targetPos, out NavMeshHit navHit) { navHit = new NavMeshHit();  return Vector3.zero;  }
-    //protected Vector3 GetCursorPos() { return Vector3.zero; }
-    //protected float GetCurrentAnimClipLength() { return 0f; }
-    //public UI_PlayerInterface PlayerInterface { get; protected set; }
 }

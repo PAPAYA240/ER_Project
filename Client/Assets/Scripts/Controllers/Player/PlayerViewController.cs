@@ -18,13 +18,6 @@ public class PlayerViewController : MonoBehaviour
     private PlayerSkillController _skill;
 
     private bool _syncing;
-    //private bool _sentArriveSnapshot;
-
-    //[SerializeField] private float _minMoveDelta = 0.01f; // 1cm
-    //[SerializeField] private float _minAngleDelta = 1.0f; // 1도
-
-    private Vector3 _lastSentPos;
-    private Quaternion _lastSentRot;
 
     private int _targetId;
     private bool _isRotating = false;
@@ -63,7 +56,6 @@ public class PlayerViewController : MonoBehaviour
                 {
                     Vector3 pos = _target.transform.position;
                     UpdateTarget(pos);
-                    //Debug.Log(pos);
                 }
             }
         }
@@ -163,17 +155,11 @@ public class PlayerViewController : MonoBehaviour
 
         // MoveSync 루프 스타트(좌표/회전 동기화는 계속 필요)
         _syncing = true;
-        _lastSentPos = _player.transform.position;
-        _lastSentRot = _player.transform.rotation;
     }
 
     // ---- 정지 입력 처리 (S/H) ----
     public void ApplyStop(StopReason reason)
     {
-        // TEMP
-        //if (_motionCo != null)
-        //    return;
-
         if (_agent == null)
             return;
 
@@ -193,8 +179,6 @@ public class PlayerViewController : MonoBehaviour
         }
 
         // 동기화 루프는 유지(서버에 현재 정지 상태 포지션 계속 보고)
-        _lastSentPos = _player.transform.position;
-        _lastSentRot = _player.transform.rotation;
         _player.UpdateTransform(true);
     }
 
@@ -224,12 +208,6 @@ public class PlayerViewController : MonoBehaviour
             StopFollowTarget();
             return;
         }
-
-        //Vector3 pos = targetView.transform.position;
-        //if (NavMesh.SamplePosition(pos, out var navHit, 2.0f, NavMesh.AllAreas))
-        //    pos = navHit.position;
-
-        //_agent.SetDestination(pos);
 
         Vector3 myPos = transform.position;
         Vector3 targetPos = targetView.transform.position;
@@ -263,7 +241,6 @@ public class PlayerViewController : MonoBehaviour
         _agent.ResetPath();
     }
     #endregion
-
 
     #region Helper
     public void UpdateTarget(Vector3 targetPos)

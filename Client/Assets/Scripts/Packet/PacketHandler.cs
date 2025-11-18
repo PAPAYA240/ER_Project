@@ -44,11 +44,7 @@ class PacketHandler
         if (go == null)
             return;
 
-        if (Managers.Object.MyPlayer.Id == mPacket.ObjectId)
-        {
-            Managers.Object.MyPlayer.OnServerUpdate(mPacket);
-        }
-        else
+        if (Managers.Object.MyPlayer.Id != mPacket.ObjectId)
         {
             BaseController bc = go.GetComponentInChildren<BaseController>();
             if (bc == null)
