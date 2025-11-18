@@ -42,8 +42,7 @@ public sealed class Yuki_W : SkillHandlerBase
     {
         p.YukiStud = 4;
         Console.WriteLine($"유키 단추 두번들어오나? : {p.YukiStud}");
-        _ = p.CoChangeSpeed("AttackSpeed", p.AttackSpeed, 1f, 3f);
-
+        
         base.OnExit(p, ctx);
     }
 }

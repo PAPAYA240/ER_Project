@@ -60,7 +60,7 @@ namespace Server.Game
 
         public override float AttackSpeed
         {
-            get { return ComposeFinal(STAT_ATTACK_SPEED, Stat.AttackSpeed + _totalItemStat.FixedSpeed * (1 + _totalItemStat.PercentageSpeed)) ; }
+            get { return ComposeFinal(STAT_ATTACK_SPEED, Stat.AttackSpeed + _totalItemStat.FixedSpeed * (1 + _totalItemStat.PercentageSpeed), false, _mulBuffOffset) ; }
             set { base.AttackSpeed = value; }
         }
 
@@ -194,7 +194,7 @@ namespace Server.Game
         }
         #endregion
 
-        #region Yuki
+        #region Yuki Privacy
         // 유키 단추용
         private static readonly int MaxStud = 4;
         private int _yukiStud_cnt = 4;
@@ -212,6 +212,30 @@ namespace Server.Game
         {
             get { return _isAttackActive; }
             set { _isAttackActive = value; }
+        }
+        #endregion
+
+        #region Rozzi Privacy
+        int _times = 0;
+        public int Times
+        {
+            get { return _times; }
+            set { _times = value; }
+        }
+
+        float _mulBuffOffset = 0f;
+        public void AttackSpeedBuff(float ratio, int times)
+        {
+            _mulBuffOffset = ratio;
+            Times = times;
+        }
+
+        public void OnAttackPerformed()
+        {
+            if (Times == 0)
+                _mulBuffOffset = 0f;
+            else
+                Times--;
         }
         #endregion
 
@@ -906,16 +930,6 @@ namespace Server.Game
         }
         #endregion
 
-        public async Task CoChangeSpeed(string paramName, float speed, float ratio, float duration)
-        {
-            float calSpeed = speed + (speed * ratio);
-            SendDurationSpeedPacket(paramName, speed);
-
-            await Task.Delay((int)(duration * 1000));
-
-            SendDurationSpeedPacket(paramName, speed);
-        }
-
         #region Util
         public bool CanAttack()
         {
@@ -1171,16 +1185,6 @@ namespace Server.Game
             untargetablePkt.ObjectId = Id;
             untargetablePkt.Untargetable = IsUntargetable;
             Room.Push(Room.Broadcast, untargetablePkt);
-        }
-
-        public void SendDurationSpeedPacket(string name, float speed)
-        {
-            S_AnimSpeed speedPkt = new S_AnimSpeed();
-            speedPkt.ObjectId = Id;
-            speedPkt.Name = name;
-            speedPkt.Speed = speed;
-
-            Room.Push(Room.Broadcast, speedPkt);
         }
 
         //public void SendMoveSpeedPacket(float moveSpeed)

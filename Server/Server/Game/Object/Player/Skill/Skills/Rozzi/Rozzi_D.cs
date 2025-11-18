@@ -23,6 +23,11 @@ public sealed class Rozzi_D : SkillHandlerBase
     {
         base.OnEnter(p, ctx);
 
+        p.Room.AddStatusEffect(p, p, _keyCode, null);
+
+        // 로지 공속버프용입니다 연진님
+        p.AttackSpeedBuff(0.7f, 2);
+
         SendSkillConfirmPacket(p);
     }
 

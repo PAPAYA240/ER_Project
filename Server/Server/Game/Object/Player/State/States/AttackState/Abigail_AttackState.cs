@@ -38,8 +38,8 @@ public class Abigail_AttackState : Player_AttackState
         _damageApplied = false;
 
         _swingStartUtc = now;
-        _hitMomentUtc = now.AddSeconds(WindupSeconds);
-        _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds);
+        _hitMomentUtc = now.AddSeconds(WindupSeconds / p.AttackSpeed);
+        _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds / p.AttackSpeed);
 
         // 애니 송출(서버 권한)
         string animName = AnimAttackT;

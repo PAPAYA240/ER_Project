@@ -140,7 +140,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
                         new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ),
                         new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ));
                     if (distNow <= player.AttackRange /* + player.HitTolerance 가능 */)
-                        ApplyHit(player, target);
+                        //ApplyHit(player, target);
 
                     _damageApplied = true;
                 }
@@ -225,15 +225,19 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
             _targetId = newTargetId;
     }
 
+    int times = 0;
     // ===== 내부 유틸 =====
     protected virtual void StartSwing(Player p, DateTime now)
     {
+        // 로지 횟수 공속증가용
+        p.OnAttackPerformed();
+
         _swingActive = true;
         _damageApplied = false;
 
         _swingStartUtc = now;
-        _hitMomentUtc = now.AddSeconds(WindupSeconds * p.AttackSpeed);
-        _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds * p.AttackSpeed);
+        _hitMomentUtc = now.AddSeconds(WindupSeconds / p.AttackSpeed);
+        _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds / p.AttackSpeed);
 
         // A/B 번갈이
         string animName = (_attackIndex == 0) ? AnimAttackA : AnimAttackB;
