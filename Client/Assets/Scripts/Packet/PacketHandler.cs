@@ -56,14 +56,14 @@ class PacketHandler
                 if (pc == null)
                     return;
 
-                if (pc.State == CreatureState.Moving)
-                {
-                    pc.SyncPosFromServer(mPacket);
-                }
+                pc.SyncPosFromServer(mPacket);
             }
-
-            bc.transform.position = mPacket.PosInfo.ToVector();
-            bc.transform.rotation = mPacket.RotInfo;
+            else
+            {
+                bc.transform.position = mPacket.PosInfo.ToVector();
+                bc.transform.rotation = mPacket.RotInfo;
+            }
+                
             bc.PosInfo = mPacket.PosInfo;
             bc.RotInfo = mPacket.RotInfo;
         }     

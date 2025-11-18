@@ -51,10 +51,9 @@ public class PlayerViewController : MonoBehaviour
             if (_isRotating == false)
             {
                 var targetView = Managers.Object.FindById(TargetId);
-
                 if (targetView != null)
                 {
-                    Vector3 pos = _target.transform.position;
+                    Vector3 pos = targetView.transform.position;
                     UpdateTarget(pos);
                 }
             }
