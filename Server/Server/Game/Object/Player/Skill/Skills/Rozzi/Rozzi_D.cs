@@ -25,6 +25,7 @@ public sealed class Rozzi_D : SkillHandlerBase
         SendSkillConfirmPacket(p);
 
         p.Room.AddStatusEffect(p, p, _keyCode, null); // 스킬 사용시 이속 버프
+
     }
 
     public override void OnHit(Player p, SkillContext ctx)

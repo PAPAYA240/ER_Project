@@ -19,6 +19,8 @@ namespace Server.Game
 {
     public partial class GameRoom : Room
     {
+        float STOP_BUFFER = 0.1f;
+
         // 우클릭 "타겟 공격" → 즉시 AttackState
         public void HandleAttack(Player player, C_Attack pkt)
         {
@@ -35,7 +37,6 @@ namespace Server.Game
                 return;
             }
 
-            Console.WriteLine($"@ Attack Packet!!");
             player.ChangeState(Player_AttackState.CreateAttackState(player, pkt.TargetId, chaseAllowed: true));
         }
 
@@ -46,6 +47,7 @@ namespace Server.Game
 
             target.OnDamaged(player, player.Attack);
         }
+
         // 우클릭 유지로 들어온 이동 의도
         public void HandleSetMoveTarget(Player player, C_SetMoveTarget pkt)
         {
@@ -101,64 +103,45 @@ namespace Server.Game
                 move.TargetId = pkt.TargetId;
 
                 var tar = player.FindTarget(pkt.TargetId);
-                if (tar != null)
-                {
-                    move.TargetPosition = new PositionInfo
-                    {
-                        PosX = tar.PosInfo.PosX,
-                        PosY = tar.PosInfo.PosY,
-                        PosZ = tar.PosInfo.PosZ
-                    };
-                }
+                if (pkt.TargetPos != null)
+                    move.TargetPosition = new PositionInfo(pkt.TargetPos);
+                else if (tar != null)
+                    move.TargetPosition = new PositionInfo(tar.PosInfo);
                 else
-                {
-                    // 안전 보강
-                    move.TargetPosition = new PositionInfo
-                    {
-                        PosX = player.PosInfo.PosX,
-                        PosY = player.PosInfo.PosY,
-                        PosZ = player.PosInfo.PosZ
-                    };
-                }
+                    move.TargetPosition = new PositionInfo(player.PosInfo);
             }
 
-            // 4) 이미 이동 중이면 상태 유지 + 목표지만 갱신
-            //    (상태 재전환/애니메이션 재생/경로 초기화 튐 방지)
-            if (player.CurrentState is IReceivesMoveCommand moving)
-            {
-                moving.OnMoveCommand(player, move);
-                return;
-            }
+            // 4) 먼저 공격 가능한지 부터 확인
+            GameObject target = null;
+            if (!pkt.IsGround)
+                target = player.FindTarget(pkt.TargetId);
 
-            // 5-1) 평타 대상이 있고, 사거리 안일 때
-            if(!pkt.IsGround && Vector3.Distance(player.Position, pkt.TargetPos.ToVector()) <= player.AttackRange)
+            if (!pkt.IsGround && target != null)
             {
-                // 이미 공격 상태면
-                if(player.CurrentState is Player_AttackState attack)
+                float dist = Vector3.Distance(player.Position, target.Position);
+                float effectiveRange = player.AttackRange + STOP_BUFFER;
+
+                if (dist <= effectiveRange)
                 {
-                    // 대상이 다르면 : 타겟만 변경
-                    if (attack._targetId != pkt.TargetId)
+                    // 이미 공격 상태면: 타겟만 변경 or 무시
+                    if (player.CurrentState is Player_AttackState attack)
                     {
-                        attack.ChangeTarget(pkt.TargetId);
-                        Console.WriteLine($"@ Moving Packet!! -> attack.ChangeTarget");
-                        return;
+                        if (attack._targetId != pkt.TargetId)
+                            attack.ChangeTarget(pkt.TargetId);
                     }
-                    // 대상이 같으면 무시
                     else
-                        return;
-                }
-                else
-                {
-                    player.ChangeState(Player_AttackState.CreateAttackState(player, pkt.TargetId, chaseAllowed: true));
+                        player.ChangeState(Player_AttackState.CreateAttackState(player, pkt.TargetId, chaseAllowed: true));
+
                     return;
-                }                  
+                }
             }
+
+            // 5) 아직 사거리 밖이면, 그때 이동 상태로 처리
+            if (player.CurrentState is IReceivesMoveCommand moving)
+                // 이미 MovingState(또는 이동 가능한 다른 상태)라면 목적지만 갱신
+                moving.OnMoveCommand(player, move);
             else
-            {
-                // 6) 그 외에는 새로 Moving으로 진입
-                Console.WriteLine($"@ Moving Packet!! -> Moving");
-                player.ChangeState(new Player_MovingState(move));
-            }          
+                player.ChangeState(new Player_MovingState(move));      
         }
 
         public void HandleSkill(Player player, C_SkillInput skillPacket)
@@ -167,42 +150,8 @@ namespace Server.Game
                 return;
 
             player.Skill.HandleSkillPacket(skillPacket);
-
-            //var key = (KeyCode)skillPacket.SkillKey;
-            //// 1) 치환할 스킬이 있는 지 확인
-
-            //// 2) 플레이어가 스킬을 사용할 수 있는 상태인지 확인
-            //if (!player.CanUseSkill(key))
-            //{
-            //    player.SendSkillConfirmPacket(false);
-            //    return;
-            //}
-
-            //// 3) 컨텍스트 구성(마우스 XZ/타겟)
-            //var ctx = new SkillContext
-            //{
-            //    MousePos = new Vector2(skillPacket.MouseX, skillPacket.MouseZ),
-            //    TargetId = skillPacket.TargetId,
-            //    Key = key,
-            //};
-
-            //// 4) 핸들러 결정
-            //ISkill handler = SkillRegistry.Resolve(player.Info.Player.CharType, key);
-
-            //// 5) 스킬이 사용 가능한 상탠지 확인
-            //if (!handler.CanCast(player, ctx))
-            //{
-            //    player.SendSkillConfirmPacket(false);
-            //    return;
-            //}
-            //else
-            //    player.CommitSkillUsage(key);
-
-            //// 5) SkillState로 전환
-            //player.ChangeState(new Player_SkillState(handler, ctx));
-
-            //// 6) 클라에 허락 패킷 보내기 -> 각 Skill의 OnEnter에서
         }
+
         public void HandleExecuteSkill(Player player, C_SkillExecute skillPacket)
         {
             var key = (KeyCode)skillPacket.SkillKey;
@@ -213,6 +162,7 @@ namespace Server.Game
             }
 
         }
+
         public void HandlerPrepareSkill(Player player, C_SkillPrepare skillPacket)
         {
             var key = (KeyCode)skillPacket.SkillKey;
@@ -235,6 +185,7 @@ namespace Server.Game
 
             ISkill handler = SkillRegistry.Prepare(player.Info.Player.CharType, key);
         }
+
         public void HandleSkillCollision(Player player, C_SkillCollisionPropose skillPacket)
         {
             if (player == null)

@@ -43,7 +43,8 @@ public class PlayerInputController : MonoBehaviour
         _beaconMask = 1 << LayerMask.NameToLayer("Beacon");
     }
 
-    // 우클릭 유지 중 이동 의도(타겟 이동 or 땅 이동)
+    // 커서 아래에 대상 없음 → 지형 이동 패킷
+    // 커서 아래에 대상은 있지만 사거리 밖 -> 타겟 추적 이동
     public virtual C_SetMoveTarget GetSetMoveTarget()
     {
         if (_player.State == CreatureState.Idle 
@@ -70,35 +71,11 @@ public class PlayerInputController : MonoBehaviour
             }
             else
             {
-                //// 타겟팅 이동
-                //if (!TryGetTargetDestination(target, out Vector3 final, out int id))
-                //    return null;
-
-                //return new C_SetMoveTarget
-                //{
-                //    IsGround = false,
-                //    TargetId = id,
-                //    TargetPos = final,
-                //};
-
-                // ★ 타겟 기억
-                _target = target;
-
-                // === 사거리 안이면 이동 명령을 보내지 않음 ===
-                Vector3 myPos = _player.transform.position;
-                Vector3 targetPos = _target.transform.position;
-
-                Vector2 myXZ = new Vector2(myPos.x, myPos.z);
-                Vector2 targetXZ = new Vector2(targetPos.x, targetPos.z);
-                float dist = Vector2.Distance(myXZ, targetXZ);
-
-                float effectiveRange = Mathf.Max(0.05f, _player.AttackRange - _stopBuffer);
-
-                // 이미 평타 사거리 안이다 → 이동 패킷 안 보냄
-                if (dist <= effectiveRange)
+                // 사거리 안이면 이동 패킷 보내지 않기
+                var cc = target.GetComponentInChildren<CreatureController>();
+                if (cc != null && IsInAttackRange(_player.transform.position, cc.transform.position))
                     return null;
 
-                // === 사거리 밖일 때만 추적 이동 패킷 ===
                 if (!TryGetTargetDestination(target, out Vector3 final, out int id))
                     return null;
 
@@ -123,27 +100,9 @@ public class PlayerInputController : MonoBehaviour
         }
     }
 
-    // 우클릭 "타겟 공격" (클릭 순간 1회)
+    // 타겟 + 사거리 안”
     public C_Attack GetAttackCommand()
     {
-        //if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving || _player.State == CreatureState.Attack)
-        //{
-        //    if (/*!Input.GetKeyDown(KeyCode.C) ||*/ !Input.GetMouseButtonDown(1))
-        //        return null;
-
-        //    int id = GetAttackableUnderCursorID();
-        //    if (id == 0)
-        //        return null;
-
-        //    _target = Managers.Object.FindById(id);
-        //    if (_target == null)
-        //        return null;
-
-        //    return new C_Attack { TargetId = id };
-        //}
-
-        //return null;
-
         // 공격 가능한 상태만 처리
         if (!(_player.State == CreatureState.Idle
             || _player.State == CreatureState.Moving
@@ -170,16 +129,7 @@ public class PlayerInputController : MonoBehaviour
             return null;
 
         // ===== 거리(사거리) 체크 =====
-        Vector3 myPos = _player.transform.position;
-        Vector3 targetPos = cc.transform.position;
-
-        Vector2 myXZ = new Vector2(myPos.x, myPos.z);
-        Vector2 targetXZ = new Vector2(targetPos.x, targetPos.z);
-        float dist = Vector2.Distance(myXZ, targetXZ);
-
-        float effectiveRange = Mathf.Max(0.05f, _player.AttackRange - _stopBuffer);
-
-        if (dist > effectiveRange)
+        if (!IsInAttackRange(_player.transform.position, cc.transform.position))
             return null;
 
         // ===== 실제로 공격 패킷을 보낼지 결정 =====
@@ -495,6 +445,16 @@ public class PlayerInputController : MonoBehaviour
             return false;
 
         return true;
+    }
+
+    private bool IsInAttackRange(Vector3 myPos, Vector3 targetPos)
+    {
+        Vector2 myXZ = new Vector2(myPos.x, myPos.z);
+        Vector2 targetXZ = new Vector2(targetPos.x, targetPos.z);
+        float dist = Vector2.Distance(myXZ, targetXZ);
+
+        float effectiveRange = Mathf.Max(0.05f, _player.AttackRange - _stopBuffer);
+        return dist <= effectiveRange;
     }
     #endregion
 

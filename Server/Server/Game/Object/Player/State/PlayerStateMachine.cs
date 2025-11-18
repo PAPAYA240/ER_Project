@@ -13,11 +13,11 @@ public class PlayerStateMachine
     {
         _currentState?.Exit(player);
         _currentState = newState;
+        UpdateState(newState, player);
         _currentState?.Enter(player);
 
         player.CurrentState = _currentState;
 
-        UpdateState(newState, player);
     }
 
     public void Update(Player player)
