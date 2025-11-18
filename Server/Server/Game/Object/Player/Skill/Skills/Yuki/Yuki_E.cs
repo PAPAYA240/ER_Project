@@ -101,6 +101,7 @@ public sealed class Yuki_E : SkillHandlerBase
 
     public override void OnExit(Player p, SkillContext ctx)
     {
+        Console.WriteLine("여러번 들어올떄가 있나?");
         base.OnExit(p, ctx);
     }
 }

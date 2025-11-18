@@ -23,8 +23,8 @@ public class Yuki_AttackState : Player_AttackState
         _damageApplied = false;
 
         _swingStartUtc = now;
-        _hitMomentUtc = now.AddSeconds(WindupSeconds);
-        _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds);
+        _hitMomentUtc = now.AddSeconds(WindupSeconds / p.AttackSpeed);
+        _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds / p.AttackSpeed);
 
         // 애니 송출(서버 권한)
         string animName = AnimAttackT;
@@ -45,7 +45,7 @@ public class Yuki_AttackState : Player_AttackState
             IsPassiveAttack = false;
         }
 
-        p.SendAnimPacket(animName, 0.05f);
+        p.SendAnimPacket(animName, 0.05f, p.AttackSpeed, true);
     }
 
     protected override void ApplyHit(Player p, GameObject target)

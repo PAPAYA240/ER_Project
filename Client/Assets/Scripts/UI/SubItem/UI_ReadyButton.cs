@@ -80,7 +80,8 @@ public class UI_ReadyButton : UI_Base
         //}
 
         //TODO
-        Managers.Scene.LoadScene(Define.Scene.Game);
+        //Managers.Scene.LoadScene(Define.Scene.Game);
+        LoadingManager.Instance.LoadScene(Define.Scene.Game);
     }
 
     void OnPointerEnter(PointerEventData eventData)

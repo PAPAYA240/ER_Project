@@ -247,6 +247,7 @@ public class PlayerController : CreatureController
 
         // 장비 슬롯
         InitEquipItem();
+        InitializeXRay();
 
         // NavMesh Agent
         _agent = GetComponent<NavMeshAgent>();
@@ -302,8 +303,8 @@ public class PlayerController : CreatureController
     protected override void UpdateController()
     {
         base.UpdateController();
-
-        //if (ObjectType == Define.Object.OtherPlayer)
+        
+        //if (Id != Managers.Object.MyPlayer.Id)
         //{
         //    float dist = Vector3.Distance(transform.position, _serverPos);
         //    if (dist > _minDist)
@@ -385,6 +386,15 @@ public class PlayerController : CreatureController
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
+
+        if (animInfo.IsChangeSpeed == true)
+            _animator.SetFloat("AttackSpeed", animInfo.Speed);
+    }
+
+    public void ChangeSpeed(string paramName, float speed)
+    {
+        _animator.SetFloat(paramName, speed);
+        Debug.Log(speed);
     }
     public void PlayEffectFromServer(S_Fx packet, Vector3 mousePos, Vector3 targetPos = new Vector3(), Quaternion targetRot = default(Quaternion))
     {
@@ -609,6 +619,114 @@ public class PlayerController : CreatureController
     }
     #endregion
 
+    [Header("X-Ray Settings")]
+    [SerializeField] private int playerWeaponStencilID = 100;
+    [SerializeField] private bool disablePlayerWeaponXRay = true;
+    #region Shader
+    void InitializeXRay()
+    {
+        if (disablePlayerWeaponXRay)
+            SetupPlayerWeaponXRay();
+    }
+
+    void SetupPlayerWeaponXRay()
+    {
+        // Player 본체
+        SetXRayGroup(gameObject, playerWeaponStencilID);
+
+        // 현재 장착된 무기
+        if (_eqipWeapon != null)
+        {
+            SetXRayGroup(_eqipWeapon, playerWeaponStencilID);
+        }
+    }
+    public void SetxRayFromPlayer(GameObject player)
+    {
+            SetXRayGroup(player, playerWeaponStencilID);
+    }
+    void SetXRayGroup(GameObject root, int stencilID)
+    {
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+
+        foreach (Renderer renderer in renderers)
+        {
+            foreach (Material mat in renderer.materials)
+            {
+                if (mat.shader.name.Contains("Toon_DoubleShadeWithFeather"))
+                {
+                    if (mat.HasProperty("_StencilRef"))
+                    {
+                        mat.SetInt("_StencilRef", stencilID);
+                        mat.SetInt("_StencilComp", (int)UnityEngine.Rendering.CompareFunction.Always);
+                        mat.SetInt("_StencilOp", (int)UnityEngine.Rendering.StencilOp.Replace);
+                    }
+                }
+            }
+        }
+    }
+
+    // 무기 교체 시 호출 (기존 EquipWeapon 메서드에 추가)
+    void OnWeaponEquipped(GameObject newWeapon)
+    {
+        if (newWeapon != null && disablePlayerWeaponXRay)
+        {
+            SetXRayGroup(newWeapon, playerWeaponStencilID);
+        }
+    }
+
+    // Player와 Weapon의 X-Ray 효과 끄기/켜기
+    public void SetPlayerWeaponXRayEnabled(bool enabled)
+    {
+        float alpha = enabled ? 0.5f : 0f;
+
+        SetOccludedColorAlpha(gameObject, alpha);
+
+        if (_eqipWeapon != null)
+        {
+            SetOccludedColorAlpha(_eqipWeapon, alpha);
+        }
+    }
+
+    void SetOccludedColorAlpha(GameObject root, float alpha)
+    {
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+
+        foreach (Renderer renderer in renderers)
+        {
+            foreach (Material mat in renderer.materials)
+            {
+                if (mat.HasProperty("_OccludedColor"))
+                {
+                    Color occludedColor = mat.GetColor("_OccludedColor");
+                    occludedColor.a = alpha;
+                    mat.SetColor("_OccludedColor", occludedColor);
+                }
+            }
+        }
+    }
+
+    void SetupRenderingLayer()
+    {
+        uint playerLayer = 1u << 1; // Layer 1
+
+        SetRenderingLayerMask(gameObject, playerLayer);
+
+        if (_eqipWeapon != null)
+        {
+            SetRenderingLayerMask(_eqipWeapon, playerLayer);
+        }
+    }
+
+    void SetRenderingLayerMask(GameObject root, uint layerMask)
+    {
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.renderingLayerMask = layerMask;
+        }
+    }
+    #endregion
     public void SyncPosFromServer(S_Move movePacket)
     {
         _agent.isStopped = false;

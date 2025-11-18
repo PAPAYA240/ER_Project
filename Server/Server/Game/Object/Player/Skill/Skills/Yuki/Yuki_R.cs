@@ -38,6 +38,7 @@ public sealed class Yuki_R : SkillHandlerBase
 
     public override void OnExit(Player p, SkillContext ctx)
     {
+        Console.WriteLine($"유키 단추 두번들어");
         base.OnExit(p, ctx);
     }
 }

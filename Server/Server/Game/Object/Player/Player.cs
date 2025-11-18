@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
+using System.Threading.Tasks;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -57,7 +58,7 @@ namespace Server.Game
 
         public override float AttackSpeed
         {
-            get { return ComposeFinal(STAT_ATTACK_SPEED, (Stat.AttackSpeed + DataManager.WeaponDict[Info.Player.Weapon].AttackSpeed) * (1 + _totalItemStat.AttackSpeed)) ; }
+            get { return ComposeFinal(STAT_ATTACK_SPEED, (Stat.AttackSpeed + DataManager.WeaponDict[Info.Player.Weapon].AttackSpeed) * (1 + _totalItemStat.AttackSpeed), false, _mulBuffOffset); }
             set { base.AttackSpeed = value; }
         }
 
@@ -191,7 +192,7 @@ namespace Server.Game
         }
         #endregion
 
-        #region Yuki
+        #region Yuki Privacy
         // 유키 단추용
         private static readonly int MaxStud = 4;
         private int _yukiStud_cnt = 4;
@@ -209,6 +210,30 @@ namespace Server.Game
         {
             get { return _isAttackActive; }
             set { _isAttackActive = value; }
+        }
+        #endregion
+
+        #region Rozzi Privacy
+        int _times = 0;
+        public int Times
+        {
+            get { return _times; }
+            set { _times = value; }
+        }
+
+        float _mulBuffOffset = 0f;
+        public void AttackSpeedBuff(float ratio, int times)
+        {
+            _mulBuffOffset = ratio;
+            Times = times;
+        }
+
+        public void OnAttackPerformed()
+        {
+            if (Times == 0)
+                _mulBuffOffset = 0f;
+            else
+                Times--;
         }
         #endregion
 
@@ -1008,7 +1033,7 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendAnimPacket(string animName, float ratio)
+        public void SendAnimPacket(string animName, float ratio, float speed = 0, bool isChangeSpeed = false)
         {
             S_Anim packet = new S_Anim()
             { 
@@ -1016,7 +1041,9 @@ namespace Server.Game
                 AnimInfo = new AnimInfo()
                 {
                     Name = animName,
-                    Ratio = ratio
+                    Ratio = ratio,
+                    Speed = speed,
+                    IsChangeSpeed = isChangeSpeed
                 }
             };
             Room.Push(Room.Broadcast, packet);

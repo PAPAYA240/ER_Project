@@ -887,8 +887,21 @@ class PacketHandler
             return;
 
         chat.EnqueueMessage(chatPkt.ObjectId, chatPkt.Message);
+    }
 
-        //combatModePkt.CombatMode;
+    public static void S_AnimSpeedHandler(PacketSession session, IMessage packet)
+    {
+        S_AnimSpeed speedPkt = packet as S_AnimSpeed;
+
+        GameObject go = Managers.Object.FindById(speedPkt.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.ChangeSpeed(speedPkt.Name, speedPkt.Speed);
     }
 
     static float GetCurrentEstimatedOneWayLatency()

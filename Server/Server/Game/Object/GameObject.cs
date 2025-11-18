@@ -718,9 +718,9 @@ namespace Server.Game
 
         #region StatusEffect 연동 
         // 최종 = 비율 → 고정 순 합성
-        protected float ComposeFinal(string key, float baseVal, bool ignoreDebuff = false)
+        protected float ComposeFinal(string key, float baseVal, bool ignoreDebuff = false, float mulbuffOffset = 0f)
         {
-            float mulBuff = _mulBuffAccum.GetValueOrDefault(key);
+            float mulBuff = _mulBuffAccum.GetValueOrDefault(key) + mulbuffOffset;
             float mulDebuff = ignoreDebuff ? 0f : _mulDebuffAccum.GetValueOrDefault(key);
 
             float flatBuff = _flatBuffAccum.GetValueOrDefault(key);
