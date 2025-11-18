@@ -1004,7 +1004,6 @@ message S_Unstoppable{
 	int32 objectId = 1;
 	bool unstoppable = 2;
 }
-}
 
 message S_AnimSpeed {
 	int32 objectId = 1;
