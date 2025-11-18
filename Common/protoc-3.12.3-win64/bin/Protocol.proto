@@ -955,7 +955,6 @@ message S_SkillCost{
 
 message S_ChangeStatus{
 	int32 objectId = 1;
-
 	float moveSpeed = 2;
 	float attack = 3;
 	float attackSpeed = 4;
