@@ -113,5 +113,10 @@ namespace Server.Game
 
             return -1;
         }
+        
+        public int GetPlayerCount()
+        {
+            return _players.Count;
+        }
     }
 }

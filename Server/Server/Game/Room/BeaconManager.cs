@@ -77,7 +77,7 @@ namespace Server.Game
                 if (data.OccupiedTeam == 0)
                     continue;
 
-                data.RemainingTime -= TimeUtil.DeltaTime;
+                data.RemainingTime -= TimeUtil.Instance.DeltaTime;
 
                 int currentTime = (int)Math.Ceiling(data.RemainingTime);
                 if (currentTime != data.LastSentTime)

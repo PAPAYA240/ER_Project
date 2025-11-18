@@ -22,12 +22,13 @@ public class EnvController : BaseController
     }
 
     #region Interaction
-
+    protected GameObject _triggerCreature = null;
     protected void OnTriggerEnter(Collider other)
     {
         if (!IsValidTrigger(other))
             return;
 
+        _triggerCreature = other.gameObject;
         _isCollecting = true;
         TryHandleInteraction();
         RequestCollect();
@@ -35,7 +36,7 @@ public class EnvController : BaseController
 
     private bool IsValidTrigger(Collider other)
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("MyPlayer"))
+        if (other.gameObject.layer != LayerMask.NameToLayer("Player"))
             return false;
         if (!_isActive || _isCollecting)
             return false;

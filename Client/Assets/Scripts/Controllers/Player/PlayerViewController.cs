@@ -20,8 +20,8 @@ public class PlayerViewController : MonoBehaviour
     private bool _syncing;
     //private bool _sentArriveSnapshot;
 
-    [SerializeField] private float _minMoveDelta = 0.01f; // 1cm
-    [SerializeField] private float _minAngleDelta = 1.0f; // 1도
+    //[SerializeField] private float _minMoveDelta = 0.01f; // 1cm
+    //[SerializeField] private float _minAngleDelta = 1.0f; // 1도
 
     private Vector3 _lastSentPos;
     private Quaternion _lastSentRot;

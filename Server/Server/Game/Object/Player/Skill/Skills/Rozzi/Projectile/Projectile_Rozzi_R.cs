@@ -14,7 +14,7 @@ public class Projectile_Rozzi_R : Projectile
     private readonly float _maxDistance = 5.5f;
     private Vector3 _startPosition;
 
-    private int _tStartTick, _tEndTick;
+    private long _tStartTick, _tEndTick;
 
     private readonly float _duration = 8f;
     private readonly float _speed = 10f;
@@ -35,8 +35,8 @@ public class Projectile_Rozzi_R : Projectile
     // 부착 대상
     private GameObject _target;
     public GameObject Target => _target;
-    private int _attachTick;
-    private int _explodeTick;
+    private long _attachTick;
+    private long _explodeTick;
 
     // 히트 스택
     private int _hitStack = 0;
@@ -48,7 +48,7 @@ public class Projectile_Rozzi_R : Projectile
         if (Owner == null)
             return;
 
-        _tStartTick = TimeUtil.LastTick;
+        _tStartTick = TimeUtil.Instance.LastTick;
         _tEndTick = unchecked(_tStartTick + (int)MathF.Round(_duration * 1000f));
 
         // Owner의 현재 위치를 복사
@@ -79,8 +79,6 @@ public class Projectile_Rozzi_R : Projectile
         if (Owner == null)  // TEMP: Owner가 죽어도 남아있기?
             return;
 
-        int now = TimeUtil.LastTick;
-
         // 상태별 업데이트
         switch (_state)
         {
@@ -107,7 +105,7 @@ public class Projectile_Rozzi_R : Projectile
                 Info.PosInfo.PosY = 1.5f;
                 SendMovePacket(PosInfo, RotInfo);
 
-                if (TimeUtil.IsPastOrNow(now, _explodeTick))
+                if (TimeUtil.Instance.IsPastOrNow(_explodeTick))
                 {
                     Explode(false);
                     return;
@@ -115,7 +113,7 @@ public class Projectile_Rozzi_R : Projectile
                 break;
 
             case BombState.StuckOnGround:
-                if (TimeUtil.IsPastOrNow(now, _explodeTick))
+                if (TimeUtil.Instance.IsPastOrNow(_explodeTick))
                 {
                     Explode(false);
                     return;
@@ -133,7 +131,7 @@ public class Projectile_Rozzi_R : Projectile
         _state = BombState.AttachedToTarget;
         _target = target;
 
-        _attachTick = TimeUtil.LastTick;
+        _attachTick = TimeUtil.Instance.LastTick;
         _explodeTick = unchecked(_attachTick + FuseMs);
 
         // 부착 시 이속 디버프 (3초)
@@ -155,7 +153,7 @@ public class Projectile_Rozzi_R : Projectile
 
         _state = BombState.StuckOnGround;
 
-        _attachTick = TimeUtil.LastTick;
+        _attachTick = TimeUtil.Instance.LastTick;
         _explodeTick = unchecked(_attachTick + FuseMs);
 
         // 더 이상 이동하지 않고 해당 위치에 고정
@@ -164,9 +162,7 @@ public class Projectile_Rozzi_R : Projectile
 
     protected override bool Deactivation()
     {
-        int now = TimeUtil.LastTick;
-
-        if (TimeUtil.IsPastOrNow(now, _tEndTick))
+        if (TimeUtil.Instance.IsPastOrNow(_tEndTick))
             return true;
 
         return false;
@@ -203,7 +199,7 @@ public class Projectile_Rozzi_R : Projectile
         }
 
         Vector3 forwardVector = Info.RotInfo.Forward();
-        Vector3 moveDistance = forwardVector * _speed * TimeUtil.DeltaTime;
+        Vector3 moveDistance = forwardVector * _speed * TimeUtil.Instance.DeltaTime;
 
         Vector3 myCurPosition = Info.PosInfo.ToVector();
         Vector3 targetPos = myCurPosition + moveDistance;

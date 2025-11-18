@@ -15,8 +15,8 @@ public class PlayerController : CreatureController
     int _maxAtkCount = 2;
 
     // SyncPos
-    float _minDist = 3f;
-    float _syncSpeed = 20f;
+    //float _minDist = 3f;
+    //float _syncSpeed = 20f;
     Vector3 _serverPos;
     float AGENT_SPEED_RATIO = 1.7f;
 
@@ -31,8 +31,11 @@ public class PlayerController : CreatureController
     protected UI_PlayerNameTag _nameTag;
     public UI_PlayerNameTag NameTag { get { return _nameTag; } }
 
+    public string NickName { get; set; } = "UserName";
+
     // 장착 아이템
-    Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
+    private Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
+    public Dictionary<EquipItemType, EquipItemInfo> EquipItemSlot { get { return _equipItemSlot; } }
     public ItemStat ItemStat { get; private set; } = new ItemStat();
     protected GameObject _eqipWeapon = null;
 
@@ -142,11 +145,28 @@ public class PlayerController : CreatureController
             _untargetable = value;
 
             if (_untargetable)
-                _nameTag.SetNameText("대상 지정 불가", 20);
+                _nameTag.SetUntargetable();
             else
                 _nameTag.SetNameText("아비게일", 16);
 
             _nameTag.SetHPColor(_untargetable);
+        } 
+    }
+    private bool _unstoppable;
+    public override bool Unstoppable 
+    {
+        get { return _unstoppable; }
+        set 
+        {
+            if (_unstoppable == value)
+                return;
+
+            _unstoppable = value;
+
+            if (_unstoppable)
+                _nameTag.SetUnstoppable();
+            else
+                _nameTag.SetNameText("UserName", 16);
         } 
     }
     #endregion
@@ -227,6 +247,7 @@ public class PlayerController : CreatureController
 
         // 장비 슬롯
         InitEquipItem();
+        InitializeXRay();
 
         // NavMesh Agent
         _agent = GetComponent<NavMeshAgent>();
@@ -282,8 +303,8 @@ public class PlayerController : CreatureController
     protected override void UpdateController()
     {
         base.UpdateController();
-
-        //if (ObjectType == Define.Object.OtherPlayer)
+        
+        //if (Id != Managers.Object.MyPlayer.Id)
         //{
         //    float dist = Vector3.Distance(transform.position, _serverPos);
         //    if (dist > _minDist)
@@ -365,9 +386,72 @@ public class PlayerController : CreatureController
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
+
+        if (animInfo.IsChangeSpeed == true)
+            _animator.SetFloat("AttackSpeed", animInfo.Speed);
+    }
+
+    public void ChangeSpeed(string paramName, float speed)
+    {
+        _animator.SetFloat(paramName, speed);
+        Debug.Log(speed);
+    }
+    public void PlayEffectFromServer(S_Fx packet, Vector3 mousePos, Vector3 targetPos = new Vector3(), Quaternion targetRot = default(Quaternion))
+    {
+        if (packet.Type == "Caster")
+            PlaySkillEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot);
+
+        else if(packet.Type == "Select")
+            PlaySelectEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot, packet.FxName);
     }
     #endregion
+    public void LookAtMouse()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100f))
+        {
+            Vector3 targetPoint = hit.point;
+            targetPoint.y = transform.position.y;
+            Vector3 direction = targetPoint - transform.position;
 
+            if (direction != Vector3.zero)
+            {
+                Quaternion newRotation = Quaternion.LookRotation(direction);
+                RotInfo = newRotation;
+                SyncPos(true);
+            }
+        }
+    }
+
+    public Vector2 GetMousePos()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 100f))
+        {
+            Vector3 targetPoint = hit.point;
+            return new Vector2(targetPoint.x, targetPoint.z);
+        }
+        return Vector2.zero;
+    }
+
+    public void LookAtMouse(Vector2 mousePos)
+    {
+        Vector3 casterPosition = transform.position;
+
+        Vector3 targetPoint = new Vector3(mousePos.x, casterPosition.y, mousePos.y);
+
+        Vector3 direction = targetPoint - casterPosition;
+
+        if (direction != Vector3.zero)
+        {
+            Quaternion newRotation = Quaternion.LookRotation(direction);
+
+            RotInfo = newRotation;
+            SyncPos(true);
+        }
+    }
     Dictionary<KeyCode, SkillMesh> msDict = new Dictionary<KeyCode, SkillMesh>();
 
     #region NameTagAndHp
@@ -460,7 +544,8 @@ public class PlayerController : CreatureController
     #endregion
 
     #region Effect
-    public void PlaySkillEffect(KeyCode skillKey)
+    // 기본 스킬 이펙트 호출 : Caster Type
+    public void PlaySkillEffect(KeyCode skillKey, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot = default(Quaternion))
     {
         CharacterType type = ObjInfo.Player.CharType;
         CreatureState state = CreatureState.Skill;
@@ -478,7 +563,32 @@ public class PlayerController : CreatureController
         {
             dataList.Add(effect);
         }
-        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, transform);
+
+        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, transform, mousePos);
+    }
+
+    // 직접 선택해서 호출하는 이펙트 : Type Select
+    public void PlaySelectEffect(KeyCode skillKey, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot, string fxName)
+    {
+        CharacterType type = ObjInfo.Player.CharType;
+        CreatureState state = CreatureState.Skill;
+
+        if (!DataManager.PlayerFxDict.ContainsKey(type))
+            return;
+        if (!DataManager.PlayerFxDict[type].ContainsKey(state))
+            return;
+        if (!DataManager.PlayerFxDict[type][state].ContainsKey(skillKey))
+            return;
+
+        SkillEffectList myEffectList = DataManager.PlayerFxDict[type][state][skillKey];
+        List<EffectData> dataList = new List<EffectData>();
+        foreach (EffectData effect in myEffectList.Select)
+        {
+            if(fxName == effect.prefabName)
+                dataList.Add(effect);
+        }
+
+        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, transform, mousePos, targetPos, targetRot);
     }
     #endregion
 
@@ -509,6 +619,114 @@ public class PlayerController : CreatureController
     }
     #endregion
 
+    [Header("X-Ray Settings")]
+    [SerializeField] private int playerWeaponStencilID = 100;
+    [SerializeField] private bool disablePlayerWeaponXRay = true;
+    #region Shader
+    void InitializeXRay()
+    {
+        if (disablePlayerWeaponXRay)
+            SetupPlayerWeaponXRay();
+    }
+
+    void SetupPlayerWeaponXRay()
+    {
+        // Player 본체
+        SetXRayGroup(gameObject, playerWeaponStencilID);
+
+        // 현재 장착된 무기
+        if (_eqipWeapon != null)
+        {
+            SetXRayGroup(_eqipWeapon, playerWeaponStencilID);
+        }
+    }
+    public void SetxRayFromPlayer(GameObject player)
+    {
+            SetXRayGroup(player, playerWeaponStencilID);
+    }
+    void SetXRayGroup(GameObject root, int stencilID)
+    {
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+
+        foreach (Renderer renderer in renderers)
+        {
+            foreach (Material mat in renderer.materials)
+            {
+                if (mat.shader.name.Contains("Toon_DoubleShadeWithFeather"))
+                {
+                    if (mat.HasProperty("_StencilRef"))
+                    {
+                        mat.SetInt("_StencilRef", stencilID);
+                        mat.SetInt("_StencilComp", (int)UnityEngine.Rendering.CompareFunction.Always);
+                        mat.SetInt("_StencilOp", (int)UnityEngine.Rendering.StencilOp.Replace);
+                    }
+                }
+            }
+        }
+    }
+
+    // 무기 교체 시 호출 (기존 EquipWeapon 메서드에 추가)
+    void OnWeaponEquipped(GameObject newWeapon)
+    {
+        if (newWeapon != null && disablePlayerWeaponXRay)
+        {
+            SetXRayGroup(newWeapon, playerWeaponStencilID);
+        }
+    }
+
+    // Player와 Weapon의 X-Ray 효과 끄기/켜기
+    public void SetPlayerWeaponXRayEnabled(bool enabled)
+    {
+        float alpha = enabled ? 0.5f : 0f;
+
+        SetOccludedColorAlpha(gameObject, alpha);
+
+        if (_eqipWeapon != null)
+        {
+            SetOccludedColorAlpha(_eqipWeapon, alpha);
+        }
+    }
+
+    void SetOccludedColorAlpha(GameObject root, float alpha)
+    {
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+
+        foreach (Renderer renderer in renderers)
+        {
+            foreach (Material mat in renderer.materials)
+            {
+                if (mat.HasProperty("_OccludedColor"))
+                {
+                    Color occludedColor = mat.GetColor("_OccludedColor");
+                    occludedColor.a = alpha;
+                    mat.SetColor("_OccludedColor", occludedColor);
+                }
+            }
+        }
+    }
+
+    void SetupRenderingLayer()
+    {
+        uint playerLayer = 1u << 1; // Layer 1
+
+        SetRenderingLayerMask(gameObject, playerLayer);
+
+        if (_eqipWeapon != null)
+        {
+            SetRenderingLayerMask(_eqipWeapon, playerLayer);
+        }
+    }
+
+    void SetRenderingLayerMask(GameObject root, uint layerMask)
+    {
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.renderingLayerMask = layerMask;
+        }
+    }
+    #endregion
     public void SyncPosFromServer(S_Move movePacket)
     {
         _agent.isStopped = false;

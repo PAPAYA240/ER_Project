@@ -8,9 +8,9 @@ namespace Server.Game
 {
     struct Funnel
     {
-        readonly Deque<Node> _funnel;
-        Node _apex;
-        Deque<Node> _output;
+        //readonly Deque<Node> _funnel;
+        //Node _apex;
+        //Deque<Node> _output;
 
         public void Clear()
         {

@@ -144,10 +144,6 @@ public class PlayerSkillController : MonoBehaviour
     public void OnSkillConfirm(S_SkillConfirm packet)
     {
         CanMoveDuringCast = packet.CanMove;
-        if (packet.CanLookatMouse)
-            _player.LookAtMouse();
-
-        _player.PlaySkillEffect((KeyCode)packet.SkillKey);
     }
 
     public void OnSkillCost(S_SkillCost packet)

@@ -65,7 +65,7 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
 
             _finalEnd = targetPos;
 
-            _elapsed += TimeUtil.DeltaTime;
+            _elapsed += TimeUtil.Instance.DeltaTime;
             if (_elapsed > _duration)
             {
                 ctx.RequestFinish();

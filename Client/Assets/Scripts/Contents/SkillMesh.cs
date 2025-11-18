@@ -16,12 +16,8 @@ public class SkillMesh : MonoBehaviour
 
     // +추가
     public float ChargeRatio { get; set; } = 1;
-    private LineRenderer lr = null;
 
     private Vector3 _mousePos = new Vector3();
-    private Vector3 _forward;
-    private Vector3 _right;
-    private float _offsetRadius = 0f;
 
     public void Init(SkillHitbox hitbox, Transform playerTransform, int team = 0, float chargeRatio = 1, Vector3 mousePos = new Vector3()) // 투사체일 경우엔 투사체의 transform을 넣어줘야함
     {

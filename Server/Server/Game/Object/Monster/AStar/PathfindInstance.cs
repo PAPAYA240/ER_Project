@@ -55,7 +55,7 @@ namespace Server.Game
     {
         public Vector3 Left;
         public Vector3 Right;
-        public bool IsGoalGate;
+        //public bool IsGoalGate;
     }
 
     [Flags]
@@ -88,8 +88,8 @@ namespace Server.Game
 
         public void Initialize()
         {
-            string basePath = ConfigManager.Config.dataPaths["monster"];
-            string navMeshFilePath = Path.Combine(basePath, "MonsterData/navmesh_data.json");
+            string basePath = ConfigManager.Config.dataPaths["player"];
+            string navMeshFilePath = Path.Combine(basePath, "navmesh_data.json");
             string navMeshJsonText = File.ReadAllText(navMeshFilePath);
 
             _navMeshData = NavMeshExportData.LoadFromJson(navMeshFilePath);

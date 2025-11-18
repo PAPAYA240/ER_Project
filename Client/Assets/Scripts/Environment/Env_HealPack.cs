@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 
 public class Env_HealPack : EnvController
-
 {
     #region Constants
+    // TODO - 나중에 데이터화 해줍시다.
+    private const float HEAL_AMOUNT = 650f;
+
 
     private const float MAX_DIST = 0.3f;
     private const float ROTATION_SPEED = 50f;
@@ -19,7 +21,7 @@ public class Env_HealPack : EnvController
 
     #region Serialized Fields
 
-    [SerializeField] private float _respawnTime = 75f;
+    [SerializeField] private float _respawnTime = 70f;
 
     #endregion
 
@@ -43,6 +45,8 @@ public class Env_HealPack : EnvController
     private readonly Color _activeColor = new Color(60f / 255f, 90f / 255f, 52f / 255f, 1f);
     private readonly Color _inactiveColor = new Color(126f / 255f, 114f / 255f, 114f / 255f, 1f);
 
+    // UI
+    private UI_HealPack _uiHealPack;
     #endregion
 
     #region Unity Lifecycle
@@ -55,6 +59,15 @@ public class Env_HealPack : EnvController
         InitializeMaterials();
         InitializeVFX();
 
+        GameObject go = Managers.Resource.Instantiate("UI/SubItem/HealPack", gameObject.transform);
+        if (go != null)
+        {
+            _uiHealPack = go.GetComponentInChildren<UI_HealPack>();
+            go.transform.localPosition = new Vector3(0, 3.0f, 0);
+            go.transform.localRotation = Quaternion.identity;
+            go.transform.localScale = new Vector3(0.005f, 0.005f, 0.005f);
+        }
+
         _isActive = true;
         UpdateVisuals(true);
     }
@@ -62,6 +75,41 @@ public class Env_HealPack : EnvController
     private void Update()
     {
         UpdateRespawnTimer();
+    }
+    private void LateUpdate()
+    {
+        if (_uiHealPack == null || !_uiHealPack.gameObject.activeSelf)
+            return;
+
+        // 1. 월드 위치 보정 (힐 팩의 피벗에서 머리 위로 2.0f 정도 올림)
+        Vector3 worldPosition = this.transform.position + new Vector3(0, 2.0f, 0);
+        Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
+
+        // 2. RectTransform을 정확히 가져옴
+        RectTransform uiRect = _uiHealPack.gameObject.GetComponent<RectTransform>();
+        RectTransform parentCanvasRect = uiRect.parent.GetComponent<RectTransform>();
+
+        Vector2 localPoint;
+
+        // 3. Canvas Render Mode에 따라 eventCamera 결정 (오류 방지)
+        Canvas rootCanvas = parentCanvasRect.root.GetComponent<Canvas>();
+        Camera eventCamera = null;
+        if (rootCanvas != null && rootCanvas.renderMode == RenderMode.ScreenSpaceCamera)
+        {
+            eventCamera = Camera.main;
+        }
+
+        bool converted = RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            parentCanvasRect,
+            screenPosition,
+            eventCamera, 
+            out localPoint
+        );
+
+        if (converted)
+        {
+            uiRect.localPosition = localPoint;
+        }
     }
     #endregion
 
@@ -112,7 +160,12 @@ public class Env_HealPack : EnvController
             AnimateFloating();
         }
         else
+        { 
             _currentTimer -= Time.deltaTime;
+        }
+
+        _uiHealPack.SetSecText((int)_currentTimer);
+        _uiHealPack.SetProgressAmount(_currentTimer);
     }
 
     private void Respawn()
@@ -126,10 +179,18 @@ public class Env_HealPack : EnvController
     #region Interaction
     protected override void TryHandleInteraction()
     {
+        if (_triggerCreature == null)
+            return;
+
+        PlayerController player = _triggerCreature.GetComponent<PlayerController>();
+        if (player == null)
+            return;
+
         base.TryHandleInteraction();
 
         _isActive = false;
         _currentTimer = _respawnTime;
+
         UpdateVisuals(false);
     }
 

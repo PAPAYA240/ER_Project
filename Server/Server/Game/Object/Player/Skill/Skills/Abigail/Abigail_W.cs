@@ -21,7 +21,7 @@ public sealed class Abigail_W : Skill_Abigail
         if (CanStopSkill)
             return;
 
-        _elapsed += TimeUtil.DeltaTime;
+        _elapsed += TimeUtil.Instance.DeltaTime;
 
         if(_elapsed >= StopSkillTime)
         {

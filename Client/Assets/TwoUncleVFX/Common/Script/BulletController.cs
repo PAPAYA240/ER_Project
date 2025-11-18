@@ -16,7 +16,7 @@ namespace VFXTools
 		public float delayTime = 0f;
 		private bool isPlay = false;
 		public float time = 1f;
-		private float lastTime = 0f;
+		//private float lastTime = 0f;
 		private Vector3 startPos;
 		public TowardType towardType = TowardType.Forward;
 		private Vector3 directionToCenter;
@@ -24,7 +24,8 @@ namespace VFXTools
 		private VisualEffect[] vfxs;
 		private TrailRenderer[] trails;
 		public float maxDistance = 100f;
-		float curDistance = 0f;
+		//float curDistance = 0f;
+
 		private void Start()
 		{
 			vfxs = GetComponentsInChildren<VisualEffect>(false);

@@ -24,7 +24,7 @@ public class UI_PlayerBoard : UI_Base
     public enum GameObjects
     {
         Weapon,
-        Armor,
+        Body,
         Head,
         Arm,
         Leg
@@ -37,6 +37,8 @@ public class UI_PlayerBoard : UI_Base
     // 킬뎃
     // 아이템
     // 배경 색
+
+    private PlayerController _targetPc;
 
     public override void Init()
     {
@@ -118,6 +120,35 @@ public class UI_PlayerBoard : UI_Base
 
     public void SetEquipItem(GameObjects go, int itemId)
     {
+        if (itemId == 0)
+            return;
         GetObject((int)go).GetComponent<UI_EquipItemSlot>().SetItem(DataManager.ItemDict[itemId] as EquipItemInfo);
+    }
+
+    public void SetTarget(PlayerController pc)
+    {
+        _targetPc = pc;
+    }
+
+    public void UpdatePlayerBoard()
+    {
+        if (_targetPc == null)
+        {
+            Debug.Log("_targetPc == null");
+            return;
+        }
+
+        SetCharImage(_targetPc.ObjInfo.Player.CharType.ToString());
+        SetBgColor(_targetPc.ObjInfo.Player.Team);
+        SetKDA(_targetPc.KillAmount, _targetPc.DeathAmount, _targetPc.AsistAmount);
+
+        
+        SetEquipItem(GameObjects.Weapon, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Weapon].Id);
+        SetEquipItem(GameObjects.Head, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Head].Id);
+        SetEquipItem(GameObjects.Arm, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Arm].Id);
+        SetEquipItem(GameObjects.Leg, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Leg].Id);
+        SetEquipItem(GameObjects.Body, _targetPc.EquipItemSlot[Google.Protobuf.Protocol.EquipItemType.Body].Id);
+
+        SetLevelText(_targetPc.ObjInfo.StatInfo.Level);
     }
 }

@@ -12,7 +12,6 @@ public sealed class Abigail_D : Skill_Abigail
     private Vector3 _startPos, _endPos, nextPos, _dir;
     private float _dashRange;
     private float _duration = 0.1f;
-    private float _speed = 11f;
 
     public Abigail_D()
     {
@@ -52,7 +51,7 @@ public sealed class Abigail_D : Skill_Abigail
         if (CanStopSkill)
             return;
 
-        _elapsed += TimeUtil.DeltaTime;
+        _elapsed += TimeUtil.Instance.DeltaTime;
 
         if (_elapsed >= StopSkillTime)
         {
@@ -72,7 +71,7 @@ public sealed class Abigail_D : Skill_Abigail
 
             if (_requestId == _commitId)
             {
-                _elapsed += TimeUtil.DeltaTime;
+                _elapsed += TimeUtil.Instance.DeltaTime;
 
                 if (_elapsed < _duration)
                 {

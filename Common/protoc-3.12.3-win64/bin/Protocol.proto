@@ -105,6 +105,9 @@ enum MsgId {
   S_COMBAT_MODE = 82;
   C_CHAT = 83;
   S_CHAT = 84;
+
+  S_UNSTOPPABLE = 85;
+  S_ANIM_SPEED = 86;
 }
 
 enum CombatState{
@@ -375,6 +378,8 @@ message C_SkillCancel{
 message C_SkillExecute{
    int32 objectId = 1;
    int32  skillKey = 2;
+   float mousePosX = 3;
+   float mousePosZ = 4;
 }
 
 message S_Spawn {
@@ -431,7 +436,14 @@ message C_Fx{
 
 message S_Fx{
 	int32 objectId = 1;
-	string fxName = 2;
+	string fxName = 2; 
+	bool canLookatMouse = 3;
+	int32 skillKey = 4;
+	float mousePosX = 5; 
+	float mousePosZ = 6;
+	PositionInfo targetPosition = 7; // type = Target 시, 타게팅 위치
+	RotationInfo targetRotation = 8; // type = Target 시, 타게팅 회전
+	string type = 9; // Caster, HitTarget, Select 중 하나, 기본은 Caster
 }
 
 message C_Anim{
@@ -575,7 +587,7 @@ message S_ChangeKDA{
 
 message S_SyncTimer{
 	int32 phase = 1;
-	int64 currentTimestamp = 2;
+	int64 currentTick = 2;
 	int64 phaseEndTime = 3;
 }
 
@@ -725,6 +737,8 @@ message PickScenePlayerInfo{
 message AnimInfo{
 	string name = 1;
 	float ratio = 2;
+	float speed = 3;
+	bool isChangeSpeed = 4;
 }
 
 message WeaponMasteryInfo{
@@ -840,7 +854,7 @@ message S_SkillConfirm {
   bool canUse = 2;
   int32 skillKey = 3;			
   bool canMove = 4;
-  bool canLookatMouse = 5;
+
   //CostInfo costInfo = 5;
   //int32 targetId = 6;
 }
@@ -984,4 +998,15 @@ message C_Chat {
 message S_Chat {
 	int32 objectId = 1;
 	string message = 2;
+}
+
+message S_Unstoppable{
+	int32 objectId = 1;
+	bool unstoppable = 2;
+}
+
+message S_AnimSpeed {
+	int32 objectId = 1;
+	string name = 2;
+	float speed = 3;
 }

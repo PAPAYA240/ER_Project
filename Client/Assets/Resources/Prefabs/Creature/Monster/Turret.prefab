@@ -481,9 +481,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8aaf8e885585ec34ca0cd6eb6ac2e534, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _monsterType: 5
-  _rotationSpeed: 10
-  isSpawned: 0
 --- !u!114 &2235846103788714481
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -888,10 +885,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1985184048165167}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.410701, z: 0}
+  m_LocalRotation: {x: -0.0000061288424, y: 0.7071068, z: 0.7071068, w: -0.0000061372752}
+  m_LocalPosition: {x: -0, y: 1.569, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4942804072780688}
-  m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0.001, z: 0}

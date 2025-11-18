@@ -9,7 +9,7 @@ namespace Server.Game
     public class StunState : IMonsterState
     {
         private double _startTime;  
-        private Vector3 _startPos;   
+        //private Vector3 _startPos;   
     
         private MonsterStunDesc _desc;
         public class MonsterStunDesc

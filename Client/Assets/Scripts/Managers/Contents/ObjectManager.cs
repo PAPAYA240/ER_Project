@@ -67,6 +67,7 @@ public class ObjectManager
             MyPlayer.Hp = info.StatInfo.MaxHp;
             MyPlayer.Stamina = info.StatInfo.MaxStamina;
             MyPlayer.ManualInit();
+            MyPlayer.UI.PlayerHUD.AddPlayerBoardToBattleBoard(MyPlayer);
         }
         else
         {
@@ -89,6 +90,8 @@ public class ObjectManager
             else
                 Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.TeamPlayer, pc);
 
+            Managers.Object.MyPlayer.SetxRayFromPlayer(go);
+            MyPlayer.UI.PlayerHUD.AddPlayerBoardToBattleBoard(pc);
         }
     }
     private void AddMonster(ObjectInfo info)
@@ -125,8 +128,6 @@ public class ObjectManager
             pc.transform.SetParent(parent);
 
             _objects.Add(info.ObjectId, go);
-
-            go.transform.SetParent(pc.transform);
             pc.SyncPos();
         }
     }

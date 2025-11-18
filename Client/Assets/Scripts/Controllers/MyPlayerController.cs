@@ -3,7 +3,6 @@ using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using System.Collections.Generic;
 using UnityEngine;
-using static Data.SkillEffectList;
 
 public class MyPlayerController : PlayerController
 {
@@ -34,6 +33,7 @@ public class MyPlayerController : PlayerController
             return baseSpeed * multiplier;
         }
     }
+
     public bool CanStopSkill { get; set; } = false;
 
     float _lastAttackTime;
@@ -41,6 +41,10 @@ public class MyPlayerController : PlayerController
 
     float _lastOperateTime;
     readonly float _operateLockTime = 0.1f;
+
+    public int CurPhase { get; set; } = 999;
+
+ 
 
     private void Awake()
     {
@@ -76,6 +80,7 @@ public class MyPlayerController : PlayerController
             string fogLayerName = $"FogTeam{ObjInfo.Player.Team}";
             fogCamGo.GetComponent<Camera>().cullingMask |= (1 << LayerMask.NameToLayer(fogLayerName));
         }
+
     }
 
     private void Update()
@@ -211,13 +216,14 @@ public class MyPlayerController : PlayerController
         if (UI.PlayerInterface == null)
             return;
         UI.PlayerInterface.Equip(DataManager.ItemDict[itemId] as EquipItemInfo);
-    }  
+    }
     #endregion
 
 
-    #region Inventory, EquipItem
 
-    public void ChangeInventory(S_ChangeInventory packet)
+#region Inventory, EquipItem
+
+public void ChangeInventory(S_ChangeInventory packet)
     {
         foreach (var change in packet.Changes)
         {
@@ -273,24 +279,7 @@ public class MyPlayerController : PlayerController
         //_isWarp = isWarp;
     }
 
-    public void LookAtMouse()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100f))
-        {
-            Vector3 targetPoint = hit.point;
-            targetPoint.y = transform.position.y;
-            Vector3 direction = targetPoint - transform.position;
-
-            if (direction != Vector3.zero)
-            {
-                Quaternion newRotation = Quaternion.LookRotation(direction);
-                RotInfo = newRotation;
-                SyncPos(true);
-            }
-        }
-    }
+    
     #endregion
 
     #region Packet
