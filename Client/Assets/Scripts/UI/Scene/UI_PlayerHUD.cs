@@ -229,4 +229,35 @@ public class UI_PlayerHUD : UI_Scene
             ui_GameResult.AddAlly(pc);
         }
     }
+
+    public void SetMinimapHealPackImg(int id, bool isActivate)
+    {
+        switch (id)
+        {
+            case 0:
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().ChangeHealPackImage(UI_Minimap.Images.HealPackLL, isActivate);
+                break;
+            case 1:
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().ChangeHealPackImage(UI_Minimap.Images.HealPackLR, isActivate);
+                break;
+            case 2:
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().ChangeHealPackImage(UI_Minimap.Images.HealPackRL, isActivate);
+                break;
+            case 3:
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().ChangeHealPackImage(UI_Minimap.Images.HealPackRR, isActivate);
+                break;
+            case 4:
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().ChangeHealPackImage(UI_Minimap.Images.HealPackCL, isActivate);
+                break;
+            case 5:
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().ChangeHealPackImage(UI_Minimap.Images.HealPackCR, isActivate);
+                break;
+            case 6:
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().ChangeHealPackImage(UI_Minimap.Images.HealPackRC, isActivate);
+                break;
+            case 7:
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().ChangeHealPackImage(UI_Minimap.Images.HealPackLC, isActivate);
+                break;
+        }
+    }
 }
