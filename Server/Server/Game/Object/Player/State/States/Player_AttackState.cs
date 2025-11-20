@@ -19,7 +19,8 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     protected const string AnimAttackB = "ATTACK_2";
 
     // ===== 상태 필드 =====
-    protected int _targetId;
+    //public int TargetId => TargetId;
+    public int _targetId;
     protected bool _chaseAllowed;
     protected int? _pendingTargetId;          // 스윙 중 들어온 타겟 변경은 스윙 종료 후 반영
 
@@ -82,8 +83,6 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         var now = DateTime.UtcNow;
         _nextAttackReadyUtc = now;              // 즉시 공격 가능
         _comboResetDeadlineUtc = default;
-
-        //StartSwing(player, now);
     }
 
     public void Execute(Player player)
@@ -140,7 +139,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
                         new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ),
                         new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ));
                     if (distNow <= player.AttackRange /* + player.HitTolerance 가능 */)
-                        //ApplyHit(player, target);
+                        ApplyHit(player, target);
 
                     _damageApplied = true;
                 }

@@ -11,7 +11,6 @@ using static Server.Game.GameObject;
 public sealed class Rozzi_W : SkillHandlerBase
 {
     public override bool CanMoveDuringCast => true;
-    public override float MoveSpeedMultiplier => 1.2f;
 
     public Rozzi_W()
     {

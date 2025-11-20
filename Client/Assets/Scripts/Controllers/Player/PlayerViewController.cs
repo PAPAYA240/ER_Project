@@ -18,13 +18,6 @@ public class PlayerViewController : MonoBehaviour
     private PlayerSkillController _skill;
 
     private bool _syncing;
-    //private bool _sentArriveSnapshot;
-
-    //[SerializeField] private float _minMoveDelta = 0.01f; // 1cm
-    //[SerializeField] private float _minAngleDelta = 1.0f; // 1도
-
-    private Vector3 _lastSentPos;
-    private Quaternion _lastSentRot;
 
     private int _targetId;
     private bool _isRotating = false;
@@ -58,51 +51,21 @@ public class PlayerViewController : MonoBehaviour
             if (_isRotating == false)
             {
                 var targetView = Managers.Object.FindById(TargetId);
-
                 if (targetView != null)
                 {
-                    Vector3 pos = _target.transform.position;
+                    Vector3 pos = targetView.transform.position;
                     UpdateTarget(pos);
-                    //Debug.Log(pos);
                 }
             }
         }
 
-        //Vector3 pos = _player.transform.position;
-        //Quaternion rot = _player.transform.rotation;
-
-        //if ((pos - _lastSentPos).sqrMagnitude >= _minMoveDelta * _minMoveDelta ||
-        //    Quaternion.Angle(rot, _lastSentRot) >= _minAngleDelta)
-        //{
-        //    _lastSentPos = pos;
-        //    _lastSentRot = rot;
-        //    _sentArriveSnapshot = false;
-
-        //    _player.UpdateTransform();
-        //}
-
         _player.UpdateTransform();
-
-        //if (_player.State == CreatureState.Moving || _player.State == CreatureState.Idle)
-        //{
-        //    _player.UpdateTransform();
-        //}
     }
 
     public void OnMove(S_Move packet)
     {
         if (_player.State == CreatureState.Skill)
             return;
-
-        //Vector3 serverPos = new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ);
-        //if (Vector3.SqrMagnitude(serverPos - _player.transform.position) > 1.0f) // 1m 이상 벌어지면 보정
-        //{
-        //    if (NavMesh.SamplePosition(serverPos, out NavMeshHit navHit, 2.0f, NavMesh.AllAreas))
-        //    {
-        //        _agent.Warp(navHit.position);
-        //        _player.UpdateTransform(true);
-        //    }
-        //}
     }
 
     public void OnMoveSync(S_MoveSync packet)
@@ -186,22 +149,16 @@ public class PlayerViewController : MonoBehaviour
 
             // 즉시 한 번 갱신 후, 주기 추적 시작
             UpdateFollowDestinationOnce();
-            _coFollow = StartCoroutine(CoFollowTarget(0.01f)); // 0.2~0.3s 주기 권장
+            _coFollow = StartCoroutine(CoFollowTarget(0.01f)); // 0.2~0.3s 주기 권장         
         }
 
         // MoveSync 루프 스타트(좌표/회전 동기화는 계속 필요)
         _syncing = true;
-        _lastSentPos = _player.transform.position;
-        _lastSentRot = _player.transform.rotation;
     }
 
     // ---- 정지 입력 처리 (S/H) ----
     public void ApplyStop(StopReason reason)
     {
-        // TEMP
-        //if (_motionCo != null)
-        //    return;
-
         if (_agent == null)
             return;
 
@@ -221,8 +178,6 @@ public class PlayerViewController : MonoBehaviour
         }
 
         // 동기화 루프는 유지(서버에 현재 정지 상태 포지션 계속 보고)
-        _lastSentPos = _player.transform.position;
-        _lastSentRot = _player.transform.rotation;
         _player.UpdateTransform(true);
     }
 
@@ -253,11 +208,25 @@ public class PlayerViewController : MonoBehaviour
             return;
         }
 
-        Vector3 pos = targetView.transform.position;
-        if (NavMesh.SamplePosition(pos, out var navHit, 2.0f, NavMesh.AllAreas))
-            pos = navHit.position;
+        Vector3 myPos = transform.position;
+        Vector3 targetPos = targetView.transform.position;
+        myPos.y = targetPos.y;
 
-        _agent.SetDestination(pos);
+        // GetAttackStopPosition
+        Vector3 dir = targetPos - myPos;
+        dir.y = 0f;
+        float dist = dir.magnitude;
+        if (dist <= Mathf.Epsilon)
+            return;
+        dir /= dist;
+
+        float stop = Mathf.Max(0.05f, _player.AttackRange - /*_stopBuffer*/0.1f);
+        Vector3 finPos = targetPos - dir * stop;
+
+        if (NavMesh.SamplePosition(finPos, out var navHit, 2.0f, NavMesh.AllAreas))
+            finPos = navHit.position;
+
+        _agent.SetDestination(finPos);
     }
 
     private void StopFollowTarget()
@@ -271,7 +240,6 @@ public class PlayerViewController : MonoBehaviour
         _agent.ResetPath();
     }
     #endregion
-
 
     #region Helper
     public void UpdateTarget(Vector3 targetPos)

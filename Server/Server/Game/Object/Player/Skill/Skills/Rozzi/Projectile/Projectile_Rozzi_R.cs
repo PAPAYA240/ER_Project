@@ -71,10 +71,7 @@ public class Projectile_Rozzi_R : Projectile
             return;
 
         if (target is Creature creature)
-        {
             AttachToTarget(creature);
-            Console.WriteLine("@ Rozzi R Hit!!! Attach bomb to target");
-        }
     }
 
     public override void Update()
@@ -88,7 +85,6 @@ public class Projectile_Rozzi_R : Projectile
             case BombState.Flying:
                 if (Deactivation())
                 {
-                    Console.WriteLine("@ Leave Game : Projectile_Rozzi_R (timeout while Flying)");
                     Room.LeaveGame(Id);
                     return;
                 }
@@ -140,7 +136,6 @@ public class Projectile_Rozzi_R : Projectile
 
         // 부착 시 이속 디버프 (3초)
         Room.Push(Room.AddStatusEffect, Owner as Player, _target, KeyCode.R, "Attach");
-        Console.WriteLine("@ AttachToTarget : Slow!");
 
         // TODO : 시야 공유 시스템이 있으면 여기서 연동
         // e.g. target.Room.Vision.Share(Owner, target);
@@ -163,7 +158,6 @@ public class Projectile_Rozzi_R : Projectile
 
         // 더 이상 이동하지 않고 해당 위치에 고정
         // (FX 연출은 클라에서 패킷 보고 처리)
-        Console.WriteLine("@ Rozzi R stick on ground");
     }
 
     protected override bool Deactivation()
@@ -183,17 +177,12 @@ public class Projectile_Rozzi_R : Projectile
         if (_target == null)
             return;
 
-        Console.WriteLine("@ RegisterOwnerHit");
-
         int add = isSkillHit ? 2 : 1;
         _hitStack += add;
 
         // 5스택 이상이면 조기 폭발
         if (_hitStack >= MaxStack)
-        {
             Explode(true);
-            Console.WriteLine("@@@ Early Explode!!!");
-        }
     }
 
     private void UpdatePositionWhileFlying()
@@ -250,7 +239,6 @@ public class Projectile_Rozzi_R : Projectile
         // TODO : 시야 공유를 했었다면 여기서 해제
 
         // 마지막으로 투사체 제거
-        Console.WriteLine($"@ Rozzi R Bomb Explode (early:{early})");
         Room.LeaveGame(Id);
     }
 
@@ -273,7 +261,6 @@ public class Projectile_Rozzi_R : Projectile
         Player player = Owner as Player;
         // (1) 대상 최대 체력 비례 고정 피해
         float extraDamage = target.Stat.MaxHp * (maxHpDamageRatio[player.GetSkillLevel(KeyCode.R)] * 0.01f);
-        Console.WriteLine($"=> Damage : {extraDamage}");
         if (extraDamage > 0)
             Room.Push(target.OnDamaged, Owner, extraDamage, true, false);
 

@@ -15,8 +15,8 @@ public class PlayerController : CreatureController
     int _maxAtkCount = 2;
 
     // SyncPos
-    //float _minDist = 3f;
-    //float _syncSpeed = 20f;
+    float _minDist = 3f;
+    float _syncSpeed = 20f;
     Vector3 _serverPos;
     float AGENT_SPEED_RATIO = 1.7f;
 
@@ -194,7 +194,6 @@ public class PlayerController : CreatureController
 
     #endregion
 
-
     public bool IsKeyInput
     {
         get { return _isKeyInput; }
@@ -304,14 +303,14 @@ public class PlayerController : CreatureController
     {
         base.UpdateController();
         
-        //if (Id != Managers.Object.MyPlayer.Id)
-        //{
-        //    float dist = Vector3.Distance(transform.position, _serverPos);
-        //    if (dist > _minDist)
-        //        _agent.Warp(_serverPos);
-        //    else
-        //        transform.position = Vector3.Lerp(transform.position, _serverPos, Time.deltaTime * _syncSpeed);
-        //}
+        if (Id != Managers.Object.MyPlayer.Id)
+        {
+            float dist = Vector3.Distance(transform.position, _serverPos);
+            if (dist > _minDist)
+                _agent.Warp(_serverPos);
+            else
+                transform.position = Vector3.Lerp(transform.position, _serverPos, Time.deltaTime * _syncSpeed);
+        }
     }
 
     protected virtual void CheckUpdatedFlag() { }

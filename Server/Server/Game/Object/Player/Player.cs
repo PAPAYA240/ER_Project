@@ -1010,7 +1010,7 @@ namespace Server.Game
             S_VisibleObjects visibleObjsPkt = new S_VisibleObjects();
             visibleObjsPkt.ObjectId = Id;
             visibleObjsPkt.VisibleObjectIds.AddRange(Ids);
-            Session.Send(visibleObjsPkt);
+            Room.Push(Session.Send, visibleObjsPkt);
         }
 
         public void SendStatePacket()
@@ -1081,7 +1081,7 @@ namespace Server.Game
                 ServerCollision = serverCollision,
                 AuthoritativeEnd = authoritativeEnd,
             };
-            Room.Broadcast(pkt);
+            Room.Push(Room.Broadcast, pkt);
         }
 
         public void SendSkillEffect(
@@ -1213,7 +1213,7 @@ namespace Server.Game
 
         public void SendTargetChangePacket(S_TargetChange packet)
         {
-            Session.Send(packet);
+            Room.Push(Session.Send, packet);
         }
 
         public void SendMoveSyncPacket(PositionInfo targetPos)
@@ -1223,7 +1223,6 @@ namespace Server.Game
                 ObjectId = Id,
                 TargetPos = targetPos,
             };
-            //Room.Push(Room.Broadcast, packet);
             Room.Push(Session.Send, packet);
         }
 
@@ -1273,17 +1272,6 @@ namespace Server.Game
             unstoppablePkt.Unstoppable = IsUnstoppable;
             Room.Push(Room.Broadcast, unstoppablePkt);
         }
-
-        //public void SendMoveSpeedPacket(float moveSpeed)
-        //{
-        //    S_MoveSpeed pkt = new S_MoveSpeed
-        //    {
-        //        ObjectId = Id,
-        //        MoveSpeed = moveSpeed,
-        //    };
-        //    Room.Push(Session.Send, pkt);
-        //}
-
         #endregion
 
         #region StatusEffect(버프, 디버프), Barrier(방어막) 관련
