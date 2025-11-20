@@ -17,7 +17,8 @@ public class UI_PlayerHUD : UI_Scene
         Minimap,
         KDA,
         KillNoti,
-        BattleBoard
+        BattleBoard,
+        GameResult
     }
 
 
@@ -41,6 +42,7 @@ public class UI_PlayerHUD : UI_Scene
 
         GetObject((int)GameObjects.KillNoti).SetActive(false);
         GetObject((int)GameObjects.BattleBoard).SetActive(false);
+        GetObject((int)GameObjects.GameResult).SetActive(false);
     }
 
     private void Start()
@@ -59,6 +61,12 @@ public class UI_PlayerHUD : UI_Scene
         if (Input.GetKeyUp(KeyCode.Tab))
         {
             GetObject((int)GameObjects.BattleBoard).SetActive(false);
+        }
+
+        //TODO 게임 끝났을 때 호출되야됨.
+        if(Input.GetKeyDown(KeyCode.M))
+        {
+            SetGameResult(true);
         }
     }
 
@@ -188,15 +196,37 @@ public class UI_PlayerHUD : UI_Scene
 
     public void AddPlayerBoardToBattleBoard(PlayerController pc)
     {
-        //GetObject((int)GameObjects.BattleBoard).SetActive(true);
         GetObject((int)GameObjects.BattleBoard).GetComponent<UI_BattleBoard>().AddPlayer(pc);
-        //GetObject((int)GameObjects.BattleBoard).SetActive(false);
     }
 
     public void UpdateBattleBoard(int id)
     {
-        //GetObject((int)GameObjects.BattleBoard).SetActive(true);
         GetObject((int)GameObjects.BattleBoard).GetComponent<UI_BattleBoard>().UpdatePlayerBoard(id);
-        //GetObject((int)GameObjects.BattleBoard).SetActive(false);
+    }
+
+    public void SetGameResult(bool isVictory)
+    {
+        GameObject gameResultGo = GetObject((int)GameObjects.GameResult);
+        if (gameResultGo == null)
+            return;
+
+        gameResultGo.SetActive(true);
+
+        UI_GameResult ui_GameResult = gameResultGo.GetComponent<UI_GameResult>();
+        if(ui_GameResult == null) 
+            return;
+
+        ui_GameResult.SetMyPlayer();
+        ui_GameResult.SetGameResultText(isVictory);
+        
+        Dictionary<int, GameObject> allies = GetObject((int)GameObjects.BattleBoard).GetComponent<UI_BattleBoard>().Allies;
+        foreach(GameObject gameObject in allies.Values)
+        {
+            PlayerController pc = gameObject.GetComponent<UI_PlayerBoard>().TargetPc;
+            if (pc.Id == Managers.Object.MyPlayer.Id)
+                continue;
+
+            ui_GameResult.AddAlly(pc);
+        }
     }
 }

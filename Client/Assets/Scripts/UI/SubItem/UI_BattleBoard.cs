@@ -10,7 +10,7 @@ public class UI_BattleBoard : UI_Base
         Enemies
     }
 
-    Dictionary<int, GameObject> _allies = new Dictionary<int, GameObject>();
+    public Dictionary<int, GameObject> Allies = new Dictionary<int, GameObject>();
     Dictionary<int, GameObject> _enemies = new Dictionary<int, GameObject>();
 
 
@@ -51,7 +51,7 @@ public class UI_BattleBoard : UI_Base
             GameObject ally = GetObject((int)GameObjects.Allies);
 
             go.transform.SetParent(ally.transform);
-            _allies.Add(pc.Id, go);
+            Allies.Add(pc.Id, go);
         }
         // Enemies
         else
@@ -64,7 +64,7 @@ public class UI_BattleBoard : UI_Base
     public void UpdatePlayerBoard(int id)
     {
 
-        if(_allies.TryGetValue(id, out GameObject ally))
+        if(Allies.TryGetValue(id, out GameObject ally))
         {
             ally.GetComponent<UI_PlayerBoard>().UpdatePlayerBoard();
         }
@@ -76,7 +76,7 @@ public class UI_BattleBoard : UI_Base
 
     public void Clear()
     {
-        _allies.Clear();
+        Allies.Clear();
         _enemies.Clear();
     }
 }

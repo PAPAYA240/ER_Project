@@ -54,11 +54,4 @@ public class UI_GameResultAlly : UI_Base
     {
         GetText((int)Texts.Asist).text = asist.ToString();
     }
-
-    public void SetKDA(int k, int d, int a)
-    {
-        SetKill(k);
-        SetDeath(d);
-        SetAsist(a);
-    }
 }
