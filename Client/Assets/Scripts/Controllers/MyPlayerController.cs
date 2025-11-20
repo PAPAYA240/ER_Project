@@ -24,15 +24,6 @@ public class MyPlayerController : PlayerController
 
     public float WeaponMasteryAS { get; set; }
     public float ItemAttackSpeed { get; set; } = 0;
-    public float AttackSpeed
-    {
-        get
-        {
-            float baseSpeed = Stat.AttackSpeed + MyWeapon.AttackSpeed;
-            float multiplier = 1 + WeaponMasteryAS + ItemAttackSpeed;
-            return baseSpeed * multiplier;
-        }
-    }
 
     public bool CanStopSkill { get; set; } = false;
 

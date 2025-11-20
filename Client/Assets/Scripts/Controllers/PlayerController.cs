@@ -42,13 +42,19 @@ public class PlayerController : CreatureController
     #region Property
     public override float Attack
     {
-        get { return base.Attack;/* + ItemStat.AttackDamage + ItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat;*/ }
+        get { return base.Attack; }
         set { base.Attack = value; }
+    }
+
+    public float AttackSpeed
+    {
+        get { return Stat.AttackSpeed; }
+        set { Stat.AttackSpeed = value; }
     }
 
     public override float Defense
     {
-        get { return base.Defense; /*+ ItemStat.Defense;*/ }
+        get { return base.Defense; }
         set { base.Defense = value; }
     }
 
@@ -107,7 +113,7 @@ public class PlayerController : CreatureController
 
     public override float Speed
     {
-        get { return Stat.MoveSpeed;/*(Stat.MoveSpeed + ItemStat.FixedSpeed) * (1 + ItemStat.PercentageSpeed) * 1.7f;*/ }
+        get { return Stat.MoveSpeed; }
         set { Stat.MoveSpeed = value; _agent.speed = value * AGENT_SPEED_RATIO; }
     }
 
@@ -343,7 +349,7 @@ public class PlayerController : CreatureController
     {
         Speed = packet.MoveSpeed;
         Attack = packet.Attack;
-        //AttackSpeed = packet.AttackSpeed;
+        AttackSpeed = packet.AttackSpeed;
         Defense = packet.Defense;
         Healing = packet.Healing;
     }

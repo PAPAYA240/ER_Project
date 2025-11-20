@@ -231,7 +231,10 @@ namespace Server.Game
         public void OnAttackPerformed()
         {
             if (Times == 0)
+            {
                 _mulBuffOffset = 0f;
+                UpdateStatusFlag();
+            }
             else
                 Times--;
         }
@@ -1305,13 +1308,14 @@ namespace Server.Game
 
                     MoveSpeed = Speed,
                     Attack = Attack,
-                    //AttackSpeed = 
+                    AttackSpeed = AttackSpeed,
                     Defense = Defense,
                     Healing = Healing,
                 };
 
                 Room.Push(Session.Send, packet);
                 _isUpdatedStatus = false;
+                Console.WriteLine($"AttackSpeed : {AttackSpeed}");
             }
         }
 
