@@ -41,13 +41,13 @@ public class SoundManager
         _audioClips.Clear();
     }
 
-    public void Play(string path, Define.Sound type = Define.Sound.Effect, float pitch = 1.0f)
+    public void Play(string path, Define.Sound type = Define.Sound.Effect, float volume = 1.0f, float pitch = 1.0f)
     {
         AudioClip audioClip = GetOrAddAudioClip(path, type);
-        Play(audioClip, type, pitch);
+        Play(audioClip, type, volume, pitch);
     }
 
-	public void Play(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, float pitch = 1.0f)
+	public void Play(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, float volume = 1.0f, float pitch = 1.0f)
 	{
         if (audioClip == null)
             return;
@@ -58,6 +58,7 @@ public class SoundManager
 			if (audioSource.isPlaying)
 				audioSource.Stop();
 
+			audioSource.volume = volume;
 			audioSource.pitch = pitch;
 			audioSource.clip = audioClip;
 			audioSource.Play();
@@ -65,15 +66,16 @@ public class SoundManager
 		else
 		{
 			AudioSource audioSource = _audioSources[(int)Define.Sound.Effect];
-			audioSource.pitch = pitch;
+            audioSource.volume = volume;
+            audioSource.pitch = pitch;
 			audioSource.PlayOneShot(audioClip);
 		}
 	}
 
 	AudioClip GetOrAddAudioClip(string path, Define.Sound type = Define.Sound.Effect)
     {
-		if (path.Contains("Sounds/") == false)
-			path = $"Sounds/{path}";
+		//if (path.Contains("Sounds/") == false)
+		//	path = $"Sounds/{path}";
 
 		AudioClip audioClip = null;
 
