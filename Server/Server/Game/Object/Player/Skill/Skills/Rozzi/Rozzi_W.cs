@@ -8,7 +8,7 @@ using System.Text;
 using static Server.Data.DataUtils;
 using static Server.Game.GameObject;
 
-public sealed class Rozzi_W : SkillHandlerBase
+public sealed class Rozzi_W : RozziSkillHandler
 {
     public override bool CanMoveDuringCast => true;
 
@@ -25,11 +25,6 @@ public sealed class Rozzi_W : SkillHandlerBase
 
         SendSkillConfirmPacket(p);
 
-        //"type": "Buff",
-        //"stat": "speed",
-        //"value": 120,
-        //"duration": 0.4,
-        //"subject": "Self"
         p.Room.AddStatusEffect(p, p, _keyCode, null); // 스킬 사용시 이속 버프
     }
 
@@ -45,28 +40,7 @@ public sealed class Rozzi_W : SkillHandlerBase
 
     public override void OnExit(Player p, SkillContext ctx)
     {
-        base.OnExit(p, ctx);
+        AddAttackToken(p);
     }
-
-    //private void CommitMotionOnce(Player p, Vector3 from, Vector3 end)
-    //{
-        //_finalEnd = end;
-
-        //float dist = Vector3.Distance(from, end);
-        //float speed = 4.0f;
-        //float duration = MathF.Max(0.05f, dist / speed);
-
-        //p.SendSkillMotion(
-        //     type: SkillMotionType.Dash,
-        //     start: from,
-        //     end: _finalEnd,
-        //     duration: duration,
-        //     anim: ""/*spec.AnimName*/,
-        //     curveId: "EaseOutCubic",
-        //     serverCollision: true,
-        //     authoritativeEnd: true);
-
-        //p.Flags.IsInSkillMotion = true;
-    //}
 }
 

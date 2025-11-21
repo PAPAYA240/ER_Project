@@ -47,11 +47,6 @@ public abstract class SkillHandlerBase : ISkill
             p.CombatTime = 0f;
         }
 
-        //LastSeq = 0;
-        //Latest = default;
-        //_collisions = default;
-        //_committed = false;
-
         // 애니메이션 패킷 전송
         p.SendAnimPacket(_animName, 0.05f);
 

@@ -17,8 +17,7 @@ public static class SkillRegistry
             if (key == KeyCode.W) return new Rozzi_W();
             if (key == KeyCode.E) return new Rozzi_E();
             if (key == KeyCode.R) return new Rozzi_R();
-            //if (key == KeyCode.D) return new Rozzi_D();
-            if (key == KeyCode.D) return new Rozzi_Buff();
+            if (key == KeyCode.D) return new Rozzi_D();
             if (key == KeyCode.F) return new Skill_Blink();
         }
         else if (character == CharacterType.Yuki)

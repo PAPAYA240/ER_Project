@@ -36,6 +36,11 @@ namespace Server.Game
                 swing.RequestTargetChange(pkt.TargetId);
                 return;
             }
+            // Skill 상태이지만 끊을 수 없는 상태라면 return
+            else if(player.CurrentState is Player_SkillState skill && !skill.CanStopSkill)
+            {
+                return;
+            }
 
             player.ChangeState(Player_AttackState.CreateAttackState(player, pkt.TargetId, chaseAllowed: true));
         }

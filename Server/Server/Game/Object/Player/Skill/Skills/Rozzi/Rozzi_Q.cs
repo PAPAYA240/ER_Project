@@ -7,7 +7,7 @@ using System.Numerics;
 using System.Text;
 using static Server.Data.DataUtils;
 
-public sealed class Rozzi_Q : SkillHandlerBase
+public sealed class Rozzi_Q : RozziSkillHandler
 {
     private bool _isCollision = false;
 
@@ -62,6 +62,8 @@ public sealed class Rozzi_Q : SkillHandlerBase
                 CancelOnUseSkill = true
             });
         }
+
+        AddAttackToken(p);
     }
 }
 

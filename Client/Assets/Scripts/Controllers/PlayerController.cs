@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering;
 using static Data.SkillEffectList;
 
 
@@ -42,13 +43,19 @@ public class PlayerController : CreatureController
     #region Property
     public override float Attack
     {
-        get { return base.Attack;/* + ItemStat.AttackDamage + ItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat;*/ }
+        get { return base.Attack; }
         set { base.Attack = value; }
+    }
+
+    public float AttackSpeed
+    {
+        get { return Stat.AttackSpeed; }
+        set { Stat.AttackSpeed = value; }
     }
 
     public override float Defense
     {
-        get { return base.Defense; /*+ ItemStat.Defense;*/ }
+        get { return base.Defense; }
         set { base.Defense = value; }
     }
 
@@ -107,7 +114,7 @@ public class PlayerController : CreatureController
 
     public override float Speed
     {
-        get { return Stat.MoveSpeed;/*(Stat.MoveSpeed + ItemStat.FixedSpeed) * (1 + ItemStat.PercentageSpeed) * 1.7f;*/ }
+        get { return Stat.MoveSpeed; }
         set { Stat.MoveSpeed = value; _agent.speed = value * AGENT_SPEED_RATIO; }
     }
 
@@ -343,7 +350,7 @@ public class PlayerController : CreatureController
     {
         Speed = packet.MoveSpeed;
         Attack = packet.Attack;
-        //AttackSpeed = packet.AttackSpeed;
+        AttackSpeed = packet.AttackSpeed;
         Defense = packet.Defense;
         Healing = packet.Healing;
     }
@@ -384,6 +391,23 @@ public class PlayerController : CreatureController
 
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
+        bool isUpperBodySkill = animInfo.Name == "ROZZI_D";
+        if (isUpperBodySkill)
+        {
+            // UpperBody 레이어에만 재생
+            int upperLayer = _animator.GetLayerIndex("UpperBody");
+            if (upperLayer >= 0)
+            {
+                _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio, upperLayer);
+                _animator.CrossFadeInFixedTime("RUN", animInfo.Ratio);
+            }
+
+            // ★ Base Layer는 건드리지 않으니까
+            //    이동 중이면 Run, 서있으면 Idle 애니 그대로 유지됨
+            Debug.Log($"Upper : {animInfo.Name}, Base : RUN");
+            return;
+        }
+
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
 
         if (animInfo.IsChangeSpeed == true)

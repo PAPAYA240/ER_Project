@@ -900,6 +900,21 @@ class PacketHandler
         pc.ChangeSpeed(speedPkt.Name, speedPkt.Speed);
     }
 
+    public static void S_ProjectileRozziHandler(PacketSession session, IMessage packet)
+    {
+        S_ProjectileRozzi projectilePacket = packet as S_ProjectileRozzi;
+
+        GameObject go = Managers.Object.FindById(projectilePacket.ObjectId);
+        if (go == null)
+            return;
+
+        Projectile_Rozzi pr = go.GetComponentInChildren<Projectile_Rozzi>();
+        if (pr == null)
+            return;
+
+        pr.ChangeState(projectilePacket);
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;
