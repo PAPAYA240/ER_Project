@@ -391,23 +391,6 @@ public class PlayerController : CreatureController
 
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
-        bool isUpperBodySkill = animInfo.Name == "ROZZI_D";
-        if (isUpperBodySkill)
-        {
-            // UpperBody 레이어에만 재생
-            int upperLayer = _animator.GetLayerIndex("UpperBody");
-            if (upperLayer >= 0)
-            {
-                _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio, upperLayer);
-                _animator.CrossFadeInFixedTime("RUN", animInfo.Ratio);
-            }
-
-            // ★ Base Layer는 건드리지 않으니까
-            //    이동 중이면 Run, 서있으면 Idle 애니 그대로 유지됨
-            Debug.Log($"Upper : {animInfo.Name}, Base : RUN");
-            return;
-        }
-
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
 
         if (animInfo.IsChangeSpeed == true)
