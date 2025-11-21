@@ -7,7 +7,7 @@ using System.Numerics;
 using System.Text;
 using static Server.Data.DataUtils;
 
-public sealed class Rozzi_R : SkillHandlerBase
+public sealed class Rozzi_R : RozziSkillHandler
 {
     private float _elapsed = 0.0f;
     private float _StopSkillTime = 0.45f;
@@ -46,6 +46,11 @@ public sealed class Rozzi_R : SkillHandlerBase
             CanStopSkill = true;
             p.SendCanStopSkillPacket(CanStopSkill);
         }
+    }
+
+    public override void OnExit(Player p, SkillContext ctx)
+    {
+        AddAttackToken(p);
     }
 }
 

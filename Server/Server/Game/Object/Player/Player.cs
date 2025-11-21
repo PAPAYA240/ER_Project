@@ -228,15 +228,19 @@ namespace Server.Game
             Times = times;
         }
 
-        public void OnAttackPerformed()
+        public bool OnAttackPerformed()
         {
             if (Times == 0)
             {
                 _mulBuffOffset = 0f;
                 UpdateStatusFlag();
+                return false;
             }
             else
+            {
                 Times--;
+                return true;
+            }
         }
         #endregion
 
