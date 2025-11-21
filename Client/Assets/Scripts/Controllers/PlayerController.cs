@@ -480,7 +480,17 @@ public class PlayerController : CreatureController
     #region NameTagAndHp
     protected void InitNameTag()
     {
-        GameObject go = Managers.Resource.Instantiate("UI/SubItem/PlayerNameTagCanvas", gameObject.transform);
+        GameObject go = null;
+
+        if(ObjInfo.Player.CharType == CharacterType.Yuki)
+        {
+            go = Managers.Resource.Instantiate("UI/SubItem/YukiNameTagCanvas", gameObject.transform);
+        }
+        else
+        {
+            go = Managers.Resource.Instantiate("UI/SubItem/PlayerNameTagCanvas", gameObject.transform);
+        }
+
         if (null == go)
         {
             Debug.Log("go is null : InitNameTag()");

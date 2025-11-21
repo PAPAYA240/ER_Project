@@ -214,6 +214,8 @@ public class Env_HealPack : EnvController
         {
             _outlineMaterial.SetColor(SHADER_OUTLINE_COLOR, outlineColor);
         }
+
+        Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapHealPackImg(int.Parse(name[name.Length - 1].ToString()), isActive);
     }
 
     #endregion
