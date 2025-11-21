@@ -40,6 +40,8 @@ public class UI_PlayerBoard : UI_Base
 
     private PlayerController _targetPc;
 
+    public PlayerController TargetPc { get { return _targetPc; } }
+
     public override void Init()
     {
         Bind<Image>(typeof(Images));

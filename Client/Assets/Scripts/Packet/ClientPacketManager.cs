@@ -136,10 +136,10 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SUnstoppable, MakePacket<S_Unstoppable>);
 		_handler.Add((ushort)MsgId.SUnstoppable, PacketHandler.S_UnstoppableHandler);		
 		_onRecv.Add((ushort)MsgId.SAnimSpeed, MakePacket<S_AnimSpeed>);
-		_handler.Add((ushort)MsgId.SAnimSpeed, PacketHandler.S_AnimSpeedHandler);
-        _onRecv.Add((ushort)MsgId.SRest, MakePacket<S_Rest>);
-        _handler.Add((ushort)MsgId.SRest, PacketHandler.S_RestHandler);
-    }
+		_handler.Add((ushort)MsgId.SAnimSpeed, PacketHandler.S_AnimSpeedHandler);		
+		_onRecv.Add((ushort)MsgId.SProjectileRozzi, MakePacket<S_ProjectileRozzi>);
+		_handler.Add((ushort)MsgId.SProjectileRozzi, PacketHandler.S_ProjectileRozziHandler);
+	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)
 	{

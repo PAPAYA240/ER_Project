@@ -10,23 +10,40 @@ using static Server.Data.DataUtils;
 public sealed class Rozzi_D : SkillHandlerBase
 {
     public override bool CanMoveDuringCast => true;
-    public override float MoveSpeedMultiplier => 1.2f;
+
+    private float _elapsed;
+    private float _duration = 1.0f;
 
     public Rozzi_D()
     {
         _characterType = CharacterType.Rozzi;
         _animName = "SKILL_D";
         _keyCode = KeyCode.D;
+
+        HitboxCreated = false;
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
-        base.OnEnter(p, ctx);
+        //base.OnEnter(p, ctx);
 
-        p.Room.AddStatusEffect(p, p, _keyCode, null);
+        // 전투 모드
+        {
+            p.CombatState = CombatState.Combat;
+            S_CombatMode combatModePkt = new S_CombatMode();
+            combatModePkt.ObjectId = p.Id;
+            combatModePkt.CombatMode = p.CombatState;
+            p.Room.Broadcast(combatModePkt);
+            p.CombatTime = 0f;
+        }
 
-        // 로지 공속버프용입니다 연진님
-        p.AttackSpeedBuff(0.7f, 2);
+        // 애니메이션 패킷 전송
+        p.SendAnimPacket("ROZZI_D", 0.05f);
+
+        if (HitboxCreated)
+            CreateHitbox(p, ctx);
+
+        p.Room.AddStatusEffect(p, p, _keyCode, null);   // 이속 증가
 
         SendSkillConfirmPacket(p);
     }
@@ -38,12 +55,18 @@ public sealed class Rozzi_D : SkillHandlerBase
 
     public override void OnTick(Player p, SkillContext ctx)
     {
+        _elapsed += TimeUtil.Instance.DeltaTime;
+        if (_elapsed > _duration)
+            ctx.RequestFinish();
+
         return;
     }
 
     public override void OnExit(Player p, SkillContext ctx)
     {
         base.OnExit(p, ctx);
+
+        p.AttackSpeedBuff(0.7f, 2);
     }
 }
 

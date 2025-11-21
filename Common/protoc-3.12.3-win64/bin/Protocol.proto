@@ -110,6 +110,7 @@ enum MsgId {
   S_ANIM_SPEED = 86;
 
   S_REST = 87;
+  S_PROJECTILE_ROZZI = 88;
 }
 
 enum CombatState{
@@ -332,6 +333,14 @@ enum Beacon{
 	Beacon_Left = 0;
 	Beacon_Center = 1;
 	Beacon_Right = 2;
+}
+
+enum BOMB_ROZZI{
+	NONE_BOMB = 0;
+	FLYING = 1;
+	ATTACHED_TO_TARGET = 2;
+	STUCK_ON_GROUND = 3;
+	EXPLODED = 4;
 }
 
 message C_Interact {
@@ -963,7 +972,6 @@ message S_SkillCost{
 
 message S_ChangeStatus{
 	int32 objectId = 1;
-
 	float moveSpeed = 2;
 	float attack = 3;
 	float attackSpeed = 4;
@@ -1017,4 +1025,10 @@ message S_AnimSpeed {
 	int32 objectId = 1;
 	string name = 2;
 	float speed = 3;
+}
+
+message S_ProjectileRozzi {
+	int32 objectId = 1;
+	int32 targetId = 2;
+	BOMB_ROZZI state = 3;
 }

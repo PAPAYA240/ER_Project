@@ -21,6 +21,13 @@ public class PlayerInputController : MonoBehaviour
 
     private bool isRest = false;
 
+    // 커서가 올려져 있는 현재 타겟
+    private GameObject _hoverTarget;
+
+    // 공격 입력을 얼마나 자주 서버로 보낼지 제한 (스팸 방지)
+    private float _nextAutoAttackSendTime;
+    [SerializeField] private float _attackInputInterval = 0.08f; // 0.08초마다 1번(초당 약 12번)
+
     private void Awake()
     {
         _player = GetComponentInChildren<MyPlayerController>();
@@ -33,11 +40,15 @@ public class PlayerInputController : MonoBehaviour
         _beaconMask = 1 << LayerMask.NameToLayer("Beacon");
     }
 
-    // 우클릭 유지 중 이동 의도(타겟 이동 or 땅 이동)
+    // 커서 아래에 대상 없음 → 지형 이동 패킷
+    // 커서 아래에 대상은 있지만 사거리 밖 -> 타겟 추적 이동
     public virtual C_SetMoveTarget GetSetMoveTarget()
     {
-        if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving || _player.State == CreatureState.Attack 
-            || _player.State == CreatureState.Skill || _player.State == CreatureState.Operate)
+        if (_player.State == CreatureState.Idle 
+            || _player.State == CreatureState.Moving 
+            || _player.State == CreatureState.Attack 
+            || _player.State == CreatureState.Skill 
+            || _player.State == CreatureState.Operate)
         {
             if (!Input.GetMouseButton(1))
                 return null;
@@ -57,7 +68,11 @@ public class PlayerInputController : MonoBehaviour
             }
             else
             {
-                // 타겟팅 이동
+                // 사거리 안이면 이동 패킷 보내지 않기
+                var cc = target.GetComponentInChildren<CreatureController>();
+                if (cc != null && IsInAttackRange(_player.transform.position, cc.transform.position))
+                    return null;
+
                 if (!TryGetTargetDestination(target, out Vector3 final, out int id))
                     return null;
 
@@ -82,26 +97,51 @@ public class PlayerInputController : MonoBehaviour
         }
     }
 
-    // 우클릭 "타겟 공격" (클릭 순간 1회)
+    // 타겟 + 사거리 안”
     public C_Attack GetAttackCommand()
     {
-        if (_player.State == CreatureState.Idle || _player.State == CreatureState.Moving || _player.State == CreatureState.Attack)
+        // 공격 가능한 상태만 처리
+        if (!(_player.State == CreatureState.Idle
+            || _player.State == CreatureState.Moving
+            || _player.State == CreatureState.Attack
+            || _player.State == CreatureState.Skill))
+            return null;
+
+        // 우클릭이 아예 안 눌려 있으면 상태 리셋
+        if (!Input.GetMouseButton(1))
         {
-            if (/*!Input.GetKeyDown(KeyCode.C) ||*/ !Input.GetMouseButtonDown(1))
-                return null;
-
-            int id = GetAttackableUnderCursorID();
-            if (id == 0)
-                return null;
-
-            _target = Managers.Object.FindById(id);
-            if (_target == null)
-                return null;
-
-            return new C_Attack { TargetId = id };
+            _hoverTarget = null;
+            _nextAutoAttackSendTime = 0f;
+            return null;
         }
 
-        return null;
+        // 커서 아래 공격 가능한 대상 찾기
+        GameObject target = GetAttackableUnderCursor();
+        _hoverTarget = target;
+
+        if (_hoverTarget == null)
+            return null;
+
+        var cc = _hoverTarget.GetComponent<CreatureController>();
+        if (cc == null)
+            return null;
+
+        // ===== 거리(사거리) 체크 =====
+        if (!IsInAttackRange(_player.transform.position, cc.transform.position))
+            return null;
+
+        // ===== 실제로 공격 패킷을 보낼지 결정 =====
+        bool explicitClick = Input.GetMouseButtonDown(1); // 딱 누른 순간
+        bool autoRepeat = Input.GetMouseButton(1) && Time.time >= _nextAutoAttackSendTime; // 홀드 중 자동 반복
+
+        if (!explicitClick && !autoRepeat)
+            return null;
+
+        // 다음 자동 공격 입력 시간 갱신 (스팸 방지용)
+        _nextAutoAttackSendTime = Time.time + _attackInputInterval;
+
+        // 공격 패킷 생성
+        return new C_Attack { TargetId = cc.Id };
     }
 
     public C_Operate GetOperateCommand()
@@ -403,6 +443,16 @@ public class PlayerInputController : MonoBehaviour
             return false;
 
         return true;
+    }
+
+    private bool IsInAttackRange(Vector3 myPos, Vector3 targetPos)
+    {
+        Vector2 myXZ = new Vector2(myPos.x, myPos.z);
+        Vector2 targetXZ = new Vector2(targetPos.x, targetPos.z);
+        float dist = Vector2.Distance(myXZ, targetXZ);
+
+        float effectiveRange = Mathf.Max(0.05f, _player.AttackRange - _stopBuffer);
+        return dist <= effectiveRange;
     }
     #endregion
 

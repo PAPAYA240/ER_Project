@@ -44,11 +44,7 @@ class PacketHandler
         if (go == null)
             return;
 
-        if (Managers.Object.MyPlayer.Id == mPacket.ObjectId)
-        {
-            Managers.Object.MyPlayer.OnServerUpdate(mPacket);
-        }
-        else
+        if (Managers.Object.MyPlayer.Id != mPacket.ObjectId)
         {
             BaseController bc = go.GetComponentInChildren<BaseController>();
             if (bc == null)
@@ -60,14 +56,14 @@ class PacketHandler
                 if (pc == null)
                     return;
 
-                if (pc.State == CreatureState.Moving)
-                {
-                    pc.SyncPosFromServer(mPacket);
-                }
+                pc.SyncPosFromServer(mPacket);
             }
-
-            bc.transform.position = mPacket.PosInfo.ToVector();
-            bc.transform.rotation = mPacket.RotInfo;
+            else
+            {
+                bc.transform.position = mPacket.PosInfo.ToVector();
+                bc.transform.rotation = mPacket.RotInfo;
+            }
+                
             bc.PosInfo = mPacket.PosInfo;
             bc.RotInfo = mPacket.RotInfo;
         }     
@@ -911,6 +907,20 @@ class PacketHandler
             return;
 
         pc.IsRest = restPkt.IsRest;
+    }
+    public static void S_ProjectileRozziHandler(PacketSession session, IMessage packet)
+    {
+        S_ProjectileRozzi projectilePacket = packet as S_ProjectileRozzi;
+
+        GameObject go = Managers.Object.FindById(projectilePacket.ObjectId);
+        if (go == null)
+            return;
+
+        Projectile_Rozzi pr = go.GetComponentInChildren<Projectile_Rozzi>();
+        if (pr == null)
+            return;
+
+        pr.ChangeState(projectilePacket);
     }
 
     static float GetCurrentEstimatedOneWayLatency()

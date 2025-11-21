@@ -9,7 +9,7 @@ using System.Text;
 using static Player_StunState;
 using static Server.Data.DataUtils;
 
-public sealed class Rozzi_E : SkillHandlerBase
+public sealed class Rozzi_E : RozziSkillHandler
 {
     private readonly float _followRatio = 0.4f;
     private readonly float _animDuration;
@@ -133,13 +133,13 @@ public sealed class Rozzi_E : SkillHandlerBase
 
     public override void OnExit(Player p, SkillContext ctx)
     {
-        base.OnExit(p, ctx);
-
         p.SendSkillMotion(
          type: SkillMotionType.Transform,
          start: p.Position,
          end: _finalEnd,
          authoritativeEnd: true);
+
+        AddAttackToken(p);
     }
 
     public override bool CanCast(Player p, SkillContext ctx)

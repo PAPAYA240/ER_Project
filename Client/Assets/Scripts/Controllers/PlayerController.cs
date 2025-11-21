@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering;
 using static Data.SkillEffectList;
 
 
@@ -15,8 +16,8 @@ public class PlayerController : CreatureController
     int _maxAtkCount = 2;
 
     // SyncPos
-    //float _minDist = 3f;
-    //float _syncSpeed = 20f;
+    float _minDist = 3f;
+    float _syncSpeed = 20f;
     Vector3 _serverPos;
     float AGENT_SPEED_RATIO = 1.7f;
 
@@ -42,13 +43,19 @@ public class PlayerController : CreatureController
     #region Property
     public override float Attack
     {
-        get { return base.Attack;/* + ItemStat.AttackDamage + ItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat;*/ }
+        get { return base.Attack; }
         set { base.Attack = value; }
+    }
+
+    public float AttackSpeed
+    {
+        get { return Stat.AttackSpeed; }
+        set { Stat.AttackSpeed = value; }
     }
 
     public override float Defense
     {
-        get { return base.Defense; /*+ ItemStat.Defense;*/ }
+        get { return base.Defense; }
         set { base.Defense = value; }
     }
 
@@ -107,7 +114,7 @@ public class PlayerController : CreatureController
 
     public override float Speed
     {
-        get { return Stat.MoveSpeed;/*(Stat.MoveSpeed + ItemStat.FixedSpeed) * (1 + ItemStat.PercentageSpeed) * 1.7f;*/ }
+        get { return Stat.MoveSpeed; }
         set { Stat.MoveSpeed = value; _agent.speed = value * AGENT_SPEED_RATIO; }
     }
 
@@ -193,7 +200,6 @@ public class PlayerController : CreatureController
     }
 
     #endregion
-
 
     public bool IsKeyInput
     {
@@ -311,14 +317,14 @@ public class PlayerController : CreatureController
     {
         base.UpdateController();
         
-        //if (Id != Managers.Object.MyPlayer.Id)
-        //{
-        //    float dist = Vector3.Distance(transform.position, _serverPos);
-        //    if (dist > _minDist)
-        //        _agent.Warp(_serverPos);
-        //    else
-        //        transform.position = Vector3.Lerp(transform.position, _serverPos, Time.deltaTime * _syncSpeed);
-        //}
+        if (Id != Managers.Object.MyPlayer.Id)
+        {
+            float dist = Vector3.Distance(transform.position, _serverPos);
+            if (dist > _minDist)
+                _agent.Warp(_serverPos);
+            else
+                transform.position = Vector3.Lerp(transform.position, _serverPos, Time.deltaTime * _syncSpeed);
+        }
     }
 
     protected virtual void CheckUpdatedFlag() { }
@@ -351,7 +357,7 @@ public class PlayerController : CreatureController
     {
         Speed = packet.MoveSpeed;
         Attack = packet.Attack;
-        //AttackSpeed = packet.AttackSpeed;
+        AttackSpeed = packet.AttackSpeed;
         Defense = packet.Defense;
         Healing = packet.Healing;
     }
@@ -392,6 +398,23 @@ public class PlayerController : CreatureController
 
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
+        bool isUpperBodySkill = animInfo.Name == "ROZZI_D";
+        if (isUpperBodySkill)
+        {
+            // UpperBody 레이어에만 재생
+            int upperLayer = _animator.GetLayerIndex("UpperBody");
+            if (upperLayer >= 0)
+            {
+                _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio, upperLayer);
+                _animator.CrossFadeInFixedTime("RUN", animInfo.Ratio);
+            }
+
+            // ★ Base Layer는 건드리지 않으니까
+            //    이동 중이면 Run, 서있으면 Idle 애니 그대로 유지됨
+            Debug.Log($"Upper : {animInfo.Name}, Base : RUN");
+            return;
+        }
+
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
 
         if (animInfo.IsChangeSpeed == true)
@@ -464,7 +487,17 @@ public class PlayerController : CreatureController
     #region NameTagAndHp
     protected void InitNameTag()
     {
-        GameObject go = Managers.Resource.Instantiate("UI/SubItem/PlayerNameTagCanvas", gameObject.transform);
+        GameObject go = null;
+
+        if(ObjInfo.Player.CharType == CharacterType.Yuki)
+        {
+            go = Managers.Resource.Instantiate("UI/SubItem/YukiNameTagCanvas", gameObject.transform);
+        }
+        else
+        {
+            go = Managers.Resource.Instantiate("UI/SubItem/PlayerNameTagCanvas", gameObject.transform);
+        }
+
         if (null == go)
         {
             Debug.Log("go is null : InitNameTag()");
