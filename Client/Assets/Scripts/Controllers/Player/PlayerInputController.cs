@@ -1,11 +1,8 @@
 ﻿using Data;
 using Google.Protobuf.Protocol;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem;
 
 public class PlayerInputController : MonoBehaviour
 {
@@ -208,20 +205,20 @@ public class PlayerInputController : MonoBehaviour
 
     public C_Rest GetRestCommand()
     {
-        if (isRest == false)
+        if (_player.IsRest == false && _player.State != CreatureState.Rest)
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
-                isRest = true;
-                return new C_Rest() { IsRest = true };
+                _player.IsRest = true;
+                return new C_Rest() { IsRest = _player.IsRest };
             }
         }
         else
         {
             if (Input.GetKeyDown(KeyCode.X) || Input.GetMouseButtonDown(1))
             {
-                isRest = false;
-                return new C_Rest() { IsRest = false };
+                _player.IsRest = false;
+                return new C_Rest() { IsRest = _player.IsRest };
             }
         }
 

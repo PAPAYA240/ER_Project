@@ -108,6 +108,8 @@ enum MsgId {
 
   S_UNSTOPPABLE = 85;
   S_ANIM_SPEED = 86;
+
+  S_REST = 87;
 }
 
 enum CombatState{
@@ -535,6 +537,7 @@ message S_Respawn{
 	RotationInfo rotInfo = 3;
 	float hp = 4;
 	float stamina = 5;
+	bool isRest = 6;
 }
 
 message S_PlayerState{
@@ -906,6 +909,11 @@ message C_SkillCollisionPropose {
 
 message C_Rest {
   bool isRest = 1;
+}
+
+message S_Rest {
+  int32 objectId = 1;
+  bool isRest = 2;
 }
 
 message S_MoveSync {

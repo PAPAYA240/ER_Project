@@ -57,6 +57,7 @@ public class Player_DeadState : IPlayerState
 
         S_Respawn respawnPacket = new S_Respawn();
         respawnPacket.ObjectId = player.Id;
+        respawnPacket.IsRest = false;
 
         respawnPacket.Hp = player.Hp = player.MaxHp;
         respawnPacket.Stamina = player.Stamina = player.MaxStamina;

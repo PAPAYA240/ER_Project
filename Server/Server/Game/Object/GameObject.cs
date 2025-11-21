@@ -198,6 +198,14 @@ namespace Server.Game
 
         public bool IsDead => State == CreatureState.Dead;
 
+        public bool _isHit = false;
+
+        public bool IsHit
+        {
+            get { return _isHit; }
+            set { _isHit = value; }
+        }
+
         public virtual CreatureState State
         {
             get { return PosInfo.State; }
@@ -252,6 +260,8 @@ namespace Server.Game
 
                 OnDamaged(attacker, finalDamage, isBasicAttack);
             }
+
+            IsHit = true;
         }
 
         protected virtual void OnDamaged(GameObject attacker, float damage, bool isBasicAttack = false)

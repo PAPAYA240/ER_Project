@@ -865,13 +865,6 @@ class PacketHandler
                 Managers.Object.MyPlayer.UI.PlayerInterface.ActivateCombatImg(false);
                 break;
         }
-
-        //GameObject go = Managers.Object.FindById(combatModePkt.ObjectId);
-        //if (go == null)
-        //    return;
-
-        
-        //combatModePkt.CombatMode;
     }
 
     public static void S_ChatHandler(PacketSession session, IMessage packet)
@@ -902,6 +895,22 @@ class PacketHandler
             return;
 
         pc.ChangeSpeed(speedPkt.Name, speedPkt.Speed);
+    }
+
+    public static void S_RestHandler(PacketSession session, IMessage packet)
+    {
+        S_Rest restPkt = packet as S_Rest;
+        Debug.Log("패킷 옴?");
+
+        GameObject go = Managers.Object.FindById(restPkt.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.IsRest = restPkt.IsRest;
     }
 
     static float GetCurrentEstimatedOneWayLatency()

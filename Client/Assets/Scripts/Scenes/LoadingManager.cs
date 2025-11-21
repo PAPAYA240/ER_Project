@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class LoadingManager : MonoBehaviour
 {
@@ -27,31 +28,35 @@ public class LoadingManager : MonoBehaviour
 
         // 로딩씬을 먼저 열기
         SceneManager.LoadScene("Loading");
-
-        // 다음 프레임에 로딩 프로세스 시작
-        StartCoroutine(LoadSceneProcess());
     }
 
     public IEnumerator LoadSceneProcess()
     {
+        Debug.Log("LoadSceneProcess START");
+
         yield return null;
 
         AsyncOperation op = SceneManager.LoadSceneAsync(nextScene);
         op.allowSceneActivation = false;
 
+        float minLoadTime = 1.0f;
+        float elapsed = 0f;
+
         while (!op.isDone)
         {
-            yield return null;
+            elapsed += Time.deltaTime;
 
-            float ProgressValue = Mathf.Clamp01(op.progress / 0.9f);
-            LoadingUIController.Instance?.SetProgress(op.progress);
+            // 실제 progress
+            float realProgress = Mathf.Clamp01(op.progress / 0.9f);
 
-            if (op.progress >= 0.9f)
-            {
-                LoadingUIController.Instance?.SetProgress(1f);
+            float displayProgress = Mathf.Lerp(0f, 1f, elapsed / minLoadTime);
+
+            LoadingUIController.Instance?.SetProgress(Mathf.Min(realProgress, displayProgress));
+
+            if (displayProgress >= 1f && op.progress >= 0.9f)
                 op.allowSceneActivation = true;
-                yield break;
-            }
+
+            yield return null;
         }
     }
 }

@@ -24,7 +24,7 @@ public class PlayerController : CreatureController
     private FogOfWarVision _fogOfWarVision;
 
     protected bool _isSkillDebug = true;
-
+    protected bool _isRest = false;
     public bool AllowOffPathMovement { get; set; } = false;
 
     // NameTag
@@ -217,6 +217,13 @@ public class PlayerController : CreatureController
         set { _maxAtkCount = value; }
     }
 
+    public bool IsRest
+    {
+        get { return _isRest; }
+        set { _isRest = value; }
+    }
+
+
     protected override void Init()
     {
         base.Init();
@@ -336,7 +343,7 @@ public class PlayerController : CreatureController
 
     public void ChangeState(S_PlayerState packet)
     {
-        Debug.Log($"Id : {Id}, Cur : {State}, Next : {packet.State}");
+        //Debug.Log($"Id : {Id}, Cur : {State}, Next : {packet.State}");
         State = packet.State;
     }
 
