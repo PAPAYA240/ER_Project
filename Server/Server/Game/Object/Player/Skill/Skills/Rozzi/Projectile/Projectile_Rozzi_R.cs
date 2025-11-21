@@ -22,15 +22,19 @@ public class Projectile_Rozzi_R : Projectile
     private readonly float[] maxHpDamageRatio = { 0, 3, 6, 9 };
 
     // 폭탄 상태
-    private enum BombState
+    private BOMB_ROZZI _bombState = BOMB_ROZZI.NoneBomb;
+    public BOMB_ROZZI BOMBSTATE
     {
-        Flying,             // 날아가는 중
-        AttachedToTarget,   // 적에게 부착
-        StuckOnGround,      // 지면에 부착
-        Exploded            // 폭발 완료
+        get { return _bombState; }
+        set 
+        {
+            if (_bombState != value)
+            {
+                _bombState = value;
+                SendBombStatePacket(_bombState);
+            }
+        }
     }
-
-    private BombState _state = BombState.Flying;
 
     // 부착 대상
     private GameObject _target;
@@ -41,7 +45,10 @@ public class Projectile_Rozzi_R : Projectile
     // 히트 스택
     private int _hitStack = 0;
     private const int MaxStack = 5;
-    private const int FuseMs = 3000;   
+    private const int FuseMs = 3000;
+
+    // LeaveGame 대기
+    private bool _isLeaveGamePending = false;
 
     public override void Init()
     {
@@ -67,7 +74,7 @@ public class Projectile_Rozzi_R : Projectile
     // (CollisionManager.CheckPlayerHit 내부에서 호출 중)
     public void OnProjectileHit(GameObject target)
     {
-        if (_state != BombState.Flying)
+        if (BOMBSTATE != BOMB_ROZZI.Flying)
             return;
 
         if (target is Creature creature)
@@ -80,9 +87,9 @@ public class Projectile_Rozzi_R : Projectile
             return;
 
         // 상태별 업데이트
-        switch (_state)
+        switch (BOMBSTATE)
         {
-            case BombState.Flying:
+            case BOMB_ROZZI.Flying:
                 if (Deactivation())
                 {
                     Room.LeaveGame(Id);
@@ -92,7 +99,7 @@ public class Projectile_Rozzi_R : Projectile
                 UpdatePositionWhileFlying();
                 break;
 
-            case BombState.AttachedToTarget:
+            case BOMB_ROZZI.AttachedToTarget:
                 // 타겟이 죽었거나 사라지면 그냥 제자리 폭발
                 if (_target == null || _target.IsDead)
                 {
@@ -112,7 +119,7 @@ public class Projectile_Rozzi_R : Projectile
                 }
                 break;
 
-            case BombState.StuckOnGround:
+            case BOMB_ROZZI.StuckOnGround:
                 if (TimeUtil.Instance.IsPastOrNow(_explodeTick))
                 {
                     Explode(false);
@@ -120,16 +127,21 @@ public class Projectile_Rozzi_R : Projectile
                 }
                 break;
 
-            case BombState.Exploded:
+            case BOMB_ROZZI.Exploded:
                 // 이미 폭발 처리, Room.LeaveGame 대기
+                if(_isLeaveGamePending)
+                {
+                    Room.LeaveGame(Id);
+                    _isLeaveGamePending = false;
+                }
                 break;
         }
     }
 
     private void AttachToTarget(Creature target)
     {
-        _state = BombState.AttachedToTarget;
         _target = target;
+        BOMBSTATE = BOMB_ROZZI.AttachedToTarget;
 
         _attachTick = TimeUtil.Instance.LastTick;
         _explodeTick = unchecked(_attachTick + FuseMs);
@@ -148,10 +160,10 @@ public class Projectile_Rozzi_R : Projectile
 
     private void AttachToGround()
     {
-        if (_state != BombState.Flying)
+        if (BOMBSTATE != BOMB_ROZZI.Flying)
             return;
 
-        _state = BombState.StuckOnGround;
+        BOMBSTATE = BOMB_ROZZI.StuckOnGround;
 
         _attachTick = TimeUtil.Instance.LastTick;
         _explodeTick = unchecked(_attachTick + FuseMs);
@@ -172,13 +184,15 @@ public class Projectile_Rozzi_R : Projectile
     // isSkillHit = true 이면 스킬 적중(2스택), false 이면 기본 공격(1스택)
     public void RegisterOwnerHit(bool isSkillHit)
     {
-        if (_state != BombState.AttachedToTarget)
+        if (BOMBSTATE != BOMB_ROZZI.AttachedToTarget)
             return;
         if (_target == null)
             return;
 
         int add = isSkillHit ? 2 : 1;
         _hitStack += add;
+
+        //Console.WriteLine($"Rozzi R RegisterOwerHit : Stack - {((isSkillHit == true) ? 2 : 1)}");
 
         // 5스택 이상이면 조기 폭발
         if (_hitStack >= MaxStack)
@@ -188,7 +202,7 @@ public class Projectile_Rozzi_R : Projectile
     private void UpdatePositionWhileFlying()
     {
         // 이미 부착되거나 터졌으면 이동 안 함
-        if (_state != BombState.Flying)
+        if (BOMBSTATE != BOMB_ROZZI.Flying)
             return;
 
         if (Vector3.Distance(Position, _startPosition) >= _maxDistance)
@@ -214,10 +228,11 @@ public class Projectile_Rozzi_R : Projectile
 
     private void Explode(bool early)
     {
-        if (_state == BombState.Exploded)
+        if (BOMBSTATE == BOMB_ROZZI.Exploded)
             return;
 
-        _state = BombState.Exploded;
+        //Console.WriteLine($"Rozzi R Explode!! : early - {early}");
+        BOMBSTATE = BOMB_ROZZI.Exploded;
 
         Vector3 explosionPos = Position;
         GameObject mainTarget = _target;
@@ -239,7 +254,8 @@ public class Projectile_Rozzi_R : Projectile
         // TODO : 시야 공유를 했었다면 여기서 해제
 
         // 마지막으로 투사체 제거
-        Room.LeaveGame(Id);
+        //Room.LeaveGame(Id);
+        _isLeaveGamePending = true;
     }
 
     public void ApplyExplosionDamage()
@@ -289,5 +305,20 @@ public class Projectile_Rozzi_R : Projectile
         };
         Owner.Room.Push(Owner.AddStatusEffect, selfBuff);
     }
+
+    private void SendBombStatePacket(BOMB_ROZZI state)
+    {
+        Player player = Owner as Player;
+        if(player == null) 
+            return;
+
+        S_ProjectileRozzi packet = new S_ProjectileRozzi()
+        {
+            ObjectId = Id,
+            TargetId = (_target != null) ? _target.Id : 0,
+            State = state,
+        };
+        player.Room.Push(player.Session.Send, packet);
+    } 
 }
 

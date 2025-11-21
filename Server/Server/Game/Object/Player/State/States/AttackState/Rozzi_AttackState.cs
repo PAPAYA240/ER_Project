@@ -160,6 +160,7 @@ public class Rozzi_AttackState : Player_AttackState
             _isPassiveAttack = true;
             _maxDamageTimes = 2;
             _hitMomentUtc2 = _hitMomentUtc.AddSeconds(0.2);
+            //_swingEndUtc = _hitMomentUtc2.AddSeconds(0.1);
         }
         else
             animName = nextCombo;

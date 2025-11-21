@@ -136,16 +136,6 @@ public class MyPlayerController_Prev : PlayerController
     Texture2D _cursorDefault;
 
     bool _isAttackGround = false;
-
-    public float AttackSpeed
-    {
-        get
-        {
-            float baseSpeed = Stat.AttackSpeed + MyWeapon.AttackSpeed;
-            float multiplier = 1 + WeaponMasteryAS + ItemAttackSpeed;
-            return baseSpeed * multiplier;
-        }
-    }
     #endregion
 
     #region Init
@@ -1352,20 +1342,6 @@ public class MyPlayerController_Prev : PlayerController
     }
 
     // 마우스 바라보기
-    protected void LookAtMouse()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        int layerMask = (1 << LayerMask.NameToLayer("Map")) | (1 << LayerMask.NameToLayer("Wall"));
-        if (Physics.Raycast(ray, out RaycastHit hit, 1000, layerMask))
-        {
-            Vector3 direction = (hit.point - transform.position).normalized;
-            direction.y = 0;
-            direction.Normalize();
-            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
-            transform.rotation = targetRotation;
-            UpdateTransform();
-        }
-    }
 
     #endregion
 }

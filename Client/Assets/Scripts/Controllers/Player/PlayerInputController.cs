@@ -106,7 +106,8 @@ public class PlayerInputController : MonoBehaviour
         // 공격 가능한 상태만 처리
         if (!(_player.State == CreatureState.Idle
             || _player.State == CreatureState.Moving
-            || _player.State == CreatureState.Attack))
+            || _player.State == CreatureState.Attack
+            || _player.State == CreatureState.Skill))
             return null;
 
         // 우클릭이 아예 안 눌려 있으면 상태 리셋
