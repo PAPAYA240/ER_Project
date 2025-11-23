@@ -245,6 +245,7 @@ class PacketHandler
         var player = client?.MyPlayer;
         if (player?.Room == null)
             return;
+
         var req = (C_AttackRequest)packet;
 
         player.Room.Push(player.Room.HandleAttackRequest, player, req);

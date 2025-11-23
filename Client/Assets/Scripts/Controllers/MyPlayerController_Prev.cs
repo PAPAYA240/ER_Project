@@ -1351,21 +1351,5 @@ public class MyPlayerController_Prev : PlayerController
         return transform.position + dir * range;
     }
 
-    // 마우스 바라보기
-    protected void LookAtMouse()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        int layerMask = (1 << LayerMask.NameToLayer("Map")) | (1 << LayerMask.NameToLayer("Wall"));
-        if (Physics.Raycast(ray, out RaycastHit hit, 1000, layerMask))
-        {
-            Vector3 direction = (hit.point - transform.position).normalized;
-            direction.y = 0;
-            direction.Normalize();
-            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
-            transform.rotation = targetRotation;
-            UpdateTransform();
-        }
-    }
-
     #endregion
 }

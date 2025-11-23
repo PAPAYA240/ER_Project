@@ -43,7 +43,8 @@ namespace Server.Game
         public void HandleAttackRequest(Player player, C_AttackRequest pkt)
         {
             GameObject target = player.FindTarget(pkt.TargetId);
-            if (target == null) return;
+            if (target == null) 
+                return;
 
             target.OnDamaged(player, player.Attack);
         }
