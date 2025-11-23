@@ -594,11 +594,13 @@ message S_SyncTimer{
 message C_EnvRequest{
 	int32 objectId = 1;
 	EnvType envType = 2;
+	int32 targetId = 3;
 }
 
 message S_EnvRequest{
 	int32 objectId = 1;
 	EnvType envType = 2;
+	int32 targetId = 3;
 }
 
 message S_AddAbigailCoord{

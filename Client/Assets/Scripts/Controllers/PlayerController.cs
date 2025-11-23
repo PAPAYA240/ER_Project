@@ -619,7 +619,7 @@ public class PlayerController : CreatureController
     #endregion
 
     [Header("X-Ray Settings")]
-    [SerializeField] private int playerWeaponStencilID = 100;
+    [SerializeField] private int xRayIgnoreStencilID = 100;
     [SerializeField] private bool disablePlayerWeaponXRay = true;
     #region Shader
     void InitializeXRay()
@@ -631,14 +631,14 @@ public class PlayerController : CreatureController
     void SetupPlayerWeaponXRay()
     {
         // Player 본체
-        SetXRayGroup(gameObject, playerWeaponStencilID);
+        SetXRayGroup(gameObject, xRayIgnoreStencilID);
 
         if (_eqipWeapon != null)
-            SetXRayGroup(_eqipWeapon, playerWeaponStencilID);
+            SetXRayGroup(_eqipWeapon, xRayIgnoreStencilID);
     }
     public void SetxRayFromPlayer(GameObject player)
     {
-         SetXRayGroup(player, playerWeaponStencilID);
+         SetXRayGroup(player, xRayIgnoreStencilID);
     }
     void SetXRayGroup(GameObject root, int stencilID)
     {
@@ -666,7 +666,7 @@ public class PlayerController : CreatureController
     {
         if (newWeapon != null && disablePlayerWeaponXRay)
         {
-            SetXRayGroup(newWeapon, playerWeaponStencilID);
+            SetXRayGroup(newWeapon, xRayIgnoreStencilID);
         }
     }
 
