@@ -633,15 +633,12 @@ public class PlayerController : CreatureController
         // Player 본체
         SetXRayGroup(gameObject, playerWeaponStencilID);
 
-        // 현재 장착된 무기
         if (_eqipWeapon != null)
-        {
             SetXRayGroup(_eqipWeapon, playerWeaponStencilID);
-        }
     }
     public void SetxRayFromPlayer(GameObject player)
     {
-            SetXRayGroup(player, playerWeaponStencilID);
+         SetXRayGroup(player, playerWeaponStencilID);
     }
     void SetXRayGroup(GameObject root, int stencilID)
     {
