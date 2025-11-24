@@ -594,19 +594,13 @@ namespace Server.Game
             return _teamToggle ? 1 : 2;
         }
 
-        private void AddVisibleObjects<T>(List<int> visibleObjs, ConcurrentDictionary<int, T> dict, Player player, float range = 8.5f) where T : GameObject
+        private void AddVisibleObjects<T>(List<int> visibleObjs, ConcurrentDictionary<int, T> dict, Player player) where T : GameObject
         {
             foreach (var pair in dict)
             {
                 GameObject go = pair.Value;
                 if (go.Id == player.Id)
                     continue;
-
-                //if (go.PosInfo.Distance(player.PosInfo) < range)
-                //{
-                //    visibleObjs.Add(go.Id);
-                //    return;
-                //}
 
                 if (go.IsVisionShare() || (go is Player p && p.Info.Player.Team == player.Info.Player.Team))
                 {

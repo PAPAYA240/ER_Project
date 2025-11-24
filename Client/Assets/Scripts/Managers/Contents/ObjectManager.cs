@@ -174,12 +174,12 @@ public class ObjectManager
             Vector3 playerPos = go.transform.position;
             Vector3 targetPos = target.transform.position;
 
-            NavMeshHit hit;
+            UnityEngine.AI.NavMeshHit hit;
 
-            if (NavMesh.SamplePosition(playerPos, out hit, 1, NavMesh.AllAreas))
+            if (UnityEngine.AI.NavMesh.SamplePosition(playerPos, out hit, 1, UnityEngine.AI.NavMesh.AllAreas))
                 playerPos = hit.position;
 
-            if (NavMesh.SamplePosition(targetPos, out hit, 1, NavMesh.AllAreas))
+            if (UnityEngine.AI.NavMesh.SamplePosition(targetPos, out hit, 1, UnityEngine.AI.NavMesh.AllAreas))
                 targetPos = hit.position;
 
             playerPos.y = 0.5f;
@@ -187,7 +187,7 @@ public class ObjectManager
 
             // Vector3 dir = targetPos - playerPos;
 
-            if (Vector3.Distance(playerPos, targetPos) < visionRange && !NavMesh.Raycast(playerPos, targetPos, out hit, NavMesh.AllAreas))
+            if (Vector3.Distance(playerPos, targetPos) < visionRange && !UnityEngine.AI.NavMesh.Raycast(playerPos, targetPos, out hit, UnityEngine.AI.NavMesh.AllAreas))
             {
                 outObjects.Add(target); /*장애물없고 시야 범위 내에 있으면*/
             }
