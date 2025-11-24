@@ -1,5 +1,6 @@
 using Google.Protobuf.Protocol;
 using UnityEngine;
+using static Define;
 
 public class Projectile : BaseController
 {
