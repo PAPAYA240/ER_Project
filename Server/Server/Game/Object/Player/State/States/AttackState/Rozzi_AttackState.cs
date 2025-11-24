@@ -182,7 +182,7 @@ public class Rozzi_AttackState : Player_AttackState
         }
 
         // 애니 송출(서버 권한)
-        p.SendAnimPacket(animName, 0.05f/*, p.AttackSpeed, _isPassiveAttack*/);
+        p.SendAnimPacket(animName, 0.05f, p.AttackSpeed/*, _isPassiveAttack*/);
     }
 
     protected override void ApplyHit(Player p, GameObject target)

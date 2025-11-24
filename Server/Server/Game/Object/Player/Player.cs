@@ -1040,7 +1040,7 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendAnimPacket(string animName, float ratio, float speed = 0, bool isChangeSpeed = false)
+        public void SendAnimPacket(string animName, float ratio = 0.05f, float speed = 0, bool isChangeSpeed = false)
         {
             S_Anim packet = new S_Anim()
             { 

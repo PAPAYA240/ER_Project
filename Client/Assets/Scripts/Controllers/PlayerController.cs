@@ -391,6 +391,13 @@ public class PlayerController : CreatureController
 
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
+        if(animInfo.Name == "ROZZI_D")
+        {
+            int upperLayer = _animator.GetLayerIndex("UpperBody");
+            _animator.CrossFadeInFixedTime(animInfo.Name, 0.05f, upperLayer);
+            return;
+        }
+
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
 
         if (animInfo.IsChangeSpeed == true)
