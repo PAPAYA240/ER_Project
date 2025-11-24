@@ -50,7 +50,7 @@ public class Yuki_AttackState : Player_AttackState
         {
             p.YukiStud--;
 
-            S_YukiStud yukiStudPkt = new S_YukiStud();
+            S_Yukistud yukiStudPkt = new S_Yukistud();
             yukiStudPkt.ObjectId = p.Id;
             yukiStudPkt.StudCnt = p.YukiStud;
 
