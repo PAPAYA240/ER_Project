@@ -245,7 +245,7 @@ namespace Google.Protobuf.Protocol {
             "CCI8CgtTX0FuaW1TcGVlZBIQCghvYmplY3RJZBgBIAEoBRIMCgRuYW1lGAIg",
             "ASgJEg0KBXNwZWVkGAMgASgCIlwKEVNfUHJvamVjdGlsZVJvenppEhAKCG9i",
             "amVjdElkGAEgASgFEhAKCHRhcmdldElkGAIgASgFEiMKBXN0YXRlGAMgASgO",
-            "MhQuUHJvdG9jb2wuQk9NQl9ST1paSSIvCgpTX1l1a2lTdHVkEhAKCG9iamVj",
+            "MhQuUHJvdG9jb2wuQk9NQl9ST1paSSIvCgpTX1l1a2lzdHVkEhAKCG9iamVj",
             "dElkGAEgASgFEg8KB3N0dWRDbnQYAiABKAUq5gwKBU1zZ0lkEhAKDENfRU5U",
             "RVJfR0FNRRAAEhAKDFNfRU5URVJfR0FNRRABEhAKDFNfTEVBVkVfR0FNRRAC",
             "EgsKB1NfU1BBV04QAxINCglTX0RFU1BBV04QBBIKCgZDX01PVkUQBRIKCgZT",
@@ -454,7 +454,7 @@ namespace Google.Protobuf.Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Unstoppable), global::Google.Protobuf.Protocol.S_Unstoppable.Parser, new[]{ "ObjectId", "Unstoppable" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_AnimSpeed), global::Google.Protobuf.Protocol.S_AnimSpeed.Parser, new[]{ "ObjectId", "Name", "Speed" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_ProjectileRozzi), global::Google.Protobuf.Protocol.S_ProjectileRozzi.Parser, new[]{ "ObjectId", "TargetId", "State" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_YukiStud), global::Google.Protobuf.Protocol.S_YukiStud.Parser, new[]{ "ObjectId", "StudCnt" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.S_Yukistud), global::Google.Protobuf.Protocol.S_Yukistud.Parser, new[]{ "ObjectId", "StudCnt" }, null, null, null, null)
           }));
     }
     #endregion
@@ -22135,11 +22135,11 @@ namespace Google.Protobuf.Protocol {
 
   }
 
-  public sealed partial class S_YukiStud : pb::IMessage<S_YukiStud> {
-    private static readonly pb::MessageParser<S_YukiStud> _parser = new pb::MessageParser<S_YukiStud>(() => new S_YukiStud());
+  public sealed partial class S_Yukistud : pb::IMessage<S_Yukistud> {
+    private static readonly pb::MessageParser<S_Yukistud> _parser = new pb::MessageParser<S_Yukistud>(() => new S_Yukistud());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<S_YukiStud> Parser { get { return _parser; } }
+    public static pb::MessageParser<S_Yukistud> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -22152,22 +22152,22 @@ namespace Google.Protobuf.Protocol {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public S_YukiStud() {
+    public S_Yukistud() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public S_YukiStud(S_YukiStud other) : this() {
+    public S_Yukistud(S_Yukistud other) : this() {
       objectId_ = other.objectId_;
       studCnt_ = other.studCnt_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public S_YukiStud Clone() {
-      return new S_YukiStud(this);
+    public S_Yukistud Clone() {
+      return new S_Yukistud(this);
     }
 
     /// <summary>Field number for the "objectId" field.</summary>
@@ -22194,11 +22194,11 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as S_YukiStud);
+      return Equals(other as S_Yukistud);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(S_YukiStud other) {
+    public bool Equals(S_Yukistud other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -22257,7 +22257,7 @@ namespace Google.Protobuf.Protocol {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(S_YukiStud other) {
+    public void MergeFrom(S_Yukistud other) {
       if (other == null) {
         return;
       }

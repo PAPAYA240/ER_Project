@@ -1036,7 +1036,7 @@ message S_ProjectileRozzi {
 	BOMB_ROZZI state = 3;
 }
 
-message S_YukiStud {
+message S_Yukistud {
 	int32 objectId = 1;
 	int32 studCnt = 2;
 }

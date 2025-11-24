@@ -924,9 +924,9 @@ class PacketHandler
         pr.ChangeState(projectilePacket);
     }
 
-    public static void S_YukiStudHandler(PacketSession session, IMessage packet)
+    public static void S_YukistudHandler(PacketSession session, IMessage packet)
     {
-        S_YukiStud yukiStudPacket = packet as S_YukiStud;
+        S_Yukistud yukiStudPacket = packet as S_Yukistud;
 
         GameObject go = Managers.Object.FindById(yukiStudPacket.ObjectId);
         if (go == null)
