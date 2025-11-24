@@ -87,7 +87,7 @@ public class TheodoreInputController : PlayerInputController
         _player.UI.PlayerInterface.StopChargingBar();
 
         if(_sound != null)
-            _sound.UseSkill(key.ToString());
+            _sound.GetRandomVoice(key.ToString());
 
         SendSkillInputPacket(key);
         _currentSkillKey = null;
@@ -214,7 +214,7 @@ public class TheodoreInputController : PlayerInputController
         }
 
         if (_sound != null)
-            _sound.UseSkill(key.ToString());
+            _sound.GetRandomVoice(key.ToString());
 
         _player.Speed = _originSpeed;
     }
