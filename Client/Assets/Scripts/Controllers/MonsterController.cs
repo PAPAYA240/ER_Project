@@ -17,7 +17,6 @@ public class MonsterController : CreatureController
         set => type = value;
     }
 
-
     public Vector3 TargetPosition { get; private set; }
     private Quaternion _targetRotation;
 
@@ -123,8 +122,6 @@ public class MonsterController : CreatureController
     {
         OnStateChanged?.Invoke(State, true);
 
-        Skill = MonsterSkill.MsNone;
-
         if (_agent != null)
             _agent.SetDestination(packet.PosInfo.ToVector());
 
@@ -166,6 +163,8 @@ public class MonsterController : CreatureController
         State = packet.MyState;
         if (packet.TargetPosition != null)
             TargetPosition = packet.TargetPosition.ToVector();
+
+        Skill = MonsterSkill.MsNone;
 
         if (State == CreatureState.Skill)
             _bMesh = false;

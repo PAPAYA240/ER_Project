@@ -63,7 +63,7 @@ public class UI_PlayerHUD : UI_Scene
             GetObject((int)GameObjects.BattleBoard).SetActive(false);
         }
 
-        //TODO °ÔÀÓ ³¡³µÀ» ¶§ È£ÃâµÇ¾ßµÊ.
+        //TODO ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ È£ï¿½ï¿½Ç¾ßµï¿½.
         if(Input.GetKeyDown(KeyCode.M))
         {
             SetGameResult(true);

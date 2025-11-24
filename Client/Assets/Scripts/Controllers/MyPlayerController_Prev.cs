@@ -611,7 +611,9 @@ public class MyPlayerController_Prev : PlayerController
     public override void OnDead()
     {
         base.OnDead();
+
         ResetCharacterState();
+
     }
 
     //public override void OnRespawn(S_Respawn respawnPacket)

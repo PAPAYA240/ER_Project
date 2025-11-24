@@ -71,7 +71,6 @@ public class MyPlayerController : PlayerController
             string fogLayerName = $"FogTeam{ObjInfo.Player.Team}";
             fogCamGo.GetComponent<Camera>().cullingMask |= (1 << LayerMask.NameToLayer(fogLayerName));
         }
-
     }
 
     private void Update()

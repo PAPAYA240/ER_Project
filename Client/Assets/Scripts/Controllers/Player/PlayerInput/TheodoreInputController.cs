@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 using static CameraController;
+using static Define;
 
 public class TheodoreInputController : PlayerInputController
 {
@@ -31,6 +32,7 @@ public class TheodoreInputController : PlayerInputController
     {
         _player.AttackRange = 6.0f;
         _originSpeed = _player.Speed;
+        _sound = GetComponentInChildren<TheodoreSound>();
     }
     protected override Vector3 GetAttackStopPosition(Vector3 from, Vector3 target)
     {
@@ -78,10 +80,14 @@ public class TheodoreInputController : PlayerInputController
         }
     }
     #region 스킬 실행
+    private TheodoreSound _sound = null; 
     private void ExecuteSkill(KeyCode key)
     {
         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
         _player.UI.PlayerInterface.StopChargingBar();
+
+        if(_sound != null)
+            _sound.UseSkill(key.ToString());
 
         SendSkillInputPacket(key);
         _currentSkillKey = null;
@@ -206,6 +212,10 @@ public class TheodoreInputController : PlayerInputController
         {
             SendSkillInputPacket(key, SKIP_STATE_CHECK);
         }
+
+        if (_sound != null)
+            _sound.UseSkill(key.ToString());
+
         _player.Speed = _originSpeed;
     }
     private void CancelSkill(KeyCode key)
