@@ -1,11 +1,13 @@
-Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_EmissiveAnimation_Opimized" {
+Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_EmissiveAnimation_Optimized" {
 	Properties {
 		[HideInInspector] _simpleUI ("SimpleUI", Float) = 0
 		[HideInInspector] _utsVersion ("Version", Float) = 2.07
 		[HideInInspector] _utsTechnique ("Technique", Float) = 0
-		[Toggle(_)] [HideInInspector] _Is_MaskedColor ("Masked Color", Float) = 0
+		[Toggle(_)] _Is_MaskedColor ("Masked Color", Float) = 0
 		[Enum(OFF,0,FRONT,1,BACK,2)] _CullMode ("Cull Mode", Float) = 2
 		_OverColor ("Overay Color", Vector) = (1,1,1,1)
+		_AddValOffset ("Overray Offset", Float) = 0
+		_CurrPos ("Current Position", Float) = 0
 		_MainTex ("BaseMap", 2D) = "white" {}
 		[HideInInspector] _BaseMap ("BaseMap", 2D) = "white" {}
 		_BaseColor ("BaseColor", Vector) = (1,1,1,1)
@@ -56,14 +58,9 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_EmissiveAnimation_Opimized" {
 		_Set_RimLightMask ("Set_RimLightMask", 2D) = "white" {}
 		_Tweak_RimLightMaskLevel ("Tweak_RimLightMaskLevel", Range(-1, 1)) = 0
 		[Toggle(_)] [HideInInspector] _MatCap ("MatCap", Float) = 0
-		[KeywordEnum(SIMPLE,ANIMATION)] [HideInInspector] _EMISSIVE ("EMISSIVE MODE", Float) = 1
+		[KeywordEnum(SIMPLE,ANIMATION)] [HideInInspector] _EMISSIVE ("EMISSIVE MODE", Float) = 0
 		_Emissive_Tex ("Emissive_Tex", 2D) = "white" {}
 		[HDR] _Emissive_Color ("Emissive_Color", Vector) = (0,0,0,1)
-		_Base_Speed ("Base_Speed", Float) = 0
-		_Scroll_EmissiveU ("Scroll_EmissiveU", Range(-1, 1)) = 0
-		_Scroll_EmissiveV ("Scroll_EmissiveV", Range(-1, 1)) = 0
-		_Rotate_EmissiveUV ("Rotate_EmissiveUV", Float) = 0
-		[Toggle(_)] _Is_PingPong_Base ("Is_PingPong_Base", Float) = 0
 		[Toggle(_)] _Is_ColorShift ("Activate ColorShift", Float) = 0
 		[HDR] _ColorShift ("ColorSift", Vector) = (0,0,0,1)
 		_ColorShift_Speed ("ColorShift_Speed", Float) = 0
@@ -87,59 +84,146 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_EmissiveAnimation_Opimized" {
 		_Offset_Y_Axis_BLD (" Offset Y-Axis (Built-in Light Direction)", Range(-1, 1)) = 0.09
 		[Toggle(_)] _Inverse_Z_Axis_BLD (" Inverse Z-Axis (Built-in Light Direction)", Float) = 1
 		[Enum(UnityEngine.Rendering.CompareFunction)] _ZTestMode ("ZTest Mode", Float) = 4
+		
+		[Header(Stencil)]
+		_StencilRef ("Stencil Reference", Float) = 0
+		[Enum(UnityEngine.Rendering.CompareFunction)] _StencilComp ("Stencil Comparison", Float) = 8
+		[Enum(UnityEngine.Rendering.StencilOp)] _StencilOp ("Stencil Operation", Float) = 0
+		_StencilWriteMask ("Stencil Write Mask", Float) = 255
+		_StencilReadMask ("Stencil Read Mask", Float) = 255
 	}
-	//DummyShaderTextExporter
-	SubShader{
-		Tags { "RenderType"="Opaque" }
+	
+	SubShader {
+		Tags { "RenderType"="Opaque" "Queue"="Geometry" "RenderPipeline"="UniversalPipeline" }
 		LOD 200
 
-		Pass
-		{
+		Pass {
+			Name "ForwardLit"
+			Tags { "LightMode" = "UniversalForward" }
+			
+			ZWrite On
+			ZTest [_ZTestMode]
+			Cull [_CullMode]
+			
+			Stencil {
+				Ref [_StencilRef]
+				Comp [_StencilComp]
+				Pass [_StencilOp]
+				ReadMask [_StencilReadMask]
+				WriteMask [_StencilWriteMask]
+			}
+			
 			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
-			float4x4 unity_ObjectToWorld;
-			float4x4 unity_MatrixVP;
-			float4 _MainTex_ST;
-
-			struct Vertex_Stage_Input
-			{
-				float4 pos : POSITION;
+			struct Attributes {
+				float4 positionOS : POSITION;
+				float3 normalOS : NORMAL;
 				float2 uv : TEXCOORD0;
 			};
 
-			struct Vertex_Stage_Output
-			{
+			struct Varyings {
 				float2 uv : TEXCOORD0;
-				float4 pos : SV_POSITION;
+				float3 normalWS : TEXCOORD1;
+				float3 positionWS : TEXCOORD2;
+				float4 positionCS : SV_POSITION;
 			};
 
-			Vertex_Stage_Output vert(Vertex_Stage_Input input)
-			{
-				Vertex_Stage_Output output;
-				output.uv = (input.uv.xy * _MainTex_ST.xy) + _MainTex_ST.zw;
-				output.pos = mul(unity_MatrixVP, mul(unity_ObjectToWorld, input.pos));
+			TEXTURE2D(_MainTex);
+			SAMPLER(sampler_MainTex);
+			TEXTURE2D(_1st_ShadeMap);
+			SAMPLER(sampler_1st_ShadeMap);
+			TEXTURE2D(_Emissive_Tex);
+			SAMPLER(sampler_Emissive_Tex);
+
+			CBUFFER_START(UnityPerMaterial)
+				float4 _MainTex_ST;
+				half4 _BaseColor;
+				half4 _1st_ShadeColor;
+				half4 _2nd_ShadeColor;
+				half4 _Emissive_Color;
+				half4 _OverColor;
+				half _AddValOffset;
+				half _CurrPos;
+				half _BaseColor_Step;
+				half _BaseShade_Feather;
+				half _ShadeColor_Step;
+				half _1st2nd_Shades_Feather;
+				half _Use_BaseAs1st;
+				half _Unlit_Intensity;
+				half _GI_Intensity;
+			CBUFFER_END
+
+			Varyings vert(Attributes input) {
+				Varyings output;
+				
+				VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
+				VertexNormalInputs normalInput = GetVertexNormalInputs(input.normalOS);
+				
+				output.positionCS = vertexInput.positionCS;
+				output.positionWS = vertexInput.positionWS;
+				output.normalWS = normalInput.normalWS;
+				output.uv = TRANSFORM_TEX(input.uv, _MainTex);
+				
 				return output;
 			}
 
-			Texture2D<float4> _MainTex;
-			SamplerState sampler_MainTex;
-			float4 _Color;
-
-			struct Fragment_Stage_Input
-			{
-				float2 uv : TEXCOORD0;
-			};
-
-			float4 frag(Fragment_Stage_Input input) : SV_TARGET
-			{
-				return _MainTex.Sample(sampler_MainTex, input.uv.xy) * _Color;
+			half4 frag(Varyings input) : SV_Target {
+				half4 baseColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv) * _BaseColor;
+				
+				Light mainLight = GetMainLight();
+				half3 normalWS = normalize(input.normalWS);
+				half NdotL = dot(normalWS, mainLight.direction);
+				
+				// 툰 셰이딩 
+				half lightIntensity = NdotL * 0.5 + 0.5;
+				half toonStep = step(_BaseColor_Step, lightIntensity);
+				
+				if (_BaseShade_Feather > 0.0001)
+				{
+					toonStep = smoothstep(_BaseColor_Step - _BaseShade_Feather * 0.5, 
+					                      _BaseColor_Step + _BaseShade_Feather * 0.5, 
+					                      lightIntensity);
+				}
+				
+				half4 shadeMap = _Use_BaseAs1st > 0.5 ? baseColor : SAMPLE_TEXTURE2D(_1st_ShadeMap, sampler_1st_ShadeMap, input.uv);
+				half4 firstShade = shadeMap * _1st_ShadeColor;
+				
+				half shade2Step = step(_ShadeColor_Step, lightIntensity);
+				if (_1st2nd_Shades_Feather > 0.0001)
+				{
+					shade2Step = smoothstep(_ShadeColor_Step - _1st2nd_Shades_Feather * 0.5, 
+					                        _ShadeColor_Step + _1st2nd_Shades_Feather * 0.5, 
+					                        lightIntensity);
+				}
+				half4 secondShade = shadeMap * _2nd_ShadeColor;
+				
+				// 셰이드 믹스
+				half4 shadedColor = lerp(secondShade, firstShade, shade2Step);
+				half4 finalColor = lerp(shadedColor, baseColor, toonStep);
+				
+				// 조명 적용
+				finalColor.rgb *= _Unlit_Intensity;
+				
+				half3 ambient = half3(unity_SHAr.w, unity_SHAg.w, unity_SHAb.w) * _GI_Intensity * 0.3;
+				finalColor.rgb += ambient * baseColor.rgb;
+				
+				// Emissive
+				half4 emissive = SAMPLE_TEXTURE2D(_Emissive_Tex, sampler_Emissive_Tex, input.uv) * _Emissive_Color;
+				finalColor.rgb += emissive.rgb;
+				
+				// Overlay Color
+				half maskValue = saturate((_CurrPos - _AddValOffset) * 10.0);
+				finalColor.rgb = lerp(finalColor.rgb, _OverColor.rgb, _OverColor.a * maskValue);
+				
+				return finalColor;
 			}
-
 			ENDHLSL
 		}
 	}
-	Fallback "Legacy Shaders/VertexLit"
-	//CustomEditor "UnityChan.UTS2GUI_Optimized"
+	
+	Fallback "Hidden/Universal Render Pipeline/FallbackError"
 }

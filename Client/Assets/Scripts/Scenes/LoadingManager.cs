@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class LoadingManager : MonoBehaviour
 {
@@ -21,46 +22,39 @@ public class LoadingManager : MonoBehaviour
         }
     }
 
-    public string GetSceneName(Define.Scene type)
-    {
-        string name = System.Enum.GetName(typeof(Define.Scene), type);
-        return name;
-    }
-
     public void LoadScene(Define.Scene type)
     {
-        nextScene = GetSceneName(type);
-        SceneManager.LoadScene("Loading");  // ·Îµù¾ÀÀ¸·Î ÀÌµ¿
+        nextScene = System.Enum.GetName(typeof(Define.Scene), type);
+
+        // ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        SceneManager.LoadScene("Loading");
     }
 
     public IEnumerator LoadSceneProcess()
     {
+        Debug.Log("LoadSceneProcess START");
+
+        yield return null;
+
         AsyncOperation op = SceneManager.LoadSceneAsync(nextScene);
         op.allowSceneActivation = false;
 
-        float timer = 0f;
+        float minLoadTime = 1.0f;
+        float elapsed = 0f;
 
         while (!op.isDone)
         {
-            if (op.progress < 0.9f)
-            {
-                // 0 ~ 0.9 ±¸°£
-                //LoadingUIController.Instance.SetProgress(op.progress);
-                Debug.Log("Loading: " + (op.progress * 100f));
-            }
-            else
-            {
-                // 0.9 ~ 1.0 ±¸°£ (º¸°£)
-                timer += Time.deltaTime;
-                float progress = Mathf.Lerp(0.9f, 1f, timer);
+            elapsed += Time.deltaTime;
 
-                //LoadingUIController.Instance.SetProgress(progress);
-                Debug.Log("Loading: " + (progress * 100f));
-                if (progress >= 1f)
-                {
-                    op.allowSceneActivation = true;
-                }
-            }
+            // ï¿½ï¿½ï¿½ï¿½ progress
+            float realProgress = Mathf.Clamp01(op.progress / 0.9f);
+
+            float displayProgress = Mathf.Lerp(0f, 1f, elapsed / minLoadTime);
+
+            LoadingUIController.Instance?.SetProgress(Mathf.Min(realProgress, displayProgress));
+
+            if (displayProgress >= 1f && op.progress >= 0.9f)
+                op.allowSceneActivation = true;
 
             yield return null;
         }

@@ -572,6 +572,7 @@ class PacketHandler
         EnvController ec = go.GetComponent<EnvController>();
         if (ec == null)
             return;
+
         ec.OnInteractionAuthorized();
     }
     
@@ -861,13 +862,6 @@ class PacketHandler
                 Managers.Object.MyPlayer.UI.PlayerInterface.ActivateCombatImg(false);
                 break;
         }
-
-        //GameObject go = Managers.Object.FindById(combatModePkt.ObjectId);
-        //if (go == null)
-        //    return;
-
-        
-        //combatModePkt.CombatMode;
     }
 
     public static void S_ChatHandler(PacketSession session, IMessage packet)
@@ -900,6 +894,21 @@ class PacketHandler
         pc.ChangeSpeed(speedPkt.Name, speedPkt.Speed);
     }
 
+    public static void S_RestHandler(PacketSession session, IMessage packet)
+    {
+        S_Rest restPkt = packet as S_Rest;
+        Debug.Log("패킷 옴?");
+
+        GameObject go = Managers.Object.FindById(restPkt.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.IsRest = restPkt.IsRest;
+    }
     public static void S_ProjectileRozziHandler(PacketSession session, IMessage packet)
     {
         S_ProjectileRozzi projectilePacket = packet as S_ProjectileRozzi;
@@ -913,6 +922,21 @@ class PacketHandler
             return;
 
         pr.ChangeState(projectilePacket);
+    }
+
+    public static void S_YukistudHandler(PacketSession session, IMessage packet)
+    {
+        S_Yukistud yukiStudPacket = packet as S_Yukistud;
+
+        GameObject go = Managers.Object.FindById(yukiStudPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null)
+            return;
+
+        //yukiStudPacket.StudCnt;
     }
 
     static float GetCurrentEstimatedOneWayLatency()

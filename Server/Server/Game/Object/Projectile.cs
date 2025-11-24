@@ -80,16 +80,5 @@ namespace Server.Game
             // 경과 시간 or 충돌을 했을 경우에 비활성화
             return (Environment.TickCount64 >= _endTime);
         }
-
-        //protected void MovingBroadcast()
-        //{
-        //    S_Move packet = new S_Move
-        //    {
-        //        ObjectId = base.Id,
-        //        PosInfo = PosInfo,
-        //        RotInfo = RotInfo
-        //    };
-        //    base.Room?.Push(Room.Broadcast, packet);
-        //}
     }
 }

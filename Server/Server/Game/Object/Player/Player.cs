@@ -1177,6 +1177,11 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
+        public void SendRestPacket(S_Rest packet)
+        {
+            Room.Push(Room.Broadcast, packet);
+        }
+
         public void SendSkillCollisionRequestPacket(KeyCode keyCode, int requestId, CollisionType type, Vector3 startPos, Vector3 endPos)
         {
             S_SkillCollisionRequest packet = new S_SkillCollisionRequest

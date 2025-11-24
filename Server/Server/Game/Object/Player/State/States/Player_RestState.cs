@@ -4,13 +4,17 @@ using Server.Data;
 using Server.Game;
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Text;
 
 public class Player_RestState : IPlayerState
 {
     bool _isRest = false;
+    string _animName;
     private DateTime _startTime;
     private float _duration = 0.7f;
+
+    public Player_RestState() {}
 
     public Player_RestState(bool isRest)
     {
@@ -21,18 +25,38 @@ public class Player_RestState : IPlayerState
     {
         _startTime = DateTime.UtcNow;
 
-        string animName;
         if (_isRest == true)
-            animName = "REST_START";
+        {
+            _animName = "REST_START";
+        }
         else
-            animName = "REST_END";
+        {
+            _animName = "REST_END";
+        }
 
-        player.SendAnimPacket(animName, 0.1f);
-        _duration = DataManager.AnimLengthInfoDict[player.Info.Player.CharType][animName].Length;
+        Console.WriteLine(_animName);
+        player.SendAnimPacket(_animName, 0.1f);
+        _duration = DataManager.AnimLengthInfoDict[player.Info.Player.CharType][_animName].Length;
     }
 
     public void Execute(Player player)
     {
+        if (player.IsHit == true)
+        {
+            if (_animName == "REST_END")
+                return;
+
+            player.IsHit = false;
+
+            S_Rest restPkt = new S_Rest();
+            restPkt.ObjectId = player.Id;
+            restPkt.IsRest = false;
+            player.SendRestPacket(restPkt);
+
+            player.ChangeState(new Player_RestState(false));
+            return;
+        }
+
         if (_isRest == false)
         {
             // 현재 시각에서 경과 시간 계산

@@ -658,7 +658,7 @@
             "length": 2.0,
             "frameRate": 30.0,
             "samples": 60,
-            "animName": "YUKI_R_END"
+            "animName": "SKILL_R_END"
           },
           {
             "clip": "Yuki_Empty_run",
@@ -666,6 +666,20 @@
             "frameRate": 30.0,
             "samples": 20,
             "animName": "RUN"
+          },
+          {
+            "clip": "Yuki_2Hand_Weaponskill_start",
+            "length": 1.75,
+            "frameRate": 30.0,
+            "samples": 20,
+            "animName": "SKILL_D"
+          },
+          {
+            "clip": "Yuki_2Hand_Weaponskill_end",
+            "length": 1.0,
+            "frameRate": 30.0,
+            "samples": 20,
+            "animName": "SKILL_D_END"
           }
         ]
       },
