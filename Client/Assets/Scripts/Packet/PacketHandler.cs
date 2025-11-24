@@ -714,11 +714,11 @@ class PacketHandler
         if (go == null)
             return;
 
-        YukiSkillRange yukiSkillEffect = go.GetComponentInChildren<YukiSkillRange>();
-        if (yukiSkillEffect == null)
+        YukiSkillRange range = go.GetComponentInChildren<YukiSkillRange>(true);
+        if (range == null)
             return;
 
-        yukiSkillEffect.SetPosition(new Vector3(YukiSkillEffectPkt.PosInfo.PosX, YukiSkillEffectPkt.PosInfo.PosY, YukiSkillEffectPkt.PosInfo.PosZ));
+        range.PlayEffectOneSecond();
     }
 
     public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)

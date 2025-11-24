@@ -229,7 +229,8 @@ public class PlayerController : CreatureController
         set { _isRest = value; }
     }
 
-
+    private YukiSkillRange _yukiSkillRange;
+    public YukiSkillRange GetYukiSkillRange() => _yukiSkillRange;
     protected override void Init()
     {
         base.Init();
@@ -253,6 +254,12 @@ public class PlayerController : CreatureController
         // 유키용
         GameObject yukiPyosik = Managers.Resource.Instantiate("Effect/UIpyosik");
         yukiPyosik.transform.SetParent(gameObject.transform);
+        if (ObjInfo.Player.CharType == CharacterType.Yuki)
+        {
+            GameObject yukiSkillRange = Managers.Resource.Instantiate("Effect/Yuki_R");
+            yukiSkillRange.transform.SetParent(gameObject.transform);
+            yukiSkillRange.SetActive(false);
+        }
 
         // Chat
         GameObject goChat = Managers.Resource.Instantiate("UI/Chat/ChatBackground");
