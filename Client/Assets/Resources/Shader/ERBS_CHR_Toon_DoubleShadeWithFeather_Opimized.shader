@@ -111,6 +111,7 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_Opimized" {
 			Stencil {
 				Ref [_StencilRef]
 				Comp NotEqual  
+				Pass Keep 
 				ReadMask [_StencilReadMask]
 			}
 			
@@ -271,6 +272,5 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_Opimized" {
 			ENDHLSL
 		}
 	}
-	
 	Fallback "Hidden/Universal Render Pipeline/FallbackError"
 }
