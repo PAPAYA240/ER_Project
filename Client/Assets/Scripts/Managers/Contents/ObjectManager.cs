@@ -68,6 +68,10 @@ public class ObjectManager
             MyPlayer.Stamina = info.StatInfo.MaxStamina;
             MyPlayer.ManualInit();
             MyPlayer.UI.PlayerHUD.AddPlayerBoardToBattleBoard(MyPlayer);
+            if(Managers.Scene.CurrentScene is GameScene scene)
+            {
+                scene.AddPlayer(go, MyPlayer);
+            }
         }
         else
         {
@@ -92,6 +96,10 @@ public class ObjectManager
 
             Managers.Object.MyPlayer.SetxRayFromPlayer(go);
             MyPlayer.UI.PlayerHUD.AddPlayerBoardToBattleBoard(pc);
+            if (Managers.Scene.CurrentScene is GameScene scene)
+            {
+                scene.AddPlayer(go, pc);
+            }
         }
     }
     private void AddMonster(ObjectInfo info)
@@ -154,10 +162,96 @@ public class ObjectManager
     #region Utils
     public void SetObjectVisible()
     {
-        return;
-        if (MyPlayer == null)
-            return;
+        //return;
+        //if (MyPlayer == null)
+        //    return;
 
+        //HashSet<int> hash = MyPlayer.View.VisibleObjectIds;
+
+        //foreach (var keyValue in _objects)
+        //{
+        //    int key = keyValue.Key;
+        //    if (MyPlayer.ObjInfo.ObjectId == key)
+        //        continue;
+
+        //    GameObject go = keyValue.Value;
+
+        //    bool isVisible = false;
+        //    float visionRange = 8.5f;
+
+        //    Vector3 playerPos = MyPlayer.transform.position;
+        //    Vector3 targetPos = go.transform.position;
+
+        //    NavMeshHit hit;
+
+        //    if (NavMesh.SamplePosition(playerPos, out hit, 1, NavMesh.AllAreas))
+        //        playerPos = hit.position;
+
+        //    if (NavMesh.SamplePosition(targetPos, out hit, 1, NavMesh.AllAreas))
+        //        targetPos = hit.position;
+
+        //    playerPos.y = 0.5f;
+        //    targetPos.y = 0.5f;
+
+        //    // Vector3 dir = targetPos - playerPos;
+
+        //    if (hash.Contains(key) || (Vector3.Distance(playerPos, targetPos) < visionRange && !NavMesh.Raycast(playerPos, targetPos, out hit, NavMesh.AllAreas)))
+        //        isVisible = true; /*장애물없고 시야 범위 내에 있으면*/
+
+        //    foreach (var r in go.GetComponentsInChildren<Renderer>())
+        //    {
+        //        if (r.gameObject.name == "VisionCircle")
+        //            continue;
+        //        r.enabled = isVisible;
+        //    }
+
+        //    foreach (var r in go.GetComponentsInChildren<Canvas>())
+        //    {
+        //        r.enabled = isVisible;
+        //    }
+        //}
+    }
+
+    public void ResiterVisibleObjects(GameObject go, HashSet<GameObject> outObjects)
+    {
+        foreach (var keyValue in _objects)
+        {
+            int key = keyValue.Key;
+            PlayerController pc = go.GetComponentInChildren<PlayerController>();
+
+            if (pc == null || pc.Id == key)
+                continue;
+
+            GameObject target = keyValue.Value;
+
+            float visionRange = 8.5f;
+
+            Vector3 playerPos = go.transform.position;
+            Vector3 targetPos = target.transform.position;
+
+            NavMeshHit hit;
+
+            if (NavMesh.SamplePosition(playerPos, out hit, 1, NavMesh.AllAreas))
+                playerPos = hit.position;
+
+            if (NavMesh.SamplePosition(targetPos, out hit, 1, NavMesh.AllAreas))
+                targetPos = hit.position;
+
+            playerPos.y = 0.5f;
+            targetPos.y = 0.5f;
+
+            // Vector3 dir = targetPos - playerPos;
+
+            if (Vector3.Distance(playerPos, targetPos) < visionRange && !NavMesh.Raycast(playerPos, targetPos, out hit, NavMesh.AllAreas))
+            {
+                //int targetid = target.GetComponentInChildren<CreatureController>().Id;
+                outObjects.Add(target); /*장애물없고 시야 범위 내에 있으면*/
+            }
+        }
+    }
+
+    public void SetVisibleObjects(HashSet<GameObject> objects)
+    {
         HashSet<int> hash = MyPlayer.View.VisibleObjectIds;
 
         foreach (var keyValue in _objects)
@@ -170,27 +264,15 @@ public class ObjectManager
 
             bool isVisible = false;
 
-            //Vector3 playerPos = MyPlayer.transform.position;
-            //Vector3 targetPos = go.transform.position;
+            // Vector3 dir = targetPos - playerPos;
 
-            //NavMeshHit hit;
-
-            //if (NavMesh.SamplePosition(playerPos, out hit, 1, NavMesh.AllAreas))
-            //    playerPos = hit.position;
-
-            //if (NavMesh.SamplePosition(targetPos, out hit, 1, NavMesh.AllAreas))
-            //    targetPos = hit.position;
-
-            //playerPos.y = 0.5f;
-            //targetPos.y = 0.5f;
-
-            //Vector3 dir = targetPos - playerPos;
-
-            if (hash.Contains(key) /*&& !NavMesh.Raycast(playerPos, targetPos, out hit, NavMesh.AllAreas)*/)
-                isVisible = true; /*장애물없고 시야 범위 내에 있으면*/
+            if (hash.Contains(key) || objects.Contains(FindById(key)))
+                isVisible = true; /* 서버에서 넘어온 해시셋에 있거나 클라에서 등록한 해시셋에 있으면 */
 
             foreach (var r in go.GetComponentsInChildren<Renderer>())
             {
+                if (r.gameObject.name == "VisionCircle")
+                    continue;
                 r.enabled = isVisible;
             }
 

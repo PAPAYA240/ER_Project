@@ -714,6 +714,18 @@ namespace Server.Game
             IsCcImmune = isUnStoppable;
             UpdateStatusFlag();
         }
+
+        public bool IsVisionShare()
+        {
+            foreach (StatusEffect effect in _statusEffects)
+            {
+                if (effect.type == "Coord" || effect.type == "VisionShare")
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         #endregion
 
         #region StatusEffect 연동 
