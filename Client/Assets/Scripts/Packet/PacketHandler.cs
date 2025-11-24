@@ -572,6 +572,7 @@ class PacketHandler
         EnvController ec = go.GetComponent<EnvController>();
         if (ec == null)
             return;
+
         ec.OnInteractionAuthorized();
     }
     

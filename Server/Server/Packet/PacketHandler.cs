@@ -245,6 +245,7 @@ class PacketHandler
         var player = client?.MyPlayer;
         if (player?.Room == null)
             return;
+
         var req = (C_AttackRequest)packet;
 
         player.Room.Push(player.Room.HandleAttackRequest, player, req);
@@ -340,21 +341,23 @@ class PacketHandler
         ClientSession clientSession = session as ClientSession;
         C_EnvRequest envPacket = packet as C_EnvRequest;
 
+        Player player = clientSession.MyPlayer;
+        if (player == null) return;
+
+        GameRoom room = player.Room;
+        if (room == null) return;
+
         if (!DataManager.EnvDict.TryGetValue(envPacket.EnvType, out EnvInfo envData))
             return;
 
-        Player player = clientSession.MyPlayer;
-        GameRoom room = player?.Room;
+        if (envPacket.TargetId == player.Id)
+            room.GetEnvManager?.GiveRewardToPlayer(player, envPacket.EnvType);
 
-        if (room == null)
-            return;
-        // 보상
-        room.GetEnvManager?.GiveRewardToPlayer(player, envPacket.EnvType);
-     
         S_EnvRequest sendPacket = new S_EnvRequest()
         {
             ObjectId = envPacket.ObjectId,
             EnvType = envPacket.EnvType,
+            TargetId = player.Id,
         };
         room.Push(room.Broadcast, sendPacket);
     }

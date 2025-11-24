@@ -1,5 +1,6 @@
 using Google.Protobuf.Protocol;
 using System;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,22 +10,22 @@ public class MonsterController : CreatureController
     
     // 몬스터 정보
     public MonsterSkill Skill { get;  set; }
-    public MonsterType Type { get; set; }
+    [SerializeField] private MonsterType type;
+    public MonsterType Type
+    {
+        get => type;
+        set => type = value;
+    }
 
- 
+
     public Vector3 TargetPosition { get; private set; }
-
     private Quaternion _targetRotation;
+
     private float _rotationSpeed = 10f;
     private float _agentSpeed = 6;
 
     // 애니메이션 끝났을 때 호출
-    public Action<CreatureState, bool> OnStateChanged; 
-
-    // Material 
-    private Renderer monsterRenderer;
-    private Material originalMaterial;
-    private Material skillMaterial;
+    public Action<CreatureState, bool> OnStateChanged;
 
     // HpBar
     protected GameObject _hpBar;
@@ -34,15 +35,31 @@ public class MonsterController : CreatureController
 	{
         base.Init();
 
-        int monsterLayer = LayerMask.NameToLayer("Monster");
-        SetLayerRecursively(this.gameObject, monsterLayer);
+        SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("Monster"));
 
         if (!Add_Component())
             return;
 
+        TriggerEnvironmentEvent();
+
         State = CreatureState.Appear;
+
         InitHpBar();
+
         UnActiveShaderXRay();
+    }
+
+    private void TriggerEnvironmentEvent()
+    {
+        if (Type == MonsterType.Gamma)
+        {
+            GameObject targetObject = GameObject.Find("BarrierSpawnpoint");
+            if (targetObject != null)
+            {
+                Env_BarrierSpawnpoint component = targetObject.GetComponent<Env_BarrierSpawnpoint>();
+                component.ActivatePhase2();
+            }
+        }
     }
 
     protected override void UpdateController()
@@ -99,20 +116,21 @@ public class MonsterController : CreatureController
     #region 패킷
     public void OnDeadPacket(S_State packet)
     {
-        _agent.ResetPath();
+        _agent?.ResetPath();
         OnDead();
     }
     public void OnIdlePacket(S_State packet)
     {
+        OnStateChanged?.Invoke(State, true);
+
+        Skill = MonsterSkill.MsNone;
+
         if (_agent != null)
             _agent.SetDestination(packet.PosInfo.ToVector());
 
         if (packet.RotInfo != null)
             _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
 
-        Skill = MonsterSkill.MsNone;
-
-        OnStateChanged?.Invoke(State, true);
     }
 
     public void OnMovePacket(S_State packet)
@@ -128,15 +146,19 @@ public class MonsterController : CreatureController
     {
         Skill = packet.Skilltype;
 
+        if (Type == MonsterType.Drone)
+            OnStateChanged?.Invoke(State, false);
+        else
+            OnStateChanged?.Invoke(State, true);
+
         if (_agent != null)
         {
-            _agent.ResetPath();
+           _agent.ResetPath();
            _agent.SetDestination(packet.PosInfo.ToVector());
         }
 
         if(packet.RotInfo != null)
             _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
-        OnStateChanged?.Invoke(State, false);
     }
 
     public void OnRecvStatePacket(S_State packet)
@@ -147,9 +169,6 @@ public class MonsterController : CreatureController
 
         if (State == CreatureState.Skill)
             _bMesh = false;
-
-        if(Type == MonsterType.Turret)
-            Debug.Log($"Turret STATE : {State}");
 
         switch (State)
         {
@@ -191,20 +210,14 @@ public class MonsterController : CreatureController
             SyncPos(true);
         }
 
-        monsterRenderer = this.GetComponentInChildren<Renderer>();
-        if (monsterRenderer == null)
-            return false;
-
         _targetRotation = transform.rotation;
-        originalMaterial = monsterRenderer.material;
-        skillMaterial = Resources.Load<Material>("materials/effect/auraMaterial");
         _highlightEffect = gameObject.AddComponent<HighlightEffect>();
         _highlightEffect.Owner = this;
 
         if (_animator == null)
             return false;
         _animator.applyRootMotion = false;
-
+         
         return true;
     }
     #endregion
@@ -231,6 +244,7 @@ public class MonsterController : CreatureController
 
         UI_MonsterHpBar ui = _hpBar.GetComponentInChildren<UI_MonsterHpBar>();
 
+
         if (null == ui)
         {
             Debug.Log("_hpBar is null");
@@ -238,6 +252,8 @@ public class MonsterController : CreatureController
         }
 
         ui.SetTarget(gameObject);
+        UpdateMaxHp();
+        UpdateHp();
     }
 
     protected override void UpdateHp()

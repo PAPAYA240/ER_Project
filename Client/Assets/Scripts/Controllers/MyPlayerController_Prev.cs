@@ -1341,7 +1341,5 @@ public class MyPlayerController_Prev : PlayerController
         return transform.position + dir * range;
     }
 
-    // 마우스 바라보기
-
     #endregion
 }

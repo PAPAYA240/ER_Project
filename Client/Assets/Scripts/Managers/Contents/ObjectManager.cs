@@ -1,12 +1,7 @@
 ﻿using Google.Protobuf.Protocol;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.PlayerLoop;
-using UnityEngine.UIElements;
-using Google.Protobuf.WellKnownTypes;
 
 #if UNITY_EDITOR
 using UnityEditor.PackageManager.UI;
@@ -155,50 +150,50 @@ public class ObjectManager
     public void SetObjectVisible()
     {
         return;
-        if (MyPlayer == null)
-            return;
+        //if (MyPlayer == null)
+        //    return;
 
-        HashSet<int> hash = MyPlayer.View.VisibleObjectIds;
+        //HashSet<int> hash = MyPlayer.View.VisibleObjectIds;
 
-        foreach (var keyValue in _objects)
-        {
-            int key = keyValue.Key;
-            if (MyPlayer.ObjInfo.ObjectId == key)
-                continue;
+        //foreach (var keyValue in _objects)
+        //{
+        //    int key = keyValue.Key;
+        //    if (MyPlayer.ObjInfo.ObjectId == key)
+        //        continue;
 
-            GameObject go = keyValue.Value;
+        //    GameObject go = keyValue.Value;
 
-            bool isVisible = false;
+        //    bool isVisible = false;
 
-            //Vector3 playerPos = MyPlayer.transform.position;
-            //Vector3 targetPos = go.transform.position;
+        //    //Vector3 playerPos = MyPlayer.transform.position;
+        //    //Vector3 targetPos = go.transform.position;
 
-            //NavMeshHit hit;
+        //    //NavMeshHit hit;
 
-            //if (NavMesh.SamplePosition(playerPos, out hit, 1, NavMesh.AllAreas))
-            //    playerPos = hit.position;
+        //    //if (NavMesh.SamplePosition(playerPos, out hit, 1, NavMesh.AllAreas))
+        //    //    playerPos = hit.position;
 
-            //if (NavMesh.SamplePosition(targetPos, out hit, 1, NavMesh.AllAreas))
-            //    targetPos = hit.position;
+        //    //if (NavMesh.SamplePosition(targetPos, out hit, 1, NavMesh.AllAreas))
+        //    //    targetPos = hit.position;
 
-            //playerPos.y = 0.5f;
-            //targetPos.y = 0.5f;
+        //    //playerPos.y = 0.5f;
+        //    //targetPos.y = 0.5f;
 
-            //Vector3 dir = targetPos - playerPos;
+        //    //Vector3 dir = targetPos - playerPos;
 
-            if (hash.Contains(key) /*&& !NavMesh.Raycast(playerPos, targetPos, out hit, NavMesh.AllAreas)*/)
-                isVisible = true; /*장애물없고 시야 범위 내에 있으면*/
+        //    if (hash.Contains(key) /*&& !NavMesh.Raycast(playerPos, targetPos, out hit, NavMesh.AllAreas)*/)
+        //        isVisible = true; /*장애물없고 시야 범위 내에 있으면*/
 
-            foreach (var r in go.GetComponentsInChildren<Renderer>())
-            {
-                r.enabled = isVisible;
-            }
+        //    foreach (var r in go.GetComponentsInChildren<Renderer>())
+        //    {
+        //        r.enabled = isVisible;
+        //    }
 
-            foreach (var r in go.GetComponentsInChildren<Canvas>())
-            {
-                r.enabled = isVisible;
-            }
-        }
+        //    foreach (var r in go.GetComponentsInChildren<Canvas>())
+        //    {
+        //        r.enabled = isVisible;
+        //    }
+        //}
     }
 
     private Transform GetOrCreateParent(string name)
