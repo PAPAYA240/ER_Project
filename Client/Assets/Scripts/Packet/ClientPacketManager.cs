@@ -141,10 +141,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SRest, PacketHandler.S_RestHandler);		
 		_onRecv.Add((ushort)MsgId.SProjectileRozzi, MakePacket<S_ProjectileRozzi>);
 		_handler.Add((ushort)MsgId.SProjectileRozzi, PacketHandler.S_ProjectileRozziHandler);		
-		_onRecv.Add((ushort)MsgId.SYukiStud, MakePacket<S_YukiStud>);
-		_handler.Add((ushort)MsgId.SYukiStud, PacketHandler.S_YukiStudHandler);		
-		_onRecv.Add((ushort)MsgId.SYukiSkillEffect, MakePacket<S_YukiSkillEffect>);
-		_handler.Add((ushort)MsgId.SYukiSkillEffect, PacketHandler.S_YukiSkillEffectHandler);
+		_onRecv.Add((ushort)MsgId.SYukistud, MakePacket<S_Yukistud>);
+		_handler.Add((ushort)MsgId.SYukistud, PacketHandler.S_YukistudHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

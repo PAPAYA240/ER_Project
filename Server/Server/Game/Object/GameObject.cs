@@ -1,18 +1,12 @@
 ﻿using Google.Protobuf.Protocol;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
-using Lucene.Net.Store;
-using ServerCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Numerics;
-using System.Threading;
 using System.Threading.Tasks;
 using static Player_StunState;
-using static Server.Game.GameObject;
 using static Server.Game.StunState;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.Game
 {
@@ -723,6 +717,18 @@ namespace Server.Game
         {
             IsCcImmune = isUnStoppable;
             UpdateStatusFlag();
+        }
+
+        public bool IsVisionShare()
+        {
+            foreach (StatusEffect effect in _statusEffects)
+            {
+                if (effect.type == "Coord" || effect.type == "VisionShare")
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         #endregion
 

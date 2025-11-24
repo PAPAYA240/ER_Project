@@ -26,7 +26,7 @@ public class LoadingManager : MonoBehaviour
     {
         nextScene = System.Enum.GetName(typeof(Define.Scene), type);
 
-        // ·Îµù¾ÀÀ» ¸ÕÀú ¿­±â
+        // ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         SceneManager.LoadScene("Loading");
     }
 
@@ -48,7 +48,7 @@ public class LoadingManager : MonoBehaviour
         {
             elapsed += Time.deltaTime;
 
-            // ½ÇÁ¦ progress
+            // ï¿½ï¿½ï¿½ï¿½ progress
             float realProgress = Mathf.Clamp01(op.progress / 0.9f);
 
             float displayProgress = Mathf.Lerp(0f, 1f, elapsed / minLoadTime);

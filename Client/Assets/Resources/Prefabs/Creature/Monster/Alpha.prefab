@@ -1809,9 +1809,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8aaf8e885585ec34ca0cd6eb6ac2e534, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _monsterType: 0
-  _rotationSpeed: 10
-  isSpawned: 0
+  type: 1
 --- !u!114 &8824076158832758506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1824,6 +1822,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6415413e3af48b24fa745e2bd62f04a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PrevHp: 0
 --- !u!195 &2155164845145939899
 NavMeshAgent:
   m_ObjectHideFlags: 0

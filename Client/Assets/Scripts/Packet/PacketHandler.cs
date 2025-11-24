@@ -315,13 +315,13 @@ class PacketHandler
 
         mpc.View.VisibleObjectIds.Clear(); // 나중에 렌더링 하고나서 바로 Clear하는게 나을듯?
         mpc.View.VisibleObjectIds = visibleObjectsPkt.VisibleObjectIds.ToHashSet();
-        Managers.Object.SetObjectVisible();
+       // Managers.Object.SetObjectVisible();
 
-        // TEMP
-        PlayerViewController pvc = go.GetComponent<PlayerViewController>();
-        if (pvc == null) return;
-        pvc.VisibleObjectIds.Clear();
-        pvc.VisibleObjectIds = visibleObjectsPkt.VisibleObjectIds.ToHashSet();
+       //// TEMP
+       // PlayerViewController pvc = go.GetComponent<PlayerViewController>();
+       // if (pvc == null) return;
+       // pvc.VisibleObjectIds.Clear();
+       // pvc.VisibleObjectIds = visibleObjectsPkt.VisibleObjectIds.ToHashSet();
     }
 
     public static void S_LevelUpHandler(PacketSession session, IMessage packet)
@@ -572,6 +572,7 @@ class PacketHandler
         EnvController ec = go.GetComponent<EnvController>();
         if (ec == null)
             return;
+
         ec.OnInteractionAuthorized();
     }
     
@@ -938,9 +939,9 @@ class PacketHandler
         pr.ChangeState(projectilePacket);
     }
 
-    public static void S_YukiStudHandler(PacketSession session, IMessage packet)
+    public static void S_YukistudHandler(PacketSession session, IMessage packet)
     {
-        S_YukiStud yukiStudPacket = packet as S_YukiStud;
+        S_Yukistud yukiStudPacket = packet as S_Yukistud;
 
         GameObject go = Managers.Object.FindById(yukiStudPacket.ObjectId);
         if (go == null)

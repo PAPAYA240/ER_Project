@@ -4,53 +4,64 @@ Shader "Custom/Outliner"
     {
         _Color ("Outline Color", Color) = (1,0,0,1)
         _Width ("Outline Width", Range(0.0, 0.1)) = 0.03
+        
+        [Header(Stencil)]
+        _StencilRef ("Stencil Reference", Float) = 0
+        [Enum(UnityEngine.Rendering.CompareFunction)] _StencilComp ("Stencil Comparison", Float) = 8
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
-        LOD 200
-
+        Tags { "RenderType"="Opaque" "Queue"="Geometry+1" "RenderPipeline"="UniversalPipeline" }
+        
         Pass
         {
-            Cull Front   // 앞면 제거
+            Name "Outline"
+            Tags { "LightMode" = "SRPDefaultUnlit" }
+            
+            Cull Front
             ZWrite On
             ZTest LEqual
-
-            CGPROGRAM
+            
+            Stencil
+            {
+                Ref [_StencilRef]
+                Comp [_StencilComp]
+                Pass Keep
+            }
+            
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #include "UnityCG.cginc"
-
-            fixed4 _Color;
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            
+            half4 _Color;
             float _Width;
-
-            struct appdata
+            
+            struct Attributes
             {
-                float4 vertex : POSITION;
-                float3 normal : NORMAL;
+                float4 positionOS : POSITION;
+                float3 normalOS : NORMAL;
             };
-
-            struct v2f
+            
+            struct Varyings
             {
-                float4 vertex : SV_POSITION;
+                float4 positionCS : SV_POSITION;
             };
-
-            v2f vert(appdata v)
+            
+            Varyings vert(Attributes input)
             {
-                v2f o;
-
-                float3 norm = normalize(v.normal);
-                // 애니메이션 있는 모델도 법선 기준으로 확장
-                v.vertex.xyz += norm * _Width;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                return o;
+                Varyings output;
+                float3 normalOS = normalize(input.normalOS);
+                float3 expandedPos = input.positionOS.xyz + normalOS * _Width;
+                output.positionCS = TransformObjectToHClip(expandedPos);
+                return output;
             }
-
-            fixed4 frag(v2f i) : SV_Target
+            
+            half4 frag(Varyings input) : SV_Target
             {
                 return _Color;
             }
-            ENDCG
+            ENDHLSL
         }
     }
 }

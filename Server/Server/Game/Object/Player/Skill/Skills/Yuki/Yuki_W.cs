@@ -41,7 +41,7 @@ public sealed class Yuki_W : SkillHandlerBase
         p.YukiStud = 4;
         Console.WriteLine($"유키 단추 두번들어오나? : {p.YukiStud}");
 
-        S_YukiStud yukiStudPkt = new S_YukiStud();
+        S_Yukistud yukiStudPkt = new S_Yukistud();
         yukiStudPkt.ObjectId = p.Id;
         yukiStudPkt.StudCnt = p.YukiStud;
 

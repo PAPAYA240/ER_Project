@@ -667,29 +667,24 @@ public class PlayerController : CreatureController
     #endregion
 
     [Header("X-Ray Settings")]
-    [SerializeField] private int playerWeaponStencilID = 100;
-    [SerializeField] private bool disablePlayerWeaponXRay = true;
+    [SerializeField] private int xRayIgnoreStencilID = 100;
     #region Shader
     void InitializeXRay()
     {
-        if (disablePlayerWeaponXRay)
-            SetupPlayerWeaponXRay();
+        SetupPlayerWeaponXRay();
     }
 
     void SetupPlayerWeaponXRay()
     {
         // Player 본체
-        SetXRayGroup(gameObject, playerWeaponStencilID);
+        SetXRayGroup(gameObject, xRayIgnoreStencilID);
 
-        // 현재 장착된 무기
         if (_eqipWeapon != null)
-        {
-            SetXRayGroup(_eqipWeapon, playerWeaponStencilID);
-        }
+            SetXRayGroup(_eqipWeapon, xRayIgnoreStencilID);
     }
     public void SetxRayFromPlayer(GameObject player)
     {
-            SetXRayGroup(player, playerWeaponStencilID);
+         SetXRayGroup(player, xRayIgnoreStencilID);
     }
     void SetXRayGroup(GameObject root, int stencilID)
     {
@@ -715,9 +710,9 @@ public class PlayerController : CreatureController
     // 무기 교체 시 호출 (기존 EquipWeapon 메서드에 추가)
     void OnWeaponEquipped(GameObject newWeapon)
     {
-        if (newWeapon != null && disablePlayerWeaponXRay)
+        if (newWeapon != null)
         {
-            SetXRayGroup(newWeapon, playerWeaponStencilID);
+            SetXRayGroup(newWeapon, xRayIgnoreStencilID);
         }
     }
 
@@ -751,7 +746,15 @@ public class PlayerController : CreatureController
             }
         }
     }
+    void SetRenderingLayerMask(GameObject root, uint layerMask)
+    {
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
 
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.renderingLayerMask = layerMask;
+        }
+    }
     void SetupRenderingLayer()
     {
         uint playerLayer = 1u << 1; // Layer 1
@@ -764,15 +767,7 @@ public class PlayerController : CreatureController
         }
     }
 
-    void SetRenderingLayerMask(GameObject root, uint layerMask)
-    {
-        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
-
-        foreach (Renderer renderer in renderers)
-        {
-            renderer.renderingLayerMask = layerMask;
-        }
-    }
+   
     #endregion
     public void SyncPosFromServer(S_Move movePacket)
     {

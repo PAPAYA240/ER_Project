@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class HyunwooSound : MonoBehaviour
 {
-
     enum Sounds
     {
         Q_1, Q_2, Q_3,
@@ -35,12 +34,10 @@ public class HyunwooSound : MonoBehaviour
         
     }
 
-    
     void Update()
     {
         
     }
-
     public void UseSkill(string keyCode)
     {
         string key = keyCode.ToString() + $"_{Random.Range(1,4)}";
