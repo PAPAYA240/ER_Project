@@ -706,6 +706,21 @@ class PacketHandler
         yukiPyosik.ActivateYukiPyosik(go);
     }
 
+    public static void S_YukiSkillEffectHandler(PacketSession session, IMessage packet)
+    {
+        S_YukiSkillEffect YukiSkillEffectPkt = packet as S_YukiSkillEffect;
+
+        GameObject go = Managers.Object.FindById(YukiSkillEffectPkt.ObjectId);
+        if (go == null)
+            return;
+
+        YukiSkillRange yukiSkillEffect = go.GetComponentInChildren<YukiSkillRange>();
+        if (yukiSkillEffect == null)
+            return;
+
+        yukiSkillEffect.SetPosition(new Vector3(YukiSkillEffectPkt.PosInfo.PosX, YukiSkillEffectPkt.PosInfo.PosY, YukiSkillEffectPkt.PosInfo.PosZ));
+    }
+
     public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)
     {
         S_OccupyBeacon occupyBeaconPkt = packet as S_OccupyBeacon;

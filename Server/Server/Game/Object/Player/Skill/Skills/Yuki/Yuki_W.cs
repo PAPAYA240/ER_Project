@@ -1,9 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
 using Server.Game;
 using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Text;
 using static Server.Data.DataUtils;
 
 public sealed class Yuki_W : SkillHandlerBase

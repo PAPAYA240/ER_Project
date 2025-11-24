@@ -4,6 +4,6 @@ public class LoadingController : MonoBehaviour
 {
     private void Start()
     {
-        StartCoroutine(LoadingManager.Instance.LoadSceneProcess());
+        StartCoroutine(LoadingManager.Instance.CoLoadSceneProcess());
     }
 }

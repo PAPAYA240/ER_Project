@@ -30,7 +30,7 @@ public class LoadingManager : MonoBehaviour
         SceneManager.LoadScene("Loading");
     }
 
-    public IEnumerator LoadSceneProcess()
+    public IEnumerator CoLoadSceneProcess()
     {
         Debug.Log("LoadSceneProcess START");
 
@@ -41,6 +41,8 @@ public class LoadingManager : MonoBehaviour
 
         float minLoadTime = 1.0f;
         float elapsed = 0f;
+
+        LoadingUIController.Instance?.StartAnimation();
 
         while (!op.isDone)
         {
@@ -54,7 +56,9 @@ public class LoadingManager : MonoBehaviour
             LoadingUIController.Instance?.SetProgress(Mathf.Min(realProgress, displayProgress));
 
             if (displayProgress >= 1f && op.progress >= 0.9f)
+            {
                 op.allowSceneActivation = true;
+            }
 
             yield return null;
         }
