@@ -7,7 +7,7 @@ using UnityEngine.AI;
 public class FogOfWarVision : MonoBehaviour
 {
     public int _rayCount = 200;          // 레이 개수
-    public float _viewDistance = 12f;     // 시야 거리
+    public float _viewDistance = 8.5f;     // 시야 거리
     public LayerMask _obstacleMask;      // 구조물 마스크
 
     Mesh _mesh;
