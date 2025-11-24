@@ -87,7 +87,7 @@ public class PlayerViewController : MonoBehaviour
     }
 
     public void OnDead(S_Die packet)
-    {
+    {      
     }
 
     public S_Die GetRestCommand()
