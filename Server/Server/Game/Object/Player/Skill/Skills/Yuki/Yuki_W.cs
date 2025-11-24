@@ -2,6 +2,7 @@
 using Server.Game;
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Text;
 using static Server.Data.DataUtils;
 
@@ -42,7 +43,13 @@ public sealed class Yuki_W : SkillHandlerBase
     {
         p.YukiStud = 4;
         Console.WriteLine($"유키 단추 두번들어오나? : {p.YukiStud}");
-        
+
+        S_YukiStud yukiStudPkt = new S_YukiStud();
+        yukiStudPkt.ObjectId = p.Id;
+        yukiStudPkt.StudCnt = p.YukiStud;
+
+        p.Room.Push(p.Room.Broadcast, yukiStudPkt);
+
         base.OnExit(p, ctx);
     }
 }

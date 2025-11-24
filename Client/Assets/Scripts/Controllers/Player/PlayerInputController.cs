@@ -19,8 +19,6 @@ public class PlayerInputController : MonoBehaviour
     [SerializeField] private LayerMask _playerMask;
     [SerializeField] private LayerMask _beaconMask;
 
-    private bool isRest = false;
-
     // 커서가 올려져 있는 현재 타겟
     private GameObject _hoverTarget;
 
