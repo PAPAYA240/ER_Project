@@ -20,9 +20,7 @@ public class UI_HealPack : UI_Base
         Bind<UnityEngine.UI.Image>(typeof(Images));
     }
 
-    void Update()
-    {
-    }
+
     public void SetSecText(int sec)
     {
         if (sec <= 0)
