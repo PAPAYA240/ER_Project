@@ -22,7 +22,7 @@ public class PlaySoundNode : ActionNode, IStateChangeListener
     {
         foreach (string name in soundPaths)
         {
-            string fullPath = $"Monster/{monster.Type}_{name}";
+            string fullPath = $"Sounds/Monster/{monster.Type}_{name}";
             Vector3 position = monster.transform.position;
             float duration = Managers.Sound.Play3D(fullPath, position);
             yield return new WaitForSeconds(duration);
