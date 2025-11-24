@@ -32,12 +32,14 @@ Shader "ERBS_FX/FX_MaskFlow_AB_Cu" {
 			{
 				float4 pos : POSITION;
 				float2 uv : TEXCOORD0;
+				float4 color : COLOR;      // 파티클 Start Color
 			};
 
 			struct Vertex_Stage_Output
 			{
 				float2 uv : TEXCOORD0;
 				float4 pos : SV_POSITION;
+				float4 color : COLOR;      // 프래그먼트로 전달
 			};
 
 			Vertex_Stage_Output vert(Vertex_Stage_Input input)
@@ -45,6 +47,7 @@ Shader "ERBS_FX/FX_MaskFlow_AB_Cu" {
 				Vertex_Stage_Output output;
 				output.uv = (input.uv.xy * _MainTex_ST.xy) + _MainTex_ST.zw;
 				output.pos = mul(unity_MatrixVP, mul(unity_ObjectToWorld, input.pos));
+				output.color = input.color;      // Start Color 전달
 				return output;
 			}
 
@@ -55,6 +58,7 @@ Shader "ERBS_FX/FX_MaskFlow_AB_Cu" {
 			struct Fragment_Stage_Input
 			{
 				float2 uv : TEXCOORD0;
+				float4 color : COLOR;      // vert에서 넘긴 색
 			};
 
 			float4 frag(Fragment_Stage_Input input) : SV_TARGET
@@ -68,7 +72,7 @@ Shader "ERBS_FX/FX_MaskFlow_AB_Cu" {
 				    discard; 
 				}
 
-				return mainTexColor * _Color;
+				return mainTexColor/*  * input.color */ * _Color;
 			}
 
 			ENDHLSL

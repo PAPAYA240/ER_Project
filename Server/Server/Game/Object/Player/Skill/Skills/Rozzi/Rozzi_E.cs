@@ -46,7 +46,7 @@ public sealed class Rozzi_E : RozziSkillHandler
         _target = ObjectManager.Instance.Find(ctx.TargetId);
         if(_target == null)
         {
-
+            ctx.RequestFinish();
         }
 
         _startPos = p.Position;
@@ -54,6 +54,7 @@ public sealed class Rozzi_E : RozziSkillHandler
         _dir = Vector3.Normalize(_midPos - _startPos);
 
         SendSkillConfirmPacket(p);
+        p.Room.AddStatusEffect(p, p, _keyCode, null); // 지정불가
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -140,12 +141,15 @@ public sealed class Rozzi_E : RozziSkillHandler
          authoritativeEnd: true);
 
         AddAttackToken(p);
+
+        // 지정 불가 해제
+        p.RemoveStatusEffects("Untargetable");
     }
 
     public override bool CanCast(Player p, SkillContext ctx)
     {
         _target = ObjectManager.Instance.Find(ctx.TargetId);
-        if (_target == null || !_target.IsAttackable() || /*!_target.IsUntargetable() || */
+        if (_target == null || !_target.IsAttackable() || _target.IsUntargetable() || 
             (_target != null && Vector3.Distance(_target.Position, p.Position) > _dashDistance))
         {
             return false;
@@ -156,7 +160,7 @@ public sealed class Rozzi_E : RozziSkillHandler
 
     private void MakeTargetPlayerStun()
     {
-        if (_target is Player targetPlayer)
+        if (_target is Player targetPlayer && !targetPlayer.IsUnstoppable())
         {
             StunStateDesc desc = new StunStateDesc();
             desc.EndPos = _target.Position;

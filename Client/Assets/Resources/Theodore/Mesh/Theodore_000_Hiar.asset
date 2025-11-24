@@ -2,12 +2,12 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!43 &4300000
 Mesh:
-  serializedVersion: 11
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Theodore_000_Hiar
+  serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
     firstByte: 0
@@ -25,18 +25,18 @@ Mesh:
     channels: []
     fullWeights: []
   m_BindPose:
-  - e00: 1.3430889E-06
+  - e00: 0.0000013430889
     e01: 0
     e02: -1
     e03: 1.8882374
-    e10: 1.4026934E-06
+    e10: 0.0000014026934
     e11: -1
-    e12: 1.8846036E-12
+    e12: 1.8846036e-12
     e13: -0.012533814
     e20: -1
-    e21: -1.4026934E-06
-    e22: -1.3430888E-06
-    e23: 2.498455E-06
+    e21: -0.0000014026934
+    e22: -0.0000013430888
+    e23: 0.000002498455
     e30: 0
     e31: 0
     e32: 0
@@ -249,7 +249,7 @@ Mesh:
     e31: 0
     e32: 0
     e33: 1
-  m_BoneNameHashes: 3b508b1f92a34c47832bc45ab68ea7+3af4aca+4eb0f5b+0b93c14+a31a95c04d1e15431bf88550cb09ddc2a71e49f+1a8c5ed389aefa95d
+  m_BoneNameHashes: 3b508b1f92a34c47832bc45ab68ea7b3af4acab4eb0f5bb0b93c14ba31a95c04d1e15431bf88550cb09ddc2a71e49fb1a8c5ed389aefa95d
   m_RootBoneNameHash: 529223739
   m_BonesAABB:
   - m_Min: {x: -0.20711148, y: -0.13694128, z: -0.11157968}
@@ -281,13 +281,13 @@ Mesh:
   - m_Min: {x: -0.1364606, y: -0.025848031, z: -0.013032913}
     m_Max: {x: -0.00025701523, y: 0.030417323, z: 0.007015705}
   m_VariableBoneCountWeights:
-    m_Data:
+    m_Data: 
   m_MeshCompression: 2
   m_IsReadable: 0
   m_KeepVertices: 0
   m_KeepIndices: 0
   m_IndexFormat: 0
-  m_IndexBuffer:
+  m_IndexBuffer: 
   m_VertexData:
     serializedVersion: 3
     m_VertexCount: 0
@@ -349,7 +349,7 @@ Mesh:
       format: 0
       dimension: 0
     m_DataSize: 0
-    _typelessdata:
+    _typelessdata: 
   m_CompressedMesh:
     m_Vertices:
       m_NumItems: 17109
@@ -391,7 +391,7 @@ Mesh:
       m_NumItems: 0
       m_Range: 0
       m_Start: 0
-      m_Data:
+      m_Data: 
       m_BitSize: 0
     m_BoneIndices:
       m_NumItems: 8972
@@ -407,13 +407,13 @@ Mesh:
     m_Extent: {x: 0.11132736, y: 0.13216123, z: 0.13288164}
   m_MeshUsageFlags: 1
   m_CookingOptions: 30
-  m_BakedConvexCollisionMesh:
-  m_BakedTriangleCollisionMesh:
-  m_MeshMetrics[0]: 1
-  m_MeshMetrics[1]: 1
+  m_BakedConvexCollisionMesh: 
+  m_BakedTriangleCollisionMesh: 
+  'm_MeshMetrics[0]': 1
+  'm_MeshMetrics[1]': 1
   m_MeshOptimizationFlags: -1
   m_StreamData:
     serializedVersion: 2
     offset: 0
     size: 0
-    path:
+    path: 

@@ -226,6 +226,7 @@ namespace Server.Game
         {
             _mulBuffOffset = ratio;
             Times = times;
+            UpdateStatusFlag();
         }
 
         public bool OnAttackPerformed()
