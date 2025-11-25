@@ -104,26 +104,4 @@ public class Util
 
         return frames.ToArray();
     }
-
-    public static void LoadSceneWithCallback(string sceneName, Action onLoaded)
-    {
-        Action callbackWrapper = null;
-        callbackWrapper = () =>
-        {
-            onLoaded?.Invoke();
-            SceneManager.sceneLoaded -= handler;
-        };
-
-        void handler(Scene scene, LoadSceneMode mode)
-        {
-            if (scene.name == sceneName)
-            {
-                callbackWrapper?.Invoke();
-            }
-        }
-
-        SceneManager.sceneLoaded += handler;
-
-        LoadingManager.Instance.LoadScene((Define.Scene)Enum.Parse(typeof(Define.Scene), sceneName));
-    }
 }

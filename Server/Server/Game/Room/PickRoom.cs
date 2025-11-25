@@ -207,7 +207,7 @@ namespace Server.Game
                     clientSession.MyPlayer = ObjectManager.Instance.Add<Hyunwoo>();
                 else
                     clientSession.MyPlayer = ObjectManager.Instance.Add<Player>();
-
+                
                 {
                     clientSession.MyPlayer.Info.Name = $"Player_{clientSession.MyPlayer.Info.ObjectId}";
                     clientSession.MyPlayer.Info.PosInfo.State = CreatureState.Idle;
@@ -229,6 +229,7 @@ namespace Server.Game
                     continue;
 
                 clientSession.CurRoom = room.RoomId;
+                Console.WriteLine($"RoomId: {room.RoomId}");
                 room.Push(room.EnterGame, player, _pickPlayers[i].Team);
             }
         }

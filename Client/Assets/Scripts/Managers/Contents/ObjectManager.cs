@@ -30,7 +30,21 @@ public class ObjectManager
     #region Add
     public void Add(ObjectInfo info, bool myPlayer = false)
 	{
-		GameObjectType objectType = GetObjectTypeById(info.ObjectId);
+        if (!LoadingManager.Instance.IsSceneLoaded("Game"))
+        {
+            LoadingManager.Instance.EnqueuePostLoadAction(() =>
+            {
+                SafeAdd(info, myPlayer);
+            });
+            return;
+        }
+
+        SafeAdd(info, myPlayer);
+    }
+
+    void SafeAdd(ObjectInfo info, bool myPlayer)
+    {
+        GameObjectType objectType = GetObjectTypeById(info.ObjectId);
         switch (objectType)
         {
             case GameObjectType.Player:
@@ -50,18 +64,11 @@ public class ObjectManager
                 break;
         }
     }
+
     private void AddPlayer(ObjectInfo info, bool myPlayer)
     {
         if (myPlayer)
         {
-            BaseScene scene = Managers.Scene.CurrentScene;
-            if(scene is GameScene)
-                Debug.Log("CurScene : GameScene");
-            else if(scene is PickScene)
-                Debug.Log("CurScene : PickScene");
-            else
-                Debug.Log("CurScene : LoadingScene");
-
             GameObject go = Managers.Resource.Instantiate($"Creature/My{info.Player.CharType}");
             go.name = info.Name;
             _objects.Add(info.ObjectId, go);
@@ -75,10 +82,10 @@ public class ObjectManager
             MyPlayer.Hp = info.StatInfo.MaxHp;
             MyPlayer.Stamina = info.StatInfo.MaxStamina;
             MyPlayer.UI.PlayerHUD.AddPlayerBoardToBattleBoard(MyPlayer);
-            //if (Managers.Scene.CurrentScene is GameScene scene)
-            //{
-            //    scene.AddPlayer(go, MyPlayer);
-            //}   
+            if (Managers.Scene.CurrentScene is GameScene scene)
+            {
+                scene.AddPlayer(go, MyPlayer);
+            }
         }
         else
         {
@@ -105,10 +112,10 @@ public class ObjectManager
 
             Managers.Object.MyPlayer.SetxRayFromPlayer(go);
             MyPlayer.UI.PlayerHUD.AddPlayerBoardToBattleBoard(pc);
-            //if (Managers.Scene.CurrentScene is GameScene scene)
-            //{
-            //    scene.AddPlayer(go, pc);
-            //}
+            if (Managers.Scene.CurrentScene is GameScene scene)
+            {
+                scene.AddPlayer(go, pc);
+            }
         }
     }
     private void AddMonster(ObjectInfo info)

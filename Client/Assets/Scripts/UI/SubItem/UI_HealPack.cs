@@ -23,12 +23,16 @@ public class UI_HealPack : UI_Base
 
     public void SetSecText(int sec)
     {
-        if (sec <= 0)
-            GetText((int)Texts.Sec_Text).gameObject.SetActive(false);
-        else
-            GetText((int)Texts.Sec_Text).gameObject.SetActive(true);
+        var tmp = GetText((int)Texts.Sec_Text);
+        if (tmp == null || tmp.gameObject == null)
+            return;
 
-        GetText((int)Texts.Sec_Text).text = $"{sec.ToString()}s";
+        if (sec <= 0)
+            tmp.gameObject.SetActive(false);
+        else
+            tmp.gameObject.SetActive(true);
+
+        tmp.text = $"{sec.ToString()}s";
     }
 
     public void SetProgressAmount(float currentRemainingTime)

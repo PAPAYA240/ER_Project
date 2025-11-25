@@ -12,10 +12,9 @@ class PacketHandler
 	{
 		S_EnterGame enterGamePacket = packet as S_EnterGame;
 
-        Util.LoadSceneWithCallback("Game", () =>
-        {
-            Managers.Object.Add(enterGamePacket.Player, myPlayer: true);
-        });
+        LoadingManager.Instance.LoadScene(Define.Scene.Game);
+
+        Managers.Object.Add(enterGamePacket.Player, myPlayer: true);
     }
 
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)
@@ -23,6 +22,7 @@ class PacketHandler
         S_LeaveGame leaveGamePacket = packet as S_LeaveGame;
         Managers.Object.Clear();
     }
+
     public static void S_SpawnHandler(PacketSession session, IMessage packet)
     {
         S_Spawn spawnPacket = packet as S_Spawn;
@@ -31,6 +31,7 @@ class PacketHandler
             Managers.Object.Add(obj, myPlayer: false);
         }
     }
+
     public static void S_DespawnHandler(PacketSession session, IMessage packet)
     {
         S_Despawn despawnPacket = packet as S_Despawn;
