@@ -43,7 +43,7 @@ public class GameScene : BaseScene
     {
         Dictionary<int, GameObject> team;
 
-        if (Managers.Object.MyPlayer.ObjInfo.Player.Team == 1)
+        if (Managers.Object.MyPlayer?.ObjInfo?.Player?.Team == 1)
         {
             team = Team1;
         }

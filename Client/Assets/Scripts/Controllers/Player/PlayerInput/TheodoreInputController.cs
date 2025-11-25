@@ -197,6 +197,8 @@ public class TheodoreInputController : PlayerInputController
         _player.UI.PlayerInterface.SetChargingBar(DataManager.SkillDict[CharacterType.Theodore][key].name, 1.5f, EFFECT_DURATION);
         _player.Speed -= SKILL_CHARGE_SPEED;
 
+        _player.Sound.GetRandomVoice(key.ToString());
+
         SendSkillPreparePacket(key);
         while (Input.GetKey(key) &&  _elapsedTime < EFFECT_DURATION)
         {
@@ -209,10 +211,7 @@ public class TheodoreInputController : PlayerInputController
         {
             SendSkillInputPacket(key, SKIP_STATE_CHECK);
         }
-
-        if (_player.Sound != null)
-            _player.Sound.GetRandomVoice(key.ToString());
-
+        _player.Sound.GetRandomVoice(key.ToString());
         _player.Speed = _originSpeed;
     }
     private void CancelSkill(KeyCode key)

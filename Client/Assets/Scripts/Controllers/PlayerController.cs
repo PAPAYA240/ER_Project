@@ -40,6 +40,8 @@ public class PlayerController : CreatureController
     public ItemStat ItemStat { get; private set; } = new ItemStat();
     protected GameObject _eqipWeapon = null;
 
+    public SoundController Sound;
+
     #region Property
     public override float Attack
     {
@@ -275,6 +277,10 @@ public class PlayerController : CreatureController
         _agent.acceleration = 999;
         _agent.angularSpeed = 720;
         _agent.stoppingDistance = 0.1f;
+
+        // Sound
+        Sound = gameObject.GetComponent<SoundController>();
+
     }
 
     private void InitEquipItem()
@@ -405,6 +411,10 @@ public class PlayerController : CreatureController
 
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
+        // Animation에 맞는 Sound
+        if (Sound != null)
+            Sound.GetEffect(animInfo.Name);
+
         bool isUpperBodySkill = animInfo.Name == "ROZZI_D";
         if (isUpperBodySkill)
         {

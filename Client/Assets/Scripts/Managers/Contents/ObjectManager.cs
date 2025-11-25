@@ -168,6 +168,8 @@ public class ObjectManager
                 continue;
 
             GameObject target = keyValue.Value;
+            if (target == null)
+                continue;
 
             float visionRange = 8.5f;
 
@@ -196,6 +198,9 @@ public class ObjectManager
 
     public void SetVisibleObjects(HashSet<GameObject> objects)
     {
+        if (MyPlayer == null || MyPlayer.View == null)
+            return;
+
         HashSet<int> hash = MyPlayer.View.VisibleObjectIds;
 
         foreach (var keyValue in _objects)
@@ -205,6 +210,8 @@ public class ObjectManager
                 continue;
 
             GameObject go = keyValue.Value;
+            if (go == null)
+                continue;
 
             bool isVisible = false;
 

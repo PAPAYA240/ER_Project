@@ -197,6 +197,13 @@ class PacketHandler
             if (attPc == null)
                 return;
 
+            // Victory Sound
+            if (Managers.Object.MyPlayer.Id == diePacket.AttackerId)
+            {
+                if (attPc.Sound != null)
+                    attPc.Sound.GetRandomVoice("Victory");
+            }
+
             Managers.Object.MyPlayer.UI.NotifyKill(attPc, pc); 
         }
     }
@@ -244,7 +251,18 @@ class PacketHandler
            KeyCode mkey = (KeyCode)interactPacket.KeyCode;
            KeyCode tKey = (KeyCode)interactPacket.TargetKeyCode;
            creature.OnHitboxCollision(mkey, tKey);
-       }
+
+            PlayerController pc = creature.GetComponentInChildren<PlayerController>();
+            if (pc == null) return;
+
+            if (pc.Sound != null) // 테오도르 WQ skill 사운드
+            {
+                if(tKey == KeyCode.Q)
+                    pc.Sound.GetEffect("SKILL_WQ");
+                else if(tKey == KeyCode.E)
+                    pc.Sound.GetEffect("SKILL_WE");
+            }
+        }
     }
 
     public static void S_WeaponHandler(PacketSession session, IMessage packet)
@@ -705,6 +723,25 @@ class PacketHandler
             return;
 
         yukiPyosik.ActivateYukiPyosik(go);
+    }
+    
+    public static void S_SoundHandler(PacketSession session, IMessage packet)
+    {
+        S_Sound soundPkt = packet as S_Sound;
+        GameObject go = Managers.Object.FindById(soundPkt.ObjectId);
+        if (go == null) return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null) return;
+
+        if (pc.Sound != null)
+        {
+            string name = soundPkt.Name;
+            if (soundPkt.Type == "Voice")
+                pc.Sound.GetRandomVoice(name);
+            else
+                pc.Sound.GetRandomEffect(name);
+        }
     }
 
     public static void S_YukiSkillEffectHandler(PacketSession session, IMessage packet)

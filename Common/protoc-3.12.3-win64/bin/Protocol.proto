@@ -113,6 +113,8 @@ enum MsgId {
   S_PROJECTILE_ROZZI = 88;
   S_YUKI_STUD = 89;
   S_YUKI_SKILL_EFFECT = 90;
+
+  S_SOUND = 91;
 }
 
 enum CombatState{
@@ -394,6 +396,14 @@ message C_SkillExecute{
    float mousePosX = 3;
    float mousePosZ = 4;
 }
+
+message S_Sound {
+  int32 objectId = 1;
+  string type = 2;
+  string name = 3;
+
+}
+
 
 message S_Spawn {
   repeated ObjectInfo objects = 1;
