@@ -113,7 +113,12 @@ public class BaseController : MonoBehaviour
         transform.position = CellPos;
         transform.rotation = RotInfo;
         if (true == isWarp)
+        {
+            if (_agent == null || !_agent.isOnNavMesh)
+                return;
+
             _agent.Warp(CellPos);
+        }   
     }
 
     public Vector3 CellPos

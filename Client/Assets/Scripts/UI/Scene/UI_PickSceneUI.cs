@@ -39,8 +39,6 @@ public class UI_PickSceneUI : UI_Scene
 
     Sprite [] _countDownSprites = new Sprite [10];
 
-    UI_ReadyButton _readyButton = null;
-
     public override void Init()
     {
         base.Init();

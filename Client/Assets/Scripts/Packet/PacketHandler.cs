@@ -4,6 +4,7 @@ using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 class PacketHandler
 {
@@ -11,9 +12,11 @@ class PacketHandler
 	{
 		S_EnterGame enterGamePacket = packet as S_EnterGame;
 
-        Managers.Scene.LoadScene(Define.Scene.Game);
-        Managers.Object.Add(enterGamePacket.Player, myPlayer: true);
-	}
+        Util.LoadSceneWithCallback("Game", () =>
+        {
+            Managers.Object.Add(enterGamePacket.Player, myPlayer: true);
+        });
+    }
 
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)
     {
@@ -263,7 +266,7 @@ class PacketHandler
 
     public static void S_EnterPickHandler(PacketSession session, IMessage packet)
     {
-        Managers.Scene.LoadScene(Define.Scene.Pick);
+        LoadingManager.Instance.LoadScene(Define.Scene.Pick);
 
         S_EnterPick enterPickPacket = packet as S_EnterPick;
         Managers.Info.PickIdx = enterPickPacket.PickIdx;

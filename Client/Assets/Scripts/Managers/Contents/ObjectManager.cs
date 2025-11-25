@@ -51,6 +51,14 @@ public class ObjectManager
     {
         if (myPlayer)
         {
+            BaseScene scene = Managers.Scene.CurrentScene;
+            if(scene is GameScene)
+                Debug.Log("CurScene : GameScene");
+            else if(scene is PickScene)
+                Debug.Log("CurScene : PickScene");
+            else
+                Debug.Log("CurScene : LoadingScene");
+
             GameObject go = Managers.Resource.Instantiate($"Creature/My{info.Player.CharType}");
             go.name = info.Name;
             _objects.Add(info.ObjectId, go);
@@ -64,10 +72,10 @@ public class ObjectManager
             MyPlayer.Hp = info.StatInfo.MaxHp;
             MyPlayer.Stamina = info.StatInfo.MaxStamina;
             MyPlayer.UI.PlayerHUD.AddPlayerBoardToBattleBoard(MyPlayer);
-            if (Managers.Scene.CurrentScene is GameScene scene)
-            {
-                scene.AddPlayer(go, MyPlayer);
-            }
+            //if (Managers.Scene.CurrentScene is GameScene scene)
+            //{
+            //    scene.AddPlayer(go, MyPlayer);
+            //}   
         }
         else
         {
@@ -94,10 +102,10 @@ public class ObjectManager
 
             Managers.Object.MyPlayer.SetxRayFromPlayer(go);
             MyPlayer.UI.PlayerHUD.AddPlayerBoardToBattleBoard(pc);
-            if (Managers.Scene.CurrentScene is GameScene scene)
-            {
-                scene.AddPlayer(go, pc);
-            }
+            //if (Managers.Scene.CurrentScene is GameScene scene)
+            //{
+            //    scene.AddPlayer(go, pc);
+            //}
         }
     }
     private void AddMonster(ObjectInfo info)
@@ -199,7 +207,12 @@ public class ObjectManager
 
     public void SetVisibleObjects(HashSet<GameObject> objects)
     {
+        if (MyPlayer == null || MyPlayer.View == null)
+            return;
+
         HashSet<int> hash = MyPlayer.View.VisibleObjectIds;
+        if (hash == null)
+            return;
 
         foreach (var keyValue in _objects)
         {
@@ -208,6 +221,9 @@ public class ObjectManager
                 continue;
 
             GameObject go = keyValue.Value;
+
+            if (go == null)
+                continue;
 
             bool isVisible = false;
 

@@ -232,6 +232,10 @@ public class UI_PlayerHUD : UI_Scene
 
     public void SetMinimapHealPackImg(int id, bool isActivate)
     {
+        GameObject minimap = GetObject((int)GameObjects.Minimap);
+        if(minimap == null) 
+            return;
+
         switch (id)
         {
             case 0:

@@ -24,7 +24,7 @@ public sealed class Rozzi_D : SkillHandlerBase
         _animName = ANIM_SKILL;
         _keyCode = KeyCode.D;
 
-        HitboxCreated = false;
+        HitboxRequired = false;
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
@@ -44,7 +44,7 @@ public sealed class Rozzi_D : SkillHandlerBase
         // 애니메이션 패킷 전송
         p.SendAnimPacket("ROZZI_D", 0.05f);
         
-        if (HitboxCreated)
+        if (HitboxRequired)
             CreateHitbox(p, ctx);
 
         p.Room.AddStatusEffect(p, p, _keyCode, null);   // 이속 증가

@@ -41,7 +41,7 @@ public class GameScene : BaseScene
     {
         Dictionary<int, GameObject> team;
 
-        if (Managers.Object.MyPlayer.ObjInfo.Player.Team == 1)
+        if (Managers.Info.Team == 1)
         {
             team = Team1;
         }
@@ -59,6 +59,9 @@ public class GameScene : BaseScene
             Managers.Object.ResiterVisibleObjects(obj, _visibleObjects);
         }
 
+        if (_visibleObjects == null || Managers.Object == null)
+            return;
+
         Managers.Object.SetVisibleObjects(_visibleObjects);
     }
 
@@ -73,7 +76,7 @@ public class GameScene : BaseScene
             Debug.Log("Sucess AddPlayer");
         }
 
-        if (pc.ObjInfo.Player.Team == 1)
+        if (Managers.Info.Team == 1)
         {
             Team1.Add(pc.Id, go);
         }

@@ -229,7 +229,7 @@ public class PlayerController : CreatureController
         set { _isRest = value; }
     }
 
-    private YukiSkillRange _yukiSkillRange;
+    private YukiSkillRange _yukiSkillRange = null;
     public YukiSkillRange GetYukiSkillRange() => _yukiSkillRange;
     protected override void Init()
     {
@@ -761,6 +761,9 @@ public class PlayerController : CreatureController
     #endregion
     public void SyncPosFromServer(S_Move movePacket)
     {
+        if (_agent == null || !_agent.isOnNavMesh)
+            return;
+
         _agent.isStopped = false;
 
         _serverPos = new Vector3
@@ -775,6 +778,9 @@ public class PlayerController : CreatureController
 
     public void SyncPosFromServer(PositionInfo positionInfo, RotationInfo rotationInfo)
     {
+        if (_agent == null || !_agent.isOnNavMesh)
+            return;
+
         _agent.isStopped = false;
 
         _serverPos = new Vector3

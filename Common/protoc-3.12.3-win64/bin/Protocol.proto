@@ -1058,7 +1058,6 @@ message S_YukiSkillEffect {
   PositionInfo posInfo = 2;
   RotationInfo rotInfo = 3;
 }
-}
 
 message S_EnterSlot{
 	int32 slotIdx = 1;
