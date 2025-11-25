@@ -68,7 +68,8 @@ public class Projectile_Rozzi : Projectile
 
                 break;
             case BOMB_ROZZI.Exploded:   // 폭발
-                _visionCircle.SetActivate(false);
+                if (_visionCircle != null)
+                    _visionCircle.SetActivate(false);
                 break;
             default:
 
