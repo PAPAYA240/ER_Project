@@ -166,6 +166,26 @@ namespace Server.Game
             Tokens.RemoveAll(t => t.CancelOnTakeDamage);
         }
 
+        public NextInputToken TryHandleAttackWithTokens()
+        {
+            var tok = Tokens
+                .Where(t => t.Active
+                            && t.Trigger == InputKind.Attack
+                            && t.RemainingUses > 0
+                            && TimeUtil.UtcSec() <= t.ExpireUtc)
+                .OrderByDescending(t => t.Priority)
+                .FirstOrDefault();
+
+            if(tok != null)
+            {
+                tok.RemainingUses--;
+                if (tok.RemainingUses <= 0)
+                    tok.Active = false;
+            }
+
+            return tok;
+        }
+
         // (옵션) 조회 헬퍼: 특정 트리거의 최고 우선순위 토큰
         public NextInputToken PeekToken(InputKind trigger)
         {

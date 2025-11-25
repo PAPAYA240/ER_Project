@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
+using System.Threading.Tasks;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -57,7 +58,7 @@ namespace Server.Game
 
         public override float AttackSpeed
         {
-            get { return ComposeFinal(STAT_ATTACK_SPEED, (Stat.AttackSpeed + DataManager.WeaponDict[Info.Player.Weapon].AttackSpeed) * (1 + _totalItemStat.AttackSpeed)) ; }
+            get { return ComposeFinal(STAT_ATTACK_SPEED, (Stat.AttackSpeed + DataManager.WeaponDict[Info.Player.Weapon].AttackSpeed) * (1 + _totalItemStat.AttackSpeed), false, _mulBuffOffset); }
             set { base.AttackSpeed = value; }
         }
 
@@ -191,7 +192,7 @@ namespace Server.Game
         }
         #endregion
 
-        #region Yuki
+        #region Yuki Privacy
         // 유키 단추용
         private static readonly int MaxStud = 4;
         private int _yukiStud_cnt = 4;
@@ -209,6 +210,38 @@ namespace Server.Game
         {
             get { return _isAttackActive; }
             set { _isAttackActive = value; }
+        }
+        #endregion
+
+        #region Rozzi Privacy
+        int _times = 0;
+        public int Times
+        {
+            get { return _times; }
+            set { _times = value; }
+        }
+
+        float _mulBuffOffset = 0f;
+        public void AttackSpeedBuff(float ratio, int times)
+        {
+            _mulBuffOffset = ratio;
+            Times = times;
+            UpdateStatusFlag();
+        }
+
+        public bool OnAttackPerformed()
+        {
+            if (Times == 0)
+            {
+                _mulBuffOffset = 0f;
+                UpdateStatusFlag();
+                return false;
+            }
+            else
+            {
+                Times--;
+                return true;
+            }
         }
         #endregion
 
@@ -256,6 +289,23 @@ namespace Server.Game
             // 실제 삭제
             foreach (int id in toRemove)
                 _damageRecords.Remove(id);
+        }
+
+        public int GetLastAttackerId()
+        {
+            int result = 0;
+            long lastTick = 0;
+
+            foreach(var recordKVP in _damageRecords)
+            {
+                if(lastTick < recordKVP.Value.Tick)
+                {
+                    lastTick = recordKVP.Value.Tick;
+                    result = recordKVP.Key;
+                }
+            }
+
+            return result;
         }
 
         public override void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false, bool isBasicAttack = false)
@@ -891,6 +941,18 @@ namespace Server.Game
             }
         }
 
+        public void SendItemStat()
+        {
+            S_ChangeItemStat packet = new S_ChangeItemStat();
+            packet.ObjectId = Id;
+            packet.ItemStat = _totalItemStat;
+
+            GameRoom room = Room;
+
+            if (room != null)
+                room.Broadcast(packet);
+        }
+
         #endregion
 
         #region Level
@@ -956,7 +1018,7 @@ namespace Server.Game
             S_VisibleObjects visibleObjsPkt = new S_VisibleObjects();
             visibleObjsPkt.ObjectId = Id;
             visibleObjsPkt.VisibleObjectIds.AddRange(Ids);
-            Session.Send(visibleObjsPkt);
+            Room.Push(Session.Send, visibleObjsPkt);
         }
 
         public void SendStatePacket()
@@ -979,7 +1041,7 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendAnimPacket(string animName, float ratio)
+        public void SendAnimPacket(string animName, float ratio = 0.05f, float speed = 0, bool isChangeSpeed = false)
         {
             S_Anim packet = new S_Anim()
             { 
@@ -987,7 +1049,9 @@ namespace Server.Game
                 AnimInfo = new AnimInfo()
                 {
                     Name = animName,
-                    Ratio = ratio
+                    Ratio = ratio,
+                    Speed = speed,
+                    IsChangeSpeed = isChangeSpeed
                 }
             };
             Room.Push(Room.Broadcast, packet);
@@ -1025,7 +1089,7 @@ namespace Server.Game
                 ServerCollision = serverCollision,
                 AuthoritativeEnd = authoritativeEnd,
             };
-            Room.Broadcast(pkt);
+            Room.Push(Room.Broadcast, pkt);
         }
 
         public void SendSkillEffect(
@@ -1114,6 +1178,11 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
+        public void SendRestPacket(S_Rest packet)
+        {
+            Room.Push(Room.Broadcast, packet);
+        }
+
         public void SendSkillCollisionRequestPacket(KeyCode keyCode, int requestId, CollisionType type, Vector3 startPos, Vector3 endPos)
         {
             S_SkillCollisionRequest packet = new S_SkillCollisionRequest
@@ -1157,7 +1226,7 @@ namespace Server.Game
 
         public void SendTargetChangePacket(S_TargetChange packet)
         {
-            Session.Send(packet);
+            Room.Push(Session.Send, packet);
         }
 
         public void SendMoveSyncPacket(PositionInfo targetPos)
@@ -1167,7 +1236,6 @@ namespace Server.Game
                 ObjectId = Id,
                 TargetPos = targetPos,
             };
-            //Room.Push(Room.Broadcast, packet);
             Room.Push(Session.Send, packet);
         }
 
@@ -1210,16 +1278,42 @@ namespace Server.Game
             Room.Push(Room.Broadcast, untargetablePkt);
         }
 
-        //public void SendMoveSpeedPacket(float moveSpeed)
-        //{
-        //    S_MoveSpeed pkt = new S_MoveSpeed
-        //    {
-        //        ObjectId = Id,
-        //        MoveSpeed = moveSpeed,
-        //    };
-        //    Room.Push(Session.Send, pkt);
-        //}
+        public void SendUnstoppablePacket(bool IsUnstoppable)
+        {
+            S_Unstoppable unstoppablePkt = new S_Unstoppable();
+            unstoppablePkt.ObjectId = Id;
+            unstoppablePkt.Unstoppable = IsUnstoppable;
+            Room.Push(Room.Broadcast, unstoppablePkt);
+        }
 
+        public void SendYukiSkillEffect(Vector2 mousePos, bool sendPacket = true)
+        {
+            Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
+            Vector2 dir = mousePos - myPos;
+
+            if (dir.LengthSquared() < 0.0001f)
+                return;
+
+            float angle = (float)Math.Atan2(dir.X, dir.Y);
+            Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle);
+
+            RotInfo = new RotationInfo
+            {
+                Qx = rot.X,
+                Qy = rot.Y,
+                Qz = rot.Z,
+                Qw = rot.W
+            };
+
+            S_YukiSkillEffect pkt = new S_YukiSkillEffect
+            {
+                ObjectId = Id,
+                PosInfo = this.PosInfo.Clone(),
+                RotInfo = new RotationInfo(RotInfo)
+            };
+
+            Room.Push(Room.Broadcast, pkt);
+        }
         #endregion
 
         #region StatusEffect(버프, 디버프), Barrier(방어막) 관련
@@ -1253,13 +1347,14 @@ namespace Server.Game
 
                     MoveSpeed = Speed,
                     Attack = Attack,
-                    //AttackSpeed = 
+                    AttackSpeed = AttackSpeed,
                     Defense = Defense,
                     Healing = Healing,
                 };
 
                 Room.Push(Session.Send, packet);
                 _isUpdatedStatus = false;
+                Console.WriteLine($"AttackSpeed : {AttackSpeed}");
             }
         }
 

@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering;
 using static Data.SkillEffectList;
 
 
@@ -15,8 +16,8 @@ public class PlayerController : CreatureController
     int _maxAtkCount = 2;
 
     // SyncPos
-    //float _minDist = 3f;
-    //float _syncSpeed = 20f;
+    float _minDist = 3f;
+    float _syncSpeed = 20f;
     Vector3 _serverPos;
     float AGENT_SPEED_RATIO = 1.7f;
 
@@ -24,28 +25,37 @@ public class PlayerController : CreatureController
     private FogOfWarVision _fogOfWarVision;
 
     protected bool _isSkillDebug = true;
-
+    protected bool _isRest = false;
     public bool AllowOffPathMovement { get; set; } = false;
 
     // NameTag
     protected UI_PlayerNameTag _nameTag;
     public UI_PlayerNameTag NameTag { get { return _nameTag; } }
 
+    public string NickName { get; set; } = "UserName";
+
     // 장착 아이템
-    Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
+    private Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
+    public Dictionary<EquipItemType, EquipItemInfo> EquipItemSlot { get { return _equipItemSlot; } }
     public ItemStat ItemStat { get; private set; } = new ItemStat();
     protected GameObject _eqipWeapon = null;
 
     #region Property
     public override float Attack
     {
-        get { return base.Attack;/* + ItemStat.AttackDamage + ItemStat.AttackDamagePerLevel * Stat.Level + AdaptiveStat;*/ }
+        get { return base.Attack; }
         set { base.Attack = value; }
+    }
+
+    public float AttackSpeed
+    {
+        get { return Stat.AttackSpeed; }
+        set { Stat.AttackSpeed = value; }
     }
 
     public override float Defense
     {
-        get { return base.Defense; /*+ ItemStat.Defense;*/ }
+        get { return base.Defense; }
         set { base.Defense = value; }
     }
 
@@ -104,7 +114,7 @@ public class PlayerController : CreatureController
 
     public override float Speed
     {
-        get { return Stat.MoveSpeed;/*(Stat.MoveSpeed + ItemStat.FixedSpeed) * (1 + ItemStat.PercentageSpeed) * 1.7f;*/ }
+        get { return Stat.MoveSpeed; }
         set { Stat.MoveSpeed = value; _agent.speed = value * AGENT_SPEED_RATIO; }
     }
 
@@ -142,11 +152,28 @@ public class PlayerController : CreatureController
             _untargetable = value;
 
             if (_untargetable)
-                _nameTag.SetNameText("대상 지정 불가", 20);
+                _nameTag.SetUntargetable();
             else
                 _nameTag.SetNameText(Managers.Info.UserName, 16);
 
             _nameTag.SetHPColor(_untargetable);
+        } 
+    }
+    private bool _unstoppable;
+    public override bool Unstoppable 
+    {
+        get { return _unstoppable; }
+        set 
+        {
+            if (_unstoppable == value)
+                return;
+
+            _unstoppable = value;
+
+            if (_unstoppable)
+                _nameTag.SetUnstoppable();
+            else
+                _nameTag.SetNameText("UserName", 16);
         } 
     }
     #endregion
@@ -174,7 +201,6 @@ public class PlayerController : CreatureController
 
     #endregion
 
-
     public bool IsKeyInput
     {
         get { return _isKeyInput; }
@@ -197,6 +223,14 @@ public class PlayerController : CreatureController
         set { _maxAtkCount = value; }
     }
 
+    public bool IsRest
+    {
+        get { return _isRest; }
+        set { _isRest = value; }
+    }
+
+    private YukiSkillRange _yukiSkillRange;
+    public YukiSkillRange GetYukiSkillRange() => _yukiSkillRange;
     protected override void Init()
     {
         base.Init();
@@ -220,6 +254,12 @@ public class PlayerController : CreatureController
         // 유키용
         GameObject yukiPyosik = Managers.Resource.Instantiate("Effect/UIpyosik");
         yukiPyosik.transform.SetParent(gameObject.transform);
+        if (ObjInfo.Player.CharType == CharacterType.Yuki)
+        {
+            GameObject yukiSkillRange = Managers.Resource.Instantiate("Effect/Yuki_R");
+            yukiSkillRange.transform.SetParent(gameObject.transform);
+            yukiSkillRange.SetActive(false);
+        }
 
         // Chat
         GameObject goChat = Managers.Resource.Instantiate("UI/Chat/ChatBackground");
@@ -227,6 +267,7 @@ public class PlayerController : CreatureController
 
         // 장비 슬롯
         InitEquipItem();
+        InitializeXRay();
 
         // NavMesh Agent
         _agent = GetComponent<NavMeshAgent>();
@@ -282,15 +323,15 @@ public class PlayerController : CreatureController
     protected override void UpdateController()
     {
         base.UpdateController();
-
-        //if (ObjectType == Define.Object.OtherPlayer)
-        //{
-        //    float dist = Vector3.Distance(transform.position, _serverPos);
-        //    if (dist > _minDist)
-        //        _agent.Warp(_serverPos);
-        //    else
-        //        transform.position = Vector3.Lerp(transform.position, _serverPos, Time.deltaTime * _syncSpeed);
-        //}
+        
+        if (Id != Managers.Object.MyPlayer.Id)
+        {
+            float dist = Vector3.Distance(transform.position, _serverPos);
+            if (dist > _minDist)
+                _agent.Warp(_serverPos);
+            else
+                transform.position = Vector3.Lerp(transform.position, _serverPos, Time.deltaTime * _syncSpeed);
+        }
     }
 
     protected virtual void CheckUpdatedFlag() { }
@@ -308,14 +349,14 @@ public class PlayerController : CreatureController
 
     public void OnRespawn(S_Respawn packet)
     {
+        _serverPos = transform.position = packet.PosInfo.ToVector();
         _agent.Warp(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
-        transform.position = packet.PosInfo.ToVector();
         Hp = packet.Hp;
     }
 
     public void ChangeState(S_PlayerState packet)
     {
-        Debug.Log($"Id : {Id}, Cur : {State}, Next : {packet.State}");
+        //Debug.Log($"Id : {Id}, Cur : {State}, Next : {packet.State}");
         State = packet.State;
     }
 
@@ -323,7 +364,7 @@ public class PlayerController : CreatureController
     {
         Speed = packet.MoveSpeed;
         Attack = packet.Attack;
-        //AttackSpeed = packet.AttackSpeed;
+        AttackSpeed = packet.AttackSpeed;
         Defense = packet.Defense;
         Healing = packet.Healing;
     }
@@ -364,7 +405,23 @@ public class PlayerController : CreatureController
 
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
+        if(animInfo.Name == "ROZZI_D")
+        {
+            int upperLayer = _animator.GetLayerIndex("UpperBody");
+            _animator.CrossFadeInFixedTime(animInfo.Name, 0.05f, upperLayer);
+            return;
+        }
+
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
+
+        if (animInfo.IsChangeSpeed == true)
+            _animator.SetFloat("AttackSpeed", animInfo.Speed);
+    }
+
+    public void ChangeSpeed(string paramName, float speed)
+    {
+        _animator.SetFloat(paramName, speed);
+        Debug.Log(speed);
     }
     public void PlayEffectFromServer(S_Fx packet, Vector3 mousePos, Vector3 targetPos = new Vector3(), Quaternion targetRot = default(Quaternion))
     {
@@ -427,7 +484,17 @@ public class PlayerController : CreatureController
     #region NameTagAndHp
     protected void InitNameTag()
     {
-        GameObject go = Managers.Resource.Instantiate("UI/SubItem/PlayerNameTagCanvas", gameObject.transform);
+        GameObject go = null;
+
+        if(ObjInfo.Player.CharType == CharacterType.Yuki)
+        {
+            go = Managers.Resource.Instantiate("UI/SubItem/YukiNameTagCanvas", gameObject.transform);
+        }
+        else
+        {
+            go = Managers.Resource.Instantiate("UI/SubItem/PlayerNameTagCanvas", gameObject.transform);
+        }
+
         if (null == go)
         {
             Debug.Log("go is null : InitNameTag()");
@@ -589,6 +656,109 @@ public class PlayerController : CreatureController
     }
     #endregion
 
+    [Header("X-Ray Settings")]
+    [SerializeField] private int xRayIgnoreStencilID = 100;
+    #region Shader
+    void InitializeXRay()
+    {
+        SetupPlayerWeaponXRay();
+    }
+
+    void SetupPlayerWeaponXRay()
+    {
+        // Player 본체
+        SetXRayGroup(gameObject, xRayIgnoreStencilID);
+
+        if (_eqipWeapon != null)
+            SetXRayGroup(_eqipWeapon, xRayIgnoreStencilID);
+    }
+    public void SetxRayFromPlayer(GameObject player)
+    {
+         SetXRayGroup(player, xRayIgnoreStencilID);
+    }
+    void SetXRayGroup(GameObject root, int stencilID)
+    {
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+
+        foreach (Renderer renderer in renderers)
+        {
+            foreach (Material mat in renderer.materials)
+            {
+                if (mat.shader.name.Contains("Toon_DoubleShadeWithFeather"))
+                {
+                    if (mat.HasProperty("_StencilRef"))
+                    {
+                        mat.SetInt("_StencilRef", stencilID);
+                        mat.SetInt("_StencilComp", (int)UnityEngine.Rendering.CompareFunction.Always);
+                        mat.SetInt("_StencilOp", (int)UnityEngine.Rendering.StencilOp.Replace);
+                    }
+                }
+            }
+        }
+    }
+
+    // 무기 교체 시 호출 (기존 EquipWeapon 메서드에 추가)
+    void OnWeaponEquipped(GameObject newWeapon)
+    {
+        if (newWeapon != null)
+        {
+            SetXRayGroup(newWeapon, xRayIgnoreStencilID);
+        }
+    }
+
+    // Player와 Weapon의 X-Ray 효과 끄기/켜기
+    public void SetPlayerWeaponXRayEnabled(bool enabled)
+    {
+        float alpha = enabled ? 0.5f : 0f;
+
+        SetOccludedColorAlpha(gameObject, alpha);
+
+        if (_eqipWeapon != null)
+        {
+            SetOccludedColorAlpha(_eqipWeapon, alpha);
+        }
+    }
+
+    void SetOccludedColorAlpha(GameObject root, float alpha)
+    {
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+
+        foreach (Renderer renderer in renderers)
+        {
+            foreach (Material mat in renderer.materials)
+            {
+                if (mat.HasProperty("_OccludedColor"))
+                {
+                    Color occludedColor = mat.GetColor("_OccludedColor");
+                    occludedColor.a = alpha;
+                    mat.SetColor("_OccludedColor", occludedColor);
+                }
+            }
+        }
+    }
+    void SetRenderingLayerMask(GameObject root, uint layerMask)
+    {
+        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
+
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.renderingLayerMask = layerMask;
+        }
+    }
+    void SetupRenderingLayer()
+    {
+        uint playerLayer = 1u << 1; // Layer 1
+
+        SetRenderingLayerMask(gameObject, playerLayer);
+
+        if (_eqipWeapon != null)
+        {
+            SetRenderingLayerMask(_eqipWeapon, playerLayer);
+        }
+    }
+
+   
+    #endregion
     public void SyncPosFromServer(S_Move movePacket)
     {
         _agent.isStopped = false;
@@ -601,5 +771,19 @@ public class PlayerController : CreatureController
         };
 
         transform.rotation = movePacket.RotInfo;
+    }
+
+    public void SyncPosFromServer(PositionInfo positionInfo, RotationInfo rotationInfo)
+    {
+        _agent.isStopped = false;
+
+        _serverPos = new Vector3
+        {
+            x = positionInfo.PosX,
+            y = positionInfo.PosY,
+            z = positionInfo.PosZ
+        };
+
+        transform.rotation = rotationInfo;
     }
 }

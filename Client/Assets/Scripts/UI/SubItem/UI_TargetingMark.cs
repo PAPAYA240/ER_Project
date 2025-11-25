@@ -91,9 +91,7 @@ public class UI_TargetingMark : UI_Base
 
     private IEnumerator Co_Lifetime(float duration)
     {
-        Debug.Log($"Mark 시간 시작: {duration}초");
         yield return new WaitForSeconds(duration);
-        Debug.Log($"Mark 시간 끝");
 
         _onComplete?.Invoke();
         _lifetimeCoroutine = null;

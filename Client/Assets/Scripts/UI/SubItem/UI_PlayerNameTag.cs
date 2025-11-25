@@ -105,6 +105,16 @@ public class UI_PlayerNameTag : UI_Base
         }
     }
 
+    public void SetUntargetable()
+    {
+        SetNameText("대상 지정 불가", 20);
+    }
+
+    public void SetUnstoppable()
+    {
+        SetNameText("이동 방해 면역", 20);
+    }
+
     public void SetTarget(GameObject target)
     {
         _target = target;

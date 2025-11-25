@@ -58,6 +58,9 @@ namespace Server.Game
     {
         GameRoom _room;
 
+        // 힐팩 구분을 위함
+        private int _healpackCount = 0;
+
         public void Init(GameRoom room)
         {
             _room = room;
@@ -65,12 +68,13 @@ namespace Server.Game
             SpawnObjectFromJson(processor.ProcessAndGetJson());
         }
 
-        public void GiveRewardToPlayer(int playerId, EnvType envType)
+        public void GiveRewardToPlayer(Player player, EnvType envType)
         {
             // 플레이어에게 보상 지급
             switch (envType)
             {
                 case EnvType.HealPack:
+                    player.Room.Push(player.OnHeal, player, 650f);
                     break;
 
                 default:
@@ -98,7 +102,13 @@ namespace Server.Game
 
                 env.Info.Env = new EnvInfo();
                 env.Info.Env.EnvType = eData.envType;
-                env.Info.Name = $"{env.Id} Environment";
+
+                // for HealPack numbering
+                if (eData.envType == EnvType.HealPack)
+                    env.Info.Name = $"HealPack_{_healpackCount++}";
+                else
+                    env.Info.Name = $"{env.Id} Environment";
+
                 _room.Push(_room.EnterGame, env, 0);
             }
         }

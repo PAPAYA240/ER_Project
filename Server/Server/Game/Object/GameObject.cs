@@ -1,18 +1,12 @@
 ﻿using Google.Protobuf.Protocol;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
-using Lucene.Net.Store;
-using ServerCore;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Numerics;
-using System.Threading;
 using System.Threading.Tasks;
 using static Player_StunState;
-using static Server.Game.GameObject;
 using static Server.Game.StunState;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.Game
 {
@@ -198,6 +192,14 @@ namespace Server.Game
 
         public bool IsDead => State == CreatureState.Dead;
 
+        public bool _isHit = false;
+
+        public bool IsHit
+        {
+            get { return _isHit; }
+            set { _isHit = value; }
+        }
+
         public virtual CreatureState State
         {
             get { return PosInfo.State; }
@@ -252,6 +254,8 @@ namespace Server.Game
 
                 OnDamaged(attacker, finalDamage, isBasicAttack);
             }
+
+            IsHit = true;
         }
 
         protected virtual void OnDamaged(GameObject attacker, float damage, bool isBasicAttack = false)
@@ -355,7 +359,7 @@ namespace Server.Game
 
             S_Die diePacket = new S_Die();
             diePacket.ObjectId = Id;
-            //diePacket.AttackerId = attacker.Id;
+            diePacket.AttackerId = attacker.Id;
             Room.Broadcast(diePacket);
 
             GameRoom room = Room;
@@ -506,7 +510,10 @@ namespace Server.Game
                     {
                         Player player = this as Player;
                         if (player != null)
+                        {
                             UpdateUnstoppable(true);
+                            player.SendUnstoppablePacket(true);
+                        }
                     }
                 }                    
             }
@@ -627,7 +634,10 @@ namespace Server.Game
             {
                 Player player = this as Player;
                 if (player != null)
+                {
                     UpdateUnstoppable(false);
+                    player.SendUnstoppablePacket(false);
+                }
             }
         }
 
@@ -718,13 +728,25 @@ namespace Server.Game
             IsCcImmune = isUnStoppable;
             UpdateStatusFlag();
         }
+
+        public bool IsVisionShare()
+        {
+            foreach (StatusEffect effect in _statusEffects)
+            {
+                if (effect.type == "Coord" || effect.type == "VisionShare")
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         #endregion
 
         #region StatusEffect 연동 
         // 최종 = 비율 → 고정 순 합성
-        protected float ComposeFinal(string key, float baseVal, bool ignoreDebuff = false)
+        protected float ComposeFinal(string key, float baseVal, bool ignoreDebuff = false, float mulbuffOffset = 0f)
         {
-            float mulBuff = _mulBuffAccum.GetValueOrDefault(key);
+            float mulBuff = _mulBuffAccum.GetValueOrDefault(key) + mulbuffOffset;
             float mulDebuff = ignoreDebuff ? 0f : _mulDebuffAccum.GetValueOrDefault(key);
 
             float flatBuff = _flatBuffAccum.GetValueOrDefault(key);

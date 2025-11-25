@@ -32,6 +32,13 @@ namespace Server.Game
 
         public EnvironmentManager GetEnvManager { get { return _envManager; } private set { _envManager = value; } }
 
+
+        #region Spawn
+        public SpawnPointRegistry SpawnRegistry { get; private set; }
+        public SpawnSystem Spawn { get; private set; }
+        public TeleportSystem Teleport { get; private set; }
+        #endregion
+
         #region Phase, Time
 
         private long _startTick;         // 게임 시작 기준 Tick
@@ -67,7 +74,7 @@ namespace Server.Game
                 _phaseEndTick = long.MaxValue; // 지속시간 정의 안되면 수동 종료
             }
 
-            _monsterManager.Add(CurPhase);
+            _monsterManager.Add(CurPhase, this);
 
             // 클라이언트 동기화
             SyncTimer();
@@ -132,9 +139,7 @@ namespace Server.Game
         public override void Init()
         {
             PathFind = new PathfindInstance(0);
-            // Spawn Monster
-            _monsterManager.Init(this);
-             
+
             // Spawn Env
             _envManager.Init(this);
 
@@ -145,6 +150,9 @@ namespace Server.Game
             // Skill Register
             SkillRegistry.InitRegister();
             SetUpStatusEffectDict(); // StatusEffectDict 초기화 
+
+            // Spawn Register
+            SpawnRegister();
 
             StartPhase();
         }
@@ -233,6 +241,9 @@ namespace Server.Game
                 {
                     // Temp Cobalt Exp
                     player.Info.StatInfo.Exp = 15800;
+                    if (Spawn == null)
+                        SpawnRegister();
+                    player.Info.PosInfo = Spawn.GetSpawnPoint(player.Team).ToPositionInfo();
 
                     S_EnterGame enterPacket = new S_EnterGame();
                     enterPacket.Player = player.Info;
@@ -300,10 +311,15 @@ namespace Server.Game
             {
                 S_Spawn spawnPacket = new S_Spawn();
                 spawnPacket.Objects.Add(gameObject.Info);
+                
                 foreach (Player p in _players.Values)
                 {
                     if (p.Id != gameObject.Id)
+                    {
                         p.Session.Send(spawnPacket);
+                    }
+
+                    //p.SendItemStat();
                 }
             }
         }
@@ -341,7 +357,7 @@ namespace Server.Game
 
                 ObjectManager.Instance.Remove(objectId);
                 monster.Room = null;
-                _monsterManager.Add(-1);
+                _monsterManager.Add(-1, this);
             }
             else if (type == GameObjectType.Projectile)
             {
@@ -575,7 +591,7 @@ namespace Server.Game
             }
         }
 
-        private void AddVisibleObjects<T>(List<int> visibleObjs, ConcurrentDictionary<int, T> dict, Player player, int range = 8) where T : GameObject
+        private void AddVisibleObjects<T>(List<int> visibleObjs, ConcurrentDictionary<int, T> dict, Player player) where T : GameObject
         {
             foreach (var pair in dict)
             {
@@ -583,7 +599,7 @@ namespace Server.Game
                 if (go.Id == player.Id)
                     continue;
 
-                if (go.PosInfo.Distance(player.PosInfo) < range)
+                if (go.IsVisionShare() || (go is Player p && p.Info.Player.Team == player.Info.Player.Team))
                 {
                     visibleObjs.Add(go.Id);
                 }
@@ -782,6 +798,17 @@ namespace Server.Game
                 Message = chatPkt.Message
             };
             Push(Broadcast, sendPkt);
+        }
+
+        private void SpawnRegister()
+        {
+            SpawnRegistry = new SpawnPointRegistry(spawnCooldownSec: 5.0);
+
+            // JSON 로드해서 스폰 포인트 채우기
+            SpawnPointLoader.LoadSpawnPoints("Data/json/SpawnPoints.json", SpawnRegistry);
+
+            Spawn = new SpawnSystem(SpawnRegistry);
+            Teleport = new TeleportSystem(SpawnRegistry);
         }
     }
 }

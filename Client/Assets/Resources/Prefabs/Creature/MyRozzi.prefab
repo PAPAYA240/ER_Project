@@ -588,7 +588,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 897187067598497633}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: aa64e8d732bd7eb40ac245d83384ddae, type: 2}
+  m_Avatar: {fileID: 9000000, guid: 791e3d0d9fb5eb543a7e9f47546faa6f, type: 2}
   m_Controller: {fileID: 9100000, guid: 968381c1245d5ac4ea37527dae031827, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
@@ -1778,7 +1778,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2606775846046253486}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.013518532, y: -0.15586485, z: 0.005763692, w: 0.98766905}
+  m_LocalRotation: {x: 0.013518533, y: -0.15586485, z: 0.0057636923, w: 0.98766905}
   m_LocalPosition: {x: -0.08805828, y: 0.000000009536743, z: 0.00000015258789}
   m_LocalScale: {x: 1.0000002, y: 1.0000002, z: 1.0000002}
   m_ConstrainProportionsScale: 0
@@ -2765,6 +2765,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d07a4ac14489814e9692da7473da8c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerWeaponStencilID: 100
+  disablePlayerWeaponXRay: 1
 --- !u!1 &4552065746279300795
 GameObject:
   m_ObjectHideFlags: 0
@@ -5293,7 +5295,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7861400010525187594}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.013518531, y: 0.15586486, z: 0.0057636877, w: 0.98766905}
+  m_LocalRotation: {x: -0.013518532, y: 0.15586486, z: 0.005763688, w: 0.98766905}
   m_LocalPosition: {x: -0.088058315, y: -0.000000009536743, z: 0}
   m_LocalScale: {x: 1.0000001, y: 1.0000001, z: 1.0000005}
   m_ConstrainProportionsScale: 0

@@ -2,10 +2,6 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
-using static UnityEngine.Rendering.DebugUI;
-
-
 
 #if UNITY_EDITOR
 using UnityEditor.Experimental.GraphView;
@@ -19,34 +15,45 @@ public interface IStateChangeListener
 public abstract class AnimationControlNode : ActionNode, IStateChangeListener
 {
     protected Animator _animator;
-    protected MonsterController monsterController;
-    protected NavMeshAgent _navMeshAgent;
-    protected string exitAnimName = "WAIT";
+    protected MonsterController _controller;
+    protected NavMeshAgent _agent;
+    protected string _waitAnim = "WAIT";
+
+    protected readonly int MoveVelocityHash = Animator.StringToHash("moveVelocity");
+    protected bool _hasMoveVelocityParam = false;
 
     protected bool Check(GameObject owner)
     {
-        if (monsterController == null)
-            monsterController = owner.GetComponentInChildren<MonsterController>();
+        if (_controller == null)
+            _controller = owner.GetComponentInChildren<MonsterController>();
 
         if (_animator == null)
             _animator = owner.GetComponentInChildren<Animator>();
 
-        if (_navMeshAgent == null)
-            _navMeshAgent = owner.GetComponentInChildren<NavMeshAgent>();
+        if (_agent == null)
+            _agent = owner.GetComponentInChildren<NavMeshAgent>();
 
-        return (monsterController != null && _animator != null);
+        foreach (AnimatorControllerParameter param in _animator.parameters)
+        {
+            if (param.nameHash == MoveVelocityHash &&
+                param.type == AnimatorControllerParameterType.Float)
+            {
+                _hasMoveVelocityParam = true;
+                break;
+            }
+        }
+
+
+        return (_controller != null && _animator != null);
     }
     public abstract void HandleStateChange(CreatureState newState, bool isClear = true);
-
 }
 
 public class PlayAnimation : AnimationControlNode
 {
-    public string animName;
     public List<string> chainAnimNames;
-    public float ratio = 0.1f;
 
-    private bool _hasStarted = false;
+    private bool _animStart = false;
     private int _currentChainIndex = 0;
     private string _currentAnimName;
 
@@ -55,63 +62,73 @@ public class PlayAnimation : AnimationControlNode
         if (!Check(owner))
             return NodeStatus.Failure;
        
-        if (monsterController.State == CreatureState.Idle)
+        if (!_animStart)
         {
-            ClearAnim();
-            return NodeStatus.Success;
-        }
+            if (_hasMoveVelocityParam)
+                _animator.SetFloat(MoveVelocityHash, 0);
 
-        if (!_hasStarted)
-        {
-            _currentAnimName = animName;
+            _animStart = true;
             _currentChainIndex = 0;
-            _hasStarted = true;
-
-            Play(_currentAnimName);
+            Play(chainAnimNames[_currentChainIndex]);
             return NodeStatus.Running;
         }
+
 
         AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName(_currentAnimName))
         {
             if (stateInfo.normalizedTime >= 0.95f)
             {
-                if (chainAnimNames == null)
-                    return NodeStatus.Running;
+                ++_currentChainIndex;
 
-                if (_currentChainIndex < chainAnimNames.Count)
-                {
-                    _currentAnimName = chainAnimNames[_currentChainIndex];
-                    _currentChainIndex++;
+                // 애니메이션 끝
+                if (_currentChainIndex >= chainAnimNames.Count)
+                    return NodeStatus.Success;
 
-                    Play(_currentAnimName);
-                    return NodeStatus.Running;
-                }
+                // 다음 애니메이션 재생
+                Play(chainAnimNames[_currentChainIndex]);
+                return NodeStatus.Running;
             }
         }
         return NodeStatus.Running;
     }
 
-    private void Play(string anim) => _animator.CrossFadeInFixedTime(anim, ratio);
-    public void Reset()
+    private void Play(string anim)
+    {
+        _currentAnimName = anim;
+
+        int animHash = Animator.StringToHash(anim);
+        if (_animator.HasState(0, animHash))
+        {
+            _animator.CrossFadeInFixedTime(anim, 0.1f, 0);
+        }
+        else
+        {
+            if(_controller.Type == MonsterType.Gamma)
+                Debug.LogError($"{_controller.Type}에 {anim} 상태가 없습니다!"); 
+        }
+    }
+
+    public void ClearAnimationRunState()
     {
         _currentAnimName = string.Empty;
-        _hasStarted = false;
         _currentChainIndex = 0;
+        _animStart = false;
     }
+
     private void ClearAnim()
     {
-        if (_animator == null) return;
-
-        _animator.CrossFadeInFixedTime(exitAnimName, ratio);
+        _animator?.CrossFadeInFixedTime(_waitAnim, 0.1f, 0);
         _currentAnimName = string.Empty;
-        _hasStarted = false;
         _currentChainIndex = 0;
+        _animStart = false;
     }
     public override void HandleStateChange(CreatureState newState, bool isClear = true)
     {
-        if(isClear)
+        if (isClear) // 애니메이션 초기화할 것인가?
+        {
             ClearAnim();
+        }
     }
 }
 
@@ -157,9 +174,10 @@ public class PlayAnimatorFloatNode : AnimationControlNode
         if (Check(owner) == false)
             return NodeStatus.Failure;
 
-        if (monsterController.State != CreatureState.Moving)
+        if (_controller.State != CreatureState.Moving)
         {
-            _animator.SetFloat("moveVelocity", 0);
+            if (_hasMoveVelocityParam)
+                _animator.SetFloat(MoveVelocityHash, 0);
             return NodeStatus.Failure;
         }
 
@@ -173,7 +191,8 @@ public class PlayAnimatorFloatNode : AnimationControlNode
 
         _isFirstFrame = false;
 
-        _animator.SetFloat("moveVelocity", speed);
+        if (_hasMoveVelocityParam)
+            _animator.SetFloat(MoveVelocityHash, speed);
 
         _lastPos = owner.transform.position;
 

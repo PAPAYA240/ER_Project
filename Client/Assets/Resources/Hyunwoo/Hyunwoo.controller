@@ -173,13 +173,13 @@ AnimatorState:
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
   m_Mirror: 0
-  m_SpeedParameterActive: 0
+  m_SpeedParameterActive: 1
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 0b60360e5a48a3f49a2c7c6a9265daf3, type: 2}
   m_Tag: 
-  m_SpeedParameter: 
+  m_SpeedParameter: AttackSpeed
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
@@ -317,7 +317,13 @@ AnimatorController:
   m_PrefabAsset: {fileID: 0}
   m_Name: Hyunwoo
   serializedVersion: 5
-  m_AnimatorParameters: []
+  m_AnimatorParameters:
+  - m_Name: AttackSpeed
+    m_Type: 1
+    m_DefaultFloat: 1
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -357,13 +363,13 @@ AnimatorStateMachine:
     m_Position: {x: 50, y: 170, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1879208294122121407}
-    m_Position: {x: 50, y: 290, z: 0}
+    m_Position: {x: 50, y: 230, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1583601410983892247}
-    m_Position: {x: 50, y: 350, z: 0}
+    m_Position: {x: 50, y: 290, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -7585019190015441630}
-    m_Position: {x: 50, y: 410, z: 0}
+    m_Position: {x: 50, y: 350, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -5373244141901292061}
     m_Position: {x: 270, y: 170, z: 0}
@@ -472,13 +478,13 @@ AnimatorState:
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
   m_Mirror: 0
-  m_SpeedParameterActive: 0
+  m_SpeedParameterActive: 1
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: f991e94bcf3a5ec4db6abe1b3762c603, type: 2}
   m_Tag: 
-  m_SpeedParameter: 
+  m_SpeedParameter: AttackSpeed
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 

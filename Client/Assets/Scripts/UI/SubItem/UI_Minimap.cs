@@ -21,6 +21,14 @@ public class UI_Minimap : UI_Base
         TurbineIconLeft,
         TurbineIconCenter,
         TurbineIconRight,
+        HealPackLL,
+        HealPackLC,
+        HealPackLR,
+        HealPackRR,
+        HealPackRC,
+        HealPackRL,
+        HealPackCR,
+        HealPackCL,
         Fog
     }
 
@@ -36,7 +44,11 @@ public class UI_Minimap : UI_Base
         CharIcon_7
     }
 
-    int _charNum = 0;
+    private int _charNum = 0;
+
+
+    private Sprite _healpackUnrespawned;
+    private Sprite _healpackRespawned;
 
     public override void Init()
     {
@@ -51,6 +63,9 @@ public class UI_Minimap : UI_Base
         GetObject((int)GameObjects.CharIcon_5).SetActive(false);
         GetObject((int)GameObjects.CharIcon_6).SetActive(false);
         GetObject((int)GameObjects.CharIcon_7).SetActive(false);
+
+        _healpackUnrespawned = Managers.Resource.Load<Sprite>("Sprite/Ico_Map_SupportPackPoint");
+        _healpackRespawned = Managers.Resource.Load<Sprite>("Sprite/Ico_Map_SupportPackSpawned");
     }
     private void Awake()
     {
@@ -113,5 +128,17 @@ public class UI_Minimap : UI_Base
     public void SetTurbineImage(Images img, Sprite sprite)
     {
         GetImage((int)img).sprite = sprite;
+    }
+
+    public void ChangeHealPackImage(Images img, bool isRespawned)
+    {
+        if(isRespawned)
+        {
+            GetImage((int)img).sprite = _healpackRespawned;
+        }
+        else
+        {
+            GetImage((int)img).sprite = _healpackUnrespawned;
+        }
     }
 }

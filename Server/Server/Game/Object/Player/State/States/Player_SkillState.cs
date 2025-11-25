@@ -18,6 +18,8 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
     private Vector3? _currentDestination = null;
     private const float DEST_CHANGE_EPS = 0.05f; // 목적지 미세변경 무시
 
+    public bool CanStopSkill => _handler.CanStopSkill;
+
     public Player_SkillState(ISkill handler, SkillContext ctx)
     {
         _handler = handler;
@@ -112,7 +114,7 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
             //);
 
             _currentDestination = move.TargetPosition.ToVector();
-            _handler.OnMove(player);
+            _handler.OnMove(player, move);
         }
         else
         {

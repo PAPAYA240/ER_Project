@@ -80,6 +80,7 @@ public class CreatureController : BaseController
     }
 
     public virtual bool Untargetable { get; set; } = false; // 대상 지정불가 상태
+    public virtual bool Unstoppable { get; set; } = false; // 이동 방해 면역
 
     virtual protected void UpdateHp()
     {
@@ -177,4 +178,25 @@ public class CreatureController : BaseController
 
         return true;
     }
+
+    #region Shader
+    // 벽 파란색 막기
+    protected void UnActiveShaderXRay()
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+
+        foreach (Renderer renderer in renderers)
+        {
+            foreach (Material mat in renderer.materials)
+            {
+                if (mat.HasProperty("_OccludedColor"))
+                {
+                    Color occludedColor = mat.GetColor("_OccludedColor");
+                    occludedColor.a = 0f; 
+                    mat.SetColor("_OccludedColor", occludedColor);
+                }
+            }
+        }
+    }
+    #endregion
 }

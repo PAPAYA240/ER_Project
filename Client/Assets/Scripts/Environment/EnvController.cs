@@ -22,21 +22,24 @@ public class EnvController : BaseController
     }
 
     #region Interaction
-
+    protected GameObject _triggerCreature = null;
     protected void OnTriggerEnter(Collider other)
     {
         if (!IsValidTrigger(other))
             return;
 
+        _triggerCreature = other.gameObject;
         _isCollecting = true;
         TryHandleInteraction();
-        RequestCollect();
+        RequestCollect(other.gameObject.GetComponent<PlayerController>());
     }
 
     private bool IsValidTrigger(Collider other)
     {
-        if (other.gameObject.layer != LayerMask.NameToLayer("MyPlayer"))
+        PlayerController pc = other.gameObject.GetComponent<PlayerController>();
+        if (pc == null)
             return false;
+
         if (!_isActive || _isCollecting)
             return false;
         return true;
@@ -51,14 +54,18 @@ public class EnvController : BaseController
 
     #region Network
 
-    private void RequestCollect()
+    private void RequestCollect(PlayerController player)
     {
+        if (player == null)
+            return;
+
         _lastRequestObjectId = Id;
 
         C_EnvRequest request = new C_EnvRequest
         {
             ObjectId = Id,
             EnvType = _envType,
+            TargetId = player.Id,
         };
         Managers.Network.Send(request);
     }

@@ -35,10 +35,10 @@ public class Player_DeadState : IPlayerState
     {
         S_Die diePacket = new S_Die();
         diePacket.ObjectId = player.Id;
-        //diePacket.AttackerId = attacker.Id;
+        diePacket.AttackerId = player.GetLastAttackerId();
 
         diePacket.RespawnTime = DataManager.RespawnDict[player.Stat.Level];
-        _ = CoRespawnTime(player, diePacket.RespawnTime);
+        _ = CoRespawnTime(player, diePacket.RespawnTime, respawnAtZero: false);
 
         player.Room.Broadcast(diePacket);
     }
@@ -57,6 +57,7 @@ public class Player_DeadState : IPlayerState
 
         S_Respawn respawnPacket = new S_Respawn();
         respawnPacket.ObjectId = player.Id;
+        respawnPacket.IsRest = false;
 
         respawnPacket.Hp = player.Hp = player.MaxHp;
         respawnPacket.Stamina = player.Stamina = player.MaxStamina;
@@ -82,7 +83,7 @@ public class Player_DeadState : IPlayerState
         }
         else
         {
-            respawnPacket.PosInfo = player.Info.PosInfo;
+            respawnPacket.PosInfo = player.Room.Spawn.GetSpawnPoint(player.Team).ToPositionInfo();
             respawnPacket.RotInfo = player.Info.RotInfo;
         }
 

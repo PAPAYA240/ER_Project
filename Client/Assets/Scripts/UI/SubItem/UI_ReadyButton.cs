@@ -70,7 +70,6 @@ public class UI_ReadyButton : UI_Base
         _image.sprite = _pressedSprite;
         SetText("준비 완료");
 
-        //TODO
         C_ReadyBtn readyBtnPkt = new C_ReadyBtn();
         Managers.Network.Send(readyBtnPkt);
     }

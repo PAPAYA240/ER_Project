@@ -11,15 +11,16 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     // ===== 튜닝 파라미터(테이블화 가능) =====
     protected const float WindupSeconds = 0.20f;      // 선딜(히트 타이밍까지)
     protected const float BackswingSeconds = 0.30f;   // 후딜
-    private const float ReattackGapSeconds = 0.10f; // 연속 스윙 사이 최소 텀
-    private const float ComboResetSeconds = 2.00f;  // 콤보 리셋 타이머
+    protected const float ReattackGapSeconds = 0.10f; // 연속 스윙 사이 최소 텀
+    protected const float ComboResetSeconds = 2.00f;  // 콤보 리셋 타이머
 
     // 애니메이션(프로젝트 애니 자원명/ID에 맞춰 교체)
     protected const string AnimAttackA = "ATTACK_1";
     protected const string AnimAttackB = "ATTACK_2";
 
     // ===== 상태 필드 =====
-    protected int _targetId;
+    //public int TargetId => TargetId;
+    public int _targetId;
     protected bool _chaseAllowed;
     protected int? _pendingTargetId;          // 스윙 중 들어온 타겟 변경은 스윙 종료 후 반영
 
@@ -28,13 +29,13 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     protected int _attackIndex;               // 0/1 → A/B 번갈이
 
     // 회전
-    private bool _isRotate = false;
+    protected bool _isRotate = false;
 
     protected DateTime _swingStartUtc;
     protected DateTime _hitMomentUtc;
     protected DateTime _swingEndUtc;
-    private DateTime _nextAttackReadyUtc;
-    private DateTime _comboResetDeadlineUtc;
+    protected DateTime _nextAttackReadyUtc;
+    protected DateTime _comboResetDeadlineUtc;
 
     // 데미지
 
@@ -82,11 +83,9 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         var now = DateTime.UtcNow;
         _nextAttackReadyUtc = now;              // 즉시 공격 가능
         _comboResetDeadlineUtc = default;
-
-        //StartSwing(player, now);
     }
 
-    public void Execute(Player player)
+    public virtual void Execute(Player player)
     {
         if (player == null || player.Room == null || !player.CanAttack())
             return;
@@ -232,8 +231,8 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         _damageApplied = false;
 
         _swingStartUtc = now;
-        _hitMomentUtc = now.AddSeconds(WindupSeconds);
-        _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds);
+        _hitMomentUtc = now.AddSeconds(WindupSeconds / p.AttackSpeed);
+        _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds / p.AttackSpeed);
 
         // A/B 번갈이
         string animName = (_attackIndex == 0) ? AnimAttackA : AnimAttackB;
@@ -250,13 +249,6 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
             p.CombatTime = 0f;
         }
 
-        // 유키 단추
-        if (p.Info.Player.CharType == CharacterType.Yuki)
-        {
-            if (p.YukiStud > 0)
-                p.YukiStud--;
-        }
-
         // 애니 송출(서버 권한)
         p.SendAnimPacket(animName, 0.05f);
  
@@ -270,13 +262,6 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
             return;
 
         target.OnDamaged(p, p.Attack, false, true);
-
-        if (p.CharType == CharacterType.Rozzi)
-        {
-            Projectile_Rozzi_R pj = p.Room.FindProjectile(p, ProjectileType.ProjectileRozziR) as Projectile_Rozzi_R;
-            if (pj != null && pj.Target != null && pj.Target == target)
-                pj.RegisterOwnerHit(isSkillHit: false);
-        }
     }
 
     public bool IsSwingActive() { return _swingActive; }
@@ -291,6 +276,8 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
             return new Yuki_AttackState(targetId, chaseAllowed);
         else if (p.Info.Player.CharType == CharacterType.Hyunwoo)
             return new Hyunwoo_AttackState(targetId, chaseAllowed);
+        else if (p.Info.Player.CharType == CharacterType.Rozzi)
+            return new Rozzi_AttackState(targetId, chaseAllowed);
 
         return new Player_AttackState(targetId, chaseAllowed);
     }

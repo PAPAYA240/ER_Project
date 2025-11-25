@@ -16,7 +16,9 @@ public class UI_PlayerHUD : UI_Scene
         TurbineRight,
         Minimap,
         KDA,
-        KillNoti
+        KillNoti,
+        BattleBoard,
+        GameResult
     }
 
 
@@ -39,6 +41,8 @@ public class UI_PlayerHUD : UI_Scene
         Bind<GameObject>(typeof(GameObjects));
 
         GetObject((int)GameObjects.KillNoti).SetActive(false);
+        GetObject((int)GameObjects.BattleBoard).SetActive(false);
+        GetObject((int)GameObjects.GameResult).SetActive(false);
     }
 
     private void Start()
@@ -49,6 +53,21 @@ public class UI_PlayerHUD : UI_Scene
     void Update()
     {
         UpdateScale();
+
+        if(Input.GetKeyDown(KeyCode.Tab))
+        {
+            GetObject((int)GameObjects.BattleBoard).SetActive(true);
+        }
+        if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            GetObject((int)GameObjects.BattleBoard).SetActive(false);
+        }
+
+        //TODO ���� ������ �� ȣ��Ǿߵ�.
+        if(Input.GetKeyDown(KeyCode.M))
+        {
+            SetGameResult(true);
+        }
     }
 
     #region Beacon
@@ -173,5 +192,72 @@ public class UI_PlayerHUD : UI_Scene
             GetObject((int)GameObjects.TeamScore).GetComponent<UI_ScoreBar>().CurrentScore = score;
         else 
             GetObject((int)GameObjects.EnemyScore).GetComponent<UI_ScoreBar>().CurrentScore = score;
+    }
+
+    public void AddPlayerBoardToBattleBoard(PlayerController pc)
+    {
+        GetObject((int)GameObjects.BattleBoard).GetComponent<UI_BattleBoard>().AddPlayer(pc);
+    }
+
+    public void UpdateBattleBoard(int id)
+    {
+        GetObject((int)GameObjects.BattleBoard).GetComponent<UI_BattleBoard>().UpdatePlayerBoard(id);
+    }
+
+    public void SetGameResult(bool isVictory)
+    {
+        GameObject gameResultGo = GetObject((int)GameObjects.GameResult);
+        if (gameResultGo == null)
+            return;
+
+        gameResultGo.SetActive(true);
+
+        UI_GameResult ui_GameResult = gameResultGo.GetComponent<UI_GameResult>();
+        if(ui_GameResult == null) 
+            return;
+
+        ui_GameResult.SetMyPlayer();
+        ui_GameResult.SetGameResultText(isVictory);
+        
+        Dictionary<int, GameObject> allies = GetObject((int)GameObjects.BattleBoard).GetComponent<UI_BattleBoard>().Allies;
+        foreach(GameObject gameObject in allies.Values)
+        {
+            PlayerController pc = gameObject.GetComponent<UI_PlayerBoard>().TargetPc;
+            if (pc.Id == Managers.Object.MyPlayer.Id)
+                continue;
+
+            ui_GameResult.AddAlly(pc);
+        }
+    }
+
+    public void SetMinimapHealPackImg(int id, bool isActivate)
+    {
+        switch (id)
+        {
+            case 0:
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().ChangeHealPackImage(UI_Minimap.Images.HealPackLL, isActivate);
+                break;
+            case 1:
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().ChangeHealPackImage(UI_Minimap.Images.HealPackLR, isActivate);
+                break;
+            case 2:
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().ChangeHealPackImage(UI_Minimap.Images.HealPackRL, isActivate);
+                break;
+            case 3:
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().ChangeHealPackImage(UI_Minimap.Images.HealPackRR, isActivate);
+                break;
+            case 4:
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().ChangeHealPackImage(UI_Minimap.Images.HealPackCL, isActivate);
+                break;
+            case 5:
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().ChangeHealPackImage(UI_Minimap.Images.HealPackCR, isActivate);
+                break;
+            case 6:
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().ChangeHealPackImage(UI_Minimap.Images.HealPackRC, isActivate);
+                break;
+            case 7:
+                GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().ChangeHealPackImage(UI_Minimap.Images.HealPackLC, isActivate);
+                break;
+        }
     }
 }

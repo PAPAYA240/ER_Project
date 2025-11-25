@@ -49,6 +49,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SEnterPick, PacketHandler.S_EnterPickHandler);		
 		_onRecv.Add((ushort)MsgId.SSpawnPick, MakePacket<S_SpawnPick>);
 		_handler.Add((ushort)MsgId.SSpawnPick, PacketHandler.S_SpawnPickHandler);		
+		_onRecv.Add((ushort)MsgId.SLeavePick, MakePacket<S_LeavePick>);
+		_handler.Add((ushort)MsgId.SLeavePick, PacketHandler.S_LeavePickHandler);		
 		_onRecv.Add((ushort)MsgId.SVisibleObjects, MakePacket<S_VisibleObjects>);
 		_handler.Add((ushort)MsgId.SVisibleObjects, PacketHandler.S_VisibleObjectsHandler);		
 		_onRecv.Add((ushort)MsgId.SLevelUp, MakePacket<S_LevelUp>);
@@ -131,24 +133,18 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SCombatMode, PacketHandler.S_CombatModeHandler);		
 		_onRecv.Add((ushort)MsgId.SChat, MakePacket<S_Chat>);
 		_handler.Add((ushort)MsgId.SChat, PacketHandler.S_ChatHandler);		
-		_onRecv.Add((ushort)MsgId.SEnterSlot, MakePacket<S_EnterSlot>);
-		_handler.Add((ushort)MsgId.SEnterSlot, PacketHandler.S_EnterSlotHandler);		
-		_onRecv.Add((ushort)MsgId.SSpawnSlot, MakePacket<S_SpawnSlot>);
-		_handler.Add((ushort)MsgId.SSpawnSlot, PacketHandler.S_SpawnSlotHandler);		
-		_onRecv.Add((ushort)MsgId.SLeaveLobby, MakePacket<S_LeaveLobby>);
-		_handler.Add((ushort)MsgId.SLeaveLobby, PacketHandler.S_LeaveLobbyHandler);		
-		_onRecv.Add((ushort)MsgId.SLobbyCnt, MakePacket<S_LobbyCnt>);
-		_handler.Add((ushort)MsgId.SLobbyCnt, PacketHandler.S_LobbyCntHandler);		
-		_onRecv.Add((ushort)MsgId.SNickname, MakePacket<S_Nickname>);
-		_handler.Add((ushort)MsgId.SNickname, PacketHandler.S_NicknameHandler);		
-		_onRecv.Add((ushort)MsgId.SCountdown, MakePacket<S_Countdown>);
-		_handler.Add((ushort)MsgId.SCountdown, PacketHandler.S_CountdownHandler);		
-		_onRecv.Add((ushort)MsgId.SPickAllReady, MakePacket<S_PickAllReady>);
-		_handler.Add((ushort)MsgId.SPickAllReady, PacketHandler.S_PickAllReadyHandler);		
-		_onRecv.Add((ushort)MsgId.SRandomPick, MakePacket<S_RandomPick>);
-		_handler.Add((ushort)MsgId.SRandomPick, PacketHandler.S_RandomPickHandler);		
-		_onRecv.Add((ushort)MsgId.SReadyBtn, MakePacket<S_ReadyBtn>);
-		_handler.Add((ushort)MsgId.SReadyBtn, PacketHandler.S_ReadyBtnHandler);
+		_onRecv.Add((ushort)MsgId.SUnstoppable, MakePacket<S_Unstoppable>);
+		_handler.Add((ushort)MsgId.SUnstoppable, PacketHandler.S_UnstoppableHandler);		
+		_onRecv.Add((ushort)MsgId.SAnimSpeed, MakePacket<S_AnimSpeed>);
+		_handler.Add((ushort)MsgId.SAnimSpeed, PacketHandler.S_AnimSpeedHandler);		
+		_onRecv.Add((ushort)MsgId.SRest, MakePacket<S_Rest>);
+		_handler.Add((ushort)MsgId.SRest, PacketHandler.S_RestHandler);		
+		_onRecv.Add((ushort)MsgId.SProjectileRozzi, MakePacket<S_ProjectileRozzi>);
+		_handler.Add((ushort)MsgId.SProjectileRozzi, PacketHandler.S_ProjectileRozziHandler);		
+		_onRecv.Add((ushort)MsgId.SYukiStud, MakePacket<S_YukiStud>);
+		_handler.Add((ushort)MsgId.SYukiStud, PacketHandler.S_YukiStudHandler);		
+		_onRecv.Add((ushort)MsgId.SYukiSkillEffect, MakePacket<S_YukiSkillEffect>);
+		_handler.Add((ushort)MsgId.SYukiSkillEffect, PacketHandler.S_YukiSkillEffectHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

@@ -8,6 +8,11 @@ namespace Google.Protobuf.Protocol
 {
     public sealed partial class PositionInfo
     {
+        public PositionInfo(float x, float y, float z)
+        {
+            posX_ = x; posY_ = y; posZ_ = z;
+        }
+
         public Vector3 ToVector()
         {
             return new Vector3(PosX, PosY, PosZ);
@@ -132,6 +137,14 @@ namespace Google.Protobuf.Protocol
         {
             if (Fps == 0)
                 Fps = 30;
+        }
+    }
+
+    public static class Vector3Extensions
+    {
+        public static PositionInfo ToPositionInfo(this Vector3 v)
+        {
+            return new PositionInfo(v.X, v.Y, v.Z);
         }
     }
 }

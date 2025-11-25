@@ -60,7 +60,7 @@ Shader "ERBS_FX/FX_AdditiveUI"
             {
                 float4 tex = _MainTex.Sample(sampler_MainTex, input.uv);
                 tex *= _Color;
-                tex.rgb *= _Color.a * 0.4;
+                tex.rgb *= _Color.a * 0.6;
                 return tex;
             }
 

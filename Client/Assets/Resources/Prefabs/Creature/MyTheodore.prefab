@@ -5378,6 +5378,7 @@ GameObject:
   - component: {fileID: 168382339782936418}
   - component: {fileID: 5622191535596995323}
   - component: {fileID: 2759011313569414496}
+  - component: {fileID: 4788815957550161799}
   m_Layer: 0
   m_Name: MyTheodore
   m_TagString: Untagged
@@ -5458,6 +5459,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d07a4ac14489814e9692da7473da8c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xRayIgnoreStencilID: 100
+  Sound: {fileID: 0}
 --- !u!114 &2759011313569414496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5470,7 +5473,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f78a77e38d495454f91251f3e3f85c53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _attackRange: 6
   _stopBuffer: 1.5
   _groundMask:
     serializedVersion: 2
@@ -5481,6 +5483,22 @@ MonoBehaviour:
   _playerMask:
     serializedVersion: 2
     m_Bits: 0
+  _beaconMask:
+    serializedVersion: 2
+    m_Bits: 0
+  _attackInputInterval: 0.08
+--- !u!114 &4788815957550161799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1792981127976458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 176bdf16fd35b524bb656781b4f2a89f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1799350042935927
 GameObject:
   m_ObjectHideFlags: 0

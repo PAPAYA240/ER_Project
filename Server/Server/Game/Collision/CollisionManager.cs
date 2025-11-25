@@ -11,6 +11,7 @@ using Google.Protobuf.Protocol;
 using Lucene.Net.Index;
 using Microsoft.VisualBasic;
 using Server.Data;
+using static NUnit.Framework.Constraints.Tolerance;
 using static Server.Data.DataUtils;
 using static Server.Game.GameObject;
 
@@ -151,7 +152,8 @@ namespace Server.Game
                 else if (charType == CharacterType.Abigail && keyCode == KeyCode.D)
                     hitbox.Omnivamp = true;
 
-                SettingPointType(hitbox);
+                SettingType(hitbox);
+
                 _pendingHitboxes.Add(hitbox);
             }            
 
@@ -203,7 +205,7 @@ namespace Server.Game
             {
                 foreach (Hitbox hitbox in hitboxSet)
                 {
-                    if (CurTick >= hitbox.EndTick || hitbox.IsUsed)
+                    if (CurTick >= hitbox.EndTick || hitbox.IsUsed || hitbox.Creature.Hp <= 0)
                     {
                         removeQueue.Add(hitbox);
 
@@ -238,22 +240,22 @@ namespace Server.Game
                         continue;
                     if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
                         continue;                      
-                    if (type != SkillType.SkillTrack)
-                        continue;
+                    //if (type != SkillType.SkillTrack)
+                    //    continue;
 
-                        Quaternion rot = new Quaternion(
-                        hitbox.Creature.RotInfo.Qx,
-                        hitbox.Creature.RotInfo.Qy,
-                        hitbox.Creature.RotInfo.Qz,
-                        hitbox.Creature.RotInfo.Qw
-                    );
+                    //    Quaternion rot = new Quaternion(
+                    //    hitbox.Creature.RotInfo.Qx,
+                    //    hitbox.Creature.RotInfo.Qy,
+                    //    hitbox.Creature.RotInfo.Qz,
+                    //    hitbox.Creature.RotInfo.Qw
+                    //);
 
-                    Vector3 offset = new Vector3(hitbox.Data.RightOffset, 0, hitbox.Data.LookOffset);
+                    //Vector3 offset = new Vector3(hitbox.Data.RightOffset, 0, hitbox.Data.LookOffset);
 
-                    Vector3 rotatedOffset = Vector3.Transform(offset, rot);
+                    //Vector3 rotatedOffset = Vector3.Transform(offset, rot);
 
-                    hitbox.PosX = hitbox.Creature.PosInfo.PosX + rotatedOffset.X;
-                    hitbox.PosZ = hitbox.Creature.PosInfo.PosZ + rotatedOffset.Z;
+                    //hitbox.PosX = hitbox.Creature.PosInfo.PosX + rotatedOffset.X;
+                    //hitbox.PosZ = hitbox.Creature.PosInfo.PosZ + rotatedOffset.Z;
                 }
             }
         }
@@ -383,26 +385,20 @@ namespace Server.Game
                 float dmg = ApplyDamage(hitbox, target, damageDict);
                 if (hitbox.Omnivamp)
                     totalDmg += target.CalcFinalDamage(hitbox.Creature, dmg);
-                hitbox.IsUsed = true;
 
-                // 때렸을 때 바로 사라져야 하는 경우
                 if (hitbox.Creature is Monster)
                 {
-                    // 몬스터는 상대가 플레이어인 경우에만 사라진다.
                     if (target is Player)
                         hitbox.IsUsed = true;
                 }
                 else
-                {
-                    // 같은 팀을 때렸을 때 제외한다
-                    if (ObjectManager.Instance.GetTeam(hitbox.Creature.Id) !=
-                        ObjectManager.Instance.GetTeam(target.Id))
-                        hitbox.IsUsed = true;
-                }
+                     hitbox.IsUsed = true;
             }
 
-            if(hitbox.Omnivamp)
-                hitbox.AddDamage(totalDmg);           
+            CheckAndApplyMonsterHit(hitbox, hitTargets);
+
+            if (hitbox.Omnivamp)
+                hitbox.AddDamage(totalDmg);
         }
 
        
@@ -925,13 +921,22 @@ namespace Server.Game
                     Interactions = ConvertProtoInteractionsToKeyCodeDictionary(skillHitbox.Interactions)
                 };
 
-                SettingPointType(hitbox);
+                if (System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
+                {
+                    if (type == SkillType.SkillTrack)
+                    {
+                        hitbox.PosX = targetPos.X;
+                        hitbox.PosZ = targetPos.Y;
+                    }
+                }
+
+                SettingType(hitbox);
                 _pendingHitboxes.Add(hitbox);
             }
             return hitbox;
         }
 
-        void SettingPointType(Hitbox hitbox)
+        void SettingType(Hitbox hitbox)
         {
             if (System.Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
             {

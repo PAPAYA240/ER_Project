@@ -23,6 +23,7 @@ public class Define
     {
         Bgm,
         Effect,
+        Voice,
         MaxCount,
     }
 

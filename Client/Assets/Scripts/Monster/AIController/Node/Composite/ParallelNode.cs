@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class ParallelNode : CompositeNode, IStateChangeListener
 {
     private List<NodeStatus> _childStates;
@@ -13,6 +12,9 @@ public class ParallelNode : CompositeNode, IStateChangeListener
         if (_childStates == null)
             ResetNode();
 
+        bool allCompleted = true;
+        bool anyFailed = false;
+
         if (_finished)
         {
             _finished = false;
@@ -21,9 +23,22 @@ public class ParallelNode : CompositeNode, IStateChangeListener
 
         for (int i = 0; i < children.Count; i++)
         {
-            // 한 번 성공한 건 재실행하지 않고 대기
             if (_childStates[i] == NodeStatus.Running)
+            {
                 _childStates[i] = children[i].Execute(obj);
+            }
+
+            // 상태 체크
+            if (_childStates[i] == NodeStatus.Running)
+                allCompleted = false;
+            else if (_childStates[i] == NodeStatus.Failure)
+                anyFailed = true;
+        }
+
+        if (allCompleted)
+        {
+            ResetNode();
+            return anyFailed ? NodeStatus.Failure : NodeStatus.Success;
         }
 
         return NodeStatus.Running;
@@ -42,8 +57,8 @@ public class ParallelNode : CompositeNode, IStateChangeListener
         foreach (var child in children)
         {
             if (child is PlayAnimation playAnim)
-                playAnim.Reset();
-            // 다른 타입의 노드들도 필요하면 추가
+                playAnim.ClearAnimationRunState();
+
         }
     }
     public void HandleStateChange(CreatureState newState, bool isClear = true)
@@ -52,6 +67,7 @@ public class ParallelNode : CompositeNode, IStateChangeListener
             _finished = true;
         else
             ResetChildren();
+
         ResetNode();
     }
 }

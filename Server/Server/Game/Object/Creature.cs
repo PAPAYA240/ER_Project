@@ -1,8 +1,5 @@
-﻿using Google.Protobuf.Protocol;
-using Nito.Collections;
+﻿using Nito.Collections;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 
 namespace Server.Game
@@ -64,7 +61,8 @@ namespace Server.Game
             Vector3 myPosition = PosInfo.ToVector();
 
             float dist = (bLastPath) ? SKILL_RANGE : DIST_TO_TARGET;
-            return Vector3.Distance(myPosition, targetPos) < DIST_TO_TARGET;
+
+            return Vector3.Distance(myPosition, targetPos) <= DIST_TO_TARGET;
         }
         public void FollowToTarget(Vector3 targetPos)
         {

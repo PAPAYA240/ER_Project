@@ -41,7 +41,11 @@ public class Projectile : BaseController
         }
         else if (objectType == GameObjectType.Monster)
         {
-            bDestroy = other.gameObject.layer == LayerMask.NameToLayer("Monster");
+            MonsterController mc = other.gameObject.GetComponentInChildren<MonsterController>();
+            if (mc == null)
+                return;
+
+            bDestroy = (mc.State != CreatureState.Dead);
         }
 
         if(bDestroy)
