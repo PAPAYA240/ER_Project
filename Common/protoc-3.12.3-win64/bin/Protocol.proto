@@ -158,6 +158,7 @@ enum EnvType{
    ACCBOUNDARY_SPAWNPOINT = 3;
    BARRIER_SPAWNPOINT = 4;
    BEACON = 5;
+   DEPLOYING_LOOP = 6;
 }
    
 enum ProjectileType {
