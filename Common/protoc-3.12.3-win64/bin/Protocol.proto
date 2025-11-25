@@ -125,6 +125,8 @@ enum MsgId {
   S_PICK_ALL_READY = 99;
   S_RANDOM_PICK = 100;
   S_READY_BTN = 101;
+
+  C_USE_ITEM = 102;
 }
 
 enum CombatState{
@@ -159,6 +161,7 @@ enum GameObjectType{
 	MONSTER = 2;
 	PROJECTILE = 3;
 	ENVIRONMENT = 4;
+	WARD = 5;
 }
 
 enum EnvType{
@@ -1107,4 +1110,12 @@ message S_RandomPick{
 
 message S_ReadyBtn{
 	uint32 flag = 1;
+}
+}
+
+message C_UseItem {
+	int32 objectId = 1;
+	int32 inventoryIndex = 2;
+	float mouseX = 3;
+	float mouseZ = 4;
 }

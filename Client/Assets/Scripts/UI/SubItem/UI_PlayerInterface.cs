@@ -483,9 +483,9 @@ public class UI_PlayerInterface : UI_Base
         GetObject((int)GameObjects.Equipment).GetComponent<UI_Equipment>().Equip(item);
     }
 
-    public void SetInventoryItem()
+    public void SetInventoryItem(ItemInfoBase item, int idx)
     {
-
+        GetObject((int)GameObjects.Inventory).GetComponent<UI_Inventory>().SetItem(item, idx);
     }
 
     #region Stat
