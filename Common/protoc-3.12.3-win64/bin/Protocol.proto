@@ -113,6 +113,7 @@ enum MsgId {
   S_PROJECTILE_ROZZI = 88;
   S_YUKI_STUD = 89;
   S_YUKI_SKILL_EFFECT = 90;
+  C_USE_ITEM = 91;
 }
 
 enum CombatState{
@@ -147,6 +148,7 @@ enum GameObjectType{
 	MONSTER = 2;
 	PROJECTILE = 3;
 	ENVIRONMENT = 4;
+	WARD = 5;
 }
 
 enum EnvType{
@@ -1052,4 +1054,11 @@ message S_YukiSkillEffect {
   int32 objectId = 1;
   PositionInfo posInfo = 2;
   RotationInfo rotInfo = 3;
+}
+
+message C_UseItem {
+	int32 objectId = 1;
+	int32 inventoryIndex = 2;
+	float mouseX = 3;
+	float mouseZ = 4;
 }
