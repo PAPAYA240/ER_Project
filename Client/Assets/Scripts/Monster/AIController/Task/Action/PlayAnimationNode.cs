@@ -118,7 +118,11 @@ public class PlayAnimation : AnimationControlNode
 
     private void ClearAnim()
     {
-        _animator?.CrossFadeInFixedTime(_waitAnim, 0.1f, 0);
+        int waitAnimHash = Animator.StringToHash(_waitAnim);
+
+        if (_animator != null && _animator.HasState(0, waitAnimHash))
+            _animator?.CrossFadeInFixedTime(_waitAnim, 0.1f, 0);
+
         _currentAnimName = string.Empty;
         _currentChainIndex = 0;
         _animStart = false;

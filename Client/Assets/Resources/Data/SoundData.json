@@ -41,9 +41,11 @@
         "Kill5": [ { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_kill5player_1_ko" } ]
       },
       "Effect": {
-        "Attack": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_NormalAttack_Shot" } ],
+        "ATTACK_1": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_NormalAttack_Shot" } ],
+        "ATTACK_2": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_NormalAttack_Shot" } ],
         "CHARGE": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill01_Start" } ], // "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill01_Start_Reinforce"
         "SKILL_Q": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill01_Fire" } ],
+        "SKILL_HEAL": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill01_Heal" } ],
         "SKILL_W": [
           { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill02_Install" },
           {

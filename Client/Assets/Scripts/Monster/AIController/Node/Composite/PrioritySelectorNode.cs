@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,7 @@ public class PrioritySelectorNode : CompositeNode
                     continue; 
             }
         }
+
         _state = NodeStatus.Failure;
         return _state;
     }

@@ -6,7 +6,7 @@ public class ParallelNode : CompositeNode, IStateChangeListener
 {
     private List<NodeStatus> _childStates;
 
-    bool _finished = false;
+    //bool _finished = false;
     public override NodeStatus Execute(GameObject obj)
     {
         if (_childStates == null)
@@ -15,11 +15,11 @@ public class ParallelNode : CompositeNode, IStateChangeListener
         bool allCompleted = true;
         bool anyFailed = false;
 
-        if (_finished)
-        {
-            _finished = false;
-            return NodeStatus.Success;
-        }
+        //if (_finished)
+        //{
+        //    _finished = false;
+        //    return NodeStatus.Success;
+        //}
 
         for (int i = 0; i < children.Count; i++)
         {
@@ -64,7 +64,7 @@ public class ParallelNode : CompositeNode, IStateChangeListener
     public void HandleStateChange(CreatureState newState, bool isClear = true)
     {
         if (isClear)
-            _finished = true;
+            ;// _finished = true;
         else
             ResetChildren();
 

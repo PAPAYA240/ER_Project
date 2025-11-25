@@ -3,8 +3,8 @@ using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.LowLevel;
 
+// Todo. Player -> Play3D 로 바꿔놓기
 public class SoundController : MonoBehaviour
 {
     [SerializeField] public CharacterType CharType;
@@ -83,7 +83,7 @@ public class SoundController : MonoBehaviour
             if (isLoopSound)
             {
                 AudioClip loopSoud = Managers.Sound.PlayLoop(clip.Clip, Define.Sound.Effect, 0.1f);
-                StartCoroutine(StopLoopAfterTime(loopSoud.name, clip.Duration)); // 임시
+                StartCoroutine(StopLoopAfterTime(loopSoud.name, clip.Duration)); 
             }
             else
                 UseSkill(clip.Clip, Define.Sound.Effect); 

@@ -13,7 +13,7 @@ public class PlaySoundNode : ActionNode, IStateChangeListener
         if (monster == null)
             return NodeStatus.Failure;
 
-        //monster.StartCoroutine(PlaySequentially(monster));
+        monster.StartCoroutine(PlaySequentially(monster));
 
         return NodeStatus.Success;
     }
@@ -25,6 +25,7 @@ public class PlaySoundNode : ActionNode, IStateChangeListener
             string fullPath = $"Sounds/Monster/{monster.Type}_{name}";
             Vector3 position = monster.transform.position;
             float duration = Managers.Sound.Play3D(fullPath, position);
+
             yield return new WaitForSeconds(duration);
         }
     }

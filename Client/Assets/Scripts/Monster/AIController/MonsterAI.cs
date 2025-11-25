@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Google.Protobuf.Protocol;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MonsterAI : MonoBehaviour
@@ -6,32 +7,33 @@ public class MonsterAI : MonoBehaviour
     private Node _rootNode; // List가 아닌 단일 루트
     private float _tickInterval = 0.2f;
     private float _timer = 0f;
-    private MonsterController _monsterController;
+    private MonsterController _controller;
     private List<IStateChangeListener> _stateListeners = new List<IStateChangeListener>();
 
     public float PrevHp = 0;
+
     void Start()
     {
-        _monsterController = GetComponentInChildren<MonsterController>();
+        _controller = GetComponentInChildren<MonsterController>();
         CreateBehaviorTree();
         FindAllListeners(_rootNode);
 
-        if (_monsterController != null)
+        if (_controller != null)
         {
             foreach (var listener in _stateListeners)
-                _monsterController.OnStateChanged += listener.HandleStateChange;
+                _controller.OnStateChanged += listener.HandleStateChange;
         }
-        PrevHp = _monsterController.Hp;
+        PrevHp = _controller.Hp;
     }
 
     void Update()
     {
-        _timer += Time.deltaTime;
-        if (_timer >= _tickInterval)
-        {
-            _timer = 0f;
-            _rootNode?.Execute(gameObject); // 단일 루트만 실행
-        }
+         _timer += Time.deltaTime;
+         if (_timer >= _tickInterval)
+         {
+             _timer = 0f;
+             _rootNode?.Execute(gameObject); 
+         }
     }
 
 
@@ -45,7 +47,7 @@ public class MonsterAI : MonoBehaviour
         }
 
         var builder = new BehaviorTreeBuilder();
-        List<Node> trees = builder.BuildMultipleFromJson(jsonAsset.text, _monsterController.Type);
+        List<Node> trees = builder.BuildMultipleFromJson(jsonAsset.text, _controller.Type);
 
         if (trees.Count > 0)
         {
@@ -60,7 +62,7 @@ public class MonsterAI : MonoBehaviour
             }
 
             _rootNode = rootSelector;
-            Debug.Log($"[{_monsterController.Type}] Loaded {rootSelector.children.Count} behaviors");
+            Debug.Log($"[{_controller.Type}] Loaded {rootSelector.children.Count} behaviors");
         }
     }
 

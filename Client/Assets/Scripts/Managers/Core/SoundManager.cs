@@ -49,13 +49,8 @@ public class SoundManager
         AudioClip audioClip = GetOrAddAudioClip(path, type);
         Play(audioClip, type, volume, pitch);
     }
-
-    public float Play3D(string path, Vector3 position, Define.Sound type = Define.Sound.Effect, float pitch = 1.0f)
+    public float Play3D(AudioClip audioClip, Vector3 position, Define.Sound type = Define.Sound.Effect, float pitch = 1.0f)
     {
-        AudioClip audioClip = GetOrAddAudioClip(path, type);
-        if (audioClip == null)
-            return -1.0f;
-
         GameObject go = new GameObject($"Sound_{audioClip}");
         go.transform.position = position;
 
@@ -68,9 +63,28 @@ public class SoundManager
         audioSource.clip = audioClip;
         audioSource.Play();
 
-         Object.Destroy(go, audioClip.length + 0.1f);
+        Object.Destroy(go, audioClip.length + 0.1f);
         return audioClip.length;
     }
+    public float Play3D(string path, Vector3 position, Define.Sound type = Define.Sound.Effect, float pitch = 1.0f)
+    {
+        AudioClip audioClip = GetOrAddAudioClip(path, type);
+        if (audioClip == null)
+            return -1.0f;
+
+        GameObject go = new GameObject($"Sound_{audioClip}");
+        go.transform.position = position;
+
+        AudioSource audioSource = go.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1f;
+        audioSource.pitch = pitch;
+        audioSource.clip = audioClip;
+        audioSource.Play();
+
+        Object.Destroy(go, audioClip.length + 0.1f);
+        return audioClip.length;
+    }
+
     public AudioClip PlayLoop(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, float volume = 1.0f, float pitch = 1.0f)
     {
         GameObject loopObject = new GameObject($"LoopSound_{audioClip.name}");

@@ -197,13 +197,15 @@ class PacketHandler
             if (attPc == null)
                 return;
 
-            // Victory Sound
-            if (Managers.Object.MyPlayer.Id == diePacket.AttackerId)
+            // Kill 수에 따라 다른 Sound 호출
+            if (Managers.Object.MyPlayer.Id == diePacket.AttackerId && Managers.Object.MyPlayer.Id == diePacket.ObjectId)
             {
                 if (attPc.Sound != null)
-                    attPc.Sound.GetRandomVoice("Victory");
+                {
+                    attPc.CurrentMultiKillCnt++;
+                    attPc.Sound.GetRandomVoice($"Kill{attPc.CurrentMultiKillCnt}");
+                }
             }
-
             Managers.Object.MyPlayer.UI.NotifyKill(attPc, pc); 
         }
     }

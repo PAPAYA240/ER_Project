@@ -19,15 +19,16 @@ public class Projectile : BaseController
         }
     }
 
-
+    private bool _isProcessingHit = false;
     void OnTriggerEnter(Collider other)
     {
         if (Type == ProjectileType.ProjectileRozziR)
             return;
+        if (_isProcessingHit)
+            return;
 
         // 스크린 활용 시 모든 몬스터와 플레이어도 맞게 할 수 있음
         bool bDestroy = false;
-
         CreatureController cc = other.gameObject.GetComponentInChildren<CreatureController>();
         if (cc == null) return;
 
@@ -50,10 +51,12 @@ public class Projectile : BaseController
 
         if(bDestroy)
         {
-            if (ownerPlayer.Sound != null)
-                ownerPlayer.Sound.GetEffect($"Hit_{Type}");
+            _isProcessingHit = true;
 
             Destroy(gameObject);
+
+            if (ownerPlayer.Sound != null)
+                ownerPlayer.Sound.GetEffect($"Hit_{Type}");
 
             if (Type == ProjectileType.ProjectileBullet)
                 SendAttackPacket(other.gameObject);
