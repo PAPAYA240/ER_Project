@@ -144,7 +144,7 @@ public class PlayerController : CreatureController
             if (_untargetable)
                 _nameTag.SetNameText("대상 지정 불가", 20);
             else
-                _nameTag.SetNameText("아비게일", 16);
+                _nameTag.SetNameText(Managers.Info.UserName, 16);
 
             _nameTag.SetHPColor(_untargetable);
         } 

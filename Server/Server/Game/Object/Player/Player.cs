@@ -240,7 +240,7 @@ namespace Server.Game
         {
             if (null == Room) return;
 
-            long now = Room.CurTick;
+            long now = TimeUtil.Instance.LastTick;
 
             // 지워야 하는 요소 수집
             List<int> toRemove = new List<int>();
@@ -265,7 +265,7 @@ namespace Server.Game
 
             UpdateDamageRecords();
 
-            long now = Room.CurTick;
+            long now = TimeUtil.Instance.LastTick;
 
             if (_damageRecords.TryGetValue(attacker.Id, out DamageRecord damageRecord))
             {

@@ -23,8 +23,8 @@ class PacketManager
 
 	public void Register()
 	{		
-		_onRecv.Add((ushort)MsgId.CEnterGame, MakePacket<C_EnterGame>);
-		_handler.Add((ushort)MsgId.CEnterGame, PacketHandler.C_EnterGameHandler);		
+		_onRecv.Add((ushort)MsgId.CReadyBtn, MakePacket<C_ReadyBtn>);
+		_handler.Add((ushort)MsgId.CReadyBtn, PacketHandler.C_ReadyBtnHandler);		
 		_onRecv.Add((ushort)MsgId.CMove, MakePacket<C_Move>);
 		_handler.Add((ushort)MsgId.CMove, PacketHandler.C_MoveHandler);		
 		_onRecv.Add((ushort)MsgId.CSkill, MakePacket<C_Skill>);
@@ -37,8 +37,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.CFx, PacketHandler.C_FxHandler);		
 		_onRecv.Add((ushort)MsgId.CPing, MakePacket<C_Ping>);
 		_handler.Add((ushort)MsgId.CPing, PacketHandler.C_PingHandler);		
-		_onRecv.Add((ushort)MsgId.CReady, MakePacket<C_Ready>);
-		_handler.Add((ushort)MsgId.CReady, PacketHandler.C_ReadyHandler);		
+		_onRecv.Add((ushort)MsgId.CEnterLobby, MakePacket<C_EnterLobby>);
+		_handler.Add((ushort)MsgId.CEnterLobby, PacketHandler.C_EnterLobbyHandler);		
 		_onRecv.Add((ushort)MsgId.CTrait, MakePacket<C_Trait>);
 		_handler.Add((ushort)MsgId.CTrait, PacketHandler.C_TraitHandler);		
 		_onRecv.Add((ushort)MsgId.CWeapon, MakePacket<C_Weapon>);
@@ -82,7 +82,11 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CAttackRequest, MakePacket<C_AttackRequest>);
 		_handler.Add((ushort)MsgId.CAttackRequest, PacketHandler.C_AttackRequestHandler);		
 		_onRecv.Add((ushort)MsgId.CChat, MakePacket<C_Chat>);
-		_handler.Add((ushort)MsgId.CChat, PacketHandler.C_ChatHandler);
+		_handler.Add((ushort)MsgId.CChat, PacketHandler.C_ChatHandler);		
+		_onRecv.Add((ushort)MsgId.CSlotClick, MakePacket<C_SlotClick>);
+		_handler.Add((ushort)MsgId.CSlotClick, PacketHandler.C_SlotClickHandler);		
+		_onRecv.Add((ushort)MsgId.CStartBtn, MakePacket<C_StartBtn>);
+		_handler.Add((ushort)MsgId.CStartBtn, PacketHandler.C_StartBtnHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

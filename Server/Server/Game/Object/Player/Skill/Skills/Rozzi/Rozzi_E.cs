@@ -36,7 +36,7 @@ public sealed class Rozzi_E : SkillHandlerBase
 
         _duration = _animDuration = GetDuration();
 
-        HitboxCreated = false;
+        HitboxRequired = false;
     }
 
     public override void OnEnter(Player p, SkillContext ctx)

@@ -11,6 +11,7 @@ class PacketHandler
 	{
 		S_EnterGame enterGamePacket = packet as S_EnterGame;
 
+        Managers.Scene.LoadScene(Define.Scene.Game);
         Managers.Object.Add(enterGamePacket.Player, myPlayer: true);
 	}
 
@@ -266,43 +267,17 @@ class PacketHandler
 
     public static void S_EnterPickHandler(PacketSession session, IMessage packet)
     {
+        Managers.Scene.LoadScene(Define.Scene.Pick);
+
         S_EnterPick enterPickPacket = packet as S_EnterPick;
-
-        GameObject go = GameObject.Find("PickScene");
-        if (go == null) return;
-
-        PickScene pickScene = go.GetComponent<PickScene>();
-        if (pickScene == null) return;
-
-        pickScene.PickIdx = enterPickPacket.PickIdx;
-        pickScene.NickName = enterPickPacket.UserName;
-        pickScene.ChangeBar(enterPickPacket.PickIdx);
+        Managers.Info.PickIdx = enterPickPacket.PickIdx;
+        Managers.Info.Team = enterPickPacket.Team;
     }
+
     public static void S_SpawnPickHandler(PacketSession session, IMessage packet)
     {
         S_SpawnPick spawnPickPacket = packet as S_SpawnPick;
-
-        GameObject go = GameObject.Find("PickScene");
-        if (go == null) return;
-
-        PickScene pickScene = go.GetComponent<PickScene>();
-        if (pickScene == null) return;
-
-        foreach(PickScenePlayerInfo pspi in spawnPickPacket.Players)
-            pickScene.Spawn(pspi);
-    }
-
-    public static void S_LeavePickHandler(PacketSession session, IMessage packet)
-    {
-        S_LeavePick leavePickPacket = packet as S_LeavePick;
-
-        GameObject go = GameObject.Find("Test");
-        if (go == null) return;
-
-        UI_SelectEvent selectEvent = go.GetComponent<UI_SelectEvent>();
-        if (selectEvent == null) return;
-
-        selectEvent.ChangePickImage(CharacterType.CharacterNone, leavePickPacket.PickIdx);
+        Managers.Info._pspiList = spawnPickPacket.Players.ToList();
     }
 
     public static void S_VisibleObjectsHandler(PacketSession session, IMessage packet)
@@ -858,6 +833,112 @@ class PacketHandler
         chat.EnqueueMessage(chatPkt.ObjectId, chatPkt.Message);
 
         //combatModePkt.CombatMode;
+    }
+
+    public static void S_EnterSlotHandler(PacketSession session, IMessage packet)
+    {
+        S_EnterSlot enterSlotPkt = packet as S_EnterSlot;
+        GameObject go = GameObject.Find("LobbySceneUI");
+        if (go == null) return;
+
+        UI_LobbyScene lobbySceneUI = go.GetComponent<UI_LobbyScene>();
+        if (lobbySceneUI == null) return;
+
+        lobbySceneUI.SetNickname(enterSlotPkt.SlotIdx, enterSlotPkt.Nickname);
+    }
+
+    public static void S_SpawnSlotHandler(PacketSession session, IMessage packet)
+    {
+        S_SpawnSlot spawnSlotPkt = packet as S_SpawnSlot;
+        GameObject go = GameObject.Find("LobbySceneUI");
+        if (go == null) return;
+
+        UI_LobbyScene lobbySceneUI = go.GetComponent<UI_LobbyScene>();
+        if (lobbySceneUI == null) return;
+
+        int cnt = spawnSlotPkt.SlotIdxs.Count;
+        for (int i = 0; i < cnt; ++i)
+            lobbySceneUI.SetNickname(spawnSlotPkt.SlotIdxs[i], spawnSlotPkt.Nicknames[i]);
+    }
+
+    public static void S_LeaveLobbyHandler(PacketSession session, IMessage packet)
+    {
+        S_LeaveLobby leaveLobbyPkt = packet as S_LeaveLobby;
+        GameObject go = GameObject.Find("LobbySceneUI");
+        if (go == null) return;
+
+        UI_LobbyScene lobbySceneUI = go.GetComponent<UI_LobbyScene>();
+        if (lobbySceneUI == null) return;
+
+        lobbySceneUI.SetNickname(leaveLobbyPkt.SlotIdx);
+    }
+
+    public static void S_LobbyCntHandler(PacketSession session, IMessage packet)
+    {
+        S_LobbyCnt lobbyCntPkt = packet as S_LobbyCnt;
+        GameObject go = GameObject.Find("LobbySceneUI");
+        if (go == null) return;
+
+        UI_LobbyScene lobbySceneUI = go.GetComponent<UI_LobbyScene>();
+        if (lobbySceneUI == null) return;
+
+        lobbySceneUI.SetCount(lobbyCntPkt.PlayerCnt, lobbyCntPkt.ObserverCnt);
+    }
+
+    public static void S_NicknameHandler(PacketSession session, IMessage packet)
+    {
+        S_Nickname nicknamePkt = packet as S_Nickname;
+        Managers.Info.UserName = nicknamePkt.Nickname;
+    }
+
+    public static void S_CountdownHandler(PacketSession session, IMessage packet)
+    {
+        S_Countdown countdownPkt = packet as S_Countdown;
+        GameObject go = GameObject.Find("PickSceneUI");
+        if (go == null) return;
+
+        UI_PickSceneUI pickSceneUI = go.GetComponent<UI_PickSceneUI>();
+        if (pickSceneUI == null) return;
+
+        pickSceneUI.ChangeCountdown(countdownPkt.Count);
+    }
+
+    public static void S_PickAllReadyHandler(PacketSession session, IMessage packet)
+    {
+        S_PickAllReady pickAllReady = packet as S_PickAllReady;
+        GameObject go = GameObject.Find("PickSceneUI");
+        if (go == null) return;
+
+        UI_PickSceneUI pickSceneUI = go.GetComponent<UI_PickSceneUI>();
+        if (pickSceneUI == null) return;
+
+        pickSceneUI.OnAllReady(pickAllReady.StartIdx, pickAllReady.CharList.ToList<CharacterType>(), 
+            pickAllReady.WeaponList.ToList<Weapon>(), pickAllReady.TraitList.ToList<TraitType>());
+    }
+
+    public static void S_RandomPickHandler(PacketSession session, IMessage packet)
+    {
+        S_RandomPick randomPickPkt = packet as S_RandomPick;
+        GameObject go = GameObject.Find("PickSceneUI");
+        if (go == null) return;
+
+        UI_PickSceneUI pickSceneUI = go.GetComponent<UI_PickSceneUI>();
+        if (pickSceneUI == null) return;
+
+        pickSceneUI.OnClickedPickButton.Invoke(randomPickPkt.CharType.ToString());
+    }
+
+    public static void S_ReadyBtnHandler(PacketSession session, IMessage packet)
+    {
+        S_RandomPick randomPickPkt = packet as S_RandomPick;
+        GameObject go = GameObject.Find("ReadyButton");
+        if (go == null) return;
+
+        UI_ReadyButton readyButton = go.GetComponent<UI_ReadyButton>();
+        if (readyButton == null) return;
+
+        Managers.Info.IsReady = true;
+        readyButton.OnReady();
     }
 
     static float GetCurrentEstimatedOneWayLatency()

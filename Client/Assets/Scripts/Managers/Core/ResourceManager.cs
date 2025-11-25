@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class ResourceManager
@@ -51,5 +52,23 @@ public class ResourceManager
         }
 
         Object.Destroy(go);
+    }
+
+    public async Task<GameObject> InstantiateAsync(string path, Transform parent = null)
+    {
+        ResourceRequest req = Resources.LoadAsync<GameObject>($"Prefabs/{path}");
+
+        while (!req.isDone)
+            await Task.Yield();
+
+        GameObject original = req.asset as GameObject;
+
+        if (original.GetComponent<Poolable>() != null)
+            return Managers.Pool.Pop(original, parent).gameObject;
+
+        GameObject go = Object.Instantiate(original, parent);
+        go.name = original.name;
+
+        return go;
     }
 }

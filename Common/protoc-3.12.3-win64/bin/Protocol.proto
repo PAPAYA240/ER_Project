@@ -5,7 +5,7 @@ package Protocol;
 option csharp_namespace = "Google.Protobuf.Protocol";
 
 enum MsgId {
-  C_ENTER_GAME = 0;
+  C_READY_BTN = 0;
   S_ENTER_GAME = 1;
   S_LEAVE_GAME = 2;
   S_SPAWN = 3;
@@ -24,11 +24,11 @@ enum MsgId {
   S_CHARACTER = 16;
   S_ENTER_PICK = 17;
   S_SPAWN_PICK = 18;
-  S_LEAVE_PICK = 19;
+
   C_PING = 20;
   S_VISIBLE_OBJECTS = 21;
   S_LEVEL_UP = 22;
-  C_READY = 23;
+  C_ENTER_LOBBY = 23;
   S_FX = 24;
   C_TRAIT = 25;
   S_TRAIT = 26;
@@ -105,6 +105,18 @@ enum MsgId {
   S_COMBAT_MODE = 82;
   C_CHAT = 83;
   S_CHAT = 84;
+
+  S_ENTER_SLOT = 86;
+  S_SPAWN_SLOT = 87;
+  C_SLOT_CLICK = 88;
+  S_LEAVE_LOBBY = 89;
+  C_START_BTN = 90;
+  S_LOBBY_CNT = 91;
+  S_NICKNAME = 92;
+  S_COUNTDOWN = 93;
+  S_PICK_ALL_READY = 94;
+  S_RANDOM_PICK = 95;
+  S_READY_BTN = 96;
 }
 
 enum CombatState{
@@ -334,15 +346,14 @@ message C_Interact {
 }
 
 message S_Interact  {
-    	int32 objectId = 1;
+    int32 objectId = 1;
 	int32 targetId = 2;
-    	int32 keyCode = 3;
+    int32 keyCode = 3;
 	int32 targetKeyCode = 4;
 }
 
-message C_EnterGame {
-	bool enterGame = 1;
-	repeated CharacterType dummyPlayers = 2;
+message C_ReadyBtn {
+	uint32 flag = 1;
 }
 
 message S_EnterGame {
@@ -483,16 +494,12 @@ message S_Weapon{
 }
 
 message S_EnterPick{
-	int32 pickIdx = 1;
-	string userName = 2;
+    int32 team = 1;
+    int32 pickIdx = 2;
 }
 
 message S_SpawnPick{
 	repeated PickScenePlayerInfo players = 1;
-}
-
-message S_LeavePick{
-	int32 pickIdx = 1;
 }
 
 message S_ChangeHp{
@@ -522,8 +529,8 @@ message S_LevelUp{
 	StatInfo statGrowth = 3;
 }
 
-message C_Ready{
-	bool ready = 1;
+message C_EnterLobby{
+	string nickname = 1;
 }
 
 message S_Respawn{
@@ -724,11 +731,9 @@ message ObjectInfo{
 }
 
 message PickScenePlayerInfo{
-	int32 pickIdx = 1;
-	string userName = 2;
-	CharacterType charType = 3;
-	TraitType traitType = 4;
-	Weapon weaponType = 5;
+	int32 team = 1;
+	int32 pickIdx = 2;
+	string userName = 3;
 }
 
 message AnimInfo{
@@ -993,4 +998,54 @@ message C_Chat {
 message S_Chat {
 	int32 objectId = 1;
 	string message = 2;
+}
+
+message S_EnterSlot{
+	int32 slotIdx = 1;
+	string nickname = 2;
+}
+
+message S_SpawnSlot{
+	repeated int32 slotIdxs = 1;
+	repeated string nicknames = 2;
+}
+
+message C_SlotClick{
+	int32 slotIdx = 1;
+}
+
+message S_LeaveLobby{
+	int32 slotIdx = 1;
+}
+
+message C_StartBtn{
+	uint32 start = 1;
+}
+
+message S_LobbyCnt{
+	int32 playerCnt = 1;
+	int32 observerCnt = 2;
+}
+
+message S_Nickname{
+	string nickname = 1;
+}
+
+message S_Countdown{
+	int32 count = 1;
+}
+
+message S_PickAllReady{
+	int32 startIdx = 1;
+	repeated CharacterType charList = 2;
+	repeated Weapon weaponList = 3;
+	repeated TraitType traitList = 4;
+}
+
+message S_RandomPick{
+	CharacterType charType = 1;
+}
+
+message S_ReadyBtn{
+	uint32 flag = 1;
 }

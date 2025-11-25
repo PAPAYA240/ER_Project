@@ -99,7 +99,7 @@ namespace Server.Game
                 env.Info.Env = new EnvInfo();
                 env.Info.Env.EnvType = eData.envType;
                 env.Info.Name = $"{env.Id} Environment";
-                _room.Push(_room.EnterGame, env);
+                _room.Push(_room.EnterGame, env, 0);
             }
         }
     }

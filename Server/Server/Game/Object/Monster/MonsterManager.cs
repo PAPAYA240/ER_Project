@@ -108,7 +108,7 @@ namespace Server.Game
                     monster.Stat.MergeFrom(monsterStat.stat);
 
                 monster.Init(monster.Info.Monster.MonsterType);
-                _room.Push(_room.EnterGame, monster);
+                _room.Push(_room.EnterGame, monster, 0);
             }
         }
     }

@@ -402,9 +402,7 @@ namespace Server.Game
             }
 
             if(hitbox.Omnivamp)
-                hitbox.AddDamage(totalDmg);
-
-            
+                hitbox.AddDamage(totalDmg);           
         }
 
        

@@ -32,6 +32,8 @@ namespace Server
 
 		public DateTime LastPing { get; set; } = DateTime.Now;
 
+		public string UserName {  get; set; }
+
 		public void Send(IMessage packet)
 		{
 			string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
@@ -67,6 +69,11 @@ namespace Server
 			else if(room is PickRoom pr)
 			{
 				pr.Push(pr.LeavePick, PickIdx);
+			}
+			else if(room is LobbyRoom lr)
+			{
+				lr.Push(lr.LeaveLobby, UserName);
+				lr.Push(lr.BroadcastPlayerCntPkt);
 			}
 
 			SessionManager.Instance.Remove(this);

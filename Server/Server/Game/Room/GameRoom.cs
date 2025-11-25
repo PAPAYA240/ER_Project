@@ -30,17 +30,7 @@ namespace Server.Game
         Dictionary<int, Dictionary<int, Player>> _teams = new Dictionary<int, Dictionary<int, Player>>();
         Dictionary<CharacterType, SkillHandler> _skillHandlers = new Dictionary<CharacterType, SkillHandler>();
 
-        bool _teamToggle = false;
-
         public EnvironmentManager GetEnvManager { get { return _envManager; } private set { _envManager = value; } }
-
-        private long _curTick;
-
-        public long CurTick
-        {
-            get => Interlocked.Read(ref _curTick);
-            set => Interlocked.Exchange(ref _curTick, value);
-        }
 
         #region Phase, Time
 
@@ -52,25 +42,25 @@ namespace Server.Game
 
         public void StartPhase()
         {
-            _startTick = CurTick;
+            _startTick = TimeUtil.Instance.LastTick;
             _phaseStartTick = _startTick;
             ChangePhase(0);
             if (DataManager.PhaseDict.TryGetValue(0, out int durationSec))
-                _phaseEndTick = CurTick + durationSec * 1000L;
+                _phaseEndTick = TimeUtil.Instance.LastTick + durationSec * 1000L;
         }
 
-        public long GameElapsedMs => CurTick - _startTick;
-        public long PhaseElapsedMs => CurTick - _phaseStartTick;
+        public long GameElapsedMs => TimeUtil.Instance.LastTick - _startTick;
+        public long PhaseElapsedMs => TimeUtil.Instance.LastTick - _phaseStartTick;
 
         public void ChangePhase(int newPhase)
         {
             CurPhase = newPhase;
-            _phaseStartTick = CurTick;
+            _phaseStartTick = TimeUtil.Instance.LastTick;
 
             // 페이즈 지속 시간 가져오기
             if (DataManager.PhaseDict.TryGetValue(newPhase, out int durationSec))
             {
-                _phaseEndTick = CurTick + durationSec * 1000L;
+                _phaseEndTick = TimeUtil.Instance.LastTick + durationSec * 1000L;
             }
             else
             {
@@ -101,7 +91,7 @@ namespace Server.Game
             S_SyncTimer syncTimerPacket = new S_SyncTimer();
 
             syncTimerPacket.Phase = CurPhase;
-            syncTimerPacket.CurrentTick = CurTick; 
+            syncTimerPacket.CurrentTick = TimeUtil.Instance.LastTick; 
             syncTimerPacket.PhaseEndTime = _phaseEndTick; 
 
             Push(Broadcast, syncTimerPacket);
@@ -139,7 +129,7 @@ namespace Server.Game
             = new Dictionary<CharacterType, Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>>();
         #endregion
 
-        public void Init()
+        public override void Init()
         {
             PathFind = new PathfindInstance(0);
             // Spawn Monster
@@ -161,10 +151,7 @@ namespace Server.Game
 
         public override void Update()
         {
-            CurTick = Environment.TickCount64;
-            TimeUtil.Instance.Update(CurTick);
-
-            if (_phaseEndTick > 0 && CurTick >= _phaseEndTick)
+            if (_phaseEndTick > 0 && TimeUtil.Instance.LastTick >= _phaseEndTick)
                 ChangePhase(CurPhase + 1);
 
             Flush();
@@ -205,7 +192,7 @@ namespace Server.Game
 
             //Flush();
 
-            _collisionManager.CurTick = CurTick;
+            _collisionManager.CurTick = TimeUtil.Instance.LastTick;
             _collisionManager.Flush();
             _collisionManager.CheckAllCollisions(_teams, _monsters, _projectiles);
             _collisionManager.Update();
@@ -216,7 +203,7 @@ namespace Server.Game
             CheckLastPing();
         }
        
-        public void EnterGame(GameObject gameObject)
+        public void EnterGame(GameObject gameObject, int team)
         {
             if (gameObject == null)
                 return;
@@ -226,7 +213,7 @@ namespace Server.Game
             {
                 Player player = gameObject as Player;
                 _players.TryAdd(gameObject.Id, player);
-                player.Info.Player.Team = AssignTeam();
+                player.Info.Player.Team = team;
                 player.Info.Player.Weapon = FindWeapon(player.Info.Player.CharType);
                 player.WeaponAttackRange = DataManager.WeaponDict[player.Info.Player.Weapon].Range;
 
@@ -586,12 +573,6 @@ namespace Server.Game
                 if (p.Session.CheckTimeout())
                     p.Session.Disconnect();
             }
-        }
-
-        int AssignTeam()
-        {
-            _teamToggle = !_teamToggle;
-            return _teamToggle ? 1 : 2;
         }
 
         private void AddVisibleObjects<T>(List<int> visibleObjs, ConcurrentDictionary<int, T> dict, Player player, int range = 8) where T : GameObject

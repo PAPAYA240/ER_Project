@@ -202,7 +202,7 @@ public class PlayerViewController : MonoBehaviour
         //if (_motionCo != null)
         //    return;
 
-        if (_agent == null)
+        if (_agent == null || !_agent.isOnNavMesh)
             return;
 
         switch (reason)
