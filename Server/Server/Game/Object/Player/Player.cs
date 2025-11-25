@@ -1285,30 +1285,12 @@ namespace Server.Game
             Room.Push(Room.Broadcast, unstoppablePkt);
         }
 
-        public void SendYukiSkillEffect(Vector2 mousePos, bool sendPacket = true)
+        public void SendYukiSkillEffect(Yuki_SkillEffectType type)
         {
-            Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
-            Vector2 dir = mousePos - myPos;
-
-            if (dir.LengthSquared() < 0.0001f)
-                return;
-
-            float angle = (float)Math.Atan2(dir.X, dir.Y);
-            Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle);
-
-            RotInfo = new RotationInfo
-            {
-                Qx = rot.X,
-                Qy = rot.Y,
-                Qz = rot.Z,
-                Qw = rot.W
-            };
-
             S_YukiSkillEffect pkt = new S_YukiSkillEffect
             {
                 ObjectId = Id,
-                PosInfo = this.PosInfo.Clone(),
-                RotInfo = new RotationInfo(RotInfo)
+                EffectType = type
             };
 
             Room.Push(Room.Broadcast, pkt);

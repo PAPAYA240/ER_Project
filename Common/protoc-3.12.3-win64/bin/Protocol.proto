@@ -113,6 +113,7 @@ enum MsgId {
   S_PROJECTILE_ROZZI = 88;
   S_YUKI_STUD = 89;
   S_YUKI_SKILL_EFFECT = 90;
+  S_YUKI_FLOWER = 91;
 }
 
 enum CombatState{
@@ -343,6 +344,15 @@ enum BOMB_ROZZI{
 	ATTACHED_TO_TARGET = 2;
 	STUCK_ON_GROUND = 3;
 	EXPLODED = 4;
+}
+
+enum Yuki_SkillEffectType {
+	Q = 0;
+    W = 1;
+    E = 2;
+    R = 3;
+    Dash = 4;
+    Hit = 5;
 }
 
 message C_Interact {
@@ -1044,6 +1054,5 @@ message S_YukiStud {
 
 message S_YukiSkillEffect {
   int32 objectId = 1;
-  PositionInfo posInfo = 2;
-  RotationInfo rotInfo = 3;
+  Yuki_SkillEffectType effectType = 2;
 }

@@ -715,11 +715,7 @@ class PacketHandler
         if (go == null)
             return;
 
-        YukiSkillRange range = go.GetComponentInChildren<YukiSkillRange>(true);
-        if (range == null)
-            return;
-
-        range.PlayEffectOneSecond();
+        Yuki_SkillEffectHandler.HandleEffect((Yuki_SkillEffectType)YukiSkillEffectPkt.EffectType, go);
     }
 
     public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)
@@ -912,7 +908,6 @@ class PacketHandler
     public static void S_RestHandler(PacketSession session, IMessage packet)
     {
         S_Rest restPkt = packet as S_Rest;
-        Debug.Log("패킷 옴?");
 
         GameObject go = Managers.Object.FindById(restPkt.ObjectId);
         if (go == null)
@@ -947,11 +942,14 @@ class PacketHandler
         if (go == null)
             return;
 
-        PlayerController pc = go.GetComponentInChildren<PlayerController>();
-        if (pc == null)
+        UI_YukiNameTag yukiNameTag = go.GetComponentInChildren<UI_YukiNameTag>();
+        if (yukiNameTag == null)
+        {
+            Debug.Log("null");
             return;
+        }
 
-        //yukiStudPacket.StudCnt;
+        yukiNameTag.SetStud(yukiStudPacket.StudCnt);
     }
 
     static float GetCurrentEstimatedOneWayLatency()

@@ -23,7 +23,7 @@ public sealed class Yuki_R : SkillHandlerBase
 
         SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
-        p.SendYukiSkillEffect(ctx.MousePos);
+        p.SendYukiSkillEffect(Yuki_SkillEffectType.R);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -39,7 +39,6 @@ public sealed class Yuki_R : SkillHandlerBase
 
     public override void OnExit(Player p, SkillContext ctx)
     {
-        Console.WriteLine($"유키 단추 두번들어");
         base.OnExit(p, ctx);
     }
 }

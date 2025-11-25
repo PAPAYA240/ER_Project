@@ -229,8 +229,6 @@ public class PlayerController : CreatureController
         set { _isRest = value; }
     }
 
-    private YukiSkillRange _yukiSkillRange;
-    public YukiSkillRange GetYukiSkillRange() => _yukiSkillRange;
     protected override void Init()
     {
         base.Init();
@@ -252,13 +250,15 @@ public class PlayerController : CreatureController
         InitNameTag();
 
         // 유키용
-        GameObject yukiPyosik = Managers.Resource.Instantiate("Effect/UIpyosik");
+        GameObject yukiPyosik = Managers.Resource.Instantiate("Effect/Yuki/UIpyosik");
         yukiPyosik.transform.SetParent(gameObject.transform);
         if (ObjInfo.Player.CharType == CharacterType.Yuki)
         {
-            GameObject yukiSkillRange = Managers.Resource.Instantiate("Effect/Yuki_R");
+            GameObject yukiSkillRange = Managers.Resource.Instantiate("Effect/Yuki/Yuki_R");
             yukiSkillRange.transform.SetParent(gameObject.transform);
             yukiSkillRange.SetActive(false);
+            GameObject yukiFlower = Managers.Resource.Instantiate("Effect/Yuki/YukiFlower");
+            yukiFlower.transform.SetParent(gameObject.transform);
         }
 
         // Chat
@@ -405,7 +405,7 @@ public class PlayerController : CreatureController
 
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
-        bool isUpperBodySkill = animInfo.Name == "ROZZI_D";
+        bool isUpperBodySkill = animInfo.Name == "ROZZI_D" || animInfo.Name == "YUKI_W";
         if (isUpperBodySkill)
         {
             // UpperBody 레이어에만 재생

@@ -8,7 +8,7 @@ public sealed class Yuki_W : SkillHandlerBase
     public Yuki_W()
     {
         _characterType = CharacterType.Yuki;
-        _animName = "SKILL_W";
+        _animName = "YUKI_W";
         _keyCode = KeyCode.W;
     }
 
@@ -21,8 +21,7 @@ public sealed class Yuki_W : SkillHandlerBase
 
         p.Room.AddStatusEffect(p, p, _keyCode, null);
 
-        Console.WriteLine("두번 들어옴?");
-        //p.LookAtMouse(ctx.MousePos);
+        p.SendYukiSkillEffect(Yuki_SkillEffectType.W);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
