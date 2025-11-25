@@ -349,8 +349,8 @@ public class PlayerController : CreatureController
 
     public void OnRespawn(S_Respawn packet)
     {
+        _serverPos = transform.position = packet.PosInfo.ToVector();
         _agent.Warp(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
-        transform.position = packet.PosInfo.ToVector();
         Hp = packet.Hp;
     }
 
