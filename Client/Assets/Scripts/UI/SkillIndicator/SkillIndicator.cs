@@ -333,9 +333,11 @@ public class SkillIndicator : UI_Base
                 keyConfigs[key].indicatorObject = Managers.Resource.Instantiate(prefabAddress);
                 keyConfigs[key].prefabName = config[key].prefabName;
                 keyConfigs[key].indicatorObject.transform.SetParent(_owner.transform);
+                keyConfigs[key].indicatorObject.transform.localPosition = Vector3.zero;
 
                 keyConfigs[key].canvas = keyConfigs[key].indicatorObject.GetComponent<Canvas>();
                 keyConfigs[key].canvas.transform.SetParent(_owner.transform, false);
+                keyConfigs[key].canvas.transform.localPosition = Vector3.zero;
                 keyConfigs[key].canvas.enabled = false;
 
                 foreach (string funcName in config[key].invokeFuncs)

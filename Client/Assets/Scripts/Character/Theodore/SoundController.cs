@@ -52,6 +52,9 @@ public class SoundController : MonoBehaviour
     }
     public void GetRandomVoice(string skillKey)
     {
+        if (!SoundClipDict[Define.Sound.Voice].ContainsKey(skillKey))
+            return;
+
         List<ClipInfo> paths = SoundClipDict[Define.Sound.Voice][skillKey];
         int index =  UnityEngine.Random.Range(0, paths.Count);
         UseVoice(paths[index].Clip, Define.Sound.Voice);
@@ -59,6 +62,8 @@ public class SoundController : MonoBehaviour
 
     public void GetRandomEffect(string skillKey)
     {
+        if (!SoundClipDict[Define.Sound.Effect].ContainsKey(skillKey))
+            return;
         List<ClipInfo> paths = SoundClipDict[Define.Sound.Effect][skillKey];
         int index = UnityEngine.Random.Range(0, paths.Count);
         UseSkill(paths[index].Clip, Define.Sound.Effect);

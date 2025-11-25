@@ -413,7 +413,11 @@ public class PlayerController : CreatureController
     {
         // Animation에 맞는 Sound
         if (Sound != null)
+        {
             Sound.GetEffect(animInfo.Name);
+            Sound.GetRandomVoice(animInfo.Name);
+        }
+
         if (animInfo.Name == "ROZZI_D")
         {
             int upperLayer = _animator.GetLayerIndex("UpperBody");
