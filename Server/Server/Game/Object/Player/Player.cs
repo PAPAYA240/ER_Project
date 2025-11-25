@@ -1040,7 +1040,16 @@ namespace Server.Game
             };
             Room.Push(Room.Broadcast, packet);
         }
-
+        public void SendSoundPakcet(string name, string type = "Effect")
+        {
+            S_Sound packet = new S_Sound()
+            {
+                ObjectId = Id,
+                Type = type,
+                Name = name,
+            };
+            Room.Push(Room.Broadcast, packet);
+        }
         public void SendAnimPacket(string animName, float ratio = 0.05f, float speed = 0, bool isChangeSpeed = false)
         {
             S_Anim packet = new S_Anim()

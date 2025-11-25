@@ -1,5 +1,6 @@
 using Google.Protobuf.Protocol;
 using UnityEngine;
+using static Define;
 
 public class Projectile : BaseController
 {
@@ -31,12 +32,11 @@ public class Projectile : BaseController
         if (cc == null) return;
 
         GameObjectType objectType = ObjectManager.GetObjectTypeById(cc.Id);
+        PlayerController player = other.gameObject.GetComponent<PlayerController>();
+        PlayerController ownerPlayer = Owner.GetComponent<PlayerController>();
 
         if (objectType == GameObjectType.Player)
         {
-            PlayerController player = other.gameObject.GetComponent<PlayerController>();
-            PlayerController ownerPlayer = Owner.GetComponent<PlayerController>();
-
             bDestroy = (ownerPlayer.ObjInfo.Player.Team != player.ObjInfo.Player.Team);
         }
         else if (objectType == GameObjectType.Monster)
@@ -50,6 +50,9 @@ public class Projectile : BaseController
 
         if(bDestroy)
         {
+            if (ownerPlayer.Sound != null)
+                ownerPlayer.Sound.GetEffect($"Hit_{Type}");
+
             Destroy(gameObject);
 
             if (Type == ProjectileType.ProjectileBullet)

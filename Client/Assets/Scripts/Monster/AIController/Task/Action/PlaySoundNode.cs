@@ -13,7 +13,7 @@ public class PlaySoundNode : ActionNode, IStateChangeListener
         if (monster == null)
             return NodeStatus.Failure;
 
-        monster.StartCoroutine(PlaySequentially(monster));
+        //monster.StartCoroutine(PlaySequentially(monster));
 
         return NodeStatus.Success;
     }

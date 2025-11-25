@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 
 public class SoundManager
 {
-    AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.MaxCount];
-    Dictionary<string, AudioClip> _audioClips = new Dictionary<string, AudioClip>();
-
+    private AudioSource[] _audioSources = new AudioSource[(int)Define.Sound.MaxCount];
+    private Dictionary<string, AudioClip> _audioClips = new Dictionary<string, AudioClip>();
+    private Dictionary<string, AudioSource> _loopSources = new Dictionary<string, AudioSource>();
     // MP3 Player   -> AudioSource
     // MP3 음원     -> AudioClip
     // 관객(귀)     -> AudioListener
@@ -58,14 +59,32 @@ public class SoundManager
         GameObject go = new GameObject($"Sound_{audioClip}");
         go.transform.position = position;
 
-         AudioSource audioSource = go.AddComponent<AudioSource>();
-         audioSource.spatialBlend = 1f;
-         audioSource.pitch = pitch;
-         audioSource.clip = audioClip;
-         audioSource.Play();
+        AudioSource audioSource = go.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1f;
+        audioSource.minDistance = 1.0f;
+        audioSource.maxDistance = 10.0f;
+
+        audioSource.pitch = pitch;
+        audioSource.clip = audioClip;
+        audioSource.Play();
 
          Object.Destroy(go, audioClip.length + 0.1f);
         return audioClip.length;
+    }
+    public AudioClip PlayLoop(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, float volume = 1.0f, float pitch = 1.0f)
+    {
+        GameObject loopObject = new GameObject($"LoopSound_{audioClip.name}");
+        AudioSource loopSource = loopObject.AddComponent<AudioSource>();
+
+        loopSource.volume = volume;
+        loopSource.pitch = pitch;
+
+        loopSource.clip = audioClip;
+        loopSource.loop = true;
+        loopSource.Play();
+
+        _loopSources.Add(audioClip.name, loopSource);
+        return audioClip;
     }
     public void Play(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, float volume = 1.0f, float pitch = 1.0f)
     {
@@ -85,18 +104,24 @@ public class SoundManager
         }
         else
         {
-            AudioSource audioSource = _audioSources[(int)Define.Sound.Effect];
-            audioSource.volume = volume;
-            audioSource.pitch = pitch;
-            audioSource.PlayOneShot(audioClip);
+             AudioSource audioSource = _audioSources[(int)Define.Sound.Effect];
+             audioSource.volume = volume;
+             audioSource.pitch = pitch;
+             audioSource.loop = false;
+             audioSource.PlayOneShot(audioClip); 
         }
     }
-
-	AudioClip GetOrAddAudioClip(string path, Define.Sound type = Define.Sound.Effect)
+    public void StopLoopSound(string clipName)
     {
-		//if (path.Contains("Sounds/") == false)
-		//	path = $"Sounds/{path}";
-
+        if (_loopSources.TryGetValue(clipName, out AudioSource loopSource))
+        {
+            loopSource.Stop();
+            Object.Destroy(loopSource.gameObject);
+            _loopSources.Remove(clipName);
+        }
+    }
+    AudioClip GetOrAddAudioClip(string path, Define.Sound type = Define.Sound.Effect)
+    {
 		AudioClip audioClip = null;
 
 		if (type == Define.Sound.Bgm)

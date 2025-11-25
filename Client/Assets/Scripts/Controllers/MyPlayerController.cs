@@ -13,7 +13,6 @@ public class MyPlayerController : PlayerController
     private PlayerUIController _UI;
     public PlayerUIController UI {  get { return _UI; } }
 
-    public SoundController Sound;
 
 
     public SkillIndicator Indicator { get { return _skillIndicator; } }
@@ -46,7 +45,6 @@ public class MyPlayerController : PlayerController
         _input = gameObject.GetOrAddComponent<PlayerInputController>();
         _view = gameObject.GetOrAddComponent<PlayerViewController>();
         _UI = gameObject.GetOrAddComponent<PlayerUIController>();
-        Sound = gameObject.GetComponent<SoundController>();
     }
 
     protected override void Init()
