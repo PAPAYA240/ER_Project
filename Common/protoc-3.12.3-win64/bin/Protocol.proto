@@ -1111,7 +1111,6 @@ message S_RandomPick{
 message S_ReadyBtn{
 	uint32 flag = 1;
 }
-}
 
 message C_UseItem {
 	int32 objectId = 1;
