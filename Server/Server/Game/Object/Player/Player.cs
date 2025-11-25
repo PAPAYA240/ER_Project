@@ -753,7 +753,7 @@ namespace Server.Game
         }
 
         // ������ ��� �Լ�(����, ��ġ), �� ��° �κ��� �ִ� �������� ����ϰڴ�.
-        public void UseItem(int index)
+        public void UseItem(int index, Vector3 mousePos)
         {
             if (null == _inventory[index])
                 return;
@@ -762,7 +762,7 @@ namespace Server.Game
             {
                 case ConsumableItemInfo consumableItem:
                     {
-                        consumableItem.Use();
+                        consumableItem.Use(mousePos, this);
                         consumableItem.Count--;
                         if (consumableItem.Count == 0)
                             _inventory[index] = null;
