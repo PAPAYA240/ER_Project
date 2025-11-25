@@ -1,15 +1,10 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-
-public enum SpawnPointType
-{
-    BaseSpawn,     // 기지 리스폰/첫 스폰
-    BushTeleport,  // 텔레포트 목적지(부쉬)
-}
 
 public struct SpawnPointInfo
 {

@@ -772,4 +772,18 @@ public class PlayerController : CreatureController
 
         transform.rotation = movePacket.RotInfo;
     }
+
+    public void SyncPosFromServer(PositionInfo positionInfo, RotationInfo rotationInfo)
+    {
+        _agent.isStopped = false;
+
+        _serverPos = new Vector3
+        {
+            x = positionInfo.PosX,
+            y = positionInfo.PosY,
+            z = positionInfo.PosZ
+        };
+
+        transform.rotation = rotationInfo;
+    }
 }

@@ -165,8 +165,6 @@ namespace Server.Game
 
             // Spawn Register
             SpawnRegister();
-
-            //MapDataLoader.LoadMapData("MapData.json", SpawnRegistry, BarrierManager);
         }
 
         public override void Update()
@@ -821,6 +819,10 @@ namespace Server.Game
         private void SpawnRegister()
         {
             SpawnRegistry = new SpawnPointRegistry(spawnCooldownSec: 5.0);
+
+            // JSON 로드해서 스폰 포인트 채우기
+            SpawnPointLoader.LoadSpawnPoints("Data/json/SpawnPoints.json", SpawnRegistry);
+
             Spawn = new SpawnSystem(SpawnRegistry);
             Teleport = new TeleportSystem(SpawnRegistry);
         }

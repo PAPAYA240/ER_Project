@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using Google.Protobuf.Protocol;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,25 +15,6 @@ public class SpawnPointRegistry
     public SpawnPointRegistry(double spawnCooldownSec)
     {
         _cooldownSec = spawnCooldownSec;
-
-        SpawnPointInfo info1 = new SpawnPointInfo()
-        {
-            Id = 0,
-            Team = true,
-            Position = new Vector3(10, 0, 10),
-            Type = SpawnPointType.BaseSpawn
-        };
-
-        SpawnPointInfo info2 = new SpawnPointInfo()
-        {
-            Id = 1,
-            Team = false,
-            Position = new Vector3(5, 0, 5),
-            Type = SpawnPointType.BaseSpawn
-        };
-
-        Add(info1);
-        Add(info2);
     }
 
     public void Add(SpawnPointInfo info)

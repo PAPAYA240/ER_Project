@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: 199588617306481801}
   - component: {fileID: 135983256202636026}
   - component: {fileID: 8366336519015345966}
+  - component: {fileID: 4546205671435234504}
   m_Layer: 0
-  m_Name: FX_BG_Cobalt_Brush
+  m_Name: Bush
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2379,6 +2380,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4546205671435234504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1034963184685310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1201bf55ab88b0f49883646e5abe0072, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  side: 0
+  type: 0
+  overrideSpawnPoint: {fileID: 0}
 --- !u!1 &1398995183490070
 GameObject:
   m_ObjectHideFlags: 0
@@ -7194,7 +7211,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4197873756743461, guid: 961351685e99b444aa8858f845e6a49a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.175
+      value: 0.008999988
       objectReference: {fileID: 0}
     - target: {fileID: 4197873756743461, guid: 961351685e99b444aa8858f845e6a49a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -7308,7 +7325,7 @@ PrefabInstance:
     - target: {fileID: 5142909285512470456, guid: c7e39262a1efefe41a4b7aabf7c96679,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.774
+      value: 1.608
       objectReference: {fileID: 0}
     - target: {fileID: 5142909285512470456, guid: c7e39262a1efefe41a4b7aabf7c96679,
         type: 3}

@@ -1,4 +1,5 @@
-﻿using Lucene.Net.Index;
+﻿using Google.Protobuf.Protocol;
+using Lucene.Net.Index;
 using Server.Game;
 using System;
 using System.Collections.Generic;
@@ -23,9 +24,9 @@ public class TeleportSystem
         if (!IsTeleporterUsable(player, 0/*, packet.TeleporterId*/))
             return player.Position;
 
-        bool enemySide = (player.Team == 0)
-            ? true
-            : false;
+        bool enemySide = (player.Team == 1)
+            ? false
+            : true;
 
         var state = _registry.SelectSpawnPoint(
             enemySide,
