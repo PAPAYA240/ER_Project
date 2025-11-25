@@ -5,10 +5,8 @@ using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class YukiPyosik : MonoBehaviour
 {
-    [Header("UI Components")]
     [SerializeField] private Image image;
 
-    [Header("Sprite Animation Settings")]
     [SerializeField] private Sprite[] _frames;
     [SerializeField] private bool autoHide = true;
 

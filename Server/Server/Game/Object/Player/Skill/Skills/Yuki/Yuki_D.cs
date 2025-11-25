@@ -52,9 +52,9 @@ public sealed class Yuki_D : SkillHandlerBase
         Skill skill = p.GetSkill(KeyCode.D);
 
         StatusEffect statusEffectUnstoppable = new StatusEffect();
-        statusEffectUnstoppable.type = skill.SkillData.levels[skill.CurLevel].effects[1].type;
-        statusEffectUnstoppable.duration = skill.SkillData.levels[skill.CurLevel].effects[1].duration;
-        if (!System.Enum.TryParse<Subject>(skill.SkillData.levels[skill.CurLevel].effects[1].subject, out statusEffectUnstoppable.subject))
+        statusEffectUnstoppable.type = skill.SkillData.levels[skill.CurLevel].effects[0].type;
+        statusEffectUnstoppable.duration = skill.SkillData.levels[skill.CurLevel].effects[0].duration;
+        if (!System.Enum.TryParse<Subject>(skill.SkillData.levels[skill.CurLevel].effects[0].subject, out statusEffectUnstoppable.subject))
             return;
         p.AddStatusEffect(statusEffectUnstoppable);
 

@@ -707,6 +707,21 @@ class PacketHandler
         yukiPyosik.ActivateYukiPyosik(go);
     }
 
+    public static void S_YukiSkillEffectHandler(PacketSession session, IMessage packet)
+    {
+        S_YukiSkillEffect YukiSkillEffectPkt = packet as S_YukiSkillEffect;
+
+        GameObject go = Managers.Object.FindById(YukiSkillEffectPkt.ObjectId);
+        if (go == null)
+            return;
+
+        YukiSkillRange range = go.GetComponentInChildren<YukiSkillRange>(true);
+        if (range == null)
+            return;
+
+        range.PlayEffectOneSecond();
+    }
+
     public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)
     {
         S_OccupyBeacon occupyBeaconPkt = packet as S_OccupyBeacon;
@@ -924,9 +939,9 @@ class PacketHandler
         pr.ChangeState(projectilePacket);
     }
 
-    public static void S_YukistudHandler(PacketSession session, IMessage packet)
+    public static void S_YukiStudHandler(PacketSession session, IMessage packet)
     {
-        S_Yukistud yukiStudPacket = packet as S_Yukistud;
+        S_YukiStud yukiStudPacket = packet as S_YukiStud;
 
         GameObject go = Managers.Object.FindById(yukiStudPacket.ObjectId);
         if (go == null)

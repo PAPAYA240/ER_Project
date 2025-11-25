@@ -32,7 +32,6 @@ public class TheodoreInputController : PlayerInputController
     {
         _player.AttackRange = 6.0f;
         _originSpeed = _player.Speed;
-        _sound = GetComponentInChildren<TheodoreSound>();
     }
     protected override Vector3 GetAttackStopPosition(Vector3 from, Vector3 target)
     {
@@ -80,14 +79,13 @@ public class TheodoreInputController : PlayerInputController
         }
     }
     #region 스킬 실행
-    private TheodoreSound _sound = null; 
     private void ExecuteSkill(KeyCode key)
     {
         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
         _player.UI.PlayerInterface.StopChargingBar();
 
-        if(_sound != null)
-            _sound.UseSkill(key.ToString());
+        if(_player.Sound != null)
+            _player.Sound.GetRandomVoice(key.ToString());
 
         SendSkillInputPacket(key);
         _currentSkillKey = null;
@@ -98,7 +96,6 @@ public class TheodoreInputController : PlayerInputController
         StartCoroutine(SniperSkill(key));
     }
 
-    
     private IEnumerator SniperSkill(KeyCode key)
     {
         _player.LookAtMouse();
@@ -213,8 +210,8 @@ public class TheodoreInputController : PlayerInputController
             SendSkillInputPacket(key, SKIP_STATE_CHECK);
         }
 
-        if (_sound != null)
-            _sound.UseSkill(key.ToString());
+        if (_player.Sound != null)
+            _player.Sound.GetRandomVoice(key.ToString());
 
         _player.Speed = _originSpeed;
     }

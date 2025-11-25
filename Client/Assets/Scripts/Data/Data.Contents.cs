@@ -501,4 +501,44 @@ namespace Data
         }
     }
     #endregion
+
+    #region Sound
+
+    [Serializable]
+    public class SoundDict : ILoader<CharacterType, Dictionary<Define.Sound, Dictionary<string, List<string>>>>
+    {
+        public Dictionary<string, Dictionary<Define.Sound, Dictionary<string, List<string>>>> soundDict
+            = new Dictionary<string, Dictionary<Define.Sound, Dictionary<string, List<string>>>>();
+
+        public Dictionary<CharacterType, Dictionary<Define.Sound, Dictionary<string, List<string>>>> MakeDict()
+        {
+            Dictionary<CharacterType, Dictionary<Define.Sound, Dictionary<string, List<string>>>> dict
+                = new Dictionary<CharacterType, Dictionary<Define.Sound, Dictionary<string, List<string>>>>();
+
+            foreach (var charEntry in soundDict)
+            {
+                if (!Enum.TryParse(charEntry.Key, true, out CharacterType charType))
+                    continue;
+
+                var soundTypeDict = new Dictionary<Define.Sound, Dictionary<string, List<string>>>();
+
+                foreach (var soundTypeEntry in charEntry.Value)
+                {
+                    Define.Sound soundType = soundTypeEntry.Key;
+
+                    var keyCodeDict = new Dictionary<string, List<string>>();
+
+                    foreach (var keyCodeEntry in soundTypeEntry.Value)
+                    {
+                        keyCodeDict.Add(keyCodeEntry.Key, keyCodeEntry.Value);
+                    }
+
+                    soundTypeDict.Add(soundType, keyCodeDict);
+                }
+                dict.Add(charType, soundTypeDict);
+            }
+            return dict;
+        }
+    }
+    #endregion
 }
