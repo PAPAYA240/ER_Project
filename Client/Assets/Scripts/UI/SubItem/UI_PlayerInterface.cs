@@ -51,7 +51,7 @@ public class UI_PlayerInterface : UI_Base
     public Dictionary<KeyCode, bool> IsActiveKey { get; set; } = new Dictionary<KeyCode, bool>();
     public Action<SkillEnum> OnCharSkillLevelUpAction = null;
 
-    int _remainSkillPoint = 10; //이건 QWERT에만 적용되야함.
+    int _remainSkillPoint = 10; /*1*/ //이건 QWERT에만 적용되야함.
     
     bool _isDead = false;
     float _respawnCool = 0.0f;
@@ -483,9 +483,9 @@ public class UI_PlayerInterface : UI_Base
         GetObject((int)GameObjects.Equipment).GetComponent<UI_Equipment>().Equip(item);
     }
 
-    public void SetInventoryItem()
+    public void SetInventoryItem(ItemInfoBase item, int idx)
     {
-
+        GetObject((int)GameObjects.Inventory).GetComponent<UI_Inventory>().SetItem(item, idx);
     }
 
     #region Stat

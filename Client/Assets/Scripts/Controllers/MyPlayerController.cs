@@ -13,6 +13,9 @@ public class MyPlayerController : PlayerController
     private PlayerUIController _UI;
     public PlayerUIController UI {  get { return _UI; } }
 
+    public SoundController Sound;
+
+
     public SkillIndicator Indicator { get { return _skillIndicator; } }
 
     private SkillIndicator _skillIndicator;
@@ -43,6 +46,7 @@ public class MyPlayerController : PlayerController
         _input = gameObject.GetOrAddComponent<PlayerInputController>();
         _view = gameObject.GetOrAddComponent<PlayerViewController>();
         _UI = gameObject.GetOrAddComponent<PlayerUIController>();
+        Sound = gameObject.GetComponent<SoundController>();
     }
 
     protected override void Init()
@@ -71,6 +75,9 @@ public class MyPlayerController : PlayerController
             string fogLayerName = $"FogTeam{ObjInfo.Player.Team}";
             fogCamGo.GetComponent<Camera>().cullingMask |= (1 << LayerMask.NameToLayer(fogLayerName));
         }
+
+        // inven
+        MakeInventory();
     }
 
     private void Update()
@@ -131,6 +138,11 @@ public class MyPlayerController : PlayerController
         if (restCmd != null)
             Managers.Network.Send(restCmd);
 
+        // 아이템 사용
+        var useItemCmd = _input.GetUseItemCommand();
+        if (useItemCmd != null)
+            Managers.Network.Send(useItemCmd);
+
         // temp 임시 코드 나중에 삭제
         //var deathCmd = _input.GetDieCommand();
         //if (deathCmd != null)
@@ -159,7 +171,14 @@ public class MyPlayerController : PlayerController
         //}
         //UpdateTransform();
     }
-    
+
+    public override void OnDead()
+    {
+        base.OnDead();
+
+        if (Sound != null)
+            Sound.GetRandomVoice("Dead");
+    }
     // 서버 응답 전달
     public void OnServerUpdate(S_MoveSync packet) => _view.OnMoveSync(packet);
     public void OnServerUpdate(S_Anim packet) => _view.OnAnim(packet);
@@ -208,6 +227,7 @@ public class MyPlayerController : PlayerController
             {
                 //TODO UI 작업
                 _inventory[change.InventoryIndex] = null;
+                UI.PlayerInterface.SetInventoryItem(null, change.InventoryIndex);
             }
             else
             {
@@ -217,6 +237,7 @@ public class MyPlayerController : PlayerController
                     {
                         // 장비 아이템
                         _inventory[change.InventoryIndex] = item;
+                        UI.PlayerInterface.SetInventoryItem(item, change.InventoryIndex);
                     }
                     else
                     {
@@ -230,6 +251,7 @@ public class MyPlayerController : PlayerController
                         consumableItem.Count = change.Count;
 
                         _inventory[change.InventoryIndex] = consumableItem;
+                        UI.PlayerInterface.SetInventoryItem(consumableItem, change.InventoryIndex);
                     }
                 }
                 else
@@ -243,6 +265,30 @@ public class MyPlayerController : PlayerController
     public override void UpdateItemStat(ItemStat stat)
     {
         base.UpdateItemStat(stat);
+    }
+
+    private void MakeInventory()
+    {
+        for (int i = 0; i < 10; ++i)
+        {
+            _inventory.Add(null); //비어 있는 인벤토리를 생성
+        }
+    }
+
+    public bool CheckInventory(int idx)
+    {
+        if(idx == 0)
+        {
+            if (_inventory[9] != null)
+                return true;
+        }
+        else 
+        {
+            if (_inventory[idx - 1] != null)
+                return true;
+        }
+
+        return false;
     }
     #endregion
 

@@ -79,7 +79,7 @@ namespace Server.Data
         public ItemGrade Grade = ItemGrade.End;   //등급
         public string Description; //아이템 설명
 
-        public virtual void Use() { }
+        public virtual void Use(Vector3 mousePos, Player p) { }
     }
 
     //카메라 등의 아이템

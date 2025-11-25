@@ -226,6 +226,7 @@ namespace Server.Game
         {
             _mulBuffOffset = ratio;
             Times = times;
+            UpdateStatusFlag();
         }
 
         public bool OnAttackPerformed()
@@ -753,7 +754,7 @@ namespace Server.Game
         }
 
         // ������ ��� �Լ�(����, ��ġ), �� ��° �κ��� �ִ� �������� ����ϰڴ�.
-        public void UseItem(int index)
+        public void UseItem(int index, Vector3 mousePos)
         {
             if (null == _inventory[index])
                 return;
@@ -762,7 +763,7 @@ namespace Server.Game
             {
                 case ConsumableItemInfo consumableItem:
                     {
-                        consumableItem.Use();
+                        consumableItem.Use(mousePos, this);
                         consumableItem.Count--;
                         if (consumableItem.Count == 0)
                             _inventory[index] = null;
@@ -1040,7 +1041,7 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendAnimPacket(string animName, float ratio, float speed = 0, bool isChangeSpeed = false)
+        public void SendAnimPacket(string animName, float ratio = 0.05f, float speed = 0, bool isChangeSpeed = false)
         {
             S_Anim packet = new S_Anim()
             { 

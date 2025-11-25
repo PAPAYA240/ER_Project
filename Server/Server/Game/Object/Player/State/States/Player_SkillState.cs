@@ -114,7 +114,7 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
             //);
 
             _currentDestination = move.TargetPosition.ToVector();
-            _handler.OnMove(player);
+            _handler.OnMove(player, move);
         }
         else
         {

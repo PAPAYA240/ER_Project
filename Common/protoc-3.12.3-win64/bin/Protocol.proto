@@ -114,6 +114,7 @@ enum MsgId {
   S_YUKI_STUD = 89;
   S_YUKI_SKILL_EFFECT = 90;
   S_YUKI_FLOWER = 91;
+  C_USE_ITEM = 92;
 }
 
 enum CombatState{
@@ -148,6 +149,7 @@ enum GameObjectType{
 	MONSTER = 2;
 	PROJECTILE = 3;
 	ENVIRONMENT = 4;
+	WARD = 5;
 }
 
 enum EnvType{
@@ -353,6 +355,12 @@ enum Yuki_SkillEffectType {
     R = 3;
     Dash = 4;
     Hit = 5;
+}
+
+enum SpawnPointType
+{
+    BaseSpawn = 0;     // 기지 리스폰/첫 스폰
+    BushTeleport = 1;  // 텔레포트 목적지(부쉬)
 }
 
 message C_Interact {
@@ -1055,4 +1063,11 @@ message S_YukiStud {
 message S_YukiSkillEffect {
   int32 objectId = 1;
   Yuki_SkillEffectType effectType = 2;
+}
+
+message C_UseItem {
+	int32 objectId = 1;
+	int32 inventoryIndex = 2;
+	float mouseX = 3;
+	float mouseZ = 4;
 }
