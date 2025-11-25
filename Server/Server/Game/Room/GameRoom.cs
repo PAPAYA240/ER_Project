@@ -42,6 +42,12 @@ namespace Server.Game
             set => Interlocked.Exchange(ref _curTick, value);
         }
 
+        #region Spawn
+        public SpawnPointRegistry SpawnRegistry { get; private set; }
+        public SpawnSystem Spawn { get; private set; }
+        public TeleportSystem Teleport { get; private set; }
+        #endregion
+
         #region Phase, Time
 
         private bool _gameStarted = false;
@@ -156,6 +162,11 @@ namespace Server.Game
             // Skill Register
             SkillRegistry.InitRegister();
             SetUpStatusEffectDict(); // StatusEffectDict 초기화 
+
+            // Spawn Register
+            SpawnRegister();
+
+            //MapDataLoader.LoadMapData("MapData.json", SpawnRegistry, BarrierManager);
         }
 
         public override void Update()
@@ -247,6 +258,9 @@ namespace Server.Game
                 {
                     // Temp Cobalt Exp
                     player.Info.StatInfo.Exp = 15800;
+                    if (Spawn == null)
+                        SpawnRegister();
+                    player.Info.PosInfo = Spawn.GetSpawnPoint(player.Team).ToPositionInfo();
 
                     S_EnterGame enterPacket = new S_EnterGame();
                     enterPacket.Player = player.Info;
@@ -314,6 +328,7 @@ namespace Server.Game
             {
                 S_Spawn spawnPacket = new S_Spawn();
                 spawnPacket.Objects.Add(gameObject.Info);
+                
                 foreach (Player p in _players.Values)
                 {
                     if (p.Id != gameObject.Id)
@@ -801,6 +816,13 @@ namespace Server.Game
                 Message = chatPkt.Message
             };
             Push(Broadcast, sendPkt);
+        }
+
+        private void SpawnRegister()
+        {
+            SpawnRegistry = new SpawnPointRegistry(spawnCooldownSec: 5.0);
+            Spawn = new SpawnSystem(SpawnRegistry);
+            Teleport = new TeleportSystem(SpawnRegistry);
         }
     }
 }

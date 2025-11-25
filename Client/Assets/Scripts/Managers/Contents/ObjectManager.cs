@@ -63,10 +63,11 @@ public class ObjectManager
             MyPlayer = go.GetComponent<MyPlayerController>();
             MyPlayer.ObjInfo = info;
             MyPlayer.Id = info.ObjectId;
-            MyPlayer.SyncPos();
+            MyPlayer.ManualInit();
+            MyPlayer.PosInfo = info.PosInfo;
+            MyPlayer.SyncPos(true);
             MyPlayer.Hp = info.StatInfo.MaxHp;
             MyPlayer.Stamina = info.StatInfo.MaxStamina;
-            MyPlayer.ManualInit();
             MyPlayer.UI.PlayerHUD.AddPlayerBoardToBattleBoard(MyPlayer);
         }
         else
@@ -79,8 +80,9 @@ public class ObjectManager
 
             pc.ObjInfo = info;
             pc.Id = info.ObjectId;
-            pc.SyncPos();
             pc.ManualInit();
+            pc.PosInfo = info.PosInfo;
+            pc.SyncPos(true);
 
             if (MyPlayer.ObjInfo.Player.Team != pc.ObjInfo.Player.Team)
             {
