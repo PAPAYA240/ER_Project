@@ -10,6 +10,9 @@ public enum NodeStatus
 
 public abstract class Node : ScriptableObject
 {
+    protected NodeStatus _state; 
+
+    public NodeStatus NodeState => _state;
     public abstract NodeStatus Execute(GameObject obj);
 
     public virtual Node Clone()

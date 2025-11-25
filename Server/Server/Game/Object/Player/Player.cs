@@ -1178,6 +1178,11 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
+        public void SendRestPacket(S_Rest packet)
+        {
+            Room.Push(Room.Broadcast, packet);
+        }
+
         public void SendSkillCollisionRequestPacket(KeyCode keyCode, int requestId, CollisionType type, Vector3 startPos, Vector3 endPos)
         {
             S_SkillCollisionRequest packet = new S_SkillCollisionRequest
@@ -1279,6 +1284,35 @@ namespace Server.Game
             unstoppablePkt.ObjectId = Id;
             unstoppablePkt.Unstoppable = IsUnstoppable;
             Room.Push(Room.Broadcast, unstoppablePkt);
+        }
+
+        public void SendYukiSkillEffect(Vector2 mousePos, bool sendPacket = true)
+        {
+            Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
+            Vector2 dir = mousePos - myPos;
+
+            if (dir.LengthSquared() < 0.0001f)
+                return;
+
+            float angle = (float)Math.Atan2(dir.X, dir.Y);
+            Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle);
+
+            RotInfo = new RotationInfo
+            {
+                Qx = rot.X,
+                Qy = rot.Y,
+                Qz = rot.Z,
+                Qw = rot.W
+            };
+
+            S_YukiSkillEffect pkt = new S_YukiSkillEffect
+            {
+                ObjectId = Id,
+                PosInfo = this.PosInfo.Clone(),
+                RotInfo = new RotationInfo(RotInfo)
+            };
+
+            Room.Push(Room.Broadcast, pkt);
         }
         #endregion
 

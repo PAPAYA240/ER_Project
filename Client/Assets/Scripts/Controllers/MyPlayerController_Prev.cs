@@ -611,6 +611,7 @@ public class MyPlayerController_Prev : PlayerController
     public override void OnDead()
     {
         base.OnDead();
+
         ResetCharacterState();
     }
 
@@ -1340,8 +1341,6 @@ public class MyPlayerController_Prev : PlayerController
 
         return transform.position + dir * range;
     }
-
-    // 마우스 바라보기
 
     #endregion
 }

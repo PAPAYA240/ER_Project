@@ -109,7 +109,10 @@ enum MsgId {
   S_UNSTOPPABLE = 85;
   S_ANIM_SPEED = 86;
 
-  S_PROJECTILE_ROZZI = 87;
+  S_REST = 87;
+  S_PROJECTILE_ROZZI = 88;
+  S_YUKI_STUD = 89;
+  S_YUKI_SKILL_EFFECT = 90;
 }
 
 enum CombatState{
@@ -545,6 +548,7 @@ message S_Respawn{
 	RotationInfo rotInfo = 3;
 	float hp = 4;
 	float stamina = 5;
+	bool isRest = 6;
 }
 
 message S_PlayerState{
@@ -604,11 +608,13 @@ message S_SyncTimer{
 message C_EnvRequest{
 	int32 objectId = 1;
 	EnvType envType = 2;
+	int32 targetId = 3;
 }
 
 message S_EnvRequest{
 	int32 objectId = 1;
 	EnvType envType = 2;
+	int32 targetId = 3;
 }
 
 message S_AddAbigailCoord{
@@ -918,6 +924,11 @@ message C_Rest {
   bool isRest = 1;
 }
 
+message S_Rest {
+  int32 objectId = 1;
+  bool isRest = 2;
+}
+
 message S_MoveSync {
   int32 objectId = 1;
   PositionInfo targetPos = 2;
@@ -1024,4 +1035,15 @@ message S_ProjectileRozzi {
 	int32 objectId = 1;
 	int32 targetId = 2;
 	BOMB_ROZZI state = 3;
+}
+
+message S_YukiStud {
+	int32 objectId = 1;
+	int32 studCnt = 2;
+}
+
+message S_YukiSkillEffect {
+  int32 objectId = 1;
+  PositionInfo posInfo = 2;
+  RotationInfo rotInfo = 3;
 }

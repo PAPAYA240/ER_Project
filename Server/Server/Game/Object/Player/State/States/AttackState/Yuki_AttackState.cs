@@ -45,6 +45,18 @@ public class Yuki_AttackState : Player_AttackState
             IsPassiveAttack = false;
         }
 
+        // 유키 단추
+        if (p.YukiStud > 0)
+        {
+            p.YukiStud--;
+
+            S_YukiStud yukiStudPkt = new S_YukiStud();
+            yukiStudPkt.ObjectId = p.Id;
+            yukiStudPkt.StudCnt = p.YukiStud;
+
+            p.Room.Push(p.Room.Broadcast, yukiStudPkt);
+        }
+
         p.SendAnimPacket(animName, 0.05f, p.AttackSpeed, true);
     }
 

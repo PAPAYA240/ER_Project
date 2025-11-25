@@ -87,7 +87,7 @@ public class PlayerViewController : MonoBehaviour
     }
 
     public void OnDead(S_Die packet)
-    {
+    {      
     }
 
     public S_Die GetRestCommand()
@@ -99,6 +99,8 @@ public class PlayerViewController : MonoBehaviour
     {
         _agent.Warp(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
         _player.Hp = packet.Hp;
+        _player.IsRest = packet.IsRest;
+        Debug.Log(_player.IsRest);
         _player.UpdateTransform(true);
         _syncing = false; // 리스폰 직후는 입력 올 때까지 동기화 중지
     }

@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 using static CameraController;
+using static Define;
 
 public class TheodoreInputController : PlayerInputController
 {
@@ -83,6 +84,9 @@ public class TheodoreInputController : PlayerInputController
         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
         _player.UI.PlayerInterface.StopChargingBar();
 
+        if(_player.Sound != null)
+            _player.Sound.GetRandomVoice(key.ToString());
+
         SendSkillInputPacket(key);
         _currentSkillKey = null;
     }
@@ -92,7 +96,6 @@ public class TheodoreInputController : PlayerInputController
         StartCoroutine(SniperSkill(key));
     }
 
-    
     private IEnumerator SniperSkill(KeyCode key)
     {
         _player.LookAtMouse();
@@ -206,6 +209,10 @@ public class TheodoreInputController : PlayerInputController
         {
             SendSkillInputPacket(key, SKIP_STATE_CHECK);
         }
+
+        if (_player.Sound != null)
+            _player.Sound.GetRandomVoice(key.ToString());
+
         _player.Speed = _originSpeed;
     }
     private void CancelSkill(KeyCode key)

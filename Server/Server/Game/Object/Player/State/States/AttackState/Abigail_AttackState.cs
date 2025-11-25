@@ -57,7 +57,7 @@ public class Abigail_AttackState : Player_AttackState
             _attackIndex = 1 - _attackIndex;
         }
 
-        p.SendAnimPacket(animName, 0.05f);
+        p.SendAnimPacket(animName, 0.05f, p.AttackSpeed, true);
     }
 
     protected override void ApplyHit(Player p, GameObject target)

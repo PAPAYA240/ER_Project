@@ -315,13 +315,13 @@ class PacketHandler
 
         mpc.View.VisibleObjectIds.Clear(); // 나중에 렌더링 하고나서 바로 Clear하는게 나을듯?
         mpc.View.VisibleObjectIds = visibleObjectsPkt.VisibleObjectIds.ToHashSet();
-        Managers.Object.SetObjectVisible();
+       // Managers.Object.SetObjectVisible();
 
-        // TEMP
-        PlayerViewController pvc = go.GetComponent<PlayerViewController>();
-        if (pvc == null) return;
-        pvc.VisibleObjectIds.Clear();
-        pvc.VisibleObjectIds = visibleObjectsPkt.VisibleObjectIds.ToHashSet();
+       //// TEMP
+       // PlayerViewController pvc = go.GetComponent<PlayerViewController>();
+       // if (pvc == null) return;
+       // pvc.VisibleObjectIds.Clear();
+       // pvc.VisibleObjectIds = visibleObjectsPkt.VisibleObjectIds.ToHashSet();
     }
 
     public static void S_LevelUpHandler(PacketSession session, IMessage packet)
@@ -572,6 +572,7 @@ class PacketHandler
         EnvController ec = go.GetComponent<EnvController>();
         if (ec == null)
             return;
+
         ec.OnInteractionAuthorized();
     }
     
@@ -704,6 +705,21 @@ class PacketHandler
             return;
 
         yukiPyosik.ActivateYukiPyosik(go);
+    }
+
+    public static void S_YukiSkillEffectHandler(PacketSession session, IMessage packet)
+    {
+        S_YukiSkillEffect YukiSkillEffectPkt = packet as S_YukiSkillEffect;
+
+        GameObject go = Managers.Object.FindById(YukiSkillEffectPkt.ObjectId);
+        if (go == null)
+            return;
+
+        YukiSkillRange range = go.GetComponentInChildren<YukiSkillRange>(true);
+        if (range == null)
+            return;
+
+        range.PlayEffectOneSecond();
     }
 
     public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)
@@ -861,13 +877,6 @@ class PacketHandler
                 Managers.Object.MyPlayer.UI.PlayerInterface.ActivateCombatImg(false);
                 break;
         }
-
-        //GameObject go = Managers.Object.FindById(combatModePkt.ObjectId);
-        //if (go == null)
-        //    return;
-
-        
-        //combatModePkt.CombatMode;
     }
 
     public static void S_ChatHandler(PacketSession session, IMessage packet)
@@ -900,6 +909,21 @@ class PacketHandler
         pc.ChangeSpeed(speedPkt.Name, speedPkt.Speed);
     }
 
+    public static void S_RestHandler(PacketSession session, IMessage packet)
+    {
+        S_Rest restPkt = packet as S_Rest;
+        Debug.Log("패킷 옴?");
+
+        GameObject go = Managers.Object.FindById(restPkt.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.IsRest = restPkt.IsRest;
+    }
     public static void S_ProjectileRozziHandler(PacketSession session, IMessage packet)
     {
         S_ProjectileRozzi projectilePacket = packet as S_ProjectileRozzi;
@@ -913,6 +937,21 @@ class PacketHandler
             return;
 
         pr.ChangeState(projectilePacket);
+    }
+
+    public static void S_YukiStudHandler(PacketSession session, IMessage packet)
+    {
+        S_YukiStud yukiStudPacket = packet as S_YukiStud;
+
+        GameObject go = Managers.Object.FindById(yukiStudPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null)
+            return;
+
+        //yukiStudPacket.StudCnt;
     }
 
     static float GetCurrentEstimatedOneWayLatency()

@@ -13,6 +13,9 @@ public class MyPlayerController : PlayerController
     private PlayerUIController _UI;
     public PlayerUIController UI {  get { return _UI; } }
 
+    public SoundController Sound;
+
+
     public SkillIndicator Indicator { get { return _skillIndicator; } }
 
     private SkillIndicator _skillIndicator;
@@ -43,6 +46,7 @@ public class MyPlayerController : PlayerController
         _input = gameObject.GetOrAddComponent<PlayerInputController>();
         _view = gameObject.GetOrAddComponent<PlayerViewController>();
         _UI = gameObject.GetOrAddComponent<PlayerUIController>();
+        Sound = gameObject.GetComponent<SoundController>();
     }
 
     protected override void Init()
@@ -71,7 +75,6 @@ public class MyPlayerController : PlayerController
             string fogLayerName = $"FogTeam{ObjInfo.Player.Team}";
             fogCamGo.GetComponent<Camera>().cullingMask |= (1 << LayerMask.NameToLayer(fogLayerName));
         }
-
     }
 
     private void Update()
@@ -160,7 +163,14 @@ public class MyPlayerController : PlayerController
         //}
         //UpdateTransform();
     }
-    
+
+    public override void OnDead()
+    {
+        base.OnDead();
+
+        if (Sound != null)
+            Sound.GetRandomVoice("Dead");
+    }
     // 서버 응답 전달
     public void OnServerUpdate(S_MoveSync packet) => _view.OnMoveSync(packet);
     public void OnServerUpdate(S_Anim packet) => _view.OnAnim(packet);
