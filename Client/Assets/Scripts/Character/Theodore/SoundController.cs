@@ -52,6 +52,8 @@ public class SoundController : MonoBehaviour
     }
     public void GetRandomVoice(string skillKey)
     {
+        if (!SoundClipDict.ContainsKey(Define.Sound.Voice))
+            return;
         if (!SoundClipDict[Define.Sound.Voice].ContainsKey(skillKey))
             return;
 

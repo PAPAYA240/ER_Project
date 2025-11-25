@@ -4,6 +4,11 @@ using UnityEngine;
 public class DeadConditionNode : DecoratorNode
 {
     private bool _isStop = false;
+
+    public override void Enter(GameObject obj)
+    {
+    }
+
     public override NodeStatus Execute(GameObject agent)
     {
         MonsterController monster = agent.GetComponentInChildren<MonsterController>();
@@ -15,5 +20,9 @@ public class DeadConditionNode : DecoratorNode
         }
         else
             return NodeStatus.Failure;
+    }
+
+    public override void Exit(GameObject obj, bool clear)
+    {
     }
 }

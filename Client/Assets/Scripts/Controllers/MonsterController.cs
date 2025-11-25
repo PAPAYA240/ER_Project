@@ -24,7 +24,7 @@ public class MonsterController : CreatureController
     private float _agentSpeed = 6;
 
     // 애니메이션 끝났을 때 호출
-    public Action<CreatureState, bool> OnStateChanged;
+    public Action<bool> OnStateChanged;
 
     // HpBar
     protected GameObject _hpBar;
@@ -116,18 +116,16 @@ public class MonsterController : CreatureController
     public void OnDeadPacket(S_State packet)
     {
         _agent?.ResetPath();
-        OnDead();
+        OnDead(); 
+        OnStateChanged?.Invoke( true);
     }
     public void OnIdlePacket(S_State packet)
     {
-        OnStateChanged?.Invoke(State, true);
-
         if (_agent != null)
             _agent.SetDestination(packet.PosInfo.ToVector());
 
         if (packet.RotInfo != null)
             _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
-
     }
 
     public void OnMovePacket(S_State packet)
@@ -144,9 +142,9 @@ public class MonsterController : CreatureController
         Skill = packet.Skilltype;
 
         if (Type == MonsterType.Drone)
-            OnStateChanged?.Invoke(State, false);
+            OnStateChanged?.Invoke(false);
         else
-            OnStateChanged?.Invoke(State, true);
+            OnStateChanged?.Invoke(true);
 
         if (_agent != null)
         {
@@ -160,6 +158,10 @@ public class MonsterController : CreatureController
 
     public void OnRecvStatePacket(S_State packet)
     {
+        if (State == CreatureState.Appear &&
+            packet.MyState == CreatureState.Idle)
+            OnStateChanged?.Invoke(true);
+
         State = packet.MyState;
         if (packet.TargetPosition != null)
             TargetPosition = packet.TargetPosition.ToVector();

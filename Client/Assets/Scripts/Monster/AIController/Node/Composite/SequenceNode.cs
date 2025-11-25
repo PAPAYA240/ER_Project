@@ -1,13 +1,23 @@
-﻿using Google.Protobuf.Protocol;
-using UnityEngine;
+﻿using UnityEngine;
+using static UnityEngine.UI.GridLayoutGroup;
 public class SequenceNode : CompositeNode
 {
     private int _currentIdx = 0;
+
+    public override void Enter(GameObject obj)
+    {
+        _currentIdx = 0;
+        for (int i = _currentIdx; i < children.Count; i++)
+        {
+            children[i].Enter(obj);
+        }
+    }
+
     public override NodeStatus Execute(GameObject obj)
     {
         if (_currentIdx >= children.Count)
             _currentIdx = 0;
-
+        
         for (int i = _currentIdx; i < children.Count; i++)
         {
             _currentIdx = i;
@@ -24,6 +34,15 @@ public class SequenceNode : CompositeNode
         }
         _currentIdx = 0;
         return NodeStatus.Success;
+    }
+
+    public override void Exit(GameObject obj, bool clear)
+    {
+        _currentIdx = 0;
+        for (int i = _currentIdx; i < children.Count; i++)
+        {
+            children[i].Exit(obj, clear);
+        }
     }
 }
 //public class SequenceNode : CompositeNode

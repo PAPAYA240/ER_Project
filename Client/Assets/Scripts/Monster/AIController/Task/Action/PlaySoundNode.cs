@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlaySoundNode : ActionNode, IStateChangeListener
+public class PlaySoundNode : ActionNode
 {
     public List<string> soundPaths;
 
+    public override void Enter(GameObject obj)
+    {
+    }
     public override NodeStatus Execute(GameObject obj)
     {
         MonsterController monster = obj.GetComponentInChildren<MonsterController>();
@@ -29,7 +32,8 @@ public class PlaySoundNode : ActionNode, IStateChangeListener
             yield return new WaitForSeconds(duration);
         }
     }
-    public void HandleStateChange(CreatureState newState, bool isClear = true)
+
+    public override void Exit(GameObject obj, bool clear)
     {
     }
 }

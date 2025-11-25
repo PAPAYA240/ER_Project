@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.Protocol;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 
 public class MonsterAI : MonoBehaviour
 {
@@ -8,22 +9,28 @@ public class MonsterAI : MonoBehaviour
     private float _tickInterval = 0.2f;
     private float _timer = 0f;
     private MonsterController _controller;
-    private List<IStateChangeListener> _stateListeners = new List<IStateChangeListener>();
 
     public float PrevHp = 0;
 
     void Start()
     {
         _controller = GetComponentInChildren<MonsterController>();
-        CreateBehaviorTree();
-        FindAllListeners(_rootNode);
-
-        if (_controller != null)
+        if (_controller == null)
         {
-            foreach (var listener in _stateListeners)
-                _controller.OnStateChanged += listener.HandleStateChange;
+            Debug.LogWarning($"MonsterAI : {_controller.Type} Controller 찾기 실패");
+            return;
         }
+
+        CreateBehaviorTree();
+        if (!FindAllListeners(_rootNode))
+        {
+            Debug.LogWarning($"MonsterAI : {_controller.Type} 행동 트리 노드 찾기 실패");
+            return;
+        }
+
+        _controller.OnStateChanged += OnExecute;
         PrevHp = _controller.Hp;
+        _rootNode?.Enter(gameObject);
     }
 
     void Update()
@@ -32,11 +39,25 @@ public class MonsterAI : MonoBehaviour
          if (_timer >= _tickInterval)
          {
              _timer = 0f;
-             _rootNode?.Execute(gameObject); 
-         }
+             NodeStatus status = _rootNode.Execute(gameObject);
+
+            if (status == NodeStatus.Success)
+            {
+                OnExecute( true);
+            }
+        }
+    }
+    private void OnExecute(bool clear)
+    {
+        _rootNode?.Exit(gameObject, clear);
+
+        _rootNode?.Enter(gameObject);
     }
 
-
+    private void Destroy()
+    {
+        _rootNode?.Exit(gameObject, true);
+    }
     private void CreateBehaviorTree()
     {
         TextAsset jsonAsset = Resources.Load<TextAsset>("Data/MonsterData/MonsterBehaviorTrees");
@@ -62,21 +83,20 @@ public class MonsterAI : MonoBehaviour
             }
 
             _rootNode = rootSelector;
-            Debug.Log($"[{_controller.Type}] Loaded {rootSelector.children.Count} behaviors");
         }
     }
 
-    private void FindAllListeners(Node node)
+    private bool FindAllListeners(Node node)
     {
-        if (node == null) return;
-
-        if (node is IStateChangeListener listener)
-            _stateListeners.Add(listener);
+        if (node == null)
+            return false ;
 
         if (node is CompositeNode composite)
         {
             foreach (var child in composite.children)
                 FindAllListeners(child);
         }
+
+        return (_rootNode != null) ? true : false;
     }
 }
