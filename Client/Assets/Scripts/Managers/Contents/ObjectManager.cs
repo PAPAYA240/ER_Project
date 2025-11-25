@@ -238,6 +238,9 @@ public class ObjectManager
 
             GameObject go = keyValue.Value;
 
+            if (go.GetComponent<EnvController>() != null)
+                continue;
+
             bool isVisible = false;
 
             if (hash.Contains(key) || objects.Contains(FindById(key)))
