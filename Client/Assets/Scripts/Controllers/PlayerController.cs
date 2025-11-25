@@ -349,8 +349,8 @@ public class PlayerController : CreatureController
 
     public void OnRespawn(S_Respawn packet)
     {
+        _serverPos = transform.position = packet.PosInfo.ToVector();
         _agent.Warp(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
-        transform.position = packet.PosInfo.ToVector();
         Hp = packet.Hp;
     }
 
@@ -405,20 +405,10 @@ public class PlayerController : CreatureController
 
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
-        bool isUpperBodySkill = animInfo.Name == "ROZZI_D";
-        if (isUpperBodySkill)
+        if(animInfo.Name == "ROZZI_D")
         {
-            // UpperBody 레이어에만 재생
             int upperLayer = _animator.GetLayerIndex("UpperBody");
-            if (upperLayer >= 0)
-            {
-                _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio, upperLayer);
-                _animator.CrossFadeInFixedTime("RUN", animInfo.Ratio);
-            }
-
-            // ★ Base Layer는 건드리지 않으니까
-            //    이동 중이면 Run, 서있으면 Idle 애니 그대로 유지됨
-            Debug.Log($"Upper : {animInfo.Name}, Base : RUN");
+            _animator.CrossFadeInFixedTime(animInfo.Name, 0.05f, upperLayer);
             return;
         }
 
@@ -781,5 +771,19 @@ public class PlayerController : CreatureController
         };
 
         transform.rotation = movePacket.RotInfo;
+    }
+
+    public void SyncPosFromServer(PositionInfo positionInfo, RotationInfo rotationInfo)
+    {
+        _agent.isStopped = false;
+
+        _serverPos = new Vector3
+        {
+            x = positionInfo.PosX,
+            y = positionInfo.PosY,
+            z = positionInfo.PosZ
+        };
+
+        transform.rotation = rotationInfo;
     }
 }

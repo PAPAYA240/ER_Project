@@ -1,0 +1,267 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: System_Brush_Footstep
+  m_Shader: {fileID: 4800000, guid: 79538e9bdea8d414ea11211123bb5897, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _ALPHATEST_ON
+  m_InvalidKeywords:
+  - ENABLE_WIND
+  - _ZWRITE_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AddTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _AnimatedEmissionTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BlendMask:
+        m_Texture: {fileID: 2800000, guid: 9c0fa29e82cc2a94880378ed9e0df9ed, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: 7d21d8ea6d8c98d49a9220dbdd642f68, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedo:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormal:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissiveMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HeightMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: d1289422137dd824bb7f08469daeeefc, type: 3}
+        m_Scale: {x: 1, y: 1.5}
+        m_Offset: {x: 0, y: 0}
+    - _Mask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: d1289422137dd824bb7f08469daeeefc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RampTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Specular:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _UvTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _VOffsetTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _WindPattern:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _distortion:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _layer1Norm:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _layer1Tex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AddValBlur: 0.01
+    - _AddValRim: 0
+    - _Amplitude: 1
+    - _BlendTile: 1
+    - _BumpScale: 1
+    - _Center: 0
+    - _Choke: 15
+    - _ChromaticAberrationVal: 1
+    - _ColorMask: 15
+    - _Crisp: 5
+    - _Cull: 0
+    - _Cutoff: 0.5
+    - _Cutout: 0.5
+    - _DebugMode: 0
+    - _DetailNormalMapScale: 1
+    - _DetailNormalStrength: 0.4
+    - _DetailTiling: 2
+    - _DstBlend: 0
+    - _Emission: 1
+    - _EmissiveValue: 0
+    - _FoliageHeightRatio: 1
+    - _Frequency: 1
+    - _GIFlag: 0
+    - _Gap: 0.7
+    - _GlossMapScale: 1
+    - _Glossiness: 0
+    - _GlossyReflections: 1
+    - _Height: 0.005
+    - _IsAnimatedEmission: 0
+    - _IsEmission: 0
+    - _IsSandDecal: 0
+    - _LeavesMax: 0.1
+    - _LeavesSpeed: 0.5
+    - _LeavesWaveScale: 5
+    - _MaskFade: 0
+    - _MaxWidth: 0.1
+    - _Metallic: 0
+    - _Mode: 1
+    - _MulValBump: 0.1
+    - _MulValEmission: 1
+    - _MulValRim: 1
+    - _MulValSpeed: 2
+    - _MulVal_Luminosity: 1.5
+    - _NormalModification: 1
+    - _OcclusionStrength: 1
+    - _OffsetVal: 0.1
+    - _OverallShakeAmount: 0.2
+    - _Parallax: 0.02
+    - _Percentage: 1
+    - _PowVal: 1
+    - _PowValRim: 1
+    - _Radius: 0.2
+    - _Rigidness: 0.5
+    - _Roughness: 0
+    - _Roughness1: 1
+    - _ScrollSpeed: 0
+    - _ScrollSpeedEmit: 0.5
+    - _SelfIllum: 0
+    - _Smoothness: 1
+    - _SmoothnessTextureChannel: 0
+    - _Specular: 0
+    - _SpecularHighlights: 1
+    - _Speed: 25
+    - _SrcBlend: 1
+    - _StemWaveScale: 0.5
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _SwayMax: 0.005
+    - _Tinting: 0.4
+    - _UVSec: 0
+    - _WaveFreq: 20
+    - _WaveHeight: 0.1
+    - _WaveScale: 1
+    - _Wind: 1
+    - _XYRadian: 0.1
+    - _XYRotateMaskAddVal: 0
+    - _XYRotateMaskMulVal: 1
+    - _XYRotateMaskPowVal: 1
+    - _XZRadian: 0.5
+    - _XZRotateMaskMultiplier: 1
+    - _YSinHeight: 0.01
+    - _YSinMaskAddVal: 0
+    - _YSinMaskMulVal: 1
+    - _YSinTimeDifference: 0
+    - _YSinWidth: 4
+    - _ZTestMode: 2
+    - _ZWrite: 1
+    - __dirty: 1
+    - _hard: 2
+    - _layer1Rough: 1
+    - _layer1Tiling: 1
+    - _power: 0.653817
+    m_Colors:
+    - _AddColor: {r: 1, g: 1, b: 1, a: 1}
+    - _AddVal: {r: 0, g: 0.1, b: 0, a: 0}
+    - _AddValSide: {r: 0, g: 0, b: 0, a: 0}
+    - _ChromaticAberrationBA: {r: 0, g: 0, b: 0, a: 0}
+    - _ChromaticAberrationRG: {r: 0, g: 0, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Color2: {r: 1, g: 0, b: 0, a: 1}
+    - _ColorB: {r: 0.5, g: 0.5, b: 0.5, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
+    - _MaskColor: {r: 1, g: 1, b: 1, a: 1}
+    - _MaskColor01: {r: 1, g: 1, b: 1, a: 1}
+    - _MaskColor02: {r: 1, g: 1, b: 1, a: 1}
+    - _MaskColor03: {r: 1, g: 1, b: 1, a: 1}
+    - _MaskColor04: {r: 1, g: 1, b: 1, a: 1}
+    - _MulValSide: {r: 1, g: 1, b: 1, a: 1}
+    - _OverColor: {r: 1, g: 1, b: 1, a: 1}
+    - _PowValSide: {r: 1, g: 1, b: 1, a: 1}
+    - _RadiusColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _ScrollSpd: {r: 0.15, g: 0.15, b: 0.15, a: 0.15}
+    - _ScrollSpeed: {r: 0, g: 0, b: 0, a: 0}
+    - _u: {r: 0.1, g: 0.1, b: -0.1, a: -0.1}
+    - _v: {r: 0.2, g: 0.2, b: 0, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

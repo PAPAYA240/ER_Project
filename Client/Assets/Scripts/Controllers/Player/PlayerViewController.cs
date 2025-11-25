@@ -102,7 +102,7 @@ public class PlayerViewController : MonoBehaviour
         _player.IsRest = packet.IsRest;
         Debug.Log(_player.IsRest);
         _player.UpdateTransform(true);
-        _syncing = false; // 리스폰 직후는 입력 올 때까지 동기화 중지
+        //_syncing = false; // 리스폰 직후는 입력 올 때까지 동기화 중지
     }
 
     public void OnStop(S_Stop packet)

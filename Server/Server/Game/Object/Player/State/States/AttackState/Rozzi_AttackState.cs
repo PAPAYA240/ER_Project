@@ -16,6 +16,8 @@ public class Rozzi_AttackState : Player_AttackState
 
     private DateTime _hitMomentUtc2;
 
+    private float[] _attackBonus = [0, 0.5f, 0.6f, 0.7f];
+
     public Rozzi_AttackState(int targetId, bool chaseAllowed = true) : base(targetId, chaseAllowed) { }
 
     public override void Execute(Player player)
@@ -180,7 +182,7 @@ public class Rozzi_AttackState : Player_AttackState
         }
 
         // 애니 송출(서버 권한)
-        p.SendAnimPacket(animName, 0.05f/*, p.AttackSpeed, _isPassiveAttack*/);
+        p.SendAnimPacket(animName, 0.05f, p.AttackSpeed/*, _isPassiveAttack*/);
     }
 
     protected override void ApplyHit(Player p, GameObject target)
@@ -188,7 +190,11 @@ public class Rozzi_AttackState : Player_AttackState
         if (target == null || target.State == CreatureState.Dead)
             return;
 
-        target.OnDamaged(p, p.Attack, false, true);
+        float damage = p.Attack;
+        if (_isPassiveAttack)
+            damage = p.Attack * (0.6f + _attackBonus[p.GetSkillLevel(KeyCode.T)]);
+     
+        target.OnDamaged(p, damage, false, true);
 
         Projectile_Rozzi_R pj = p.Room.FindProjectile(p, ProjectileType.ProjectileRozziR) as Projectile_Rozzi_R;
         if (pj != null && pj.Target != null && pj.Target == target)
