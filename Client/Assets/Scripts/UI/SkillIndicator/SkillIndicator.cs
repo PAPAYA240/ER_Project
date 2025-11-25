@@ -150,8 +150,6 @@ public class SkillIndicator : UI_Base
             _setupAiming = false;
         }
     }
-
-
     private void ObjectAimAtMousePosition(Canvas canvas, GameObject map, string prefabName)
     {
        if(!_setupAiming)

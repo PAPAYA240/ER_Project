@@ -30,7 +30,7 @@ public class GameScene : BaseScene
 
     private void Update()
     {
-        SetVisibleObjects();
+        //SetVisibleObjects();
     }
 
     public override void Clear()
