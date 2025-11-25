@@ -1,4 +1,5 @@
 ﻿
+using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game;
 using System.Numerics;
@@ -21,7 +22,13 @@ public class WardInfo : ConsumableItemInfo
     public override void Use(Vector3 mousePos, Player p)
     {
         // sqawn ward
-        GameObject go = new WardObject();
-        //go.PosInfo. = mousePos;
+        WardObject wardObject = ObjectManager.Instance.Add<WardObject>();
+        wardObject.Position = mousePos;
+        wardObject.TeamIndex = p.Team;
+        
+        S_Spawn packet = new S_Spawn();
+        packet.Objects.Add(wardObject.Info);
+
+        p.Room.Push(p.Room.Broadcast, packet);
     }
 }

@@ -60,7 +60,7 @@ public class UI_ItemSlot : UI_Base
 
     public void SetItem(ItemInfoBase item)
     {
-        if(item.Id == 0)
+        if(item == null || item.Id == 0)
         {
             // 빈칸 처리
             SetActive(GameObjects.EmptyBg, true);

@@ -94,7 +94,10 @@ namespace Server.Game
                 case 2:
                 case 3:
                     foreach (var p in _players)
+                    {
+                        p.Value.AcquireItem(new WardInfo()/*DataManager.ItemDict[502212] as WardInfo*/);
                         Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
+                    }
                     break;
             }
         }
@@ -801,6 +804,11 @@ namespace Server.Game
                 Message = chatPkt.Message
             };
             Push(Broadcast, sendPkt);
+        }
+
+        public void HandleUseItem(Player player, C_UseItem packet)
+        {
+            player.UseItem(packet.InventoryIndex, new Vector3(packet.MouseX, 0, packet.MouseZ));
         }
     }
 }

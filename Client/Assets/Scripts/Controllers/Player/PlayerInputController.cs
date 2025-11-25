@@ -1,5 +1,6 @@
 ﻿using Data;
 using Google.Protobuf.Protocol;
+using NUnit.Framework.Constraints;
 using System;
 using UnityEngine;
 using UnityEngine.AI;
@@ -260,6 +261,40 @@ public class PlayerInputController : MonoBehaviour
             }
         }
 
+        return null;
+    }
+
+    public C_UseItem GetUseItemCommand()
+    {
+        if(_player.State == CreatureState.Idle || _player.State == CreatureState.Moving
+            || _player.State == CreatureState.Attack || _player.State == CreatureState.Rest)
+        {
+            for (int i = 0; i <= 9; i++)
+            {
+                KeyCode alphaKey = (KeyCode)((int)KeyCode.Alpha0 + i);
+
+                if (Input.GetKeyDown(alphaKey))
+                {
+                    if(_player.CheckInventory(i))
+                    {
+                        int index = 0;
+                        if (i == 0)
+                            index = 9;
+                        else
+                            index = i - 1;
+
+                        return new C_UseItem()
+                        {
+                            ObjectId = _player.Id,
+                            InventoryIndex = index,
+                            MouseX = GetMouseWorldPosition().x,
+                            MouseZ = GetMouseWorldPosition().z
+                        }; // 하나의 키 입력만 처리하고 싶을 때 사용 (중복 입력 방지)
+                    }
+
+                }
+            }
+        }
         return null;
     }
 

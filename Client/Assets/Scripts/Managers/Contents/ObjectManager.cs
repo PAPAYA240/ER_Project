@@ -45,6 +45,9 @@ public class ObjectManager
             case GameObjectType.Environment:
                 AddEnvironment(info);
                 break;
+            case GameObjectType.Ward:
+                AddWard(info);
+                break;
         }
     }
     private void AddPlayer(ObjectInfo info, bool myPlayer)
@@ -151,6 +154,35 @@ public class ObjectManager
         if (System.Enum.TryParse(info.Name, out EnvType envEnum))
             ec._envType = envEnum;
         ec.SyncPos();
+    }
+
+    private void AddWard(ObjectInfo info)
+    {
+        GameObject go = Managers.Resource.Instantiate("Creature/Ward");
+        if (go == null) return;
+
+        go.name = "Ward";
+        _objects.Add(info.ObjectId, go);
+        go.transform.position = new Vector3(info.PosInfo.PosX, info.PosInfo.PosY, info.PosInfo.PosZ);
+
+        //Debug.Log(" Add Ward!");
+
+        WardController wc = go.GetComponent<WardController>();
+        wc.ObjInfo = info;
+        wc.Id = info.ObjectId;
+        wc.PosInfo = info.PosInfo;
+        wc.Stat = info.StatInfo;
+        wc.SyncPos();
+
+        //EnvController ec = go.GetComponent<EnvController>();
+        //ec.ObjInfo = info;
+        //ec.Id = info.ObjectId;
+        //ec.PosInfo = info.PosInfo;
+        //ec.Stat = info.StatInfo;
+
+        //if (System.Enum.TryParse(info.Name, out EnvType envEnum))
+        //    ec._envType = envEnum;
+        //ec.SyncPos();
     }
     #endregion
 

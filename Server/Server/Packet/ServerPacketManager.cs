@@ -82,7 +82,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CAttackRequest, MakePacket<C_AttackRequest>);
 		_handler.Add((ushort)MsgId.CAttackRequest, PacketHandler.C_AttackRequestHandler);		
 		_onRecv.Add((ushort)MsgId.CChat, MakePacket<C_Chat>);
-		_handler.Add((ushort)MsgId.CChat, PacketHandler.C_ChatHandler);
+		_handler.Add((ushort)MsgId.CChat, PacketHandler.C_ChatHandler);		
+		_onRecv.Add((ushort)MsgId.CUseItem, MakePacket<C_UseItem>);
+		_handler.Add((ushort)MsgId.CUseItem, PacketHandler.C_UseItemHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)
