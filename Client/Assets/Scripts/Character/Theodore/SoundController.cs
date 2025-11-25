@@ -65,6 +65,8 @@ public class SoundController : MonoBehaviour
     }
     public void GetEffect(string soundName)
     {
+        if (!SoundClipDict.ContainsKey(Define.Sound.Effect))
+            return;
         if (!SoundClipDict[Define.Sound.Effect].ContainsKey(soundName))
             return;
 
