@@ -25,8 +25,6 @@ class PacketHandler
 
     public static void S_SpawnHandler(PacketSession session, IMessage packet)
     {
-        if (!IsSceneReady("Game", () => S_SpawnHandler(session, packet))) return;
-
         S_Spawn spawnPacket = packet as S_Spawn;
         foreach (ObjectInfo obj in spawnPacket.Objects)
         {
@@ -1150,6 +1148,7 @@ class PacketHandler
         S_SpawnWard wardPacket = packet as S_SpawnWard;
 
         Managers.Object.AddWard(wardPacket.ObjInfo, wardPacket.TeamIndex);
+
         //GameObject go = Managers.Object.FindById(yukiStudPacket.ObjectId);
         //if (go == null)
         //    return;

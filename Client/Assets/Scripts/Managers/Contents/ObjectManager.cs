@@ -13,6 +13,8 @@ public class ObjectManager
 	private Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
     public Define.Character Character { get; set; } = Define.Character.Rozzi;
 
+    Queue<Action> _pendingActions = new Queue<Action>();
+
     #region Type ID
     public static GameObjectType GetObjectTypeById(int id)
 	{
@@ -38,14 +40,12 @@ public class ObjectManager
             });
             return;
         }
-
-        SafeAdd(info, myPlayer);
+        else
+            SafeAdd(info, myPlayer);
     }
 
     void SafeAdd(ObjectInfo info, bool myPlayer)
     {
-        Debug.Log($"SafeAdd : {info.ObjectId}");
-
         GameObjectType objectType = GetObjectTypeById(info.ObjectId);
         switch (objectType)
         {
@@ -85,9 +85,18 @@ public class ObjectManager
             {
                 scene.AddPlayer(go, MyPlayer);
             }
+
+            while (_pendingActions.Count > 0)
+                _pendingActions.Dequeue().Invoke();
         }
         else
         {
+            if(MyPlayer == null)
+            {
+                _pendingActions.Enqueue(() => AddPlayer(info, myPlayer));
+                return;
+            }
+
             GameObject go = Managers.Resource.Instantiate($"Creature/{info.Player.CharType}");
             go.name = info.Name;
             _objects.Add(info.ObjectId, go);
@@ -101,7 +110,7 @@ public class ObjectManager
             pc.SyncPos(true);
             pc.SyncPosFromServer(info.PosInfo, info.RotInfo);
 
-            if (MyPlayer.ObjInfo.Player.Team != pc.ObjInfo.Player.Team)
+            if (Managers.Info.Team != pc.ObjInfo.Player.Team)
             {
                 go.gameObject.AddComponent<HighlightEffect>();
                 Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.EnemyPlayer, pc);
