@@ -229,7 +229,6 @@ namespace Server.Game
                     continue;
 
                 clientSession.CurRoom = room.RoomId;
-                Console.WriteLine($"RoomId: {room.RoomId}");
                 room.Push(room.EnterGame, player, _pickPlayers[i].Team);
             }
         }

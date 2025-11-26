@@ -1,5 +1,6 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_HealPack : UI_Base
 {
@@ -39,6 +40,10 @@ public class UI_HealPack : UI_Base
     {
         float ratio = currentRemainingTime / MAX_TIME; 
         float progress = 1.0f - ratio;
-        GetImage((int)Images.Progress).fillAmount = progress;
+
+        Image img = GetImage((int)Images.Progress);
+        if (img == null)
+            return;
+        img.fillAmount = progress;
     }
 }

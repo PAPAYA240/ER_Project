@@ -40,8 +40,10 @@ class PacketHandler
             Managers.Object.Remove(id);
         }
     }
+
     public static void S_MoveHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_MoveHandler(session, packet))) return;
         S_Move mPacket = packet as S_Move;
         ServerSession serverSession = session as ServerSession;
 
@@ -76,6 +78,7 @@ class PacketHandler
 
     public static void S_TargetChangeHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_TargetChangeHandler(session, packet))) return;
         S_TargetChange targetChangePacket = packet as S_TargetChange;
         ServerSession serverSession = session as ServerSession;
 
@@ -84,6 +87,7 @@ class PacketHandler
 
     public static void S_SetMoveTargetHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_SetMoveTargetHandler(session, packet))) return;
         S_SetMoveTarget targetPacket = packet as S_SetMoveTarget;
         ServerSession serverSession = session as ServerSession;
 
@@ -95,6 +99,7 @@ class PacketHandler
 
     public static void S_StateHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_StateHandler(session, packet))) return;
         S_State skillPacket = packet as S_State;
         if (skillPacket == null)
             return;
@@ -113,6 +118,7 @@ class PacketHandler
 
     public static void S_SkillHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_SkillHandler(session, packet))) return;
         S_Skill skillPacket = packet as S_Skill;
 
         GameObject go = Managers.Object.FindById(skillPacket.ObjectId);
@@ -132,6 +138,7 @@ class PacketHandler
 
     public static void S_AnimHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_AnimHandler(session, packet))) return;
         S_Anim animPacket = packet as S_Anim;
 
         GameObject go = Managers.Object.FindById(animPacket.ObjectId);
@@ -147,6 +154,7 @@ class PacketHandler
     
     public static void S_ChangeHpHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_ChangeHpHandler(session, packet))) return;
         S_ChangeHp changePacket = packet as S_ChangeHp;
 
         GameObject go = Managers.Object.FindById(changePacket.ObjectId);
@@ -233,6 +241,7 @@ class PacketHandler
 
     public static void S_InteractHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_InteractHandler(session, packet))) return;
         S_Interact interactPacket = packet as S_Interact;
 
         GameObject go = Managers.Object.FindById(interactPacket.ObjectId);
@@ -282,6 +291,7 @@ class PacketHandler
 
     public static void S_VisibleObjectsHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_VisibleObjectsHandler(session, packet))) return;
         S_VisibleObjects visibleObjectsPkt = packet as S_VisibleObjects;
 
         GameObject go = Managers.Object.FindById(visibleObjectsPkt.ObjectId);
@@ -305,6 +315,7 @@ class PacketHandler
 
     public static void S_LevelUpHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_LevelUpHandler(session, packet))) return;
         S_LevelUp levelUpPkt = packet as S_LevelUp;
 
         GameObject go = Managers.Object.FindById(levelUpPkt.ObjectId);
@@ -342,6 +353,7 @@ class PacketHandler
 
     public static void S_FxHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_FxHandler(session, packet))) return;
         S_Fx fxPacket = packet as S_Fx;
         GameObject go = Managers.Object.FindById(fxPacket.ObjectId);
         if (go == null)     return;
@@ -358,6 +370,7 @@ class PacketHandler
 
     public static void S_RespawnHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_RespawnHandler(session, packet))) return;
         S_Respawn respawnPacket = packet as S_Respawn;
 
         GameObject go = Managers.Object.FindById(respawnPacket.ObjectId);
@@ -376,6 +389,7 @@ class PacketHandler
 
     public static void S_SkillLevelUpHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_SkillLevelUpHandler(session, packet))) return;
         S_SkillLevelUp skillLevelUpPacket = packet as S_SkillLevelUp;
 
         KeyCode key = (KeyCode)skillLevelUpPacket.KeyCode;
@@ -386,6 +400,7 @@ class PacketHandler
 
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_ChangeStatHandler(session, packet))) return;
         S_ChangeStat statPacket = packet as S_ChangeStat;
 
         GameObject go = Managers.Object.FindById(statPacket.ObjectId);
@@ -403,6 +418,7 @@ class PacketHandler
 
     public static void S_PlayerStateHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_PlayerStateHandler(session, packet))) return;
         S_PlayerState statePacket = packet as S_PlayerState;
 
         GameObject go = Managers.Object.FindById(statePacket.ObjectId);
@@ -418,6 +434,7 @@ class PacketHandler
 
     public static void S_StopHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_StopHandler(session, packet))) return;
         S_Stop stopPacket = packet as S_Stop;
 
         GameObject go = Managers.Object.FindById(stopPacket.Id);
@@ -440,6 +457,7 @@ class PacketHandler
 
     public static void S_SkillConfirmHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_SkillConfirmHandler(session, packet))) return;
         S_SkillConfirm confirmPacket = packet as S_SkillConfirm;
 
         GameObject go = Managers.Object.FindById(confirmPacket.ObjectId);
@@ -458,6 +476,7 @@ class PacketHandler
 
     public static void S_SkillCollisionRequestHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_SkillCollisionRequestHandler(session, packet))) return;
         S_SkillCollisionRequest requestPacket = packet as S_SkillCollisionRequest;
 
         Managers.Object.MyPlayer.OnServerUpdate(requestPacket);
@@ -465,6 +484,7 @@ class PacketHandler
 
     public static void S_SkillCostHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_SkillCostHandler(session, packet))) return;
         S_SkillCost costPacket = packet as S_SkillCost;
 
         GameObject go = Managers.Object.FindById(costPacket.ObjectId);
@@ -476,6 +496,7 @@ class PacketHandler
 
     public static void S_SkillMotionHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_SkillMotionHandler(session, packet))) return;
         S_SkillMotion motionPacket = packet as S_SkillMotion;
 
         GameObject go = Managers.Object.FindById(motionPacket.ObjectId);
@@ -490,6 +511,7 @@ class PacketHandler
 
     public static void S_MoveSyncHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_MoveSyncHandler(session, packet))) return;
         S_MoveSync syncPacket = packet as S_MoveSync;
 
         GameObject go = Managers.Object.FindById(syncPacket.ObjectId);
@@ -504,6 +526,7 @@ class PacketHandler
 
     public static void S_ChangeItemStatHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_ChangeItemStatHandler(session, packet))) return;
         S_ChangeItemStat changeItemStatPacket = packet as S_ChangeItemStat;
 
         GameObject go = Managers.Object.FindById(changeItemStatPacket.ObjectId);
@@ -526,6 +549,7 @@ class PacketHandler
 
     public static void S_ChangeEquipItemHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_ChangeEquipItemHandler(session, packet))) return;
         S_ChangeEquipItem changeEquipPacket = packet as S_ChangeEquipItem;
 
         GameObject go = Managers.Object.FindById(changeEquipPacket.ObjectId);
@@ -540,8 +564,10 @@ class PacketHandler
 
         Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(pc.Id);
     }
+    
     public static void S_EnvRequestHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_EnvRequestHandler(session, packet))) return;
         S_EnvRequest revPacket = packet as S_EnvRequest;
 
         GameObject go = Managers.Object.FindById(revPacket.ObjectId);
@@ -557,6 +583,7 @@ class PacketHandler
     
     public static void S_ChangeInventoryHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_ChangeInventoryHandler(session, packet))) return;
         S_ChangeInventory changeInventoryPacket = packet as S_ChangeInventory;
 
         MyPlayerController mpc = Managers.Object.MyPlayer;
@@ -569,6 +596,7 @@ class PacketHandler
 
     public static void S_CombatTextHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_CombatTextHandler(session, packet))) return;
         S_CombatText textPacket = packet as S_CombatText;
 
         GameObject go = Managers.Object.FindById(textPacket.ObjectId);
@@ -580,6 +608,7 @@ class PacketHandler
 
     public static void S_ChangeKDAHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_ChangeKDAHandler(session, packet))) return;
         S_ChangeKDA KDAPacket = packet as S_ChangeKDA;
 
         foreach(KDAInfo info in KDAPacket.KDAs)
@@ -597,8 +626,10 @@ class PacketHandler
             }               
         }
     }
+
     public static void S_SnareHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_SnareHandler(session, packet))) return;
         S_Snare stunPacket = packet as S_Snare;
 
         GameObject go = Managers.Object.FindById(stunPacket.ObjectId);
@@ -612,8 +643,10 @@ class PacketHandler
 
         cc.Snare(stunPacket, atkc.ObjInfo.Player.CharType);
     }
+
     public static void S_SyncTimerHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_SyncTimerHandler(session, packet))) return;
         S_SyncTimer syncTimerPacket = packet as S_SyncTimer;
 
         float clientPacketReceiveTime = Time.realtimeSinceStartup; // 패킷을 받은 로컬 시간 (Unity)
@@ -643,6 +676,7 @@ class PacketHandler
 
     public static void S_AddAbigailCoordHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_AddAbigailCoordHandler(session, packet))) return;
         S_AddAbigailCoord addAbigailCoordPkt = packet as S_AddAbigailCoord;
 
         GameObject go = Managers.Object.FindById(addAbigailCoordPkt.ObjectId);
@@ -658,6 +692,7 @@ class PacketHandler
 
     public static void S_RemoveAbigailCoordHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_RemoveAbigailCoordHandler(session, packet))) return;
         S_RemoveAbigailCoord addAbigailCoordPkt = packet as S_RemoveAbigailCoord;
 
         GameObject go = Managers.Object.FindById(addAbigailCoordPkt.ObjectId);
@@ -673,6 +708,7 @@ class PacketHandler
 
     public static void S_AddYukiPyosikHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_AddYukiPyosikHandler(session, packet))) return;
         S_AddYukiPyosik addYukiPyosikPkt = packet as S_AddYukiPyosik;
 
         GameObject go = Managers.Object.FindById(addYukiPyosikPkt.ObjectId);
@@ -688,6 +724,7 @@ class PacketHandler
 
     public static void S_YukiSkillEffectHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_YukiSkillEffectHandler(session, packet))) return;
         S_YukiSkillEffect YukiSkillEffectPkt = packet as S_YukiSkillEffect;
 
         GameObject go = Managers.Object.FindById(YukiSkillEffectPkt.ObjectId);
@@ -703,6 +740,7 @@ class PacketHandler
 
     public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_OccupyBeaconHandler(session, packet))) return;
         S_OccupyBeacon occupyBeaconPkt = packet as S_OccupyBeacon;
         if(Enum.TryParse<Beacon>(occupyBeaconPkt.BeaconName, out Beacon result))
             Managers.Object.MyPlayer.UI.PlayerHUD.CaptureTurbine(result, occupyBeaconPkt.Team);
@@ -710,6 +748,7 @@ class PacketHandler
 
     public static void S_ChangeBeaconTimeHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_ChangeBeaconTimeHandler(session, packet))) return;
         S_ChangeBeaconTime changeBeaconTimePkt = packet as S_ChangeBeaconTime;
 
         Managers.Object.MyPlayer.UI.PlayerHUD.SetBeaconTimer((Beacon)changeBeaconTimePkt.Beacon, changeBeaconTimePkt.Time);
@@ -717,6 +756,7 @@ class PacketHandler
 
     public static void S_ChangeScoreHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_ChangeScoreHandler(session, packet))) return;
         S_ChangeScore changeScorePkt = packet as S_ChangeScore;
 
         Managers.Object.MyPlayer.UI.PlayerHUD.SetScore(changeScorePkt.Team, changeScorePkt.Score);
@@ -724,6 +764,7 @@ class PacketHandler
 
     public static void S_GameOverHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_GameOverHandler(session, packet))) return;
         S_GameOver gameOverPkt = packet as S_GameOver;
 
 
@@ -731,6 +772,7 @@ class PacketHandler
 
     public static void S_ChangeTransformHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_ChangeTransformHandler(session, packet))) return;
         S_ChangeTransform changeTransformPkt = packet as S_ChangeTransform;
 
         GameObject go = Managers.Object.FindById(changeTransformPkt.ObjectId);
@@ -748,6 +790,7 @@ class PacketHandler
 
     public static void S_CanStopSkillHandler(PacketSession session, IMessage packet) 
     {
+        if (!IsSceneReady("Game", () => S_CanStopSkillHandler(session, packet))) return;
         S_CanStopSkill canStopSkillPkt = packet as S_CanStopSkill;
 
         GameObject go = Managers.Object.FindById(canStopSkillPkt.ObjectId);
@@ -763,6 +806,7 @@ class PacketHandler
 
     public static void S_RotateToPosHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_RotateToPosHandler(session, packet))) return;
         S_RotateToPos rotateToPosPkt = packet as S_RotateToPos;
         GameObject go = Managers.Object.FindById(rotateToPosPkt.ObjectId);
         if (go == null)
@@ -777,6 +821,7 @@ class PacketHandler
 
     public static void S_ChangeStatusHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_ChangeStatusHandler(session, packet))) return;
         S_ChangeStatus statusPacket = packet as S_ChangeStatus;
 
         GameObject go = Managers.Object.FindById(statusPacket.ObjectId);
@@ -797,6 +842,7 @@ class PacketHandler
 
     public static void S_ChangeAttackRangeHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_ChangeAttackRangeHandler(session, packet))) return;
         S_ChangeAttackRange changeAtkRangePkt = packet as S_ChangeAttackRange;
 
         GameObject go = Managers.Object.FindById(changeAtkRangePkt.ObjectId);
@@ -815,6 +861,7 @@ class PacketHandler
 
     public static void S_UntargetableHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_UntargetableHandler(session, packet))) return;
         S_Untargetable untargetablePkt = packet as S_Untargetable;
 
         GameObject go = Managers.Object.FindById(untargetablePkt.ObjectId);
@@ -830,6 +877,7 @@ class PacketHandler
 
     public static void S_UnstoppableHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_UnstoppableHandler(session, packet))) return;
         S_Unstoppable unstoppablePkt = packet as S_Unstoppable;
 
         GameObject go = Managers.Object.FindById(unstoppablePkt.ObjectId);
@@ -845,6 +893,7 @@ class PacketHandler
 
     public static void S_CombatModeHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_CombatModeHandler(session, packet))) return;
         S_CombatMode combatModePkt = packet as S_CombatMode;
 
         switch (combatModePkt.CombatMode)
@@ -860,6 +909,7 @@ class PacketHandler
 
     public static void S_ChatHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_ChatHandler(session, packet))) return;
         S_Chat chatPkt = packet as S_Chat;
 
         GameObject go = Managers.Object.FindById(chatPkt.ObjectId);
@@ -875,6 +925,7 @@ class PacketHandler
 
     public static void S_AnimSpeedHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_AnimSpeedHandler(session, packet))) return;
         S_AnimSpeed speedPkt = packet as S_AnimSpeed;
 
         GameObject go = Managers.Object.FindById(speedPkt.ObjectId);
@@ -890,6 +941,7 @@ class PacketHandler
 
     public static void S_RestHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_RestHandler(session, packet))) return;
         S_Rest restPkt = packet as S_Rest;
         Debug.Log("패킷 옴?");
 
@@ -903,8 +955,10 @@ class PacketHandler
 
         pc.IsRest = restPkt.IsRest;
     }
+
     public static void S_ProjectileRozziHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_ProjectileRozziHandler(session, packet))) return;
         S_ProjectileRozzi projectilePacket = packet as S_ProjectileRozzi;
 
         GameObject go = Managers.Object.FindById(projectilePacket.ObjectId);
@@ -920,6 +974,7 @@ class PacketHandler
 
     public static void S_YukiStudHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_YukiStudHandler(session, packet))) return;
         S_YukiStud yukiStudPacket = packet as S_YukiStud;
 
         GameObject go = Managers.Object.FindById(yukiStudPacket.ObjectId);
@@ -1043,4 +1098,14 @@ class PacketHandler
     {
         return 0.05f;
     }
+
+    public static bool IsSceneReady(string sceneName, Action callback)
+    {
+        if (!LoadingManager.Instance.IsSceneLoaded(sceneName))
+        {
+            LoadingManager.Instance.EnqueuePostLoadAction(callback);
+            return false;
+        }
+        return true;
+    } // 특정 Scene이 아직 존재하지 않으면 해당 Scene이 될 때까지 기다렸다가 실행
 }
