@@ -26,7 +26,7 @@ public sealed class Theodore_D : SkillHandlerBase
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
-        HitboxCreated = false;
+        HitboxRequired = false;
         base.OnEnter(p, ctx);
         p.LookAtMouse(ctx.MousePos);
     }

@@ -92,18 +92,20 @@ public class UI_TraitButton : UI_Base
 
     private void OnClickedEvent(PointerEventData data)
     {
+        if (Managers.Info.IsReady)
+            return;
+
         SetSelected(true);
 
         PickScene ps =  Managers.Scene.CurrentScene as PickScene;
+        if (ps == null)
+            return;
+        
+        C_Trait traitPacket = new C_Trait();
+        traitPacket.TraitType = _traitType;
+        traitPacket.PickIdx = ps.PickIdx;
+        Managers.Network.Send(traitPacket);
 
-        if(null != ps)
-        {
-            C_Trait traitPacket = new C_Trait();
-            traitPacket.TraitType = _traitType;
-            traitPacket.PickIdx = ps.PickIdx;
-            Managers.Network.Send(traitPacket);
-
-            ps.ChangeTraitImage(_traitType, ps.PickIdx);
-        }
+        ps.ChangeTraitImage(_traitType, ps.PickIdx);
     }
 }

@@ -11,7 +11,16 @@ namespace Server.Game
         public PickRoom Room { get; set; }
         public ClientSession Session { get; set; }
 
-        //public CharacterType CharacterType { get; set; }
+        public Weapon Weapon { get; set; } = Weapon.None;
+
+        public TraitType Trait { get; set; }
+
         public string UserName { get; set; }
+
+        public int Team { get; set; }
+
+        public int PickIdx { get; set; }
+
+        public bool IsReady { get; set; } = false;
     }
 }

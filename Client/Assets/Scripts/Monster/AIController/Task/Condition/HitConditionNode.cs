@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class HitConditionNode : DecoratorNode
 {
+    public override void Enter(GameObject obj)
+    {
+    }
+
     public override NodeStatus Execute(GameObject agent)
     {
         MonsterController monster = agent.GetComponentInChildren<MonsterController>();
@@ -18,5 +22,9 @@ public class HitConditionNode : DecoratorNode
             monsterAI.PrevHp = monster.Hp;
         }
         return NodeStatus.Failure;
+    }
+
+    public override void Exit(GameObject obj, bool clear)
+    {
     }
 }

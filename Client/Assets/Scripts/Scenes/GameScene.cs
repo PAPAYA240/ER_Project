@@ -1,7 +1,8 @@
-﻿using Google.Protobuf.Protocol;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Google.Protobuf.Protocol;
+using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
@@ -19,18 +20,15 @@ public class GameScene : BaseScene
 
         SceneType = Define.Scene.Game;
 
-        Managers.Map.LoadMap("Cobalt");
+        GameObject go = Managers.Resource.Instantiate("Map/Map_Cobalt");
+        go.name = "Map";
 
         Screen.SetResolution(960 , 540, false);
-
-        // 서버로 패킷 보내기
-        C_EnterGame EnterGamePacket = new C_EnterGame();
-        Managers.Network.Send(EnterGamePacket);
     }
 
     private void Update()
     {
-        SetVisibleObjects();
+        //SetVisibleObjects();
     }
 
     public override void Clear()
@@ -41,12 +39,12 @@ public class GameScene : BaseScene
 
     public void SetVisibleObjects()
     {
-        if (Managers.Object.MyPlayer.ObjInfo.Player == null)
+        if (Managers.Object.MyPlayer.ObjInfo.Player == null || _visibleObjects == null)
             return;
 
         Dictionary<int, GameObject> team;
 
-        if (Managers.Object.MyPlayer.ObjInfo.Player.Team == 1)
+        if (Managers.Info.Team == 1)
         {
             team = Team1;
         }
@@ -60,10 +58,11 @@ public class GameScene : BaseScene
         // 팀을 돌면서 obj(팀원)의 시야로 보이는 오브젝트를 추림
         foreach (GameObject obj in team.Values)
         {
-            if(null == obj || _visibleObjects == null || Managers.Object == null) continue;
+            if(null == obj) continue;
 
             Managers.Object.ResiterVisibleObjects(obj, _visibleObjects);
         }
+
 
         // 와드를 돌면서 obj(와드)의 시야로 보이는 오브젝트를 추림
         foreach(int wardId in Managers.Object.MyPlayer.View.WardIds)
@@ -88,7 +87,7 @@ public class GameScene : BaseScene
             Debug.Log("Sucess AddPlayer");
         }
 
-        if (pc.ObjInfo.Player.Team == 1)
+        if (Managers.Info.Team == 1)
         {
             Team1.Add(pc.Id, go);
         }

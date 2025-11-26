@@ -1,37 +1,45 @@
 ﻿using Data;
 using Google.Protobuf.Protocol;
+using System.Threading;
 using UnityEngine;
 
-public class SetMaterialNode : ActionNode, IStateChangeListener
+public class SetMaterialNode : ActionNode
 {
     public string strChangeMaterial;
 
     private Material changeMaterial = null;
     private Material originalMaterial = null;
     private Renderer monsterRenderer = null;
-    public override NodeStatus Execute(GameObject owner)
+
+    public override void Enter(GameObject obj)
     {
-        MonsterController monster = owner.GetComponentInChildren<MonsterController>();
+        MonsterController monster = obj.GetComponentInChildren<MonsterController>();
         if (monster == null)
-            return NodeStatus.Failure;
+            return;
 
         monsterRenderer = monster.GetComponentInChildren<Renderer>();
         changeMaterial = Resources.Load<Material>(strChangeMaterial);
+    }
+
+    public override NodeStatus Execute(GameObject owner)
+    {
+        if (monsterRenderer == null || changeMaterial == null)
+            return NodeStatus.Failure;
+
         if (originalMaterial == null)
             originalMaterial = monsterRenderer.material;
 
-        if (changeMaterial == null || monsterRenderer == null || originalMaterial == null)
+        if (originalMaterial == null)
             return NodeStatus.Failure;
 
         monsterRenderer.material = changeMaterial;
-        return NodeStatus.Success;
+        return NodeStatus.Running;
     }
 
-    public void HandleStateChange(CreatureState newState, bool isClear = true)
+    public override void Exit(GameObject obj, bool clear)
     {
         if (monsterRenderer == null || originalMaterial == null)
             return;
-
         monsterRenderer.material = originalMaterial;
     }
 }

@@ -13,7 +13,7 @@ public sealed class Abigail_E : Skill_Abigail
         _animName = "SKILL_E";
         _keyCode = KeyCode.E;
         _animDuration = GetDuration();
-        HitboxCreated = false;
+        HitboxRequired = false;
     }
 
     public override void OnEnter(Player p, SkillContext ctx)

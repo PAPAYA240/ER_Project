@@ -363,7 +363,7 @@ namespace Server.Game
             Room.Broadcast(diePacket);
 
             GameRoom room = Room;
-            room.LeaveGame(Id);
+            room.Push(room.LeaveGame, Id);
 
             Hp = MaxHp;
             Stamina = MaxStamina;
@@ -376,7 +376,17 @@ namespace Server.Game
             RotInfo.Qz = 0;
             RotInfo.Qw = 1;
 
-            room.EnterGame(this);
+            GameObjectType type = ObjectManager.GetObjectTypeById(Id);
+            if (type == GameObjectType.Player)
+            {
+                Player player = this as Player;
+                if (player == null)
+                    return;
+
+                room.Push(room.EnterGame, this, player.Info.Player.Team);
+            }
+            else
+                room.Push(room.EnterGame, this, 0);
         }
         #endregion
 
@@ -412,7 +422,7 @@ namespace Server.Game
         {
             lock (_lock)
             {
-                statusEffect.startTick = Room.CurTick;
+                statusEffect.startTick = TimeUtil.Instance.LastTick;
 
                 if (statusEffect.stat == "barrier")
                 {
@@ -579,13 +589,13 @@ namespace Server.Game
 
             foreach (var effect in snapshot)
             {
-                if (unchecked(Room.CurTick - effect.startTick) >= effect.duration * 1000f)
+                if (unchecked(TimeUtil.Instance.LastTick - effect.startTick) >= effect.duration * 1000f)
                     expired.Add(effect);
             }
 
             foreach (var effect in barrierSnapshot)
             {
-                if (unchecked(Room.CurTick - effect.startTick) >= effect.duration * 1000f)
+                if (unchecked(TimeUtil.Instance.LastTick - effect.startTick) >= effect.duration * 1000f)
                     expiredBarriers.Add(effect);
             }
 

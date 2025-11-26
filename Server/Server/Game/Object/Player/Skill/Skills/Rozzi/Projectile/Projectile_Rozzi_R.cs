@@ -92,7 +92,7 @@ public class Projectile_Rozzi_R : Projectile
             case BOMB_ROZZI.Flying:
                 if (Deactivation())
                 {
-                    Room.LeaveGame(Id);
+                    Room.Push(Room.LeaveGame, Id);
                     return;
                 }
 
@@ -251,7 +251,8 @@ public class Projectile_Rozzi_R : Projectile
 
         // TODO : 폭발 FX 패킷 전송 (S_SemtexBoom 등)
 
-        // TODO : 시야 공유를 했었다면 여기서 해제
+        // 시야 공유 해제
+        Owner.RemoveStatusEffects("VisionShare");
 
         // 마지막으로 투사체 제거
         //Room.LeaveGame(Id);

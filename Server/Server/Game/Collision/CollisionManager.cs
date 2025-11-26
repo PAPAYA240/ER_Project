@@ -423,6 +423,9 @@ namespace Server.Game
        
         bool CheckCollision(Hitbox hitbox, GameObject go)
         {
+            if (go.IsDead)
+                return false;
+
             if (go.IsUntargetable())
                 return false;
 
@@ -770,8 +773,11 @@ namespace Server.Game
 
                     foreach (EffectData effect in skillLevel.effects)
                     {
-                        if(effect.type == "Heal")
+                        if (effect.type == "Heal")
+                        {
                             target.Room.Push(target.OnHeal, target, effect.value);
+                            target.SendSoundPakcet("SKILL_HEAL");
+                        }
                     }
 
                     hitbox.HitObjs.TryAdd(target.Id, 0);

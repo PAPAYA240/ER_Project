@@ -1,12 +1,14 @@
-﻿using Google.Protobuf.Protocol;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlaySoundNode : ActionNode, IStateChangeListener
+public class PlaySoundNode : ActionNode
 {
     public List<string> soundPaths;
 
+    public override void Enter(GameObject obj)
+    {
+    }
     public override NodeStatus Execute(GameObject obj)
     {
         MonsterController monster = obj.GetComponentInChildren<MonsterController>();
@@ -25,10 +27,12 @@ public class PlaySoundNode : ActionNode, IStateChangeListener
             string fullPath = $"Sounds/Monster/{monster.Type}_{name}";
             Vector3 position = monster.transform.position;
             float duration = Managers.Sound.Play3D(fullPath, position);
+
             yield return new WaitForSeconds(duration);
         }
     }
-    public void HandleStateChange(CreatureState newState, bool isClear = true)
+
+    public override void Exit(GameObject obj, bool clear)
     {
     }
 }

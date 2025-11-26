@@ -48,7 +48,7 @@ namespace Server.Game
 
             if (Deactivation())
             {
-                Room.LeaveGame(Id);
+                Room.Push(Room.LeaveGame, Id);
                 return;
             }
             Moving();

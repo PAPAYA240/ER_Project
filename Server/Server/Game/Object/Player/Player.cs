@@ -273,7 +273,7 @@ namespace Server.Game
         {
             if (null == Room) return;
 
-            long now = Room.CurTick;
+            long now = TimeUtil.Instance.LastTick;
 
             // 지워야 하는 요소 수집
             List<int> toRemove = new List<int>();
@@ -315,7 +315,7 @@ namespace Server.Game
 
             UpdateDamageRecords();
 
-            long now = Room.CurTick;
+            long now = TimeUtil.Instance.LastTick;
 
             if (_damageRecords.TryGetValue(attacker.Id, out DamageRecord damageRecord))
             {
@@ -1040,7 +1040,16 @@ namespace Server.Game
             };
             Room.Push(Room.Broadcast, packet);
         }
-
+        public void SendSoundPakcet(string name, string type = "Effect")
+        {
+            S_Sound packet = new S_Sound()
+            {
+                ObjectId = Id,
+                Type = type,
+                Name = name,
+            };
+            Room.Push(Room.Broadcast, packet);
+        }
         public void SendAnimPacket(string animName, float ratio = 0.05f, float speed = 0, bool isChangeSpeed = false)
         {
             S_Anim packet = new S_Anim()
