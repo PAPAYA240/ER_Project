@@ -167,10 +167,12 @@ class PacketHandler
             cc.Hp = changePacket.Hp;
             cc.Barrier = changePacket.Barrier;
 
+            // * Damage Screen
+            if (changePacket.ObjectId == Managers.Object.MyPlayer.Id)
+                Managers.Object.MyPlayer.UI.SetDamageOverlay();
+
             //foreach(var v in changePacket.Damages)
-            //{
             //    Managers.CombatText.SetCombatText(CombatTextManager.TextType.AdDamage, v.Damage, cc.transform.position);
-            //}
         }
     }
 
