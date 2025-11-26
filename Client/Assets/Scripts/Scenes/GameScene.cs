@@ -39,7 +39,7 @@ public class GameScene : BaseScene
 
     public void SetVisibleObjects()
     {
-        if (Managers.Object.MyPlayer.ObjInfo.Player == null || _visibleObjects == null)
+        if (Managers.Object.MyPlayer == null ||Managers.Object.MyPlayer.ObjInfo.Player == null || _visibleObjects == null)
             return;
 
         Dictionary<int, GameObject> team;

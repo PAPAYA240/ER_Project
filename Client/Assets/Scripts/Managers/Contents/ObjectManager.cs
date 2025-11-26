@@ -44,6 +44,8 @@ public class ObjectManager
 
     void SafeAdd(ObjectInfo info, bool myPlayer)
     {
+        Debug.Log($"SafeAdd : {info.ObjectId}");
+
         GameObjectType objectType = GetObjectTypeById(info.ObjectId);
         switch (objectType)
         {
