@@ -20,6 +20,7 @@ public sealed class Theodore_Charge : SkillHandlerBase
     {
         HitboxRequired = false;
         base.OnEnter(p, ctx);
+
         SendSkillConfirmPacket(p);
     }
     public override void OnTick(Player p, SkillContext ctx)

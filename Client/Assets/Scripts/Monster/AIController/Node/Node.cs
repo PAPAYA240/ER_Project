@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Google.Protobuf.Protocol;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum NodeStatus
@@ -13,7 +14,9 @@ public abstract class Node : ScriptableObject
     protected NodeStatus _state; 
 
     public NodeStatus NodeState => _state;
+    public abstract void Enter(GameObject obj);
     public abstract NodeStatus Execute(GameObject obj);
+    public abstract void Exit(GameObject obj, bool clear);
 
     public virtual Node Clone()
     {

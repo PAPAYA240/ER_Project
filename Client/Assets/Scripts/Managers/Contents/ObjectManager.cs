@@ -218,6 +218,8 @@ public class ObjectManager
                 continue;
 
             GameObject target = keyValue.Value;
+            if (target == null)
+                continue;
 
             float visionRange = 8.5f;
 
@@ -260,6 +262,8 @@ public class ObjectManager
                 continue;
 
             GameObject go = keyValue.Value;
+            if (go == null)
+                continue;
 
             if (go == null)
                 continue;

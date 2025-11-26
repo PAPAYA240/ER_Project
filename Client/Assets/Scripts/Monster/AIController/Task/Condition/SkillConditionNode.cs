@@ -4,6 +4,11 @@ using UnityEngine;
 public class SkillConditionNode : DecoratorNode
  {
     public MonsterSkill skillId;
+
+    public override void Enter(GameObject obj)
+    {
+    }
+
     public override NodeStatus Execute(GameObject agent)
      {
         MonsterController controller = agent.GetComponentInChildren<MonsterController>();
@@ -13,4 +18,8 @@ public class SkillConditionNode : DecoratorNode
         else
             return NodeStatus.Success;
     }
- }
+
+    public override void Exit(GameObject obj, bool clear)
+    {
+    }
+}

@@ -161,6 +161,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SRandomPick, PacketHandler.S_RandomPickHandler);		
 		_onRecv.Add((ushort)MsgId.SReadyBtn, MakePacket<S_ReadyBtn>);
 		_handler.Add((ushort)MsgId.SReadyBtn, PacketHandler.S_ReadyBtnHandler);
+		_onRecv.Add((ushort)MsgId.SSound, MakePacket<S_Sound>);
+		_handler.Add((ushort)MsgId.SSound, PacketHandler.S_SoundHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

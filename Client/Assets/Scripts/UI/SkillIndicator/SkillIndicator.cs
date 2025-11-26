@@ -24,8 +24,8 @@ public class IndicatorRunTimeData
 
 public class SkillIndicator : UI_Base
 {
-    private Dictionary<CharacterType, Dictionary<KeyCode, IndicatorRunTimeData>> _skillConfigs 
-        = new Dictionary< CharacterType, Dictionary<KeyCode, IndicatorRunTimeData>>();
+    private Dictionary<CharacterType, Dictionary<KeyCode, IndicatorRunTimeData>> _skillConfigs
+        = new Dictionary<CharacterType, Dictionary<KeyCode, IndicatorRunTimeData>>();
 
     private Dictionary<ValueTuple<CharacterType, KeyCode>, List<Action<Canvas, GameObject, string>>> _activeSkillFuncs
     = new Dictionary<ValueTuple<CharacterType, KeyCode>, List<Action<Canvas, GameObject, string>>>();
@@ -44,10 +44,10 @@ public class SkillIndicator : UI_Base
     {
         foreach (var keyPair in _activeSkillFuncs)
         {
-            var value= keyPair.Key;
+            var value = keyPair.Key;
             List<Action<Canvas, GameObject, string>> funcList = keyPair.Value;
 
-            var runTimeData = _skillConfigs[value.Item1][value.Item2]; 
+            var runTimeData = _skillConfigs[value.Item1][value.Item2];
             var map = runTimeData.indicatorObject;
             var canvas = runTimeData.canvas;
             var prefab = runTimeData.prefabName;
@@ -56,7 +56,7 @@ public class SkillIndicator : UI_Base
                 func.Invoke(canvas, map, prefab);
         }
     }
-  
+
 
     public void EnableIndicator(CharacterType charType, KeyCode key)
     {
@@ -154,11 +154,11 @@ public class SkillIndicator : UI_Base
 
     private void ObjectAimAtMousePosition(Canvas canvas, GameObject map, string prefabName)
     {
-       if(!_setupAiming)
-       {
-           _setupAiming = true;
+        if (!_setupAiming)
+        {
+            _setupAiming = true;
             _fixedPlayerForward = Quaternion.LookRotation(_owner.transform.forward);
-       }
+        }
 
         map.transform.rotation = _fixedPlayerForward;
 
@@ -179,9 +179,9 @@ public class SkillIndicator : UI_Base
         Vector3 LLimitPos = Util.FindChildByName(map.transform, "L_Line").transform.right;
         Vector3 RLimitPos = Util.FindChildByName(map.transform, "R_Line").transform.right;
 
-        float currentAngle = Vector3.SignedAngle(centerForward, targetForward, rotationYAxis); 
-        float LAngle = Vector3.SignedAngle(centerForward, LLimitPos, rotationYAxis); 
-        float RAngle = Vector3.SignedAngle(centerForward, RLimitPos, rotationYAxis); 
+        float currentAngle = Vector3.SignedAngle(centerForward, targetForward, rotationYAxis);
+        float LAngle = Vector3.SignedAngle(centerForward, LLimitPos, rotationYAxis);
+        float RAngle = Vector3.SignedAngle(centerForward, RLimitPos, rotationYAxis);
 
         // 제한 범위 내에 넘어가지 않았다면
         if (currentAngle >= LAngle && currentAngle <= RAngle)
@@ -192,19 +192,19 @@ public class SkillIndicator : UI_Base
         else
         {
             Debug.Log("넘어감");
-            float clampedAngle 
+            float clampedAngle
                 = Mathf.Clamp(currentAngle, LAngle, RAngle);
 
-            Quaternion angleAdjustment 
+            Quaternion angleAdjustment
                 = Quaternion.AngleAxis(clampedAngle, rotationYAxis);
 
-            Vector3 newRightDirection 
+            Vector3 newRightDirection
                 = angleAdjustment * centerForward;
 
-            Vector3 finalForward 
+            Vector3 finalForward
                 = Quaternion.AngleAxis(-90f, rotationYAxis) * newRightDirection;
 
-            Quaternion clampedRotation 
+            Quaternion clampedRotation
                 = Quaternion.LookRotation(finalForward, rotationYAxis);
 
             aimObject.transform.rotation = clampedRotation;
@@ -252,7 +252,7 @@ public class SkillIndicator : UI_Base
         Transform L = Util.FindChildByName(map.transform, "L_Line").transform;
         Transform R = Util.FindChildByName(map.transform, "R_Line").transform;
 
-         
+
         _bArrowInit = true;
 
         LStart.gameObject.SetActive(true);
@@ -333,11 +333,13 @@ public class SkillIndicator : UI_Base
                 keyConfigs[key].indicatorObject = Managers.Resource.Instantiate(prefabAddress);
                 keyConfigs[key].prefabName = config[key].prefabName;
                 keyConfigs[key].indicatorObject.transform.SetParent(_owner.transform);
+                keyConfigs[key].indicatorObject.transform.localPosition = Vector3.zero;
 
                 keyConfigs[key].canvas = keyConfigs[key].indicatorObject.GetComponent<Canvas>();
                 keyConfigs[key].canvas.transform.SetParent(_owner.transform, false);
+                keyConfigs[key].canvas.transform.localPosition = Vector3.zero;
                 keyConfigs[key].canvas.enabled = false;
-                
+
                 foreach (string funcName in config[key].invokeFuncs)
                 {
                     System.Reflection.MethodInfo method = thisType.GetMethod(funcName,

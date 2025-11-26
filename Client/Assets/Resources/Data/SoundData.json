@@ -2,37 +2,74 @@
   "soundDict": {
     "Theodore": {
       "Voice": {
-        "Q": [
-          "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062100seq0_1_ko",
-          "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062200seq0_2_ko",
-          "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062200seq0_3_ko"
+        "SKILL_Q": [
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062100seq0_1_ko" },
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062200seq0_2_ko" },
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062200seq0_3_ko" }
         ],
-        "W": [
-          "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062300seq0_1_ko",
-          "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062300seq0_2_ko",
-          "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062300seq0_3_ko"
+        "SKILL_W": [
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062300seq0_1_ko" },
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062300seq0_2_ko" },
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062300seq0_3_ko" }
         ],
-        "E": [
-          "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062400seq0_1_ko",
-          "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062400seq0_2_ko",
-          "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062400seq0_3_ko"
+        "SKILL_E": [
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062400seq0_1_ko" },
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062400seq0_2_ko" },
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062400seq0_3_ko" }
         ],
-        "R": [
-          "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062500seq0_1_ko",
-          "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062500seq0_1_ko",
-          "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062500seq0_3_ko"
+        "SKILL_R": [
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062500seq0_1_ko" },
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062500seq0_1_ko" },
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062500seq0_3_ko" }
         ],
         "Dead": [
-          "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_Dead_1_ko",
-          "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_Dead_2_ko",
-          "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_Dead_3_ko"
-        ]
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_Dead_1_ko" },
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_Dead_2_ko" },
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_Dead_3_ko" }
+        ],
+        "Victory": [
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_victory_1_ko" },
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_victory_2_ko" }
+        ],
+        "Kill1": [
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_kill1player_1_ko" },
+          { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_kill1player_2_ko" }
+        ],
+        "Kill2": [ { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_kill2player_1_ko" } ],
+        "Kill3": [ { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_kill3player_1_ko" } ],
+        "Kill4": [ { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_kill4player_1_ko" } ],
+        "Kill5": [ { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_kill5player_1_ko" } ]
       },
       "Effect": {
-        "Q": [
-          "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill01_Start",
-          "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill01_Start_Reinforce"
-        ]
+        "ATTACK_1": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_NormalAttack_Shot" } ],
+        "ATTACK_2": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_NormalAttack_Shot" } ],
+        "CHARGE": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill01_Start" } ], // "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill01_Start_Reinforce"
+        "SKILL_Q": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill01_Fire" } ],
+        "SKILL_HEAL": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill01_Heal" } ],
+        "SKILL_W": [
+          { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill02_Install" },
+          {
+            "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill02_Loop",
+            "Duration": 7.0
+          }
+        ],
+        "SKILL_W_END": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill02_Dead" } ],
+        "SKILL_WQ": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill02_Fire" } ],
+        "SKILL_E": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill03_Fire" } ], //"Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill03_Hit_Reinforce"
+        "SKILL_WE": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill03_Fetter" } ],
+        "SKILL_R": [
+          { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill04_Start" },
+          { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill04_Fire" },
+          {
+            "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill04_Loop",
+            "Duration": 7.0
+          } //"Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill04_Ing",
+        ],
+
+        // 어떤 스킬로 맞았는 지 어떻게 찾지?
+        "Hit_SKILLR": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill04_Hit" } ],
+        "Hit_ProjectileBall": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill03_Hit" } ],
+        "Hit_ProjectileBullet": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_NormalAttack_Hit" } ]
       }
     }
   }
