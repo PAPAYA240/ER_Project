@@ -954,6 +954,22 @@ class PacketHandler
         //yukiStudPacket.StudCnt;
     }
 
+    public static void S_SpawnWardHandler(PacketSession session, IMessage packet)
+    {
+        S_SpawnWard wardPacket = packet as S_SpawnWard;
+
+        Managers.Object.AddWard(wardPacket.ObjInfo, wardPacket.TeamIndex);
+        //GameObject go = Managers.Object.FindById(yukiStudPacket.ObjectId);
+        //if (go == null)
+        //    return;
+
+        //PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        //if (pc == null)
+        //    return;
+
+        //yukiStudPacket.StudCnt;
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;

@@ -144,7 +144,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SYukiStud, MakePacket<S_YukiStud>);
 		_handler.Add((ushort)MsgId.SYukiStud, PacketHandler.S_YukiStudHandler);		
 		_onRecv.Add((ushort)MsgId.SYukiSkillEffect, MakePacket<S_YukiSkillEffect>);
-		_handler.Add((ushort)MsgId.SYukiSkillEffect, PacketHandler.S_YukiSkillEffectHandler);
+		_handler.Add((ushort)MsgId.SYukiSkillEffect, PacketHandler.S_YukiSkillEffectHandler);		
+		_onRecv.Add((ushort)MsgId.SSpawnWard, MakePacket<S_SpawnWard>);
+		_handler.Add((ushort)MsgId.SSpawnWard, PacketHandler.S_SpawnWardHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

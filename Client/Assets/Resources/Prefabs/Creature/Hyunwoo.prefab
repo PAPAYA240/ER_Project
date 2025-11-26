@@ -1658,6 +1658,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4542377131128135}
   - component: {fileID: 95477892664855200}
+  - component: {fileID: 2756164890041607852}
   m_Layer: 3
   m_Name: Hyunwoo_01_LOD1
   m_TagString: Untagged
@@ -1705,6 +1706,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2756164890041607852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1394858152380701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c745c0719ae17cc42a08873d8292b4c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1401044875801596
 GameObject:
   m_ObjectHideFlags: 0
@@ -1866,6 +1879,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55e86d03b5ee90343aeb5c705c87e670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xRayIgnoreStencilID: 100
 --- !u!1 &1414983113027675
 GameObject:
   m_ObjectHideFlags: 0

@@ -290,6 +290,32 @@ public class MyPlayerController : PlayerController
 
         return false;
     }
+
+    public void UseInventoryItem(int idx)
+    {
+        int viewIndex = 0;
+        if (idx == 0)
+            viewIndex = 9;
+        else
+            viewIndex = idx - 1;
+
+        if(_inventory[viewIndex] != null && _inventory[viewIndex] is ConsumableItemInfo item)
+        {
+            --item.Count;
+
+            S_ChangeInventory s_ChangeInventory = new S_ChangeInventory();
+            if (item.Count == 0)
+            {
+                s_ChangeInventory.Changes.Add(new ChangeInventoryInfo() { ItemId = 0, InventoryIndex = viewIndex });
+            }
+            else
+            {
+                s_ChangeInventory.Changes.Add(new ChangeInventoryInfo() { ItemId = item.Id, Count = item.Count, InventoryIndex = viewIndex });
+            }
+
+            ChangeInventory(s_ChangeInventory);
+        }
+    }
     #endregion
 
     #region Util

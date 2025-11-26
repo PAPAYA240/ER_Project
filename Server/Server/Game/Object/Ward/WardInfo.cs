@@ -22,12 +22,12 @@ public class WardInfo : ConsumableItemInfo
     public override void Use(Vector3 mousePos, Player p)
     {
         // sqawn ward
-        WardObject wardObject = ObjectManager.Instance.Add<WardObject>();
-        wardObject.Position = mousePos;
-        wardObject.TeamIndex = p.Team;
+        GameObject ward = new GameObject();
+        ward.Position = mousePos;
         
-        S_Spawn packet = new S_Spawn();
-        packet.Objects.Add(wardObject.Info);
+        S_SpawnWard packet = new S_SpawnWard();
+        packet.ObjInfo = ward.Info;
+        packet.TeamIndex = p.Team;
 
         p.Room.Push(p.Room.Broadcast, packet);
     }

@@ -283,15 +283,15 @@ public class PlayerInputController : MonoBehaviour
                         else
                             index = i - 1;
 
+                        _player.UseInventoryItem(i);
                         return new C_UseItem()
                         {
                             ObjectId = _player.Id,
                             InventoryIndex = index,
                             MouseX = GetMouseWorldPosition().x,
                             MouseZ = GetMouseWorldPosition().z
-                        }; // 하나의 키 입력만 처리하고 싶을 때 사용 (중복 입력 방지)
+                        }; 
                     }
-
                 }
             }
         }

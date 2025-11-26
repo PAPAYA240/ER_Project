@@ -45,9 +45,6 @@ public class ObjectManager
             case GameObjectType.Environment:
                 AddEnvironment(info);
                 break;
-            case GameObjectType.Ward:
-                AddWard(info);
-                break;
         }
     }
     private void AddPlayer(ObjectInfo info, bool myPlayer)
@@ -159,7 +156,7 @@ public class ObjectManager
         ec.SyncPos();
     }
 
-    private void AddWard(ObjectInfo info)
+    public void AddWard(ObjectInfo info, int teamIndex)
     {
         GameObject go = Managers.Resource.Instantiate("Creature/Ward");
         if (go == null) return;
@@ -175,6 +172,7 @@ public class ObjectManager
         wc.Id = info.ObjectId;
         wc.PosInfo = info.PosInfo;
         wc.Stat = info.StatInfo;
+        wc.TeamIndex = teamIndex;
         wc.SyncPos();
 
         //EnvController ec = go.GetComponent<EnvController>();
@@ -192,19 +190,20 @@ public class ObjectManager
     #region Utils
 
 
-    public void ResiterVisibleObjects(GameObject go, HashSet<GameObject> outObjects)
+    public void ResiterVisibleObjects(GameObject go, HashSet<GameObject> outObjects, float visionRange = 8.5f)
     {
         foreach (var keyValue in _objects)
         {
             int key = keyValue.Key;
-            PlayerController pc = go.GetComponentInChildren<PlayerController>();
+            //PlayerController pc = go.GetComponentInChildren<PlayerController>();
+            BaseController pc = go.GetComponentInChildren<BaseController>();
 
             if (pc == null || pc.Id == key)
                 continue;
 
             GameObject target = keyValue.Value;
 
-            float visionRange = 8.5f;
+            //float visionRange = 8.5f;
 
             Vector3 playerPos = go.transform.position;
             Vector3 targetPos = target.transform.position;
@@ -232,6 +231,7 @@ public class ObjectManager
     public void SetVisibleObjects(HashSet<GameObject> objects)
     {
         HashSet<int> hash = MyPlayer.View.VisibleObjectIds;
+        HashSet<int> wardHash = MyPlayer.View.WardIds;
 
         foreach (var keyValue in _objects)
         {
@@ -246,7 +246,7 @@ public class ObjectManager
 
             bool isVisible = false;
 
-            if (hash.Contains(key) || objects.Contains(FindById(key)))
+            if (hash.Contains(key) || wardHash.Contains(key) || objects.Contains(FindById(key)))
                 isVisible = true; /* 서버에서 넘어온 해시셋에 있거나 클라에서 등록한 해시셋에 있으면 */
 
             foreach (var r in go.GetComponentsInChildren<Renderer>())
@@ -259,6 +259,11 @@ public class ObjectManager
             foreach (var r in go.GetComponentsInChildren<Canvas>())
             {
                 r.enabled = isVisible;
+            }
+
+            if(go.name == "Ward")
+            {
+                go.GetComponentInChildren<WardController>().SetWardLifeBarActive(isVisible);
             }
         }
     }

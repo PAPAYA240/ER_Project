@@ -114,6 +114,7 @@ enum MsgId {
   S_YUKI_STUD = 89;
   S_YUKI_SKILL_EFFECT = 90;
   C_USE_ITEM = 91;
+  S_SPAWN_WARD = 92;
 }
 
 enum CombatState{
@@ -148,7 +149,6 @@ enum GameObjectType{
 	MONSTER = 2;
 	PROJECTILE = 3;
 	ENVIRONMENT = 4;
-	WARD = 5;
 }
 
 enum EnvType{
@@ -1061,4 +1061,9 @@ message C_UseItem {
 	int32 inventoryIndex = 2;
 	float mouseX = 3;
 	float mouseZ = 4;
+}
+
+message S_SpawnWard{
+	ObjectInfo objInfo = 1;
+	int32 teamIndex = 2;
 }

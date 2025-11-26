@@ -41,6 +41,9 @@ public class GameScene : BaseScene
 
     public void SetVisibleObjects()
     {
+        if (Managers.Object.MyPlayer.ObjInfo.Player == null)
+            return;
+
         Dictionary<int, GameObject> team;
 
         if (Managers.Object.MyPlayer.ObjInfo.Player.Team == 1)
@@ -54,11 +57,21 @@ public class GameScene : BaseScene
 
         _visibleObjects.Clear();
 
+        // 팀을 돌면서 obj(팀원)의 시야로 보이는 오브젝트를 추림
         foreach (GameObject obj in team.Values)
         {
             if(null == obj || _visibleObjects == null || Managers.Object == null) continue;
 
             Managers.Object.ResiterVisibleObjects(obj, _visibleObjects);
+        }
+
+        // 와드를 돌면서 obj(와드)의 시야로 보이는 오브젝트를 추림
+        foreach(int wardId in Managers.Object.MyPlayer.View.WardIds)
+        {
+            GameObject go = Managers.Object.FindById(wardId);
+            if (null == go) continue;
+
+            Managers.Object.ResiterVisibleObjects(go, _visibleObjects, 13f);
         }
 
         Managers.Object.SetVisibleObjects(_visibleObjects);
