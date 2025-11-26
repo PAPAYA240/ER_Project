@@ -114,6 +114,7 @@ enum MsgId {
   S_YUKI_STUD = 89;
   S_YUKI_SKILL_EFFECT = 90;
   C_USE_ITEM = 91;
+  C_DEPLOYING_LOOP = 92;
 }
 
 enum CombatState{
@@ -158,7 +159,6 @@ enum EnvType{
    ACCBOUNDARY_SPAWNPOINT = 3;
    BARRIER_SPAWNPOINT = 4;
    BEACON = 5;
-   DEPLOYING_LOOP = 6;
 }
    
 enum ProjectileType {
@@ -350,8 +350,9 @@ enum BOMB_ROZZI{
 
 enum SpawnPointType
 {
-    BaseSpawn = 0;     // 기지 리스폰/첫 스폰
-    BushTeleport = 1;  // 텔레포트 목적지(부쉬)
+    BaseSpawn = 0;		// 기지 리스폰/첫 스폰
+    BushTeleport = 1;	// 텔레포트 목적지(부쉬)
+	BushNone = 2;		// 일반 부쉬
 }
 
 message C_Interact {
@@ -1062,4 +1063,9 @@ message C_UseItem {
 	int32 inventoryIndex = 2;
 	float mouseX = 3;
 	float mouseZ = 4;
+}
+
+message C_DeployingLoop {
+	int32 objectId = 1;
+	PositionInfo ioPos = 2;
 }

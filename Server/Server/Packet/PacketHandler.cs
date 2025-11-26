@@ -483,4 +483,20 @@ class PacketHandler
 
         room.Push(room.HandleUseItem, player, useItemPkt);
     }
+
+    public static void C_DeployingLoopHandler(PacketSession session, IMessage packet)
+    {
+        C_DeployingLoop deployingPacket = packet as C_DeployingLoop;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleDeployingLoop, player, deployingPacket);
+    }
 }

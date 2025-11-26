@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1687684134877070048}
   - component: {fileID: 2028761444005563167}
   - component: {fileID: 1876179453325338854}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Cobalt_OBJ_DeployingLoop_Base_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +120,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8249306893455891792}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Wheel_03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -151,7 +151,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3168703473912706099}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -184,7 +184,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 937435771233117596}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Dummy001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -219,7 +219,7 @@ GameObject:
   - component: {fileID: 6350461153225530691}
   - component: {fileID: 2467464575895872310}
   - component: {fileID: 3758128824417147715}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Cobalt_OBJ_DeployingLoop_Grass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -334,7 +334,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4114381660168762157}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Wheel_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -365,7 +365,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3954463186271659221}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Wheel_main
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -401,7 +401,7 @@ GameObject:
   - component: {fileID: 8535662564140303614}
   - component: {fileID: 1825515877329425368}
   - component: {fileID: 7509168513481231414}
-  m_Layer: 15
+  m_Layer: 21
   m_Name: lightningwall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2764,7 +2764,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 473284264791289861}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: machine_Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2801,7 +2801,7 @@ GameObject:
   - component: {fileID: 3709001632867160122}
   - component: {fileID: 8180210003868890511}
   - component: {fileID: 1665002422807851512}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Cobalt_OBJ_DeployingLoop_GrassShape
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2904,7 +2904,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1475027248889869665}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Wheel_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2935,7 +2935,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 114475081172324565}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Body_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2967,10 +2967,11 @@ GameObject:
   m_Component:
   - component: {fileID: 1176375415289674421}
   - component: {fileID: 2910365518912210540}
-  - component: {fileID: 8524284793090551212}
-  - component: {fileID: 6238858245523540489}
-  m_Layer: 0
-  m_Name: Deployingloop
+  - component: {fileID: -7654457420400478288}
+  - component: {fileID: 1422397889170288514}
+  - component: {fileID: 1513687482919390628}
+  m_Layer: 21
+  m_Name: DeployingLoop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3017,8 +3018,23 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!136 &8524284793090551212
-CapsuleCollider:
+--- !u!114 &-7654457420400478288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7821434391390891400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79aebb5b59b0a764bbecd1b2ac80d2ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  side: 0
+  _lookTarget: {fileID: 3583687465324388042}
+--- !u!65 &1422397889170288514
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -3032,29 +3048,39 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 4
-  m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &6238858245523540489
-MonoBehaviour:
+  serializedVersion: 3
+  m_Size: {x: 1, y: 2.2, z: 1.3}
+  m_Center: {x: 0, y: 1, z: -0.3}
+--- !u!54 &1513687482919390628
+Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7821434391390891400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37e44653e048b084cbc4bb3f1313cca0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _envType: 0
-  id: 0
-  side: 0
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &7967267709613944921
 GameObject:
   m_ObjectHideFlags: 0
@@ -3064,7 +3090,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5903599669812812593}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Display
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3095,7 +3121,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9149722489063575698}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: Body_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3129,7 +3155,7 @@ GameObject:
   - component: {fileID: 8752793996058418330}
   - component: {fileID: 8754925971183967954}
   - component: {fileID: 4277587634509045687}
-  m_Layer: 15
+  m_Layer: 21
   m_Name: FX_BG_Cobalt_DeployingLoop01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
