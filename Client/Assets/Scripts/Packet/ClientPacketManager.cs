@@ -162,7 +162,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SReadyBtn, MakePacket<S_ReadyBtn>);
 		_handler.Add((ushort)MsgId.SReadyBtn, PacketHandler.S_ReadyBtnHandler);		
 		_onRecv.Add((ushort)MsgId.SSound, MakePacket<S_Sound>);
-		_handler.Add((ushort)MsgId.SSound, PacketHandler.S_SoundHandler);
+		_handler.Add((ushort)MsgId.SSound, PacketHandler.S_SoundHandler);		
+		_onRecv.Add((ushort)MsgId.SSpawnWard, MakePacket<S_SpawnWard>);
+		_handler.Add((ushort)MsgId.SSpawnWard, PacketHandler.S_SpawnWardHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

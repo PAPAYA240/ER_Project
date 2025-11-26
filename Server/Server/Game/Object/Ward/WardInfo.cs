@@ -22,7 +22,8 @@ public class WardInfo : ConsumableItemInfo
     public override void Use(Vector3 mousePos, Player p)
     {
         // sqawn ward
-        GameObject ward = new GameObject();
+        //GameObject ward = new GameObject();
+        GameObject ward = ObjectManager.Instance.Add<GameObject>();
         ward.Position = mousePos;
         
         S_SpawnWard packet = new S_SpawnWard();
