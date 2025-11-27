@@ -203,6 +203,8 @@ public class PlayerSkillController : MonoBehaviour
         if (_player.AllowOffPathMovement)
             return;
 
+        if (_agent == null)
+            return;
         //_agent.Warp(_endPosition);
         _agent.enabled = true;
         _agent.updatePosition = true;

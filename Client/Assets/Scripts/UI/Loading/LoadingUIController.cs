@@ -33,6 +33,12 @@ public class LoadingUIController : MonoBehaviour
         _frames = Util.Slice(sheet, 6, 4, 1);
         if (_frames == null || _frames.Length == 0)
             Debug.LogError("Sprite slicing failed");
+
+        if (Managers.Scene.CurrentScene is GameScene scene)
+        {
+            SetProgress(1);
+            StartAnimation();
+        }
     }
     public void SetProgress(float value)
     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
@@ -1207,7 +1208,7 @@ class PacketHandler
 
     public static bool IsSceneReady(string sceneName, Action callback)
     {
-        if (!LoadingManager.Instance.IsSceneLoaded(sceneName))
+        if (!LoadingManager.Instance.IsGameSceneReady())
         {
             LoadingManager.Instance.EnqueuePostLoadAction(callback);
             return false;

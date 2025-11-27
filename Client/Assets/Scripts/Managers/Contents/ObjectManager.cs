@@ -32,7 +32,7 @@ public class ObjectManager
     #region Add
     public void Add(ObjectInfo info, bool myPlayer = false)
 	{
-        if (!LoadingManager.Instance.IsSceneLoaded("Game"))
+        if (!LoadingManager.Instance.IsGameSceneReady())
         {
             LoadingManager.Instance.EnqueuePostLoadAction(() =>
             {
@@ -81,6 +81,7 @@ public class ObjectManager
             MyPlayer.Hp = info.StatInfo.MaxHp;
             MyPlayer.Stamina = info.StatInfo.MaxStamina;
             MyPlayer.UI.PlayerHUD.AddPlayerBoardToBattleBoard(MyPlayer);
+            MyPlayer.NickName = info.Player.Nickname;
             if (Managers.Scene.CurrentScene is GameScene scene)
             {
                 scene.AddPlayer(go, MyPlayer);
@@ -109,6 +110,7 @@ public class ObjectManager
             pc.PosInfo = info.PosInfo;
             pc.SyncPos(true);
             pc.SyncPosFromServer(info.PosInfo, info.RotInfo);
+            pc.NickName = info.Player.Nickname;
 
             if (Managers.Info.Team != pc.ObjInfo.Player.Team)
             {
