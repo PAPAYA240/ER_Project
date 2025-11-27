@@ -202,7 +202,7 @@ public class UI_CharSkillInfoPopup : UI_Popup
         Vector2 panelSize = GetObject((int)GameObjects.Panel).GetComponent<RectTransform>().sizeDelta;
         Vector2 levelUpSize = GetObject((int)GameObjects.LevelUpValues).GetComponent<RectTransform>().sizeDelta;
 
-        pos.y = y + panelSize.y + levelUpSize.y;
+        pos.y = (y + panelSize.y + levelUpSize.y)* _scaler.scaleFactor;
         GetObject((int)GameObjects.Root).transform.position = pos;
     }
 

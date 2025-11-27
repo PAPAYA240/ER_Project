@@ -161,7 +161,7 @@ class PacketHandler
         if (go == null)
             return;
 
-        CreatureController cc = go.GetComponent<CreatureController>();
+        CreatureController cc = go.GetComponentInChildren<CreatureController>();
         if (cc != null)
         {
             cc.Hp = changePacket.Hp;
@@ -1137,13 +1137,7 @@ class PacketHandler
 
     public static void S_SpawnWardHandler(PacketSession session, IMessage packet)
     {
-        Debug.Log("S_SpawnWardHandler In");
-
-        if (!IsSceneReady("Game", () => S_SpawnWardHandler(session, packet)))
-        {
-            Debug.Log("S_SpawnWardHandler Return");
-            return;
-        }
+        if (!IsSceneReady("Game", () => S_SpawnWardHandler(session, packet))) return;
 
         S_SpawnWard wardPacket = packet as S_SpawnWard;
 

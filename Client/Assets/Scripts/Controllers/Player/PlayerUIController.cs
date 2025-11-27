@@ -10,6 +10,7 @@ using UnityEngine.AI;
 using static PlayerSkillController;
 using static UI_SkillBase;
 using static UI_PlayerInterface;
+using UnityEngine.Rendering;
 
 public class PlayerUIController : MonoBehaviour
 {
@@ -153,6 +154,11 @@ public class PlayerUIController : MonoBehaviour
         PlayerInterface.SetSkillMaxCool(skillEnum, value);
     }
 
+    private void SetSkillStaminaCost(UI_PlayerInterface.GameObjects skillEnum, int value)
+    {
+        PlayerInterface.SetSkillStaminaCost(skillEnum, value);
+    }
+
     public void UpdateSkillMaxCool()
     {
         // TODO 현재 스킬레벨에 따른 쿨타임과 아이템으로 인한 스킬 가속을 적용하여 UI에 반영
@@ -164,6 +170,8 @@ public class PlayerUIController : MonoBehaviour
         SkillBase ESkill = FindSkill(KeyCode.E);
         SkillBase RSkill = FindSkill(KeyCode.R);
         SkillBase TSkill = FindSkill(KeyCode.T);
+        SkillBase DSkill = FindSkill(KeyCode.D);
+        SkillBase FSkill = FindSkill(KeyCode.F);
 
         
         SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, CalculateMaxCool(QSkill.CurLevelCooldown, _player.ItemStat.SkillAcceleration));
@@ -171,6 +179,8 @@ public class PlayerUIController : MonoBehaviour
         SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, CalculateMaxCool(ESkill.CurLevelCooldown, _player.ItemStat.SkillAcceleration));
         SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(RSkill.CurLevelCooldown, _player.ItemStat.SkillAcceleration));
         SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.TSkill, CalculateMaxCool(TSkill.CurLevelCooldown, _player.ItemStat.SkillAcceleration));
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.DSkill, DSkill.CurLevelCooldown);
+        SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.FSkill, FSkill.CurLevelCooldown);
     }
 
     protected float CalculateMaxCool(float cooldown, float skillAcc)
@@ -201,22 +211,34 @@ public class PlayerUIController : MonoBehaviour
             case SkillEnum.Q:
                 SkillBase QSkill = FindSkill(KeyCode.Q);
                 SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.QSkill, CalculateMaxCool(QSkill.CurLevelCooldown, skillAcc));
+                SetSkillStaminaCost(UI_PlayerInterface.GameObjects.QSkill, (int)_skillDict[key].CurLevelStamina);
                 break;
             case SkillEnum.W:
                 SkillBase WSkill = FindSkill(KeyCode.W);
                 SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.WSkill, CalculateMaxCool(WSkill.CurLevelCooldown, skillAcc));
+                SetSkillStaminaCost(UI_PlayerInterface.GameObjects.WSkill, (int)_skillDict[key].CurLevelStamina);
                 break;
             case SkillEnum.E:
                 SkillBase ESkill = FindSkill(KeyCode.E);
                 SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.ESkill, CalculateMaxCool(ESkill.CurLevelCooldown, skillAcc));
+                SetSkillStaminaCost(UI_PlayerInterface.GameObjects.ESkill, (int)_skillDict[key].CurLevelStamina);
                 break;
             case SkillEnum.R:
                 SkillBase RSkill = FindSkill(KeyCode.R);
                 SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(RSkill.CurLevelCooldown, skillAcc));
+                SetSkillStaminaCost(UI_PlayerInterface.GameObjects.RSkill, (int)_skillDict[key].CurLevelStamina);
                 break;
             case SkillEnum.T:
                 SkillBase TSkill = FindSkill(KeyCode.T);
-                SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.RSkill, CalculateMaxCool(TSkill.CurLevelCooldown, skillAcc));
+                SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.TSkill, CalculateMaxCool(TSkill.CurLevelCooldown, skillAcc));
+                break;
+            case SkillEnum.D:
+                SkillBase DSkill = FindSkill(KeyCode.D);
+                SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.DSkill, DSkill.CurLevelCooldown);
+                break;
+            case SkillEnum.F:
+                SkillBase FSkill = FindSkill(KeyCode.F);
+                SetMaxCoolDownUI(UI_PlayerInterface.GameObjects.FSkill, FSkill.CurLevelCooldown);
                 break;
         }
     }
@@ -273,8 +295,8 @@ public class PlayerUIController : MonoBehaviour
         PlayerInterface.SetSkillCool(GameObjects.ESkill, _coolDownDict[KeyCode.E].coolTime);
         PlayerInterface.SetSkillCool(GameObjects.RSkill, _coolDownDict[KeyCode.R].coolTime);
         PlayerInterface.SetSkillCool(GameObjects.TSkill, _coolDownDict[KeyCode.T].coolTime);
-        //PlayerInterface.SetSkillCool(GameObjects.DSkill, );
-        //PlayerInterface.SetSkillCool(GameObjects.FSkill, );
+        PlayerInterface.SetSkillCool(GameObjects.DSkill, _coolDownDict[KeyCode.D].coolTime);
+        PlayerInterface.SetSkillCool(GameObjects.FSkill, _coolDownDict[KeyCode.F].coolTime);
     }
     #endregion
 
