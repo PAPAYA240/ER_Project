@@ -9,49 +9,14 @@ using static Server.Data.DataUtils;
 
 class PacketHandler
 {
-    public static void C_EnterGameHandler(PacketSession session, IMessage packet)
+    public static void C_ReadyBtnHandler(PacketSession session, IMessage packet)
     {
         ClientSession clientSession = session as ClientSession;
-
-        GameRoom room = RoomManager.Instance.Find(2) as GameRoom;
+        PickRoom room = RoomManager.Instance.Find(clientSession.CurRoom) as PickRoom;
         if (room == null)
             return;
 
-        if (ObjectManager.Instance.GetPlayerCount() == 0)
-            room.StartGame();
-
-        // create hyunwoo
-        if (clientSession.MyCharacter == CharacterType.Hyunwoo)
-        {
-            clientSession.MyPlayer = ObjectManager.Instance.Add<Hyunwoo>();
-        }
-        else
-        {
-            clientSession.MyPlayer = ObjectManager.Instance.Add<Player>();
-        }
-
-        {
-            clientSession.MyPlayer.Info.Name = $"Player_{clientSession.MyPlayer.Info.ObjectId}";
-            clientSession.MyPlayer.Info.PosInfo.State = CreatureState.Idle;
-            clientSession.MyPlayer.Info.PosInfo.PosX = 0;
-            clientSession.MyPlayer.Info.PosInfo.PosY = 0;
-            clientSession.MyPlayer.Info.Player = new PlayerInfo();
-            clientSession.MyPlayer.Info.Player.CharType = clientSession.MyCharacter;
-
-            StatInfo stat = null;
-            DataManager.StatDict.TryGetValue(clientSession.MyCharacter, out stat);
-            clientSession.MyPlayer.Stat.MergeFrom(stat);
-            clientSession.MyPlayer.Hp = clientSession.MyPlayer.MaxHp;
-            clientSession.MyPlayer.Stamina = clientSession.MyPlayer.MaxStamina;
-            clientSession.MyPlayer.Session = clientSession;
-        }
-
-        Player player = clientSession.MyPlayer;
-        if (player == null)
-            return;
-
-        clientSession.CurRoom = room.RoomId;
-        room.Push(room.EnterGame, player);
+        room.OnReadyBtnClick(clientSession);
     }
 
     public static void C_MoveHandler(PacketSession session, IMessage packet)
@@ -121,36 +86,41 @@ class PacketHandler
 
         //room.Push(room.HandleVF, player, skillPacket);
     }
+
     public static void C_CharacterHandler(PacketSession session, IMessage packet)
     {
         ClientSession clientSession = session as ClientSession;
         C_Character c_charPacket = packet as C_Character;
         clientSession.MyCharacter = c_charPacket.CharType;
 
-        PickRoom room = RoomManager.Instance.Find(1) as PickRoom;
-        if(room == null) 
+        PickRoom room = RoomManager.Instance.Find(clientSession.CurRoom) as PickRoom;
+        if(room == null || room.IsReady(c_charPacket.PickIdx)) 
             return;
 
         S_Character s_charPacket = new S_Character();
         s_charPacket.CharType = c_charPacket.CharType;
         s_charPacket.PickIdx = c_charPacket.PickIdx;
-        room.Push(room.Broadcast, s_charPacket, c_charPacket.PickIdx);
+        room.Push(room.BroadcastToTeam, s_charPacket, c_charPacket.PickIdx);
     }
+
     public static void C_TraitHandler(PacketSession session, IMessage packet)
     {
         ClientSession clientSession = session as ClientSession;
         C_Trait c_traitPacket = packet as C_Trait;
         clientSession.TraitType = c_traitPacket.TraitType;
 
-        PickRoom room = RoomManager.Instance.Find(1) as PickRoom;
-        if(room == null) 
+        PickRoom room = RoomManager.Instance.Find(clientSession.CurRoom) as PickRoom;
+        if(room == null || room.IsReady(c_traitPacket.PickIdx)) 
             return;
+
+        room.Push(room.SetTrait, c_traitPacket.TraitType, c_traitPacket.PickIdx);
 
         S_Trait s_traitPacket = new S_Trait();
         s_traitPacket.TraitType = c_traitPacket.TraitType;
         s_traitPacket.PickIdx = c_traitPacket.PickIdx;
-        room.Push(room.Broadcast, s_traitPacket, c_traitPacket.PickIdx);
+        room.Push(room.BroadcastToTeam, s_traitPacket, c_traitPacket.PickIdx);
     }
+
     public static void C_InteractHandler(PacketSession session, IMessage packet)
     {
         //C_Interact interactPacket = packet as C_Interact;
@@ -172,14 +142,17 @@ class PacketHandler
         C_Weapon c_weaponPacket = packet as C_Weapon;
         clientSession.WeaponType = c_weaponPacket.WeaponType;
 
-        PickRoom room = RoomManager.Instance.Find(1) as PickRoom;
-        if(room == null) 
+        PickRoom room = RoomManager.Instance.Find(clientSession.CurRoom) as PickRoom;
+        if(room == null || room.IsReady(c_weaponPacket.PickIdx)) 
             return;
+
+        room.Push(room.SetWeapon, c_weaponPacket.WeaponType, c_weaponPacket.PickIdx);
 
         S_Weapon s_weaponPacket = new S_Weapon();
         s_weaponPacket.WeaponType = c_weaponPacket.WeaponType;
         s_weaponPacket.PickIdx = c_weaponPacket.PickIdx;
-        room.Push(room.Broadcast, s_weaponPacket, c_weaponPacket.PickIdx);
+
+        room.Push(room.BroadcastToTeam, s_weaponPacket, c_weaponPacket.PickIdx);
     }
 
     public static void C_PingHandler(PacketSession session, IMessage packet)
@@ -189,20 +162,23 @@ class PacketHandler
         clientSession.LastPing = DateTime.Now;
     }
 
-    public static void C_ReadyHandler(PacketSession session, IMessage packet)
+    public static void C_EnterLobbyHandler(PacketSession session, IMessage packet)
     {
+        C_EnterLobby enterLobbyPkt = packet as C_EnterLobby;
         ClientSession clientSession = session as ClientSession;
 
-        PickRoom room = RoomManager.Instance.Find(1) as PickRoom;
+        LobbyRoom room = RoomManager.Instance.Find(1) as LobbyRoom;
         if (room == null)
             return;
 
-        if (room.isRoomFull())
+        int slotIdx = room.GetEmptySlotIdx();
+        if (slotIdx == -1)
             return;
 
-        PickPlayer pp = new PickPlayer();
-        pp.Session = clientSession;
-        room.Push(room.EnterPick, pp);
+        LobbyPlayer lp = new LobbyPlayer();
+        lp.Session = clientSession;
+        lp.UserName = enterLobbyPkt.Nickname;
+        room.Push(room.EnterLobby, lp, slotIdx);
     }
 
     public static void C_SkillLevelUpHandler(PacketSession session, IMessage packet)
@@ -466,6 +442,31 @@ class PacketHandler
             return;
 
         room.Push(room.HandlerChat, player, chatPkt);
+    }
+
+    public static void C_SlotClickHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        C_SlotClick slotClickPkt = packet as C_SlotClick;
+
+        Room room = RoomManager.Instance.Find(1);
+
+        LobbyRoom lr = room as LobbyRoom;
+        if (lr == null)
+            return;
+
+        lr.Push(lr.OnSlotClick, clientSession.SessionId, slotClickPkt.SlotIdx);
+    }
+
+    public static void C_StartBtnHandler(PacketSession session, IMessage packet)
+    {
+        ClientSession clientSession = session as ClientSession;
+        Room room = RoomManager.Instance.Find(1);
+        LobbyRoom lr = room as LobbyRoom;
+        if (lr == null)
+            return;
+
+        lr.Push(lr.AddPickRoom, clientSession.SessionId);
     }
 
     public static void C_UseItemHandler(PacketSession session, IMessage packet)

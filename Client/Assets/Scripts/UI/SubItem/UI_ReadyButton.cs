@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Google.Protobuf.Protocol;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -66,22 +67,11 @@ public class UI_ReadyButton : UI_Base
 
     void OnClicked(PointerEventData eventData)
     {
-        //if(_state == State.Notyet)
-        //{
-        //    _state = State.Ready;
-        //    _image.sprite = _pressedSprite;
-        //    SetText("�غ� �Ϸ�");
-        //}
-        //else if( _state == State.Ready)
-        //{
-        //    _state = State.Notyet;
-        //    _image.sprite = _basicSprite;
-        //    SetText("�غ� ��");
-        //}
+        _image.sprite = _pressedSprite;
+        SetText("준비 완료");
 
-        //TODO
-        //Managers.Scene.LoadScene(Define.Scene.Game);
-        LoadingManager.Instance.LoadScene(Define.Scene.Game);
+        C_ReadyBtn readyBtnPkt = new C_ReadyBtn();
+        Managers.Network.Send(readyBtnPkt);
     }
 
     void OnPointerEnter(PointerEventData eventData)
@@ -91,12 +81,8 @@ public class UI_ReadyButton : UI_Base
             _image.sprite = _rolloverSprite;
             SetText("준비 완료");
         }
-        else if (_state == State.Ready)
-        {
-            _image.sprite = _disabledSprite;
-            SetText("준비 취소");
-        }
     }
+
     void OnPointerExit(PointerEventData eventData)
     {
         if (_state == State.Notyet)
@@ -106,8 +92,15 @@ public class UI_ReadyButton : UI_Base
         }
         else if (_state == State.Ready)
         {
-            _image.sprite = _pressedSprite;
+            _image.sprite = _disabledSprite;
             SetText("준비 완료");
         }
+    }
+
+    public void OnReady()
+    {
+        _state = State.Ready;
+        _image.sprite = _disabledSprite;
+        SetText("준비 완료");
     }
 }

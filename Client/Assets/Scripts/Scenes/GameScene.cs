@@ -1,7 +1,8 @@
-﻿using Google.Protobuf.Protocol;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Google.Protobuf.Protocol;
+using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
@@ -19,18 +20,15 @@ public class GameScene : BaseScene
 
         SceneType = Define.Scene.Game;
 
-        Managers.Map.LoadMap("Cobalt");
+        GameObject go = Managers.Resource.Instantiate("Map/Map_Cobalt");
+        go.name = "Map";
 
         Screen.SetResolution(960 , 540, false);
-
-        // 서버로 패킷 보내기
-        C_EnterGame EnterGamePacket = new C_EnterGame();
-        Managers.Network.Send(EnterGamePacket);
     }
 
     private void Update()
     {
-        SetVisibleObjects();
+        //SetVisibleObjects();
     }
 
     public override void Clear()
@@ -43,7 +41,7 @@ public class GameScene : BaseScene
     {
         Dictionary<int, GameObject> team;
 
-        if (Managers.Object.MyPlayer.ObjInfo.Player.Team == 1)
+        if (Managers.Info.Team == 1)
         {
             team = Team1;
         }
@@ -61,6 +59,9 @@ public class GameScene : BaseScene
             Managers.Object.ResiterVisibleObjects(obj, _visibleObjects);
         }
 
+        if (_visibleObjects == null || Managers.Object == null)
+            return;
+
         Managers.Object.SetVisibleObjects(_visibleObjects);
     }
 
@@ -75,7 +76,7 @@ public class GameScene : BaseScene
             Debug.Log("Sucess AddPlayer");
         }
 
-        if (pc.ObjInfo.Player.Team == 1)
+        if (Managers.Info.Team == 1)
         {
             Team1.Add(pc.Id, go);
         }

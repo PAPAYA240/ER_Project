@@ -10,6 +10,7 @@ public class PickScene : BaseScene
     UI_PickSceneUI _pickSceneUI = null;
 
     public int PickIdx {  get; set; }
+    public int Team {  get; set; }
 
     CharacterType _characterType = CharacterType.CharacterNone;
     string _nickname = "";
@@ -24,14 +25,22 @@ public class PickScene : BaseScene
     // 닉네임
     // TODO 무기 특성 팀 정보
 
-    protected override void Init()
+    protected override async void Init()
     {
         base.Init();
 
-        SceneType = Define.Scene.Login;
-        GameObject go = Managers.Resource.Instantiate("UI/Scene/PickSceneUI");
+        SceneType = Define.Scene.Pick;
+
+        GameObject go = await Managers.Resource.InstantiateAsync("UI/Scene/PickSceneUI");
+
         _pickSceneUI = go.GetComponent<UI_PickSceneUI>();
         _pickSceneUI.OnClickedPickButton += ClickedCharPickButton;
+
+        PickIdx = Managers.Info.PickIdx;
+        Team = Managers.Info.Team;
+
+        foreach (PickScenePlayerInfo pspi in Managers.Info._pspiList)
+            Spawn(pspi);
     }
 
     private void Start()
@@ -41,10 +50,7 @@ public class PickScene : BaseScene
 
     void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    Managers.Scene.LoadScene(Define.Scene.Game);
-        //}
+
     }
 
     public override void Clear()
@@ -90,7 +96,7 @@ public class PickScene : BaseScene
         _pickSceneUI.ChangeNickname(nickname, idx);
     }
 
-    public void ChangeBar(int idx)
+    public void ChangeBar(int idx, int team)
     {
         if (_pickSceneUI == null)
             return;
@@ -99,7 +105,7 @@ public class PickScene : BaseScene
 
         if (PickIdx == idx)
             barType = BarType.My;
-        else if ((PickIdx + idx) % 2 == 1) //더한게 홀수면 적
+        else if (team != Team)
             barType = BarType.Enemy;
         else
             barType = BarType.Team;
@@ -145,10 +151,7 @@ public class PickScene : BaseScene
 
     public void Spawn(PickScenePlayerInfo info)
     {
-        ChangePickImage(info.CharType, info.PickIdx);
         ChangeNickname(info.UserName, info.PickIdx);
-        ChangeBar(info.PickIdx);
-        ChangeTraitImage(info.TraitType, info.PickIdx);
-        ChangeWeaponImage(info.WeaponType, info.PickIdx);
+        ChangeBar(info.PickIdx, info.Team);
     }
 }

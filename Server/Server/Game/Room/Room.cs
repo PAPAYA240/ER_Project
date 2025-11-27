@@ -12,6 +12,11 @@ namespace Server.Game
             
         }
 
+        public virtual void Init()
+        {
+            
+        }
+
         public abstract void CheckLastPing();
 
         public void StartTick(int tick = 100)

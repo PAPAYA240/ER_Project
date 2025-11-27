@@ -74,34 +74,58 @@ public class UI_Minimap : UI_Base
 
     void Start()
     {
+        StartCoroutine(CoInitFog());
+
+        // 기존 코드
+
         //GetImage((int)Images.Fog).material
 
+        //Image img = GetImage((int)Images.Fog);
+        //GameObject cam = GameObject.Find("FogCamera");
+        //if (null == cam)
+        //{
+
+        //    Debug.Log("@Cam == null");
+        //    return; 
+        //}
+
+        //FogCameraController fcc = cam.GetComponent<FogCameraController>();
+        //if (null == fcc)
+        //{
+
+        //    Debug.Log("@fcc == null");
+        //    return;
+        //}
+
+        //Texture texture = fcc.FogTexture;
+        //Material newMat = Material.Instantiate(img.material);
+
+        //if(null != newMat)
+        //{
+        //    Debug.Log("@Success to instantiate material");
+        //    img.material = newMat;
+        //    newMat.SetTexture("_VisionMask", texture);
+        //}
+    }
+
+    IEnumerator CoInitFog()
+    {
         Image img = GetImage((int)Images.Fog);
-        GameObject cam = GameObject.Find("FogCamera");
-        if (null == cam)
-        {
 
-            Debug.Log("@Cam == null");
-            return; 
+        FogCameraController fcc = null;
+
+        while(fcc == null)
+        {
+            GameObject cam = GameObject.Find("FogCamera");
+            if(cam != null)
+                fcc = cam.GetComponent<FogCameraController>();
+
+            yield return null;
         }
 
-        FogCameraController fcc = cam.GetComponent<FogCameraController>();
-        if (null == fcc)
-        {
-
-            Debug.Log("@fcc == null");
-            return;
-        }
-
-        Texture texture = fcc.FogTexture;
         Material newMat = Material.Instantiate(img.material);
-
-        if(null != newMat)
-        {
-            Debug.Log("@Success to instantiate material");
-            img.material = newMat;
-            newMat.SetTexture("_VisionMask", texture);
-        }
+        img.material = newMat;
+        newMat.SetTexture("_VisionMask", fcc.FogTexture);
     }
 
     void Update()

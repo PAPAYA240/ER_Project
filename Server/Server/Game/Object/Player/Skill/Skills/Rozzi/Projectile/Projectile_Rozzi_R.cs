@@ -92,7 +92,7 @@ public class Projectile_Rozzi_R : Projectile
             case BOMB_ROZZI.Flying:
                 if (Deactivation())
                 {
-                    Room.LeaveGame(Id);
+                    Room.Push(Room.LeaveGame, Id);
                     return;
                 }
 

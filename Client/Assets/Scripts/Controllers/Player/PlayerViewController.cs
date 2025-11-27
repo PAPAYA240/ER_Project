@@ -161,7 +161,7 @@ public class PlayerViewController : MonoBehaviour
     // ---- 정지 입력 처리 (S/H) ----
     public void ApplyStop(StopReason reason)
     {
-        if (_agent == null)
+        if (_agent == null || !_agent.isOnNavMesh)
             return;
 
         switch (reason)

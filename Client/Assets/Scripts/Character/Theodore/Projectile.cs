@@ -1,5 +1,6 @@
 using Google.Protobuf.Protocol;
 using UnityEngine;
+using static Define;
 
 public class Projectile : BaseController
 {
@@ -18,25 +19,25 @@ public class Projectile : BaseController
         }
     }
 
-
+    private bool _isProcessingHit = false;
     void OnTriggerEnter(Collider other)
     {
         if (Type == ProjectileType.ProjectileRozziR)
             return;
+        if (_isProcessingHit)
+            return;
 
         // 스크린 활용 시 모든 몬스터와 플레이어도 맞게 할 수 있음
         bool bDestroy = false;
-
         CreatureController cc = other.gameObject.GetComponentInChildren<CreatureController>();
         if (cc == null) return;
 
         GameObjectType objectType = ObjectManager.GetObjectTypeById(cc.Id);
+        PlayerController player = other.gameObject.GetComponent<PlayerController>();
+        PlayerController ownerPlayer = Owner.GetComponent<PlayerController>();
 
         if (objectType == GameObjectType.Player)
         {
-            PlayerController player = other.gameObject.GetComponent<PlayerController>();
-            PlayerController ownerPlayer = Owner.GetComponent<PlayerController>();
-
             bDestroy = (ownerPlayer.ObjInfo.Player.Team != player.ObjInfo.Player.Team);
         }
         else if (objectType == GameObjectType.Monster)
@@ -50,7 +51,12 @@ public class Projectile : BaseController
 
         if(bDestroy)
         {
+            _isProcessingHit = true;
+
             Destroy(gameObject);
+
+            if (ownerPlayer.Sound != null)
+                ownerPlayer.Sound.GetEffect($"Hit_{Type}");
 
             if (Type == ProjectileType.ProjectileBullet)
                 SendAttackPacket(other.gameObject);

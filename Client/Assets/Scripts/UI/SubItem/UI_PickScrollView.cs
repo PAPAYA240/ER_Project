@@ -51,8 +51,8 @@ public class UI_PickScrollView : UI_Base
                 ui.SetChar(charName);
                 ui.OnClicked += OnClickedPickButton;
             }
-            go.transform.SetParent(GetObject((int)GameObjects.Content).transform);
-            go.GetComponent<RectTransform>().localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            go.transform.SetParent(GetObject((int)GameObjects.Content).transform, false);
+            go.GetComponent<RectTransform>().localScale = new Vector3(0.49f, 0.49f, 0.49f);
             _buttonList.Add(charName, go);
         }
     }

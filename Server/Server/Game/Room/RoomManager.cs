@@ -13,26 +13,9 @@ namespace Server.Game
         Dictionary<int, Room> _rooms = new Dictionary<int, Room>();
         int _roomId = 1;
 
-        public GameRoom AddGameRoom(int mapId)
+        public T AddRoom<T>() where T : Room, new()
         {
-            GameRoom room = new GameRoom();
-
-            room.Push(room.Init, mapId);
-
-            lock (_lock)
-            {
-                room.RoomId = _roomId;
-                _rooms.Add(_roomId, room);
-                _roomId++;
-                room.StartTick(10);
-            }
-
-            return room;
-        }
-
-        public PickRoom AddPickRoom()
-        {
-            PickRoom room = new PickRoom();
+            T room = new T();
             room.Push(room.Init);
 
             lock (_lock)
@@ -61,11 +44,8 @@ namespace Server.Game
         {
             lock (_lock)
             {
-                Room room = null;
-                if (_rooms.TryGetValue(roomId, out room))
-                    return room;
-
-                return null;
+                _rooms.TryGetValue(roomId, out Room room);
+                return room;
             }
         }
     }

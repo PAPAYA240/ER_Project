@@ -5378,7 +5378,7 @@ GameObject:
   - component: {fileID: 168382339782936418}
   - component: {fileID: 5622191535596995323}
   - component: {fileID: 2759011313569414496}
-  - component: {fileID: 4788815957550161799}
+  - component: {fileID: 8076878046078651404}
   m_Layer: 0
   m_Name: MyTheodore
   m_TagString: Untagged
@@ -5459,8 +5459,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d07a4ac14489814e9692da7473da8c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xRayIgnoreStencilID: 100
   Sound: {fileID: 0}
+  xRayIgnoreStencilID: 100
 --- !u!114 &2759011313569414496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5487,7 +5487,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   _attackInputInterval: 0.08
---- !u!114 &4788815957550161799
+--- !u!114 &8076878046078651404
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5499,6 +5499,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 176bdf16fd35b524bb656781b4f2a89f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CharType: 5
 --- !u!1 &1799350042935927
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,26 +1,31 @@
 ﻿using Google.Protobuf.Protocol;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.UI.GridLayoutGroup;
 
-public class ParallelNode : CompositeNode, IStateChangeListener
+public class ParallelNode : CompositeNode
 {
     private List<NodeStatus> _childStates;
 
-    bool _finished = false;
+    public override void Enter(GameObject obj)
+    {
+        if (_childStates == null || _childStates.Count != children.Count)
+            _childStates = new List<NodeStatus>(new NodeStatus[children.Count]);
+
+        for (int i = 0; i < _childStates.Count; i++)
+            _childStates[i] = NodeStatus.Running;
+
+        foreach (var child in children)
+        {
+            child.Enter(obj);
+        }
+    }
+
     public override NodeStatus Execute(GameObject obj)
     {
-        if (_childStates == null)
-            ResetNode();
-
         bool allCompleted = true;
         bool anyFailed = false;
-
-        if (_finished)
-        {
-            _finished = false;
-            return NodeStatus.Success;
-        }
-
+  
         for (int i = 0; i < children.Count; i++)
         {
             if (_childStates[i] == NodeStatus.Running)
@@ -28,46 +33,22 @@ public class ParallelNode : CompositeNode, IStateChangeListener
                 _childStates[i] = children[i].Execute(obj);
             }
 
-            // 상태 체크
             if (_childStates[i] == NodeStatus.Running)
                 allCompleted = false;
+
             else if (_childStates[i] == NodeStatus.Failure)
                 anyFailed = true;
         }
 
         if (allCompleted)
-        {
-            ResetNode();
             return anyFailed ? NodeStatus.Failure : NodeStatus.Success;
-        }
 
         return NodeStatus.Running;
     }
 
-    private void ResetNode()
-    {
-        if (_childStates == null)
-             _childStates = new List<NodeStatus>(new NodeStatus[children.Count]);
-
-        for (int i = 0; i < children.Count; i++)
-            _childStates[i] = NodeStatus.Running;
-    }
-    private void ResetChildren()
+    public override void Exit(GameObject obj, bool clear)
     {
         foreach (var child in children)
-        {
-            if (child is PlayAnimation playAnim)
-                playAnim.ClearAnimationRunState();
-
-        }
-    }
-    public void HandleStateChange(CreatureState newState, bool isClear = true)
-    {
-        if (isClear)
-            _finished = true;
-        else
-            ResetChildren();
-
-        ResetNode();
+            child.Exit(obj, clear);
     }
 }

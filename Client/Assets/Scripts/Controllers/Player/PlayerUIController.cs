@@ -283,6 +283,11 @@ public class PlayerUIController : MonoBehaviour
         PlayerHUD.SetTimer(phase, clientLocalTargetRealtimeSinceStartupEnd);
     }
 
+    public void SetDamageOverlay()
+    {
+        if(_player.Hp <= (_player.MaxHp * 0.5f))
+            PlayerHUD.SetDamageOverlay();
+    }
     public void NotifyKill(PlayerController attPc, PlayerController diePc)
     {
         PlayerHUD.NotifyKill(attPc, diePc);

@@ -39,7 +39,7 @@ public sealed class Theodore_E : SkillHandlerBase
             projectile.ProjectileType = ProjectileType.ProjectileBall;
             projectile.Owner = p;
             projectile.Init();
-            p.Room.EnterGame(projectile);
+            p.Room.EnterGame(projectile, 0);
         }
     }
 

@@ -30,7 +30,21 @@ public class ObjectManager
     #region Add
     public void Add(ObjectInfo info, bool myPlayer = false)
 	{
-		GameObjectType objectType = GetObjectTypeById(info.ObjectId);
+        if (!LoadingManager.Instance.IsSceneLoaded("Game"))
+        {
+            LoadingManager.Instance.EnqueuePostLoadAction(() =>
+            {
+                SafeAdd(info, myPlayer);
+            });
+            return;
+        }
+
+        SafeAdd(info, myPlayer);
+    }
+
+    void SafeAdd(ObjectInfo info, bool myPlayer)
+    {
+        GameObjectType objectType = GetObjectTypeById(info.ObjectId);
         switch (objectType)
         {
             case GameObjectType.Player:
@@ -50,6 +64,7 @@ public class ObjectManager
                 break;
         }
     }
+
     private void AddPlayer(ObjectInfo info, bool myPlayer)
     {
         if (myPlayer)
@@ -203,6 +218,8 @@ public class ObjectManager
                 continue;
 
             GameObject target = keyValue.Value;
+            if (target == null)
+                continue;
 
             float visionRange = 8.5f;
 
@@ -231,7 +248,12 @@ public class ObjectManager
 
     public void SetVisibleObjects(HashSet<GameObject> objects)
     {
+        if (MyPlayer == null || MyPlayer.View == null)
+            return;
+
         HashSet<int> hash = MyPlayer.View.VisibleObjectIds;
+        if (hash == null)
+            return;
 
         foreach (var keyValue in _objects)
         {
@@ -240,6 +262,11 @@ public class ObjectManager
                 continue;
 
             GameObject go = keyValue.Value;
+            if (go == null)
+                continue;
+
+            if (go == null)
+                continue;
 
             if (go.GetComponent<EnvController>() != null)
                 continue;
