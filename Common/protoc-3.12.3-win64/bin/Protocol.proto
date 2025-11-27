@@ -384,7 +384,8 @@ message C_ReadyBtn {
 message S_EnterGame {
 	ObjectInfo player = 1;
 }
-message S_LeaveGame {
+
+message S_LeaveGame{
 
 }
 
@@ -709,6 +710,7 @@ message PlayerInfo {
     int32 skillPoints = 2;
     int32 team = 3;
 	Weapon weapon = 4;
+	string nickname = 5;
 }
 
 message MonsterInfo {

@@ -158,9 +158,8 @@ public class MyPlayerController : PlayerController
 
     protected override void UpdateCharging()
     {
-        if (_agent == null)
+        if (_agent == null || !_agent.isOnNavMesh)
             return;
-
         //if (_agent.remainingDistance <= _agent.stoppingDistance)
         //{
         //    if (_moveKeyPressed)

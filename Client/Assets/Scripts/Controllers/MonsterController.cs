@@ -115,11 +115,17 @@ public class MonsterController : CreatureController
     #region 패킷
     public void OnDeadPacket(S_State packet)
     {
+        if (_agent == null || !_agent.isOnNavMesh)
+            return;
+
         _agent?.ResetPath();
         OnDead();
     }
     public void OnIdlePacket(S_State packet)
     {
+        if (_agent == null || !_agent.isOnNavMesh)
+            return;
+
         OnStateChanged?.Invoke(State, true);
 
         if (_agent != null)
@@ -132,6 +138,9 @@ public class MonsterController : CreatureController
 
     public void OnMovePacket(S_State packet)
     {
+        if (_agent == null || !_agent.isOnNavMesh)
+            return;
+
         if (_agent != null)
              _agent.SetDestination(packet.PosInfo.ToVector());
 
@@ -141,6 +150,9 @@ public class MonsterController : CreatureController
 
     public void OnSkillPacket(S_State packet)
     {
+        if (_agent == null || !_agent.isOnNavMesh)
+            return;
+
         Skill = packet.Skilltype;
 
         if (Type == MonsterType.Drone)

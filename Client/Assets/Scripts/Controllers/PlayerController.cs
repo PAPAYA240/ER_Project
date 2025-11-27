@@ -154,7 +154,7 @@ public class PlayerController : CreatureController
             if (_untargetable)
                 _nameTag.SetUntargetable();
             else
-                _nameTag.SetNameText(Managers.Info.UserName, 16);
+                _nameTag.SetNameText(ObjInfo.Player.Nickname, 16);
 
             _nameTag.SetHPColor(_untargetable);
         } 
@@ -173,7 +173,7 @@ public class PlayerController : CreatureController
             if (_unstoppable)
                 _nameTag.SetUnstoppable();
             else
-                _nameTag.SetNameText("UserName", 16);
+                _nameTag.SetNameText(ObjInfo.Player.Nickname, 16);
         } 
     }
     #endregion
@@ -328,7 +328,11 @@ public class PlayerController : CreatureController
         {
             float dist = Vector3.Distance(transform.position, _serverPos);
             if (dist > _minDist)
+            {
+                if (_agent == null || !_agent.isOnNavMesh)
+                    return;
                 _agent.Warp(_serverPos);
+            }                
             else
                 transform.position = Vector3.Lerp(transform.position, _serverPos, Time.deltaTime * _syncSpeed);
         }
@@ -343,6 +347,9 @@ public class PlayerController : CreatureController
 
     public void OnStop(S_Stop packet)
     {
+        if (_agent == null || !_agent.isOnNavMesh)
+            return;
+
         _agent.isStopped = true;
         _agent.ResetPath();
     }
@@ -512,6 +519,7 @@ public class PlayerController : CreatureController
 
         _nameTag.SetTarget(gameObject);
         _nameTag.SetHPColor();
+        _nameTag.SetNameText(ObjInfo.Player.Nickname, 16);
 
         //이거 왜 터지지?
         _nameTag.SetLevelText(Stat.Level);

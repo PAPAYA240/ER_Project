@@ -53,8 +53,6 @@ public class UI_PlayerNameTag : UI_Base
         _skyBlue_Dark = _skyBlue * 0.5f;
 
         Camera.main.gameObject.GetOrAddComponent<CameraController>().LateUpdateAction += UpdatePosition;
-
-        SetNameText(Managers.Info.UserName, 16);
     }
 
     private void Awake()

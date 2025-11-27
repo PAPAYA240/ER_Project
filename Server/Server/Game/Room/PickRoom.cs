@@ -215,6 +215,7 @@ namespace Server.Game
                     clientSession.MyPlayer.Info.PosInfo.PosY = 0;
                     clientSession.MyPlayer.Info.Player = new PlayerInfo();
                     clientSession.MyPlayer.Info.Player.CharType = clientSession.MyCharacter;
+                    clientSession.MyPlayer.Info.Player.Nickname = _pickPlayers[i].UserName;
 
                     StatInfo stat = null;
                     DataManager.StatDict.TryGetValue(clientSession.MyCharacter, out stat);

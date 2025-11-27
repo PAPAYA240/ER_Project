@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Google.Protobuf.Protocol;
 using Unity.AI.Navigation;
 using UnityEngine;
@@ -13,17 +15,23 @@ public class GameScene : BaseScene
 
     private HashSet<GameObject> _visibleObjects = new HashSet<GameObject>();
 
-
-    protected override void Init()
+    protected async override void Init()
     {
         base.Init();
 
         SceneType = Define.Scene.Game;
 
-        GameObject go = Managers.Resource.Instantiate("Map/Map_Cobalt");
+        GameObject go = await Managers.Resource.InstantiateAsync("Map/Map_Cobalt");
         go.name = "Map";
 
         Screen.SetResolution(960 , 540, false);
+
+        await Task.Yield();
+
+        LoadingManager.Instance.OnSceneReady();
+
+        GameObject loadingUI = GameObject.Find("LoadingUI");
+        loadingUI.SetActive(false);
     }
 
     private void Update()
