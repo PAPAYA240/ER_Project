@@ -132,6 +132,7 @@ enum MsgId {
   S_SOUND = 103;
 
   S_SPAWN_WARD = 104;
+  C_DEPLOYING_LOOP = 105;
 }
 
 enum CombatState{
@@ -366,8 +367,9 @@ enum BOMB_ROZZI{
 
 enum SpawnPointType
 {
-    BaseSpawn = 0;     // 기지 리스폰/첫 스폰
-    BushTeleport = 1;  // 텔레포트 목적지(부쉬)
+    BaseSpawn = 0;		// 기지 리스폰/첫 스폰
+    BushTeleport = 1;	// 텔레포트 목적지(부쉬)
+	BushNone = 2;		// 일반 부쉬
 }
 
 message C_Interact {
@@ -1134,4 +1136,10 @@ message C_UseItem {
 message S_SpawnWard{
 	ObjectInfo objInfo = 1;
 	int32 teamIndex = 2;
+}
+
+message C_DeployingLoop {
+	int32 objectId = 1;
+	PositionInfo ioPos = 2;
+}
 }

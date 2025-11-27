@@ -88,7 +88,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CStartBtn, MakePacket<C_StartBtn>);
 		_handler.Add((ushort)MsgId.CStartBtn, PacketHandler.C_StartBtnHandler);		
 		_onRecv.Add((ushort)MsgId.CUseItem, MakePacket<C_UseItem>);
-		_handler.Add((ushort)MsgId.CUseItem, PacketHandler.C_UseItemHandler);
+		_handler.Add((ushort)MsgId.CUseItem, PacketHandler.C_UseItemHandler);		
+		_onRecv.Add((ushort)MsgId.CDeployingLoop, MakePacket<C_DeployingLoop>);
+		_handler.Add((ushort)MsgId.CDeployingLoop, PacketHandler.C_DeployingLoopHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

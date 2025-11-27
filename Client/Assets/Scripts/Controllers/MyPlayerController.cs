@@ -98,10 +98,17 @@ public class MyPlayerController : PlayerController
             if(Time.time - _lastAttackTime >= _attackLockTime)
             {
                 var operate = _input.GetOperateCommand();
+                var deploying = _input.GetDeployingLoopCommand();
                 if (operate != null)
                 {
                     _lastOperateTime = Time.time;
                     Managers.Network.Send(operate);
+                }
+                else if(deploying != null)
+                {
+                    _lastOperateTime = Time.time;
+                    Managers.Network.Send(deploying);
+                    Debug.Log($"@ Send Packet! : Id - {deploying.ObjectId}");
                 }
                 else
                 {

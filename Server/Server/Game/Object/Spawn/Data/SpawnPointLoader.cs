@@ -12,7 +12,7 @@ public class SpawnPointExportDTO
 {
     public int id { get; set; }
     public string side { get; set; }   // "0", "1"
-    public string type { get; set; }   // "BaseSpawn", "BushTeleport"
+    public string type { get; set; }   // "BaseSpawn", "BushTeleport", "BushNone"
     public float x { get; set; }
     public float y { get; set; }
     public float z { get; set; }

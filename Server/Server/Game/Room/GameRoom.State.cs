@@ -262,6 +262,20 @@ namespace Server.Game
             }
         }
 
+        public void HandleDeployingLoop(Player player, C_DeployingLoop pkt)
+        {
+            if (player == null)
+                return;
+            if (player.IsDead)
+                return;
+
+            if (!(player.State == CreatureState.Idle || player.State == CreatureState.Moving))
+                return;
+
+            player.ChangeState(new Player_TeleportState(pkt.IoPos));
+        }
+
+
         #region Utils
         public GameObject FindNearestEnemy(Player me, int range)
         {
