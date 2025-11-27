@@ -40,6 +40,18 @@ public class PlayerController : CreatureController
     public ItemStat ItemStat { get; private set; } = new ItemStat();
     protected GameObject _eqipWeapon = null;
 
+    public SoundController Sound;
+
+    // Kill Count : 20초 안에 얼만큼의 처치했는는가?
+    public float CurrentMultiKillCnt
+    {
+        get { return _currentMultiKillCount;  }
+        set { ++_currentMultiKillCount; }
+    }
+    private const float _multiKillTimeLimit = 20.0f;
+    private float _currentMultiKillCount = 0;
+    private float _lastKillTime = 0.0f;
+
     #region Property
     public override float Attack
     {
@@ -154,7 +166,7 @@ public class PlayerController : CreatureController
             if (_untargetable)
                 _nameTag.SetUntargetable();
             else
-                _nameTag.SetNameText("아비게일", 16);
+                _nameTag.SetNameText(Managers.Info.UserName, 16);
 
             _nameTag.SetHPColor(_untargetable);
         } 
@@ -201,6 +213,7 @@ public class PlayerController : CreatureController
 
     #endregion
 
+   
     public bool IsKeyInput
     {
         get { return _isKeyInput; }
@@ -266,6 +279,11 @@ public class PlayerController : CreatureController
         _agent.acceleration = 999;
         _agent.angularSpeed = 720;
         _agent.stoppingDistance = 0.1f;
+
+        // Sound
+        Sound = gameObject.GetComponent<SoundController>();
+        if(Sound != null)
+            Sound.PreloadCharAllSounds(ObjInfo.Player.CharType);
     }
 
     void SkillEffectInit()
@@ -345,7 +363,8 @@ public class PlayerController : CreatureController
     protected override void UpdateController()
     {
         base.UpdateController();
-        
+        MultiKillTimer();
+
         if (Id != Managers.Object.MyPlayer.Id)
         {
             float dist = Vector3.Distance(transform.position, _serverPos);
@@ -428,6 +447,14 @@ public class PlayerController : CreatureController
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
         bool isUpperBodySkill = animInfo.Name == "ROZZI_D" || animInfo.Name == "YUKI_W";
+        if (isUpperBodySkill)
+        // Animation에 맞는 Sound
+        if (Sound != null)
+        {
+            Sound.GetEffect3D(animInfo.Name, transform.position, true);
+            Sound.GetRandomVoice(animInfo.Name);
+        }
+
         if (isUpperBodySkill)
         {
             int upperLayer = _animator.GetLayerIndex("UpperBody");
@@ -784,6 +811,9 @@ public class PlayerController : CreatureController
     #endregion
     public void SyncPosFromServer(S_Move movePacket)
     {
+        if (_agent == null || !_agent.isOnNavMesh)
+            return;
+
         _agent.isStopped = false;
 
         _serverPos = new Vector3
@@ -798,6 +828,9 @@ public class PlayerController : CreatureController
 
     public void SyncPosFromServer(PositionInfo positionInfo, RotationInfo rotationInfo)
     {
+        if (_agent == null || !_agent.isOnNavMesh)
+            return;
+
         _agent.isStopped = false;
 
         _serverPos = new Vector3
@@ -809,4 +842,18 @@ public class PlayerController : CreatureController
 
         transform.rotation = rotationInfo;
     }
+    private void MultiKillTimer()
+    {
+        if (CurrentMultiKillCnt <= 0)
+            return;
+
+        _lastKillTime += Time.deltaTime;
+        if (_multiKillTimeLimit <= _lastKillTime)
+        {
+            CurrentMultiKillCnt = 0;
+            return;
+        }
+        return;
+    }
+
 }

@@ -45,15 +45,6 @@ namespace Server.Game
             player.ChangeState(Player_AttackState.CreateAttackState(player, pkt.TargetId, chaseAllowed: true));
         }
 
-        public void HandleAttackRequest(Player player, C_AttackRequest pkt)
-        {
-            GameObject target = player.FindTarget(pkt.TargetId);
-            if (target == null) 
-                return;
-
-            target.OnDamaged(player, player.Attack);
-        }
-
         // 우클릭 유지로 들어온 이동 의도
         public void HandleSetMoveTarget(Player player, C_SetMoveTarget pkt)
         {
@@ -261,6 +252,20 @@ namespace Server.Game
                 }
             }
         }
+
+        public void HandleDeployingLoop(Player player, C_DeployingLoop pkt)
+        {
+            if (player == null)
+                return;
+            if (player.IsDead)
+                return;
+
+            if (!(player.State == CreatureState.Idle || player.State == CreatureState.Moving))
+                return;
+
+            player.ChangeState(new Player_TeleportState(pkt.IoPos));
+        }
+
 
         #region Utils
         public GameObject FindNearestEnemy(Player me, int range)

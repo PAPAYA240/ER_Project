@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using Google.Protobuf.Protocol;
+using static Server.Data.DataUtils;
 
 namespace Server.Game
 {
@@ -48,7 +49,7 @@ namespace Server.Game
 
             if (Deactivation())
             {
-                Room.LeaveGame(Id);
+                Room.Push(Room.LeaveGame, Id);
                 return;
             }
             Moving();

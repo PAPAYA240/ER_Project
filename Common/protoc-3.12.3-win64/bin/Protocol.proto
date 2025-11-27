@@ -5,7 +5,7 @@ package Protocol;
 option csharp_namespace = "Google.Protobuf.Protocol";
 
 enum MsgId {
-  C_ENTER_GAME = 0;
+  C_READY_BTN = 0;
   S_ENTER_GAME = 1;
   S_LEAVE_GAME = 2;
   S_SPAWN = 3;
@@ -24,11 +24,11 @@ enum MsgId {
   S_CHARACTER = 16;
   S_ENTER_PICK = 17;
   S_SPAWN_PICK = 18;
-  S_LEAVE_PICK = 19;
+
   C_PING = 20;
   S_VISIBLE_OBJECTS = 21;
   S_LEVEL_UP = 22;
-  C_READY = 23;
+  C_ENTER_LOBBY = 23;
   S_FX = 24;
   C_TRAIT = 25;
   S_TRAIT = 26;
@@ -96,7 +96,7 @@ enum MsgId {
 
   S_ADD_YUKI_PYOSIK = 78;
 
-  C_ATTACK_REQUEST = 79;
+  S_ATTACK_INFO = 79;
 
 
   S_CHANGE_ATTACK_RANGE = 80;
@@ -114,7 +114,25 @@ enum MsgId {
   S_YUKI_STUD = 89;
   S_SKILL_EFFECT = 90;
 
-  C_USE_ITEM = 92;
+
+  S_ENTER_SLOT = 91;
+  S_SPAWN_SLOT = 92;
+  C_SLOT_CLICK = 93;
+  S_LEAVE_LOBBY = 94;
+  C_START_BTN = 95;
+  S_LOBBY_CNT = 96;
+  S_NICKNAME = 97;
+  S_COUNTDOWN = 98;
+  S_PICK_ALL_READY = 99;
+  S_RANDOM_PICK = 100;
+  S_READY_BTN = 101;
+
+  C_USE_ITEM = 102;
+
+  S_SOUND = 103;
+
+  S_SPAWN_WARD = 104;
+  C_DEPLOYING_LOOP = 105;
 }
 
 enum CombatState{
@@ -149,7 +167,6 @@ enum GameObjectType{
 	MONSTER = 2;
 	PROJECTILE = 3;
 	ENVIRONMENT = 4;
-	WARD = 5;
 }
 
 enum EnvType{
@@ -362,8 +379,9 @@ enum SkillEffectType {
 
 enum SpawnPointType
 {
-    BaseSpawn = 0;     // 기지 리스폰/첫 스폰
-    BushTeleport = 1;  // 텔레포트 목적지(부쉬)
+    BaseSpawn = 0;		// 기지 리스폰/첫 스폰
+    BushTeleport = 1;	// 텔레포트 목적지(부쉬)
+	BushNone = 2;		// 일반 부쉬
 }
 
 message C_Interact {
@@ -371,15 +389,14 @@ message C_Interact {
 }
 
 message S_Interact  {
-    	int32 objectId = 1;
+    int32 objectId = 1;
 	int32 targetId = 2;
-    	int32 keyCode = 3;
+    int32 keyCode = 3;
 	int32 targetKeyCode = 4;
 }
 
-message C_EnterGame {
-	bool enterGame = 1;
-	repeated CharacterType dummyPlayers = 2;
+message C_ReadyBtn {
+	uint32 flag = 1;
 }
 
 message S_EnterGame {
@@ -415,6 +432,14 @@ message C_SkillExecute{
    float mousePosX = 3;
    float mousePosZ = 4;
 }
+
+message S_Sound {
+  int32 objectId = 1;
+  string type = 2;
+  string name = 3;
+
+}
+
 
 message S_Spawn {
   repeated ObjectInfo objects = 1;
@@ -520,16 +545,12 @@ message S_Weapon{
 }
 
 message S_EnterPick{
-	int32 pickIdx = 1;
-	string userName = 2;
+    int32 team = 1;
+    int32 pickIdx = 2;
 }
 
 message S_SpawnPick{
 	repeated PickScenePlayerInfo players = 1;
-}
-
-message S_LeavePick{
-	int32 pickIdx = 1;
 }
 
 message S_ChangeHp{
@@ -559,8 +580,8 @@ message S_LevelUp{
 	StatInfo statGrowth = 3;
 }
 
-message C_Ready{
-	bool ready = 1;
+message C_EnterLobby{
+	string nickname = 1;
 }
 
 message S_Respawn{
@@ -765,11 +786,9 @@ message ObjectInfo{
 }
 
 message PickScenePlayerInfo{
-	int32 pickIdx = 1;
-	string userName = 2;
-	CharacterType charType = 3;
-	TraitType traitType = 4;
-	Weapon weaponType = 5;
+	int32 team = 1;
+	int32 pickIdx = 2;
+	string userName = 3;
 }
 
 message AnimInfo{
@@ -857,10 +876,12 @@ message ItemStat{
     float MaxHpPerLevel = 27;                 //레벨 당 최대 체력
 }
 
-message C_AttackRequest{
+message S_AttackInfo{
 	int32 objectId = 1;
-	int32 targetId= 2;
+	int32 attackerId= 2;
+	string attackType = 3;
 }
+
 message C_Attack {					// 우클릭 타겟 공격
 	int32 targetId = 1;
 }
@@ -1069,9 +1090,69 @@ message S_SkillEffect {
   SkillEffectType effectType = 2;
 }
 
+message S_EnterSlot{
+	int32 slotIdx = 1;
+	string nickname = 2;
+}
+
+message S_SpawnSlot{
+	repeated int32 slotIdxs = 1;
+	repeated string nicknames = 2;
+}
+
+message C_SlotClick{
+	int32 slotIdx = 1;
+}
+
+message S_LeaveLobby{
+	int32 slotIdx = 1;
+}
+
+message C_StartBtn{
+	uint32 start = 1;
+}
+
+message S_LobbyCnt{
+	int32 playerCnt = 1;
+	int32 observerCnt = 2;
+}
+
+message S_Nickname{
+	string nickname = 1;
+}
+
+message S_Countdown{
+	int32 count = 1;
+}
+
+message S_PickAllReady{
+	int32 startIdx = 1;
+	repeated CharacterType charList = 2;
+	repeated Weapon weaponList = 3;
+	repeated TraitType traitList = 4;
+}
+
+message S_RandomPick{
+	CharacterType charType = 1;
+}
+
+message S_ReadyBtn{
+	uint32 flag = 1;
+}
+
 message C_UseItem {
 	int32 objectId = 1;
 	int32 inventoryIndex = 2;
 	float mouseX = 3;
 	float mouseZ = 4;
+}
+
+message S_SpawnWard{
+	ObjectInfo objInfo = 1;
+	int32 teamIndex = 2;
+}
+
+message C_DeployingLoop {
+	int32 objectId = 1;
+	PositionInfo ioPos = 2;
 }

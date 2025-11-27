@@ -24,8 +24,6 @@ public class ServerSession : PacketSession
     public override void OnConnected(EndPoint endPoint)
 	{
 		Debug.Log($"OnConnected : {endPoint}");
-		C_Ready readyPkt = new C_Ready();
-		Send(readyPkt);
 
 		PacketManager.Instance.CustomHandler = (s, m, i) =>
 		{

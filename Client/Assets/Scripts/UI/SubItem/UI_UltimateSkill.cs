@@ -71,7 +71,7 @@ public class UI_UltimateSkill : UI_SkillBase
         //GetObject(_cooldownTimer).gameObject.SetActive(false);
 
         //temp
-        SetStaminaCost(100);
+        //SetStaminaCost(100);
 
         GetText((int)Texts.CooldownTimerText).text = "";
         ActivateLevelUp(false);

@@ -30,6 +30,7 @@ public class PlayerViewController : MonoBehaviour
     private GameObject _target;
 
     public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
+    public HashSet<int> WardIds { get; set; } = new HashSet<int>();
 
     public int TargetId { get { return _targetId; } set { _targetId = value; } }
 
@@ -161,7 +162,7 @@ public class PlayerViewController : MonoBehaviour
     // ---- 정지 입력 처리 (S/H) ----
     public void ApplyStop(StopReason reason)
     {
-        if (_agent == null)
+        if (_agent == null || !_agent.isOnNavMesh)
             return;
 
         switch (reason)

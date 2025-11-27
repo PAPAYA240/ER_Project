@@ -13,6 +13,8 @@ public class ObjectManager
 	private Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
     public Define.Character Character { get; set; } = Define.Character.Rozzi;
 
+    Queue<Action> _pendingActions = new Queue<Action>();
+
     #region Type ID
     public static GameObjectType GetObjectTypeById(int id)
 	{
@@ -30,7 +32,21 @@ public class ObjectManager
     #region Add
     public void Add(ObjectInfo info, bool myPlayer = false)
 	{
-		GameObjectType objectType = GetObjectTypeById(info.ObjectId);
+        if (!LoadingManager.Instance.IsSceneLoaded("Game"))
+        {
+            LoadingManager.Instance.EnqueuePostLoadAction(() =>
+            {
+                SafeAdd(info, myPlayer);
+            });
+            return;
+        }
+        else
+            SafeAdd(info, myPlayer);
+    }
+
+    void SafeAdd(ObjectInfo info, bool myPlayer)
+    {
+        GameObjectType objectType = GetObjectTypeById(info.ObjectId);
         switch (objectType)
         {
             case GameObjectType.Player:
@@ -45,11 +61,9 @@ public class ObjectManager
             case GameObjectType.Environment:
                 AddEnvironment(info);
                 break;
-            case GameObjectType.Ward:
-                AddWard(info);
-                break;
         }
     }
+
     private void AddPlayer(ObjectInfo info, bool myPlayer)
     {
         if (myPlayer)
@@ -71,9 +85,18 @@ public class ObjectManager
             {
                 scene.AddPlayer(go, MyPlayer);
             }
+
+            while (_pendingActions.Count > 0)
+                _pendingActions.Dequeue().Invoke();
         }
         else
         {
+            if(MyPlayer == null)
+            {
+                _pendingActions.Enqueue(() => AddPlayer(info, myPlayer));
+                return;
+            }
+
             GameObject go = Managers.Resource.Instantiate($"Creature/{info.Player.CharType}");
             go.name = info.Name;
             _objects.Add(info.ObjectId, go);
@@ -87,7 +110,7 @@ public class ObjectManager
             pc.SyncPos(true);
             pc.SyncPosFromServer(info.PosInfo, info.RotInfo);
 
-            if (MyPlayer.ObjInfo.Player.Team != pc.ObjInfo.Player.Team)
+            if (Managers.Info.Team != pc.ObjInfo.Player.Team)
             {
                 go.gameObject.AddComponent<HighlightEffect>();
                 Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.EnemyPlayer, pc);
@@ -159,7 +182,7 @@ public class ObjectManager
         ec.SyncPos();
     }
 
-    private void AddWard(ObjectInfo info)
+    public void AddWard(ObjectInfo info, int teamIndex)
     {
         GameObject go = Managers.Resource.Instantiate("Creature/Ward");
         if (go == null) return;
@@ -175,6 +198,7 @@ public class ObjectManager
         wc.Id = info.ObjectId;
         wc.PosInfo = info.PosInfo;
         wc.Stat = info.StatInfo;
+        wc.TeamIndex = teamIndex;
         wc.SyncPos();
 
         //EnvController ec = go.GetComponent<EnvController>();
@@ -192,19 +216,22 @@ public class ObjectManager
     #region Utils
 
 
-    public void ResiterVisibleObjects(GameObject go, HashSet<GameObject> outObjects)
+    public void ResiterVisibleObjects(GameObject go, HashSet<GameObject> outObjects, float visionRange = 8.5f)
     {
         foreach (var keyValue in _objects)
         {
             int key = keyValue.Key;
-            PlayerController pc = go.GetComponentInChildren<PlayerController>();
+            //PlayerController pc = go.GetComponentInChildren<PlayerController>();
+            BaseController pc = go.GetComponentInChildren<BaseController>();
 
             if (pc == null || pc.Id == key)
                 continue;
 
             GameObject target = keyValue.Value;
+            if (target == null)
+                continue;
 
-            float visionRange = 8.5f;
+            //float visionRange = 8.5f;
 
             Vector3 playerPos = go.transform.position;
             Vector3 targetPos = target.transform.position;
@@ -231,7 +258,16 @@ public class ObjectManager
 
     public void SetVisibleObjects(HashSet<GameObject> objects)
     {
+        if (MyPlayer == null || MyPlayer.View == null)
+            return;
+
         HashSet<int> hash = MyPlayer.View.VisibleObjectIds;
+        if (hash == null)
+            return;
+
+        HashSet<int> wardHash = MyPlayer.View.WardIds;
+        if (wardHash == null)
+            return;
 
         foreach (var keyValue in _objects)
         {
@@ -240,13 +276,18 @@ public class ObjectManager
                 continue;
 
             GameObject go = keyValue.Value;
+            if (go == null)
+                continue;
+
+            if (go == null)
+                continue;
 
             if (go.GetComponent<EnvController>() != null)
                 continue;
 
             bool isVisible = false;
 
-            if (hash.Contains(key) || objects.Contains(FindById(key)))
+            if (hash.Contains(key) || wardHash.Contains(key) || objects.Contains(FindById(key)))
                 isVisible = true; /* 서버에서 넘어온 해시셋에 있거나 클라에서 등록한 해시셋에 있으면 */
 
             foreach (var r in go.GetComponentsInChildren<Renderer>())
@@ -259,6 +300,16 @@ public class ObjectManager
             foreach (var r in go.GetComponentsInChildren<Canvas>())
             {
                 r.enabled = isVisible;
+            }
+
+            if(go.GetComponent<PlayerController>() != null && Managers.Object.MyPlayer != null)
+            {
+                Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapCharImgEnable(key, isVisible);
+            }
+
+            if(go.name == "Ward")
+            {
+                go.GetComponentInChildren<WardController>().SetWardLifeBarActive(isVisible);
             }
         }
     }

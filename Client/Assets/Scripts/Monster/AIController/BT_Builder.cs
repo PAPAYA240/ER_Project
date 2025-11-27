@@ -5,7 +5,6 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Google.Protobuf.Protocol;
 
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -114,7 +113,10 @@ public class BehaviorTreeBuilder
 
         Type type = Type.GetType(typeName);
         if (null == type)
+        {
+            Debug.LogError($"BT_Builder 타입을 찾을 수 없음: {typeName}");
             return null;
+        }
 
         Node node = ScriptableObject.CreateInstance(type) as Node;
         return node;

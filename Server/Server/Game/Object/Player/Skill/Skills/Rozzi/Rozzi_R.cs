@@ -31,7 +31,7 @@ public sealed class Rozzi_R : RozziSkillHandler
             projectile.ProjectileType = ProjectileType.ProjectileRozziR;
             projectile.Owner = p;
             projectile.Init();
-            p.Room.Push(p.Room.EnterGame, projectile);
+            p.Room.Push(p.Room.EnterGame, projectile, 0);
             projectile.BOMBSTATE = BOMB_ROZZI.Flying;
         }
     }

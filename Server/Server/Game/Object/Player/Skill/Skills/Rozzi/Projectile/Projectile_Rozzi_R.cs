@@ -1,5 +1,7 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.Protocol;
+using Lucene.Net.Store;
+using Server.Data;
 using Server.Game;
 using System;
 using System.Collections.Generic;
@@ -92,7 +94,7 @@ public class Projectile_Rozzi_R : Projectile
             case BOMB_ROZZI.Flying:
                 if (Deactivation())
                 {
-                    Room.LeaveGame(Id);
+                    Room.Push(Room.LeaveGame, Id);
                     return;
                 }
 

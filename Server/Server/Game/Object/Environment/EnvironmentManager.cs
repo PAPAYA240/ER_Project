@@ -107,9 +107,9 @@ namespace Server.Game
                 if (eData.envType == EnvType.HealPack)
                     env.Info.Name = $"HealPack_{_healpackCount++}";
                 else
-                    env.Info.Name = $"{env.Id} Environment";
+                    env.Info.Name = $"{eData.envType}";
 
-                _room.Push(_room.EnterGame, env);
+                _room.Push(_room.EnterGame, env, 0);
             }
         }
     }

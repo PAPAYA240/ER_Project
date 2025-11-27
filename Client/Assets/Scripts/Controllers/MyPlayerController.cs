@@ -13,7 +13,6 @@ public class MyPlayerController : PlayerController
     private PlayerUIController _UI;
     public PlayerUIController UI {  get { return _UI; } }
 
-    public SoundController Sound;
 
 
     public SkillIndicator Indicator { get { return _skillIndicator; } }
@@ -46,7 +45,6 @@ public class MyPlayerController : PlayerController
         _input = gameObject.GetOrAddComponent<PlayerInputController>();
         _view = gameObject.GetOrAddComponent<PlayerViewController>();
         _UI = gameObject.GetOrAddComponent<PlayerUIController>();
-        Sound = gameObject.GetComponent<SoundController>();
     }
 
     protected override void Init()
@@ -100,10 +98,17 @@ public class MyPlayerController : PlayerController
             if(Time.time - _lastAttackTime >= _attackLockTime)
             {
                 var operate = _input.GetOperateCommand();
+                var deploying = _input.GetDeployingLoopCommand();
                 if (operate != null)
                 {
                     _lastOperateTime = Time.time;
                     Managers.Network.Send(operate);
+                }
+                else if(deploying != null)
+                {
+                    _lastOperateTime = Time.time;
+                    Managers.Network.Send(deploying);
+                    Debug.Log($"@ Send Packet! : Id - {deploying.ObjectId}");
                 }
                 else
                 {
@@ -175,9 +180,6 @@ public class MyPlayerController : PlayerController
     public override void OnDead()
     {
         base.OnDead();
-
-        if (Sound != null)
-            Sound.GetRandomVoice("Dead");
     }
     // 서버 응답 전달
     public void OnServerUpdate(S_MoveSync packet) => _view.OnMoveSync(packet);
@@ -289,6 +291,32 @@ public class MyPlayerController : PlayerController
         }
 
         return false;
+    }
+
+    public void UseInventoryItem(int idx)
+    {
+        int viewIndex = 0;
+        if (idx == 0)
+            viewIndex = 9;
+        else
+            viewIndex = idx - 1;
+
+        if(_inventory[viewIndex] != null && _inventory[viewIndex] is ConsumableItemInfo item)
+        {
+            --item.Count;
+
+            S_ChangeInventory s_ChangeInventory = new S_ChangeInventory();
+            if (item.Count == 0)
+            {
+                s_ChangeInventory.Changes.Add(new ChangeInventoryInfo() { ItemId = 0, InventoryIndex = viewIndex });
+            }
+            else
+            {
+                s_ChangeInventory.Changes.Add(new ChangeInventoryInfo() { ItemId = item.Id, Count = item.Count, InventoryIndex = viewIndex });
+            }
+
+            ChangeInventory(s_ChangeInventory);
+        }
     }
     #endregion
 

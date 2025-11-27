@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -9,12 +11,17 @@ public class LoadingManager : MonoBehaviour
 
     private string nextScene;
 
+    bool _sceneLoaded = false;
+    Queue<Action> _postLoadActions = new Queue<Action>();
+
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -62,5 +69,38 @@ public class LoadingManager : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    public void EnqueuePostLoadAction(Action action)
+    {
+        if (IsSceneLoaded("Game"))
+        {
+            action?.Invoke();
+            return;
+        }
+            
+        _postLoadActions.Enqueue(action);
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "Game")
+        {
+            _sceneLoaded = true;
+
+            while (_postLoadActions.Count > 0)
+                _postLoadActions.Dequeue()?.Invoke();
+        }
+    }
+
+    public void ResetSceneUtil()
+    {
+        _sceneLoaded = false;
+        _postLoadActions.Clear();
+    }
+
+    public bool IsSceneLoaded(string sceneName)
+    {
+        return _sceneLoaded && SceneManager.GetActiveScene().name == sceneName;
     }
 }

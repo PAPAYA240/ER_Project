@@ -104,4 +104,12 @@ public class UI_TraitGroup : UI_Base
 
         _material.SetFloat("_IsNonColor", blendValue);
     }
+
+    public void SelectTrait(int button)
+    {
+        if (Managers.Info.IsReady)
+            return;
+
+        GetObject((int)GameObjects.Button_0 + button).GetComponent<UI_TraitButton>().OnSelected.Invoke(true);
+    }
 }

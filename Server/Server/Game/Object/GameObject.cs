@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using static Player_StunState;
 using static Server.Game.StunState;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Server.Game
 {
@@ -23,7 +24,7 @@ namespace Server.Game
         public GameRoom Room { get; set; }
 
         public CharacterType CharType => Info.Player.CharType;
-        
+
         ObjectInfo _objectInfo = new ObjectInfo()
         {
             StatInfo = new StatInfo(),
@@ -68,7 +69,7 @@ namespace Server.Game
             }
         }
 
-        public StatInfo Stat 
+        public StatInfo Stat
         {
             get
             {
@@ -146,7 +147,7 @@ namespace Server.Game
             set { Stat.AttackSpeed = value; }
         }
 
-        public virtual float Healing  
+        public virtual float Healing
         {
             get { return Stat.Healing; }
             set { Stat.Healing = value; }
@@ -188,7 +189,7 @@ namespace Server.Game
         protected bool _isUpdatedStatus = false;
         public void UpdateStatusFlag(bool isUpdated = true) => _isUpdatedStatus = isUpdated;
         protected bool _isCcImmune = false;
-        public bool IsCcImmune { get {  return _isCcImmune; } set { _isCcImmune = value; } }
+        public bool IsCcImmune { get { return _isCcImmune; } set { _isCcImmune = value; } }
 
         public bool IsDead => State == CreatureState.Dead;
 
@@ -237,7 +238,6 @@ namespace Server.Game
 
             return true;
         }
-
         public virtual void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false, bool isBasicAttack = false)
         {
             if (Room == null || State == CreatureState.Dead || State == CreatureState.Appear)
@@ -258,8 +258,45 @@ namespace Server.Game
             IsHit = true;
         }
 
+        private void AttackInfo(GameObject attacker)
+        {
+            string attackKey = "";
+            bool isAttackerValid = false;
+
+            if (attacker is Player playerAttack)
+            {
+                isAttackerValid = true;
+                Player_SkillState skillstate = playerAttack.CurrentState as Player_SkillState;
+
+                if (skillstate != null)
+                    attackKey = skillstate.Handler.GetKeyCode().ToString();
+                else
+                {
+                     attackKey = "Attack";
+                }
+            }
+            else if (attacker is Monster monsterAttack)
+            {
+                isAttackerValid = true;
+                attackKey = monsterAttack.CurrentSkill.ToString();
+            }
+
+            if (isAttackerValid)
+            {
+                S_AttackInfo attackInfoPacket = new S_AttackInfo
+                {
+                    ObjectId = this.Id,          
+                    AttackerId = attacker.Id,  
+                    AttackType = attackKey,   
+                };
+
+                Room.Broadcast(attackInfoPacket);
+            }
+        }
         protected virtual void OnDamaged(GameObject attacker, float damage, bool isBasicAttack = false)
         {
+            AttackInfo(attacker);
+
             //배리어가 흡수할 수치 계산
             float absorbed = Math.Min(Barrier, damage);
             ReduceBarrier(absorbed);
@@ -363,7 +400,7 @@ namespace Server.Game
             Room.Broadcast(diePacket);
 
             GameRoom room = Room;
-            room.LeaveGame(Id);
+            room.Push(room.LeaveGame, Id);
 
             Hp = MaxHp;
             Stamina = MaxStamina;
@@ -376,7 +413,17 @@ namespace Server.Game
             RotInfo.Qz = 0;
             RotInfo.Qw = 1;
 
-            room.EnterGame(this);
+            GameObjectType type = ObjectManager.GetObjectTypeById(Id);
+            if (type == GameObjectType.Player)
+            {
+                Player player = this as Player;
+                if (player == null)
+                    return;
+
+                room.Push(room.EnterGame, this, player.Info.Player.Team);
+            }
+            else
+                room.Push(room.EnterGame, this, 0);
         }
         #endregion
 
@@ -412,7 +459,7 @@ namespace Server.Game
         {
             lock (_lock)
             {
-                statusEffect.startTick = Room.CurTick;
+                statusEffect.startTick = TimeUtil.Instance.LastTick;
 
                 if (statusEffect.stat == "barrier")
                 {
@@ -582,13 +629,13 @@ namespace Server.Game
 
             foreach (var effect in snapshot)
             {
-                if (unchecked(Room.CurTick - effect.startTick) >= effect.duration * 1000f)
+                if (unchecked(TimeUtil.Instance.LastTick - effect.startTick) >= effect.duration * 1000f)
                     expired.Add(effect);
             }
 
             foreach (var effect in barrierSnapshot)
             {
-                if (unchecked(Room.CurTick - effect.startTick) >= effect.duration * 1000f)
+                if (unchecked(TimeUtil.Instance.LastTick - effect.startTick) >= effect.duration * 1000f)
                     expiredBarriers.Add(effect);
             }
 

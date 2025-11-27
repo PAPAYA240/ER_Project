@@ -30,17 +30,8 @@ namespace Server.Game
         Dictionary<int, Dictionary<int, Player>> _teams = new Dictionary<int, Dictionary<int, Player>>();
         Dictionary<CharacterType, SkillHandler> _skillHandlers = new Dictionary<CharacterType, SkillHandler>();
 
-        bool _teamToggle = false;
-
         public EnvironmentManager GetEnvManager { get { return _envManager; } private set { _envManager = value; } }
 
-        private long _curTick;
-
-        public long CurTick
-        {
-            get => Interlocked.Read(ref _curTick);
-            set => Interlocked.Exchange(ref _curTick, value);
-        }
 
         #region Spawn
         public SpawnPointRegistry SpawnRegistry { get; private set; }
@@ -50,36 +41,33 @@ namespace Server.Game
 
         #region Phase, Time
 
-        private bool _gameStarted = false;
         private long _startTick;         // 게임 시작 기준 Tick
         private long _phaseStartTick;    // 현재 페이즈 시작 Tick
         private long _phaseEndTick;      // 현재 페이즈 종료 Tick
 
-        public int CurPhase { get; private set; } = 5;
+        public int CurPhase { get; private set; } = 0;
 
-        public void StartGame()
+        public void StartPhase()
         {
-            _gameStarted = true;
-            _startTick = CurTick;
+            _startTick = TimeUtil.Instance.LastTick;
             _phaseStartTick = _startTick;
             ChangePhase(0);
+            if (DataManager.PhaseDict.TryGetValue(0, out int durationSec))
+                _phaseEndTick = TimeUtil.Instance.LastTick + durationSec * 1000L;
         }
 
-        public long GameElapsedMs => CurTick - _startTick;
-        public long PhaseElapsedMs => CurTick - _phaseStartTick;
+        public long GameElapsedMs => TimeUtil.Instance.LastTick - _startTick;
+        public long PhaseElapsedMs => TimeUtil.Instance.LastTick - _phaseStartTick;
 
         public void ChangePhase(int newPhase)
         {
-            if (CurPhase == newPhase)
-                return;
-
             CurPhase = newPhase;
-            _phaseStartTick = CurTick;
+            _phaseStartTick = TimeUtil.Instance.LastTick;
 
             // 페이즈 지속 시간 가져오기
             if (DataManager.PhaseDict.TryGetValue(newPhase, out int durationSec))
             {
-                _phaseEndTick = CurTick + durationSec * 1000L;
+                _phaseEndTick = TimeUtil.Instance.LastTick + durationSec * 1000L;
             }
             else
             {
@@ -113,7 +101,7 @@ namespace Server.Game
             S_SyncTimer syncTimerPacket = new S_SyncTimer();
 
             syncTimerPacket.Phase = CurPhase;
-            syncTimerPacket.CurrentTick = CurTick; 
+            syncTimerPacket.CurrentTick = TimeUtil.Instance.LastTick; 
             syncTimerPacket.PhaseEndTime = _phaseEndTick; 
 
             Push(Broadcast, syncTimerPacket);
@@ -151,7 +139,7 @@ namespace Server.Game
             = new Dictionary<CharacterType, Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>>();
         #endregion
 
-        public void Init(int mapId)
+        public override void Init()
         {
             PathFind = new PathfindInstance(0);
 
@@ -168,16 +156,13 @@ namespace Server.Game
 
             // Spawn Register
             SpawnRegister();
+
+            StartPhase();
         }
 
         public override void Update()
         {
-            CurTick = Environment.TickCount64;
-            if (!_gameStarted)
-                return;
-
-            TimeUtil.Instance.Update(CurTick);
-            if (CurTick >= _phaseEndTick)
+            if (_phaseEndTick > 0 && TimeUtil.Instance.LastTick >= _phaseEndTick)
                 ChangePhase(CurPhase + 1);
 
             Flush();
@@ -218,7 +203,7 @@ namespace Server.Game
 
             //Flush();
 
-            _collisionManager.CurTick = CurTick;
+            _collisionManager.CurTick = TimeUtil.Instance.LastTick;
             _collisionManager.Flush();
             _collisionManager.CheckAllCollisions(_teams, _monsters, _projectiles);
             _collisionManager.Update();
@@ -229,7 +214,7 @@ namespace Server.Game
             CheckLastPing();
         }
        
-        public void EnterGame(GameObject gameObject)
+        public void EnterGame(GameObject gameObject, int team)
         {
             if (gameObject == null)
                 return;
@@ -239,7 +224,7 @@ namespace Server.Game
             {
                 Player player = gameObject as Player;
                 _players.TryAdd(gameObject.Id, player);
-                player.Info.Player.Team = AssignTeam();
+                player.Info.Player.Team = team;
                 player.Info.Player.Weapon = FindWeapon(player.Info.Player.CharType);
                 player.WeaponAttackRange = DataManager.WeaponDict[player.Info.Player.Weapon].Range;
 
@@ -353,6 +338,7 @@ namespace Server.Game
                     return;
                 var myTeam = _teams[player.Info.Player.Team];
                 myTeam.Remove(player.Id);
+                ObjectManager.Instance.Remove(player.Id);
 
                 player.Room = null;
                 player.OnDestroy();
@@ -362,6 +348,9 @@ namespace Server.Game
                     S_LeaveGame leavePacket = new S_LeaveGame();
                     player.Session.Send(leavePacket);
                 }
+
+                if (_players.IsEmpty)
+                    RoomManager.Instance.Remove(RoomId);
             }
             else if (type == GameObjectType.Monster)
             {
@@ -369,6 +358,7 @@ namespace Server.Game
                 if (_monsters.Remove(objectId, out monster) == false)
                     return;
 
+                ObjectManager.Instance.Remove(objectId);
                 monster.Room = null;
                 _monsterManager.Add(-1, this);
             }
@@ -602,12 +592,6 @@ namespace Server.Game
                 if (p.Session.CheckTimeout())
                     p.Session.Disconnect();
             }
-        }
-
-        int AssignTeam()
-        {
-            _teamToggle = !_teamToggle;
-            return _teamToggle ? 1 : 2;
         }
 
         private void AddVisibleObjects<T>(List<int> visibleObjs, ConcurrentDictionary<int, T> dict, Player player) where T : GameObject
