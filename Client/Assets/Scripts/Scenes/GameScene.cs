@@ -86,15 +86,6 @@ public class GameScene : BaseScene
 
     public void AddPlayer(GameObject go, PlayerController pc)
     {
-        if(go == null)
-        {
-            Debug.Log("go null : AddPlayer in GameScene");
-        }
-        else
-        {
-            Debug.Log("Sucess AddPlayer");
-        }
-
         if (Managers.Info.Team == 1)
         {
             Team1.Add(pc.Id, go);
