@@ -116,7 +116,6 @@ public class MonsterController : CreatureController
     {
         _agent?.ResetPath();
         OnDead(); 
-        OnStateChanged?.Invoke( true);
     }
     public void OnIdlePacket(S_State packet)
     {

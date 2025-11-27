@@ -104,6 +104,9 @@ public class PlayAnimation : AnimationControlNode
 
     private void ClearAnim()
     {
+        if (_controller.State == CreatureState.Dead)
+            return;
+
         int waitAnimHash = Animator.StringToHash(_waitAnim);
         if (_animator != null && _animator.HasState(0, waitAnimHash))
             _animator?.CrossFadeInFixedTime(_waitAnim, 0.1f, 0);
