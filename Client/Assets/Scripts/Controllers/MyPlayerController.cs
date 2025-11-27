@@ -76,6 +76,8 @@ public class MyPlayerController : PlayerController
 
         // inven
         MakeInventory();
+
+        Managers.Object.MyPlayerReady();
     }
 
     private void Update()

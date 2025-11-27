@@ -2,6 +2,10 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
+using UnityEngine.SceneManagement;
+
+
 
 #if UNITY_EDITOR
 using UnityEditor.PackageManager.UI;
@@ -9,11 +13,12 @@ using UnityEditor.PackageManager.UI;
 
 public class ObjectManager
 {
-	public MyPlayerController MyPlayer { get; set; }
+    public MyPlayerController MyPlayer { get; set; } = null;
 	private Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
     public Define.Character Character { get; set; } = Define.Character.Rozzi;
 
     Queue<Action> _pendingActions = new Queue<Action>();
+    bool _myPlayerReady = false;
 
     #region Type ID
     public static GameObjectType GetObjectTypeById(int id)
@@ -32,20 +37,9 @@ public class ObjectManager
     #region Add
     public void Add(ObjectInfo info, bool myPlayer = false)
 	{
-        if (!LoadingManager.Instance.IsGameSceneReady())
-        {
-            LoadingManager.Instance.EnqueuePostLoadAction(() =>
-            {
-                SafeAdd(info, myPlayer);
-            });
+        if (Managers.Object.FindById(info.ObjectId) != null)
             return;
-        }
-        else
-            SafeAdd(info, myPlayer);
-    }
 
-    void SafeAdd(ObjectInfo info, bool myPlayer)
-    {
         GameObjectType objectType = GetObjectTypeById(info.ObjectId);
         switch (objectType)
         {
@@ -92,7 +86,7 @@ public class ObjectManager
         }
         else
         {
-            if(MyPlayer == null)
+            if (!_myPlayerReady)
             {
                 _pendingActions.Enqueue(() => AddPlayer(info, myPlayer));
                 return;
@@ -112,15 +106,20 @@ public class ObjectManager
             pc.SyncPosFromServer(info.PosInfo, info.RotInfo);
             pc.NickName = info.Player.Nickname;
 
+            UI_Minimap ui_minimap = MyPlayer.GetComponentInChildren<UI_Minimap>();
+
             if (Managers.Info.Team != pc.ObjInfo.Player.Team)
             {
                 go.gameObject.AddComponent<HighlightEffect>();
-                Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.EnemyPlayer, pc);
+                if (ui_minimap != null)
+                {
+                    ui_minimap.ActivatePlayerIcon(UI_MinimapCharIcon.IconType.EnemyPlayer, pc);
+                }
             }
             else
-                Managers.Object.MyPlayer.GetComponentInChildren<UI_Minimap>().ActivatePlayerIcon(UI_MinimapCharIcon.IconType.TeamPlayer, pc);
+                ui_minimap.ActivatePlayerIcon(UI_MinimapCharIcon.IconType.TeamPlayer, pc);
 
-            Managers.Object.MyPlayer.SetxRayFromPlayer(go);
+            MyPlayer.SetxRayFromPlayer(go);
             MyPlayer.UI.PlayerHUD.AddPlayerBoardToBattleBoard(pc);
             if (Managers.Scene.CurrentScene is GameScene scene)
             {
@@ -128,6 +127,7 @@ public class ObjectManager
             }
         }
     }
+    
     private void AddMonster(ObjectInfo info)
     {
         GameObject go = Managers.Resource.Instantiate($"Creature/Monster/{info.Monster.MonsterType}");
@@ -217,7 +217,10 @@ public class ObjectManager
 
     #region Utils
 
-
+    public void MyPlayerReady()
+    {
+        _myPlayerReady = true;
+    }
     public void ResiterVisibleObjects(GameObject go, HashSet<GameObject> outObjects, float visionRange = 8.5f)
     {
         foreach (var keyValue in _objects)

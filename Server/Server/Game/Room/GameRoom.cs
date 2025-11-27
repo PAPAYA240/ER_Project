@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Numerics;
@@ -27,7 +28,7 @@ namespace Server.Game
         EnvironmentManager _envManager = new EnvironmentManager();
         BeaconManager _beaconManager = new BeaconManager();
 
-        Dictionary<int, Dictionary<int, Player>> _teams = new Dictionary<int, Dictionary<int, Player>>();
+        ConcurrentDictionary<int, ConcurrentDictionary<int, Player>> _teams = new ConcurrentDictionary<int, ConcurrentDictionary<int, Player>>();
         Dictionary<CharacterType, SkillHandler> _skillHandlers = new Dictionary<CharacterType, SkillHandler>();
 
         public EnvironmentManager GetEnvManager { get { return _envManager; } private set { _envManager = value; } }
@@ -220,20 +221,18 @@ namespace Server.Game
                 return;
 
             GameObjectType type = ObjectManager.GetObjectTypeById(gameObject.Id);
+
             if (type == GameObjectType.Player)
             {
                 Player player = gameObject as Player;
+
                 _players.TryAdd(gameObject.Id, player);
                 player.Info.Player.Team = team;
                 player.Info.Player.Weapon = FindWeapon(player.Info.Player.CharType);
                 player.WeaponAttackRange = DataManager.WeaponDict[player.Info.Player.Weapon].Range;
 
-                if (!_teams.TryGetValue(player.Info.Player.Team, out var teamPlayers))
-                {
-                    teamPlayers = new Dictionary<int, Player>(); 
-                    _teams[player.Info.Player.Team] = teamPlayers;
-                }
-                teamPlayers.Add(player.Id, player);
+                var teamPlayers = _teams.GetOrAdd(player.Info.Player.Team, new ConcurrentDictionary<int, Player>());
+                teamPlayers.TryAdd(player.Id, player);
 
                 ObjectManager.Instance.RegisterTeam(gameObject.Id, player.Info.Player.Team);
 
@@ -253,20 +252,31 @@ namespace Server.Game
                     player.Session.Send(enterPacket);
 
                     S_Spawn spawnPacket = new S_Spawn();
-                    foreach (Player p in _players.Values)
+                    foreach (Player p in _players.Values.ToArray())
                     {
-                        if (player != p)
+                        if (player != p && p != null)
+                        {
+                            spawnPacket.Objects.Add(p.Info);
+                        }                            
+                    }
+
+                    foreach (Monster m in _monsters.Values.ToArray())
+                    {
+                        if (m != null)
+                            spawnPacket.Objects.Add(m.Info);
+                    }
+
+                    foreach (Projectile p in _projectiles.Values.ToArray())
+                    {
+                        if (p != null)
                             spawnPacket.Objects.Add(p.Info);
                     }
 
-                    foreach (Monster m in _monsters.Values)
-                        spawnPacket.Objects.Add(m.Info);
-
-                    foreach (Projectile p in _projectiles.Values)
-                        spawnPacket.Objects.Add(p.Info);
-
-                    foreach (EnvironmentObject env in _envs.Values)
-                        spawnPacket.Objects.Add(env.Info);
+                    foreach (EnvironmentObject env in _envs.Values.ToArray())
+                    {
+                        if (env != null)
+                            spawnPacket.Objects.Add(env.Info);
+                    }
 
                     player.Session.Send(spawnPacket);
 
@@ -315,9 +325,9 @@ namespace Server.Game
                 S_Spawn spawnPacket = new S_Spawn();
                 spawnPacket.Objects.Add(gameObject.Info);
                 
-                foreach (Player p in _players.Values)
+                foreach (Player p in _players.Values.ToArray())
                 {
-                    if (p.Id != gameObject.Id)
+                    if (p != null && p.Id != gameObject.Id && p.Session != null)
                     {
                         p.Session.Send(spawnPacket);
                     }
@@ -334,10 +344,14 @@ namespace Server.Game
             if (type == GameObjectType.Player)
             {
                 Player player = null;
-                if (_players.Remove(objectId, out player) == false)
+                if (!_players.TryGetValue(objectId, out player) || player == null)
                     return;
-                var myTeam = _teams[player.Info.Player.Team];
-                myTeam.Remove(player.Id);
+                int teamId = player.Info.Player.Team;
+                _players.TryRemove(objectId, out _);
+
+                if (_teams.TryGetValue(teamId, out var myTeam))
+                    myTeam.TryRemove(objectId, out _);
+
                 ObjectManager.Instance.Remove(player.Id);
 
                 player.Room = null;
@@ -354,31 +368,29 @@ namespace Server.Game
             }
             else if (type == GameObjectType.Monster)
             {
-                Monster monster = null;
-                if (_monsters.Remove(objectId, out monster) == false)
-                    return;
-
-                ObjectManager.Instance.Remove(objectId);
-                monster.Room = null;
-                _monsterManager.Add(-1, this);
+                if (_monsters.TryRemove(objectId, out Monster monster) && monster != null)
+                {
+                    ObjectManager.Instance.Remove(objectId);
+                    monster.Room = null;
+                    _monsterManager.Add(-1, this);
+                }
             }
             else if (type == GameObjectType.Projectile)
             {
-                Projectile projectile = null;
-                if (_projectiles.Remove(objectId, out projectile) == false)
-                    return;
-
-                projectile.Room = null;
-                projectile.Owner = null;
+                if (_projectiles.TryRemove(objectId, out Projectile projectile) && projectile != null)
+                {
+                    projectile.Room = null;
+                    projectile.Owner = null;
+                }
             }
 
             // 타인한테 정보 전송
             {
                 S_Despawn despawnPacket = new S_Despawn();
                 despawnPacket.ObjectIds.Add(objectId);
-                foreach (Player p in _players.Values)
+                foreach (Player p in _players.Values.ToList())
                 {
-                    if (p.Id != objectId)
+                    if (p.Id != objectId && p.Session != null)
                         p.Session.Send(despawnPacket);
                 }
             }
@@ -579,16 +591,22 @@ namespace Server.Game
         #endregion
         public void Broadcast(IMessage packet)
         {
-            foreach (Player p in _players.Values)
+            foreach (Player p in _players.Values.ToArray())
             {
+                if (p == null || p.Session == null)
+                    continue;
+
                 p.Session.Send(packet);
             }
         }
 
         public override void CheckLastPing()
         {
-            foreach(Player p in _players.Values)
+            foreach(Player p in _players.Values.ToArray())
             {
+                if (p == null || p.Session == null)
+                    continue;
+
                 if (p.Session.CheckTimeout())
                     p.Session.Disconnect();
             }
