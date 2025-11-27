@@ -79,8 +79,6 @@ class PacketManager
 		_handler.Add((ushort)MsgId.CChargingSkill, PacketHandler.C_ChargingSkillHandler);		
 		_onRecv.Add((ushort)MsgId.COperate, MakePacket<C_Operate>);
 		_handler.Add((ushort)MsgId.COperate, PacketHandler.C_OperateHandler);		
-		_onRecv.Add((ushort)MsgId.CAttackRequest, MakePacket<C_AttackRequest>);
-		_handler.Add((ushort)MsgId.CAttackRequest, PacketHandler.C_AttackRequestHandler);		
 		_onRecv.Add((ushort)MsgId.CChat, MakePacket<C_Chat>);
 		_handler.Add((ushort)MsgId.CChat, PacketHandler.C_ChatHandler);		
 		_onRecv.Add((ushort)MsgId.CSlotClick, MakePacket<C_SlotClick>);
@@ -88,7 +86,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CStartBtn, MakePacket<C_StartBtn>);
 		_handler.Add((ushort)MsgId.CStartBtn, PacketHandler.C_StartBtnHandler);		
 		_onRecv.Add((ushort)MsgId.CUseItem, MakePacket<C_UseItem>);
-		_handler.Add((ushort)MsgId.CUseItem, PacketHandler.C_UseItemHandler);
+		_handler.Add((ushort)MsgId.CUseItem, PacketHandler.C_UseItemHandler);		
+		_onRecv.Add((ushort)MsgId.CDeployingLoop, MakePacket<C_DeployingLoop>);
+		_handler.Add((ushort)MsgId.CDeployingLoop, PacketHandler.C_DeployingLoopHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

@@ -14,7 +14,6 @@ namespace Server.Game
         public EnvironmentObject()
         {
             ObjectType = GameObjectType.Environment;
-
         }
     }
 }

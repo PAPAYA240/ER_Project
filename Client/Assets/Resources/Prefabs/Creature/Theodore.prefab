@@ -5377,6 +5377,7 @@ GameObject:
   - component: {fileID: 136305000347277930}
   - component: {fileID: 7589953576854205319}
   - component: {fileID: 2907659643995508593}
+  - component: {fileID: 2867911544984159696}
   m_Layer: 3
   m_Name: Theodore
   m_TagString: Untagged
@@ -5457,6 +5458,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55e86d03b5ee90343aeb5c705c87e670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Sound: {fileID: 0}
+  xRayIgnoreStencilID: 100
+--- !u!114 &2867911544984159696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1792981127976458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 176bdf16fd35b524bb656781b4f2a89f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CharType: 5
 --- !u!1 &1799350042935927
 GameObject:
   m_ObjectHideFlags: 0

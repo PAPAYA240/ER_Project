@@ -2,6 +2,7 @@ using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class UI_PlayerHUD : UI_Scene
@@ -18,7 +19,8 @@ public class UI_PlayerHUD : UI_Scene
         KDA,
         KillNoti,
         BattleBoard,
-        GameResult
+        GameResult,
+        DamageOverlay,
     }
 
 
@@ -149,7 +151,10 @@ public class UI_PlayerHUD : UI_Scene
     }
 
     #endregion
-
+    public void SetDamageOverlay()
+    {
+        GetObject((int)GameObjects.DamageOverlay).GetComponent<UI_DamageOverlay>().ActiveDamageScreen();
+    }
     public void SetTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)
     {
         GetObject((int)GameObjects.Timer).GetComponent<UI_Timer>().SetTimer(phase, clientLocalTargetRealtimeSinceStartupEnd);
@@ -263,5 +268,10 @@ public class UI_PlayerHUD : UI_Scene
                 GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().ChangeHealPackImage(UI_Minimap.Images.HealPackLC, isActivate);
                 break;
         }
+    }
+
+    public void SetMinimapCharImgEnable(int id, bool isEnable)
+    {
+        GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetImageEnable(id, isEnable);
     }
 }

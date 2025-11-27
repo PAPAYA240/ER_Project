@@ -30,6 +30,7 @@ public class PlayerViewController : MonoBehaviour
     private GameObject _target;
 
     public HashSet<int> VisibleObjectIds { get; set; } = new HashSet<int>();
+    public HashSet<int> WardIds { get; set; } = new HashSet<int>();
 
     public int TargetId { get { return _targetId; } set { _targetId = value; } }
 

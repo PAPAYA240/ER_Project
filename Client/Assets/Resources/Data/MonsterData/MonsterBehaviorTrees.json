@@ -21,11 +21,6 @@
                   "Name": "Animation",
                   "Type": "PlayAnimation",
                   "Properties": { "chainAnimNames": [ "DEAD" ] }
-                },
-                {
-                  "Name": "Sound",
-                  "Type": "PlaySoundNode",
-                  "Properties": { "soundPaths": [ "Dead" ] }
                 }
               ]
             }
@@ -38,11 +33,6 @@
             {
               "Name": "Condition",
               "Type": "HitConditionNode"
-            },
-            {
-              "Name": "Sound",
-              "Type": "PlaySoundNode",
-              "Properties": { "soundPaths": [ "Hit" ] }
             }
           ]
         },
@@ -62,11 +52,6 @@
                   "Name": "Animation",
                   "Type": "PlayAnimation",
                   "Properties": { "chainAnimNames": [ "APPEAR" ] }
-                },
-                {
-                  "Name": "Sound",
-                  "Type": "PlaySoundNode",
-                  "Properties": { "soundPaths": [ "Appear" ] }
                 }
               ]
             }
@@ -114,11 +99,6 @@
                 {
                   "Name": "Effect",
                   "Type": "PlayEffectNode"
-                },
-                {
-                  "Name": "Sound",
-                  "Type": "PlaySoundNode",
-                  "Properties": { "soundPaths": [ "Attack1" ] }
                 }
               ]
             }
@@ -144,11 +124,6 @@
                 {
                   "Name": "Effect",
                   "Type": "PlayEffectNode"
-                },
-                {
-                  "Name": "Sound",
-                  "Type": "PlaySoundNode",
-                  "Properties": { "soundPaths": [ "Attack2" ] }
                 }
               ]
             }
@@ -174,11 +149,6 @@
                 {
                   "Name": "Effect",
                   "Type": "PlayEffectNode"
-                },
-                {
-                  "Name": "Sound",
-                  "Type": "PlaySoundNode",
-                  "Properties": { "soundPaths": [ "Skill1_Start", "Skill1" ] }
                 }
               ]
             }
@@ -209,11 +179,6 @@
                   "Name": "Material",
                   "Type": "SetMaterialNode",
                   "Properties": { "strChangeMaterial": "materials/effect/auraMaterial" }
-                },
-                {
-                  "Name": "Sound",
-                  "Type": "PlaySoundNode",
-                  "Properties": { "soundPaths": [ "Skill2_Ready", "Skill2" ] }
                 }
               ]
             }
@@ -243,11 +208,6 @@
                   "Name": "Animation",
                   "Type": "PlayAnimation",
                   "Properties": { "chainAnimNames": [ "ATTACK1" ] }
-                },
-                {
-                  "Name": "Sound",
-                  "Type": "PlaySoundNode",
-                  "Properties": { "soundPaths": [ "Attack" ] }
                 }
               ]
             }
@@ -274,11 +234,6 @@
                 {
                   "Name": "Effect",
                   "Type": "PlayEffectNode"
-                },
-                {
-                  "Name": "Sound",
-                  "Type": "PlaySoundNode",
-                  "Properties": { "soundPaths": [ "Skill1_Start", "Skill1_Shot" ] }
                 }
               ]
             }
@@ -305,11 +260,6 @@
                 {
                   "Name": "Effect",
                   "Type": "PlayEffectNode"
-                },
-                {
-                  "Name": "Sound",
-                  "Type": "PlaySoundNode",
-                  "Properties": { "soundPaths": [ "Skill2_ShotReady", "Skill2_Shot" ] }
                 }
               ]
             }
@@ -336,11 +286,6 @@
                 {
                   "Name": "Effect",
                   "Type": "PlayEffectNode"
-                },
-                {
-                  "Name": "Sound",
-                  "Type": "PlaySoundNode",
-                  "Properties": { "soundPaths": [ "Skill3_Scan", "Skill3_Shot" ] }
                 }
               ]
             }
@@ -374,11 +319,6 @@
                 {
                   "Name": "Effect",
                   "Type": "PlayEffectNode"
-                },
-                {
-                  "Name": "Sound",
-                  "Type": "PlaySoundNode",
-                  "Properties": { "soundPaths": [ "Attack1" ] }
                 }
               ]
             }
@@ -412,11 +352,6 @@
                 {
                   "Name": "Effect",
                   "Type": "PlayEffectNode"
-                },
-                {
-                  "Name": "Sound",
-                  "Type": "PlaySoundNode",
-                  "Properties": { "soundPaths": [ "Attack" ] }
                 }
               ]
             }

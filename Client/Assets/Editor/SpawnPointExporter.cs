@@ -44,7 +44,7 @@ public static class SpawnPointExporter
             {
                 id = m.id,
                 side = m.side == true ? "1" : "0",
-                type = m.type.ToString(),   // "BaseSpawn", "BushTeleport"
+                type = m.type.ToString(),   // "BaseSpawn", "BushTeleport", "BushNone"
                 x = pos.x,
                 y = pos.y,
                 z = pos.z

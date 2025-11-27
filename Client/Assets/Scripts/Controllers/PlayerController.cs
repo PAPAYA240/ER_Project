@@ -40,6 +40,18 @@ public class PlayerController : CreatureController
     public ItemStat ItemStat { get; private set; } = new ItemStat();
     protected GameObject _eqipWeapon = null;
 
+    public SoundController Sound;
+
+    // Kill Count : 20초 안에 얼만큼의 처치했는는가?
+    public float CurrentMultiKillCnt
+    {
+        get { return _currentMultiKillCount;  }
+        set { ++_currentMultiKillCount; }
+    }
+    private const float _multiKillTimeLimit = 20.0f;
+    private float _currentMultiKillCount = 0;
+    private float _lastKillTime = 0.0f;
+
     #region Property
     public override float Attack
     {
@@ -201,6 +213,7 @@ public class PlayerController : CreatureController
 
     #endregion
 
+   
     public bool IsKeyInput
     {
         get { return _isKeyInput; }
@@ -229,8 +242,6 @@ public class PlayerController : CreatureController
         set { _isRest = value; }
     }
 
-    private YukiSkillRange _yukiSkillRange = null;
-    public YukiSkillRange GetYukiSkillRange() => _yukiSkillRange;
     protected override void Init()
     {
         base.Init();
@@ -252,14 +263,7 @@ public class PlayerController : CreatureController
         InitNameTag();
 
         // 유키용
-        GameObject yukiPyosik = Managers.Resource.Instantiate("Effect/UIpyosik");
-        yukiPyosik.transform.SetParent(gameObject.transform);
-        if (ObjInfo.Player.CharType == CharacterType.Yuki)
-        {
-            GameObject yukiSkillRange = Managers.Resource.Instantiate("Effect/Yuki_R");
-            yukiSkillRange.transform.SetParent(gameObject.transform);
-            yukiSkillRange.SetActive(false);
-        }
+        SkillEffectInit();
 
         // Chat
         GameObject goChat = Managers.Resource.Instantiate("UI/Chat/ChatBackground");
@@ -275,6 +279,42 @@ public class PlayerController : CreatureController
         _agent.acceleration = 999;
         _agent.angularSpeed = 720;
         _agent.stoppingDistance = 0.1f;
+
+        // Sound
+        Sound = gameObject.GetComponent<SoundController>();
+        if(Sound != null)
+            Sound.PreloadCharAllSounds(ObjInfo.Player.CharType);
+    }
+
+    void SkillEffectInit()
+    {
+        // 표식 이펙트
+        GameObject yukiPyosik = Managers.Resource.Instantiate("Effect/Yuki/UIpyosik");
+        yukiPyosik.transform.SetParent(gameObject.transform);
+        // 표식 히트 이펙트
+        GameObject yukiPyosikHit = Managers.Resource.Instantiate("Effect/Yuki/Yuki_Pyosik_Hit");
+        yukiPyosikHit.transform.SetParent(gameObject.transform);
+        yukiPyosikHit.transform.localPosition = new Vector3(0, 1.5f, 0);
+
+        if (ObjInfo.Player.CharType == CharacterType.Yuki)
+        {
+            // 유키 궁 범위
+            GameObject yukiSkillRange = Managers.Resource.Instantiate("Effect/Yuki/Yuki_R");
+            yukiSkillRange.transform.SetParent(gameObject.transform);
+            yukiSkillRange.SetActive(false);
+            // 궁 이펙트
+            GameObject yukiSkillShadow = Managers.Resource.Instantiate("Effect/Yuki/Yuki_Skill_Shadow");
+            yukiSkillShadow.transform.SetParent(gameObject.transform);
+            yukiSkillShadow.transform.localPosition = Vector3.zero;
+            // 궁 공격 범위
+            GameObject yukiSkillAttack = Managers.Resource.Instantiate("Effect/Yuki/Yuki_Skill_Attack");
+            yukiSkillAttack.transform.SetParent(gameObject.transform);
+            yukiSkillAttack.transform.localPosition = new Vector3(0, 1f, 0);
+            // W 이펙트
+            GameObject yukiFlower = Managers.Resource.Instantiate("Effect/Yuki/YukiFlower");
+            yukiFlower.transform.SetParent(gameObject.transform);
+            yukiFlower.transform.localPosition = Vector3.zero;
+        }
     }
 
     private void InitEquipItem()
@@ -323,7 +363,8 @@ public class PlayerController : CreatureController
     protected override void UpdateController()
     {
         base.UpdateController();
-        
+        MultiKillTimer();
+
         if (Id != Managers.Object.MyPlayer.Id)
         {
             float dist = Vector3.Distance(transform.position, _serverPos);
@@ -412,7 +453,16 @@ public class PlayerController : CreatureController
 
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
-        if(animInfo.Name == "ROZZI_D")
+        bool isUpperBodySkill = animInfo.Name == "ROZZI_D" || animInfo.Name == "YUKI_W";
+        if (isUpperBodySkill)
+        // Animation에 맞는 Sound
+        if (Sound != null)
+        {
+            Sound.GetEffect3D(animInfo.Name, transform.position, true);
+            Sound.GetRandomVoice(animInfo.Name);
+        }
+
+        if (isUpperBodySkill)
         {
             int upperLayer = _animator.GetLayerIndex("UpperBody");
             _animator.CrossFadeInFixedTime(animInfo.Name, 0.05f, upperLayer);
@@ -800,4 +850,18 @@ public class PlayerController : CreatureController
 
         transform.rotation = rotationInfo;
     }
+    private void MultiKillTimer()
+    {
+        if (CurrentMultiKillCnt <= 0)
+            return;
+
+        _lastKillTime += Time.deltaTime;
+        if (_multiKillTimeLimit <= _lastKillTime)
+        {
+            CurrentMultiKillCnt = 0;
+            return;
+        }
+        return;
+    }
+
 }

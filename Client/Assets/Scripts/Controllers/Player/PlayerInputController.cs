@@ -2,6 +2,7 @@
 using Google.Protobuf.Protocol;
 using NUnit.Framework.Constraints;
 using System;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -19,9 +20,13 @@ public class PlayerInputController : MonoBehaviour
     [SerializeField] private LayerMask _monsterMask;
     [SerializeField] private LayerMask _playerMask;
     [SerializeField] private LayerMask _beaconMask;
+    [SerializeField] private LayerMask _deployingLoopMask;
 
     // 커서가 올려져 있는 현재 타겟
     private GameObject _hoverTarget;
+
+    // 사거리 밖에서 타겟팅된 DeployingLoop
+    private IO_DeployingLoop _pendingDeployingLoop;
 
     // 공격 입력을 얼마나 자주 서버로 보낼지 제한 (스팸 방지)
     private float _nextAutoAttackSendTime;
@@ -37,6 +42,7 @@ public class PlayerInputController : MonoBehaviour
         _monsterMask = 1 << LayerMask.NameToLayer("Monster");
         _playerMask = 1 << LayerMask.NameToLayer("Player");
         _beaconMask = 1 << LayerMask.NameToLayer("Beacon");
+        _deployingLoopMask = 1 << LayerMask.NameToLayer("DeployingLoop");
     }
 
     // 커서 아래에 대상 없음 → 지형 이동 패킷
@@ -192,14 +198,84 @@ public class PlayerInputController : MonoBehaviour
         return null;
     }
 
+    public C_DeployingLoop GetDeployingLoopCommand()
+    {
+        // 스킬/휴식/스턴 등 다른 상태면 상호작용 대기 취소
+        if (_player.State != CreatureState.Idle && _player.State != CreatureState.Moving)
+        {
+            _pendingDeployingLoop = null;
+            return null;
+        }
+
+        // 2페이즈 이후부터 사용가능
+        // UI : 지금은 준비되지 않았습니다.
+        //if (_player.CurPhase < 2)
+        //    return null;
+
+        // 1) 새 우클릭이 들어온 경우 → 기존 pending 취소/갱신
+        if (Input.GetMouseButtonDown(1))
+        {
+            GameObject hit = GetMouseTargetInLayer(_deployingLoopMask);
+            IO_DeployingLoop clickedIo = hit ? hit.GetComponentInChildren<IO_DeployingLoop>() : null;
+
+            // 이전에 다른 DeployingLoop를 향해 가고 있었는데,
+            // 이번에 클릭한 게 그게 아니면 → 대기 상호작용 취소
+            if (_pendingDeployingLoop != null && clickedIo != _pendingDeployingLoop)
+                _pendingDeployingLoop = null;
+
+            // 이번 우클릭이 DeployingLoop가 아니면 return
+            if (clickedIo == null)
+                return null;
+
+            // 사거리 안이면 즉시 상호작용 패킷 전송
+            if (clickedIo.IsPlayerInside)
+            {
+                return new C_DeployingLoop
+                {
+                    ObjectId = _player.Id,
+                    IoPos = clickedIo.GetLookTargetPosition(),
+                };
+            }
+
+            // 사거리 밖이면 : 도착 후 자동 상호작용을 위해 pending 으로 기록만 해 둠
+            _pendingDeployingLoop = clickedIo;
+            return null;
+        }
+
+        // 2) 새 클릭은 없고, 예전에 클릭해 둔 DeployingLoop가 있는 경우
+        if (_pendingDeployingLoop != null)
+        {
+            // 트리거 안에 들어온 순간 → 한 번만 패킷 전송
+            if (_pendingDeployingLoop.IsPlayerInside)
+            {
+                var pkt = new C_DeployingLoop
+                {
+                    ObjectId = _player.Id,
+                    IoPos = _pendingDeployingLoop.GetLookTargetPosition(),
+                };
+
+                _pendingDeployingLoop = null;
+                return pkt;
+            }
+        }
+
+        return null;
+    }
+
     // S키 : 공격, 이동 중지 -> Idle 상태 벗어나면 다시 자동 공격
     // H키 : 이동 중지
     public C_Stop GetStopCommand()
     {
         if (Input.GetKeyDown(KeyCode.S))
+        {
+            _pendingDeployingLoop = null;
             return new C_Stop { Reason = StopReason.StopAll };
+        }
         if (Input.GetKeyDown(KeyCode.H))
+        {
+            _pendingDeployingLoop = null;
             return new C_Stop { Reason = StopReason.StopMoveOnly };
+        }
         return null;
     }
 
@@ -283,15 +359,25 @@ public class PlayerInputController : MonoBehaviour
                         else
                             index = i - 1;
 
+                        _player.UseInventoryItem(i);
+                        Vector3 playerToMouse = GetMouseWorldPosition() - _player.transform.position;
+                        playerToMouse.y = 0;
+                        float dist = playerToMouse.magnitude;
+
+                        Vector3 result = GetMouseWorldPosition();
+                        if(dist > 8.5f)
+                        {
+                            result = _player.transform.position + playerToMouse.normalized * 8.5f;
+                        }
+
                         return new C_UseItem()
                         {
                             ObjectId = _player.Id,
                             InventoryIndex = index,
-                            MouseX = GetMouseWorldPosition().x,
-                            MouseZ = GetMouseWorldPosition().z
-                        }; // 하나의 키 입력만 처리하고 싶을 때 사용 (중복 입력 방지)
+                            MouseX = result.x,
+                            MouseZ = result.z
+                        }; 
                     }
-
                 }
             }
         }
@@ -378,6 +464,15 @@ public class PlayerInputController : MonoBehaviour
         {
             return hit.collider.gameObject;
         }
+
+        return null;
+    }
+
+    GameObject GetMouseTargetInLayer(LayerMask mask, float radius = 0.1f)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.SphereCast(ray, radius, out RaycastHit hit, 1000f, mask))
+            return hit.collider.gameObject;
 
         return null;
     }

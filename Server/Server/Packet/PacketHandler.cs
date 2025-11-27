@@ -211,18 +211,7 @@ class PacketHandler
 
        player.Room.Push(player.Room.HandleAttack, player, req);
      }
-    public static void C_AttackRequestHandler(PacketSession session, IMessage packet)
-    {
-        var client = (ClientSession)session;
-        var player = client?.MyPlayer;
-        if (player?.Room == null)
-            return;
 
-        var req = (C_AttackRequest)packet;
-
-        player.Room.Push(player.Room.HandleAttackRequest, player, req);
-    }
-    
     public static void C_SetMoveTargetHandler(PacketSession session, IMessage packet)
     {
         var client = (ClientSession)session;
@@ -483,5 +472,21 @@ class PacketHandler
             return;
 
         room.Push(room.HandleUseItem, player, useItemPkt);
+    }
+
+    public static void C_DeployingLoopHandler(PacketSession session, IMessage packet)
+    {
+        C_DeployingLoop deployingPacket = packet as C_DeployingLoop;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleDeployingLoop, player, deployingPacket);
     }
 }

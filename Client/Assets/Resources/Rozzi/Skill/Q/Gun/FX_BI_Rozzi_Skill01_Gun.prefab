@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4918536910939260}
   - component: {fileID: 198997291885968311}
   - component: {fileID: 199118727513530178}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: twist_smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.6666667, y: 9.701494, z: 1}
+  m_LocalScale: {x: 0.3, y: 7, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4291133939393418}
@@ -115,7 +115,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0, g: 0, b: 0, a: 0.45490196}
+      maxColor: {r: 0, g: 0, b: 0, a: 0.2}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -2375,7 +2375,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8ce4d05096d528644898ee89546b818b, type: 2}
+  - {fileID: 2100000, guid: ed65ca9fd14714f4b8abad67758ca8aa, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2419,7 +2419,7 @@ ParticleSystemRenderer:
   m_VertexStreams: 00010304052226
   m_UseCustomTrailVertexStreams: 0
   m_TrailVertexStreams: 00010304
-  m_Mesh: {fileID: 4300000, guid: dd222a1b2c822e2429038c25ca64fb25, type: 2}
+  m_Mesh: {fileID: 4300000, guid: ab94fac889cfab04cb688dfc73519082, type: 2}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
@@ -2439,9 +2439,8 @@ GameObject:
   - component: {fileID: 4096892863532895}
   - component: {fileID: 198669766051066445}
   - component: {fileID: 199613910340234008}
-  - component: {fileID: 114419969113045110}
   - component: {fileID: 135981475314660225}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: FX_BI_Rozzi_Skill01_Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4739,19 +4738,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &114419969113045110
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1150514830081525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36cbf226ee13bccfdee14097ee974fb0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  time: 1.5
 --- !u!135 &135981475314660225
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4784,7 +4770,7 @@ GameObject:
   - component: {fileID: 4726895578044453}
   - component: {fileID: 198720577657959501}
   - component: {fileID: 199010027949020597}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: floor_plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4800,8 +4786,8 @@ Transform:
   m_GameObject: {fileID: 1224874076139263}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: -0.7071068, w: 0}
-  m_LocalPosition: {x: -0, y: 0, z: -1.05}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0, y: 0, z: 0.45}
+  m_LocalScale: {x: 0.7, y: 0.72, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4338755378357207}
@@ -7058,7 +7044,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: e8d2dfae861a2164591863514a2e1e19, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7079,7 +7065,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: -54616529
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_RenderMode: 4
+  m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
   m_MinParticleSize: 0
@@ -7102,7 +7088,7 @@ ParticleSystemRenderer:
   m_VertexStreams: 00010304
   m_UseCustomTrailVertexStreams: 0
   m_TrailVertexStreams: 00010304
-  m_Mesh: {fileID: 4300000, guid: a17a99f4b9bc1c347887b62cdc9c65e6, type: 2}
+  m_Mesh: {fileID: 4300000, guid: 23fbb67513e527245956d326fd9f92c1, type: 2}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
@@ -7122,7 +7108,7 @@ GameObject:
   - component: {fileID: 4418002841339645}
   - component: {fileID: 198999380439065317}
   - component: {fileID: 199186009849288791}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: twist_smoke (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7139,7 +7125,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.6666667, y: 9.701494, z: 1}
+  m_LocalScale: {x: 0.6, y: 7.2, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4291133939393418}
@@ -7226,7 +7212,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 0.15784632, b: 0.13679248, a: 1}
+      maxColor: {r: 1, g: 0.15784632, b: 0.13679248, a: 0.101960786}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -9513,7 +9499,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 41f187d8f8eda4c4d8382f7f1c43155d, type: 2}
+  - {fileID: 2100000, guid: ed65ca9fd14714f4b8abad67758ca8aa, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9557,7 +9543,7 @@ ParticleSystemRenderer:
   m_VertexStreams: 00010304052226
   m_UseCustomTrailVertexStreams: 0
   m_TrailVertexStreams: 00010304
-  m_Mesh: {fileID: 4300000, guid: cabf076b56a62f242b71808364605de5, type: 2}
+  m_Mesh: {fileID: 4300000, guid: ab94fac889cfab04cb688dfc73519082, type: 2}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
@@ -9577,7 +9563,7 @@ GameObject:
   - component: {fileID: 4761519486016900}
   - component: {fileID: 198155450837535796}
   - component: {fileID: 199852837046926093}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: twist_smoke (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9594,7 +9580,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.6666667, y: 9.701494, z: 1}
+  m_LocalScale: {x: 0.3, y: 7, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4291133939393418}
@@ -9681,7 +9667,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 0.15784632, b: 0.13679248, a: 0.34117648}
+      maxColor: {r: 1, g: 0.15784632, b: 0.13679248, a: 0.29803923}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -11941,7 +11927,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8ce4d05096d528644898ee89546b818b, type: 2}
+  - {fileID: 2100000, guid: ed65ca9fd14714f4b8abad67758ca8aa, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -11985,7 +11971,7 @@ ParticleSystemRenderer:
   m_VertexStreams: 00010304052226
   m_UseCustomTrailVertexStreams: 0
   m_TrailVertexStreams: 00010304
-  m_Mesh: {fileID: 4300000, guid: dd222a1b2c822e2429038c25ca64fb25, type: 2}
+  m_Mesh: {fileID: 4300000, guid: ab94fac889cfab04cb688dfc73519082, type: 2}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
@@ -12005,7 +11991,7 @@ GameObject:
   - component: {fileID: 4106427537579042}
   - component: {fileID: 198144850725394305}
   - component: {fileID: 199427642039194371}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: floor_pattern (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12109,7 +12095,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.18039216, g: 0, b: 0.011764706, a: 0.6509804}
+      maxColor: {r: 0.18039216, g: 0, b: 0.011764706, a: 0.6}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -14288,7 +14274,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f7ae69c019a410247bb8f16325fbdc11, type: 2}
+  - {fileID: 2100000, guid: 11551de2fe6bc5744aab6d438db7428d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14352,7 +14338,7 @@ GameObject:
   - component: {fileID: 4218729901912285}
   - component: {fileID: 198486975034594475}
   - component: {fileID: 199966986740126646}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: twist_smoke (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14368,8 +14354,8 @@ Transform:
   m_GameObject: {fileID: 1461717744815699}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: -0, z: -0.38}
-  m_LocalScale: {x: 0.6666667, y: 9.701494, z: 1}
+  m_LocalPosition: {x: 0, y: -0, z: 0}
+  m_LocalScale: {x: 0.6, y: 7.2, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4291133939393418}
@@ -14456,7 +14442,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0, g: 0, b: 0, a: 0.57254905}
+      maxColor: {r: 0, g: 0, b: 0, a: 0.101960786}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -16743,7 +16729,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 41f187d8f8eda4c4d8382f7f1c43155d, type: 2}
+  - {fileID: 2100000, guid: ed65ca9fd14714f4b8abad67758ca8aa, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -16787,7 +16773,7 @@ ParticleSystemRenderer:
   m_VertexStreams: 00010304052226
   m_UseCustomTrailVertexStreams: 0
   m_TrailVertexStreams: 00010304
-  m_Mesh: {fileID: 4300000, guid: cabf076b56a62f242b71808364605de5, type: 2}
+  m_Mesh: {fileID: 4300000, guid: ab94fac889cfab04cb688dfc73519082, type: 2}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
@@ -16807,7 +16793,7 @@ GameObject:
   - component: {fileID: 4232414920567856}
   - component: {fileID: 198687277814354410}
   - component: {fileID: 199088692735312097}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16823,7 +16809,7 @@ Transform:
   m_GameObject: {fileID: 1463692033530535}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.27}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -19145,7 +19131,7 @@ GameObject:
   - component: {fileID: 4493692761246920}
   - component: {fileID: 198000883587470162}
   - component: {fileID: 199468746824919567}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: floor_laser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19162,7 +19148,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0.8, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4338755378357207}
@@ -21419,7 +21405,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8130f84e405190048a422387090107af, type: 2}
+  - {fileID: 2100000, guid: 2cfd3ae15ab4af14abffc3e01b8a16ef, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -21437,7 +21423,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -954504163
+  m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_RenderMode: 0
@@ -21483,7 +21469,7 @@ GameObject:
   - component: {fileID: 4338755378357207}
   - component: {fileID: 198861456831727188}
   - component: {fileID: 199155301424974645}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: Q_Sign
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23793,7 +23779,7 @@ GameObject:
   - component: {fileID: 4291133939393418}
   - component: {fileID: 198042975067389029}
   - component: {fileID: 199547400524981931}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: Q_Shoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26108,7 +26094,7 @@ GameObject:
   - component: {fileID: 4457952423072886}
   - component: {fileID: 198840326786849300}
   - component: {fileID: 199110247861527271}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: bullet_blackSmoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26124,8 +26110,8 @@ Transform:
   m_GameObject: {fileID: 1777299124405316}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: 0, y: 0.02, z: 0.426}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0.02, z: 4}
+  m_LocalScale: {x: 1, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4291133939393418}
@@ -26212,7 +26198,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.009433985, g: 0.009433985, b: 0.009433985, a: 1}
+      maxColor: {r: 0.009433985, g: 0.009433985, b: 0.009433985, a: 0.12156863}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -28418,7 +28404,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8ce4d05096d528644898ee89546b818b, type: 2}
+  - {fileID: 2100000, guid: 41617d6acb8db024288e7d9e187878e1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -28439,7 +28425,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: -954504163
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_RenderMode: 4
+  m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
   m_MinParticleSize: 0
@@ -28462,7 +28448,7 @@ ParticleSystemRenderer:
   m_VertexStreams: 00010304052226
   m_UseCustomTrailVertexStreams: 0
   m_TrailVertexStreams: 00010304
-  m_Mesh: {fileID: 4300000, guid: 9fd94e36b542b6f4496a433b0f51351c, type: 2}
+  m_Mesh: {fileID: 4300000, guid: ea8e1dee528322943a32156caae0f38d, type: 2}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
@@ -28482,7 +28468,7 @@ GameObject:
   - component: {fileID: 4904666400205770}
   - component: {fileID: 198458135075361610}
   - component: {fileID: 199821786852797802}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28499,7 +28485,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
   m_LocalPosition: {x: 0, y: 0.003000021, z: 0.426}
-  m_LocalScale: {x: 1, y: 1, z: 0.5}
+  m_LocalScale: {x: 1.9, y: 1.7, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4291133939393418}
@@ -28586,7 +28572,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 0.4146431, b: 0.32549024, a: 0.25490198}
+      maxColor: {r: 1, g: 0.4146431, b: 0.32549024, a: 0.8156863}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -30756,7 +30742,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 34453432b5d0a8e4eac94ba4f822218b, type: 2}
+  - {fileID: 2100000, guid: 19eb4cdbcb66e9940bd19f6041f95f8e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -30777,7 +30763,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: -954504163
   m_SortingLayer: 0
   m_SortingOrder: 10
-  m_RenderMode: 4
+  m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
   m_MinParticleSize: 0
@@ -30800,7 +30786,7 @@ ParticleSystemRenderer:
   m_VertexStreams: 00010304
   m_UseCustomTrailVertexStreams: 0
   m_TrailVertexStreams: 00010304
-  m_Mesh: {fileID: 4300000, guid: a17a99f4b9bc1c347887b62cdc9c65e6, type: 2}
+  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
@@ -30820,13 +30806,13 @@ GameObject:
   - component: {fileID: 4946523645289400}
   - component: {fileID: 198161340594695767}
   - component: {fileID: 199834579658526205}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: bullet_particle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4946523645289400
 Transform:
   m_ObjectHideFlags: 0
@@ -33085,7 +33071,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 732c0adcd1d698740be00bca9eb074fc, type: 2}
+  - {fileID: 2100000, guid: 8733ea57d2bd7094f86872ee28f873db, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

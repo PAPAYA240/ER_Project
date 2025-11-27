@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using static Player_StunState;
 using static Server.Game.StunState;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Server.Game
 {
@@ -23,7 +24,7 @@ namespace Server.Game
         public GameRoom Room { get; set; }
 
         public CharacterType CharType => Info.Player.CharType;
-        
+
         ObjectInfo _objectInfo = new ObjectInfo()
         {
             StatInfo = new StatInfo(),
@@ -68,7 +69,7 @@ namespace Server.Game
             }
         }
 
-        public StatInfo Stat 
+        public StatInfo Stat
         {
             get
             {
@@ -146,7 +147,7 @@ namespace Server.Game
             set { Stat.AttackSpeed = value; }
         }
 
-        public virtual float Healing  
+        public virtual float Healing
         {
             get { return Stat.Healing; }
             set { Stat.Healing = value; }
@@ -188,7 +189,7 @@ namespace Server.Game
         protected bool _isUpdatedStatus = false;
         public void UpdateStatusFlag(bool isUpdated = true) => _isUpdatedStatus = isUpdated;
         protected bool _isCcImmune = false;
-        public bool IsCcImmune { get {  return _isCcImmune; } set { _isCcImmune = value; } }
+        public bool IsCcImmune { get { return _isCcImmune; } set { _isCcImmune = value; } }
 
         public bool IsDead => State == CreatureState.Dead;
 
@@ -237,7 +238,6 @@ namespace Server.Game
 
             return true;
         }
-
         public virtual void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false, bool isBasicAttack = false)
         {
             if (Room == null || State == CreatureState.Dead || State == CreatureState.Appear)
@@ -258,8 +258,45 @@ namespace Server.Game
             IsHit = true;
         }
 
+        private void AttackInfo(GameObject attacker)
+        {
+            string attackKey = "";
+            bool isAttackerValid = false;
+
+            if (attacker is Player playerAttack)
+            {
+                isAttackerValid = true;
+                Player_SkillState skillstate = playerAttack.CurrentState as Player_SkillState;
+
+                if (skillstate != null)
+                    attackKey = skillstate.Handler.GetKeyCode().ToString();
+                else
+                {
+                     attackKey = "Attack";
+                }
+            }
+            else if (attacker is Monster monsterAttack)
+            {
+                isAttackerValid = true;
+                attackKey = monsterAttack.CurrentSkill.ToString();
+            }
+
+            if (isAttackerValid)
+            {
+                S_AttackInfo attackInfoPacket = new S_AttackInfo
+                {
+                    ObjectId = this.Id,          
+                    AttackerId = attacker.Id,  
+                    AttackType = attackKey,   
+                };
+
+                Room.Broadcast(attackInfoPacket);
+            }
+        }
         protected virtual void OnDamaged(GameObject attacker, float damage, bool isBasicAttack = false)
         {
+            AttackInfo(attacker);
+
             //배리어가 흡수할 수치 계산
             float absorbed = Math.Min(Barrier, damage);
             ReduceBarrier(absorbed);
@@ -469,6 +506,7 @@ namespace Server.Game
                     {
                         S_AddYukiPyosik yukiPyosikPkt = new S_AddYukiPyosik();
                         yukiPyosikPkt.ObjectId = Id;
+                        yukiPyosikPkt.AttackerId = statusEffect.attacker.Id;
                         yukiPyosikPkt.Position = new PositionInfo
                         {
                             PosX = PosInfo.PosX,
@@ -482,7 +520,7 @@ namespace Server.Game
                         // 유키 궁 표식 데미지
                         int curLevel = player.GetSkillLevel(Data.DataUtils.KeyCode.R);
                         float curAttack = player.Attack;
-                        _ = CoDelayYukiCoupDeGrace(statusEffect.attacker, curAttack, curLevel, 1000);
+                        _ = CoDelayYukiCoupDeGrace(player, curAttack, curLevel, 1000);
                     }
                     else if (statusEffect.type == "Buff" || statusEffect.type == "Debuff")
                     {
@@ -521,9 +559,11 @@ namespace Server.Game
 
         // Yuki pyosik damage coroutine
         List<float> FixedDamage = new List<float> { 0.06f, 0.1f, 0.14f };
-        private async Task CoDelayYukiCoupDeGrace(Creature atk, float curAttack, int curLevel, int delayMs)
+        private async Task CoDelayYukiCoupDeGrace(Player atk, float curAttack, int curLevel, int delayMs)
         {
             await Task.Delay(delayMs);
+
+            SendYukiSkillEffect(SkillEffectType.YukiRHit);
 
             float damage = MaxHp * (FixedDamage[curLevel - 1] + (curAttack * 0.05f) * 0.01f);
             Room.Push(OnDamaged, atk, damage, true, false);
@@ -850,6 +890,17 @@ namespace Server.Game
             };
 
             Room?.Push(Room.Broadcast, packet);
+        }
+
+        public void SendYukiSkillEffect(SkillEffectType type)
+        {
+            S_SkillEffect pkt = new S_SkillEffect
+            {
+                ObjectId = Id,
+                EffectType = type
+            };
+
+            Room.Push(Room.Broadcast, pkt);
         }
         #endregion
     }

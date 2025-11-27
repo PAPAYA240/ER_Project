@@ -69,8 +69,7 @@ public class UI_CommonSkill : UI_SkillBase
         if (ui_PlayerInterface == null)
             Debug.Log("null  == ui_PlayerInterface");
 
-        //temp
-        SetStaminaCost(50);
+        SetStaminaCost(0);
         GetObject(_stamina).gameObject.SetActive(false);
 
         GetText((int)Texts.CooldownTimerText).text = "";

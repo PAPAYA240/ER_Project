@@ -71,7 +71,7 @@ public class Util
     }
 
     // Image Slice
-    public static Sprite[] Slice(Texture2D spriteSheet, int columns, int rows, float padding)
+    public static Sprite[] Slice(Texture2D spriteSheet, int columns, int rows, float padding = 0)
     {
         if (spriteSheet == null)
         {
