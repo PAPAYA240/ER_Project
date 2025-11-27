@@ -813,8 +813,8 @@ class PacketHandler
 
     public static void S_SkillEffectHandler(PacketSession session, IMessage packet)
     {
-        if (!IsSceneReady("Game", () => S_YukiSkillEffectHandler(session, packet))) return;
-        S_YukiSkillEffect YukiSkillEffectPkt = packet as S_YukiSkillEffect;
+        if (!IsSceneReady("Game", () => S_SkillEffectHandler(session, packet))) return;
+        S_SkillEffect YukiSkillEffectPkt = packet as S_SkillEffect;
 
         GameObject go = Managers.Object.FindById(YukiSkillEffectPkt.ObjectId);
         if (go == null)
