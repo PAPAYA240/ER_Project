@@ -250,16 +250,7 @@ public class PlayerController : CreatureController
         InitNameTag();
 
         // 유키용
-        GameObject yukiPyosik = Managers.Resource.Instantiate("Effect/Yuki/UIpyosik");
-        yukiPyosik.transform.SetParent(gameObject.transform);
-        if (ObjInfo.Player.CharType == CharacterType.Yuki)
-        {
-            GameObject yukiSkillRange = Managers.Resource.Instantiate("Effect/Yuki/Yuki_R");
-            yukiSkillRange.transform.SetParent(gameObject.transform);
-            yukiSkillRange.SetActive(false);
-            GameObject yukiFlower = Managers.Resource.Instantiate("Effect/Yuki/YukiFlower");
-            yukiFlower.transform.SetParent(gameObject.transform);
-        }
+        SkillEffectInit();
 
         // Chat
         GameObject goChat = Managers.Resource.Instantiate("UI/Chat/ChatBackground");
@@ -275,6 +266,37 @@ public class PlayerController : CreatureController
         _agent.acceleration = 999;
         _agent.angularSpeed = 720;
         _agent.stoppingDistance = 0.1f;
+    }
+
+    void SkillEffectInit()
+    {
+        // 표식 이펙트
+        GameObject yukiPyosik = Managers.Resource.Instantiate("Effect/Yuki/UIpyosik");
+        yukiPyosik.transform.SetParent(gameObject.transform);
+        // 표식 히트 이펙트
+        GameObject yukiPyosikHit = Managers.Resource.Instantiate("Effect/Yuki/Yuki_Pyosik_Hit");
+        yukiPyosikHit.transform.SetParent(gameObject.transform);
+        yukiPyosikHit.transform.localPosition = new Vector3(0, 1.5f, 0);
+
+        if (ObjInfo.Player.CharType == CharacterType.Yuki)
+        {
+            // 유키 궁 범위
+            GameObject yukiSkillRange = Managers.Resource.Instantiate("Effect/Yuki/Yuki_R");
+            yukiSkillRange.transform.SetParent(gameObject.transform);
+            yukiSkillRange.SetActive(false);
+            // 궁 이펙트
+            GameObject yukiSkillShadow = Managers.Resource.Instantiate("Effect/Yuki/Yuki_Skill_Shadow");
+            yukiSkillShadow.transform.SetParent(gameObject.transform);
+            yukiSkillShadow.transform.localPosition = Vector3.zero;
+            // 궁 공격 범위
+            GameObject yukiSkillAttack = Managers.Resource.Instantiate("Effect/Yuki/Yuki_Skill_Attack");
+            yukiSkillAttack.transform.SetParent(gameObject.transform);
+            yukiSkillAttack.transform.localPosition = new Vector3(0, 1f, 0);
+            // W 이펙트
+            GameObject yukiFlower = Managers.Resource.Instantiate("Effect/Yuki/YukiFlower");
+            yukiFlower.transform.SetParent(gameObject.transform);
+            yukiFlower.transform.localPosition = Vector3.zero;
+        }
     }
 
     private void InitEquipItem()

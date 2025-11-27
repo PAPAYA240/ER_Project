@@ -1286,16 +1286,6 @@ namespace Server.Game
             Room.Push(Room.Broadcast, unstoppablePkt);
         }
 
-        public void SendYukiSkillEffect(Yuki_SkillEffectType type)
-        {
-            S_YukiSkillEffect pkt = new S_YukiSkillEffect
-            {
-                ObjectId = Id,
-                EffectType = type
-            };
-
-            Room.Push(Room.Broadcast, pkt);
-        }
         #endregion
 
         #region StatusEffect(버프, 디버프), Barrier(방어막) 관련

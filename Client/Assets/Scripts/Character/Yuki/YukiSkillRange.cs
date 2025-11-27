@@ -10,6 +10,8 @@ public class YukiSkillRange : MonoBehaviour
 
     void Start()
     {
+        transform.localPosition = Vector3.zero;
+
         _backgroundImage.type = Image.Type.Filled;
         _backgroundImage.fillMethod = Image.FillMethod.Radial360; // ¿øÇü
         _backgroundImage.fillOrigin = 3; // 0: À§

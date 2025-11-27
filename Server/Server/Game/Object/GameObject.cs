@@ -459,6 +459,7 @@ namespace Server.Game
                     {
                         S_AddYukiPyosik yukiPyosikPkt = new S_AddYukiPyosik();
                         yukiPyosikPkt.ObjectId = Id;
+                        yukiPyosikPkt.AttackerId = statusEffect.attacker.Id;
                         yukiPyosikPkt.Position = new PositionInfo
                         {
                             PosX = PosInfo.PosX,
@@ -472,7 +473,7 @@ namespace Server.Game
                         // 유키 궁 표식 데미지
                         int curLevel = player.GetSkillLevel(Data.DataUtils.KeyCode.R);
                         float curAttack = player.Attack;
-                        _ = CoDelayYukiCoupDeGrace(statusEffect.attacker, curAttack, curLevel, 1000);
+                        _ = CoDelayYukiCoupDeGrace(player, curAttack, curLevel, 1000);
                     }
                     else if (statusEffect.type == "Buff" || statusEffect.type == "Debuff")
                     {
@@ -511,9 +512,11 @@ namespace Server.Game
 
         // Yuki pyosik damage coroutine
         List<float> FixedDamage = new List<float> { 0.06f, 0.1f, 0.14f };
-        private async Task CoDelayYukiCoupDeGrace(Creature atk, float curAttack, int curLevel, int delayMs)
+        private async Task CoDelayYukiCoupDeGrace(Player atk, float curAttack, int curLevel, int delayMs)
         {
             await Task.Delay(delayMs);
+
+            SendYukiSkillEffect(SkillEffectType.YukiRHit);
 
             float damage = MaxHp * (FixedDamage[curLevel - 1] + (curAttack * 0.05f) * 0.01f);
             Room.Push(OnDamaged, atk, damage, true, false);
@@ -840,6 +843,17 @@ namespace Server.Game
             };
 
             Room?.Push(Room.Broadcast, packet);
+        }
+
+        public void SendYukiSkillEffect(SkillEffectType type)
+        {
+            S_SkillEffect pkt = new S_SkillEffect
+            {
+                ObjectId = Id,
+                EffectType = type
+            };
+
+            Room.Push(Room.Broadcast, pkt);
         }
         #endregion
     }

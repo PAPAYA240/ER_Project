@@ -13,6 +13,8 @@ public class YukiFlower : MonoBehaviour
 
     private void Awake()
     {
+        transform.parent.localPosition = Vector3.zero;
+
         Texture2D sheet = Resources.Load<Texture2D>("effects/textures/FX_BI_Yuki_01SE");
         if (sheet == null)
         {
@@ -23,10 +25,14 @@ public class YukiFlower : MonoBehaviour
         _frames = Util.Slice(sheet, 6, 6);
         if (_frames == null || _frames.Length == 0)
             Debug.LogError("Sprite slicing failed");
+
+        image.enabled = false;
     }
 
     public void ActivateYukiPyosik()
     {
+        transform.localPosition = Vector3.zero;
+
         // 중복 재생 방지
         if (_coAnimRoutine != null)
             StopCoroutine(_coAnimRoutine);

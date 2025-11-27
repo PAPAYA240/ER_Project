@@ -700,22 +700,28 @@ class PacketHandler
         if (go == null)
             return;
 
+        GameObject attackerGo = Managers.Object.FindById(addYukiPyosikPkt.AttackerId);
+        if (attackerGo == null)
+            return;
+
         YukiPyosik yukiPyosik = go.GetComponentInChildren<YukiPyosik>();
         if (yukiPyosik == null)
             return;
 
         yukiPyosik.ActivateYukiPyosik(go);
+        SkillEffectHandler.HandleEffect(SkillEffectType.YukiRShadow, attackerGo);
+        SkillEffectHandler.HandleEffect(SkillEffectType.YukiRAttack, attackerGo);
     }
 
-    public static void S_YukiSkillEffectHandler(PacketSession session, IMessage packet)
+    public static void S_SkillEffectHandler(PacketSession session, IMessage packet)
     {
-        S_YukiSkillEffect YukiSkillEffectPkt = packet as S_YukiSkillEffect;
+        S_SkillEffect YukiSkillEffectPkt = packet as S_SkillEffect;
 
         GameObject go = Managers.Object.FindById(YukiSkillEffectPkt.ObjectId);
         if (go == null)
             return;
 
-        Yuki_SkillEffectHandler.HandleEffect((Yuki_SkillEffectType)YukiSkillEffectPkt.EffectType, go);
+        SkillEffectHandler.HandleEffect((SkillEffectType)YukiSkillEffectPkt.EffectType, go);
     }
 
     public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)
