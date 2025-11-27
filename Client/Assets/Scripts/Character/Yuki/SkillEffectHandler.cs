@@ -18,6 +18,7 @@ public static class SkillEffectHandler
         Register(SkillEffectType.YukiRShadow, PlayYukiRShadow);
         Register(SkillEffectType.YukiRHit, PlayYukiRHit);
         Register(SkillEffectType.YukiRAttack, PlayYukiRAttack);
+        Register(SkillEffectType.YukiQAttack, PlayYukiQAttack);
 
         //Register(Yuki_SkillEffectType.Dash, PlayDashEffect);
     }
@@ -54,6 +55,11 @@ public static class SkillEffectHandler
     private static void PlayYukiRAttack(GameObject owner)
     {
         owner.GetComponentInChildren<Yuki_SkillAttack>(true)?.PlayEffect();
+    }
+
+    private static void PlayYukiQAttack(GameObject owner)
+    {
+        owner.GetComponentInChildren<Yuki_SkillQAttack>(true)?.PlayEffect();
     }
 
     private static void PlayYukiW(GameObject owner)

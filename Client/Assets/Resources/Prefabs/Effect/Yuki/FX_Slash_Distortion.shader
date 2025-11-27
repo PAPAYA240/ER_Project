@@ -1,4 +1,4 @@
-Shader "ERBS_FX/FX_Slash_Animated"
+ÔªøShader "ERBS_FX/FX_Slash_Distortion"
 {
     Properties
     {
@@ -8,6 +8,7 @@ Shader "ERBS_FX/FX_Slash_Animated"
         _FlowMap ("Flow Map", 2D) = "white" {}
         _FlowStrength ("Flow Strength", Float) = 0.3
         _FlowSpeed ("Flow Speed", Float) = 1
+        _DistortionStrength ("Distortion Strength", Float) = 0.05
         _AlphaCutoff ("Alpha Cutoff", Range(0,1)) = 0.05
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull Mode", Float) = 0
         [Toggle] _ZWrite ("ZWrite Mode", Float) = 0
@@ -36,6 +37,7 @@ Shader "ERBS_FX/FX_Slash_Animated"
             float _FlowStrength;
             float _FlowSpeed;
             float _EmissStrength;
+            float _DistortionStrength;
             float _AlphaCutoff;
 
             struct appdata
@@ -59,26 +61,42 @@ Shader "ERBS_FX/FX_Slash_Animated"
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv = v.uv;
 
-                // ø¿∏•¬  °Ê øﬁ¬  FlowMap UV π›¿¸
-                float2 flowUV = v.uv;
-                flowUV.x = 1.0 - flowUV.x;
+                // FlowMap Î∞©Ìñ• Î∞òÏ†Ñ Ï†úÍ±∞ ‚Üí ÏôºÏ™Ω ‚Üí Ïò§Î•∏Ï™Ω
+                float2 flowUV = v.uv; 
                 o.uvFlow = flowUV + _Time.y * _FlowSpeed;
 
-                o.color = v.color; // Particle Alpha
+                o.color = v.color; // Particle Lifetime Alpha
                 return o;
             }
 
             float4 frag(v2f i) : SV_Target
             {
-                float4 tex = tex2D(_MainTex, i.uv);
+                // ÏãúÍ∞Ñ Í∏∞Î∞ò UV ÌùîÎì§Î¶º
+                float t = _Time.y * _FlowSpeed;
+
+                float2 distortion;
+                distortion.x = sin(i.uv.y * 10.0 + t) * _DistortionStrength;
+                distortion.y = cos(i.uv.x * 10.0 + t) * _DistortionStrength;
+                float2 distortedUV = i.uv + distortion;
+
+                // MainTex ÏÉòÌîå
+                float4 tex = tex2D(_MainTex, distortedUV);
+
+                // FlowMap ÏÉòÌîå
                 float4 flow = tex2D(_FlowMap, i.uvFlow);
 
+                // Emission Í≥ÑÏÇ∞
                 float emiss = flow.r * _FlowStrength * _EmissStrength;
                 float4 col = tex * _Color + tex * emiss;
 
-                // Particle Lifetime Alpha ¿˚øÎ °Ê ¿Ãµø«œ∏Èº≠ º≠º≠»˜ ªÁ∂Û¡¸
+                // Particle Lifetime Alpha Ï†ÅÏö©
                 col.a *= i.color.a;
 
+                // Tail Fade (ÏôºÏ™Ω Î®∏Î¶¨ ‚Üí Ïò§Î•∏Ï™Ω Íº¨Î¶¨)
+                float tailFade = i.uv.x;
+                col.a *= tailFade;
+
+                // Alpha Cutoff
                 if(col.a < _AlphaCutoff) discard;
 
                 return col;

@@ -9,7 +9,7 @@ using static Server.Data.DataUtils;
 
 public class Yuki_AttackState : Player_AttackState
 {
-    private const string AnimAttackT = "SKILL_Q";
+    private const string AnimAttackQ = "SKILL_Q";
     KeyCode _keyCode = KeyCode.Q;
     bool IsPassiveAttack = false;
 
@@ -27,15 +27,16 @@ public class Yuki_AttackState : Player_AttackState
         _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds / p.AttackSpeed);
 
         // 애니 송출(서버 권한)
-        string animName = AnimAttackT;
+        string animName = AnimAttackQ;
 
         if (p.AttackActive == true)
         {
             p.AttackActive = false;
 
-            animName = AnimAttackT;
+            animName = AnimAttackQ;
             p.Skill.StartCooldown(_keyCode);
             p.SendSkillCostPacket(_keyCode, p.Skill.GetCooldown(_keyCode));
+            p.SendYukiSkillEffect(SkillEffectType.YukiQAttack);
             IsPassiveAttack = true;
         }
         else

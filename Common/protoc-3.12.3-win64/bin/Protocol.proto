@@ -373,8 +373,9 @@ enum SkillEffectType {
 	YUKI_R_SHADOW = 4;
 	YUKI_R_HIT = 5;
 	YUKI_R_ATTACK = 6;
-    DASH = 7;
-    Hit = 8;
+	YUKI_Q_ATTACK = 7;
+    DASH = 8;
+    Hit = 9;
 }
 
 enum SpawnPointType

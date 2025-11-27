@@ -307,13 +307,17 @@ public class PlayerController : CreatureController
             yukiSkillShadow.transform.SetParent(gameObject.transform);
             yukiSkillShadow.transform.localPosition = Vector3.zero;
             // 궁 공격 범위
-            GameObject yukiSkillAttack = Managers.Resource.Instantiate("Effect/Yuki/Yuki_Skill_Attack");
+            GameObject yukiSkillAttack = Managers.Resource.Instantiate("Effect/Yuki/Yuki_SkillR_Attack");
             yukiSkillAttack.transform.SetParent(gameObject.transform);
             yukiSkillAttack.transform.localPosition = new Vector3(0, 1f, 0);
             // W 이펙트
             GameObject yukiFlower = Managers.Resource.Instantiate("Effect/Yuki/YukiFlower");
             yukiFlower.transform.SetParent(gameObject.transform);
             yukiFlower.transform.localPosition = Vector3.zero;
+            // Q 공격 이펙트
+            GameObject yukiSkillQAttack = Managers.Resource.Instantiate("Effect/Yuki/Yuki_SkillQ_Attack");
+            yukiSkillQAttack.transform.SetParent(gameObject.transform);
+            yukiSkillQAttack.transform.localPosition = new Vector3(1f, 1f, 0);
         }
     }
 
