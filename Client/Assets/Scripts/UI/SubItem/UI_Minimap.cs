@@ -49,6 +49,7 @@ public class UI_Minimap : UI_Base
 
     private Sprite _healpackUnrespawned;
     private Sprite _healpackRespawned;
+    private Dictionary<int, int> _characters = new Dictionary<int, int>();
 
     public override void Init()
     {
@@ -136,6 +137,7 @@ public class UI_Minimap : UI_Base
     public void ActivatePlayerIcon(IconType iconType, PlayerController pc)
     {
         string objName = "CharIcon_" + _charNum;
+        _characters.Add(pc.Id, _charNum);
         _charNum++;
         GameObjects obj = Enum.Parse<GameObjects>(objName);
 
@@ -163,6 +165,22 @@ public class UI_Minimap : UI_Base
         else
         {
             GetImage((int)img).sprite = _healpackUnrespawned;
+        }
+    }
+
+    public void SetImageEnable(int id, bool isEnable)
+    {
+        if (_characters.TryGetValue(id, out int index))
+        {
+            string objName = "CharIcon_" + index;
+            GameObjects obj = Enum.Parse<GameObjects>(objName);
+
+            GameObject go = GetObject((int)obj);
+
+            foreach(var img in go.GetComponentsInChildren<Image>())
+            {
+                img.enabled = isEnable;
+            }
         }
     }
 }

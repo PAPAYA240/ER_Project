@@ -269,4 +269,9 @@ public class UI_PlayerHUD : UI_Scene
                 break;
         }
     }
+
+    public void SetMinimapCharImgEnable(int id, bool isEnable)
+    {
+        GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetImageEnable(id, isEnable);
+    }
 }

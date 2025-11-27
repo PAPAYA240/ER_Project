@@ -369,7 +369,6 @@ namespace Server.Game
                 {
                     _combatTime = 0;
 
-                    Console.WriteLine($"비전투 상태");
                     CombatState = CombatState.NonCombat;
                     S_CombatMode combatModePkt = new S_CombatMode();
                     combatModePkt.ObjectId = Id;
@@ -1295,34 +1294,6 @@ namespace Server.Game
             Room.Push(Room.Broadcast, unstoppablePkt);
         }
 
-        public void SendYukiSkillEffect(Vector2 mousePos, bool sendPacket = true)
-        {
-            Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
-            Vector2 dir = mousePos - myPos;
-
-            if (dir.LengthSquared() < 0.0001f)
-                return;
-
-            float angle = (float)Math.Atan2(dir.X, dir.Y);
-            Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle);
-
-            RotInfo = new RotationInfo
-            {
-                Qx = rot.X,
-                Qy = rot.Y,
-                Qz = rot.Z,
-                Qw = rot.W
-            };
-
-            S_YukiSkillEffect pkt = new S_YukiSkillEffect
-            {
-                ObjectId = Id,
-                PosInfo = this.PosInfo.Clone(),
-                RotInfo = new RotationInfo(RotInfo)
-            };
-
-            Room.Push(Room.Broadcast, pkt);
-        }
         #endregion
 
         #region StatusEffect(버프, 디버프), Barrier(방어막) 관련

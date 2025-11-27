@@ -1,0 +1,81 @@
+{
+  "soundDict": {
+    // *드론
+    "Drone": {
+      "Voice": {},
+      "Effect": {
+        "APPEAR": [ { "Path": "Sounds/Monster/Drone_Appear" } ],
+        "ATTACK": [ { "Path": "Sounds/Monster/Drone_attack1" } ],
+        "DEAD": [ { "Path": "Sounds/Monster/Drone_Dead" } ],
+
+        "MsDroneAttack1_Hit": [ { "Path": "Sounds/Monster/Drone_Hit" } ]
+      }
+    },
+
+    // *감마
+    "Gamma": {
+      "Voice": {},
+      "Effect": {
+        "WAIT": [ { "Path": "Sounds/Monster/Gamma_Wait" } ],
+        "APPEAR": [ { "Path": "Sounds/Monster/Gamma_Appear" } ],
+        "ATTACK": [ { "Path": "Sounds/Monster/Gamma_Attack" } ],
+        "DEAD": [ { "Path": "Sounds/Monster/Gamma_Dead" } ],
+
+        "SKILL1": [ { "Path": "Sounds/Monster/Gamma_Skill1_Start" } ],
+        "SKILL1_ATTACK": [ { "Path": "Sounds/Monster/Gamma_Skill1_Shot" } ],
+
+        "SKILL2": [ { "Path": "Sounds/Monster/Gamma_Skill2_ShotReady" } ],
+        "SKILL2_LOOP": [
+          {
+            "Path": "Sounds/Monster/Gamma_Skill2_Shot",
+            "Duration": 4.0
+          }
+        ],
+
+        "SKILL3": [
+          { "Path": "Sounds/Monster/Gamma_Skill3_Scan" },
+          { "Path": "Sounds/Monster/Gamma_Skill3_Shot" }
+        ],
+
+        "MsGammaAttack1_Hit": [ { "Path": "Sounds/Monster/Gamma_Hit" } ],
+        "MsGammaSkill1_Hit": [ { "Path": "Sounds/Monster/Gamma_Skill1_Hit" } ],
+        "MsGammaSkill2_Hit": [ { "Path": "Sounds/Monster/Gamma_Skill2_Hit" } ],
+        "MsGammaSkill3_Hit": [ { "Path": "Sounds/Monster/Gamma_Skill3_Hit" } ],
+        "Room_Open": [ { "Path": "Sounds/Monster/GammaRoom_Open" } ]
+      }
+    },
+
+    // *오메가 / (알파도)
+    "Omega": {
+      "Voice": {},
+      "Effect": {
+        "APPEAR": [ { "Path": "Sounds/Monster/Omega_Appear" } ],
+        "DEAD": [ { "Path": "Sounds/Monster/Omega_Dead" } ],
+        "ATTACK1": [ { "Path": "Sounds/Monster/Omega_Attack1" } ],
+        "ATTACK2": [ { "Path": "Sounds/Monster/Omega_Attack2" } ],
+        "SKILL1": [ { "Path": "Sounds/Monster/Omega_Skill1_Start" } ],
+        "SKILL1_ATTACK": [ { "Path": "Sounds/Monster/Omega_Skill1" } ],
+        "SKILL2": [
+          { "Path": "Sounds/Monster/Omega_Skill2_Ready" },
+          { "Path": "Sounds/Monster/Omega_Skill2" }
+        ],
+
+        "MsAttack1_Hit": [ { "Path": "Sounds/Monster/Omega_Hit" } ],
+        "MsAttack2_Hit": [ { "Path": "Sounds/Monster/Omega_Hit" } ],
+        "MsSkill1_Hit": [ { "Path": "Sounds/Monster/Omega_Skill1_Hit" } ],
+        "MsSkill2_Hit": [ { "Path": "Sounds/Monster/Omega_Skill2_Hit" } ]
+      }
+    },
+
+    // *터렛
+    "Turret": {
+      "Voice": {},
+      "Effect": {
+        "ATTACK": [ { "Path": "Sounds/Monster/Turret_Attack" } ],
+        "DEAD": [ { "Path": "Sounds/Monster/Turret_Dead" } ],
+
+        "MsTurretAttack_Hit": [ { "Path": "Sounds/Monster/Turret_Hit" } ]
+      }
+    }
+  }
+}

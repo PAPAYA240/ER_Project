@@ -96,7 +96,7 @@ enum MsgId {
 
   S_ADD_YUKI_PYOSIK = 78;
 
-  C_ATTACK_REQUEST = 79;
+  S_ATTACK_INFO = 79;
 
 
   S_CHANGE_ATTACK_RANGE = 80;
@@ -112,7 +112,7 @@ enum MsgId {
   S_REST = 87;
   S_PROJECTILE_ROZZI = 88;
   S_YUKI_STUD = 89;
-  S_YUKI_SKILL_EFFECT = 90;
+  S_SKILL_EFFECT = 90;
 
 
   S_ENTER_SLOT = 91;
@@ -363,6 +363,18 @@ enum BOMB_ROZZI{
 	ATTACHED_TO_TARGET = 2;
 	STUCK_ON_GROUND = 3;
 	EXPLODED = 4;
+}
+
+enum SkillEffectType {
+	YUKI_Q = 0;
+    YUKI_W = 1;
+    YUKI_E = 2;
+    YUKI_R = 3;
+	YUKI_R_SHADOW = 4;
+	YUKI_R_HIT = 5;
+	YUKI_R_ATTACK = 6;
+    DASH = 7;
+    Hit = 8;
 }
 
 enum SpawnPointType
@@ -659,7 +671,8 @@ message S_RemoveAbigailCoord{
 
 message S_AddYukiPyosik{
 	int32 objectId = 1;
-	PositionInfo position = 2;
+	int32 attackerId = 2;
+	PositionInfo position = 3;
 }
 
 message S_OccupyBeacon{
@@ -863,10 +876,12 @@ message ItemStat{
     float MaxHpPerLevel = 27;                 //레벨 당 최대 체력
 }
 
-message C_AttackRequest{
+message S_AttackInfo{
 	int32 objectId = 1;
-	int32 targetId= 2;
+	int32 attackerId= 2;
+	string attackType = 3;
 }
+
 message C_Attack {					// 우클릭 타겟 공격
 	int32 targetId = 1;
 }
@@ -1070,10 +1085,9 @@ message S_YukiStud {
 	int32 studCnt = 2;
 }
 
-message S_YukiSkillEffect {
+message S_SkillEffect {
   int32 objectId = 1;
-  PositionInfo posInfo = 2;
-  RotationInfo rotInfo = 3;
+  SkillEffectType effectType = 2;
 }
 
 message S_EnterSlot{

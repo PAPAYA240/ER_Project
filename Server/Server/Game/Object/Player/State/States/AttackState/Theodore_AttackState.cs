@@ -17,6 +17,7 @@ public class Theodore_AttackState : Player_AttackState
         if (target == null || target.State == CreatureState.Dead || target.IsUntargetable())
             return;
 
+        target.OnDamaged(p, p.Attack, false, true);
         Projectile projectile = ObjectManager.Instance.Add<Projectile>();
         if (projectile != null)
         {

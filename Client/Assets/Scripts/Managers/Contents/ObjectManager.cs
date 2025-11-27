@@ -302,6 +302,11 @@ public class ObjectManager
                 r.enabled = isVisible;
             }
 
+            if(go.GetComponent<PlayerController>() != null && Managers.Object.MyPlayer != null)
+            {
+                Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapCharImgEnable(key, isVisible);
+            }
+
             if(go.name == "Ward")
             {
                 go.GetComponentInChildren<WardController>().SetWardLifeBarActive(isVisible);

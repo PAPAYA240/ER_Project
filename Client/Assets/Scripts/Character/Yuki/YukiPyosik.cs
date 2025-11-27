@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 public class YukiPyosik : MonoBehaviour
 {
@@ -68,21 +67,8 @@ public class YukiPyosik : MonoBehaviour
         }
 
         if (autoHide)
-        {
             image.enabled = false;
-        }
 
         _coAnimRoutine = null;
-    }
-
-    public void DeactivateAbigailCoord()
-    {
-        if (_coAnimRoutine != null)
-        {
-            StopCoroutine(_coAnimRoutine);
-            _coAnimRoutine = null;
-        }
-
-        image.enabled = false;
     }
 }

@@ -360,12 +360,22 @@ public class PlayerInputController : MonoBehaviour
                             index = i - 1;
 
                         _player.UseInventoryItem(i);
+                        Vector3 playerToMouse = GetMouseWorldPosition() - _player.transform.position;
+                        playerToMouse.y = 0;
+                        float dist = playerToMouse.magnitude;
+
+                        Vector3 result = GetMouseWorldPosition();
+                        if(dist > 8.5f)
+                        {
+                            result = _player.transform.position + playerToMouse.normalized * 8.5f;
+                        }
+
                         return new C_UseItem()
                         {
                             ObjectId = _player.Id,
                             InventoryIndex = index,
-                            MouseX = GetMouseWorldPosition().x,
-                            MouseZ = GetMouseWorldPosition().z
+                            MouseX = result.x,
+                            MouseZ = result.z
                         }; 
                     }
                 }
