@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using Google.Protobuf.Protocol;
+using static Server.Data.DataUtils;
 
 namespace Server.Game
 {

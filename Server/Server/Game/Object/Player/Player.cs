@@ -369,7 +369,6 @@ namespace Server.Game
                 {
                     _combatTime = 0;
 
-                    Console.WriteLine($"비전투 상태");
                     CombatState = CombatState.NonCombat;
                     S_CombatMode combatModePkt = new S_CombatMode();
                     combatModePkt.ObjectId = Id;

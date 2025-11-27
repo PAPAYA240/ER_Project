@@ -22,7 +22,7 @@
           { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062500seq0_1_ko" },
           { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062500seq0_3_ko" }
         ],
-        "Dead": [
+        "DEAD": [
           { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_Dead_1_ko" },
           { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_Dead_2_ko" },
           { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_Dead_3_ko" }
@@ -66,10 +66,37 @@
           } //"Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill04_Ing",
         ],
         "SKILL_D": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/skillSniperRifle_v1" } ],
-        // 어떤 스킬로 맞았는 지 어떻게 찾지?
-        "Hit_SKILLR": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill04_Hit" } ],
-        "Hit_ProjectileBall": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill03_Hit" } ],
-        "Hit_ProjectileBullet": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_NormalAttack_Hit" } ]
+
+        "R_Hit": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill04_Hit" } ],
+        "E_Hit": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill03_Hit" } ],
+        "Attack_Hit": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_NormalAttack_Hit" } ]
+      }
+    },
+
+    "Hyunwoo": {
+      "Voice": {
+        "SKILL_Q": [
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007200Seq0_1_ko" },
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007200Seq0_2_ko" },
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007200Seq0_3_ko" }
+        ],
+        "SKILL_W": [
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007300Seq0_1_ko" },
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007300Seq0_2_ko" },
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007300Seq0_3_ko" }
+        ],
+        "SKILL_E": [
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007400Seq0_1_ko" },
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007400Seq0_2_ko" },
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007400Seq0_3_ko" }
+        ],
+        "SKILL_R": [
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007500Seq0_1_ko" },
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007500Seq0_2_ko" },
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007500Seq0_3_ko" }
+        ]
+      },
+      "Effect": {
       }
     }
   }

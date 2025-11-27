@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Data;
+
 
 
 #if UNITY_EDITOR
@@ -65,8 +67,6 @@ public class PlayAnimation : AnimationControlNode
     {
         if(!_play)
         {
-            if (_controller.Type == MonsterType.Omega)
-                Debug.Log($"{chainAnimNames[_currentChainIndex]}");
              int animHash = Animator.StringToHash(chainAnimNames[_currentChainIndex]);
             if(_animator.HasState(0, animHash))
                 Play(chainAnimNames[_currentChainIndex]); 
@@ -100,10 +100,15 @@ public class PlayAnimation : AnimationControlNode
         _play = true;
         _currentAnimName = anim;
         _animator.CrossFadeInFixedTime(anim, 0.1f, 0);
+
+        _controller.Sound.GetEffect3D(_currentAnimName, _controller.transform.position);
     }
 
     private void ClearAnim()
     {
+        if (_controller.State == CreatureState.Dead)
+            return;
+
         int waitAnimHash = Animator.StringToHash(_waitAnim);
         if (_animator != null && _animator.HasState(0, waitAnimHash))
             _animator?.CrossFadeInFixedTime(_waitAnim, 0.1f, 0);

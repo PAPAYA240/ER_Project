@@ -549,5 +549,41 @@ namespace Data
             return dict;
         }
     }
+
+    public class SoundMcDict : ILoader<MonsterType, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>>
+    {
+        public Dictionary<string, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>> soundDict
+            = new Dictionary<string, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>>();
+
+        public Dictionary<MonsterType, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>> MakeDict()
+        {
+            Dictionary<MonsterType, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>> dict
+                = new Dictionary<MonsterType, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>>();
+
+            foreach (var charEntry in soundDict)
+            {
+                if (!Enum.TryParse(charEntry.Key, true, out MonsterType charType))
+                    continue;
+
+                var soundTypeDict = new Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>();
+
+                foreach (var soundTypeEntry in charEntry.Value)
+                {
+                    Define.Sound soundType = soundTypeEntry.Key;
+
+                    var keyCodeDict = new Dictionary<string, List<SoundData>>();
+
+                    foreach (var keyCodeEntry in soundTypeEntry.Value)
+                    {
+                        keyCodeDict.Add(keyCodeEntry.Key, keyCodeEntry.Value);
+                    }
+
+                    soundTypeDict.Add(soundType, keyCodeDict);
+                }
+                dict.Add(charType, soundTypeDict);
+            }
+            return dict;
+        }
+    }
     #endregion
 }
