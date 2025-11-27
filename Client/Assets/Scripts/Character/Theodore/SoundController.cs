@@ -71,9 +71,6 @@ public class SoundController : MonoBehaviour
         if (!SoundClipDict[Define.Sound.Effect].ContainsKey(soundName))
             return;
 
-        if(isf)
-            Debug.Log($"{soundName}");
-
         List<ClipInfo> clips = SoundClipDict[Define.Sound.Effect][soundName];
         foreach(ClipInfo clip in clips)
         {
