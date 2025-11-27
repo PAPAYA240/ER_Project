@@ -71,12 +71,9 @@ namespace Server.Game
         public Hitbox trackingHitbox { get; set; } = null;
         public MonsterType MonstType { get; set; }
 
-        public Vector2 OffsetPos { get; set; } = new Vector2();
-
         public bool IsInteracted = true;
         public float OffsetRadius = 0;
         public Vector3 FixedPosition = new Vector3();
-        public Quaternion InitialRotation { get; set; }
         #endregion
     }
 
@@ -240,22 +237,6 @@ namespace Server.Game
                         continue;
                     if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
                         continue;                      
-                    //if (type != SkillType.SkillTrack)
-                    //    continue;
-
-                    //    Quaternion rot = new Quaternion(
-                    //    hitbox.Creature.RotInfo.Qx,
-                    //    hitbox.Creature.RotInfo.Qy,
-                    //    hitbox.Creature.RotInfo.Qz,
-                    //    hitbox.Creature.RotInfo.Qw
-                    //);
-
-                    //Vector3 offset = new Vector3(hitbox.Data.RightOffset, 0, hitbox.Data.LookOffset);
-
-                    //Vector3 rotatedOffset = Vector3.Transform(offset, rot);
-
-                    //hitbox.PosX = hitbox.Creature.PosInfo.PosX + rotatedOffset.X;
-                    //hitbox.PosZ = hitbox.Creature.PosInfo.PosZ + rotatedOffset.Z;
                 }
             }
         }
@@ -919,8 +900,6 @@ namespace Server.Game
                     MonstType = creature.Info.Monster.MonsterType,
                     Data = skillHitbox,
                     MousePos = forward,
-                    InitialRotation = quat,
-                    OffsetPos = new Vector2(skillHitbox.RightOffset, skillHitbox.LookOffset),
                     Interactions = ConvertProtoInteractionsToKeyCodeDictionary(skillHitbox.Interactions)
                 };
 
