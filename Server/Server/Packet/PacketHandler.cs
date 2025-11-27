@@ -211,18 +211,7 @@ class PacketHandler
 
        player.Room.Push(player.Room.HandleAttack, player, req);
      }
-    public static void C_AttackRequestHandler(PacketSession session, IMessage packet)
-    {
-        var client = (ClientSession)session;
-        var player = client?.MyPlayer;
-        if (player?.Room == null)
-            return;
 
-        var req = (C_AttackRequest)packet;
-
-        player.Room.Push(player.Room.HandleAttackRequest, player, req);
-    }
-    
     public static void C_SetMoveTargetHandler(PacketSession session, IMessage packet)
     {
         var client = (ClientSession)session;

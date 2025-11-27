@@ -26,6 +26,8 @@ public class DataManager
 
     public static Dictionary<CharacterType, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>> SoundDict { get; private set; }
          = new Dictionary<CharacterType, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>>();
+    public static Dictionary<MonsterType, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>> SoundMcDict { get; private set; }
+     = new Dictionary<MonsterType, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>>();
 
     public static Dictionary<CharacterType, Dictionary<KeyCode, SkillVariants>> SkillSpecDict { get; private set; }
             = new Dictionary<CharacterType, Dictionary<KeyCode, SkillVariants>>();
@@ -51,11 +53,12 @@ public class DataManager
         IndicatorDict = LoadJson<Data.IndicatorData, CharacterType, Dictionary<KeyCode, SkillIndicatorConfig>>("IndicatorData").MakeDict();
         SkillHitboxDict = LoadJson<Data.HitboxData, CharacterType, Dictionary<KeyCode, SkillHitbox>>("HitboxData").MakeDict();
         SoundDict = LoadJson<Data.SoundDict, CharacterType, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>>("SoundData").MakeDict();
-        
-        // For Effect
-        MonsterSkillDict = LoadJson<Data.MonsterEffectDict, MonsterSkill, List<EffectData>>("MonsterData/MonsterEffectData").MakeDict();
         PlayerFxDict = LoadJson<Data.PlayerEffectDict, CharacterType, Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>>("PlayerEffectData").MakeDict();
+
+        // For Monster Data
+        MonsterSkillDict = LoadJson<Data.MonsterEffectDict, MonsterSkill, List<EffectData>>("MonsterData/MonsterEffectData").MakeDict();
         MonstSkillHitboxDict = LoadJson<Data.MonstHitboxData, MonsterType, Dictionary<MonsterSkill, SkillHitbox>>("MonsterData/MonsterHitboxData").MakeDict();
+        SoundMcDict = LoadJson<Data.SoundMcDict, MonsterType, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>>("MonsterData/MonsterSoundData").MakeDict();
 
         // For Item
         JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };

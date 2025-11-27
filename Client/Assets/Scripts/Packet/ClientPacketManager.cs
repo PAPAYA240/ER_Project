@@ -123,6 +123,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SRotateToPos, PacketHandler.S_RotateToPosHandler);		
 		_onRecv.Add((ushort)MsgId.SAddYukiPyosik, MakePacket<S_AddYukiPyosik>);
 		_handler.Add((ushort)MsgId.SAddYukiPyosik, PacketHandler.S_AddYukiPyosikHandler);		
+		_onRecv.Add((ushort)MsgId.SAttackInfo, MakePacket<S_AttackInfo>);
+		_handler.Add((ushort)MsgId.SAttackInfo, PacketHandler.S_AttackInfoHandler);		
 		_onRecv.Add((ushort)MsgId.SChangeAttackRange, MakePacket<S_ChangeAttackRange>);
 		_handler.Add((ushort)MsgId.SChangeAttackRange, PacketHandler.S_ChangeAttackRangeHandler);		
 		_onRecv.Add((ushort)MsgId.SUntargetable, MakePacket<S_Untargetable>);
@@ -160,7 +162,7 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SRandomPick, MakePacket<S_RandomPick>);
 		_handler.Add((ushort)MsgId.SRandomPick, PacketHandler.S_RandomPickHandler);		
 		_onRecv.Add((ushort)MsgId.SReadyBtn, MakePacket<S_ReadyBtn>);
-		_handler.Add((ushort)MsgId.SReadyBtn, PacketHandler.S_ReadyBtnHandler);
+		_handler.Add((ushort)MsgId.SReadyBtn, PacketHandler.S_ReadyBtnHandler);		
 		_onRecv.Add((ushort)MsgId.SSound, MakePacket<S_Sound>);
 		_handler.Add((ushort)MsgId.SSound, PacketHandler.S_SoundHandler);
 	}

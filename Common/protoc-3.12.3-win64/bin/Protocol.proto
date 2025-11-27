@@ -96,7 +96,7 @@ enum MsgId {
 
   S_ADD_YUKI_PYOSIK = 78;
 
-  C_ATTACK_REQUEST = 79;
+  S_ATTACK_INFO = 79;
 
 
   S_CHANGE_ATTACK_RANGE = 80;
@@ -861,10 +861,12 @@ message ItemStat{
     float MaxHpPerLevel = 27;                 //레벨 당 최대 체력
 }
 
-message C_AttackRequest{
+message S_AttackInfo{
 	int32 objectId = 1;
-	int32 targetId= 2;
+	int32 attackerId= 2;
+	string attackType = 3;
 }
+
 message C_Attack {					// 우클릭 타겟 공격
 	int32 targetId = 1;
 }

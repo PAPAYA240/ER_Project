@@ -276,9 +276,9 @@ class PacketHandler
             if (pc.Sound != null) // 테오도르 WQ skill 사운드
             {
                 if(tKey == KeyCode.Q)
-                    pc.Sound.GetEffect("SKILL_WQ");
+                    pc.Sound.GetEffect3D("SKILL_WQ", pc.transform.position);
                 else if(tKey == KeyCode.E)
-                    pc.Sound.GetEffect("SKILL_WE");
+                    pc.Sound.GetEffect3D("SKILL_WE", pc.transform.position);
             }
         }
     }
@@ -615,6 +615,48 @@ class PacketHandler
         mpc.ChangeInventory(changeInventoryPacket);
     }
 
+    public static void S_AttackInfoHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_AttackInfoHandler(session, packet))) return;
+
+        // *Sound
+        S_AttackInfo atkInfoPacket = packet as S_AttackInfo;
+
+        if ("MsDroneAttack1" == atkInfoPacket.AttackType)
+        {
+            int ac = 3;
+        }
+        BaseController bc = Managers.Object.FindById(atkInfoPacket.AttackerId)?.GetComponentInChildren<BaseController>();
+        if (bc == null)
+            return;
+        BaseController tbc = Managers.Object.FindById(atkInfoPacket.ObjectId)?.GetComponentInChildren<BaseController>();
+        if (tbc == null)
+            return;
+
+        GameObjectType attackerObjType = ObjectManager.GetObjectTypeById(bc.Id);
+        if (attackerObjType == GameObjectType.Player)
+        {
+            PlayerController atkPlayer = (PlayerController)bc;
+            if (atkPlayer == null) return;
+
+            Vector3 targetPosition = tbc.transform.position;
+
+            // 사용 중인 키(Player)/몬스터 스킬(Monster) 이름 + hit
+            // ex. Q_Hit, W_Hit, 
+            if (atkPlayer.Sound != null)
+                atkPlayer.Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
+        }
+        else if (attackerObjType == GameObjectType.Monster)
+        {
+            MonsterController atkMonster = (MonsterController)bc;
+            if (atkMonster == null) return;
+
+            Vector3 targetPosition = tbc.transform.position;
+
+            if (atkMonster.Sound != null)
+                atkMonster.Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
+        }
+    }
 
     public static void S_CombatTextHandler(PacketSession session, IMessage packet)
     {
@@ -759,7 +801,7 @@ class PacketHandler
             if (soundPkt.Type == "Voice")
                 pc.Sound.GetRandomVoice(name);
             else
-                pc.Sound.GetRandomEffect(name);
+                pc.Sound.GetRandom3DEffect(name, pc.transform.position);
         }
     }
 

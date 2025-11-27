@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using static Player_StunState;
 using static Server.Game.StunState;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Server.Game
 {
@@ -23,7 +24,7 @@ namespace Server.Game
         public GameRoom Room { get; set; }
 
         public CharacterType CharType => Info.Player.CharType;
-        
+
         ObjectInfo _objectInfo = new ObjectInfo()
         {
             StatInfo = new StatInfo(),
@@ -68,7 +69,7 @@ namespace Server.Game
             }
         }
 
-        public StatInfo Stat 
+        public StatInfo Stat
         {
             get
             {
@@ -146,7 +147,7 @@ namespace Server.Game
             set { Stat.AttackSpeed = value; }
         }
 
-        public virtual float Healing  
+        public virtual float Healing
         {
             get { return Stat.Healing; }
             set { Stat.Healing = value; }
@@ -188,7 +189,7 @@ namespace Server.Game
         protected bool _isUpdatedStatus = false;
         public void UpdateStatusFlag(bool isUpdated = true) => _isUpdatedStatus = isUpdated;
         protected bool _isCcImmune = false;
-        public bool IsCcImmune { get {  return _isCcImmune; } set { _isCcImmune = value; } }
+        public bool IsCcImmune { get { return _isCcImmune; } set { _isCcImmune = value; } }
 
         public bool IsDead => State == CreatureState.Dead;
 
@@ -237,7 +238,6 @@ namespace Server.Game
 
             return true;
         }
-
         public virtual void OnDamaged(GameObject attacker, float damage, bool isTrueDamage = false, bool isBasicAttack = false)
         {
             if (Room == null || State == CreatureState.Dead || State == CreatureState.Appear)
@@ -258,8 +258,45 @@ namespace Server.Game
             IsHit = true;
         }
 
+        private void AttackInfo(GameObject attacker)
+        {
+            string attackKey = "";
+            bool isAttackerValid = false;
+
+            if (attacker is Player playerAttack)
+            {
+                isAttackerValid = true;
+                Player_SkillState skillstate = playerAttack.CurrentState as Player_SkillState;
+
+                if (skillstate != null)
+                    attackKey = skillstate.Handler.GetKeyCode().ToString();
+                else
+                {
+                     attackKey = "Attack";
+                }
+            }
+            else if (attacker is Monster monsterAttack)
+            {
+                isAttackerValid = true;
+                attackKey = monsterAttack.CurrentSkill.ToString();
+            }
+
+            if (isAttackerValid)
+            {
+                S_AttackInfo attackInfoPacket = new S_AttackInfo
+                {
+                    ObjectId = this.Id,          
+                    AttackerId = attacker.Id,  
+                    AttackType = attackKey,   
+                };
+
+                Room.Broadcast(attackInfoPacket);
+            }
+        }
         protected virtual void OnDamaged(GameObject attacker, float damage, bool isBasicAttack = false)
         {
+            AttackInfo(attacker);
+
             //배리어가 흡수할 수치 계산
             float absorbed = Math.Min(Barrier, damage);
             ReduceBarrier(absorbed);

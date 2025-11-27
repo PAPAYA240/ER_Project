@@ -1658,7 +1658,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4542377131128135}
   - component: {fileID: 95477892664855200}
-  - component: {fileID: 8302125655503479818}
   m_Layer: 0
   m_Name: Hyunwoo_01_LOD1
   m_TagString: Untagged
@@ -1706,18 +1705,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &8302125655503479818
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1394858152380701}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c745c0719ae17cc42a08873d8292b4c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1401044875801596
 GameObject:
   m_ObjectHideFlags: 0
@@ -1799,6 +1786,7 @@ GameObject:
   - component: {fileID: 136483301112181312}
   - component: {fileID: -7297693006577042440}
   - component: {fileID: -1063505943179309422}
+  - component: {fileID: 8559617127150321144}
   m_Layer: 0
   m_Name: MyHyunwoo
   m_TagString: Untagged
@@ -1879,8 +1867,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d07a4ac14489814e9692da7473da8c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerWeaponStencilID: 100
-  disablePlayerWeaponXRay: 1
+  Sound: {fileID: 0}
+  xRayIgnoreStencilID: 100
+--- !u!114 &8559617127150321144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1410087195572070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 176bdf16fd35b524bb656781b4f2a89f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1414983113027675
 GameObject:
   m_ObjectHideFlags: 0

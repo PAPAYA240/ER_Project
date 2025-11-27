@@ -173,9 +173,6 @@ public class MyPlayerController : PlayerController
     public override void OnDead()
     {
         base.OnDead();
-
-        if (Sound != null)
-            Sound.GetRandomVoice("Dead");
     }
     // 서버 응답 전달
     public void OnServerUpdate(S_MoveSync packet) => _view.OnMoveSync(packet);

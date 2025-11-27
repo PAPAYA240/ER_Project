@@ -291,7 +291,8 @@ public class PlayerController : CreatureController
 
         // Sound
         Sound = gameObject.GetComponent<SoundController>();
-
+        if(Sound != null)
+            Sound.PreloadCharAllSounds(ObjInfo.Player.CharType);
     }
 
     private void InitEquipItem()
@@ -426,7 +427,7 @@ public class PlayerController : CreatureController
         // Animation에 맞는 Sound
         if (Sound != null)
         {
-            Sound.GetEffect(animInfo.Name);
+            Sound.GetEffect3D(animInfo.Name, transform.position, true);
             Sound.GetRandomVoice(animInfo.Name);
         }
 

@@ -51,14 +51,14 @@ public class SoundManager
     }
     public float Play3D(AudioClip audioClip, Vector3 position, Define.Sound type = Define.Sound.Effect, float pitch = 1.0f)
     {
+        if (audioClip == null)
+            return -1.0f;
+
         GameObject go = new GameObject($"Sound_{audioClip}");
         go.transform.position = position;
 
         AudioSource audioSource = go.AddComponent<AudioSource>();
         audioSource.spatialBlend = 1f;
-        audioSource.minDistance = 1.0f;
-        audioSource.maxDistance = 10.0f;
-
         audioSource.pitch = pitch;
         audioSource.clip = audioClip;
         audioSource.Play();

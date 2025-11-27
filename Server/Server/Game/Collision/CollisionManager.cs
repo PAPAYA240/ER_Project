@@ -11,6 +11,7 @@ using Google.Protobuf.Protocol;
 using Lucene.Net.Index;
 using Microsoft.VisualBasic;
 using Server.Data;
+using static System.Net.Mime.MediaTypeNames;
 using static NUnit.Framework.Constraints.Tolerance;
 using static Server.Data.DataUtils;
 using static Server.Game.GameObject;
@@ -66,6 +67,7 @@ namespace Server.Game
         }
 
         #region 추가 데이터
+        public MonsterSkill MonsterSkillType;
         public Dictionary<KeyCode, List<string>> Interactions { get; set; } = new Dictionary<KeyCode, List<string>>();
         public HashSet<Hitbox> InteractedHitboxes { get; } = new HashSet<Hitbox>();
         public Hitbox trackingHitbox { get; set; } = null;
@@ -580,16 +582,17 @@ namespace Server.Game
                 dmg = CalcDamage(hitbox.Creature, target as Creature);
             }
 
+
             if (target is Player)
                 Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Creature.Id}, Target:{target.Info.Player.CharType}_{target.Id}, Damage:{dmg}");
             else if (target is Monster)
             {
                 Monster monster = target as Monster;
-                if(monster != null)
+                if (monster != null)
                     monster.OnHit(hitbox.Creature);
                 Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Creature.Id}, Target:{target.Info.Monster.MonsterType}_{target.Id}, Damage:{dmg}");
             }
-            else
+            else;
                 Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Creature.Id}, Target:Env_{target.Id}, Damage:{dmg}");
 
             if (damageDict.ContainsKey(target.Id))
@@ -607,6 +610,9 @@ namespace Server.Game
                 damageDict[target.Id][hitbox.Creature.Id] = dmg;
             }
             hitbox.HitObjs.TryAdd(target.Id, 0);
+
+            // 공격자 및 피격자 정보 필요
+            
 
             return dmg;
         }
@@ -900,6 +906,7 @@ namespace Server.Game
                     MonstType = creature.Info.Monster.MonsterType,
                     Data = skillHitbox,
                     MousePos = forward,
+                    MonsterSkillType = skilltype,
                     Interactions = ConvertProtoInteractionsToKeyCodeDictionary(skillHitbox.Interactions)
                 };
 

@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class MonsterController : CreatureController
 {
     private System.Random _random = new System.Random();
-    
+
     // 몬스터 정보
     public MonsterSkill Skill { get;  set; }
     [SerializeField] private MonsterType type;
@@ -15,6 +15,7 @@ public class MonsterController : CreatureController
         get => type;
         set => type = value;
     }
+    public SoundController Sound;
 
     public Vector3 TargetPosition { get; private set; }
     private Quaternion _targetRotation;
@@ -45,6 +46,10 @@ public class MonsterController : CreatureController
         InitHpBar();
 
         UnActiveShaderXRay();
+
+        Sound = gameObject.GetOrAddComponent<SoundController>();
+        if (Sound != null)
+            Sound.PreloadMonsterAllSounds(Type);
     }
 
     private void TriggerEnvironmentEvent()
