@@ -286,6 +286,7 @@ public class PlayerController : CreatureController
             Sound.PreloadCharAllSounds(ObjInfo.Player.CharType);
     }
 
+    public Dictionary<KeyCode, GameObject> tempSkillEffect = new Dictionary<KeyCode, GameObject>();
     void SkillEffectInit()
     {
         // 표식 이펙트
@@ -314,6 +315,58 @@ public class PlayerController : CreatureController
             GameObject yukiFlower = Managers.Resource.Instantiate("Effect/Yuki/YukiFlower");
             yukiFlower.transform.SetParent(gameObject.transform);
             yukiFlower.transform.localPosition = Vector3.zero;
+        }
+        else if(ObjInfo.Player.CharType == CharacterType.Rozzi)
+        {
+            // Q 
+            GameObject FX_BI_Rozzi_Skill01_Gun = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_Skill01_Gun");
+            FX_BI_Rozzi_Skill01_Gun.transform.SetParent(gameObject.transform);
+            FX_BI_Rozzi_Skill01_Gun.transform.localPosition = new Vector3(0, 1f, 0);
+            tempSkillEffect.Add(KeyCode.Q, FX_BI_Rozzi_Skill01_Gun);
+            //GameObject FX_BI_Rozzi_Skill01_Move = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_Skill01_Move");
+            //FX_BI_Rozzi_Skill01_Move.transform.SetParent(gameObject.transform);
+            // W
+            //GameObject FX_BI_Rozzi_Skill02_Debuff = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_Skill02_Debuff");
+            //FX_BI_Rozzi_Skill02_Debuff.transform.SetParent(gameObject.transform);
+            //GameObject FX_BI_Rozzi_Skill02_Fire = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_Skill02_Fire");
+            //FX_BI_Rozzi_Skill02_Fire.transform.SetParent(gameObject.transform);
+            GameObject FX_BI_Rozzi_Skill02_Gun = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_Skill02_Gun");
+            FX_BI_Rozzi_Skill02_Gun.transform.SetParent(gameObject.transform);
+            FX_BI_Rozzi_Skill02_Gun.transform.localPosition = new Vector3(0, 1f, 0);
+            tempSkillEffect.Add(KeyCode.W, FX_BI_Rozzi_Skill02_Gun);
+            //GameObject FX_BI_Rozzi_Skill02_Hit = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_Skill02_Hit");
+            //FX_BI_Rozzi_Skill02_Hit.transform.SetParent(gameObject.transform);
+            // E
+            GameObject FX_BI_Rozzi_Skill03_Fire = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_Skill03_Fire");
+            FX_BI_Rozzi_Skill03_Fire.transform.SetParent(gameObject.transform);
+            FX_BI_Rozzi_Skill03_Fire.transform.localPosition = Vector3.zero;
+            tempSkillEffect.Add(KeyCode.E, FX_BI_Rozzi_Skill03_Fire);
+            //GameObject FX_BI_Rozzi_Skill03_Ground = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_Skill03_Ground");
+            //FX_BI_Rozzi_Skill03_Ground.transform.SetParent(gameObject.transform);
+            //GameObject FX_BI_Rozzi_Skill03_Hit = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_Skill03_Hit");
+            //FX_BI_Rozzi_Skill03_Hit.transform.SetParent(gameObject.transform);
+            //GameObject FX_BI_Rozzi_Skill03_JumpSmoke = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_Skill03_JumpSmoke");
+            //FX_BI_Rozzi_Skill03_JumpSmoke.transform.SetParent(gameObject.transform);
+            // R
+            //GameObject FX_BI_Rozzi_Skill04_Buff = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_Skill04_Buff");
+            //FX_BI_Rozzi_Skill04_Buff.transform.SetParent(gameObject.transform);
+            //GameObject FX_BI_Rozzi_Skill04_Explore = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_Skill04_Explore");
+            //FX_BI_Rozzi_Skill04_Explore.transform.SetParent(gameObject.transform);
+            GameObject FX_BI_Rozzi_Skill04_Fire = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_Skill04_Fire");
+            FX_BI_Rozzi_Skill04_Fire.transform.SetParent(gameObject.transform);
+            FX_BI_Rozzi_Skill04_Fire.transform.localPosition = Vector3.zero;
+            tempSkillEffect.Add(KeyCode.R, FX_BI_Rozzi_Skill04_Fire);
+            //GameObject FX_BI_Rozzi_Skill04_Set_Character = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_Skill04_Set_Character");
+            //FX_BI_Rozzi_Skill04_Set_Character.transform.SetParent(gameObject.transform);
+            //GameObject FX_BI_Rozzi_Skill04_Set_Character_Count = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_Skill04_Set_Character_Count");
+            //FX_BI_Rozzi_Skill04_Set_Character_Count.transform.SetParent(gameObject.transform);
+            //GameObject FX_BI_Rozzi_Skill04_Set_Character_Hit = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_Skill04_Set_Character_Hit");
+            //FX_BI_Rozzi_Skill04_Set_Character_Hit.transform.SetParent(gameObject.transform);
+            // Normal Attack
+            //GameObject FX_BI_Rozzi_NormalAttack_Hit = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_NormalAttack_Hit");
+            //FX_BI_Rozzi_NormalAttack_Hit.transform.SetParent(gameObject.transform);
+            //GameObject FX_BI_Rozzi_NormalAttack_Shot = Managers.Resource.Instantiate("Effect/Rozzi/FX_BI_Rozzi_NormalAttack_Shot");
+            //FX_BI_Rozzi_NormalAttack_Shot.transform.SetParent(gameObject.transform);
         }
     }
 

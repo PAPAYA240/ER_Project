@@ -17,6 +17,7 @@ using UnityEngine.Timeline;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using static Unity.Burst.Intrinsics.X86.Avx;
 using static UnityEngine.GraphicsBuffer;
+using static UnityEngine.UI.GridLayoutGroup;
 
 public class PlayerSkillController : MonoBehaviour
 {
@@ -144,6 +145,41 @@ public class PlayerSkillController : MonoBehaviour
     public void OnSkillConfirm(S_SkillConfirm packet)
     {
         CanMoveDuringCast = packet.CanMove;
+
+        switch ((KeyCode)packet.SkillKey)
+        {
+            case KeyCode.Q:
+                _player.tempSkillEffect.TryGetValue(KeyCode.Q, out var effectQ);
+                if(effectQ == null)
+                {
+                    Debug.Log("@ effectQ null!!");
+                    return;
+                }
+                ParticleSystem ps = effectQ.GetComponentInChildren<ParticleSystem>();
+                if (ps == null)
+                {
+                    Debug.Log("@ ps null!!");
+                    return;
+                }
+                Debug.Log($"position : {ps.transform.position}");   
+                ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                ps.Play();
+                break;
+            case KeyCode.W:
+                _player.tempSkillEffect.TryGetValue(KeyCode.W, out var effectW);
+                effectW.GetComponentInChildren<ParticleSystem>().Play();
+                break;
+            case KeyCode.E:
+                _player.tempSkillEffect.TryGetValue(KeyCode.E, out var effectE);
+                effectE.GetComponentInChildren<ParticleSystem>().Play();
+                break;
+            case KeyCode.R:
+                _player.tempSkillEffect.TryGetValue(KeyCode.R, out var effectR);
+                effectR.GetComponentInChildren<ParticleSystem>().Play();
+                break;
+            default:
+                break;
+        }
     }
 
     public void OnSkillCost(S_SkillCost packet)
