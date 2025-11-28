@@ -1,14 +1,22 @@
 ﻿using Google.Protobuf.Protocol;
 using Server.Game;
 using System;
+using System.Numerics;
 using static Server.Data.DataUtils;
 
 public sealed class Yuki_W : SkillHandlerBase
 {
+    private bool _onMoveCmd, _hasSentRunAnimation;
+    private Vector3 _targetPosition;
+    private const float STOP_RANGE = 0.1f;
+
+    private string ANIM_RUN = "RUN";
+    private string ANIM_IDLE = "WAIT";
+
     public Yuki_W()
     {
         _characterType = CharacterType.Yuki;
-        _animName = "SKILL_W";
+        _animName = "YUKI_W";
         _keyCode = KeyCode.W;
     }
 
@@ -21,8 +29,7 @@ public sealed class Yuki_W : SkillHandlerBase
 
         p.Room.AddStatusEffect(p, p, _keyCode, null);
 
-        Console.WriteLine("두번 들어옴?");
-        //p.LookAtMouse(ctx.MousePos);
+        p.SendYukiSkillEffect(SkillEffectType.YukiW);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -32,14 +39,41 @@ public sealed class Yuki_W : SkillHandlerBase
 
     public override void OnTick(Player p, SkillContext ctx)
     {
+        if (_onMoveCmd)
+        {
+            if (!_hasSentRunAnimation)
+            {
+                p.SendAnimPacket(ANIM_RUN);
+                _hasSentRunAnimation = true;
+            }
+        }
+        else
+        {
+            if (_hasSentRunAnimation)
+            {
+                if (Vector3.Distance(p.Position, _targetPosition) <= STOP_RANGE)
+                {
+                    p.SendAnimPacket(ANIM_IDLE);
+                    p.SendStopPacket();
+                    _hasSentRunAnimation = false;
+                }
+            }
+        }
+
+        _onMoveCmd = false;
 
         return;
+    }
+
+    public override void OnMove(Player p, C_Move packet)   // OnTick 보다 먼저 실행(Flush)
+    {
+        _onMoveCmd = true;
+        _targetPosition = packet.TargetPosition.ToVector();
     }
 
     public override void OnExit(Player p, SkillContext ctx)
     {
         p.YukiStud = 4;
-        Console.WriteLine($"유키 단추 두번들어오나? : {p.YukiStud}");
 
         S_YukiStud yukiStudPkt = new S_YukiStud();
         yukiStudPkt.ObjectId = p.Id;

@@ -62,7 +62,7 @@ namespace Server.Game
                 skillstate.Ctx.MousePos,
                 keyCode: skillstate.Ctx.Key,
                 sendLookatMousePacket: true,
-                targetPos: new Vector3(targetHitbox.MousePos.X, 0, targetHitbox.MousePos.Y),
+                targetPos: new Vector3(targetHitbox.MousePos.X, 1.0f, targetHitbox.MousePos.Y),
                 targetRot: rotation,
                 type: "Select",
                 name: "FX_Shield_linoleum");

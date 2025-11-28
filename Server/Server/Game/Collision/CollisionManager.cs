@@ -11,6 +11,7 @@ using Google.Protobuf.Protocol;
 using Lucene.Net.Index;
 using Microsoft.VisualBasic;
 using Server.Data;
+using static System.Net.Mime.MediaTypeNames;
 using static NUnit.Framework.Constraints.Tolerance;
 using static Server.Data.DataUtils;
 using static Server.Game.GameObject;
@@ -66,17 +67,15 @@ namespace Server.Game
         }
 
         #region 추가 데이터
+        public MonsterSkill MonsterSkillType;
         public Dictionary<KeyCode, List<string>> Interactions { get; set; } = new Dictionary<KeyCode, List<string>>();
         public HashSet<Hitbox> InteractedHitboxes { get; } = new HashSet<Hitbox>();
         public Hitbox trackingHitbox { get; set; } = null;
         public MonsterType MonstType { get; set; }
 
-        public Vector2 OffsetPos { get; set; } = new Vector2();
-
         public bool IsInteracted = true;
         public float OffsetRadius = 0;
         public Vector3 FixedPosition = new Vector3();
-        public Quaternion InitialRotation { get; set; }
         #endregion
     }
 
@@ -184,7 +183,7 @@ namespace Server.Game
         }
 
         public void CheckAllCollisions(
-            Dictionary<int, Dictionary<int, Player>> teams,
+            ConcurrentDictionary<int, ConcurrentDictionary<int, Player>> teams,
             ConcurrentDictionary<int, Monster> monsters,
             ConcurrentDictionary<int, Projectile> projectiles)
         {
@@ -240,27 +239,11 @@ namespace Server.Game
                         continue;
                     if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
                         continue;                      
-                    //if (type != SkillType.SkillTrack)
-                    //    continue;
-
-                    //    Quaternion rot = new Quaternion(
-                    //    hitbox.Creature.RotInfo.Qx,
-                    //    hitbox.Creature.RotInfo.Qy,
-                    //    hitbox.Creature.RotInfo.Qz,
-                    //    hitbox.Creature.RotInfo.Qw
-                    //);
-
-                    //Vector3 offset = new Vector3(hitbox.Data.RightOffset, 0, hitbox.Data.LookOffset);
-
-                    //Vector3 rotatedOffset = Vector3.Transform(offset, rot);
-
-                    //hitbox.PosX = hitbox.Creature.PosInfo.PosX + rotatedOffset.X;
-                    //hitbox.PosZ = hitbox.Creature.PosInfo.PosZ + rotatedOffset.Z;
                 }
             }
         }
 
-        void CheckPlayerHit(Dictionary<int, Dictionary<int, Player>> teams, Dictionary<int, Dictionary<int, float>> damageDict)
+        void CheckPlayerHit(ConcurrentDictionary<int, ConcurrentDictionary<int, Player>> teams, Dictionary<int, Dictionary<int, float>> damageDict)
         {
             foreach (var nestedKvp in _hitboxDict)
             {
@@ -599,12 +582,13 @@ namespace Server.Game
                 dmg = CalcDamage(hitbox.Creature, target as Creature);
             }
 
+
             if (target is Player)
                 Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Creature.Id}, Target:{target.Info.Player.CharType}_{target.Id}, Damage:{dmg}");
             else if (target is Monster)
             {
                 Monster monster = target as Monster;
-                if(monster != null)
+                if (monster != null)
                     monster.OnHit(hitbox.Creature);
                 Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Creature.Id}, Target:{target.Info.Monster.MonsterType}_{target.Id}, Damage:{dmg}");
             }
@@ -626,6 +610,9 @@ namespace Server.Game
                 damageDict[target.Id][hitbox.Creature.Id] = dmg;
             }
             hitbox.HitObjs.TryAdd(target.Id, 0);
+
+            // 공격자 및 피격자 정보 필요
+            
 
             return dmg;
         }
@@ -685,7 +672,7 @@ namespace Server.Game
             return result;
         }
 
-        void SendChangeHpPkts(Dictionary<int, Dictionary<int, Player>> teams, Dictionary<int, Dictionary<int, float>> damageDict)
+        void SendChangeHpPkts(ConcurrentDictionary<int, ConcurrentDictionary<int, Player>> teams, Dictionary<int, Dictionary<int, float>> damageDict)
         {
             foreach (var kvp in damageDict)
             {
@@ -752,7 +739,7 @@ namespace Server.Game
             }
         }
 
-        void HandleAllyHit(Hitbox hitbox, Dictionary<int, Player> targets)
+        void HandleAllyHit(Hitbox hitbox, ConcurrentDictionary<int, Player> targets)
         {
             foreach (var targetKvp in targets)
             {
@@ -919,8 +906,7 @@ namespace Server.Game
                     MonstType = creature.Info.Monster.MonsterType,
                     Data = skillHitbox,
                     MousePos = forward,
-                    InitialRotation = quat,
-                    OffsetPos = new Vector2(skillHitbox.RightOffset, skillHitbox.LookOffset),
+                    MonsterSkillType = skilltype,
                     Interactions = ConvertProtoInteractionsToKeyCodeDictionary(skillHitbox.Interactions)
                 };
 

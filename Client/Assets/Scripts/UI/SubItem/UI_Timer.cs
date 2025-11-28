@@ -72,7 +72,7 @@ public class UI_Timer : UI_Base
         }
 
         SetTimer(0); // Ÿ�̸� ���� �� 0���� ����
-        Debug.Log($"Phase {phase} Synced Timer Finished!");
+        //Debug.Log($"Phase {phase} Synced Timer Finished!");
     }
 
     public void SetTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)

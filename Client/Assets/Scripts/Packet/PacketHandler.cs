@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
@@ -8,23 +9,28 @@ using UnityEngine.SceneManagement;
 
 class PacketHandler
 {
+    public static void S_LoadGameSceneHandler(PacketSession session, IMessage packet)
+    {
+        LoadingManager.Instance.LoadScene(Define.Scene.Game);
+    }
+
 	public static void S_EnterGameHandler(PacketSession session, IMessage packet)
 	{
-		S_EnterGame enterGamePacket = packet as S_EnterGame;
-
-        LoadingManager.Instance.LoadScene(Define.Scene.Game);
-
+        if (!IsSceneReady("Game", () => S_EnterGameHandler(session, packet))) return;
+        S_EnterGame enterGamePacket = packet as S_EnterGame;
         Managers.Object.Add(enterGamePacket.Player, myPlayer: true);
     }
 
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_LeaveGameHandler(session, packet))) return;
         S_LeaveGame leaveGamePacket = packet as S_LeaveGame;
         Managers.Object.Clear();
     }
 
     public static void S_SpawnHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_SpawnHandler(session, packet))) return;
         S_Spawn spawnPacket = packet as S_Spawn;
         foreach (ObjectInfo obj in spawnPacket.Objects)
         {
@@ -34,6 +40,7 @@ class PacketHandler
 
     public static void S_DespawnHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_DespawnHandler(session, packet))) return;
         S_Despawn despawnPacket = packet as S_Despawn;
         foreach (int id in despawnPacket.ObjectIds)
         {
@@ -276,9 +283,9 @@ class PacketHandler
             if (pc.Sound != null) // 테오도르 WQ skill 사운드
             {
                 if(tKey == KeyCode.Q)
-                    pc.Sound.GetEffect("SKILL_WQ");
+                    pc.Sound.GetEffect3D("SKILL_WQ", pc.transform.position);
                 else if(tKey == KeyCode.E)
-                    pc.Sound.GetEffect("SKILL_WE");
+                    pc.Sound.GetEffect3D("SKILL_WE", pc.transform.position);
             }
         }
     }
@@ -615,6 +622,48 @@ class PacketHandler
         mpc.ChangeInventory(changeInventoryPacket);
     }
 
+    public static void S_AttackInfoHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_AttackInfoHandler(session, packet))) return;
+
+        // *Sound
+        S_AttackInfo atkInfoPacket = packet as S_AttackInfo;
+
+        if ("MsDroneAttack1" == atkInfoPacket.AttackType)
+        {
+            int ac = 3;
+        }
+        BaseController bc = Managers.Object.FindById(atkInfoPacket.AttackerId)?.GetComponentInChildren<BaseController>();
+        if (bc == null)
+            return;
+        BaseController tbc = Managers.Object.FindById(atkInfoPacket.ObjectId)?.GetComponentInChildren<BaseController>();
+        if (tbc == null)
+            return;
+
+        GameObjectType attackerObjType = ObjectManager.GetObjectTypeById(bc.Id);
+        if (attackerObjType == GameObjectType.Player)
+        {
+            PlayerController atkPlayer = (PlayerController)bc;
+            if (atkPlayer == null) return;
+
+            Vector3 targetPosition = tbc.transform.position;
+
+            // 사용 중인 키(Player)/몬스터 스킬(Monster) 이름 + hit
+            // ex. Q_Hit, W_Hit, 
+            if (atkPlayer.Sound != null)
+                atkPlayer.Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
+        }
+        else if (attackerObjType == GameObjectType.Monster)
+        {
+            MonsterController atkMonster = (MonsterController)bc;
+            if (atkMonster == null) return;
+
+            Vector3 targetPosition = tbc.transform.position;
+
+            if (atkMonster.Sound != null)
+                atkMonster.Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
+        }
+    }
 
     public static void S_CombatTextHandler(PacketSession session, IMessage packet)
     {
@@ -737,11 +786,17 @@ class PacketHandler
         if (go == null)
             return;
 
+        GameObject attackerGo = Managers.Object.FindById(addYukiPyosikPkt.AttackerId);
+        if (attackerGo == null)
+            return;
+
         YukiPyosik yukiPyosik = go.GetComponentInChildren<YukiPyosik>();
         if (yukiPyosik == null)
             return;
 
         yukiPyosik.ActivateYukiPyosik(go);
+        SkillEffectHandler.HandleEffect(SkillEffectType.YukiRShadow, attackerGo);
+        SkillEffectHandler.HandleEffect(SkillEffectType.YukiRAttack, attackerGo);
     }
     
     public static void S_SoundHandler(PacketSession session, IMessage packet)
@@ -759,24 +814,20 @@ class PacketHandler
             if (soundPkt.Type == "Voice")
                 pc.Sound.GetRandomVoice(name);
             else
-                pc.Sound.GetRandomEffect(name);
+                pc.Sound.GetRandom3DEffect(name, pc.transform.position);
         }
     }
 
-    public static void S_YukiSkillEffectHandler(PacketSession session, IMessage packet)
+    public static void S_SkillEffectHandler(PacketSession session, IMessage packet)
     {
-        if (!IsSceneReady("Game", () => S_YukiSkillEffectHandler(session, packet))) return;
-        S_YukiSkillEffect YukiSkillEffectPkt = packet as S_YukiSkillEffect;
+        if (!IsSceneReady("Game", () => S_SkillEffectHandler(session, packet))) return;
+        S_SkillEffect YukiSkillEffectPkt = packet as S_SkillEffect;
 
         GameObject go = Managers.Object.FindById(YukiSkillEffectPkt.ObjectId);
         if (go == null)
             return;
 
-        YukiSkillRange range = go.GetComponentInChildren<YukiSkillRange>(true);
-        if (range == null)
-            return;
-
-        range.PlayEffectOneSecond();
+        SkillEffectHandler.HandleEffect((SkillEffectType)YukiSkillEffectPkt.EffectType, go);
     }
 
     public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)
@@ -984,7 +1035,6 @@ class PacketHandler
     {
         if (!IsSceneReady("Game", () => S_RestHandler(session, packet))) return;
         S_Rest restPkt = packet as S_Rest;
-        Debug.Log("패킷 옴?");
 
         GameObject go = Managers.Object.FindById(restPkt.ObjectId);
         if (go == null)
@@ -1022,11 +1072,14 @@ class PacketHandler
         if (go == null)
             return;
 
-        PlayerController pc = go.GetComponentInChildren<PlayerController>();
-        if (pc == null)
+        UI_YukiNameTag yukiNameTag = go.GetComponentInChildren<UI_YukiNameTag>();
+        if (yukiNameTag == null)
+        {
+            Debug.Log("null");
             return;
+        }
 
-        //yukiStudPacket.StudCnt;
+        yukiNameTag.SetStud(yukiStudPacket.StudCnt);
     }
 
     public static void S_EnterSlotHandler(PacketSession session, IMessage packet)
@@ -1161,7 +1214,7 @@ class PacketHandler
 
     public static bool IsSceneReady(string sceneName, Action callback)
     {
-        if (!LoadingManager.Instance.IsSceneLoaded(sceneName))
+        if (!LoadingManager.Instance.IsGameSceneReady())
         {
             LoadingManager.Instance.EnqueuePostLoadAction(callback);
             return false;

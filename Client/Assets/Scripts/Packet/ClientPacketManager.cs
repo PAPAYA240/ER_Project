@@ -49,6 +49,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SEnterPick, PacketHandler.S_EnterPickHandler);		
 		_onRecv.Add((ushort)MsgId.SSpawnPick, MakePacket<S_SpawnPick>);
 		_handler.Add((ushort)MsgId.SSpawnPick, PacketHandler.S_SpawnPickHandler);		
+		_onRecv.Add((ushort)MsgId.SLoadGameScene, MakePacket<S_LoadGameScene>);
+		_handler.Add((ushort)MsgId.SLoadGameScene, PacketHandler.S_LoadGameSceneHandler);		
 		_onRecv.Add((ushort)MsgId.SVisibleObjects, MakePacket<S_VisibleObjects>);
 		_handler.Add((ushort)MsgId.SVisibleObjects, PacketHandler.S_VisibleObjectsHandler);		
 		_onRecv.Add((ushort)MsgId.SLevelUp, MakePacket<S_LevelUp>);
@@ -123,6 +125,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SRotateToPos, PacketHandler.S_RotateToPosHandler);		
 		_onRecv.Add((ushort)MsgId.SAddYukiPyosik, MakePacket<S_AddYukiPyosik>);
 		_handler.Add((ushort)MsgId.SAddYukiPyosik, PacketHandler.S_AddYukiPyosikHandler);		
+		_onRecv.Add((ushort)MsgId.SAttackInfo, MakePacket<S_AttackInfo>);
+		_handler.Add((ushort)MsgId.SAttackInfo, PacketHandler.S_AttackInfoHandler);		
 		_onRecv.Add((ushort)MsgId.SChangeAttackRange, MakePacket<S_ChangeAttackRange>);
 		_handler.Add((ushort)MsgId.SChangeAttackRange, PacketHandler.S_ChangeAttackRangeHandler);		
 		_onRecv.Add((ushort)MsgId.SUntargetable, MakePacket<S_Untargetable>);
@@ -141,8 +145,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SProjectileRozzi, PacketHandler.S_ProjectileRozziHandler);		
 		_onRecv.Add((ushort)MsgId.SYukiStud, MakePacket<S_YukiStud>);
 		_handler.Add((ushort)MsgId.SYukiStud, PacketHandler.S_YukiStudHandler);		
-		_onRecv.Add((ushort)MsgId.SYukiSkillEffect, MakePacket<S_YukiSkillEffect>);
-		_handler.Add((ushort)MsgId.SYukiSkillEffect, PacketHandler.S_YukiSkillEffectHandler);		
+		_onRecv.Add((ushort)MsgId.SSkillEffect, MakePacket<S_SkillEffect>);
+		_handler.Add((ushort)MsgId.SSkillEffect, PacketHandler.S_SkillEffectHandler);		
 		_onRecv.Add((ushort)MsgId.SEnterSlot, MakePacket<S_EnterSlot>);
 		_handler.Add((ushort)MsgId.SEnterSlot, PacketHandler.S_EnterSlotHandler);		
 		_onRecv.Add((ushort)MsgId.SSpawnSlot, MakePacket<S_SpawnSlot>);

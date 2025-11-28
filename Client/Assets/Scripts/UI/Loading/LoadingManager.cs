@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -11,7 +12,7 @@ public class LoadingManager : MonoBehaviour
 
     private string nextScene;
 
-    bool _sceneLoaded = false;
+    bool _gameSceneReady = false;
     Queue<Action> _postLoadActions = new Queue<Action>();
 
     private void Awake()
@@ -20,8 +21,6 @@ public class LoadingManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-
-            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -39,8 +38,6 @@ public class LoadingManager : MonoBehaviour
 
     public IEnumerator CoLoadSceneProcess()
     {
-        Debug.Log("LoadSceneProcess START");
-
         yield return null;
 
         AsyncOperation op = SceneManager.LoadSceneAsync(nextScene);
@@ -55,11 +52,8 @@ public class LoadingManager : MonoBehaviour
         {
             elapsed += Time.deltaTime;
 
-            // ���� progress
             float realProgress = Mathf.Clamp01(op.progress / 0.9f);
-
             float displayProgress = Mathf.Lerp(0f, 1f, elapsed / minLoadTime);
-
             LoadingUIController.Instance?.SetProgress(Mathf.Min(realProgress, displayProgress));
 
             if (displayProgress >= 1f && op.progress >= 0.9f)
@@ -73,7 +67,7 @@ public class LoadingManager : MonoBehaviour
 
     public void EnqueuePostLoadAction(Action action)
     {
-        if (IsSceneLoaded("Game"))
+        if (IsGameSceneReady())
         {
             action?.Invoke();
             return;
@@ -82,25 +76,15 @@ public class LoadingManager : MonoBehaviour
         _postLoadActions.Enqueue(action);
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    public bool IsGameSceneReady()
     {
-        if (scene.name == "Game")
-        {
-            _sceneLoaded = true;
-
-            while (_postLoadActions.Count > 0)
-                _postLoadActions.Dequeue()?.Invoke();
-        }
+        return _gameSceneReady;
     }
 
-    public void ResetSceneUtil()
+    public void OnSceneReady()
     {
-        _sceneLoaded = false;
-        _postLoadActions.Clear();
-    }
-
-    public bool IsSceneLoaded(string sceneName)
-    {
-        return _sceneLoaded && SceneManager.GetActiveScene().name == sceneName;
+        _gameSceneReady = true;
+        while (_postLoadActions.Count > 0)
+            _postLoadActions.Dequeue()?.Invoke();
     }
 }
