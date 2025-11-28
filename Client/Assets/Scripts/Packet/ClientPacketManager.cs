@@ -49,6 +49,8 @@ class PacketManager
 		_handler.Add((ushort)MsgId.SEnterPick, PacketHandler.S_EnterPickHandler);		
 		_onRecv.Add((ushort)MsgId.SSpawnPick, MakePacket<S_SpawnPick>);
 		_handler.Add((ushort)MsgId.SSpawnPick, PacketHandler.S_SpawnPickHandler);		
+		_onRecv.Add((ushort)MsgId.SLoadGameScene, MakePacket<S_LoadGameScene>);
+		_handler.Add((ushort)MsgId.SLoadGameScene, PacketHandler.S_LoadGameSceneHandler);		
 		_onRecv.Add((ushort)MsgId.SVisibleObjects, MakePacket<S_VisibleObjects>);
 		_handler.Add((ushort)MsgId.SVisibleObjects, PacketHandler.S_VisibleObjectsHandler);		
 		_onRecv.Add((ushort)MsgId.SLevelUp, MakePacket<S_LevelUp>);

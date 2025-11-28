@@ -101,6 +101,8 @@ public class PlayAnimation : AnimationControlNode
         _currentAnimName = anim;
         _animator.CrossFadeInFixedTime(anim, 0.1f, 0);
 
+        if (_controller.Type == MonsterType.Turret)
+            Debug.Log($"{_currentAnimName}");
         _controller.Sound.GetEffect3D(_currentAnimName, _controller.transform.position);
     }
 

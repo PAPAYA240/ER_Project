@@ -24,7 +24,7 @@ enum MsgId {
   S_CHARACTER = 16;
   S_ENTER_PICK = 17;
   S_SPAWN_PICK = 18;
-
+  S_LOAD_GAME_SCENE = 19;
   C_PING = 20;
   S_VISIBLE_OBJECTS = 21;
   S_LEVEL_UP = 22;
@@ -402,7 +402,8 @@ message C_ReadyBtn {
 message S_EnterGame {
 	ObjectInfo player = 1;
 }
-message S_LeaveGame {
+
+message S_LeaveGame{
 
 }
 
@@ -738,6 +739,7 @@ message PlayerInfo {
     int32 skillPoints = 2;
     int32 team = 3;
 	Weapon weapon = 4;
+	string nickname = 5;
 }
 
 message MonsterInfo {
@@ -1157,4 +1159,8 @@ message S_SpawnWard{
 message C_DeployingLoop {
 	int32 objectId = 1;
 	PositionInfo ioPos = 2;
+}
+
+message S_LoadGameScene{
+
 }

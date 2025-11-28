@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
@@ -8,23 +9,28 @@ using UnityEngine.SceneManagement;
 
 class PacketHandler
 {
+    public static void S_LoadGameSceneHandler(PacketSession session, IMessage packet)
+    {
+        LoadingManager.Instance.LoadScene(Define.Scene.Game);
+    }
+
 	public static void S_EnterGameHandler(PacketSession session, IMessage packet)
 	{
-		S_EnterGame enterGamePacket = packet as S_EnterGame;
-
-        LoadingManager.Instance.LoadScene(Define.Scene.Game);
-
+        if (!IsSceneReady("Game", () => S_EnterGameHandler(session, packet))) return;
+        S_EnterGame enterGamePacket = packet as S_EnterGame;
         Managers.Object.Add(enterGamePacket.Player, myPlayer: true);
     }
 
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_LeaveGameHandler(session, packet))) return;
         S_LeaveGame leaveGamePacket = packet as S_LeaveGame;
         Managers.Object.Clear();
     }
 
     public static void S_SpawnHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_SpawnHandler(session, packet))) return;
         S_Spawn spawnPacket = packet as S_Spawn;
         foreach (ObjectInfo obj in spawnPacket.Objects)
         {
@@ -34,6 +40,7 @@ class PacketHandler
 
     public static void S_DespawnHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_DespawnHandler(session, packet))) return;
         S_Despawn despawnPacket = packet as S_Despawn;
         foreach (int id in despawnPacket.ObjectIds)
         {
@@ -1207,7 +1214,7 @@ class PacketHandler
 
     public static bool IsSceneReady(string sceneName, Action callback)
     {
-        if (!LoadingManager.Instance.IsSceneLoaded(sceneName))
+        if (!LoadingManager.Instance.IsGameSceneReady())
         {
             LoadingManager.Instance.EnqueuePostLoadAction(callback);
             return false;

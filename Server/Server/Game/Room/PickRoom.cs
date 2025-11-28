@@ -105,6 +105,9 @@ namespace Server.Game
                 {
                     if (Interlocked.Exchange(ref _enterGame, 1) == 0)
                     {
+                        S_LoadGameScene loadGameScenePkt = new S_LoadGameScene();
+                        Broadcast(loadGameScenePkt);
+
                         GameRoom gr = RoomManager.Instance.AddRoom<GameRoom>();
                         EnterGame(gr);
                     }
@@ -215,6 +218,7 @@ namespace Server.Game
                     clientSession.MyPlayer.Info.PosInfo.PosY = 0;
                     clientSession.MyPlayer.Info.Player = new PlayerInfo();
                     clientSession.MyPlayer.Info.Player.CharType = clientSession.MyCharacter;
+                    clientSession.MyPlayer.Info.Player.Nickname = _pickPlayers[i].UserName;
 
                     StatInfo stat = null;
                     DataManager.StatDict.TryGetValue(clientSession.MyCharacter, out stat);
@@ -227,7 +231,7 @@ namespace Server.Game
                 Player player = clientSession.MyPlayer;
                 if (player == null)
                     continue;
-
+                
                 clientSession.CurRoom = room.RoomId;
                 room.Push(room.EnterGame, player, _pickPlayers[i].Team);
             }

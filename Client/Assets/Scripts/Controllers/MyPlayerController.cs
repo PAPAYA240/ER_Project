@@ -76,6 +76,8 @@ public class MyPlayerController : PlayerController
 
         // inven
         MakeInventory();
+
+        Managers.Object.MyPlayerReady();
     }
 
     private void Update()
@@ -163,9 +165,8 @@ public class MyPlayerController : PlayerController
 
     protected override void UpdateCharging()
     {
-        if (_agent == null)
+        if (_agent == null || !_agent.isOnNavMesh)
             return;
-
         //if (_agent.remainingDistance <= _agent.stoppingDistance)
         //{
         //    if (_moveKeyPressed)

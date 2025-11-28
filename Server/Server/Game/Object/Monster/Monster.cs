@@ -33,7 +33,7 @@ namespace Server.Game
         // Skills
         List<MonsterSkill> _skills = new List<MonsterSkill>();
         public MonsterSkill CurrentSkill { get; private set; }
-        public float _delaySkillAnimationTimer = 0;
+        public float DelaySkillAnimationTimer = 0;
 
         // Position
         public Vector3 _spawnPosition = new Vector3();
