@@ -4779,6 +4779,7 @@ GameObject:
   - component: {fileID: 198692393971402343}
   - component: {fileID: 199262453741837341}
   - component: {fileID: 135248882238029727}
+  - component: {fileID: 3867088906967221692}
   m_Layer: 15
   m_Name: Yuki_SkillQ_Attack
   m_TagString: Untagged
@@ -7230,6 +7231,19 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3867088906967221692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1523170786377963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c96732f1b2de7940a296e718c6f1168, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ps: {fileID: 198692393971402343}
 --- !u!1 &1641887720979269
 GameObject:
   m_ObjectHideFlags: 0

@@ -795,6 +795,7 @@ class PacketHandler
     
     public static void S_SoundHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_SoundHandler(session, packet))) return;
         S_Sound soundPkt = packet as S_Sound;
         GameObject go = Managers.Object.FindById(soundPkt.ObjectId);
         if (go == null) return;

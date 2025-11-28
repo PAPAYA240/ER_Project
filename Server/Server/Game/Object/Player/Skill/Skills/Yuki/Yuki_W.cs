@@ -65,6 +65,12 @@ public sealed class Yuki_W : SkillHandlerBase
         return;
     }
 
+    public override void OnMove(Player p, C_Move packet)   // OnTick 보다 먼저 실행(Flush)
+    {
+        _onMoveCmd = true;
+        _targetPosition = packet.TargetPosition.ToVector();
+    }
+
     public override void OnExit(Player p, SkillContext ctx)
     {
         p.YukiStud = 4;

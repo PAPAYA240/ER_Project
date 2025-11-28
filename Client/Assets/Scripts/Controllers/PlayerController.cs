@@ -317,7 +317,7 @@ public class PlayerController : CreatureController
             // Q 공격 이펙트
             GameObject yukiSkillQAttack = Managers.Resource.Instantiate("Effect/Yuki/Yuki_SkillQ_Attack");
             yukiSkillQAttack.transform.SetParent(gameObject.transform);
-            yukiSkillQAttack.transform.localPosition = new Vector3(1f, 1f, 0);
+            yukiSkillQAttack.transform.localPosition = new Vector3(0, 1f, 1f);
         }
     }
 

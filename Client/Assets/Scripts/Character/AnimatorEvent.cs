@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.UI.GridLayoutGroup;
 
 public class AnimatorEvent : MonoBehaviour
 {
@@ -19,27 +20,6 @@ public class AnimatorEvent : MonoBehaviour
         if (_controller == null)
             return;
 
-        //_controller.OnSkillAnimationEnd();
-
-        _controller.State = CreatureState.Idle;
-        _controller.IsKeyInput = false;
-        Debug.Log("(Animation Event)");
+        _controller.GetComponentInChildren<Yuki_SkillQAttack>(true)?.PlayEffect();
     }
-
-    //public void OnAttackEnd()
-    //{
-    //    if (_controller == null)
-    //        return;
-
-    //    if (_controller.AttackCount < _controller.MaxAttackCount)
-    //    {
-    //        _controller.AttackCount++;
-    //        _controller.State = CreatureState.Idle;
-    //    }
-    //    else
-    //    {
-    //        _controller.AttackCount = 1;
-    //        _controller.State = CreatureState.Idle;
-    //    }
-    //}
 }

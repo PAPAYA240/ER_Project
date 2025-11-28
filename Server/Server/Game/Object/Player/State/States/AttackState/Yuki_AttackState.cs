@@ -36,7 +36,6 @@ public class Yuki_AttackState : Player_AttackState
             animName = AnimAttackQ;
             p.Skill.StartCooldown(_keyCode);
             p.SendSkillCostPacket(_keyCode, p.Skill.GetCooldown(_keyCode));
-            p.SendYukiSkillEffect(SkillEffectType.YukiQAttack);
             IsPassiveAttack = true;
         }
         else

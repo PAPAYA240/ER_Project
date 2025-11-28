@@ -365,12 +365,13 @@ namespace Google.Protobuf.Protocol {
             "DwoLQmVhY29uX0xlZnQQABIRCg1CZWFjb25fQ2VudGVyEAESEAoMQmVhY29u",
             "X1JpZ2h0EAIqYgoKQk9NQl9ST1paSRINCglOT05FX0JPTUIQABIKCgZGTFlJ",
             "TkcQARIWChJBVFRBQ0hFRF9UT19UQVJHRVQQAhITCg9TVFVDS19PTl9HUk9V",
-            "TkQQAxIMCghFWFBMT0RFRBAEKooBCg9Ta2lsbEVmZmVjdFR5cGUSCgoGWVVL",
+            "TkQQAxIMCghFWFBMT0RFRBAEKp0BCg9Ta2lsbEVmZmVjdFR5cGUSCgoGWVVL",
             "SV9REAASCgoGWVVLSV9XEAESCgoGWVVLSV9FEAISCgoGWVVLSV9SEAMSEQoN",
             "WVVLSV9SX1NIQURPVxAEEg4KCllVS0lfUl9ISVQQBRIRCg1ZVUtJX1JfQVRU",
-            "QUNLEAYSCAoEREFTSBAHEgcKA0hpdBAIKj8KDlNwYXduUG9pbnRUeXBlEg0K",
-            "CUJhc2VTcGF3bhAAEhAKDEJ1c2hUZWxlcG9ydBABEgwKCEJ1c2hOb25lEAJC",
-            "G6oCGEdvb2dsZS5Qcm90b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
+            "QUNLEAYSEQoNWVVLSV9RX0FUVEFDSxAHEggKBERBU0gQCBIHCgNIaXQQCSo/",
+            "Cg5TcGF3blBvaW50VHlwZRINCglCYXNlU3Bhd24QABIQCgxCdXNoVGVsZXBv",
+            "cnQQARIMCghCdXNoTm9uZRACQhuqAhhHb29nbGUuUHJvdG9idWYuUHJvdG9j",
+            "b2xiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CombatState), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.SkillInputType), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.EnvType), typeof(global::Google.Protobuf.Protocol.ProjectileType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.MonsterSkill), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.Weapon), typeof(global::Google.Protobuf.Protocol.SkillShape), typeof(global::Google.Protobuf.Protocol.TraitType), typeof(global::Google.Protobuf.Protocol.EquipItemType), typeof(global::Google.Protobuf.Protocol.ItemGrade), typeof(global::Google.Protobuf.Protocol.StopReason), typeof(global::Google.Protobuf.Protocol.SkillMotionType), typeof(global::Google.Protobuf.Protocol.CollisionType), typeof(global::Google.Protobuf.Protocol.VariantKey), typeof(global::Google.Protobuf.Protocol.CombatTextType), typeof(global::Google.Protobuf.Protocol.Beacon), typeof(global::Google.Protobuf.Protocol.BOMB_ROZZI), typeof(global::Google.Protobuf.Protocol.SkillEffectType), typeof(global::Google.Protobuf.Protocol.SpawnPointType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -847,8 +848,9 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("YUKI_R_SHADOW")] YukiRShadow = 4,
     [pbr::OriginalName("YUKI_R_HIT")] YukiRHit = 5,
     [pbr::OriginalName("YUKI_R_ATTACK")] YukiRAttack = 6,
-    [pbr::OriginalName("DASH")] Dash = 7,
-    [pbr::OriginalName("Hit")] Hit = 8,
+    [pbr::OriginalName("YUKI_Q_ATTACK")] YukiQAttack = 7,
+    [pbr::OriginalName("DASH")] Dash = 8,
+    [pbr::OriginalName("Hit")] Hit = 9,
   }
 
   public enum SpawnPointType {
