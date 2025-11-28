@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Google.Protobuf.Protocol;
+using Lucene.Net.Index;
 using Server.Data;
 
 namespace Server.Game
@@ -26,7 +27,6 @@ namespace Server.Game
         #region Fields
         // State
         private IMonsterState _currentState;
-
         // Packet
         private int _sequenceId = 0;
 
@@ -52,12 +52,13 @@ namespace Server.Game
         {
             ObjectType = GameObjectType.Monster;
         }
-        public void Init(MonsterType type)
+        public void Init(MonsterType type, int team)
         {
             if (!LoadMonsterData(type))
                 return;
 
-           DIST_TO_TARGET = DataManager.MonsterDict[type].attackDist;
+            MonsterTeam = team;
+            DIST_TO_TARGET = DataManager.MonsterDict[type].attackDist;
             OnAttacked += HandlerRegisterTarget;
         }
         bool _appeared = false;
@@ -107,9 +108,17 @@ namespace Server.Game
         #endregion
 
         #region Hit
+        private bool CheckTeam(GameObject attacker)
+        {
+            if (attacker is Player player)
+                return (MonsterTeam == player.Team);
+            return false;
+        }
         protected override void OnDamaged(GameObject attacker, float damage, bool isBasicAttack = false)
         {
-            // 
+            if (CheckTeam(attacker))
+                return;
+
             base.OnDamaged(attacker, damage, isBasicAttack);
 
             OnAttacked?.Invoke(attacker);
@@ -175,6 +184,10 @@ namespace Server.Game
             return Vector3.Distance(myPosition, targetPosition) <= DIST_TO_TARGET;
         }
 
+        public Player SearchForPlayerInRange()
+        {
+             return Room?.FindViableTarget(this, DIST_TO_TARGET);
+        }
         public bool IsReturnSpawn()
         {
             Vector3 monsterPosition = PosInfo.ToVector();

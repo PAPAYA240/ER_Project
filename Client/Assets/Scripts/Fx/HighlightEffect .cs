@@ -60,14 +60,6 @@ public class HighlightEffect : MonoBehaviour
             hitThisObject = true;
         }
 
-        //if (Physics.Raycast(ray, out RaycastHit hit, 100.0f))
-        //{
-        //    if (hit.collider.gameObject == this.gameObject)
-        //    {
-        //        hitThisObject = true;
-        //    }
-        //}
-
         if (Owner?.State == CreatureState.Dead)
         {
             OnMouseExit();
@@ -79,9 +71,25 @@ public class HighlightEffect : MonoBehaviour
         else if (!hitThisObject && isHighlighted)
             OnMouseExit();
     }
+
+    private bool CheckCondition()
+    {
+        if (myRenderers == null)
+            return false;
+
+        if (Owner is MonsterController monster)
+        {
+            if (Managers.Object.MyPlayer.ObjInfo.Player.Team == monster.MonsterTeam)
+                return false;
+        }
+        return true;
+        
+    }
     public void OnMouseEnter()
     {
-        if (myRenderers == null) return;
+        if (!CheckCondition())
+            return;
+       
         isHighlighted = true;
         foreach (var renderer in myRenderers)
         {
@@ -94,7 +102,9 @@ public class HighlightEffect : MonoBehaviour
 
     public void OnMouseExit()
     {
-        if (myRenderers == null) return;
+        if (myRenderers == null) 
+            return;
+
         isHighlighted = false;
         foreach (var renderer in myRenderers)
         {

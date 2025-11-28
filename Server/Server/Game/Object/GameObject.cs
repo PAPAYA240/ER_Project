@@ -226,6 +226,11 @@ namespace Server.Game
             get { return Info.Player.Team; }
             set { Info.Player.Team = value; }
         }
+        public int MonsterTeam
+        {
+            get { return Info.Monster.Team; }
+            set { Info.Monster.Team = value; }
+        }
         #endregion
 
         public virtual void Update() { }

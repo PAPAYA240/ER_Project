@@ -742,6 +742,7 @@ message PlayerInfo {
 
 message MonsterInfo {
     MonsterType monsterType = 1;
+	 int32 team = 2;
 }
 
 message ProjectileInfo {

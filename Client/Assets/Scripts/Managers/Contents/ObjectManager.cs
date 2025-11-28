@@ -143,6 +143,7 @@ public class ObjectManager
         mc.Stat = info.StatInfo;
         mc.Hp = info.StatInfo.MaxHp;
         mc.Type = info.Monster.MonsterType;
+        mc.MonsterTeam = info.Monster.Team;
     }
     private void AddProjectile(ObjectInfo info)
     {

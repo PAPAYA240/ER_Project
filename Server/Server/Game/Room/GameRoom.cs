@@ -837,5 +837,25 @@ namespace Server.Game
             Teleport = new TeleportSystem(SpawnRegistry);
 
         }
+
+        public Player FindViableTarget(Monster monster, float range)
+        {
+            float rangeSq = range * range;
+
+            foreach (var p in _players)
+            {
+                Player player = p.Value;
+                if (player == null)
+                    continue;
+                if (player.Team == monster.MonsterTeam)
+                    continue;
+
+                PositionInfo playerPos = player.Info.PosInfo;
+
+                if (monster.Info.PosInfo.GetDistanceSq(playerPos) <= rangeSq)
+                    return player;
+            }
+            return null;
+        }
     }
 }

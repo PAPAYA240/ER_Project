@@ -9,6 +9,8 @@ public class MonsterController : CreatureController
 
     // 몬스터 정보
     public MonsterSkill Skill { get;  set; }
+    public int MonsterTeam { get; set; }
+
     [SerializeField] private MonsterType type;
     public MonsterType Type
     {
