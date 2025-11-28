@@ -38,8 +38,6 @@ public class LoadingManager : MonoBehaviour
 
     public IEnumerator CoLoadSceneProcess()
     {
-        Debug.Log("LoadSceneProcess START");
-
         yield return null;
 
         AsyncOperation op = SceneManager.LoadSceneAsync(nextScene);

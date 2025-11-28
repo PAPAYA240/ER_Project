@@ -105,6 +105,9 @@ namespace Server.Game
                 {
                     if (Interlocked.Exchange(ref _enterGame, 1) == 0)
                     {
+                        S_LoadGameScene loadGameScenePkt = new S_LoadGameScene();
+                        Broadcast(loadGameScenePkt);
+
                         GameRoom gr = RoomManager.Instance.AddRoom<GameRoom>();
                         EnterGame(gr);
                     }
@@ -228,7 +231,7 @@ namespace Server.Game
                 Player player = clientSession.MyPlayer;
                 if (player == null)
                     continue;
-
+                
                 clientSession.CurRoom = room.RoomId;
                 room.Push(room.EnterGame, player, _pickPlayers[i].Team);
             }

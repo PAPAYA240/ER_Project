@@ -183,7 +183,7 @@ namespace Server.Game
         }
 
         public void CheckAllCollisions(
-            Dictionary<int, Dictionary<int, Player>> teams,
+            ConcurrentDictionary<int, ConcurrentDictionary<int, Player>> teams,
             ConcurrentDictionary<int, Monster> monsters,
             ConcurrentDictionary<int, Projectile> projectiles)
         {
@@ -243,7 +243,7 @@ namespace Server.Game
             }
         }
 
-        void CheckPlayerHit(Dictionary<int, Dictionary<int, Player>> teams, Dictionary<int, Dictionary<int, float>> damageDict)
+        void CheckPlayerHit(ConcurrentDictionary<int, ConcurrentDictionary<int, Player>> teams, Dictionary<int, Dictionary<int, float>> damageDict)
         {
             foreach (var nestedKvp in _hitboxDict)
             {
@@ -592,7 +592,7 @@ namespace Server.Game
                     monster.OnHit(hitbox.Creature);
                 Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Creature.Id}, Target:{target.Info.Monster.MonsterType}_{target.Id}, Damage:{dmg}");
             }
-            else;
+            else
                 Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Creature.Id}, Target:Env_{target.Id}, Damage:{dmg}");
 
             if (damageDict.ContainsKey(target.Id))
@@ -672,7 +672,7 @@ namespace Server.Game
             return result;
         }
 
-        void SendChangeHpPkts(Dictionary<int, Dictionary<int, Player>> teams, Dictionary<int, Dictionary<int, float>> damageDict)
+        void SendChangeHpPkts(ConcurrentDictionary<int, ConcurrentDictionary<int, Player>> teams, Dictionary<int, Dictionary<int, float>> damageDict)
         {
             foreach (var kvp in damageDict)
             {
@@ -739,7 +739,7 @@ namespace Server.Game
             }
         }
 
-        void HandleAllyHit(Hitbox hitbox, Dictionary<int, Player> targets)
+        void HandleAllyHit(Hitbox hitbox, ConcurrentDictionary<int, Player> targets)
         {
             foreach (var targetKvp in targets)
             {
