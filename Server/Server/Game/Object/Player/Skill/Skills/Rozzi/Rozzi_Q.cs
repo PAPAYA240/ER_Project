@@ -27,11 +27,24 @@ public sealed class Rozzi_Q : RozziSkillHandler
 
         SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
+        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode, sendLookatMousePacket: true);
     }
 
     public override void OnCollision<T>(Player p, List<T> targets, GameObject.StatusEffect effect)
     {
         _isCollision = true;
+
+        foreach(var t in targets)
+        {
+            GameObject go = t as GameObject;
+            if (go == null)
+                return;
+
+            p.SendSkillEffect(new Vector2(go.Position.X, go.Position.Z), keyCode: _keyCode, sendLookatMousePacket: true, 
+                targetPos: default, targetRot: default, 
+                type: "Select", "FX_BI_Rozzi_Skill02_Hit", 
+                useTargetTransform: true, targetId: go.Id);
+        }        
     }
 
     public override void OnTick(Player p, SkillContext ctx)

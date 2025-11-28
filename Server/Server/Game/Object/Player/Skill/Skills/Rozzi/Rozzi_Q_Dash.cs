@@ -33,6 +33,8 @@ public sealed class Rozzi_Q_Dash : SkillHandlerBase
 
         SendSkillCollisionRequestPacket(p, CollisionType.Block, p.Position, targetPos);
         p.LookAtMouse(ctx.MousePos);
+
+        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode, sendLookatMousePacket: true, targetPos: default, targetRot: default, type: "Select", "FX_BI_Rozzi_Skill01_Move");
     }
 
     public override void OnHit(Player p, SkillContext ctx)

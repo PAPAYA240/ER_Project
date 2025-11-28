@@ -503,6 +503,8 @@ message S_Fx{
 	PositionInfo targetPosition = 7; // type = Target 시, 타게팅 위치
 	RotationInfo targetRotation = 8; // type = Target 시, 타게팅 회전
 	string type = 9; // Caster, HitTarget, Select 중 하나, 기본은 Caster
+	bool useTargetTransform = 10;
+	int32 targetId = 11;
 }
 
 message C_Anim{

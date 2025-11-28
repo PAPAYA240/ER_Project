@@ -13,6 +13,7 @@ using ValueType = Server.Game.ValueType;
 
 public class Projectile_Rozzi_R : Projectile
 {
+    private Player _owner = null;
     private readonly float _maxDistance = 5.5f;
     private Vector3 _startPosition;
 
@@ -55,6 +56,10 @@ public class Projectile_Rozzi_R : Projectile
     public override void Init()
     {
         if (Owner == null)
+            return;
+
+        _owner = Owner as Player;
+        if (_owner == null)
             return;
 
         _tStartTick = TimeUtil.Instance.LastTick;
@@ -154,6 +159,20 @@ public class Projectile_Rozzi_R : Projectile
         // TODO : 시야 공유 시스템이 있으면 여기서 연동
         // e.g. target.Room.Vision.Share(Owner, target);
 
+        // FX
+        _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: true,
+                targetPos: default, targetRot: default,
+                type: "Select", "FX_BI_Rozzi_Skill04_Set_Character",
+                useTargetTransform: true, targetId: target.Id);
+        _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: true,
+                targetPos: default, targetRot: default,
+                type: "Select", "FX_BI_Rozzi_Skill04_Set_Character_Count",
+                useTargetTransform: true, targetId: target.Id);
+        _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: true,
+                targetPos: default, targetRot: default,
+                type: "Select", "FX_BI_Rozzi_Skill04_Set_Character_Hit",
+                useTargetTransform: true, targetId: target.Id);
+
         // 위치를 타겟에게 붙임
         Info.PosInfo.SetPosInfoFromVector3(target.Position);
         Info.PosInfo.PosY = 1.5f;
@@ -171,7 +190,11 @@ public class Projectile_Rozzi_R : Projectile
         _explodeTick = unchecked(_attachTick + FuseMs);
 
         // 더 이상 이동하지 않고 해당 위치에 고정
-        // (FX 연출은 클라에서 패킷 보고 처리)
+        // FX
+        _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: true,
+                targetPos: default, targetRot: default,
+                type: "Select", "FX_BI_Rozzi_Skill04_Set_Character_Count",
+                useTargetTransform: true, targetId: Id);
     }
 
     protected override bool Deactivation()
@@ -247,11 +270,21 @@ public class Projectile_Rozzi_R : Projectile
 
         // TODO : 바닥 폭탄인 경우 여기서 AoE 처리도 가능
 
-        // 2) 조기 폭발 추가 효과
+        // 2) 조기 폭발 추가 효과   
+        if (early)
+        {
+            _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: true,
+                targetPos: default, targetRot: default,
+                type: "Select", "FX_BI_Rozzi_Skill04_Buff");
+        }
         if (early && mainTarget != null && !mainTarget.IsDead)
             ApplyEarlyExplosionEffects(mainTarget);
 
-        // TODO : 폭발 FX 패킷 전송 (S_SemtexBoom 등)
+        // 폭발 FX 패킷 전송
+        _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: true,
+                targetPos: default, targetRot: default,
+                type: "Select", "FX_BI_Rozzi_Skill04_Explore",
+                useTargetTransform: true, targetId: Id);
 
         // 시야 공유 해제
         Owner.RemoveStatusEffects("VisionShare");

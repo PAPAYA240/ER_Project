@@ -144,42 +144,7 @@ public class PlayerSkillController : MonoBehaviour
     // 스킬 시작 승인(시전별 instanceId 포함 -> 안함)
     public void OnSkillConfirm(S_SkillConfirm packet)
     {
-        CanMoveDuringCast = packet.CanMove;
-
-        switch ((KeyCode)packet.SkillKey)
-        {
-            case KeyCode.Q:
-                _player.tempSkillEffect.TryGetValue(KeyCode.Q, out var effectQ);
-                if(effectQ == null)
-                {
-                    Debug.Log("@ effectQ null!!");
-                    return;
-                }
-                ParticleSystem ps = effectQ.GetComponentInChildren<ParticleSystem>();
-                if (ps == null)
-                {
-                    Debug.Log("@ ps null!!");
-                    return;
-                }
-                Debug.Log($"position : {ps.transform.position}");   
-                ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-                ps.Play();
-                break;
-            case KeyCode.W:
-                _player.tempSkillEffect.TryGetValue(KeyCode.W, out var effectW);
-                effectW.GetComponentInChildren<ParticleSystem>().Play();
-                break;
-            case KeyCode.E:
-                _player.tempSkillEffect.TryGetValue(KeyCode.E, out var effectE);
-                effectE.GetComponentInChildren<ParticleSystem>().Play();
-                break;
-            case KeyCode.R:
-                _player.tempSkillEffect.TryGetValue(KeyCode.R, out var effectR);
-                effectR.GetComponentInChildren<ParticleSystem>().Play();
-                break;
-            default:
-                break;
-        }
+        CanMoveDuringCast = packet.CanMove;     
     }
 
     public void OnSkillCost(S_SkillCost packet)

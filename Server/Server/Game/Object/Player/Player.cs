@@ -1107,7 +1107,9 @@ namespace Server.Game
             Vector3 targetPos = new Vector3(),
             Quaternion targetRot = default(Quaternion),
             string type = "Caster", 
-            string name = "")
+            string name = "",
+            bool useTargetTransform = false,
+            int targetId = 0)
         {
             Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
             Vector2 dir = mousePos - myPos;
@@ -1136,7 +1138,9 @@ namespace Server.Game
                 TargetPosition = new PositionInfo { PosX = targetPos.X, PosY = targetPos.Y, PosZ = targetPos.Z },
                 TargetRotation = new RotationInfo { Qx = targetRot.X, Qy = targetRot.Y, Qz = targetRot.Z, Qw = targetRot.W },
                 Type = type,
-                FxName = name
+                FxName = name,
+                UseTargetTransform = useTargetTransform,
+                TargetId = targetId,
             };
 
             Room.Push(Room.Broadcast, fxPacket);
