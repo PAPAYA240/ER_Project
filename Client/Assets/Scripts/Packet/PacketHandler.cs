@@ -1243,6 +1243,32 @@ class PacketHandler
         bc.FailCapture();
     }
 
+    public static void S_AbigailSoundHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_AbigailSoundHandler(session, packet))) return;
+
+        S_AbigailSound abigailSoundPkt = packet as S_AbigailSound;
+        GameObject go = Managers.Object.FindById(abigailSoundPkt.ObjectId);
+        if (go == null) return;
+        AbigailAudioManager aam = go.GetComponentInChildren<AbigailAudioManager>();
+        if(aam == null) return;
+
+        aam.Play(abigailSoundPkt.ObjectId, abigailSoundPkt.Sound);
+    }
+
+    public static void S_PickSoundHandler(PacketSession session, IMessage packet)
+    {
+        S_PickSound pickSoundPkt = packet as S_PickSound;
+
+        GameObject go = GameObject.Find("PickScene");
+        if (go == null) return;
+
+        PickScene pickScene = go.GetComponent<PickScene>();
+        if (pickScene == null) return;
+
+        pickScene.PlaySelectedSound(pickSoundPkt.CharType);
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;

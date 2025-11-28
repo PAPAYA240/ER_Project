@@ -172,7 +172,11 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SStartOperate, MakePacket<S_StartOperate>);
 		_handler.Add((ushort)MsgId.SStartOperate, PacketHandler.S_StartOperateHandler);		
 		_onRecv.Add((ushort)MsgId.SStopOperate, MakePacket<S_StopOperate>);
-		_handler.Add((ushort)MsgId.SStopOperate, PacketHandler.S_StopOperateHandler);
+		_handler.Add((ushort)MsgId.SStopOperate, PacketHandler.S_StopOperateHandler);		
+		_onRecv.Add((ushort)MsgId.SAbigailSound, MakePacket<S_AbigailSound>);
+		_handler.Add((ushort)MsgId.SAbigailSound, PacketHandler.S_AbigailSoundHandler);		
+		_onRecv.Add((ushort)MsgId.SPickSound, MakePacket<S_PickSound>);
+		_handler.Add((ushort)MsgId.SPickSound, PacketHandler.S_PickSoundHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

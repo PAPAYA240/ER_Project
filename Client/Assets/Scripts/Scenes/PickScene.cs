@@ -25,6 +25,8 @@ public class PickScene : BaseScene
     // 닉네임
     // TODO 무기 특성 팀 정보
 
+    Dictionary<CharacterType, AudioClip> _selectedAudios = new Dictionary<CharacterType, AudioClip>(); // 픽 선택완료 했을때 사운드
+
     protected override async void Init()
     {
         base.Init();
@@ -38,6 +40,8 @@ public class PickScene : BaseScene
 
         PickIdx = Managers.Info.PickIdx;
         Team = Managers.Info.Team;
+
+        LoadAudioClips();
 
         foreach (PickScenePlayerInfo pspi in Managers.Info._pspiList)
             Spawn(pspi);
@@ -153,5 +157,19 @@ public class PickScene : BaseScene
     {
         ChangeNickname(info.UserName, info.PickIdx);
         ChangeBar(info.PickIdx, info.Team);
+    }
+
+    public void LoadAudioClips()
+    {
+        AudioClip abigail = Resources.Load<AudioClip>("Abigail/voice/Abigail_selected_1_ko");
+        _selectedAudios[CharacterType.Abigail] = abigail;
+    }
+
+    public void PlaySelectedSound(CharacterType charType)
+    {
+        if (!_selectedAudios.TryGetValue(charType, out AudioClip audioClip))
+            return;
+
+        Managers.Sound.Play(audioClip, Define.Sound.Voice, 0.2f);
     }
 }

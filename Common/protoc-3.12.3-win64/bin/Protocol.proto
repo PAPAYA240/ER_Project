@@ -136,6 +136,8 @@ enum MsgId {
 
   S_START_OPERATE = 106;
   S_STOP_OPERATE = 107;
+  S_ABIGAIL_SOUND = 108;
+  S_PICK_SOUND = 109;
 }
 
 enum CombatState{
@@ -387,8 +389,39 @@ enum SpawnPointType
 	BushNone = 2;		// 일반 부쉬
 }
 
+enum AbigailSound{
+	Q = 0;
+	Q_FirstHit = 1;
+	Q_SecondHit = 2;
+	Q_Voice = 3;
+	W = 4;
+	W_Hit = 5;
+	W_Voice = 6;
+	E = 7;
+	E_Hit = 8;
+	E_Voice = 9;
+	R = 10;
+	R_Hit = 11;
+	R_Voice = 12;
+	Attack1 = 13;
+	Attack2 = 14;
+	AttackHit = 15;
+	Attack_Voice = 16;
+	PassiveReady = 17;
+	PassiveAttack = 18;
+	PassiveAttackHit = 19;
+	WeaponSkill = 20;
+	Selected = 21;
+	Dead = 22;
+	Kill = 23;
+	KillMonster = 24;
+	Rest = 25;
+	Victory = 26;
+	Defeat = 27;
+}
+
 message C_Interact {
-    	int32 objectId = 1;
+    int32 objectId = 1;
 }
 
 message S_Interact  {
@@ -1173,4 +1206,13 @@ message S_StartOperate{
 
 message S_StopOperate{
 	string beaconName = 1;
+}
+
+message S_AbigailSound{
+	int32 objectId = 1;
+	AbigailSound sound = 2;
+}
+
+message S_PickSound{
+	CharacterType charType = 1;
 }
