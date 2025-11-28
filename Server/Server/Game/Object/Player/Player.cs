@@ -1353,6 +1353,15 @@ namespace Server.Game
 
             Room.Push(Session.Send, packet);
         }
+
+        public void SendRemoveEffect(KeyCode keyCode)
+        {
+            S_RemoveEffect packet = new S_RemoveEffect();
+            packet.ObjectId = Id;
+            packet.KeyCode = (int)keyCode;
+
+            Room.Push(Room.Broadcast, packet);
+        }
         #endregion
     }
 }

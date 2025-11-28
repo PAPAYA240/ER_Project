@@ -43,5 +43,6 @@ public sealed class Hyunwoo_W : InstantHandlerBase
         }
 
         SendSkillConfirmPacket(p);
+        p.SendSkillEffect(new System.Numerics.Vector2(), keyCode: _keyCode, false);
     }
 }

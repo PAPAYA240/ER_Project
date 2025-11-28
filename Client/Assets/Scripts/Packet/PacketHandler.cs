@@ -1,11 +1,15 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Data;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Data.EffectData;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 class PacketHandler
 {
@@ -393,7 +397,8 @@ class PacketHandler
         Vector3 targetPos = fxPacket.TargetPosition.ToVector();
         Quaternion targetRot = fxPacket.TargetRotation;
 
-        pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));
+        if(fxPacket.CanLookatMouse == true)
+            pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));
         pc.PlayEffectFromServer(fxPacket, mousePos, targetPos, targetRot);
     }
 
@@ -1195,16 +1200,14 @@ class PacketHandler
         S_SpawnWard wardPacket = packet as S_SpawnWard;
 
         Managers.Object.AddWard(wardPacket.ObjInfo, wardPacket.TeamIndex);
+    }
 
-        //GameObject go = Managers.Object.FindById(yukiStudPacket.ObjectId);
-        //if (go == null)
-        //    return;
+    public static void S_RemoveEffectHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_RemoveEffectHandler(session, packet))) return;
 
-        //PlayerController pc = go.GetComponentInChildren<PlayerController>();
-        //if (pc == null)
-        //    return;
-
-        //yukiStudPacket.StudCnt;
+        S_RemoveEffect removeEffectPacket = packet as S_RemoveEffect;
+        Managers.FX.Effect.RemoveEffect(removeEffectPacket);
     }
 
     static float GetCurrentEstimatedOneWayLatency()

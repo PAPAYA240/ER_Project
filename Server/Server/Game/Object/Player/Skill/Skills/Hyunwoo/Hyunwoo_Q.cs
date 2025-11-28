@@ -22,6 +22,7 @@ public sealed class Hyunwoo_Q : SkillHandlerBase
 
         SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
+        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

@@ -168,7 +168,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SSound, MakePacket<S_Sound>);
 		_handler.Add((ushort)MsgId.SSound, PacketHandler.S_SoundHandler);		
 		_onRecv.Add((ushort)MsgId.SSpawnWard, MakePacket<S_SpawnWard>);
-		_handler.Add((ushort)MsgId.SSpawnWard, PacketHandler.S_SpawnWardHandler);
+		_handler.Add((ushort)MsgId.SSpawnWard, PacketHandler.S_SpawnWardHandler);		
+		_onRecv.Add((ushort)MsgId.SRemoveEffect, MakePacket<S_RemoveEffect>);
+		_handler.Add((ushort)MsgId.SRemoveEffect, PacketHandler.S_RemoveEffectHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

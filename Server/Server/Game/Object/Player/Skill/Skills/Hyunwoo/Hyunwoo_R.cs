@@ -24,6 +24,7 @@ public sealed class Hyunwoo_R : ChargingSkillHandler
 
         SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
+        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode);
         _start = TimeUtil.UtcSec();
     }
 
