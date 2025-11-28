@@ -7,12 +7,12 @@ public class Yuki_SkillAttack : MonoBehaviour
 
     private void Awake()
     {
-        // ÇÁ¸®ÆÕ ³»ºÎ ÆÄÆ¼Å¬ ÀÚµ¿ Å½»ö
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ¼Å¬ ï¿½Úµï¿½ Å½ï¿½ï¿½
         ps = GetComponentInChildren<ParticleSystem>();
         ps.Stop();
     }
 
-    // ¿ÜºÎ(½ºÅ³ ÄÚµå/¾Ö´Ï¸ÞÀÌ¼Ç)¿¡¼­ È£ÃâÇÒ ÇÔ¼ö
+    // ï¿½Üºï¿½(ï¿½ï¿½Å³ ï¿½Úµï¿½/ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½)ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
     public void PlayEffect()
     {
         ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
