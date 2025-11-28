@@ -133,6 +133,9 @@ enum MsgId {
 
   S_SPAWN_WARD = 104;
   C_DEPLOYING_LOOP = 105;
+
+  S_START_OPERATE = 106;
+  S_STOP_OPERATE = 107;
 }
 
 enum CombatState{
@@ -1161,4 +1164,13 @@ message C_DeployingLoop {
 
 message S_LoadGameScene{
 
+}
+
+message S_StartOperate{
+	string beaconName = 1;
+	int32 team = 2;
+}
+
+message S_StopOperate{
+	string beaconName = 1;
 }
