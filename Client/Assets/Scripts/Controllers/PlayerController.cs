@@ -453,8 +453,6 @@ public class PlayerController : CreatureController
 
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
-        bool isUpperBodySkill = animInfo.Name == "ROZZI_D" || animInfo.Name == "YUKI_W";
-        if (isUpperBodySkill)
         // Animation에 맞는 Sound
         if (Sound != null)
         {
@@ -462,6 +460,7 @@ public class PlayerController : CreatureController
             Sound.GetRandomVoice(animInfo.Name);
         }
 
+        bool isUpperBodySkill = animInfo.Name == "ROZZI_D" || animInfo.Name == "YUKI_W";
         if (isUpperBodySkill)
         {
             int upperLayer = _animator.GetLayerIndex("UpperBody");

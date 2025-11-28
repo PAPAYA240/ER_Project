@@ -19,6 +19,7 @@ public class Env_BarrierSpawnpoint : EnvController
         }
         else
             UnityEngine.Debug.LogError("Phase2 오브젝트를 찾을 수 없습니다");
+
     }
 
     public void ActivatePhase2(bool active = false)
