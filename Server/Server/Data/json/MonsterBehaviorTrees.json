@@ -1,0 +1,363 @@
+{
+  "behaviorTrees": [
+    {
+      "Name": "Common Behaviors",
+      "Type": "PrioritySelectorNode",
+      "TargetObject": "Common",
+      "Children": [
+        {
+          "Name": "Dead",
+          "Type": "SequenceNode",
+          "Children": [
+            {
+              "Name": "Condition",
+              "Type": "DeadConditionNode"
+            },
+            {
+              "Name": "ParallelNodeRoot",
+              "Type": "ParallelNode",
+              "Children": [
+                {
+                  "Name": "Animation",
+                  "Type": "PlayAnimation",
+                  "Properties": { "chainAnimNames": [ "DEAD" ] }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Name": "Hit",
+          "Type": "SequenceNode",
+          "Children": [
+            {
+              "Name": "Condition",
+              "Type": "HitConditionNode"
+            }
+          ]
+        },
+        {
+          "Name": "Appear",
+          "Type": "SequenceNode",
+          "Children": [
+            {
+              "Name": "Condition",
+              "Type": "SpawnConditionNode"
+            },
+            {
+              "Name": "ParallelNodeRoot",
+              "Type": "ParallelNode",
+              "Children": [
+                {
+                  "Name": "Animation",
+                  "Type": "PlayAnimation",
+                  "Properties": { "chainAnimNames": [ "APPEAR" ] }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Name": "Move",
+          "Type": "SequenceNode",
+          "Children": [
+            {
+              "Name": "Condition",
+              "Type": "MovingConditionNode"
+            },
+            {
+              "Name": "Animation",
+              "Type": "PlayAnimatorFloatNode",
+              "Properties": { "paramName": "walk" }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Omega Behaviors",
+      "Type": "PrioritySelectorNode",
+      "TargetObject": "Omega",
+      "Children": [
+        {
+          "Name": "Omega Attack1",
+          "Type": "SequenceNode",
+          "Children": [
+            {
+              "Name": "Condition",
+              "Type": "SkillConditionNode",
+              "Properties": { "skillId": "MsAttack1" }
+            },
+            {
+              "Type": "ParallelNode",
+              "Children": [
+                {
+                  "Name": "Animation",
+                  "Type": "PlayAnimation",
+                  "Properties": { "chainAnimNames": [ "ATTACK1" ] }
+                },
+                {
+                  "Name": "Effect",
+                  "Type": "PlayEffectNode"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Name": "Omega Attack2",
+          "Type": "SequenceNode",
+          "Children": [
+            {
+              "Name": "Condition",
+              "Type": "SkillConditionNode",
+              "Properties": { "skillId": "MsAttack2" }
+            },
+            {
+              "Type": "ParallelNode",
+              "Children": [
+                {
+                  "Name": "Animation",
+                  "Type": "PlayAnimation",
+                  "Properties": { "chainAnimNames": [ "ATTACK2" ] }
+                },
+                {
+                  "Name": "Effect",
+                  "Type": "PlayEffectNode"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Name": "Omega Skill1",
+          "Type": "SequenceNode",
+          "Children": [
+            {
+              "Name": "Condition",
+              "Type": "SkillConditionNode",
+              "Properties": { "skillId": "MsSkill1" }
+            },
+            {
+              "Type": "ParallelNode",
+              "Children": [
+                {
+                  "Name": "Animation",
+                  "Type": "PlayAnimation",
+                  "Properties": { "chainAnimNames": [ "SKILL1", "SKILL1_ATTACK" ] }
+                },
+                {
+                  "Name": "Effect",
+                  "Type": "PlayEffectNode"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Name": "Omega Skill2",
+          "Type": "SequenceNode",
+          "Children": [
+            {
+              "Name": "Condition",
+              "Type": "SkillConditionNode",
+              "Properties": { "skillId": "MsSkill2" }
+            },
+            {
+              "Type": "ParallelNode",
+              "Children": [
+                {
+                  "Name": "Animation",
+                  "Type": "PlayAnimation",
+                  "Properties": { "chainAnimNames": [ "SKILL2" ] }
+                },
+                {
+                  "Name": "Effect",
+                  "Type": "PlayEffectNode"
+                },
+                {
+                  "Name": "Material",
+                  "Type": "SetMaterialNode",
+                  "Properties": { "strChangeMaterial": "materials/effect/auraMaterial" }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Gamma Behaviors",
+      "Type": "PrioritySelectorNode",
+      "TargetObject": "Gamma",
+      "Children": [
+        {
+          "Name": "Gamma Attack1",
+          "Type": "SequenceNode",
+          "Children": [
+            {
+              "Name": "Condition",
+              "Type": "SkillConditionNode",
+              "Properties": { "skillId": "MsGammaAttack1" }
+            },
+            {
+              "Name": "ParallelNodeRoot",
+              "Type": "ParallelNode",
+              "Children": [
+                {
+                  "Name": "Animation",
+                  "Type": "PlayAnimation",
+                  "Properties": { "chainAnimNames": [ "ATTACK1" ] }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Name": "Gamma Skill1",
+          "Type": "SequenceNode",
+          "Children": [
+            {
+              "Name": "Condition",
+              "Type": "SkillConditionNode",
+              "Properties": { "skillId": "MsGammaSkill1" }
+            },
+            {
+              "Name": "ParallelNodeRoot",
+              "Type": "ParallelNode",
+              "Children": [
+                {
+                  "Name": "Animation",
+                  "Type": "PlayAnimation",
+                  "Properties": { "chainAnimNames": [ "SKILL1", "SKILL1_ATTACK" ] }
+                },
+                {
+                  "Name": "Effect",
+                  "Type": "PlayEffectNode"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Name": "Gamma Skill2",
+          "Type": "SequenceNode",
+          "Children": [
+            {
+              "Name": "Condition",
+              "Type": "SkillConditionNode",
+              "Properties": { "skillId": "MsGammaSkill2" }
+            },
+            {
+              "Name": "ParallelNodeRoot",
+              "Type": "ParallelNode",
+              "Children": [
+                {
+                  "Name": "Animation",
+                  "Type": "PlayAnimation",
+                  "Properties": { "chainAnimNames": [ "SKILL2", "SKILL2_LOOP", "SKILL2_END" ] }
+                },
+                {
+                  "Name": "Effect",
+                  "Type": "PlayEffectNode"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "Name": "Gamma Skill3",
+          "Type": "SequenceNode",
+          "Children": [
+            {
+              "Name": "Condition",
+              "Type": "SkillConditionNode",
+              "Properties": { "skillId": "MsGammaSkill3" }
+            },
+            {
+              "Name": "ParallelNodeRoot",
+              "Type": "ParallelNode",
+              "Children": [
+                {
+                  "Name": "Animation",
+                  "Type": "PlayAnimation",
+                  "Properties": { "chainAnimNames": [ "SKILL3" ] }
+                },
+                {
+                  "Name": "Effect",
+                  "Type": "PlayEffectNode"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Drone Behaviors",
+      "Type": "PrioritySelectorNode",
+      "TargetObject": "Drone",
+      "Children": [
+        {
+          "Name": "Drone Attack",
+          "Type": "SequenceNode",
+          "Children": [
+            {
+              "Name": "Condition",
+              "Type": "SkillConditionNode",
+              "Properties": { "skillId": "MsDroneAttack1" }
+            },
+            {
+              "Name": "ParallelNodeRoot",
+              "Type": "ParallelNode",
+              "Children": [
+                {
+                  "Name": "Animation",
+                  "Type": "PlayAnimation",
+                  "Properties": { "chainAnimNames": [ "ATTACK" ] }
+                },
+                {
+                  "Name": "Effect",
+                  "Type": "PlayEffectNode"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Turret Behaviors",
+      "Type": "PrioritySelectorNode",
+      "TargetObject": "Turret",
+      "Children": [
+        {
+          "Name": "Turret Attack",
+          "Type": "SequenceNode",
+          "Children": [
+            {
+              "Name": "Condition",
+              "Type": "SkillConditionNode",
+              "Properties": { "skillId": "MsTurretAttack" }
+            },
+            {
+              "Name": "ParallelNodeRoot",
+              "Type": "ParallelNode",
+              "Children": [
+                {
+                  "Name": "Animation",
+                  "Type": "PlayAnimation",
+                  "Properties": { "chainAnimNames": [ "ATTACK" ] }
+                },
+                {
+                  "Name": "Effect",
+                  "Type": "PlayEffectNode"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

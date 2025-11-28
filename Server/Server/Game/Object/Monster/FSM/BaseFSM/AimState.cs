@@ -20,6 +20,8 @@ namespace Server.Game
                 return;
             }
 
+            monster.DelaySkillAnimationTimer = _skillData.skillCoolTime;
+
             SetupSkill(monster);
 
             RotateTowardTarget(monster);
@@ -34,7 +36,12 @@ namespace Server.Game
             if (IsSkillFinished())
             {
                 if (monster.IsInSkillRange())
-                    monster.ChangeState(FSMManager.Instance.EvaluateTargetForNextState(monster));
+                {
+                    if (monster.Info.Monster.MonsterType == MonsterType.Drone)
+                        monster.ChangeState(FSMManager.Instance.EvaluateTargetForNextState(monster));
+                    else
+                        monster.ChangeState(FSMManager.Instance.GetIdleState());
+                }
                 else
                 {
                     monster.Target = null;
@@ -77,7 +84,7 @@ namespace Server.Game
             long durationMs = (long)(_skillData.skillDuration * 1000f);
             _skillEndTime = Environment.TickCount64 + durationMs;
 
-            monster._delaySkillAnimationTimer = _skillData.skillCoolTime;
+            monster.DelaySkillAnimationTimer = _skillData.skillCoolTime;
         }
         #endregion
     }
