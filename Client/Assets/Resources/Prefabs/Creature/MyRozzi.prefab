@@ -2765,8 +2765,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d07a4ac14489814e9692da7473da8c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerWeaponStencilID: 100
-  disablePlayerWeaponXRay: 1
+  Sound: {fileID: 0}
+  xRayIgnoreStencilID: 100
 --- !u!1 &4552065746279300795
 GameObject:
   m_ObjectHideFlags: 0

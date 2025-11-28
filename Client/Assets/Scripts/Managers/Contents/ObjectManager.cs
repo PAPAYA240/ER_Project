@@ -20,6 +20,8 @@ public class ObjectManager
     Queue<Action> _pendingActions = new Queue<Action>();
     bool _myPlayerReady = false;
 
+    private readonly Dictionary<ProjectileType, Queue<Projectile>> _projectilePool = new Dictionary<ProjectileType, Queue<Projectile>>();
+
     #region Type ID
     public static GameObjectType GetObjectTypeById(int id)
 	{
@@ -149,20 +151,47 @@ public class ObjectManager
         GameObject go = Managers.Object.FindById(info.ObjectId);
         if (go == null)
         {
-            go = Managers.Resource.Instantiate($"Creature/Weapon/{info.Projectile.ProjectileType}");
-            go.name = "Projectile_" + info.ObjectId;
+            ProjectileType type = info.Projectile.ProjectileType;
+            if (type == ProjectileType.ProjectileRozziNormalAttack)
+            {
+                // 1) 풀에서 꺼내기
+                Projectile pc = GetOrCreateProjectile(info.Projectile.ProjectileType);
+                go = pc.gameObject;
+                go.name = "Projectile_" + info.ObjectId;
 
-            Projectile pc = go.GetComponent<Projectile>();
-            pc.PosInfo = info.PosInfo;
-            pc.Stat = info.StatInfo;
-            pc.Type = info.Projectile.ProjectileType;
-            pc.Owner = Managers.Object.FindById(info.Projectile.OwnerId);
+                // 2) 기본 정보 세팅
+                pc.PosInfo = info.PosInfo;
+                pc.Stat = info.StatInfo;
+                pc.Type = info.Projectile.ProjectileType;
+                pc.Owner = Managers.Object.FindById(info.Projectile.OwnerId);
 
-            Transform parent = GetOrCreateParent("@ Projectiles");
-            pc.transform.SetParent(parent);
+                // 3) 딕셔너리에 등록
+                _objects.Add(info.ObjectId, go);
 
-            _objects.Add(info.ObjectId, go);
-            pc.SyncPos();
+                // 4) 위치 동기화
+                pc.SyncPos();
+
+                Projectile_Rozzi_NormalAttack pr = go.GetComponent<Projectile_Rozzi_NormalAttack>();
+                if (pr != null)
+                    pr.ResetForPool();
+            }
+            else
+            {
+                go = Managers.Resource.Instantiate($"Creature/Weapon/{type}");
+                go.name = "Projectile_" + info.ObjectId;
+
+                Projectile pc = go.GetComponent<Projectile>();
+                pc.PosInfo = info.PosInfo;
+                pc.Stat = info.StatInfo;
+                pc.Type = info.Projectile.ProjectileType;
+                pc.Owner = Managers.Object.FindById(info.Projectile.OwnerId);
+
+                Transform parent = GetOrCreateParent("@ Projectiles");
+                pc.transform.SetParent(parent);
+
+                _objects.Add(info.ObjectId, go);
+                pc.SyncPos();
+            }               
         }
     }
     private void AddEnvironment(ObjectInfo info)
@@ -339,7 +368,12 @@ public class ObjectManager
 			return;
 
 		_objects.Remove(id);
-		Managers.Resource.Destroy(go);
+
+        Projectile proj = go.GetComponent<Projectile_Rozzi_NormalAttack>();
+        if (proj != null) 
+            ReturnProjectileToPool(proj);
+        else        
+            Managers.Resource.Destroy(go);
 	}
 
 	public GameObject FindById(int id)
@@ -366,5 +400,50 @@ public class ObjectManager
         _objects.Clear();
 		MyPlayer = null;
 	}
+    #endregion
+
+    #region Projectile Pool
+    private Projectile GetOrCreateProjectile(ProjectileType type)
+    {
+        Queue<Projectile> queue;
+        if (!_projectilePool.TryGetValue(type, out queue))
+        {
+            queue = new Queue<Projectile>();
+            _projectilePool[type] = queue;
+        }
+
+        Projectile proj = null;
+
+        if (queue.Count > 0)
+        {
+            proj = queue.Dequeue();
+        }
+        else
+        {
+            // 새로 생성
+            GameObject go = Managers.Resource.Instantiate($"Creature/Weapon/{type}");
+            proj = go.GetComponent<Projectile>();
+
+            Transform parent = GetOrCreateParent("@ Projectile Pool");
+            proj.transform.SetParent(parent);
+        }
+
+        proj.gameObject.SetActive(true);
+        return proj;
+    }
+
+    private void ReturnProjectileToPool(Projectile proj)
+    {
+        proj.gameObject.SetActive(false);
+
+        Queue<Projectile> queue;
+        if (!_projectilePool.TryGetValue(proj.Type, out queue))
+        {
+            queue = new Queue<Projectile>();
+            _projectilePool[proj.Type] = queue;
+        }
+
+        queue.Enqueue(proj);
+    }
     #endregion
 }

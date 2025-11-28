@@ -83,7 +83,7 @@ public class EffectFXManager : MonoBehaviour
                 fxObject.transform.localPosition = data.position;
                 fxObject.transform.localRotation = Quaternion.identity;
             }
-            else if(data.target == EEffectTarget.Target)
+            else if(data.target == EEffectTarget.Enemy)
             {
                 fxObject.transform.SetParent(casterTransform);
                 fxObject.transform.SetPositionAndRotation(spawnPos, spawnRot);
@@ -181,9 +181,13 @@ public class EffectFXManager : MonoBehaviour
             yield break;
 
         yield return new WaitForSeconds(delayTime);
+        if (fxObject == null)
+            yield break;
         fxObject.SetActive(true);
 
         yield return new WaitForSeconds(duration);
+        if (fxObject == null)
+            yield break;
         RemoveEffect(ownerId, fxObject);
     }
     #endregion

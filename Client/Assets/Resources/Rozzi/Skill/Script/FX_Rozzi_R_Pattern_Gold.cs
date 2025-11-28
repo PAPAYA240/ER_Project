@@ -1,65 +1,55 @@
 using UnityEngine;
 
-[ExecuteAlways] // 에디터 + 플레이 둘 다에서 실행
-[RequireComponent(typeof(ParticleSystemRenderer))]
+[RequireComponent(typeof(Renderer))] // MeshRenderer, ParticleSystemRenderer 둘 다 포함
 public class FX_Rozzi_R_Pattern_Gold : MonoBehaviour
 {
-    public ParticleSystem ps;                   // 파티클
-    public float duration = 3f;                 // 0→1 가는 시간
-    public string propertyName = "_Progress";   // Shader Graph Reference
+    [Tooltip("0 → 1 까지 차오르는 데 걸리는 시간 (초)")]
+    public float duration = 3f;
 
-    ParticleSystemRenderer _renderer;
-    MaterialPropertyBlock _mpb;
-    float _time;
-    bool _wasPlaying;
+    [Tooltip("Shader Graph에서 Progress 프로퍼티 Reference 이름")]
+    public string propertyName = "_Progress";
 
-    void Reset()
-    {
-        if (!ps)
-            ps = GetComponent<ParticleSystem>();
-    }
+    private ParticleSystemRenderer _renderer;
+    private MaterialPropertyBlock _mpb;
+    private float _time;
 
-    void Awake()
+    private void Awake()
     {
         _renderer = GetComponent<ParticleSystemRenderer>();
         _mpb = new MaterialPropertyBlock();
-    }
-
-    void OnEnable()
-    {
         _time = 0f;
-        ApplyProgress(0f);
+        SetProgress(0f);
     }
 
-    void Update()
+    private void OnEnable()
     {
-        if (!ps || !_renderer)
-            return;
-
-        bool playing = ps.isPlaying;
-
-        // ▶ Play 버튼을 막 누른 순간(= false → true 변화) 감지
-        if (playing && !_wasPlaying)
-        {
-            _time = 0f;          // 시간 리셋
-            ApplyProgress(0f);   // 0부터 다시 시작
-        }
-
-        if (playing)
-        {
-            // 에디터에서도 돌아가도록 Time.deltaTime 사용
-            _time += Time.deltaTime;
-            float t = Mathf.Clamp01(_time / duration);
-            ApplyProgress(t);           
-        }
-
-        _wasPlaying = playing;
+        // 오브젝트가 활성화될 때마다 항상 0부터 다시 시작
+        _time = 0f;
+        SetProgress(0f);
     }
 
-    void ApplyProgress(float value)
+    void OnDisable()
+    {
+        SetProgress(0f); // 풀로 돌아갈 때 항상 0으로
+    }
+
+    private void Update()
+    {
+        // 인게임(Play 모드)에서만 동작
+        //if (!Application.isPlaying)
+        //    return;
+
+        _time += Time.deltaTime;
+        float t = Mathf.Clamp01(_time / duration);
+        SetProgress(t);
+    }
+
+    private void SetProgress(float value)
     {
         _renderer.GetPropertyBlock(_mpb);
         _mpb.SetFloat(propertyName, value);
         _renderer.SetPropertyBlock(_mpb);
+
+        //Debug.Log($"_mpb : {_mpb.GetFloat("_Progress")}, value : {value}");
     }
 }

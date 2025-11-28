@@ -18,6 +18,9 @@ public class Rozzi_AttackState : Player_AttackState
 
     private float[] _attackBonus = [0, 0.5f, 0.6f, 0.7f];
 
+    private KeyCode _keyCode = KeyCode.F3;
+    private float _projectileSpeed = 10f;
+
     public Rozzi_AttackState(int targetId, bool chaseAllowed = true) : base(targetId, chaseAllowed) { }
 
     public override void Execute(Player player)
@@ -67,20 +70,19 @@ public class Rozzi_AttackState : Player_AttackState
             // ===== 공격 진행 중 =====
             if (_swingActive)
             {
-                if ((_damageAppliedTimes < _maxDamageTimes) && now >= _hitMomentUtc)
-                {
-                    if((_damageAppliedTimes == 0) || (_damageAppliedTimes == 1 && now >= _hitMomentUtc2))
-                    {
-                        // 히트 타이밍: 서버 거리 검증(위에서 inRange는 프레임 타임이라 다시 체크해도 됨)
-                        float distNow = Vector3.Distance(
-                            new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ),
-                            new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ));
-                        if (distNow <= player.AttackRange /* + player.HitTolerance 가능 */)
-                            ApplyHit(player, target);
+                //if ((_damageAppliedTimes < _maxDamageTimes) && now >= _hitMomentUtc)
+                //{
+                //    if((_damageAppliedTimes == 0) || (_damageAppliedTimes == 1 && now >= _hitMomentUtc2))
+                //    {
+                //        // 히트 타이밍
+                //        float distNow = Vector3.Distance( new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ),
+                //                                          new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ));
+                //        if (distNow <= player.AttackRange)
+                //            ApplyHit(player, target);
 
-                        _damageAppliedTimes++;
-                    }                 
-                }
+                //        _damageAppliedTimes++;
+                //    }                 
+                //}
 
                 if (now >= _swingEndUtc)
                 {
@@ -141,6 +143,10 @@ public class Rozzi_AttackState : Player_AttackState
 
     protected override void StartSwing(Player p, DateTime now)
     {
+        GameObject target = ObjectManager.Instance.Find(_targetId);
+        if (target == null)
+            return;
+
         _swingActive = true;
         _damageAppliedTimes = 0;
 
@@ -183,6 +189,22 @@ public class Rozzi_AttackState : Player_AttackState
 
         // 애니 송출(서버 권한)
         p.SendAnimPacket(animName, 0.05f, p.AttackSpeed/*, _isPassiveAttack*/);
+
+        // Projectile       
+        CreateProjectile(p, animName);
+    }
+
+    private void CreateProjectile(Player p, string animName)
+    {
+        Projectile_Rozzi_NormalAttack projectile = ObjectManager.Instance.Add<Projectile_Rozzi_NormalAttack>();
+        if (projectile != null)
+        {
+            projectile.ProjectileType = ProjectileType.ProjectileRozziNormalAttack;
+            projectile.Owner = p;
+            projectile.Init();
+            p.Room.Push(p.Room.EnterGame, projectile, 0);
+            projectile.SendRozziNormalAttackPacket(p, _targetId, projectile.Id, animName == AnimAttackA ? true : false, _projectileSpeed);
+        }
     }
 
     protected override void ApplyHit(Player p, GameObject target)
@@ -199,5 +221,22 @@ public class Rozzi_AttackState : Player_AttackState
         Projectile_Rozzi_R pj = p.Room.FindProjectile(p, ProjectileType.ProjectileRozziR) as Projectile_Rozzi_R;
         if (pj != null && pj.Target != null && pj.Target == target)
             pj.RegisterOwnerHit(isSkillHit: false);
+
+        p.SendSkillEffect(new Vector2(target.Position.X, target.Position.Z), keyCode: _keyCode, sendLookatMousePacket: true,
+                targetPos: default, targetRot: default,
+                type: "Select",  name: "FX_BI_Rozzi_NormalAttack_Hit",
+                useTargetTransform: true, targetId: target.Id);
+    }
+
+    public void ApplyProjectileHit(Player p, C_RozziNormalAttack pkt)
+    {
+        if (p == null || pkt == null)
+            return;
+
+        GameObject target = ObjectManager.Instance.Find(pkt.TargetId);
+        ApplyHit(p, target);
+
+        p.Room.Push(p.Room.LeaveGame, pkt.ObjectId);
+        Console.WriteLine($"@ ApplyProjectileHit");
     }
 }

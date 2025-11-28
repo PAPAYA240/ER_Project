@@ -133,6 +133,8 @@ enum MsgId {
 
   S_SPAWN_WARD = 104;
   C_DEPLOYING_LOOP = 105;
+  S_ROZZI_NORMAL_ATTACK = 106;
+  C_ROZZI_NORMAL_ATTACK = 107;
 }
 
 enum CombatState{
@@ -183,6 +185,7 @@ enum ProjectileType {
 	PROJECTILE_BULLET = 1;
 	PROJECTILE_BALL = 2;
 	PROJECTILE_ROZZI_R = 3;
+	PROJECTILE_ROZZI_NORMAL_ATTACK = 4;
 }
 enum SkillType{
 	SKILL_NONE = 0;
@@ -1163,4 +1166,16 @@ message C_DeployingLoop {
 
 message S_LoadGameScene{
 
+}
+
+message S_RozziNormalAttack {
+	int32 objectId = 1;
+	int32 targetId = 2;
+	bool isLWeapon = 3;
+	float speed = 4;
+}
+
+message C_RozziNormalAttack {
+	int32 objectId = 1;
+	int32 targetId = 2;
 }

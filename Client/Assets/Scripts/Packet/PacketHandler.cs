@@ -1207,6 +1207,24 @@ class PacketHandler
         //yukiStudPacket.StudCnt;
     }
 
+    public static void S_RozziNormalAttackHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_RozziNormalAttackHandler(session, packet)))
+            return;
+
+        S_RozziNormalAttack attackPacket = packet as S_RozziNormalAttack;
+
+        var projectile = Managers.Object.FindById(attackPacket.ObjectId);
+        if (projectile == null)
+            return;
+
+        Projectile_Rozzi_NormalAttack pr = projectile.GetComponentInChildren<Projectile_Rozzi_NormalAttack>();
+        if (pr == null)
+            return;
+
+        pr.Init(attackPacket);
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;

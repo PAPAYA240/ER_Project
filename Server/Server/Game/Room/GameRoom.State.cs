@@ -266,6 +266,22 @@ namespace Server.Game
             player.ChangeState(new Player_TeleportState(pkt.IoPos));
         }
 
+        public void HandleRozziNormalAttack(Player player, C_RozziNormalAttack pkt)
+        {
+            if (player == null)
+                return;
+            if (player.IsDead)
+                return;
+
+            if(player.CurrentState is Rozzi_AttackState attackState)
+                attackState.ApplyProjectileHit(player, pkt);
+            else
+            {
+                Rozzi_AttackState state = new Rozzi_AttackState(pkt.TargetId);
+                state.ApplyProjectileHit(player, pkt);
+            }
+        }
+
 
         #region Utils
         public GameObject FindNearestEnemy(Player me, int range)

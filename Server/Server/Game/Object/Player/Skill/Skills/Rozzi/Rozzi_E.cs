@@ -128,7 +128,7 @@ public sealed class Rozzi_E : RozziSkillHandler
 
         if(!_isRequest && t >= _followRatio)
         {          
-            Vector3 requestPos = p.Position + _dir * _behindDistance;
+            Vector3 requestPos = _midPos + _dir * _behindDistance;
             SendSkillCollisionRequestPacket(p, CollisionType.Block, p.Position, requestPos);
             _isRequest = true;
 

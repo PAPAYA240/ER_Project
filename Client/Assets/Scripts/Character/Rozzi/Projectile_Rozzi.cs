@@ -23,17 +23,6 @@ public class Projectile_Rozzi : Projectile
         _layer2Team = LayerMask.NameToLayer(layer2Name);
     }
 
-    void Update()
-    {
-    }
-
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (Type == ProjectileType.ProjectileRozziR)
-            return;
-    }
-
     public void ChangeState(S_ProjectileRozzi packet)
     {
         _state = packet.State;
@@ -75,5 +64,11 @@ public class Projectile_Rozzi : Projectile
 
                 break;
         }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (Type == ProjectileType.ProjectileRozziR)
+            return;
     }
 }
