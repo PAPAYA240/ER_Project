@@ -841,6 +841,13 @@ class PacketHandler
         S_OccupyBeacon occupyBeaconPkt = packet as S_OccupyBeacon;
         if(Enum.TryParse<Beacon>(occupyBeaconPkt.BeaconName, out Beacon result))
             Managers.Object.MyPlayer.UI.PlayerHUD.CaptureTurbine(result, occupyBeaconPkt.Team);
+
+        GameObject beacon = GameObject.Find("Beacon_" + occupyBeaconPkt.BeaconName);
+        if (beacon == null) return;
+        BeaconController bc = beacon.GetComponent<BeaconController>();
+        if (bc == null) return;
+
+        bc.CompleteCapture(occupyBeaconPkt.Team);
     }
 
     public static void S_ChangeBeaconTimeHandler(PacketSession session, IMessage packet)
@@ -1210,6 +1217,61 @@ class PacketHandler
 
         
         Managers.FX.Effect.RemoveEffect(removeEffectPacket);
+    }
+
+    public static void S_StartOperateHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_StartOperateHandler(session, packet))) return;
+
+        S_StartOperate startOperatePkt = packet as S_StartOperate;
+
+        GameObject beacon = GameObject.Find(startOperatePkt.BeaconName);
+        
+        if (beacon == null) return;
+        BeaconController bc = beacon.GetComponent<BeaconController>();
+        if (bc == null) return;
+
+        bc.StartCapture(startOperatePkt.Team);
+    }
+
+    public static void S_StopOperateHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_StopOperateHandler(session, packet))) return;
+
+        S_StopOperate stopOperatePkt = packet as S_StopOperate;
+        GameObject beacon = GameObject.Find(stopOperatePkt.BeaconName);
+        
+        if (beacon == null) return;
+        BeaconController bc = beacon.GetComponent<BeaconController>();
+        if (bc == null) return;
+
+        bc.FailCapture();
+    }
+
+    public static void S_AbigailSoundHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_AbigailSoundHandler(session, packet))) return;
+
+        S_AbigailSound abigailSoundPkt = packet as S_AbigailSound;
+        GameObject go = Managers.Object.FindById(abigailSoundPkt.ObjectId);
+        if (go == null) return;
+        AbigailAudioManager aam = go.GetComponentInChildren<AbigailAudioManager>();
+        if(aam == null) return;
+
+        aam.Play(abigailSoundPkt.ObjectId, abigailSoundPkt.Sound);
+    }
+
+    public static void S_PickSoundHandler(PacketSession session, IMessage packet)
+    {
+        S_PickSound pickSoundPkt = packet as S_PickSound;
+
+        GameObject go = GameObject.Find("PickScene");
+        if (go == null) return;
+
+        PickScene pickScene = go.GetComponent<PickScene>();
+        if (pickScene == null) return;
+
+        pickScene.PlaySelectedSound(pickSoundPkt.CharType);
     }
 
     static float GetCurrentEstimatedOneWayLatency()

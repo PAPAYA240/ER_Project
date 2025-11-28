@@ -191,6 +191,10 @@ namespace Server.Game
 
             S_ReadyBtn readyBtn = new S_ReadyBtn();
             pp.Session.Send(readyBtn);
+
+            S_PickSound pickSound = new S_PickSound();
+            pickSound.CharType = pp.Session.MyCharacter;
+            pp.Session.Send(pickSound);
         }
 
         void EnterGame(GameRoom room)

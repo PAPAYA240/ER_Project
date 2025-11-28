@@ -285,7 +285,6 @@ SkinnedMeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 371b2782c21674445b694c141d63cf60, type: 2}
-  - {fileID: 2100000, guid: 15f712ed7dadd1a42bc2badda86eac23, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -331,8 +330,8 @@ GameObject:
   - component: {fileID: 4421621765046578}
   - component: {fileID: 95061980447242749}
   - component: {fileID: 136224486725882642}
-  - component: {fileID: 9106806905809847421}
   - component: {fileID: 8274972419545696255}
+  - component: {fileID: 5848730821599487755}
   m_Layer: 0
   m_Name: Beacon
   m_TagString: Untagged
@@ -403,19 +402,6 @@ CapsuleCollider:
   m_Height: 4
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &9106806905809847421
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1404581338874786}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e31972557294f5f4bae2562d7a884929, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _envType: 5
 --- !u!54 &8274972419545696255
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -443,6 +429,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &5848730821599487755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1404581338874786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a34ecad1a5942248a0644963125d3d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  beaconRenderer: {fileID: 137465714700777820}
+  captureSpeed: 0.3
 --- !u!1 &1475163485259697
 GameObject:
   m_ObjectHideFlags: 0

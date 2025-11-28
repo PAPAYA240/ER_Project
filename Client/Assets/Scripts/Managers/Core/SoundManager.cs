@@ -118,11 +118,21 @@ public class SoundManager
         }
         else
         {
-             AudioSource audioSource = _audioSources[(int)Define.Sound.Effect];
+             AudioSource audioSource = _audioSources[(int)type];
              audioSource.volume = volume;
              audioSource.pitch = pitch;
              audioSource.loop = false;
-             audioSource.PlayOneShot(audioClip); 
+
+            if(type == Define.Sound.Voice)
+            {
+                if (audioSource.isPlaying)
+                    return;
+                
+                audioSource.clip = audioClip;
+                audioSource.Play();
+            }
+            else
+                audioSource.PlayOneShot(audioClip);  
         }
     }
     public void StopLoopSound(string clipName)

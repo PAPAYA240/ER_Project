@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Cobalt_OBJ_Turbine_Gauge_01
-  m_Shader: {fileID: 4800000, guid: a782bd8735fd11f48ae1a4de44569176, type: 3}
+  m_Shader: {fileID: 4800000, guid: 12633cb4d4bcbe5469bdbaf33fe3acf8, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -19,38 +19,45 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties:
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs: {}
-    m_Ints: {}
+    m_TexEnvs: []
+    m_Ints: []
     m_Floats:
-      _AddValBlur: 0.01
-      _BumpScale: 1
-      _Cutoff: 0.5
-      _DetailNormalMapScale: 1
-      _DstBlend: 0
-      _Emission: 7.09
-      _Gap: 0.5
-      _GlossMapScale: 0
-      _Glossiness: 0.922
-      _GlossyReflections: 1
-      _Metallic: 0
-      _Mode: 0
-      _MulValEmission: 3.29
-      _OcclusionStrength: 0.14
-      _Parallax: 0.005
-      _Percentage: 0
-      _Shininess: 1
-      _SmoothnessTextureChannel: 0
-      _SpecularHighlights: 1
-      _SrcBlend: 1
-      _UVSec: 0
-      _ZWrite: 1
+    - _AddValBlur: 0.01
+    - _BumpScale: 1
+    - _CaptureProgress: 1
+    - _CaptureTeam: 1
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _Emission: 7.09
+    - _Gap: 0.5
+    - _GlossMapScale: 0
+    - _Glossiness: 0.922
+    - _GlossyReflections: 1
+    - _Metallic: 0
+    - _Mode: 0
+    - _MulValEmission: 3.29
+    - _OcclusionStrength: 0.14
+    - _OwningTeam: 0
+    - _Parallax: 0.005
+    - _Percentage: 0
+    - _Shininess: 1
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _UVSec: 0
+    - _ZWrite: 1
     m_Colors:
-      _AddColor: {r: 0.37254903, g: 0.9176471, b: 0.9294118, a: 1}
-      _Color: {r: 0.9150943, g: 0.105289765, b: 0.09064613, a: 1}
-      _Color2: {r: 0.1981132, g: 0.1981132, b: 0.1981132, a: 1}
-      _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-      _SpecColor: {r: 0.62357605, g: 0.7587575, b: 0.764151, a: 1}
+    - _AddColor: {r: 0.37254903, g: 0.9176471, b: 0.9294118, a: 1}
+    - _AllyColor: {r: 0.2, g: 0.5, b: 1, a: 1}
+    - _BaseColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+    - _Color: {r: 0.9150943, g: 0.105289765, b: 0.09064613, a: 1}
+    - _Color2: {r: 0.1981132, g: 0.1981132, b: 0.1981132, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EnemyColor: {r: 1, g: 0, b: 0, a: 1}
+    - _SpecColor: {r: 0.62357605, g: 0.7587575, b: 0.764151, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

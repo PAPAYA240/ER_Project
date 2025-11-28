@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 4068211485769650}
   - component: {fileID: 198754181082105258}
   - component: {fileID: 199588617306481801}
-  - component: {fileID: 135983256202636026}
   - component: {fileID: 8366336519015345966}
   - component: {fileID: 4546205671435234504}
+  - component: {fileID: 7331728748748380400}
   m_Layer: 0
   m_Name: Bush
   m_TagString: Untagged
@@ -2314,27 +2314,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!135 &135983256202636026
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1034963184685310}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &8366336519015345966
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2396,6 +2375,27 @@ MonoBehaviour:
   side: 0
   type: 0
   overrideSpawnPoint: {fileID: 0}
+--- !u!65 &7331728748748380400
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1034963184685310}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 5.4984283, y: 1.6161308, z: 0.60824776}
+  m_Center: {x: -0.0052452087, y: 0.90373707, z: -0.0869894}
 --- !u!1 &1398995183490070
 GameObject:
   m_ObjectHideFlags: 0
