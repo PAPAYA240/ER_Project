@@ -1207,6 +1207,8 @@ class PacketHandler
         if (!IsSceneReady("Game", () => S_RemoveEffectHandler(session, packet))) return;
 
         S_RemoveEffect removeEffectPacket = packet as S_RemoveEffect;
+
+        
         Managers.FX.Effect.RemoveEffect(removeEffectPacket);
     }
 
