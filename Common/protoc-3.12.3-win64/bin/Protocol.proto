@@ -176,6 +176,7 @@ enum EnvType{
    ACCBOUNDARY_SPAWNPOINT = 3;
    BARRIER_SPAWNPOINT = 4;
    BEACON = 5;
+   BUSH = 6;
 }
    
 enum ProjectileType {
@@ -705,7 +706,11 @@ message PositionInfo{
 	float posY = 3;
 	float posZ = 4;
 }
-
+message ScaledInfo{
+	float scaledX = 1;
+	float scaledY= 2;
+	float scaledZ= 3;
+}
 message RotationInfo{
 	float qx = 1;
     float qy = 2;
@@ -786,6 +791,7 @@ message ObjectInfo{
         EnvInfo env = 8;
 	ProjectileInfo projectile = 9;
     	}
+	ScaledInfo scaleInfo = 10;
 }
 
 message PickScenePlayerInfo{

@@ -7,7 +7,6 @@ using System.Numerics;
 using System.Threading.Tasks;
 using static Player_StunState;
 using static Server.Game.StunState;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Server.Game
 {
@@ -29,13 +28,14 @@ namespace Server.Game
         {
             StatInfo = new StatInfo(),
             PosInfo = new PositionInfo(),
-            RotInfo = new RotationInfo() { Qw = 1f }
+            RotInfo = new RotationInfo() { Qw = 1f },
+            ScaleInfo = new ScaledInfo() { ScaledX = 1f, ScaledY = 1f, ScaledZ = 1f, }
         };
 
         public ObjectInfo Info
         {
             get { return _objectInfo; }
-            set { _objectInfo = value; PosInfo = value.PosInfo; RotInfo = value.RotInfo; Stat = value.StatInfo; }
+            set { _objectInfo = value; PosInfo = value.PosInfo; RotInfo = value.RotInfo; Stat = value.StatInfo; ScaleInfo = value.ScaleInfo; }
         }
 
         public PositionInfo PosInfo
@@ -68,7 +68,17 @@ namespace Server.Game
                 Info.RotInfo.Qw = value.Qw;
             }
         }
+        public ScaledInfo ScaleInfo
+        {
+            get { return Info.ScaleInfo; }
+            set
+            {
+                if (Info.ScaleInfo.Equals(value))
+                    return;
 
+                ScaleInfo = value;
+            }
+        }
         public StatInfo Stat
         {
             get

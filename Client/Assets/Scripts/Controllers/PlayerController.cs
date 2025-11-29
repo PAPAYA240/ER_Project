@@ -196,6 +196,11 @@ public class PlayerController : CreatureController
     // 화살
     protected Transform _equipTransform = null;
 
+    // Bush Material
+    private Transform _lodTransform = null;
+    private Material[] _originMaterials = null;
+    private Material _playerBushMaterial = null;
+    public bool HidingInBush = false;
     #region KDA
 
     public int KillAmount { get; private set; } = 0; 
@@ -272,6 +277,7 @@ public class PlayerController : CreatureController
         // 장비 슬롯
         InitEquipItem();
         InitializeXRay();
+        InitBushRenderSetting();
 
         // NavMesh Agent
         _agent = GetComponent<NavMeshAgent>();
@@ -286,6 +292,7 @@ public class PlayerController : CreatureController
             Sound.PreloadCharAllSounds(ObjInfo.Player.CharType);
     }
 
+  
     void SkillEffectInit()
     {
         // 표식 이펙트
@@ -863,4 +870,71 @@ public class PlayerController : CreatureController
         return;
     }
 
+    #region Bush Renderer
+    private void InitBushRenderSetting()
+    {
+        Renderer playerRenderer = this.GetComponentInChildren<Renderer>();
+        if (playerRenderer != null)
+            _originMaterials = playerRenderer.materials;
+        _playerBushMaterial = Resources.Load<Material>("Material/ghostMaterial");
+        foreach (Transform child in transform)
+        {
+            if (child.name.Contains("LOD"))
+            {
+                _lodTransform = child;
+                break;
+            }
+        }
+    }
+    // 렌더러 비활성화
+    public void MakeInvisible()
+    {
+        if (_lodTransform == null)
+            return;
+
+        HidingInBush = true;
+        _nameTag.gameObject.SetActive(false);
+
+        Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.enabled = false;
+        }
+    }
+    // 렌더러 활성화
+    public IEnumerator MakeVisible(float duration = 0f)
+    {
+        if (_lodTransform == null)
+            yield break;
+
+        yield return new WaitForSeconds(duration);
+
+        HidingInBush = false;
+        _nameTag.gameObject.SetActive(true);
+
+        Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.enabled = true;
+            renderer.materials = _originMaterials;
+        }
+    }
+
+    public void ChangeBushRenderer()
+    {
+        if (_lodTransform == null)
+            return;
+
+        HidingInBush = true;
+        Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
+        Material[] newMaterials = new Material[] { _playerBushMaterial };
+
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.enabled = true;
+            renderer.materials = newMaterials;
+        }
+
+    }
+    #endregion
 }

@@ -109,8 +109,23 @@
             }
           ],
           "HitTarget": []
+        },
+        "F1": {
+          "Caster": [
+            {
+              "prefabName": "FX_PassiveShideld",
+              "target": "Self",
+              "duration": 2.5,
+              "delayTime": 0,
+              "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ]
         }
       }
-      }
+    }
   }
 }

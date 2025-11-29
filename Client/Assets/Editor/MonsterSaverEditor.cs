@@ -84,12 +84,14 @@ public class EnvSaveData
     public EnvType envType;
     public Vector3 posInfo;
     public Quaternion rotInfo;
+    public Vector3 scaled;
 
-    public EnvSaveData(EnvType type, Vector3 pos, Quaternion rot)
+    public EnvSaveData(EnvType type, Vector3 pos, Quaternion rot, Vector3 scaled)
     {
         this.envType = type;
         this.posInfo = pos;
         this.rotInfo = rot;
+        this.scaled = scaled;
     }
 }
 
@@ -108,7 +110,7 @@ public class EnvSaverEditor : MonoBehaviour
     const string _envHealpath = "Assets/Resources/GameObject/SpawnPoint/SupportPackSpawnPoints.prefab";
     const string _Turbinepath = "Assets/Resources/GameObject/SpawnPoint/TurbineSpawnPoints.prefab";
 
-    [MenuItem("Tools/Save EnvObject Data")]
+    //[MenuItem("Tools/Save EnvObject Data")]
     public static void SaveEnvSaveData()
     {
         GameObject HealSpawnPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(_envHealpath);
@@ -128,8 +130,9 @@ public class EnvSaverEditor : MonoBehaviour
         {
             Vector3 pos = envInfo.transform.position;
             Quaternion rot = envInfo.transform.rotation;
+            Vector3 scaled = envInfo.transform.localScale;
 
-            EnvSaveData data = new EnvSaveData(EnvType.HealPack, pos, rot);
+            EnvSaveData data = new EnvSaveData(EnvType.HealPack, pos, rot, scaled);
             envList.EnvObjects.Add(data);
         }
 
@@ -149,7 +152,7 @@ public class EnvSaverEditor : MonoBehaviour
                 Vector3 pos = envInfo.transform.position;
                 Quaternion rot = envInfo.transform.rotation;
 
-                EnvSaveData data = new EnvSaveData(EnvType.Beacon, pos, rot);
+                EnvSaveData data = new EnvSaveData(EnvType.Beacon, pos, rot, envInfo.transform.localScale);
                 envList.EnvObjects.Add(data);
             }
         }
@@ -162,6 +165,57 @@ public class EnvSaverEditor : MonoBehaviour
         AssetDatabase.Refresh();
 
         Debug.Log($"**환경 데이터** ({envList.EnvObjects.Count}개 객체)가 **{path}** 경로에 성공적으로 저장되었습니다.");
+    }
+
+    [MenuItem("Tools/Save EnvController Data")]
+    public static void SaveEnvControllerData()
+    {
+        EnvController[] envControllers = GameObject.FindObjectsOfType<EnvController>(true);
+
+        if (envControllers.Length == 0)
+        {
+            Debug.LogWarning("Error: 현재 씬에서 저장할 EnvController 객체를 찾을 수 없습니다.");
+            return;
+        }
+
+        EnvList envList = new EnvList();
+        envList.EnvObjects = new List<EnvSaveData>();
+
+        foreach (EnvController envController in envControllers)
+        {
+            Transform envTransform = envController.transform;
+
+            EnvType type = envController.Type;
+
+            // if (envController.TryGetComponent<YourEnvTypeComponent>(out var typeComp))
+            // {
+            //     type = typeComp.EnvType;
+            // }
+
+            Vector3 pos = envTransform.position;
+            Quaternion rot = envTransform.rotation;
+            Vector3 scaled = envTransform.localScale;
+
+            // EnvSaveData 생성자에 EnvType, 위치, 회전, 스케일 전달
+            EnvSaveData data = new EnvSaveData(type, pos, rot, scaled);
+            envList.EnvObjects.Add(data);
+        }
+
+        string jsonData = JsonUtility.ToJson(envList, true);
+
+        string path = Application.dataPath + "/Resources/Data/Env/CurrentSceneEnvData.json";
+
+        string directoryPath = Path.GetDirectoryName(path);
+        if (!Directory.Exists(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath);
+        }
+
+        File.WriteAllText(path, jsonData);
+
+        AssetDatabase.Refresh();
+
+        Debug.Log($"**현재 씬 환경 데이터** ({envList.EnvObjects.Count}개 객체)가 **{path}** 경로에 성공적으로 저장되었습니다.");
     }
 }
 
