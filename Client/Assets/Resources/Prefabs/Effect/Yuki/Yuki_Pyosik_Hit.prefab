@@ -2350,7 +2350,7 @@ GameObject:
   - component: {fileID: 198669967899892371}
   - component: {fileID: 199609085045708550}
   - component: {fileID: 135973498540188607}
-  - component: {fileID: 3257150440732524731}
+  - component: {fileID: 6472057164924546585}
   m_Layer: 15
   m_Name: Yuki_Pyosik_Hit
   m_TagString: Untagged
@@ -4693,7 +4693,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3257150440732524731
+--- !u!114 &6472057164924546585
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4702,10 +4702,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1245812699773115}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b10a62c9354e1884987d3c364c8abc8b, type: 3}
+  m_Script: {fileID: 11500000, guid: 5bebdc177863cc74f8b27d8a1d63c6ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ps: {fileID: 198669967899892371}
 --- !u!1 &1402853103559349
 GameObject:
   m_ObjectHideFlags: 0

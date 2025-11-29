@@ -1,9 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
 using Server.Game;
 using System;
-using System.Collections.Generic;
-using System.Numerics;
-using System.Text;
 using static Player_StunState;
 using static Server.Data.DataUtils;
 
@@ -27,22 +24,25 @@ public class Yuki_AttackState : Player_AttackState
         _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds / p.AttackSpeed);
 
         // 애니 송출(서버 권한)
-        string animName = AnimAttackQ;
+        string animName;
 
         if (p.AttackActive == true)
         {
+            animName = AnimAttackQ;
+
+            // 이펙트 멈추기
+            p.SendYukiSkillEffect(SkillEffectType.QBuff, false);
+
             p.AttackActive = false;
 
             animName = AnimAttackQ;
             p.Skill.StartCooldown(_keyCode);
             p.SendSkillCostPacket(_keyCode, p.Skill.GetCooldown(_keyCode));
-            IsPassiveAttack = true;
         }
         else
         {
             animName = (_attackIndex == 0) ? AnimAttackA : AnimAttackB;
             _attackIndex = 1 - _attackIndex;
-            IsPassiveAttack = false;
         }
 
         // 유키 단추

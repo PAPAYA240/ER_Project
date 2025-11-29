@@ -366,14 +366,15 @@ enum BOMB_ROZZI{
 }
 
 enum SkillEffectType {
-	YUKI_Q = 0;
-    YUKI_W = 1;
-    YUKI_E = 2;
-    YUKI_R = 3;
-	YUKI_R_SHADOW = 4;
-	YUKI_R_HIT = 5;
-	YUKI_R_ATTACK = 6;
-	YUKI_Q_ATTACK = 7;
+	R_SHADOW = 0;
+	R_HIT = 1;
+	R_ATTACK = 2;
+	R_RANGE = 3;
+	Q_ATTACK = 4;
+	Q_Buff = 5;
+	W_Flower = 6;
+	W_EFFECT = 7;
+
     DASH = 8;
     Hit = 9;
 }
@@ -1090,7 +1091,8 @@ message S_YukiStud {
 
 message S_SkillEffect {
   int32 objectId = 1;
-  SkillEffectType effectType = 2;
+  bool isPlay = 2;
+  SkillEffectType effectType = 3;
 }
 
 message S_EnterSlot{

@@ -795,8 +795,6 @@ class PacketHandler
             return;
 
         yukiPyosik.ActivateYukiPyosik(go);
-        SkillEffectHandler.HandleEffect(SkillEffectType.YukiRShadow, attackerGo);
-        SkillEffectHandler.HandleEffect(SkillEffectType.YukiRAttack, attackerGo);
     }
     
     public static void S_SoundHandler(PacketSession session, IMessage packet)
@@ -828,7 +826,10 @@ class PacketHandler
         if (go == null)
             return;
 
-        SkillEffectHandler.HandleEffect((SkillEffectType)YukiSkillEffectPkt.EffectType, go);
+        if (YukiSkillEffectPkt.IsPlay)
+            Managers.EffectHandler.PlayEffect((SkillEffectType)YukiSkillEffectPkt.EffectType);
+        else
+            Managers.EffectHandler.StopEffect((SkillEffectType)YukiSkillEffectPkt.EffectType);
     }
 
     public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)

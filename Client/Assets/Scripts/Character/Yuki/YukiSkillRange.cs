@@ -1,8 +1,9 @@
+using Google.Protobuf.Protocol;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class YukiSkillRange : MonoBehaviour
+public class YukiSkillRange : MonoBehaviour, IEffect
 {
     private Coroutine _co;
     public Image _backgroundImage;
@@ -24,7 +25,7 @@ public class YukiSkillRange : MonoBehaviour
         _foregroundImage.fillAmount = 0.5f; // 50%만 그리기
     }
 
-    public void PlayEffectOneSecond()
+    public void Play()
     {
         gameObject.SetActive(true);
 
@@ -47,6 +48,9 @@ public class YukiSkillRange : MonoBehaviour
             yield return null;
         }
 
+        Managers.EffectHandler.PlayEffect(SkillEffectType.RShadow);
+        Managers.EffectHandler.PlayEffect(SkillEffectType.RAttack);
+
         _backgroundImage.fillAmount = 0.5f; // 확실하게 반만 채움
 
         // 잠깐 보여주고 숨기기
@@ -54,5 +58,10 @@ public class YukiSkillRange : MonoBehaviour
 
         gameObject.SetActive(false);
         _co = null;
+    }
+
+    public void Stop()
+    {
+        throw new System.NotImplementedException();
     }
 }

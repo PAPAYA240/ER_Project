@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 198089109300997758}
   - component: {fileID: 199429770976012886}
   - component: {fileID: 135924581183323367}
-  - component: {fileID: 6777708912944863378}
+  - component: {fileID: 4255377818049375148}
   m_Layer: 15
   m_Name: Yuki_Skill_Shadow
   m_TagString: Untagged
@@ -2355,7 +2355,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6777708912944863378
+--- !u!114 &4255377818049375148
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2364,10 +2364,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1428586992555860}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5483bb994acde2843a9d9490a4af561e, type: 3}
+  m_Script: {fileID: 11500000, guid: 5bebdc177863cc74f8b27d8a1d63c6ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ps: {fileID: 198089109300997758}
 --- !u!1 &1711335855718279
 GameObject:
   m_ObjectHideFlags: 0

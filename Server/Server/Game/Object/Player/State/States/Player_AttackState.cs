@@ -250,8 +250,8 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         }
 
         // 애니 송출(서버 권한)
-        p.SendAnimPacket(animName, 0.05f);
- 
+        p.SendAnimPacket(animName, 0.05f, p.AttackSpeed, true);
+
         //p.FaceToTarget(_targetId);
     }
 

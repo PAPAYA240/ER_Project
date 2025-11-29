@@ -389,6 +389,8 @@ namespace Server.Game
 
                 if (_attactActiveTime > _nonCombatTime)
                 {
+                    // 이펙트 멈추기
+                    SendYukiSkillEffect(SkillEffectType.QBuff, false);
                     AttackActive = false;
                 }
             }
@@ -519,7 +521,10 @@ namespace Server.Game
             switch (Info.Player.CharType)
             {
                 case CharacterType.Yuki:
-                    // Q 활성화 되어있으면 BonusAttackRange = 0.25f
+                    if (AttackActive)
+                        BonusAttackRange = 0.25f;
+                    else
+                        BonusAttackRange = 0f;
                     break;
                 case CharacterType.Abigail:
                     if (Skill.IsPassiveAttackReady())

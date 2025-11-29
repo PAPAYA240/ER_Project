@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class YukiFlower : MonoBehaviour
+public class YukiFlower : MonoBehaviour, IEffect
 {
     [SerializeField] private Image image;
 
@@ -13,8 +13,6 @@ public class YukiFlower : MonoBehaviour
 
     private void Awake()
     {
-        transform.parent.localPosition = Vector3.zero;
-
         Texture2D sheet = Resources.Load<Texture2D>("effects/textures/FX_BI_Yuki_01SE");
         if (sheet == null)
         {
@@ -29,9 +27,9 @@ public class YukiFlower : MonoBehaviour
         image.enabled = false;
     }
 
-    public void ActivateYukiPyosik()
+    public void Play()
     {
-        transform.localPosition = Vector3.zero;
+        gameObject.SetActive(true);
 
         // 중복 재생 방지
         if (_coAnimRoutine != null)
@@ -58,5 +56,10 @@ public class YukiFlower : MonoBehaviour
         }
 
         _coAnimRoutine = null;
+    }
+
+    public void Stop()
+    {
+        throw new System.NotImplementedException();
     }
 }

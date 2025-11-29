@@ -1,79 +1,98 @@
 using Google.Protobuf.Protocol;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class SkillEffectHandler
+public interface IEffect
 {
-    static Dictionary<SkillEffectType, Action<GameObject>> _effectMap
-        = new Dictionary<SkillEffectType, Action<GameObject>>();
+    void Play();
+    void Stop();
+}
 
-    static SkillEffectHandler()
+public class SkillEffectHandler
+{
+    private Dictionary<SkillEffectType, IEffect> _effectMap = new Dictionary<SkillEffectType, IEffect>();
+
+    public void InitEffects(PlayerController player)
     {
-        // 원하는 스킬 이펙트 등록
-        //Register(Yuki_SkillEffectType.Q, PlayYukiQ);
-        Register(SkillEffectType.YukiW, PlayYukiW);
-        //Register(Yuki_SkillEffectType.E, PlayYukiE);
-        Register(SkillEffectType.YukiR, PlayYukiR);
-        Register(SkillEffectType.YukiRShadow, PlayYukiRShadow);
-        Register(SkillEffectType.YukiRHit, PlayYukiRHit);
-        Register(SkillEffectType.YukiRAttack, PlayYukiRAttack);
-        Register(SkillEffectType.YukiQAttack, PlayYukiQAttack);
+        // 모든 캐릭 공통 이펙트
+        RegisterEffect(SkillEffectType.RHit, player, "Effect/Yuki/Yuki_Pyosik_Hit");
 
-        //Register(Yuki_SkillEffectType.Dash, PlayDashEffect);
+        GameObject yukiPyosik = Managers.Resource.Instantiate("Effect/Yuki/UIpyosik");
+        yukiPyosik.transform.SetParent(player.transform);
+
+        // Yuki 전용 이펙트
+        if (player.ObjInfo.Player.CharType == CharacterType.Yuki)
+        {
+            RegisterEffect(SkillEffectType.RShadow, player, "Effect/Yuki/Yuki_Skill_Shadow");
+            RegisterEffect(SkillEffectType.RAttack, player, "Effect/Yuki/Yuki_SkillR_Attack");
+            RegisterEffect(SkillEffectType.QAttack, player, "Effect/Yuki/Yuki_SkillQ_Attack");
+            RegisterEffect(SkillEffectType.WEffect, player, "Effect/Yuki/Yuki_SkillW");
+            RegisterEffectBone(SkillEffectType.QBuff, player, "Effect/Yuki/Yuki_SkillQ_Buff", "Fx_Hand_R");
+
+            // 직접 만든 커스텀 Fx 클래스
+            RegisterEffect(SkillEffectType.WFlower, player, "Effect/Yuki/YukiFlower");
+            RegisterEffect(SkillEffectType.RRange, player, "Effect/Yuki/Yuki_R");
+
+            //(_effectMap[SkillEffectType.RShadow] as MonoBehaviour).transform.localPosition = Vector3.zero;
+            (_effectMap[SkillEffectType.QBuff] as MonoBehaviour).transform.localPosition = Vector3.zero;
+            (_effectMap[SkillEffectType.RAttack] as MonoBehaviour).transform.localPosition = new Vector3(0, 1f, 0);
+            (_effectMap[SkillEffectType.QAttack] as MonoBehaviour).transform.localPosition = new Vector3(0, 1f, 1f);
+        }
+
+        // 모든 이펙트 초기 비활성화
+        foreach (var effect in _effectMap.Values)
+            (effect as MonoBehaviour).gameObject.SetActive(false);
     }
 
-    public static void Register(SkillEffectType type, Action<GameObject> effect)
+    private void RegisterEffect(SkillEffectType type, PlayerController player, string prefabPath)
     {
-        if (!_effectMap.ContainsKey(type))
-            _effectMap.Add(type, effect);
+        GameObject prefab = Managers.Resource.Instantiate(prefabPath); 
+        prefab.transform.SetParent(player.transform);
+        prefab.transform.localPosition = Vector3.zero;
+
+        // Fx_YukiEffect, Fx_YukiFlower, Fx_YukiR 등 어떤 타입이어도 자동으로 찾음
+        IEffect effectComp = prefab.GetComponentInChildren<IEffect>();
+
+        if (effectComp == null) 
+            effectComp = prefab.AddComponent<Fx_YukiEffect>();
+
+        _effectMap[type] = effectComp;
     }
 
-    public static void HandleEffect(SkillEffectType type, GameObject owner)
+    private void RegisterEffectBone(SkillEffectType type, PlayerController player, string prefabPath, string boneName)
     {
-        if (_effectMap.TryGetValue(type, out var effectAction))
-            effectAction(owner);
+        GameObject prefab = Managers.Resource.Instantiate(prefabPath);
+
+        Transform bone = Util.FindChildByName(player.transform, boneName).transform;
+        prefab.transform.SetParent(bone);
+
+
+        // Fx_YukiEffect, Fx_YukiFlower, Fx_YukiR 등 어떤 타입이어도 자동으로 찾음
+        IEffect effectComp = prefab.GetComponentInChildren<IEffect>();
+
+        if (effectComp == null)
+            effectComp = prefab.AddComponent<Fx_YukiEffect>();
+
+        _effectMap[type] = effectComp;
+    }
+
+    public void PlayEffect(SkillEffectType type)
+    {
+        if (_effectMap.TryGetValue(type, out var effect))
+        {
+            effect.Play();
+        }
         else
-            Debug.LogWarning($"Effect not implemented: {type}");
+        {
+            Debug.LogWarning($"SkillEffect not found: {type}");
+        }
     }
 
-    private static void PlayYukiR(GameObject owner)
+    public void StopEffect(SkillEffectType type)
     {
-        owner.GetComponentInChildren<YukiSkillRange>(true)?.PlayEffectOneSecond();
-    }
-
-    private static void PlayYukiRShadow(GameObject owner)
-    {
-        owner.GetComponentInChildren<Yuki_SkillShadow>(true)?.PlayEffect();
-    }
-
-    private static void PlayYukiRHit(GameObject owner)
-    {
-        owner.GetComponentInChildren<Yuki_SkillHit>(true)?.PlayEffect();
-    }
-
-    private static void PlayYukiRAttack(GameObject owner)
-    {
-        owner.GetComponentInChildren<Yuki_SkillAttack>(true)?.PlayEffect();
-    }
-
-    private static void PlayYukiQAttack(GameObject owner)
-    {
-        owner.GetComponentInChildren<Yuki_SkillQAttack>(true)?.PlayEffect();
-    }
-
-    private static void PlayYukiW(GameObject owner)
-    {
-        owner.GetComponentInChildren<YukiFlower>(true)?.ActivateYukiPyosik();
-    }
-
-    private static void PlayExplosion(GameObject owner)
-    {
-        // 파티클 instantiate 등
-    }
-
-    private static void PlayDash(GameObject owner)
-    {
-        // 잔상, 트레일, 파티클 등
+        if (_effectMap.TryGetValue(type, out var effect))
+        {
+            effect.Stop();
+        }
     }
 }

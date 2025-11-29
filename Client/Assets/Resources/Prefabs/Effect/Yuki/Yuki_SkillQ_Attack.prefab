@@ -4779,7 +4779,7 @@ GameObject:
   - component: {fileID: 198692393971402343}
   - component: {fileID: 199262453741837341}
   - component: {fileID: 135248882238029727}
-  - component: {fileID: 3867088906967221692}
+  - component: {fileID: 1304346377405473252}
   m_Layer: 15
   m_Name: Yuki_SkillQ_Attack
   m_TagString: Untagged
@@ -7231,7 +7231,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3867088906967221692
+--- !u!114 &1304346377405473252
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7240,10 +7240,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1523170786377963}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1c96732f1b2de7940a296e718c6f1168, type: 3}
+  m_Script: {fileID: 11500000, guid: 5bebdc177863cc74f8b27d8a1d63c6ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ps: {fileID: 198692393971402343}
 --- !u!1 &1641887720979269
 GameObject:
   m_ObjectHideFlags: 0
@@ -12065,7 +12064,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d4bfd27d3448f184084358c4585e7792, type: 2}
+  - {fileID: 2100000, guid: 32cc483f9636edd4bbb82e26419fd290, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
