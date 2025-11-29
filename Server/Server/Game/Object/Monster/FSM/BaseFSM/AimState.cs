@@ -41,10 +41,15 @@ namespace Server.Game
                     if (type == MonsterType.Drone || type == MonsterType.Turret)
                         monster.ChangeState(FSMManager.Instance.EvaluateTargetForNextState(monster));
                     else
-                        monster.ChangeState(FSMManager.Instance.GetIdleState());
+                    {
+                        Console.WriteLine("스킬 끝 : 공격 범위 내");
+
+                        monster.ChangeState(FSMManager.Instance.GetIdleState()); 
+                    }
                 }
                 else
                 {
+                        Console.WriteLine("스킬 끝 : 공격 범위 외");
                     monster.Target = null;
                     monster.ChangeState(FSMManager.Instance.GetIdleState());
                 }
