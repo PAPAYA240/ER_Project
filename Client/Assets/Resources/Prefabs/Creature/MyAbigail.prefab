@@ -1164,6 +1164,7 @@ GameObject:
   - component: {fileID: 8691479134577812688}
   - component: {fileID: -6654736425494255908}
   - component: {fileID: 1796408649209361006}
+  - component: {fileID: 6165833819830594196}
   m_Layer: 0
   m_Name: MyAbigail
   m_TagString: Untagged
@@ -1242,6 +1243,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5d07a4ac14489814e9692da7473da8c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Sound: {fileID: 0}
+  xRayIgnoreStencilID: 100
+--- !u!114 &6165833819830594196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1872682378519393342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48183e92a69139743a1f7b5484a9a8fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1936378632354409582

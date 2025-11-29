@@ -154,6 +154,14 @@ namespace Server.Game
                 return;
 
             _beacons[player.Beacon].OperatingTeam = player.Info.Player.Team;
+
+            string beaconName = player.Beacon.ToString();
+            beaconName = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(beaconName.ToLower());
+
+            S_StartOperate startOperatePkt = new S_StartOperate();
+            startOperatePkt.BeaconName = beaconName;
+            startOperatePkt.Team = player.Info.Player.Team;
+            player.Room.Push(player.Room.Broadcast, startOperatePkt);
         }
 
         public void ExitOperate(Player player)
@@ -162,6 +170,13 @@ namespace Server.Game
                 return;
 
             _beacons[player.Beacon].OperatingTeam = 0;
+
+            string beaconName = player.Beacon.ToString();
+            beaconName = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(beaconName.ToLower());
+
+            S_StopOperate stopOperatePkt = new S_StopOperate();
+            stopOperatePkt.BeaconName = beaconName;
+            player.Room.Push(player.Room.Broadcast, stopOperatePkt);
         }
     }
 }

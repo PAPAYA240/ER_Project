@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Collections;
-using UnityEngine;
-using Data;
-using static Data.EffectData;
+﻿using Data;
 using Google.Protobuf.Protocol;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEditor.Sprites;
+using UnityEngine;
+using static Data.EffectData;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 public class EffectFXManager : MonoBehaviour
 {
@@ -158,6 +159,19 @@ public class EffectFXManager : MonoBehaviour
         }
     }
 
+    //public void StopAndReturnEffect(GameObject effect)
+    //{
+    //    if (effect == null)
+    //        return;
+
+    //    if (activeCoroutines.ContainsKey(effect))
+    //    {
+    //        effect.SetActive(false);
+    //        StopCoroutine(activeCoroutines[effect]);
+    //        activeCoroutines.Remove(effect);
+    //    }
+    //}
+
     public void StopAndReturnEffect(GameObject effect)
     {
         if (effect == null)
@@ -165,11 +179,15 @@ public class EffectFXManager : MonoBehaviour
 
         if (activeCoroutines.ContainsKey(effect))
         {
-            effect.SetActive(false);
             StopCoroutine(activeCoroutines[effect]);
             activeCoroutines.Remove(effect);
         }
+
+        Managers.FX.Push(effect);
+
+        effect.transform.SetParent(null);
     }
+
     private IEnumerator ReturnToPoolAfterDelay(int ownerId, GameObject fxObject, string prefabName, float delayTime, float duration, Transform casterTransform)
     {
         if (fxObject == null)
@@ -263,6 +281,62 @@ public class EffectFXManager : MonoBehaviour
 
             if (effectList.Count == 0)
                 currentlyPlayingEffects.Remove(ownerId);
+        }
+    }
+    public void RemoveEffect(S_RemoveEffect packet)
+    {
+        GameObject go = Managers.Object.FindById(packet.ObjectId);
+        if (go == null) return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null) return;
+
+        SkillEffectList myEffectList = DataManager.PlayerFxDict[pc.ObjInfo.Player.CharType][CreatureState.Skill][(KeyCode)packet.KeyCode];
+        List<EffectData> dataList = new List<EffectData>();
+
+        foreach (EffectData effect in myEffectList.Caster)
+        {
+            dataList.Add(effect);
+        }
+
+        foreach (EffectData data in dataList)
+        {
+            GameObject fxPrefab = Managers.FX.Effect.GetFxPrefab(packet.ObjectId, data.prefabName);
+            if (fxPrefab == null)
+            {
+                Debug.LogWarning($"FX Prefab not found: {data.prefabName}");
+                continue;
+            }
+
+            GameObject fxObject = Managers.FX.Pop(fxPrefab, null);
+            if (fxObject == null)
+            {
+                Debug.LogError($"Failed to pop FX from pool: {data.prefabName}");
+                continue;
+            }
+
+            Debug.Log($"packet.ObjectId : {packet.ObjectId}");
+
+            //fxObject.SetActive(false);
+
+            //if (currentlyPlayingEffects.TryGetValue(packet.ObjectId, out List<GameObject> effectList))
+            //{
+            //    StopAndReturnEffect(fxObject);
+            //    effectList.Remove(fxObject);
+
+            //    Debug.Log($"currentlyPlayingEffects Remove Ing");
+
+            //    if (effectList.Count == 0)
+            //    {
+            //        foreach (var obj in currentlyPlayingEffects[packet.ObjectId])
+            //        {
+            //            Managers.Resource.Destroy(obj);
+            //        }
+            //        currentlyPlayingEffects[packet.ObjectId].Clear();
+            //        currentlyPlayingEffects.Remove(packet.ObjectId);
+            //    }
+            //}
+            RemoveEffect(packet.ObjectId, fxObject);
         }
     }
     private void LoadFxPrefabs()

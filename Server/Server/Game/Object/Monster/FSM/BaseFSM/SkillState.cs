@@ -25,6 +25,8 @@ namespace Server.Game
 
             SetupSkill(monster);
 
+            monster.DelaySkillAnimationTimer = _skillData.skillCoolTime;
+
             monster.Room.CollManager.AddHitbox(monster, _skillData.skillType);
             monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), _skillData);
         }
@@ -95,7 +97,7 @@ namespace Server.Game
 
             long durationInMilliseconds = (long)(_skillData.skillDuration * 1000f);
             _skillEndTime = Environment.TickCount64 + durationInMilliseconds;
-            monster._delaySkillAnimationTimer = _skillData.skillCoolTime;
+            monster.DelaySkillAnimationTimer = _skillData.skillCoolTime;
         }
       
         private void RotateTowardTarget(Monster monster)
