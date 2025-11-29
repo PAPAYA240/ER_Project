@@ -475,10 +475,29 @@ public class PlayerController : CreatureController
             return;
         }
 
+        AnimCondition(animInfo.Name);
+
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
 
         if (animInfo.IsChangeSpeed == true)
             _animator.SetFloat("AttackSpeed", animInfo.Speed);
+    }
+
+    private void AnimCondition(string name)
+    {
+        if (ObjInfo.Player.CharType == CharacterType.Theodore)
+        {
+            // *todo. operate 조건이 자꾸 true로 만들어서 애니메이션으로 조정
+            if (name == "OPERATE" && _eqipWeapon.gameObject.activeInHierarchy == true)
+            {
+                _eqipWeapon.gameObject.SetActive(false);
+            }
+            else if (_eqipWeapon.gameObject.activeInHierarchy == false)
+            {
+                _eqipWeapon.gameObject.SetActive(true);
+                ActiveRenderer(true);
+            }
+        }
     }
 
     public void ChangeSpeed(string paramName, float speed)
@@ -697,7 +716,7 @@ public class PlayerController : CreatureController
     public IEnumerator CoRotateToPosition(Vector3 targetPos)
     {
         float rotateSpeed = 15f;
-
+       
         while (true)
         {
             if (State == CreatureState.Moving)
@@ -886,8 +905,24 @@ public class PlayerController : CreatureController
             }
         }
     }
+    Coroutine _coRenderer = null;
+    public void ActiveRenderer(bool active, float duration = 0f)
+    {
+        if (active == false)
+        {
+            MakeInvisible();
+        }
+        else
+        {
+            if (_coRenderer != null)
+                StopCoroutine(_coRenderer);
+
+            _coRenderer = StartCoroutine(MakeVisible(duration));
+        }
+    }
+
     // 렌더러 비활성화
-    public void MakeInvisible()
+    private void MakeInvisible()
     {
         if (_lodTransform == null)
             return;
@@ -901,8 +936,9 @@ public class PlayerController : CreatureController
             renderer.enabled = false;
         }
     }
+   
     // 렌더러 활성화
-    public IEnumerator MakeVisible(float duration = 0f)
+    private IEnumerator MakeVisible(float duration = 0f)
     {
         if (_lodTransform == null)
             yield break;

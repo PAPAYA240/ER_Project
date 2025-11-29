@@ -41,10 +41,10 @@ public class Env_Bush : EnvController
                 pc.PlaySkillEffect(KeyCode.F1, default(Vector3), default(Vector3));
             }
 
-            StartCoroutine(pc.MakeVisible(2.5f)); 
+            pc.ActiveRenderer(true, 2.5f); 
         }
         else
-            StartCoroutine(pc.MakeVisible());
+            pc.ActiveRenderer(true); 
     }
     #region Interaction
     protected override void TryHandleInteraction(PlayerController target)
@@ -55,7 +55,7 @@ public class Env_Bush : EnvController
         }
         else
         {
-            target.MakeInvisible();
+            target.ActiveRenderer(false);
         }
     }
     #endregion
