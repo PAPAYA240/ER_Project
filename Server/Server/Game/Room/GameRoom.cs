@@ -837,5 +837,19 @@ namespace Server.Game
             Teleport = new TeleportSystem(SpawnRegistry);
 
         }
+
+        public void BroadcastAbigailSound(Player player, AbigailSound sound, float prob)
+        {
+            bool play = Math.Abs(prob - 1) < 0.0001f || Random.Shared.NextDouble() < prob;
+
+            if (play)
+            {
+                S_AbigailSound abigailSound = new S_AbigailSound();
+                abigailSound.ObjectId = player.Id;
+                abigailSound.Sound = sound;
+                abigailSound.Pos = player.PosInfo;
+                Broadcast(abigailSound);
+            }
+        }
     }
 }

@@ -20,16 +20,7 @@ public class Abigail_AttackState : Player_AttackState
     {
         base.Enter(player);
 
-        if (player.Skill.IsPassiveAttackReady())
-        {
-            player.BonusAttackRange = 0.1f;
-            IsPassiveAttack = true;
-        }
-        else
-        {
-            player.BonusAttackRange = 0;
-            IsPassiveAttack = false;
-        }
+        CheckPassive(player);
     }
 
     protected override void StartSwing(Player p, DateTime now)
@@ -43,6 +34,8 @@ public class Abigail_AttackState : Player_AttackState
 
         // 애니 송출(서버 권한)
         string animName = AnimAttackT;
+
+        CheckPassive(p);
 
         if (IsPassiveAttack)
         {
@@ -76,5 +69,19 @@ public class Abigail_AttackState : Player_AttackState
         
         // 평타 데미지
         room.Push(target.OnDamaged, p, p.Attack, false, true);
+    }
+
+    void CheckPassive(Player player)
+    {
+        if (player.Skill.IsPassiveAttackReady())
+        {
+            player.BonusAttackRange = 0.1f;
+            IsPassiveAttack = true;
+        }
+        else
+        {
+            player.BonusAttackRange = 0;
+            IsPassiveAttack = false;
+        }
     }
 }
