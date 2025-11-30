@@ -170,10 +170,6 @@ public class ObjectManager
 
                 // 4) 위치 동기화
                 pc.SyncPos();
-
-                Projectile_Rozzi_NormalAttack pr = go.GetComponent<Projectile_Rozzi_NormalAttack>();
-                if (pr != null)
-                    pr.ResetForPool();
             }
             else
             {
@@ -429,12 +425,18 @@ public class ObjectManager
         }
 
         proj.gameObject.SetActive(true);
+        Debug.Log($"[POOL] Activate {proj.gameObject.name}");
+
+        if (proj is Projectile_Rozzi_NormalAttack normal)
+            normal.ResetForPool();
+
         return proj;
     }
 
     private void ReturnProjectileToPool(Projectile proj)
     {
         proj.gameObject.SetActive(false);
+        Debug.Log($"[POOL] Deactivate {proj.gameObject.name}");
 
         Queue<Projectile> queue;
         if (!_projectilePool.TryGetValue(proj.Type, out queue))

@@ -1178,4 +1178,5 @@ message S_RozziNormalAttack {
 message C_RozziNormalAttack {
 	int32 objectId = 1;
 	int32 targetId = 2;
+	bool hasHit = 3;
 }

@@ -33,6 +33,7 @@ public class Projectile_Rozzi_NormalAttack : Projectile
         };
 
         owner.Room.Push(owner.Room.Broadcast, packet);
+        Console.WriteLine($"@ Send Add Packet : {Id}");
     }
 
     private void SendFxPacket(Player owner, int projectileId)

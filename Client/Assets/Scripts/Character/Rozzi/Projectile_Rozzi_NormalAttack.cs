@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using static UnityEngine.ParticleSystem;
 
 public class Projectile_Rozzi_NormalAttack : Projectile
 {
@@ -19,8 +20,22 @@ public class Projectile_Rozzi_NormalAttack : Projectile
     private float _speed = 1f;
     private float _hitRadius = 0.5f;
 
-    bool _hasHit = false;     // 실제 히트 발생 여부 (Update/이동 막기)
-    bool _packetSent = false; // 서버로 C_RozziNormalAttack 보낸 적 있는지
+    private bool _hasHit = false;     // 실제 히트 발생 여부 (Update/이동 막기)
+    private bool _packetSent = false; // 서버로 C_RozziNormalAttack 보낸 적 있는지
+
+    private float _maxTravelTime = 1f;
+    private float _elapsed = 0f;
+
+    private float _deltaScale = 0.05f;
+
+    [SerializeField] Renderer[] _renderers;
+    //[SerializeField] TrailRenderer _trail;
+
+    private void Awake()
+    {
+        if (_renderers == null || _renderers.Length == 0)
+            _renderers = GetComponentsInChildren<Renderer>();
+    }
 
     // 풀에서 꺼낼 때 항상 호출해줄 리셋 함수
     public void ResetForPool()
@@ -29,6 +44,19 @@ public class Projectile_Rozzi_NormalAttack : Projectile
         _speed = 1f;
         _hasHit = false;
         _packetSent = false;
+
+        var renderers = GetComponentsInChildren<Renderer>(true);
+        foreach (var r in renderers)
+            r.enabled = true;
+
+        var particles = GetComponentsInChildren<ParticleSystem>(true);
+        foreach (var ps in particles)
+        {
+            ps.Clear();
+            ps.Play();
+        }
+        //gameObject.SetActive(true);
+        //Debug.Log($"@ ResetForPool - true : {Id}");
     }
 
     public void Init(S_RozziNormalAttack packet)
@@ -48,15 +76,33 @@ public class Projectile_Rozzi_NormalAttack : Projectile
             return;
 
         GameObject target = Managers.Object.FindById(_targetId);
-        if(target == null) 
+        if(target == null)
+        {
+            //OnHit(false);
             return;
+        }
 
-        transform.position = Vector3.MoveTowards(transform.position, target.transform.position, _speed * Time.deltaTime);
+        //Vector3 finPos = Vector3.MoveTowards(transform.position, target.transform.position, _speed * 0.8f);
+
+        _elapsed += _speed * Time.deltaTime * _deltaScale;
+        if(_elapsed >= _maxTravelTime)
+        {
+            CellPos = target.transform.position;
+            SyncPos();
+        }
+        else
+        {
+            Vector3 finPos = Vector3.Lerp(transform.position, target.transform.position, _elapsed / _maxTravelTime);
+
+            CellPos = finPos;
+            SyncPos();
+        }
+            
         float dist = Vector2.Distance(  new Vector2(transform.position.x, transform.position.z), 
                                         new Vector2(target.transform.position.x, target.transform.position.z));
 
         if (dist <= _hitRadius)
-            OnHit();
+            OnHit(true);
     }
 
     private void SetStartPosition()
@@ -66,22 +112,21 @@ public class Projectile_Rozzi_NormalAttack : Projectile
             return;
 
         transform.position = boneTransform.position;
-        Debug.Log($"@ bone : {(_isLWeapon ? _LWeaponBone : _RWeaponBone)}, pos - {transform.position}");
     }
 
-    private void OnHit()
+    private void OnHit(bool hasHit)
     {
         if (_hasHit)
             return;        
         _hasHit = true;
 
-        gameObject.SetActive(false);
-        TrySendHitPacket();
-
-        Debug.Log($"@ OnHit!!");
+        //gameObject.SetActive(false);
+        //Debug.Log($"[OnHit] Deactivate {gameObject.name}");
+        HideVisual();
+        TrySendHitPacket(hasHit);
     }
 
-    private void TrySendHitPacket()
+    private void TrySendHitPacket(bool hasHit)
     {
         // 1) 내 플레이어 아닌 경우 → 서버에 패킷 안 보냄 (단순 이펙트 전용)
         var myPlayer = Managers.Object.MyPlayer;
@@ -99,9 +144,34 @@ public class Projectile_Rozzi_NormalAttack : Projectile
         C_RozziNormalAttack packet = new C_RozziNormalAttack
         {
             ObjectId = Id,
-            TargetId = _targetId
+            TargetId = _targetId,
+            HasHit = hasHit
         };
         Managers.Network.Send(packet);
-        Debug.Log("@ Send C_RozziNormalAttack");
+    }
+
+    private void HideVisual()
+    {
+        var renderers = GetComponentsInChildren<Renderer>(true);
+        Debug.Log($"[Proj] HideVisual {gameObject.name}, renderers={renderers.Length}");
+
+        foreach (var r in renderers)
+            r.enabled = false;
+
+        var particles = GetComponentsInChildren<ParticleSystem>(true);
+        foreach (var ps in particles)
+        {
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+    }
+
+    void OnEnable()
+    {
+        Debug.Log($"[Proj] OnEnable - {gameObject.name}");
+    }
+
+    void OnDisable()
+    {
+        Debug.Log($"[Proj] OnDisable - {gameObject.name}");
     }
 }

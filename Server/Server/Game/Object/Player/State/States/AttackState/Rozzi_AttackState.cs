@@ -233,8 +233,11 @@ public class Rozzi_AttackState : Player_AttackState
         if (p == null || pkt == null)
             return;
 
-        GameObject target = ObjectManager.Instance.Find(pkt.TargetId);
-        ApplyHit(p, target);
+        if(pkt.HasHit)
+        {
+            GameObject target = ObjectManager.Instance.Find(pkt.TargetId);
+            ApplyHit(p, target);
+        }
 
         p.Room.Push(p.Room.LeaveGame, pkt.ObjectId);
         Console.WriteLine($"@ ApplyProjectileHit");

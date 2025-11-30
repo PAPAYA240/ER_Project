@@ -268,9 +268,7 @@ namespace Server.Game
 
         public void HandleRozziNormalAttack(Player player, C_RozziNormalAttack pkt)
         {
-            if (player == null)
-                return;
-            if (player.IsDead)
+            if (player == null || player.IsDead)
                 return;
 
             if(player.CurrentState is Rozzi_AttackState attackState)
