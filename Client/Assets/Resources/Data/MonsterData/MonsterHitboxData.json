@@ -41,6 +41,16 @@
       }
     },
     "Gamma": {
+      "MsGammaAttack1": {
+        "shape": "Ray",
+        "type": "SkillTrack",
+        "width": 3,
+        "height": 3,
+        "startFrame": 7,
+        "endFrame": 12,
+        "minRange": 10,
+        "maxRange": 13
+      },
       "MsGammaSkill1": {
         "shape": "Ray",
         "type": "SkillTrack",
@@ -56,8 +66,8 @@
         "type": "SkillTrack",
         "width": 3,
         "height": 4,
-        "startFrame": 70,
-        "endFrame": 200,
+        "startFrame": 60,
+        "endFrame": 190,
         "minRange": 10,
         "maxRange": 13
       },

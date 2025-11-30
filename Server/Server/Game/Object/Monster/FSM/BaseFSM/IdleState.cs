@@ -10,7 +10,6 @@ namespace Server.Game
         private const int SEARCH_INTERVAL_MS = 1000;
         private long _nextSearchTick = 0;
         private float _delayTimer = 0;
-        //private long _lastRotationUpdateTime = 0;
 
         public void Enter(Monster monster)
         {

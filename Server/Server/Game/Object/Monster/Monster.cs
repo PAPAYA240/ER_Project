@@ -121,14 +121,19 @@ namespace Server.Game
 
             base.OnDamaged(attacker, damage, isBasicAttack);
 
-            OnAttacked?.Invoke(attacker);
+            if (Target == null)
+                OnAttacked?.Invoke(attacker);
         }
         public void OnHit(Creature creature)
         {
-            OnAttacked?.Invoke(creature);
+            if (Target == null)
+                OnAttacked?.Invoke(creature);
         }
         private void HandlerRegisterTarget(GameObject attacker)
         {
+            if (Target != null)
+                return;
+
             if (attacker is Player attackerPlayer)
                 Target = attackerPlayer;
         }
@@ -146,7 +151,7 @@ namespace Server.Game
             int skillIdx = new Random().Next(0, _skills.Count);
             MonsterSkill skillName = _skills[skillIdx];
 
-            if (DataManager.MonsterSkillDict.TryGetValue(skillName, out MonsterSkillData skillData) == false)
+            if (DataManager.MonsterSkillDict.TryGetValue(MonsterSkill.MsGammaSkill1, out MonsterSkillData skillData) == false)
                 return null;
 
             //Target?.Room?.Push(OnDamaged, this, skillData.damage + Attack, false);
