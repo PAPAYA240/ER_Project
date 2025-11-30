@@ -41,20 +41,34 @@
       }
     },
     "Gamma": {
+      "MsGammaAttack1": {
+        "shape": "Ray",
+        "type": "SkillTrack",
+        "width": 3,
+        "height": 3,
+        "startFrame": 7,
+        "endFrame": 12,
+        "minRange": 10,
+        "maxRange": 13
+      },
       "MsGammaSkill1": {
         "shape": "Ray",
-        "type": "SkillStatic",
-        "width": 2,
-        "startFrame": 60,
-        "endFrame": 100,
+        "type": "SkillTrack",
+        "width": 3,
+        "height": 4,
+        "startFrame": 70,
+        "endFrame": 90,
+        "minRange": 10,
         "maxRange": 13
       },
       "MsGammaSkill2": {
         "shape": "Ray",
-        "type": "SkillStatic",
-        "width": 2,
-        "startFrame": 70,
-        "endFrame": 180,
+        "type": "SkillTrack",
+        "width": 3,
+        "height": 4,
+        "startFrame": 60,
+        "endFrame": 190,
+        "minRange": 10,
         "maxRange": 13
       },
       "MsGammaSkill3": {

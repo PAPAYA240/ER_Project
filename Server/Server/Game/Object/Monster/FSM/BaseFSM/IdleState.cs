@@ -50,7 +50,6 @@ namespace Server.Game
                 HandleAttackDelay(monster);
                 return;
             }
-            Console.WriteLine("다음 공격 : 타겟 존재");
             monster.ChangeState(FSMManager.Instance.EvaluateTargetForNextState(monster));
         }
         private void ExecuteIdle(Monster monster)
@@ -62,8 +61,6 @@ namespace Server.Game
                 if (monster.Target != null)
                     return;
             }
-            if (monster.Info.Monster.MonsterType == MonsterType.Gamma)
-                Console.WriteLine("Idle : 타겟 없음");
             if (!monster.IsAtSpawn())
                 monster.ChangeState(FSMManager.Instance.GetMovingState());
         }
