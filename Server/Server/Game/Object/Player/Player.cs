@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
@@ -394,6 +393,8 @@ namespace Server.Game
 
                 if (_attactActiveTime > _nonCombatTime)
                 {
+                    // 이펙트 멈추기
+                    SendYukiSkillEffect(SkillEffectType.QBuff, false);
                     AttackActive = false;
                 }
             }
@@ -525,7 +526,10 @@ namespace Server.Game
             switch (Info.Player.CharType)
             {
                 case CharacterType.Yuki:
-                    // Q 활성화 되어있으면 BonusAttackRange = 0.25f
+                    if (AttackActive)
+                        BonusAttackRange = 0.25f;
+                    else
+                        BonusAttackRange = 0f;
                     break;
                 case CharacterType.Abigail:
                     isPassiveAttackReady = Skill.IsPassiveAttackReady();
@@ -1367,6 +1371,15 @@ namespace Server.Game
             };
 
             Room.Push(Session.Send, packet);
+        }
+
+        public void SendRemoveEffect(KeyCode keyCode)
+        {
+            S_RemoveEffect packet = new S_RemoveEffect();
+            packet.ObjectId = Id;
+            packet.KeyCode = (int)keyCode;
+
+            Room.Push(Room.Broadcast, packet);
         }
         #endregion
     }

@@ -176,7 +176,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SAbigailSound, MakePacket<S_AbigailSound>);
 		_handler.Add((ushort)MsgId.SAbigailSound, PacketHandler.S_AbigailSoundHandler);		
 		_onRecv.Add((ushort)MsgId.SPickSound, MakePacket<S_PickSound>);
-		_handler.Add((ushort)MsgId.SPickSound, PacketHandler.S_PickSoundHandler);
+		_handler.Add((ushort)MsgId.SPickSound, PacketHandler.S_PickSoundHandler);		
+		_onRecv.Add((ushort)MsgId.SRemoveEffect, MakePacket<S_RemoveEffect>);
+		_handler.Add((ushort)MsgId.SRemoveEffect, PacketHandler.S_RemoveEffectHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

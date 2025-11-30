@@ -1,8 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
 using Server.Game;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using static Server.Data.DataUtils;
 
 public sealed class Yuki_Q : InstantHandlerBase
@@ -17,6 +15,8 @@ public sealed class Yuki_Q : InstantHandlerBase
     public override void ExecuteInstant(Player p)
     {
         p.AttackActive = true;
+        p.SendYukiSkillEffect(SkillEffectType.QBuff);
+
         Console.WriteLine("Yuki Q Active");
     }
 }

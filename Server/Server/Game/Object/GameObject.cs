@@ -7,7 +7,6 @@ using System.Numerics;
 using System.Threading.Tasks;
 using static Player_StunState;
 using static Server.Game.StunState;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Server.Game
 {
@@ -563,7 +562,7 @@ namespace Server.Game
         {
             await Task.Delay(delayMs);
 
-            SendYukiSkillEffect(SkillEffectType.YukiRHit);
+            SendYukiSkillEffect(SkillEffectType.RHit);
 
             float damage = MaxHp * (FixedDamage[curLevel - 1] + (curAttack * 0.05f) * 0.01f);
             Room.Push(OnDamaged, atk, damage, true, false);
@@ -892,12 +891,13 @@ namespace Server.Game
             Room?.Push(Room.Broadcast, packet);
         }
 
-        public void SendYukiSkillEffect(SkillEffectType type)
+        public void SendYukiSkillEffect(SkillEffectType type, bool isPlay = true)
         {
             S_SkillEffect pkt = new S_SkillEffect
             {
                 ObjectId = Id,
-                EffectType = type
+                EffectType = type,
+                IsPlay = isPlay
             };
 
             Room.Push(Room.Broadcast, pkt);

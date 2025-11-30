@@ -7,15 +7,11 @@ Shader "ERBS_FX/FX_ParticleAB" {
 	}
 	//DummyShaderTextExporter
 	SubShader{
-		Tags { "RenderType"="Transparent" } // RenderType을 투명으로 변경
+		Tags { "RenderType"="Opaque" }
 		LOD 200
 
 		Pass
 		{
-			// 블렌딩과 Z-Write 옵션 추가
-            Blend SrcAlpha OneMinusSrcAlpha
-            ZWrite Off
-
 			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag

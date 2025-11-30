@@ -1,11 +1,15 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Data;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Data.EffectData;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 class PacketHandler
 {
@@ -393,7 +397,8 @@ class PacketHandler
         Vector3 targetPos = fxPacket.TargetPosition.ToVector();
         Quaternion targetRot = fxPacket.TargetRotation;
 
-        pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));
+        if(fxPacket.CanLookatMouse == true)
+            pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));
         pc.PlayEffectFromServer(fxPacket, mousePos, targetPos, targetRot);
     }
 
@@ -795,12 +800,11 @@ class PacketHandler
             return;
 
         yukiPyosik.ActivateYukiPyosik(go);
-        SkillEffectHandler.HandleEffect(SkillEffectType.YukiRShadow, attackerGo);
-        SkillEffectHandler.HandleEffect(SkillEffectType.YukiRAttack, attackerGo);
     }
     
     public static void S_SoundHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_SoundHandler(session, packet))) return;
         S_Sound soundPkt = packet as S_Sound;
         GameObject go = Managers.Object.FindById(soundPkt.ObjectId);
         if (go == null) return;
@@ -827,7 +831,10 @@ class PacketHandler
         if (go == null)
             return;
 
-        SkillEffectHandler.HandleEffect((SkillEffectType)YukiSkillEffectPkt.EffectType, go);
+        if (YukiSkillEffectPkt.IsPlay)
+            Managers.EffectHandler.PlayEffect((SkillEffectType)YukiSkillEffectPkt.EffectType);
+        else
+            Managers.EffectHandler.StopEffect((SkillEffectType)YukiSkillEffectPkt.EffectType);
     }
 
     public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)
@@ -1202,16 +1209,16 @@ class PacketHandler
         S_SpawnWard wardPacket = packet as S_SpawnWard;
 
         Managers.Object.AddWard(wardPacket.ObjInfo, wardPacket.TeamIndex);
+    }
 
-        //GameObject go = Managers.Object.FindById(yukiStudPacket.ObjectId);
-        //if (go == null)
-        //    return;
+    public static void S_RemoveEffectHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_RemoveEffectHandler(session, packet))) return;
 
-        //PlayerController pc = go.GetComponentInChildren<PlayerController>();
-        //if (pc == null)
-        //    return;
+        S_RemoveEffect removeEffectPacket = packet as S_RemoveEffect;
 
-        //yukiStudPacket.StudCnt;
+        
+        Managers.FX.Effect.RemoveEffect(removeEffectPacket);
     }
 
     public static void S_StartOperateHandler(PacketSession session, IMessage packet)

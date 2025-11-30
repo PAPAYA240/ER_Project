@@ -29,7 +29,7 @@ public sealed class Yuki_W : SkillHandlerBase
 
         p.Room.AddStatusEffect(p, p, _keyCode, null);
 
-        p.SendYukiSkillEffect(SkillEffectType.YukiW);
+        p.SendYukiSkillEffect(SkillEffectType.WFlower);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -80,6 +80,7 @@ public sealed class Yuki_W : SkillHandlerBase
         yukiStudPkt.StudCnt = p.YukiStud;
 
         p.Room.Push(p.Room.Broadcast, yukiStudPkt);
+        p.SendYukiSkillEffect(SkillEffectType.WEffect);
 
         base.OnExit(p, ctx);
     }

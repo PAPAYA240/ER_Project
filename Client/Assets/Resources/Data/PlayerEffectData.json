@@ -111,6 +111,48 @@
           "HitTarget": []
         }
       }
+      },
+    "Hyunwoo": {
+      "Skill": {
+        "Q": {
+          "Caster": [
+            {
+              "prefabName": "FX_BI_Hyunwoo_Skill01_Attack_Ys",
+              "target": "Self",
+              "duration": 1.0
+            }
+          ],
+          "HitTarget": []
+        },
+        "W": {
+          "Caster": [
+            {
+              "prefabName": "FX_BI_Hyunwoo_Skill02_Buff01_Ys",
+              "target": "Self",
+              "duration": 2.5
+            }
+          ],
+          "HitTarget": []
+        },
+        "E": {
+          "Caster": [],
+          "HitTarget": []
+        },
+        "R": {
+          "Caster": [
+            {
+              "prefabName": "FX_BI_Hyunwoo_Skill04_Range_Ys",
+              "target": "Self",
+              "duration": 2.5
+            }
+          ],
+          "HitTarget": []
+        },
+        "D": {
+          "Caster": [],
+          "HitTarget": []
+        }
       }
+    }
   }
 }
