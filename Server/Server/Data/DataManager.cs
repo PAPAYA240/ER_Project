@@ -34,11 +34,9 @@ namespace Server.Data
             = new Dictionary<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>();
 
         public static Dictionary<CharacterType, Dictionary<string, AnimLengthInfo>> AnimLengthInfoDict { get; private set; } = new Dictionary<CharacterType, Dictionary<string, AnimLengthInfo>>();
-
         public static Dictionary<MonsterType, MonsterData> MonsterDict { get; private set; } = new Dictionary<MonsterType, MonsterData>();
         public static Dictionary<MonsterSkill, MonsterSkillData> MonsterSkillDict { get; private set; } = new Dictionary<MonsterSkill, MonsterSkillData>();
         public static Dictionary<EnvType, EnvInfo> EnvDict { get; private set; } = new Dictionary<EnvType, EnvInfo>();
-
         public static Dictionary<int, int> PhaseDict { get; private set; } = new Dictionary<int, int>();
         public static Dictionary<int, int> RespawnDict { get; private set; } = new Dictionary<int, int>();
 
