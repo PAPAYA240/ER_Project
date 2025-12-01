@@ -175,25 +175,6 @@ namespace Server.Game
             }
         }
 
-        #region CombatState
-        // CombatState
-        // 전투 시간 (용수야 여기야)
-        private float _combatTime = 0f;
-        private readonly float _nonCombatTime = 5f;
-        public float CombatTime
-        {
-            get { return _combatTime; }
-            set { _combatTime = value; }
-        }
-
-        private CombatState _curCombat;
-        public CombatState CombatState
-        {
-            get { return _curCombat; }
-            set { _curCombat = value; }
-        }
-        #endregion
-
         #region Yuki Privacy
         // 유키 단추용
         private static readonly int MaxStud = 4;
@@ -375,9 +356,8 @@ namespace Server.Game
 
                     CombatState = CombatState.NonCombat;
                     S_CombatMode combatModePkt = new S_CombatMode();
-                    combatModePkt.ObjectId = Id;
                     combatModePkt.CombatMode = CombatState;
-                    Room.Broadcast(combatModePkt);
+                    Room.Push(Session.Send, combatModePkt);
 
                     // 유키 단추용
                     if (Info.Player.CharType == CharacterType.Yuki)
@@ -464,6 +444,11 @@ namespace Server.Game
             }
 
             Room.Broadcast(KdaPacket);
+
+            // 경험치
+
+            // 스코어
+
         }
         #endregion
 
@@ -1393,7 +1378,7 @@ namespace Server.Game
             Room.Push(Session.Send, packet);
         }
 
-        public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = null)
+        public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = "")
         {
             S_RemoveEffect packet = new S_RemoveEffect();
             packet.ObjectId = Id;

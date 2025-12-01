@@ -441,6 +441,15 @@ public class UI_PlayerInterface : UI_Base
         GetObject((int)GameObjects.LevelAndExp).GetComponent<UI_Level>().CurrentLevel = level;
     }
 
+    public void SetExp(int value)
+    {
+        GetObject((int)GameObjects.LevelAndExp).GetComponent<UI_Level>().CurrentExp = value;
+    }
+
+    public void SetMaxExp(int value)
+    {
+        GetObject((int)GameObjects.LevelAndExp).GetComponent<UI_Level>().MaxExp = value;
+    }
     #endregion
 
     #region Credit

@@ -46,6 +46,9 @@ namespace Server.Game
         private long _phaseStartTick;    // 현재 페이즈 시작 Tick
         private long _phaseEndTick;      // 현재 페이즈 종료 Tick
 
+        private System.Timers.Timer _syncTimer;
+        private System.Timers.Timer _expTimer;
+
         public int CurPhase { get; private set; } = 0;
 
         public void StartPhase()
@@ -86,6 +89,15 @@ namespace Server.Game
             switch (newPhase)
             {
                 case 1:
+                    {
+                        foreach (var p in _players)
+                        {
+                            p.Value.AcquireItem(new WardInfo()/*DataManager.ItemDict[502212] as WardInfo*/);
+                            Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
+                        }
+                        StartExpTimer(); // 1페이즈부터 경험치 획득
+                        break;
+                    }
                 case 2:
                 case 3:
                     foreach (var p in _players)
@@ -106,6 +118,53 @@ namespace Server.Game
             syncTimerPacket.PhaseEndTime = _phaseEndTick; 
 
             Push(Broadcast, syncTimerPacket);
+        }
+
+        public void GetTickExp(object state = null)
+        {
+            S_ChangeExp expPacket = new S_ChangeExp();
+
+            lock (this)
+            {
+                foreach (var p in _players.Values)
+                {
+                    p.Stat.Exp += 50;
+                    expPacket.Exp = p.Stat.Exp;
+                    Push(p.Session.Send, expPacket);
+                }
+            }
+        }
+
+        private void StartSyncTimer(float tick = 5000)
+        {
+            _syncTimer = new System.Timers.Timer();
+            _syncTimer.Interval = tick;
+            _syncTimer.Elapsed += ((s, e) => { SyncTimer(); });
+            _syncTimer.AutoReset = true;
+            _syncTimer.Enabled = true;
+        }
+
+        private void StopSyncTimer()
+        {
+            _syncTimer?.Stop();
+            _syncTimer?.Dispose();
+            _syncTimer = null;
+        }
+
+        private void StartExpTimer(float tick = 2500)
+        {
+            _expTimer = new System.Timers.Timer();
+            _expTimer.Interval = tick;
+            _expTimer.Elapsed += ((s, e) => { GetTickExp(); });
+            _expTimer.AutoReset = true;
+            _expTimer.Enabled = true;
+        }
+
+        private void StopExpTimer()
+        {
+            _expTimer?.Stop();
+            _expTimer?.Dispose();
+            _expTimer = null;
         }
         #endregion
 
@@ -159,6 +218,7 @@ namespace Server.Game
             SpawnRegister();
 
             StartPhase();
+            StartSyncTimer();
         }
 
         public override void Update()
@@ -175,6 +235,10 @@ namespace Server.Game
 
             foreach (Player player in _players.Values)
             {
+                int levelUpCnt = player.CheckLevelUp();
+                if (levelUpCnt > 0)
+                    Push(BroadcastLevelUp, player, levelUpCnt, player.Info.Player.CharType);
+
                 player.Update();
             }
             foreach (Monster monster in _monsters.Values)
@@ -191,8 +255,6 @@ namespace Server.Game
 
             foreach (var monster in _monsters.Values)
                 monster.RemoveExpiredStatusEffects();
-
-            //Flush();
 
             _collisionManager.CurTick = TimeUtil.Instance.LastTick;
             _collisionManager.Flush();
@@ -272,7 +334,7 @@ namespace Server.Game
 
                     int levelUpCnt = player.CheckLevelUp();
                     if (levelUpCnt > 0)
-                        BroadcastLevelUp(player.Id, levelUpCnt, player.Info.Player.CharType);
+                        BroadcastLevelUp(player, levelUpCnt, player.Info.Player.CharType);
 
                     // 페이즈에 해당하는 아이템 장착
                     if (CurPhase > 0)
@@ -647,18 +709,23 @@ namespace Server.Game
             }
         }
 
-        void BroadcastLevelUp(int objectId, int levelUpCnt, CharacterType charType)
+        void BroadcastLevelUp(Player player, int levelUpCnt, CharacterType charType)
         {
             S_LevelUp levelUpPkt = new S_LevelUp();
-            levelUpPkt.ObjectId = objectId;
+            levelUpPkt.ObjectId = player.Id;
             levelUpPkt.LevelUpCnt = levelUpCnt;
 
             StatInfo statInfo = new StatInfo(DataManager.StatGrowthDict[charType]);
             statInfo.MultiplyForGrowth(levelUpCnt);
             levelUpPkt.StatGrowth = statInfo;
 
+            levelUpPkt.NextMaxExp = DataManager.ExpDict[player.Stat.Level];
+            levelUpPkt.CurExp = player.Stat.Exp;
+
             Broadcast(levelUpPkt);
         }
+
+        
 
         public void SkillLevelUp(int id, int key)
         {

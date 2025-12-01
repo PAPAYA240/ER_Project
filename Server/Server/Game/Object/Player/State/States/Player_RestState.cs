@@ -28,6 +28,7 @@ public class Player_RestState : IPlayerState
         if (_isRest == true)
         {
             _animName = "REST_START";
+            player.IsHit = false;
 
             if (player.Info.Player.CharType == CharacterType.Abigail)
                 player.Room.BroadcastAbigailSound(player, AbigailSound.Rest, 1);
@@ -57,6 +58,8 @@ public class Player_RestState : IPlayerState
 
         else if (player.IsHit == true)
         {
+            player.IsHit = false;
+
             S_Rest restPkt = new S_Rest();
             restPkt.ObjectId = player.Id;
             restPkt.IsRest = false;
