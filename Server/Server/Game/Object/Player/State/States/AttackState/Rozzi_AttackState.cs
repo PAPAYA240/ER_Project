@@ -8,15 +8,21 @@ using static Server.Data.DataUtils;
 
 public class Rozzi_AttackState : Player_AttackState
 {
+    protected const float RozziWindupSeconds = 0.05f;      // 선딜(히트 타이밍까지)
     protected const string AnimPassiveAttack = "ATTACK_3";
-    private bool _isPassiveAttack = false;
 
-    private int _damageAppliedTimes = 0;
-    private int _maxDamageTimes = 1;
+    private string _curAnimName = AnimAttackA;
 
     private DateTime _hitMomentUtc2;
 
+    private bool _isPassiveAttack = false;
+    private bool _shot1Fired = false;
+    private bool _shot2Fired = false;
+
     private float[] _attackBonus = [0, 0.5f, 0.6f, 0.7f];
+
+    private KeyCode _keyCode = KeyCode.F3;
+    private float _projectileSpeed = 10f;
 
     public Rozzi_AttackState(int targetId, bool chaseAllowed = true) : base(targetId, chaseAllowed) { }
 
@@ -67,25 +73,42 @@ public class Rozzi_AttackState : Player_AttackState
             // ===== 공격 진행 중 =====
             if (_swingActive)
             {
-                if ((_damageAppliedTimes < _maxDamageTimes) && now >= _hitMomentUtc)
-                {
-                    if((_damageAppliedTimes == 0) || (_damageAppliedTimes == 1 && now >= _hitMomentUtc2))
-                    {
-                        // 히트 타이밍: 서버 거리 검증(위에서 inRange는 프레임 타임이라 다시 체크해도 됨)
-                        float distNow = Vector3.Distance(
-                            new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ),
-                            new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ));
-                        if (distNow <= player.AttackRange /* + player.HitTolerance 가능 */)
-                            ApplyHit(player, target);
+                //if ((_damageAppliedTimes < _maxDamageTimes) && now >= _hitMomentUtc)
+                //{
+                //    if((_damageAppliedTimes == 0) || (_damageAppliedTimes == 1 && now >= _hitMomentUtc2))
+                //    {
+                //        // 히트 타이밍
+                //        float distNow = Vector3.Distance( new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ),
+                //                                          new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ));
+                //        if (distNow <= player.AttackRange)
+                //            ApplyHit(player, target);
 
-                        _damageAppliedTimes++;
-                    }                 
+                //        _damageAppliedTimes++;
+                //    }                 
+                //}
+
+                // 1번 샷: 모든 평타 공통
+                if (!_shot1Fired && now >= _hitMomentUtc)
+                {
+                    // 첫 발 – 예: 오른손(혹은 현재 attackIndex 기준)
+                    CreateProjectile(player, isLWeapon: (_curAnimName == AnimAttackA)? false : true);
+                    _shot1Fired = true;
+                }
+
+                // 2번 샷: 패시브 ATTACK_3일 때만
+                if (_isPassiveAttack && !_shot2Fired && now >= _hitMomentUtc2)
+                {
+                    // 두 번째 발 – 예: 왼손
+                    CreateProjectile(player, isLWeapon: true);
+                    _shot2Fired = true;
                 }
 
                 if (now >= _swingEndUtc)
                 {
                     _swingActive = false;
-                    _damageAppliedTimes = 0;
+                    _shot1Fired = false;
+                    _shot2Fired = false;
+
                     _nextAttackReadyUtc = now.AddSeconds(ReattackGapSeconds);
                     _comboResetDeadlineUtc = now.AddSeconds(ComboResetSeconds);
 
@@ -141,37 +164,47 @@ public class Rozzi_AttackState : Player_AttackState
 
     protected override void StartSwing(Player p, DateTime now)
     {
+        GameObject target = ObjectManager.Instance.Find(_targetId);
+        if (target == null)
+            return;
+
         _swingActive = true;
-        _damageAppliedTimes = 0;
+        _shot1Fired = false;
+        _shot2Fired = false;
 
         _swingStartUtc = now;
-        _hitMomentUtc = now.AddSeconds(WindupSeconds / p.AttackSpeed);
-        _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds / p.AttackSpeed);
 
-        string animName = default;
-        string nextCombo = (_attackIndex == 0) ? AnimAttackA : AnimAttackB;
+        // 첫 번째 샷(기본 히트 타이밍)
+        _hitMomentUtc = now.AddSeconds(RozziWindupSeconds / p.AttackSpeed);
+
+        // 기본은 1타 공격
         _isPassiveAttack = false;
-        _maxDamageTimes = 1;
+        string nextCombo = (_attackIndex == 0) ? AnimAttackA : AnimAttackB;
 
-        // 우선순위: OnAttackPerformed → 토큰 공격 → 기본 A/B
         if (p.OnAttackPerformed())
-            animName = nextCombo;
+            _curAnimName = nextCombo;
         else if (p.TryHandleAttackWithTokens() != null)
-        { 
-            animName = AnimPassiveAttack;
+        {
+            _curAnimName = AnimPassiveAttack;
             _isPassiveAttack = true;
-            _maxDamageTimes = 2;
-            _hitMomentUtc2 = _hitMomentUtc.AddSeconds(0.2);
-            //_swingEndUtc = _hitMomentUtc2.AddSeconds(0.1);
+
+            // 두 번째 샷 타이밍: 첫 샷 이후 0.12초(공속 보정)
+            double gap = 0.12 / p.AttackSpeed;
+            _hitMomentUtc2 = _hitMomentUtc.AddSeconds(gap);
         }
         else
-            animName = nextCombo;
+            _curAnimName = nextCombo;
 
-        if (animName == AnimAttackA || animName == AnimAttackB)
+        if (_curAnimName == AnimAttackA || _curAnimName == AnimAttackB)
             _attackIndex = 1 - _attackIndex;
 
-        // 전투 상태 평타 칠 때마다 갱신
-        // 전투 모드
+        // 스윙 종료 시점: 패시브면 두 번째 샷 이후, 아니면 첫 샷 이후
+        if (_isPassiveAttack)
+            _swingEndUtc = _hitMomentUtc2.AddSeconds(BackswingSeconds / p.AttackSpeed);
+        else
+            _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds / p.AttackSpeed);
+
+        // 전투 모드 + 애니 송출 그대로
         {
             p.CombatState = CombatState.Combat;
             S_CombatMode combatModePkt = new S_CombatMode();
@@ -181,8 +214,20 @@ public class Rozzi_AttackState : Player_AttackState
             p.CombatTime = 0f;
         }
 
-        // 애니 송출(서버 권한)
-        p.SendAnimPacket(animName, 0.05f, p.AttackSpeed/*, _isPassiveAttack*/);
+        p.SendAnimPacket(_curAnimName, 0.05f, p.AttackSpeed);
+    }
+
+    private void CreateProjectile(Player p, bool isLWeapon)
+    {
+        Projectile_Rozzi_NormalAttack projectile = ObjectManager.Instance.Add<Projectile_Rozzi_NormalAttack>();
+        if (projectile != null)
+        {
+            projectile.ProjectileType = ProjectileType.ProjectileRozziNormalAttack;
+            projectile.Owner = p;
+            projectile.Init();
+            p.Room.Push(p.Room.EnterGame, projectile, 0);
+            projectile.SendRozziNormalAttackPacket(p, _targetId, isLWeapon, _projectileSpeed);
+        }
     }
 
     protected override void ApplyHit(Player p, GameObject target)
@@ -199,5 +244,25 @@ public class Rozzi_AttackState : Player_AttackState
         Projectile_Rozzi_R pj = p.Room.FindProjectile(p, ProjectileType.ProjectileRozziR) as Projectile_Rozzi_R;
         if (pj != null && pj.Target != null && pj.Target == target)
             pj.RegisterOwnerHit(isSkillHit: false);
+
+        p.SendSkillEffect(new Vector2(target.Position.X, target.Position.Z), keyCode: _keyCode, sendLookatMousePacket: true,
+                targetPos: default, targetRot: default,
+                type: "Select",  name: "FX_BI_Rozzi_NormalAttack_Hit",
+                useTargetTransform: true, targetId: target.Id);
+    }
+
+    public void ApplyProjectileHit(Player p, C_RozziNormalAttack pkt)
+    {
+        if (p == null || pkt == null)
+            return;
+
+        if(pkt.HasHit)
+        {
+            GameObject target = ObjectManager.Instance.Find(pkt.TargetId);
+            ApplyHit(p, target);
+        }
+
+        p.Room.Push(p.Room.LeaveGame, pkt.ObjectId);
+        Console.WriteLine($"@ ApplyProjectileHit");
     }
 }

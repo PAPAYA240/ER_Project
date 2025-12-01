@@ -389,9 +389,12 @@ class PacketHandler
         if (!IsSceneReady("Game", () => S_FxHandler(session, packet))) return;
         S_Fx fxPacket = packet as S_Fx;
         GameObject go = Managers.Object.FindById(fxPacket.ObjectId);
-        if (go == null)     return;
+        if (go == null)     
+            return;
+
         PlayerController pc = go.GetComponent<PlayerController>();
-        if (pc == null)      return;
+        if (pc == null)      
+            return;
 
         Vector3 mousePos = new Vector3(fxPacket.MousePosX, 0, fxPacket.MousePosZ);
         Vector3 targetPos = fxPacket.TargetPosition.ToVector();
@@ -607,12 +610,17 @@ class PacketHandler
         GameObject go = Managers.Object.FindById(revPacket.ObjectId);
         if (go == null)
             return;
-
         EnvController ec = go.GetComponent<EnvController>();
-        if (ec == null)
+
+        GameObject tc = Managers.Object.FindById(revPacket.TargetId);
+        if (tc == null)
             return;
 
-        ec.OnInteractionAuthorized();
+        PlayerController pc = tc.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
+
+        ec.OnInteractionAuthorized(pc);
     }
     
     public static void S_ChangeInventoryHandler(PacketSession session, IMessage packet)
@@ -634,10 +642,6 @@ class PacketHandler
         // *Sound
         S_AttackInfo atkInfoPacket = packet as S_AttackInfo;
 
-        if ("MsDroneAttack1" == atkInfoPacket.AttackType)
-        {
-            int ac = 3;
-        }
         BaseController bc = Managers.Object.FindById(atkInfoPacket.AttackerId)?.GetComponentInChildren<BaseController>();
         if (bc == null)
             return;
@@ -1268,7 +1272,7 @@ class PacketHandler
         AbigailAudioManager aam = go.GetComponentInChildren<AbigailAudioManager>();
         if(aam == null) return;
 
-        aam.Play(abigailSoundPkt.ObjectId, abigailSoundPkt.Sound);
+        aam.Play(abigailSoundPkt.ObjectId, abigailSoundPkt.Sound, abigailSoundPkt.Pos.ToVector());
     }
 
     public static void S_PickSoundHandler(PacketSession session, IMessage packet)
@@ -1282,6 +1286,24 @@ class PacketHandler
         if (pickScene == null) return;
 
         pickScene.PlaySelectedSound(pickSoundPkt.CharType);
+    }
+
+    public static void S_RozziNormalAttackHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_RozziNormalAttackHandler(session, packet)))
+            return;
+
+        S_RozziNormalAttack attackPacket = packet as S_RozziNormalAttack;
+
+        var projectile = Managers.Object.FindById(attackPacket.ObjectId);
+        if (projectile == null)
+            return;
+
+        Projectile_Rozzi_NormalAttack pr = projectile.GetComponentInChildren<Projectile_Rozzi_NormalAttack>();
+        if (pr == null)
+            return;
+
+        pr.Init(attackPacket);
     }
 
     static float GetCurrentEstimatedOneWayLatency()

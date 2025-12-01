@@ -9,8 +9,8 @@ public class WardController : BaseController
     public int TeamIndex;
 
     private float elapsed = 0;
-    public float _lifeTime = 15f; // ¿ÍµåÀÇ ¼ö¸í
-    public float _destructionAnimationDuration = 3f; // ÆÄ±« ¾Ö´Ï¸ÞÀÌ¼Ç Àç»ý ½Ã°£
+    public float _lifeTime = 15f; // ï¿½Íµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    public float _destructionAnimationDuration = 3f; // ï¿½Ä±ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
 
     private FogOfWarVision _vision;
 
@@ -18,18 +18,18 @@ public class WardController : BaseController
     private int _layer2Team;
 
 
-    [Header("UI Canvas ÂüÁ¶")]
-    public Canvas mainScreenCanvas; // <<--- ¾À¿¡ ÀÖ´Â ¸ÞÀÎ UI Canvas¸¦ Inspector¿¡¼­ ¿¬°áÇØÁÖ¼¼¿ä!
-                                    //       Render Mode°¡ Screen Space-Camera ¶Ç´Â Overlay¿©¾ß ÇÕ´Ï´Ù.
+    [Header("UI Canvas ï¿½ï¿½ï¿½ï¿½")]
+    public Canvas mainScreenCanvas; // <<--- ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ UI Canvasï¿½ï¿½ Inspectorï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½!
+                                    //       Render Modeï¿½ï¿½ Screen Space-Camera ï¿½Ç´ï¿½ Overlayï¿½ï¿½ï¿½ï¿½ ï¿½Õ´Ï´ï¿½.
 
-    [Header("Life Bar UI ÇÁ¸®ÆÕ")]
-    public GameObject wardLifeBarUIPrefab; // <<--- Canvas°¡ Æ÷ÇÔµÇÁö ¾ÊÀº WardLifeBarUI ÇÁ¸®ÆÕÀ» ¿¬°áÇØÁÖ¼¼¿ä!
+    [Header("Life Bar UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
+    public GameObject wardLifeBarUIPrefab; // <<--- Canvasï¿½ï¿½ ï¿½ï¿½ï¿½Ôµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ WardLifeBarUI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½!
 
-    [Header("Life Bar UI À§Ä¡ ¿ÀÇÁ¼Â")]
-    public Vector3 uiOffset = new Vector3(0, 2f, 0); // ¿Íµå ¸Ó¸® À§ 2m ÁöÁ¡¿¡ Life Bar Ç¥½Ã
+    [Header("Life Bar UI ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
+    public Vector3 uiOffset = new Vector3(0, 2f, 0); // ï¿½Íµï¿½ ï¿½Ó¸ï¿½ ï¿½ï¿½ 2m ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Life Bar Ç¥ï¿½ï¿½
 
-    private GameObject _lifeBarInstance; // Instantiate·Î »ý¼ºµÈ LifeBar UI GameObject ÀÎ½ºÅÏ½º
-    private UI_WardLifeBar _lifeBarController; // Life Bar UI¸¦ Á¦¾îÇÏ´Â ½ºÅ©¸³Æ®
+    private GameObject _lifeBarInstance; // Instantiateï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ LifeBar UI GameObject ï¿½Î½ï¿½ï¿½Ï½ï¿½
+    private UI_WardLifeBar _lifeBarController; // Life Bar UIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®
 
     private void Awake()
     {
@@ -81,7 +81,7 @@ public class WardController : BaseController
         }
         else
         {
-            Debug.LogError("Life Bar UI¸¦ ÃÊ±âÈ­ÇÒ ¼ö ¾ø½À´Ï´Ù. ÇÊ¿äÇÑ ÂüÁ¶°¡ ¾ø½À´Ï´Ù.");
+            Debug.LogError("Life Bar UIï¿½ï¿½ ï¿½Ê±ï¿½È­ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½. ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
         }
 
         _lifeBarController.SetMaxValue(_lifeTime);
@@ -123,45 +123,45 @@ public class WardController : BaseController
 
     private void InitializeLifeBarUI()
     {
-        // 1. Life Bar UI ÇÁ¸®ÆÕÀ» ¸ÞÀÎ UI CanvasÀÇ ÀÚ½ÄÀ¸·Î ÀÎ½ºÅÏ½ºÈ­ÇÕ´Ï´Ù.
-        //    ÀÌ·¸°Ô ÇØ¾ß UI ½Ã½ºÅÛÀÇ ¿Ã¹Ù¸¥ °èÃþ ±¸Á¶ ¾È¿¡ µé¾î°¡°Ô µË´Ï´Ù.
+        // 1. Life Bar UI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ UI Canvasï¿½ï¿½ ï¿½Ú½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î½ï¿½ï¿½Ï½ï¿½È­ï¿½Õ´Ï´ï¿½.
+        //    ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Ø¾ï¿½ UI ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¹Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½È¿ï¿½ ï¿½ï¿½î°¡ï¿½ï¿½ ï¿½Ë´Ï´ï¿½.
         //_lifeBarInstance = Instantiate(wardLifeBarUIPrefab, mainScreenCanvas.transform);
         _lifeBarInstance = Managers.Resource.Instantiate("UI/SubItem/WardLifeBarCanvas", /*gameObject.transform*/ mainScreenCanvas.transform);
 
         if (_lifeBarInstance == null)
         {
-            Debug.LogError("WardLifeBarUI ÇÁ¸®ÆÕ Instantiate ½ÇÆÐ!");
+            Debug.LogError("WardLifeBarUI ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Instantiate ï¿½ï¿½ï¿½ï¿½!");
             return;
         }
 
-        // 2. Life Bar UI¸¦ Á¦¾îÇÏ´Â ½ºÅ©¸³Æ®¸¦ °¡Á®¿É´Ï´Ù.
-        //    _lifeBarInstance GameObject ÀÚÃ¼¿¡ UI_BarNonText°¡ ºÙ¾îÀÖ°Å³ª ÀÚ½Ä¿¡ ºÙ¾îÀÖÀ» ¼ö ÀÖ½À´Ï´Ù.
+        // 2. Life Bar UIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½É´Ï´ï¿½.
+        //    _lifeBarInstance GameObject ï¿½ï¿½Ã¼ï¿½ï¿½ UI_BarNonTextï¿½ï¿½ ï¿½Ù¾ï¿½ï¿½Ö°Å³ï¿½ ï¿½Ú½Ä¿ï¿½ ï¿½Ù¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½.
         _lifeBarController = _lifeBarInstance.GetComponent<UI_WardLifeBar>();
-        if (_lifeBarController == null) // ¸¸¾à ·çÆ®¿¡ ¾ø´Ù¸é ÀÚ½Ä¿¡¼­ Ã£¾Æº¾´Ï´Ù.
+        if (_lifeBarController == null) // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½Ú½Ä¿ï¿½ï¿½ï¿½ Ã£ï¿½Æºï¿½ï¿½Ï´ï¿½.
         {
             _lifeBarController = _lifeBarInstance.GetComponentInChildren<UI_WardLifeBar>();
         }
 
         if (_lifeBarController == null)
         {
-            Debug.LogError("UI_BarNonText ÄÄÆ÷³ÍÆ®¸¦ Life Bar UI ÇÁ¸®ÆÕ¿¡¼­ Ã£À» ¼ö ¾ø½À´Ï´Ù!");
-            Destroy(_lifeBarInstance); // UI ÀÎ½ºÅÏ½º Á¤¸®
+            Debug.LogError("UI_BarNonText ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ Life Bar UI ï¿½ï¿½ï¿½ï¿½ï¿½Õ¿ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!");
+            Destroy(_lifeBarInstance); // UI ï¿½Î½ï¿½ï¿½Ï½ï¿½ ï¿½ï¿½ï¿½ï¿½
             return;
         }
 
-        // ½ºÄÉÀÏÀº Canvas Scaler¿¡ ÀÇÇØ Á¶ÀýµÇÁö¸¸, ¸¸¾à UI ÀÚÃ¼ ½ºÄÉÀÏÀ» ÁÙ¿©¾ß ÇÑ´Ù¸é ¿©±â¼­ Á¶Àý
-        // _lifeBarInstance.transform.localScale = Vector3.one; // ÀÏ¹ÝÀûÀ¸·Î 1·Î À¯Áö
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Canvas Scalerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ UI ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¿ï¿½ï¿½ï¿½ ï¿½Ñ´Ù¸ï¿½ ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½ï¿½
+        // _lifeBarInstance.transform.localScale = Vector3.one; // ï¿½Ï¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
 
-    // Ä«¸Þ¶ó ÀÌµ¿ ÈÄ¿¡µµ UI°¡ ¿ÀºêÁ§Æ®¸¦ µû¶ó´Ù´Ïµµ·Ï LateUpdate¿¡¼­ À§Ä¡¸¦ °»½ÅÇÕ´Ï´Ù.
+    // Ä«ï¿½Þ¶ï¿½ ï¿½Ìµï¿½ ï¿½Ä¿ï¿½ï¿½ï¿½ UIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ù´Ïµï¿½ï¿½ï¿½ LateUpdateï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
     void LateUpdate()
     {
         if (_lifeBarInstance == null || mainScreenCanvas == null || Camera.main == null) return;
 
-        // 1. ¿ÍµåÀÇ ¿ùµå Æ÷Áö¼Ç + ¿ÀÇÁ¼ÂÀ» °è»êÇÕ´Ï´Ù.
+        // 1. ï¿½Íµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ + ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
         Vector3 wardWorldPos = transform.position + uiOffset;
 
-        // 2. ¿ùµå Æ÷Áö¼ÇÀ» ½ºÅ©¸°(ÇÈ¼¿) Æ÷Áö¼ÇÀ¸·Î º¯È¯ÇÕ´Ï´Ù.
+        // 2. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½(ï¿½È¼ï¿½) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Õ´Ï´ï¿½.
         Vector3 screenPoint = Camera.main.WorldToScreenPoint(wardWorldPos);
         _lifeBarInstance.transform.position = screenPoint;
     }

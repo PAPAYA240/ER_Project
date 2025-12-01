@@ -34,6 +34,8 @@ public sealed class Rozzi_R : RozziSkillHandler
             p.Room.Push(p.Room.EnterGame, projectile, 0);
             projectile.BOMBSTATE = BOMB_ROZZI.Flying;
         }
+
+        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode, sendLookatMousePacket: false);
     }
 
     public override void OnTick(Player p, SkillContext ctx)

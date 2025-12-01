@@ -17,6 +17,7 @@ using UnityEngine.Timeline;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using static Unity.Burst.Intrinsics.X86.Avx;
 using static UnityEngine.GraphicsBuffer;
+using static UnityEngine.UI.GridLayoutGroup;
 
 public class PlayerSkillController : MonoBehaviour
 {
@@ -143,7 +144,7 @@ public class PlayerSkillController : MonoBehaviour
     // 스킬 시작 승인(시전별 instanceId 포함 -> 안함)
     public void OnSkillConfirm(S_SkillConfirm packet)
     {
-        CanMoveDuringCast = packet.CanMove;
+        CanMoveDuringCast = packet.CanMove;     
     }
 
     public void OnSkillCost(S_SkillCost packet)

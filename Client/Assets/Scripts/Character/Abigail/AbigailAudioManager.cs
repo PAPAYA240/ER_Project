@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,25 +16,9 @@ public class AbigailAudioManager : MonoBehaviour
 
     Dictionary<AbigailSound, Define.Sound> _audioTypeDict = new Dictionary<AbigailSound, Define.Sound>();
 
-    HashSet<AbigailSound> _otherAbigailSoundDict;
-
     private void Start()
     {
-        SetUpOtherAbigailSound();
         LoadAudioClips();
-    }
-
-    void SetUpOtherAbigailSound()
-    {
-        _otherAbigailSoundDict = new HashSet<AbigailSound> { 
-            AbigailSound.Q, AbigailSound.QFirstHit,AbigailSound.QSecondHit,
-            AbigailSound.W, AbigailSound.WHit,
-            AbigailSound.E, AbigailSound.EHit,
-            AbigailSound.R, AbigailSound.RHit,
-            AbigailSound.Attack1, AbigailSound.Attack2, AbigailSound.AttackHit,
-            AbigailSound.PassiveAttack, AbigailSound.PassiveAttackHit,
-            AbigailSound.WeaponSkill
-        };
     }
 
     void LoadAudioClips()
@@ -57,29 +42,34 @@ public class AbigailAudioManager : MonoBehaviour
             foreach (var path in paths)
             {
                 AudioClip clip = Resources.Load<AudioClip>("Abigail/" + path);
-                if(clip == null)
+                if (clip == null)
                     continue;
-
+                    
                 _audioClipDict[sound].Add(clip);
             }
         }
     }
 
-    public void Play(int objectId, AbigailSound sound)
+    public void Play(int objectId, AbigailSound sound, Vector3 pos)
     {
-        if (Managers.Object.MyPlayer.Id != objectId && !_otherAbigailSoundDict.Contains(sound))
-            return;
-
-        if (!_audioClipDict.TryGetValue(sound, out List<AudioClip> clips) || clips.Count == 0)
-            return;
-
-        if (!_audioTypeDict.TryGetValue(sound, out Define.Sound soundType))
-            return;
-
+        if (!_audioClipDict.TryGetValue(sound, out List<AudioClip> clips) || clips.Count == 0) return;  
+        if (!_audioTypeDict.TryGetValue(sound, out Define.Sound soundType)) return;
+        
         AudioClip randomClip = clips[UnityEngine.Random.Range(0, clips.Count)];
         if (randomClip == null)
             return;
 
-        Managers.Sound.Play(randomClip, soundType, 0.2f);
+        bool forcePlay = false; // 강제 재생
+        if (sound == AbigailSound.Dead)
+            forcePlay = true;
+
+        float volume = 0.35f;
+        if (soundType == Define.Sound.Voice)
+            volume = 0.15f;
+
+        if (objectId == Managers.Object.MyPlayer.Id)
+            Managers.Sound.Play(randomClip, soundType, volume, forcePlay);
+        else
+            Managers.Sound.Play3D(randomClip, pos, soundType, volume, forcePlay, objectId);
     }
 }

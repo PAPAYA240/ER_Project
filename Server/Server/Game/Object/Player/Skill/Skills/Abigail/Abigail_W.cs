@@ -38,5 +38,8 @@ public sealed class Abigail_W : Skill_Abigail
         SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
         p.SendCanStopSkillPacket(false);
+
+        p.Room.BroadcastAbigailSound(p, AbigailSound.W, 1);
+        p.Room.BroadcastAbigailSound(p, AbigailSound.Wvoice, 0.6f);
     }
 }

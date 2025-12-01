@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Google.Protobuf.Protocol;
 using Server.Game;
+using ServerCore;
 using static Server.Data.DataUtils;
 
 
@@ -10,7 +12,7 @@ public sealed class Abigail_Q : Skill_Abigail
 {
     public override bool CanMoveDuringCast => true;
     public override float MoveSpeedMultiplier => 1.2f;
-
+    
     public Abigail_Q()
     {
         _animName = "SKILL_Q";
@@ -25,5 +27,8 @@ public sealed class Abigail_Q : Skill_Abigail
 
         SendSkillConfirmPacket(p);
         p.Room.AddStatusEffect(p, p, _keyCode, null); // 스킬 사용시 이속 버프
+
+        p.Room.BroadcastAbigailSound(p, AbigailSound.Q, 1);
+        p.Room.BroadcastAbigailSound(p, AbigailSound.Qvoice, 0.6f);
     }
 }

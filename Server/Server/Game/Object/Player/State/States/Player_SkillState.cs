@@ -141,11 +141,15 @@ public class Player_SkillState : IPlayerState, IReceivesMoveCommand, IReceivesSt
             }   
         }
     }
-    public void OnStopCommand(Player player, C_Stop stopPacket)
+
+    #nullable enable
+    public void OnStopCommand(Player player, C_Stop? stopPacket)
     {
         _currentDestination = null;
         _handler.OnStop(player);
     }
+    #nullable disable
+
     public void RequestFinish(SkillFinishReason reason = SkillFinishReason.EarlyEnd)
     {
         _forceEnd = true;

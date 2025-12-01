@@ -1,5 +1,6 @@
 using Google.Protobuf.Protocol;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,11 +10,25 @@ public class MonsterController : CreatureController
 
     // 몬스터 정보
     public MonsterSkill Skill { get;  set; }
+    public int MonsterTeam { get; set; }
+
     [SerializeField] private MonsterType type;
     public MonsterType Type
     {
         get => type;
         set => type = value;
+    }
+    public override CreatureState State
+    {
+        get { return PosInfo.State; }
+        set
+        {
+            if (PosInfo.State == value)
+                return;
+
+            PosInfo.State = value;
+            _updated = true;
+        }
     }
     public SoundController Sound;
 
@@ -144,10 +159,15 @@ public class MonsterController : CreatureController
     {
         Skill = packet.Skilltype;
 
+
         if (Type == MonsterType.Drone)
+        {
             OnStateChanged?.Invoke(false);
+        }
         else
+        {
             OnStateChanged?.Invoke(true);
+        }
 
         if (_agent != null)
         {
@@ -163,14 +183,15 @@ public class MonsterController : CreatureController
     {
         if (State == CreatureState.Appear &&
             packet.MyState == CreatureState.Idle)
+        {
             OnStateChanged?.Invoke(true);
+        }
 
         State = packet.MyState;
         if (packet.TargetPosition != null)
             TargetPosition = packet.TargetPosition.ToVector();
 
         Skill = MonsterSkill.MsNone;
-
         if (State == CreatureState.Skill)
             _bMesh = false;
 

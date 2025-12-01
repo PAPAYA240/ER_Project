@@ -1,7 +1,9 @@
-﻿using Google.Protobuf.Protocol;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Google.Protobuf.Protocol;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 
@@ -44,13 +46,63 @@ public class SoundManager
         _audioClips.Clear();
     }
 
-    public void Play(string path, Define.Sound type = Define.Sound.Effect, float volume = 1.0f, float pitch = 1.0f)
+    public void Play(string path, Define.Sound type = Define.Sound.Effect, float volume = 0.15f)
     {
         AudioClip audioClip = GetOrAddAudioClip(path, type);
-        Play(audioClip, type, volume, pitch);
+        Play(audioClip, type, volume);
     }
-    public float Play3D(AudioClip audioClip, Vector3 position, Define.Sound type = Define.Sound.Effect, float pitch = 1.0f)
+
+    public float Play3D(AudioClip audioClip, Vector3 position, Define.Sound type = Define.Sound.Effect, 
+        float volume = 0.15f, bool forcePlay = false, int id = -1)
     {
+        if (audioClip == null)
+            return -1.0f;
+
+        if(type == Define.Sound.Voice && id != -1)
+        {
+            CleanupFinishedVoices();
+
+            if (IsSpeaking(id))
+            {
+                if(forcePlay)
+                    StopVoice(id);
+                else
+                    return -1.0f;
+            }                
+        }
+
+        GameObject go = new GameObject($"Sound_{audioClip}");
+        go.transform.position = position;
+
+        AudioSource audioSource = go.AddComponent<AudioSource>();
+        audioSource.volume = volume;
+        audioSource.spatialBlend = 1f;
+
+        audioSource.rolloffMode = AudioRolloffMode.Logarithmic; // 감쇠 모드
+        audioSource.minDistance = 2f;            // 이 거리까지는 최대 음량
+        audioSource.maxDistance = 20f;           // 이 거리까지는 서서히 작아짐
+
+        audioSource.dopplerLevel = 0f;           // 도플러 효과 없음
+        audioSource.spread = 180f;               // 최대 넓이로 스테레오 유지
+        audioSource.panStereo = 0f;              // 중앙 고정
+
+        audioSource.playOnAwake = false;
+        audioSource.loop = false;
+        audioSource.pitch = 1f;
+        audioSource.clip = audioClip;
+        audioSource.Play();
+
+        if (type == Define.Sound.Voice && id != -1)
+            RegisterVoice(id, audioSource);
+
+        Object.Destroy(go, audioClip.length + 0.1f);
+        return audioClip.length;
+    }
+
+    public float Play3D(string path, Vector3 position, Define.Sound type = Define.Sound.Effect,
+        float volume = 0.15f)
+    {
+        AudioClip audioClip = GetOrAddAudioClip(path, type);
         if (audioClip == null)
             return -1.0f;
 
@@ -58,26 +110,9 @@ public class SoundManager
         go.transform.position = position;
 
         AudioSource audioSource = go.AddComponent<AudioSource>();
+        audioSource.volume = volume;
         audioSource.spatialBlend = 1f;
-        audioSource.pitch = pitch;
-        audioSource.clip = audioClip;
-        audioSource.Play();
-
-        Object.Destroy(go, audioClip.length + 0.1f);
-        return audioClip.length;
-    }
-    public float Play3D(string path, Vector3 position, Define.Sound type = Define.Sound.Effect, float pitch = 1.0f)
-    {
-        AudioClip audioClip = GetOrAddAudioClip(path, type);
-        if (audioClip == null)
-            return -1.0f;
-
-        GameObject go = new GameObject($"Sound_{audioClip}");
-        go.transform.position = position;
-
-        AudioSource audioSource = go.AddComponent<AudioSource>();
-        audioSource.spatialBlend = 1f;
-        audioSource.pitch = pitch;
+        audioSource.pitch = 1;
         audioSource.clip = audioClip;
         audioSource.Play();
 
@@ -85,13 +120,13 @@ public class SoundManager
         return audioClip.length;
     }
 
-    public AudioClip PlayLoop(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, float volume = 1.0f, float pitch = 1.0f)
+    public AudioClip PlayLoop(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, float volume = 0.15f)
     {
         GameObject loopObject = new GameObject($"LoopSound_{audioClip.name}");
         AudioSource loopSource = loopObject.AddComponent<AudioSource>();
 
         loopSource.volume = volume;
-        loopSource.pitch = pitch;
+        loopSource.pitch = 1;
 
         loopSource.clip = audioClip;
         loopSource.loop = true;
@@ -100,7 +135,9 @@ public class SoundManager
         _loopSources.Add(audioClip.name, loopSource);
         return audioClip;
     }
-    public void Play(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, float volume = 1.0f, float pitch = 1.0f)
+
+    public void Play(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, 
+        float volume = 0.15f, bool forcePlay = false)
     {
         if (audioClip == null)
             return;
@@ -112,7 +149,7 @@ public class SoundManager
                 audioSource.Stop();
 
             audioSource.volume = volume;
-            audioSource.pitch = pitch;
+            audioSource.pitch = 1;
             audioSource.clip = audioClip;
             audioSource.Play();
         }
@@ -120,21 +157,27 @@ public class SoundManager
         {
              AudioSource audioSource = _audioSources[(int)type];
              audioSource.volume = volume;
-             audioSource.pitch = pitch;
+             audioSource.pitch = 1;
              audioSource.loop = false;
 
-            if(type == Define.Sound.Voice)
-            {
+             if(type == Define.Sound.Voice)
+             {
                 if (audioSource.isPlaying)
-                    return;
-                
+                {
+                    if (forcePlay)
+                        audioSource.Stop();
+                    else
+                        return;
+                }
+
                 audioSource.clip = audioClip;
                 audioSource.Play();
-            }
-            else
-                audioSource.PlayOneShot(audioClip);  
+             }
+
+             audioSource.PlayOneShot(audioClip, volume);  
         }
     }
+
     public void StopLoopSound(string clipName)
     {
         if (_loopSources.TryGetValue(clipName, out AudioSource loopSource))
@@ -144,6 +187,7 @@ public class SoundManager
             _loopSources.Remove(clipName);
         }
     }
+    
     AudioClip GetOrAddAudioClip(string path, Define.Sound type = Define.Sound.Effect)
     {
 		AudioClip audioClip = null;
@@ -166,4 +210,60 @@ public class SoundManager
 
 		return audioClip;
     }
+
+    #region Voice
+    Dictionary<int, AudioSource> _voiceSources = new Dictionary<int, AudioSource>();
+
+    public bool IsSpeaking(int id)
+    {
+        return _voiceSources.ContainsKey(id) &&
+               _voiceSources[id] != null &&
+               _voiceSources[id].isPlaying;
+    }
+
+    public void RegisterVoice(int id, AudioSource voiceSource)
+    {
+        // 기존 Voice 정지 및 제거
+        StopVoice(id);
+
+        // 새로운 Voice 등록
+        _voiceSources[id] = voiceSource;
+    }
+
+    public void StopVoice(int id)
+    {
+        if (_voiceSources.TryGetValue(id, out var existingSource))
+        {
+            if (existingSource != null && existingSource.isPlaying)
+            {
+                existingSource.Stop();
+            }
+
+            _voiceSources.Remove(id);
+        }
+    }
+
+    public void CleanupFinishedVoices()
+    {
+        var finishedCharacters = _voiceSources
+            .Where(kvp => kvp.Value == null || !kvp.Value.isPlaying)
+            .Select(kvp => kvp.Key)
+            .ToList();
+
+        foreach (var characterId in finishedCharacters)
+        {
+            _voiceSources.Remove(characterId);
+        }
+    }
+
+    public void StopAllVoices()
+    {
+        foreach (var source in _voiceSources.Values)
+        {
+            if (source != null && source.isPlaying)
+                source.Stop();
+        }
+        _voiceSources.Clear();
+    }
+    #endregion
 }

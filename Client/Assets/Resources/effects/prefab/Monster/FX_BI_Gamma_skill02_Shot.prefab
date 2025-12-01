@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4521487405640799}
   - component: {fileID: 198667565530251328}
   - component: {fileID: 199412328517031761}
-  m_Layer: 15
+  m_Layer: 17
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2270,10 +2270,12 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0eeb06abfdf7daa4aade15452c2fc27a, type: 2}
   - {fileID: 2100000, guid: 0eeb06abfdf7daa4aade15452c2fc27a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -2338,7 +2340,7 @@ GameObject:
   - component: {fileID: 4909915296457493}
   - component: {fileID: 198771223852789178}
   - component: {fileID: 199029865703038179}
-  m_Layer: 15
+  m_Layer: 17
   m_Name: Particle System (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4597,10 +4599,12 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0eeb06abfdf7daa4aade15452c2fc27a, type: 2}
   - {fileID: 2100000, guid: 0eeb06abfdf7daa4aade15452c2fc27a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -4667,7 +4671,7 @@ GameObject:
   - component: {fileID: 199737380358512664}
   - component: {fileID: 114689383172585125}
   - component: {fileID: 135199349610985554}
-  m_Layer: 15
+  m_Layer: 17
   m_Name: FX_BI_Gamma_skill02_Shot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6928,10 +6932,12 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0

@@ -81,17 +81,14 @@ public class Env_HealPack : EnvController
         if (_uiHealPack == null || !_uiHealPack.gameObject.activeSelf)
             return;
 
-        // 1. 월드 위치 보정 (힐 팩의 피벗에서 머리 위로 2.0f 정도 올림)
         Vector3 worldPosition = this.transform.position + new Vector3(0, 2.0f, 0);
         Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
 
-        // 2. RectTransform을 정확히 가져옴
         RectTransform uiRect = _uiHealPack.gameObject.GetComponent<RectTransform>();
         RectTransform parentCanvasRect = uiRect.parent.GetComponent<RectTransform>();
 
         Vector2 localPoint;
 
-        // 3. Canvas Render Mode에 따라 eventCamera 결정 (오류 방지)
         Canvas rootCanvas = parentCanvasRect.root.GetComponent<Canvas>();
         Camera eventCamera = null;
         if (rootCanvas != null && rootCanvas.renderMode == RenderMode.ScreenSpaceCamera)
@@ -177,7 +174,7 @@ public class Env_HealPack : EnvController
     #endregion
 
     #region Interaction
-    protected override void TryHandleInteraction()
+    protected override void TryHandleInteraction(PlayerController target)
     {
         if (_triggerCreature == null)
             return;
@@ -186,14 +183,13 @@ public class Env_HealPack : EnvController
         if (player == null)
             return;
 
-        base.TryHandleInteraction();
+        base.TryHandleInteraction(target);
 
         _isActive = false;
         _currentTimer = _respawnTime;
 
         UpdateVisuals(false);
     }
-
     #endregion
 
     #region Visual Updates

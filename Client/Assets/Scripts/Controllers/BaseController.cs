@@ -74,7 +74,18 @@ public class BaseController : MonoBehaviour
             State = value.State;
         }
     }
+    public ScaledInfo ScaleInfo
+    {
+        get { return ObjInfo.ScaleInfo; }
+        set
+        {
+           //if (ObjInfo.ScaleInfo.Equals(value))
+           //    return;
 
+            ObjInfo.ScaleInfo = value;
+            transform.localScale = new Vector3(value.ScaledX, value.ScaledY, value.ScaledZ);
+        }
+    }
     public RotationInfo RotInfo
     {
         get { return ObjInfo.RotInfo; }

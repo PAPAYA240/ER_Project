@@ -55,11 +55,32 @@ public sealed class Rozzi_E : RozziSkillHandler
 
         SendSkillConfirmPacket(p);
         p.Room.AddStatusEffect(p, p, _keyCode, null); // 지정불가
+        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode, sendLookatMousePacket: false);
     }
 
-    public override void OnHit(Player p, SkillContext ctx)
+    public override void OnCollision<T>(Player p, List<T> targets, GameObject.StatusEffect effect)
     {
-        return;
+        foreach (var t in targets)
+        {
+            GameObject go = t as GameObject;
+            if (go == null)
+                return;
+
+            p.SendSkillEffect(new Vector2(go.Position.X, go.Position.Z), keyCode: _keyCode, sendLookatMousePacket: false,
+                targetPos: default, targetRot: default,
+                type: "Select", "FX_BI_Rozzi_Skill03_Ground",
+                useTargetTransform: true, targetId: go.Id);
+
+            p.SendSkillEffect(new Vector2(go.Position.X, go.Position.Z), keyCode: _keyCode, sendLookatMousePacket: false,
+                targetPos: default, targetRot: default,
+                type: "Select", "FX_BI_Rozzi_Skill03_Fire",
+                useTargetTransform: true, targetId: go.Id);
+
+            p.SendSkillEffect(new Vector2(go.Position.X, go.Position.Z), keyCode: _keyCode, sendLookatMousePacket: false,
+                targetPos: default, targetRot: default,
+                type: "Select", "FX_BI_Rozzi_Skill03_Hit",
+                useTargetTransform: true, targetId: go.Id);
+        }
     }
 
     public override void OnTick(Player p, SkillContext ctx)
@@ -107,7 +128,7 @@ public sealed class Rozzi_E : RozziSkillHandler
 
         if(!_isRequest && t >= _followRatio)
         {          
-            Vector3 requestPos = p.Position + _dir * _behindDistance;
+            Vector3 requestPos = _midPos + _dir * _behindDistance;
             SendSkillCollisionRequestPacket(p, CollisionType.Block, p.Position, requestPos);
             _isRequest = true;
 

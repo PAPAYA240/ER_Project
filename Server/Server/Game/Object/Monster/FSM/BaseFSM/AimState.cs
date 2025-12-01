@@ -37,10 +37,13 @@ namespace Server.Game
             {
                 if (monster.IsInSkillRange())
                 {
-                    if (monster.Info.Monster.MonsterType == MonsterType.Drone)
+                    MonsterType type = monster.Info.Monster.MonsterType;
+                    if (type == MonsterType.Drone || type == MonsterType.Turret)
                         monster.ChangeState(FSMManager.Instance.EvaluateTargetForNextState(monster));
                     else
-                        monster.ChangeState(FSMManager.Instance.GetIdleState());
+                    {
+                        monster.ChangeState(FSMManager.Instance.GetIdleState()); 
+                    }
                 }
                 else
                 {
