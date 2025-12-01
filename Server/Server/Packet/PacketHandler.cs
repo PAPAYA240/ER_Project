@@ -318,7 +318,7 @@ class PacketHandler
         {
             ObjectId = envPacket.ObjectId,
             EnvType = envPacket.EnvType,
-            TargetId = player.Id,
+            TargetId = envPacket.TargetId
         };
         room.Push(room.Broadcast, sendPacket);
     }
@@ -488,5 +488,21 @@ class PacketHandler
             return;
 
         room.Push(room.HandleDeployingLoop, player, deployingPacket);
+    }
+
+    public static void C_RozziNormalAttackHandler(PacketSession session, IMessage packet)
+    {
+        C_RozziNormalAttack attackPacket = packet as C_RozziNormalAttack;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleRozziNormalAttack, player, attackPacket);
     }
 }

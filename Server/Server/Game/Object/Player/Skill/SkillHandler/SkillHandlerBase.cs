@@ -1,14 +1,9 @@
 ﻿using Google.Protobuf.Protocol;
-using Google.Protobuf.WellKnownTypes;
 using Server.Data;
 using Server.Game;
-using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Text;
-using static ISkill;
 using static Server.Data.DataUtils;
-using static Server.Game.GameObject;
 
 public abstract class SkillHandlerBase : ISkill
 {

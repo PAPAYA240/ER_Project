@@ -14,13 +14,13 @@ public class SkillEffectHandler
 
     public void InitEffects(PlayerController player)
     {
-        // ¸ðµç Ä³¸¯ °øÅë ÀÌÆåÆ®
+        // ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
         RegisterEffect(SkillEffectType.RHit, player, "Effect/Yuki/Yuki_Pyosik_Hit");
 
         GameObject yukiPyosik = Managers.Resource.Instantiate("Effect/Yuki/UIpyosik");
         yukiPyosik.transform.SetParent(player.transform);
 
-        // Yuki Àü¿ë ÀÌÆåÆ®
+        // Yuki ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
         if (player.ObjInfo.Player.CharType == CharacterType.Yuki)
         {
             RegisterEffect(SkillEffectType.RShadow, player, "Effect/Yuki/Yuki_Skill_Shadow");
@@ -29,7 +29,7 @@ public class SkillEffectHandler
             RegisterEffect(SkillEffectType.WEffect, player, "Effect/Yuki/Yuki_SkillW");
             RegisterEffectBone(SkillEffectType.QBuff, player, "Effect/Yuki/Yuki_SkillQ_Buff", "Fx_Hand_R");
 
-            // Á÷Á¢ ¸¸µç Ä¿½ºÅÒ Fx Å¬·¡½º
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½ï¿½ï¿½ï¿½ Fx Å¬ï¿½ï¿½ï¿½ï¿½
             RegisterEffect(SkillEffectType.WFlower, player, "Effect/Yuki/YukiFlower");
             RegisterEffect(SkillEffectType.RRange, player, "Effect/Yuki/Yuki_R");
 
@@ -39,7 +39,7 @@ public class SkillEffectHandler
             (_effectMap[SkillEffectType.QAttack] as MonoBehaviour).transform.localPosition = new Vector3(0, 1f, 1f);
         }
 
-        // ¸ðµç ÀÌÆåÆ® ÃÊ±â ºñÈ°¼ºÈ­
+        // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ê±ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
         foreach (var effect in _effectMap.Values)
             (effect as MonoBehaviour).gameObject.SetActive(false);
     }
@@ -50,7 +50,7 @@ public class SkillEffectHandler
         prefab.transform.SetParent(player.transform);
         prefab.transform.localPosition = Vector3.zero;
 
-        // Fx_YukiEffect, Fx_YukiFlower, Fx_YukiR µî ¾î¶² Å¸ÀÔÀÌ¾îµµ ÀÚµ¿À¸·Î Ã£À½
+        // Fx_YukiEffect, Fx_YukiFlower, Fx_YukiR ï¿½ï¿½ ï¿½î¶² Å¸ï¿½ï¿½ï¿½Ì¾îµµ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½
         IEffect effectComp = prefab.GetComponentInChildren<IEffect>();
 
         if (effectComp == null) 
@@ -67,7 +67,7 @@ public class SkillEffectHandler
         prefab.transform.SetParent(bone);
 
 
-        // Fx_YukiEffect, Fx_YukiFlower, Fx_YukiR µî ¾î¶² Å¸ÀÔÀÌ¾îµµ ÀÚµ¿À¸·Î Ã£À½
+        // Fx_YukiEffect, Fx_YukiFlower, Fx_YukiR ï¿½ï¿½ ï¿½î¶² Å¸ï¿½ï¿½ï¿½Ì¾îµµ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½
         IEffect effectComp = prefab.GetComponentInChildren<IEffect>();
 
         if (effectComp == null)

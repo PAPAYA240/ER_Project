@@ -85,13 +85,18 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         _comboResetDeadlineUtc = default;
     }
 
+
     public virtual void Execute(Player player)
     {
         if (player == null || player.Room == null || !player.CanAttack())
             return;
 
+        //*몬스터 공격 조건 추가
         GameObject target = player.FindTarget(_targetId);
-        if (target == null || target.State == CreatureState.Dead || target.IsUntargetable())
+       
+
+        if (target == null || target.State == CreatureState.Dead || target.IsUntargetable() 
+            || SameMonsterTeam(target , player))
         {
             // 공격 중이 아니고 pending 타겟이 있으면 교체 후 재시도
             if (!_swingActive && _pendingTargetId.HasValue)
@@ -280,6 +285,15 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
             return new Rozzi_AttackState(targetId, chaseAllowed);
 
         return new Player_AttackState(targetId, chaseAllowed);
+    }
+    private bool SameMonsterTeam(GameObject target, Player player)
+    {
+        if (target is Monster monster)
+        {
+            if (monster.MonsterTeam == player.Team)
+                return true;
+        }
+        return false;
     }
 }
 

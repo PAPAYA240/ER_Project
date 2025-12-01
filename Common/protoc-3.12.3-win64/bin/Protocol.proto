@@ -139,7 +139,9 @@ enum MsgId {
   S_ABIGAIL_SOUND = 108;
   S_PICK_SOUND = 109;
   S_REMOVE_EFFECT = 110;
-  S_CHANGE_EXP = 111;
+  S_ROZZI_NORMAL_ATTACK = 111;
+  C_ROZZI_NORMAL_ATTACK = 112;
+  S_CHANGE_EXP = 113;
 }
 
 enum CombatState{
@@ -183,6 +185,7 @@ enum EnvType{
    ACCBOUNDARY_SPAWNPOINT = 3;
    BARRIER_SPAWNPOINT = 4;
    BEACON = 5;
+   BUSH = 6;
 }
    
 enum ProjectileType {
@@ -190,6 +193,7 @@ enum ProjectileType {
 	PROJECTILE_BULLET = 1;
 	PROJECTILE_BALL = 2;
 	PROJECTILE_ROZZI_R = 3;
+	PROJECTILE_ROZZI_NORMAL_ATTACK = 4;
 }
 enum SkillType{
 	SKILL_NONE = 0;
@@ -544,6 +548,8 @@ message S_Fx{
 	PositionInfo targetPosition = 7; // type = Target 시, 타게팅 위치
 	RotationInfo targetRotation = 8; // type = Target 시, 타게팅 회전
 	string type = 9; // Caster, HitTarget, Select 중 하나, 기본은 Caster
+	bool useTargetTransform = 10;
+	int32 targetId = 11;
 }
 
 message C_Anim{
@@ -747,7 +753,11 @@ message PositionInfo{
 	float posY = 3;
 	float posZ = 4;
 }
-
+message ScaledInfo{
+	float scaledX = 1;
+	float scaledY= 2;
+	float scaledZ= 3;
+}
 message RotationInfo{
 	float qx = 1;
     float qy = 2;
@@ -784,6 +794,7 @@ message PlayerInfo {
 
 message MonsterInfo {
     MonsterType monsterType = 1;
+	 int32 team = 2;
 }
 
 message ProjectileInfo {
@@ -827,6 +838,7 @@ message ObjectInfo{
         EnvInfo env = 8;
 	ProjectileInfo projectile = 9;
     	}
+	ScaledInfo scaleInfo = 10;
 }
 
 message PickScenePlayerInfo{
@@ -1228,6 +1240,21 @@ message S_PickSound{
 message S_RemoveEffect{
 	int32 objectId = 1;
 	int32 keyCode = 2; 
+	bool isCaster = 3;
+	string fxName = 4;
+}
+
+message S_RozziNormalAttack {
+	int32 objectId = 1;
+	int32 targetId = 2;
+	bool isLWeapon = 3;
+	float speed = 4;
+}
+
+message C_RozziNormalAttack {
+	int32 objectId = 1;
+	int32 targetId = 2;
+	bool hasHit = 3;
 }
 
 message S_ChangeExp{

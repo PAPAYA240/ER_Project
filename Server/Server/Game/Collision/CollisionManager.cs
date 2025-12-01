@@ -281,7 +281,14 @@ namespace Server.Game
                             {
                                 if (hitbox.KeyCode == KeyCode.R)
                                 {
-                                    pj.OnProjectileHit(hitPlayers.First());
+                                    foreach(var player in hitPlayers)
+                                    {
+                                        if(player.Id != ownerId)
+                                        {
+                                            pj.OnProjectileHit(player);
+                                            break;
+                                        }
+                                    }                               
                                     continue;
                                 }
                                 else if(pj.Target != null && hitPlayers.Contains(pj.Target as Player))                                   
@@ -307,7 +314,7 @@ namespace Server.Game
                 HashSet<Hitbox> hitboxes = nestedKvp.Value;
                 if (hitboxes.Count == 0)
                     continue;
-
+              
                 foreach (var hitbox in hitboxes)
                 {
                     if (CurTick < hitbox.StartTick || CurTick > hitbox.EndTick)
@@ -325,6 +332,7 @@ namespace Server.Game
             }
         }
 
+      
         void HandleCollision<T>(Hitbox hitbox, IDictionary<int, T> targets, List<T> hitTargets, Dictionary<int, Dictionary<int, float>> damageDict) where T : GameObject, new()
         {
             foreach (var targetKvp in targets)
@@ -332,9 +340,6 @@ namespace Server.Game
                 T target = targetKvp.Value;
 
                 if (hitbox.IsUsed)
-                    continue;
-
-                if (hitbox.HitObjs.ContainsKey(targetKvp.Key))
                     continue;
 
                 if (!CheckCollision(hitbox, target))
@@ -378,7 +383,7 @@ namespace Server.Game
                      hitbox.IsUsed = true;
             }
 
-            CheckAndApplyMonsterHit(hitbox, hitTargets);
+            //CheckAndApplyMonsterHit(hitbox, hitTargets);
 
             if (hitbox.Omnivamp)
                 hitbox.AddDamage(totalDmg);
@@ -900,6 +905,7 @@ namespace Server.Game
                 hitbox = new Hitbox
                 {
                     Creature = creature,
+                    Team = creature.MonsterTeam,
                     PosX = creature.PosInfo.PosX,
                     PosZ = creature.PosInfo.PosZ,
                     ChargeRatio = chargeRatio,
@@ -1084,9 +1090,9 @@ namespace Server.Game
                 {
                     foreach (T target in hitTargets)
                     {
-                        Player p = target as Player;
-                        if (p != null)
-                            monster.OnTargetHit(p);
+                       // Player p = target as Player;
+                       // if (p != null)
+                       //     monster.OnTargetHit(p);
                     }
                 }
             }

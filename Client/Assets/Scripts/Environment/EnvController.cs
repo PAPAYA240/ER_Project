@@ -3,17 +3,13 @@ using UnityEngine;
 
 public class EnvController : BaseController
 {
-    [SerializeField] public EnvType _envType;
+    [SerializeField] public EnvType Type;
 
     // Components
     protected Animator animator;
 
     // State
     protected bool _isActive = false;
-    protected bool _isCollecting = false;
-
-    // Network
-    private int _lastRequestObjectId = -1;
 
     protected override void Init()
     {
@@ -23,15 +19,17 @@ public class EnvController : BaseController
 
     #region Interaction
     protected GameObject _triggerCreature = null;
-    protected void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
         if (!IsValidTrigger(other))
             return;
 
         _triggerCreature = other.gameObject;
-        _isCollecting = true;
-        TryHandleInteraction();
         RequestCollect(other.gameObject.GetComponent<PlayerController>());
+    }
+    
+    protected virtual void OnTriggerExit(Collider other)
+    {
     }
 
     private bool IsValidTrigger(Collider other)
@@ -40,44 +38,37 @@ public class EnvController : BaseController
         if (pc == null)
             return false;
 
-        if (!_isActive || _isCollecting)
+        if (!_isActive)
             return false;
+
         return true;
     }
 
-    protected virtual void TryHandleInteraction()
+    protected virtual void TryHandleInteraction(PlayerController target)
     {
-        _isCollecting = false;
     }
 
     #endregion
 
     #region Network
 
-    private void RequestCollect(PlayerController player)
+    protected void RequestCollect(PlayerController player)
     {
         if (player == null)
             return;
 
-        _lastRequestObjectId = Id;
-
         C_EnvRequest request = new C_EnvRequest
         {
             ObjectId = Id,
-            EnvType = _envType,
+            EnvType = Type,
             TargetId = player.Id,
         };
         Managers.Network.Send(request);
     }
 
-    public void OnInteractionAuthorized()
+    public void OnInteractionAuthorized(PlayerController target)
     {
-        if (_lastRequestObjectId == Id)
-        {
-            _lastRequestObjectId = -1;
-            return;
-        }
-        TryHandleInteraction();
+        TryHandleInteraction(target);
     }
 
     #endregion

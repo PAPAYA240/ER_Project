@@ -320,6 +320,12 @@ public class PlayerInputController : MonoBehaviour
 
     public C_Rest GetRestCommand()
     {
+        if (_player.CombatStat == CombatState.Combat)
+        {
+            Debug.Log("전투모드");
+            return null;
+        }
+
         if (_player.IsRest == false && _player.State != CreatureState.Rest)
         {
             if (Input.GetKeyDown(KeyCode.X))
@@ -328,10 +334,11 @@ public class PlayerInputController : MonoBehaviour
                 return new C_Rest() { IsRest = _player.IsRest };
             }
         }
-        else
+        else if (_player.IsRest == true  && _player.State == CreatureState.Rest)
         {
             if (Input.GetKeyDown(KeyCode.X) || Input.GetMouseButtonDown(1))
             {
+                Debug.Log("휴식 해제");
                 _player.IsRest = false;
                 return new C_Rest() { IsRest = _player.IsRest };
             }

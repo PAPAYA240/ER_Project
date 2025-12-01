@@ -391,9 +391,12 @@ class PacketHandler
         if (!IsSceneReady("Game", () => S_FxHandler(session, packet))) return;
         S_Fx fxPacket = packet as S_Fx;
         GameObject go = Managers.Object.FindById(fxPacket.ObjectId);
-        if (go == null)     return;
+        if (go == null)     
+            return;
+
         PlayerController pc = go.GetComponent<PlayerController>();
-        if (pc == null)      return;
+        if (pc == null)      
+            return;
 
         Vector3 mousePos = new Vector3(fxPacket.MousePosX, 0, fxPacket.MousePosZ);
         Vector3 targetPos = fxPacket.TargetPosition.ToVector();
@@ -609,12 +612,17 @@ class PacketHandler
         GameObject go = Managers.Object.FindById(revPacket.ObjectId);
         if (go == null)
             return;
-
         EnvController ec = go.GetComponent<EnvController>();
-        if (ec == null)
+
+        GameObject tc = Managers.Object.FindById(revPacket.TargetId);
+        if (tc == null)
             return;
 
-        ec.OnInteractionAuthorized();
+        PlayerController pc = tc.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
+
+        ec.OnInteractionAuthorized(pc);
     }
     
     public static void S_ChangeInventoryHandler(PacketSession session, IMessage packet)
@@ -636,10 +644,6 @@ class PacketHandler
         // *Sound
         S_AttackInfo atkInfoPacket = packet as S_AttackInfo;
 
-        if ("MsDroneAttack1" == atkInfoPacket.AttackType)
-        {
-            int ac = 3;
-        }
         BaseController bc = Managers.Object.FindById(atkInfoPacket.AttackerId)?.GetComponentInChildren<BaseController>();
         if (bc == null)
             return;
@@ -1004,7 +1008,15 @@ class PacketHandler
         if (!IsSceneReady("Game", () => S_CombatModeHandler(session, packet))) return;
         S_CombatMode combatModePkt = packet as S_CombatMode;
 
-        switch (combatModePkt.CombatMode)
+        GameObject go = Managers.Object.FindById(combatModePkt.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null)
+            return;
+
+        switch (pc.CombatStat = combatModePkt.CombatMode)
         {
             case CombatState.Combat:
                 Managers.Object.MyPlayer.UI.PlayerInterface.ActivateCombatImg(true);
@@ -1276,6 +1288,24 @@ class PacketHandler
         if (pickScene == null) return;
 
         pickScene.PlaySelectedSound(pickSoundPkt.CharType);
+    }
+
+    public static void S_RozziNormalAttackHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_RozziNormalAttackHandler(session, packet)))
+            return;
+
+        S_RozziNormalAttack attackPacket = packet as S_RozziNormalAttack;
+
+        var projectile = Managers.Object.FindById(attackPacket.ObjectId);
+        if (projectile == null)
+            return;
+
+        Projectile_Rozzi_NormalAttack pr = projectile.GetComponentInChildren<Projectile_Rozzi_NormalAttack>();
+        if (pr == null)
+            return;
+
+        pr.Init(attackPacket);
     }
 
     public static void S_ChangeExpHandler(PacketSession session, IMessage packet)

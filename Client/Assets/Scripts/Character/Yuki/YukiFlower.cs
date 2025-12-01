@@ -31,7 +31,7 @@ public class YukiFlower : MonoBehaviour, IEffect
     {
         gameObject.SetActive(true);
 
-        // Áßº¹ Àç»ý ¹æÁö
+        // ï¿½ßºï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (_coAnimRoutine != null)
             StopCoroutine(_coAnimRoutine);
 
