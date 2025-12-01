@@ -14,8 +14,8 @@ public class Projectile_Rozzi_NormalAttack : Projectile
     private int _targetId = 0;
 
     private bool _isLWeapon = true;
-    private string _LWeaponBone = "WP_Rozzi_S002_L_Pistol";
-    private string _RWeaponBone = "WP_Rozzi_S002_R_Pistol";
+    private string _LWeaponBone = "Muzzle_L";
+    private string _RWeaponBone = "Muzzle_R";
 
     private float _speed = 1f;
     private float _hitRadius = 0.5f;
@@ -61,15 +61,18 @@ public class Projectile_Rozzi_NormalAttack : Projectile
         Vector3 finPos = transform.position;
         Quaternion finRot = transform.rotation;
 
+        Vector3 targetPos = target.transform.position;
+        targetPos.y = transform.position.y;
+
         // Position
         _elapsed += _speed * Time.deltaTime * _deltaScale;
         if (_elapsed >= _maxTravelTime)
-            finPos = target.transform.position;
+            finPos = targetPos;
         else
-            finPos = Vector3.Lerp(transform.position, target.transform.position, _elapsed / _maxTravelTime);
+            finPos = Vector3.Lerp(transform.position, targetPos, _elapsed / _maxTravelTime);
 
         // Rotation
-        Vector3 dir = target.transform.position - transform.position;
+        Vector3 dir = targetPos - transform.position;
         finRot = Quaternion.LookRotation(dir, Vector3.up);
 
         // Sync
@@ -91,7 +94,6 @@ public class Projectile_Rozzi_NormalAttack : Projectile
         if (boneTransform == null)
             return;
 
-        transform.position = boneTransform.position;
         CellPos = boneTransform.position;
         SyncPos();  
     }

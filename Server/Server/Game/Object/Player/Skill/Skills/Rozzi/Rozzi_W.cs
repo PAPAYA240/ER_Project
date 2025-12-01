@@ -26,7 +26,7 @@ public sealed class Rozzi_W : RozziSkillHandler
         SendSkillConfirmPacket(p);
 
         p.Room.AddStatusEffect(p, p, _keyCode, null); // 스킬 사용시 이속 버프
-        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode, sendLookatMousePacket: true);
+        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode, sendLookatMousePacket: false);
     }
 
     public override void OnCollision<T>(Player p, List<T> targets, GameObject.StatusEffect effect)
@@ -37,12 +37,12 @@ public sealed class Rozzi_W : RozziSkillHandler
             if (go == null)
                 return;
 
-            p.SendSkillEffect(new Vector2(go.Position.X, go.Position.Z), keyCode: _keyCode, sendLookatMousePacket: true,
+            p.SendSkillEffect(new Vector2(go.Position.X, go.Position.Z), keyCode: _keyCode, sendLookatMousePacket: false,
                 targetPos: default, targetRot: default,
                 type: "Select", "FX_BI_Rozzi_Skill02_Debuff",
                 useTargetTransform: true, targetId: go.Id);
 
-            p.SendSkillEffect(new Vector2(go.Position.X, go.Position.Z), keyCode: _keyCode, sendLookatMousePacket: true,
+            p.SendSkillEffect(new Vector2(go.Position.X, go.Position.Z), keyCode: _keyCode, sendLookatMousePacket: false,
                 targetPos: default, targetRot: default,
                 type: "Select", "FX_BI_Rozzi_Skill02_Hit",
                 useTargetTransform: true, targetId: go.Id);

@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: FX_Rozzi_R_Set_Character_Count_Pattern_Gold
-  m_Shader: {fileID: -6465566751694194690, guid: a9de55aad5a40374c86c6960d242816e,
+  m_Name: FX_Rozzi_R_Upper_Explore_Bomb
+  m_Shader: {fileID: -6465566751694194690, guid: f16f65353090a4f49922e279f05df6d3,
     type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -63,11 +63,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 1e255d8e208049b4fa28fa88a20b0c78, type: 3}
+        m_Texture: {fileID: 2800000, guid: e99f0ef8233988e469af5b8047c1caee, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 1e255d8e208049b4fa28fa88a20b0c78, type: 3}
+        m_Texture: {fileID: 2800000, guid: bb377ac92b802794cbe3398262ccc776, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -134,14 +134,12 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _HighlightIntensity: 3
     - _Keyword0: 1
     - _LightingEnabled: 0
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
-    - _Progress: 0
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1

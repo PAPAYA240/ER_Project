@@ -15,11 +15,11 @@ public class Projectile_Rozzi_NormalAttack : Projectile
 {
     private KeyCode _keyCode = KeyCode.F3;
     
-    public void SendRozziNormalAttackPacket(Player owner, int targetId, int projectileId, bool isLWeapon, float speed)
+    public void SendRozziNormalAttackPacket(Player owner, int targetId, bool isLWeapon, float speed)
     {
         SendAddPacket(owner, targetId, isLWeapon, speed);
 
-        SendFxPacket(owner, projectileId);
+        SendFxPacket(owner, isLWeapon);
     }
 
     public override void Init()
@@ -71,12 +71,11 @@ public class Projectile_Rozzi_NormalAttack : Projectile
         Console.WriteLine($"@ Send Add Packet : {Id}");
     }
 
-    private void SendFxPacket(Player owner, int projectileId)
+    private void SendFxPacket(Player owner, bool isLWeapon)
     {
-        owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: _keyCode, sendLookatMousePacket: true,
+        owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: _keyCode, sendLookatMousePacket: false,
                 targetPos: default, targetRot: default,
-                type: "Select", "FX_BI_Rozzi_NormalAttack_Shot",
-                useTargetTransform: true, targetId: projectileId);
+                type: "Select", name: (isLWeapon ? "FX_BI_Rozzi_NormalAttack_Shot_L" : "FX_BI_Rozzi_NormalAttack_Shot_R"));
     }
 }
 

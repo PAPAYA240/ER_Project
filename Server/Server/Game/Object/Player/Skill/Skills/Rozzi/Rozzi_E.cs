@@ -55,7 +55,7 @@ public sealed class Rozzi_E : RozziSkillHandler
 
         SendSkillConfirmPacket(p);
         p.Room.AddStatusEffect(p, p, _keyCode, null); // 지정불가
-        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode, sendLookatMousePacket: true);
+        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode, sendLookatMousePacket: false);
     }
 
     public override void OnCollision<T>(Player p, List<T> targets, GameObject.StatusEffect effect)
@@ -66,17 +66,17 @@ public sealed class Rozzi_E : RozziSkillHandler
             if (go == null)
                 return;
 
-            p.SendSkillEffect(new Vector2(go.Position.X, go.Position.Z), keyCode: _keyCode, sendLookatMousePacket: true,
+            p.SendSkillEffect(new Vector2(go.Position.X, go.Position.Z), keyCode: _keyCode, sendLookatMousePacket: false,
                 targetPos: default, targetRot: default,
                 type: "Select", "FX_BI_Rozzi_Skill03_Ground",
                 useTargetTransform: true, targetId: go.Id);
 
-            p.SendSkillEffect(new Vector2(go.Position.X, go.Position.Z), keyCode: _keyCode, sendLookatMousePacket: true,
+            p.SendSkillEffect(new Vector2(go.Position.X, go.Position.Z), keyCode: _keyCode, sendLookatMousePacket: false,
                 targetPos: default, targetRot: default,
                 type: "Select", "FX_BI_Rozzi_Skill03_Fire",
                 useTargetTransform: true, targetId: go.Id);
 
-            p.SendSkillEffect(new Vector2(go.Position.X, go.Position.Z), keyCode: _keyCode, sendLookatMousePacket: true,
+            p.SendSkillEffect(new Vector2(go.Position.X, go.Position.Z), keyCode: _keyCode, sendLookatMousePacket: false,
                 targetPos: default, targetRot: default,
                 type: "Select", "FX_BI_Rozzi_Skill03_Hit",
                 useTargetTransform: true, targetId: go.Id);
