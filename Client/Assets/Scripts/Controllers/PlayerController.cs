@@ -213,7 +213,14 @@ public class PlayerController : CreatureController
 
     #endregion
 
-   
+    CombatState _combatMode;
+    public virtual CombatState CombatStat
+    {
+        get { return _combatMode; }
+        set { _combatMode = value; }
+    }
+
+
     public bool IsKeyInput
     {
         get { return _isKeyInput; }

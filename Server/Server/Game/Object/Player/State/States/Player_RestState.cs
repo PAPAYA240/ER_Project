@@ -31,6 +31,7 @@ public class Player_RestState : IPlayerState
         }
         else
         {
+            Console.WriteLine("휴식 끝");
             _animName = "REST_END";
         }
 
@@ -41,22 +42,6 @@ public class Player_RestState : IPlayerState
 
     public void Execute(Player player)
     {
-        if (player.IsHit == true)
-        {
-            if (_animName == "REST_END")
-                return;
-
-            player.IsHit = false;
-
-            S_Rest restPkt = new S_Rest();
-            restPkt.ObjectId = player.Id;
-            restPkt.IsRest = false;
-            player.SendRestPacket(restPkt);
-
-            player.ChangeState(new Player_RestState(false));
-            return;
-        }
-
         if (_isRest == false)
         {
             // 현재 시각에서 경과 시간 계산
@@ -66,6 +51,18 @@ public class Player_RestState : IPlayerState
             {
                 player.ChangeState(new Player_IdleState());
             }
+        }
+
+        else if (player.IsHit == true)
+        {
+            S_Rest restPkt = new S_Rest();
+            restPkt.ObjectId = player.Id;
+            restPkt.IsRest = false;
+            player.SendRestPacket(restPkt);
+
+            Console.WriteLine("맞아서 휴식 풀림 진입");
+            player.ChangeState(new Player_RestState(false));
+            return;
         }
     }
 
