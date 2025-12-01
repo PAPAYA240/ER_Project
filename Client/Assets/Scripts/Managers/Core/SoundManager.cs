@@ -76,15 +76,17 @@ public class SoundManager
 
         AudioSource audioSource = go.AddComponent<AudioSource>();
         audioSource.volume = volume;
-        audioSource.spatialBlend = 0.05f;
+        audioSource.spatialBlend = 1f;
 
         audioSource.rolloffMode = AudioRolloffMode.Logarithmic; // 감쇠 모드
         audioSource.minDistance = 2f;            // 이 거리까지는 최대 음량
         audioSource.maxDistance = 20f;           // 이 거리까지는 서서히 작아짐
 
         audioSource.dopplerLevel = 0f;           // 도플러 효과 없음
-        audioSource.spread = 180f;               // 최대 넓이로 스테레오 유지
-        audioSource.panStereo = 0f;              // 중앙 고정
+        audioSource.spread = 0;               // 최대 넓이로 스테레오 유지
+
+        audioSource.spatialize = true;           // 3D 공간화 활성화
+        audioSource.spatializePostEffects = true; // 3D 효과 강화
 
         audioSource.playOnAwake = false;
         audioSource.loop = false;

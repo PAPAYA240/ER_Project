@@ -974,20 +974,36 @@ namespace Server.Game
         #endregion
 
         #region Level
+        private readonly object _lock = new object();
+
+        bool CanLevelUp()
+        {
+            return DataManager.ExpDict.ContainsKey(Stat.Level) &&
+                   Stat.Exp >= DataManager.ExpDict[Stat.Level];
+        }
+
         public int CheckLevelUp()
         {
-            int levelUp = 0;
-            while (DataManager.ExpDict.ContainsKey(Stat.Level) &&
-                Stat.Exp >= DataManager.ExpDict[Stat.Level])
-            {
-                Stat.Exp -= DataManager.ExpDict[Stat.Level];
-                Stat.Level++;
-                StatInfo statInfo = DataManager.StatGrowthDict[Info.Player.CharType];
-                Stat.AddStat(statInfo);
-                levelUp++;
-            }
+            if (!CanLevelUp())
+                return 0;
 
-            return levelUp;
+            lock (_lock)
+            {
+                if (!CanLevelUp())
+                    return 0;
+
+                int levelUp = 0;
+                while (DataManager.ExpDict.ContainsKey(Stat.Level) &&
+                    Stat.Exp >= DataManager.ExpDict[Stat.Level])
+                {
+                    Stat.Exp -= DataManager.ExpDict[Stat.Level];
+                    Stat.Level++;
+                    StatInfo statInfo = DataManager.StatGrowthDict[Info.Player.CharType];
+                    Stat.AddStat(statInfo);
+                    levelUp++;
+                }
+                return levelUp;
+            }
         }
         #endregion
 

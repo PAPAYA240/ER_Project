@@ -187,16 +187,6 @@ namespace Server.Game
             }
 
             foreach (Player player in _players.Values)
-            {
-                List<int> visibleObjs = new List<int>();
-                AddVisibleObjects(visibleObjs, _players, player);
-                AddVisibleObjects(visibleObjs, _monsters, player);
-                AddVisibleObjects(visibleObjs, _projectiles, player);
-                AddVisibleObjects(visibleObjs, _envs, player);
-                player.SendVisibleObjsPkt(visibleObjs);
-            }
-
-            foreach (Player player in _players.Values)
                 player.RemoveExpiredStatusEffects();
 
             foreach (var monster in _monsters.Values)
@@ -211,7 +201,7 @@ namespace Server.Game
 
             _beaconManager.Update(this);
 
-            BroadcastVisibleObjs();
+            SendVisibleObjsPkts();
             CheckLastPing();
         }
        
@@ -644,7 +634,7 @@ namespace Server.Game
             return result;
         }
 
-        void BroadcastVisibleObjs()
+        void SendVisibleObjsPkts()
         {
             foreach (Player player in _players.Values)
             {
