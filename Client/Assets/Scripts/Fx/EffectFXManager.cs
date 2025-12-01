@@ -97,8 +97,6 @@ public class EffectFXManager : MonoBehaviour
             SettingLayer(fxObject, fxLayer);
             StartEffectLogic(ownerId, fxObject, data, copyTransform);
             effectList.Add(fxObject);
-
-            Debug.Log($"FX : {data.prefabName}, Pos : {spawnPos}, Rot : {spawnRot}, Transform : {casterTransform}");
         }
 
         // 진행 중인 이펙트 리스트
