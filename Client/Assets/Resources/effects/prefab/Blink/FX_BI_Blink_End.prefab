@@ -115,7 +115,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 0.48627448, g: 0.6452151, b: 1, a: 0.6509804}
-      maxColor: {r: 0, g: 0, b: 0, a: 0.0627451}
+      maxColor: {r: 0, g: 0, b: 0, a: 0.25490198}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -11711,7 +11711,6 @@ GameObject:
   - component: {fileID: 4509386292366887}
   - component: {fileID: 198254799778372850}
   - component: {fileID: 199032755774232280}
-  - component: {fileID: 114696349097021582}
   m_Layer: 15
   m_Name: particle_2
   m_TagString: Untagged
@@ -14084,19 +14083,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &114696349097021582
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1607816249204495}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59c3ad779e6d89127faf311a41099091, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  offset: -3000000
 --- !u!1 &1678575723874217
 GameObject:
   m_ObjectHideFlags: 0
@@ -18854,7 +18840,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 0.48627448, g: 0.6452151, b: 1, a: 0.6509804}
-      maxColor: {r: 0, g: 0, b: 0, a: 0.03529412}
+      maxColor: {r: 0, g: 0, b: 0, a: 0.19215687}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}

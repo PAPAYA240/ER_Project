@@ -2735,6 +2735,7 @@ GameObject:
   - component: {fileID: 7715207981999100302}
   - component: {fileID: 8649169367258116997}
   - component: {fileID: 5054191823484502314}
+  - component: {fileID: 4396116257158448980}
   m_Layer: 3
   m_Name: Rozzi
   m_TagString: Untagged
@@ -2818,6 +2819,18 @@ MonoBehaviour:
   Sound: {fileID: 0}
   HidingInBush: 0
   xRayIgnoreStencilID: 100
+--- !u!114 &4396116257158448980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4507760152863837473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 176bdf16fd35b524bb656781b4f2a89f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4552065746279300795
 GameObject:
   m_ObjectHideFlags: 0

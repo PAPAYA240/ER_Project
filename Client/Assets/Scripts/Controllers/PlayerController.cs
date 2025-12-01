@@ -438,7 +438,7 @@ public class PlayerController : CreatureController
         if (isUpperBodySkill)
         {
             int upperLayer = _animator.GetLayerIndex("UpperBody");
-            _animator.CrossFadeInFixedTime(animInfo.Name, 0.05f, upperLayer);
+            _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio, upperLayer);
             return;
         }
 

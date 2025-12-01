@@ -160,18 +160,18 @@ public class Projectile_Rozzi_R : Projectile
         // e.g. target.Room.Vision.Share(Owner, target);
 
         // FX
-        _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: true,
+        _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: false,
                 targetPos: default, targetRot: default,
                 type: "Select", "FX_BI_Rozzi_Skill04_Set_Character",
                 useTargetTransform: true, targetId: target.Id);
-        _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: true,
+        _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: false,
                 targetPos: default, targetRot: default,
                 type: "Select", "FX_BI_Rozzi_Skill04_Set_Character_Count",
                 useTargetTransform: true, targetId: target.Id);
-        _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: true,
+        _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: false,
                 targetPos: default, targetRot: default,
                 type: "Select", "FX_BI_Rozzi_Skill04_Set_Character_Hit",
-                useTargetTransform: true, targetId: target.Id);
+                useTargetTransform: true, targetId: Id);
 
         // 위치를 타겟에게 붙임
         Info.PosInfo.SetPosInfoFromVector3(target.Position);
@@ -191,7 +191,7 @@ public class Projectile_Rozzi_R : Projectile
 
         // 더 이상 이동하지 않고 해당 위치에 고정
         // FX
-        _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: true,
+        _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: false,
                 targetPos: default, targetRot: default,
                 type: "Select", "FX_BI_Rozzi_Skill04_Set_Character_Count",
                 useTargetTransform: true, targetId: Id);
@@ -273,7 +273,7 @@ public class Projectile_Rozzi_R : Projectile
         // 2) 조기 폭발 추가 효과   
         if (early)
         {
-            _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: true,
+            _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: false,
                 targetPos: default, targetRot: default,
                 type: "Select", "FX_BI_Rozzi_Skill04_Buff");
 
@@ -284,7 +284,7 @@ public class Projectile_Rozzi_R : Projectile
             ApplyEarlyExplosionEffects(mainTarget);
 
         // 폭발 FX 패킷 전송
-        _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: true,
+        _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: false,
                 targetPos: default, targetRot: default,
                 type: "Select", "FX_BI_Rozzi_Skill04_Explore",
                 useTargetTransform: true, targetId: Id);

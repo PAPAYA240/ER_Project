@@ -47,6 +47,8 @@ public class Projectile_Rozzi_NormalAttack : Projectile
         _speed = packet.Speed;
 
         SetStartPosition();
+
+        SkillSoundRouter.Play(Owner, KeyCode.F3, SkillSoundEvent.Cast, transform.position);
     }
 
     private void Update()
@@ -106,6 +108,8 @@ public class Projectile_Rozzi_NormalAttack : Projectile
 
         gameObject.SetActive(false);
         TrySendHitPacket(hasHit);
+
+        SkillSoundRouter.Play(Owner, KeyCode.F3, SkillSoundEvent.Hit, transform.position);
     }
 
     private void TrySendHitPacket(bool hasHit)

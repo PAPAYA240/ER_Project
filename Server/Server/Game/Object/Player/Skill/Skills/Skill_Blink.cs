@@ -27,6 +27,8 @@ public sealed class Skill_Blink : SkillHandlerBase
         Vector3 targetPos = p.Position + dir * _blinkDistance;
 
         SendSkillCollisionRequestPacket(p, CollisionType.Pass, p.Position, targetPos);
+
+        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode, sendLookatMousePacket: false);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

@@ -50,7 +50,7 @@ public sealed class Rozzi_D : SkillHandlerBase
         p.Room.AddStatusEffect(p, p, _keyCode, null);   // 이속 증가
 
         SendSkillConfirmPacket(p);
-        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode, sendLookatMousePacket: true);
+        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode, sendLookatMousePacket: false);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
