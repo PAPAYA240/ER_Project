@@ -267,28 +267,28 @@ public class EffectFXManager : MonoBehaviour
                 currentlyPlayingEffects.Remove(ownerId);
         }
     }
-    //public void RemoveEffect(S_RemoveEffect packet)
-    //{
-    //    GameObject go = Managers.Object.FindById(packet.ObjectId);
-    //    if (go == null) return;
+    public void RemoveEffect(S_RemoveEffect packet)
+    {
+        GameObject go = Managers.Object.FindById(packet.ObjectId);
+        if (go == null) return;
 
-    //    PlayerController pc = go.GetComponentInChildren<PlayerController>();
-    //    if (pc == null) return;
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null) return;
 
-    //    SkillEffectList myEffectList = DataManager.PlayerFxDict[pc.ObjInfo.Player.CharType][CreatureState.Skill][(KeyCode)packet.KeyCode];
-    //    List<EffectData> dataList = new List<EffectData>();
+        SkillEffectList myEffectList = DataManager.PlayerFxDict[pc.ObjInfo.Player.CharType][CreatureState.Skill][(KeyCode)packet.KeyCode];
+        List<EffectData> dataList = new List<EffectData>();
 
-    //    if (currentlyPlayingEffects.TryGetValue(packet.ObjectId, out List<GameObject> activeFxList))
-    //    {
-    //        foreach (EffectData data in myEffectList.Caster) 
-    //        {
-    //            GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+        if (currentlyPlayingEffects.TryGetValue(packet.ObjectId, out List<GameObject> activeFxList))
+        {
+            foreach (EffectData data in myEffectList.Caster) 
+            {
+                GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
 
-    //            if (fxObjectToRemove != null)
-    //                RemoveEffect(packet.ObjectId, fxObjectToRemove);
-    //        }
-    //    }
-    //}
+                if (fxObjectToRemove != null)
+                    RemoveEffect(packet.ObjectId, fxObjectToRemove);
+            }
+        }
+    }
     private void LoadFxPrefabs()
     {
         GameObject[] loadedPrefabs = Resources.LoadAll<GameObject>("effects/prefab");

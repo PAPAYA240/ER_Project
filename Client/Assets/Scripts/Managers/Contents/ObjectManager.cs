@@ -175,6 +175,9 @@ public class ObjectManager
         _objects.Add(info.ObjectId, go);
 
         EnvController ec = go.GetComponent<EnvController>();
+        if (ec == null)
+            return;
+
         ec.ObjInfo = info;
         ec.Id = info.ObjectId;
         ec.PosInfo = info.PosInfo;
