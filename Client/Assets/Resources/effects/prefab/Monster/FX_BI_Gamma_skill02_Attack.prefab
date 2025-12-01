@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4511779879945626}
   - component: {fileID: 198129938973833534}
   - component: {fileID: 199624143814624983}
-  m_Layer: 15
+  m_Layer: 7
   m_Name: floor_pattern
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,7 +115,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.8117647, g: 0.23921567, b: 0.33386424, a: 1}
+      maxColor: {r: 0.83137256, g: 0.4862745, b: 0.64705884, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -179,7 +179,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 4
+      scalar: 3.22
       minScalar: 0.5
       maxCurve:
         serializedVersion: 2
@@ -196,7 +196,7 @@ ParticleSystem:
     startSizeY:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 8
+      scalar: 14.77
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -2270,10 +2270,12 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1f08a5b8797171d4e825262148dcc9a0, type: 2}
   - {fileID: 2100000, guid: 1f08a5b8797171d4e825262148dcc9a0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -2295,7 +2297,7 @@ ParticleSystemRenderer:
   m_SortingLayerID: -54616529
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_RenderMode: 4
+  m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
   m_MinParticleSize: 0
@@ -2338,7 +2340,7 @@ GameObject:
   - component: {fileID: 4270605125347406}
   - component: {fileID: 198094004820254170}
   - component: {fileID: 199490804745915209}
-  m_Layer: 15
+  m_Layer: 7
   m_Name: dust_up
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4584,10 +4586,12 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ae870583de9c8a545b480e703f0d1f88, type: 2}
   - {fileID: 2100000, guid: ae870583de9c8a545b480e703f0d1f88, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -4652,7 +4656,7 @@ GameObject:
   - component: {fileID: 4920636079300105}
   - component: {fileID: 198994037357143208}
   - component: {fileID: 199803413011545104}
-  m_Layer: 15
+  m_Layer: 7
   m_Name: floor_line
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6911,10 +6915,12 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 93ec183645573b149950f391eb537e53, type: 2}
   - {fileID: 2100000, guid: 93ec183645573b149950f391eb537e53, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -6979,7 +6985,7 @@ GameObject:
   - component: {fileID: 4225774199708469}
   - component: {fileID: 198583748390646571}
   - component: {fileID: 199466954842636139}
-  m_Layer: 15
+  m_Layer: 7
   m_Name: floor_pattern_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9256,10 +9262,12 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c2666ea13ebba3c43b4dd8219c40a4c6, type: 2}
   - {fileID: 2100000, guid: c2666ea13ebba3c43b4dd8219c40a4c6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -9324,7 +9332,7 @@ GameObject:
   - component: {fileID: 4831356335071572}
   - component: {fileID: 198173190846143926}
   - component: {fileID: 199188474527229402}
-  m_Layer: 15
+  m_Layer: 7
   m_Name: shot_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11561,10 +11569,12 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 84a75f8f3140d6c428bd1d23dc3270f4, type: 2}
   - {fileID: 2100000, guid: 84a75f8f3140d6c428bd1d23dc3270f4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -11629,7 +11639,7 @@ GameObject:
   - component: {fileID: 4822442242321576}
   - component: {fileID: 198747085822365071}
   - component: {fileID: 199345139654037034}
-  m_Layer: 15
+  m_Layer: 7
   m_Name: emptyShell_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13889,11 +13899,13 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: f99f439c1fee51a4f91142c269cbccfc, type: 2}
-  - {fileID: 2100000, guid: a42db98bd0ef25d40b29390b97f36291, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -13959,7 +13971,7 @@ GameObject:
   - component: {fileID: 199653198286292297}
   - component: {fileID: 135741166795105369}
   - component: {fileID: 114051007714763644}
-  m_Layer: 15
+  m_Layer: 7
   m_Name: FX_BI_Gamma_skill02_Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16208,10 +16220,12 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -16310,13 +16324,13 @@ GameObject:
   - component: {fileID: 4958179882278824}
   - component: {fileID: 198038848944010510}
   - component: {fileID: 199200147074332145}
-  m_Layer: 15
+  m_Layer: 7
   m_Name: floor_bg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4958179882278824
 Transform:
   m_ObjectHideFlags: 0
@@ -18569,10 +18583,12 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3668c7fbefda16442babae3b7b639be5, type: 2}
   - {fileID: 2100000, guid: 3668c7fbefda16442babae3b7b639be5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -18637,7 +18653,7 @@ GameObject:
   - component: {fileID: 4103060039855837}
   - component: {fileID: 198156130795808453}
   - component: {fileID: 199914665779525936}
-  m_Layer: 15
+  m_Layer: 7
   m_Name: emptyShell_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20897,11 +20913,13 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: f99f439c1fee51a4f91142c269cbccfc, type: 2}
-  - {fileID: 2100000, guid: a42db98bd0ef25d40b29390b97f36291, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -20965,7 +20983,7 @@ GameObject:
   - component: {fileID: 4406132737253209}
   - component: {fileID: 198222004794604593}
   - component: {fileID: 199883864655684234}
-  m_Layer: 15
+  m_Layer: 7
   m_Name: ground_hit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23229,11 +23247,13 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c103678e661c7ea4285f9add7c738c46, type: 2}
-  - {fileID: 2100000, guid: c103678e661c7ea4285f9add7c738c46, type: 2}
+  - {fileID: 2100000, guid: 09bb6ff2780992343b1708d2ea47a5ca, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -23297,7 +23317,7 @@ GameObject:
   - component: {fileID: 4516251969546427}
   - component: {fileID: 198912993896562032}
   - component: {fileID: 199139747400883310}
-  m_Layer: 15
+  m_Layer: 7
   m_Name: floor_pattern_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25574,10 +25594,12 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c2666ea13ebba3c43b4dd8219c40a4c6, type: 2}
   - {fileID: 2100000, guid: c2666ea13ebba3c43b4dd8219c40a4c6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -25642,7 +25664,7 @@ GameObject:
   - component: {fileID: 4197461060250194}
   - component: {fileID: 198319368879688389}
   - component: {fileID: 199981154417617056}
-  m_Layer: 15
+  m_Layer: 7
   m_Name: dust
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27888,11 +27910,13 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: ae870583de9c8a545b480e703f0d1f88, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -27956,7 +27980,7 @@ GameObject:
   - component: {fileID: 4408436033140354}
   - component: {fileID: 198341187855076543}
   - component: {fileID: 199179005677790739}
-  m_Layer: 15
+  m_Layer: 7
   m_Name: shot_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30193,10 +30217,12 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 84a75f8f3140d6c428bd1d23dc3270f4, type: 2}
   - {fileID: 2100000, guid: 84a75f8f3140d6c428bd1d23dc3270f4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0

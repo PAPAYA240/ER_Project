@@ -143,6 +143,7 @@ public class ObjectManager
         mc.Stat = info.StatInfo;
         mc.Hp = info.StatInfo.MaxHp;
         mc.Type = info.Monster.MonsterType;
+        mc.MonsterTeam = info.Monster.Team;
     }
     private void AddProjectile(ObjectInfo info)
     {
@@ -178,9 +179,9 @@ public class ObjectManager
         ec.Id = info.ObjectId;
         ec.PosInfo = info.PosInfo;
         ec.Stat = info.StatInfo;
-
+        ec.ScaleInfo = info.ScaleInfo;
         if (System.Enum.TryParse(info.Name, out EnvType envEnum))
-            ec._envType = envEnum;
+            ec.Type = envEnum;
         ec.SyncPos();
     }
 
@@ -289,6 +290,13 @@ public class ObjectManager
 
             if (go.GetComponent<EnvController>() != null)
                 continue;
+
+            PlayerController controller = go.GetComponent<PlayerController>();
+            if (controller != null)
+            {
+                if (controller.HidingInBush)
+                    continue;
+            }
 
             bool isVisible = false;
 

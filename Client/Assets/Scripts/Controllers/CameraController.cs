@@ -68,12 +68,14 @@ public class CameraController : MonoBehaviour
         uiCamObj.transform.SetParent(this.transform);
         _uiCamera = uiCamObj.AddComponent<Camera>();
         _uiCamera.CopyFrom(_mainCamera);
+
         _uiCamera.clearFlags = CameraClearFlags.Nothing;
         _uiCamera.cullingMask = (1 << uiLayer);
         _uiCamera.depth = 10;
 
         var uiCamData = _uiCamera.gameObject.GetOrAddComponent<UniversalAdditionalCameraData>();
         uiCamData.renderType = CameraRenderType.Overlay;
+
         mainCamData.cameraStack.Add(_uiCamera);
     }
 

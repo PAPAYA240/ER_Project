@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
+using Lucene.Net.Index;
 
 namespace Server.Game
 {
@@ -12,6 +13,7 @@ namespace Server.Game
         public MonsterType monsterType;
         public Vector3 posInfo;
         public Quaternion rotInfo;
+        public int team;
     }
 
     public class RawMonsterList
@@ -50,6 +52,7 @@ namespace Server.Game
                     monsterType = monsterTypeName,
                     posInfo = rawData.posInfo,
                     rotInfo = rawData.rotInfo,
+                    team = rawData.team,
                 });
             }
             return cleanedList;
@@ -100,7 +103,7 @@ namespace Server.Game
 
                 MonsterType type = monsterData.monsterType;
                 monster.Info.Monster.MonsterType = type;
-
+                
                 monster.Info.Name = $"{monster.Id} {type}";
                 monster.Info.PosInfo.State = CreatureState.Appear;
 
@@ -109,7 +112,7 @@ namespace Server.Game
                 if (monsterStat != null)
                     monster.Stat.MergeFrom(monsterStat.stat);
 
-                monster.Init(monster.Info.Monster.MonsterType);
+                monster.Init(monster.Info.Monster.MonsterType, monsterData.team);
                 _room.Push(_room.EnterGame, monster, 0);
             }
         }
