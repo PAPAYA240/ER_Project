@@ -151,10 +151,9 @@ namespace Server.Game
             int skillIdx = new Random().Next(0, _skills.Count);
             MonsterSkill skillName = _skills[skillIdx];
 
-            if (DataManager.MonsterSkillDict.TryGetValue(MonsterSkill.MsGammaSkill1, out MonsterSkillData skillData) == false)
+            if (DataManager.MonsterSkillDict.TryGetValue(skillName, out MonsterSkillData skillData) == false)
                 return null;
 
-            //Target?.Room?.Push(OnDamaged, this, skillData.damage + Attack, false);
             return skillData;
         }
         public void CreateHitbox(MonsterSkill skilltype)

@@ -161,11 +161,12 @@ public class MonsterController : CreatureController
 
 
         if (Type == MonsterType.Drone)
+        {
             OnStateChanged?.Invoke(false);
+        }
         else
         {
             OnStateChanged?.Invoke(true);
-            Debug.Log("2");
         }
 
         if (_agent != null)
@@ -184,7 +185,6 @@ public class MonsterController : CreatureController
             packet.MyState == CreatureState.Idle)
         {
             OnStateChanged?.Invoke(true);
-            Debug.Log("3");
         }
 
         State = packet.MyState;

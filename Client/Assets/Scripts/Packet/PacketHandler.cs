@@ -637,10 +637,6 @@ class PacketHandler
         // *Sound
         S_AttackInfo atkInfoPacket = packet as S_AttackInfo;
 
-        if ("MsDroneAttack1" == atkInfoPacket.AttackType)
-        {
-            int ac = 3;
-        }
         BaseController bc = Managers.Object.FindById(atkInfoPacket.AttackerId)?.GetComponentInChildren<BaseController>();
         if (bc == null)
             return;

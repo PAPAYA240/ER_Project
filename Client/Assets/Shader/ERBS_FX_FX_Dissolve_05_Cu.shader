@@ -25,20 +25,19 @@ Shader "ERBS_FX/FX_Dissolve_05_Cu" {
 		_RadialGradientPower ("Gradient Power", Range(0.1, 5)) = 1
 		_RadialGradientRadius ("Gradient Radius", Range(0.1, 2)) = 1
 		
-		[Space(20)] [Enum(LESS,0,GREATER,1,LEQUAL,2,GEQUAL,3,EQUAL,4,NOTEQUAL,5,ALWAYS,6)] _ZTestMode ("ZTest Mode", Float) = 6
+		[Space(20)] [Enum(LESS,0,GREATER,1,LEQUAL,2,GEQUAL,3,EQUAL,4,NOTEQUAL,5,ALWAYS,6)] _ZTestMode ("ZTest Mode", Float) = 4
 		[Toggle] _ZWrite ("ZWrite", Float) = 0
 		[Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull Mode", Float) = 0
 	}
 	
 	SubShader{
-		Tags { "Queue"="Transparent" "RenderType"="Transparent" "IgnoreProjector"="True" }
-		LOD 200
-		
-		Blend SrcAlpha OneMinusSrcAlpha
+		 Tags { "Queue"="Transparent" "RenderType"="Transparent" }
+    
+		Blend SrcAlpha One
 		ZWrite Off
-		Cull [_Cull]
-		ZTest [_ZTestMode]
-		
+		Cull Off  
+		ZTest LEqual
+
 		Pass
 		{
 			HLSLPROGRAM
