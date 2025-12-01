@@ -558,4 +558,28 @@ namespace Server.Data
         public int Samples;
     }
     #endregion
+
+    #region Sound
+
+    #region AbigailSound
+    public class AbigailSoundData : ILoader<AbigailSound, List<string>>
+    {
+        public Dictionary<string, List<string>> abigailSoundDict = new Dictionary<string, List<string>>();
+
+        public Dictionary<AbigailSound, List<string>> MakeDict()
+        {
+            Dictionary<AbigailSound, List<string>> dict = new Dictionary<AbigailSound, List<string>>();
+
+            foreach (var entry in abigailSoundDict)
+            {
+                if (Enum.TryParse(entry.Key, out AbigailSound soundType))
+                    dict[soundType] = entry.Value;
+            }
+
+            return dict;
+        }
+    }
+    #endregion
+
+    #endregion
 }

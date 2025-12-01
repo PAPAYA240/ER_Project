@@ -724,7 +724,7 @@ namespace Server.Game
 
             foreach (var kvp in _players)
             {
-                if (kvp.Key == id || kvp.Value.IsUntargetable())
+                if (kvp.Key == id || kvp.Value.IsUntargetable() || kvp.Value.IsDead)
                     continue;
                 var player = kvp.Value;
                 Vector2 playerPos = new Vector2(player.PosInfo.PosX, player.PosInfo.PosZ);
@@ -741,6 +741,8 @@ namespace Server.Game
                 if (kvp.Key == id)
                     continue;
                 var monster = kvp.Value;
+                if (monster.IsUntargetable() || monster.Info.Monster.MonsterType == MonsterType.Turret)
+                    continue;
                 Vector2 monsterPos = new Vector2(monster.PosInfo.PosX, monster.PosInfo.PosZ);
                 float distSq = Vector2.DistanceSquared(pos, monsterPos);
                 if (distSq < nearestDistSq)
@@ -830,16 +832,19 @@ namespace Server.Game
 
         public void BroadcastAbigailSound(Player player, AbigailSound sound, float prob)
         {
-            bool play = Math.Abs(prob - 1) < 0.0001f || Random.Shared.NextDouble() < prob;
+            if (!DataManager.AbigailAudioDict.TryGetValue(sound, out List<string> paths))
+                return;
 
-            if (play)
-            {
-                S_AbigailSound abigailSound = new S_AbigailSound();
-                abigailSound.ObjectId = player.Id;
-                abigailSound.Sound = sound;
-                abigailSound.Pos = player.PosInfo;
-                Broadcast(abigailSound);
-            }
+            bool play = Math.Abs(prob - 1) < 0.0001f || Random.Shared.NextDouble() < prob;
+            if (!play)
+                return;
+
+            S_AbigailSound abigailSound = new S_AbigailSound();
+            abigailSound.ObjectId = player.Id;
+            abigailSound.Sound = sound;
+            abigailSound.Pos = player.PosInfo;
+            abigailSound.Idx = Random.Shared.Next(0, paths.Count);
+            Broadcast(abigailSound);
         }
 
         public Player FindViableTarget(Monster monster, float range)

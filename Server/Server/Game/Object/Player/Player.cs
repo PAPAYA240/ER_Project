@@ -532,15 +532,12 @@ namespace Server.Game
                         BonusAttackRange = 0f;
                     break;
                 case CharacterType.Abigail:
+                    if (null == Skill)
+                        break;
                     isPassiveAttackReady = Skill.IsPassiveAttackReady();
 
-                    if(!_wasPassiveReady && isPassiveAttackReady)
-                    {
-                        S_AbigailSound abigailSound = new S_AbigailSound();
-                        abigailSound.ObjectId = Id;
-                        abigailSound.Sound = AbigailSound.PassiveReady;
-                        Room.Push(Session.Send, abigailSound);
-                    }
+                    if(!_wasPassiveReady && isPassiveAttackReady && !IsDead)
+                        Room.Push(Room.BroadcastAbigailSound, this, AbigailSound.PassiveReady, 1f);
 
                     _wasPassiveReady = isPassiveAttackReady;
 

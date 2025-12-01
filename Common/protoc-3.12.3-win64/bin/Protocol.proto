@@ -1223,6 +1223,7 @@ message S_AbigailSound{
 	int32 objectId = 1;
 	AbigailSound sound = 2;
 	PositionInfo pos = 3;
+	int32 idx = 4;
 }
 
 message S_PickSound{

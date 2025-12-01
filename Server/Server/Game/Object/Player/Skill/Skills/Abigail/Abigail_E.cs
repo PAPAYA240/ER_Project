@@ -31,6 +31,7 @@ public sealed class Abigail_E : Skill_Abigail
 
         p.Room.BroadcastAbigailSound(p, AbigailSound.E, 1);
         p.Room.BroadcastAbigailSound(p, AbigailSound.Evoice, 0.6f);
+        p.Room.BroadcastAbigailSound(p, AbigailSound.Ehit, 1);
     }
 
     public override bool CanCast(Player p, SkillContext ctx)

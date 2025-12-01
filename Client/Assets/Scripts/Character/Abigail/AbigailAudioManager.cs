@@ -50,12 +50,12 @@ public class AbigailAudioManager : MonoBehaviour
         }
     }
 
-    public void Play(int objectId, AbigailSound sound, Vector3 pos)
+    public void Play(int objectId, AbigailSound sound, Vector3 pos, int idx)
     {
         if (!_audioClipDict.TryGetValue(sound, out List<AudioClip> clips) || clips.Count == 0) return;  
         if (!_audioTypeDict.TryGetValue(sound, out Define.Sound soundType)) return;
         
-        AudioClip randomClip = clips[UnityEngine.Random.Range(0, clips.Count)];
+        AudioClip randomClip = clips[idx];
         if (randomClip == null)
             return;
 

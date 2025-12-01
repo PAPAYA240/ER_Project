@@ -280,6 +280,9 @@ namespace Server.Game
 
             if (attacker is Player playerAttack)
             {
+                if (playerAttack.Info.Player.CharType == CharacterType.Abigail)
+                    return;                 
+
                 isAttackerValid = true;
                 Player_SkillState skillstate = playerAttack.CurrentState as Player_SkillState;
 

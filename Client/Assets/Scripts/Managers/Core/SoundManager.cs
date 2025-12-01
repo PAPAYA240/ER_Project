@@ -75,11 +75,11 @@ public class SoundManager
         go.transform.position = position;
 
         AudioSource audioSource = go.AddComponent<AudioSource>();
-        audioSource.volume = volume;
+        audioSource.volume = volume * 0.45f; // 3D 사운드는 2D보다 소리 낮춤
         audioSource.spatialBlend = 1f;
 
-        audioSource.rolloffMode = AudioRolloffMode.Logarithmic; // 감쇠 모드
-        audioSource.minDistance = 2f;            // 이 거리까지는 최대 음량
+        audioSource.rolloffMode = AudioRolloffMode.Linear; // 감쇠 모드
+        audioSource.minDistance = 4f;            // 이 거리까지는 최대 음량
         audioSource.maxDistance = 20f;           // 이 거리까지는 서서히 작아짐
 
         audioSource.dopplerLevel = 0f;           // 도플러 효과 없음
