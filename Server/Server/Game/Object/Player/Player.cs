@@ -1382,7 +1382,7 @@ namespace Server.Game
             Room.Push(Session.Send, packet);
         }
 
-        public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = null)
+        public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = "")
         {
             S_RemoveEffect packet = new S_RemoveEffect();
             packet.ObjectId = Id;
