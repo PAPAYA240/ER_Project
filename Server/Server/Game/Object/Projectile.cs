@@ -9,7 +9,7 @@ namespace Server.Game
     {
         public Creature Owner = null;
         public ProjectileType ProjectileType { get; set; }
-        private long _endTime = 0;
+        protected long _endTime = 0;
         private long _lastTickTime = 0;
         private float _speed = 15.0f;
 

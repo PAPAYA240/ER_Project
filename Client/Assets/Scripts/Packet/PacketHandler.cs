@@ -1006,7 +1006,15 @@ class PacketHandler
         if (!IsSceneReady("Game", () => S_CombatModeHandler(session, packet))) return;
         S_CombatMode combatModePkt = packet as S_CombatMode;
 
-        switch (combatModePkt.CombatMode)
+        GameObject go = Managers.Object.FindById(combatModePkt.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null)
+            return;
+
+        switch (pc.CombatStat = combatModePkt.CombatMode)
         {
             case CombatState.Combat:
                 Managers.Object.MyPlayer.UI.PlayerInterface.ActivateCombatImg(true);
@@ -1279,6 +1287,24 @@ class PacketHandler
         if (pickScene == null) return;
 
         pickScene.PlaySelectedSound(pickSoundPkt.CharType);
+    }
+
+    public static void S_RozziNormalAttackHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_RozziNormalAttackHandler(session, packet)))
+            return;
+
+        S_RozziNormalAttack attackPacket = packet as S_RozziNormalAttack;
+
+        var projectile = Managers.Object.FindById(attackPacket.ObjectId);
+        if (projectile == null)
+            return;
+
+        Projectile_Rozzi_NormalAttack pr = projectile.GetComponentInChildren<Projectile_Rozzi_NormalAttack>();
+        if (pr == null)
+            return;
+
+        pr.Init(attackPacket);
     }
 
     static float GetCurrentEstimatedOneWayLatency()

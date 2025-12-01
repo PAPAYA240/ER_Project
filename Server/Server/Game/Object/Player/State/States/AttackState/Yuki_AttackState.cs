@@ -57,6 +57,17 @@ public class Yuki_AttackState : Player_AttackState
             p.Room.Push(p.Room.Broadcast, yukiStudPkt);
         }
 
+        // 전투 상태 평타 칠 때마다 갱신
+        // 전투 모드
+        {
+            p.CombatState = CombatState.Combat;
+            S_CombatMode combatModePkt = new S_CombatMode();
+            combatModePkt.ObjectId = p.Id;
+            combatModePkt.CombatMode = p.CombatState;
+            p.Room.Broadcast(combatModePkt);
+            p.CombatTime = 0f;
+        }
+
         p.SendAnimPacket(animName, 0.05f, p.AttackSpeed, true);
     }
 

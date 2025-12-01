@@ -300,7 +300,14 @@ namespace Server.Game
                             {
                                 if (hitbox.KeyCode == KeyCode.R)
                                 {
-                                    pj.OnProjectileHit(hitPlayers.First());
+                                    foreach(var player in hitPlayers)
+                                    {
+                                        if(player.Id != ownerId)
+                                        {
+                                            pj.OnProjectileHit(player);
+                                            break;
+                                        }
+                                    }                               
                                     continue;
                                 }
                                 else if(pj.Target != null && hitPlayers.Contains(pj.Target as Player))                                   

@@ -2,6 +2,7 @@
 using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using static Data.EffectData;
 
@@ -80,6 +81,11 @@ public class EffectFXManager : MonoBehaviour
                 fxObject.transform.SetParent(copyTransform);
                 fxObject.transform.localPosition = data.position;
                 fxObject.transform.localRotation = Quaternion.identity;
+            }
+            else if(data.target == EEffectTarget.Enemy)
+            {
+                fxObject.transform.SetParent(casterTransform);
+                fxObject.transform.SetPositionAndRotation(spawnPos, spawnRot);
             }
             else
             {
@@ -178,9 +184,13 @@ public class EffectFXManager : MonoBehaviour
             yield break;
 
         yield return new WaitForSeconds(delayTime);
+        if (fxObject == null)
+            yield break;
         fxObject.SetActive(true);
 
         yield return new WaitForSeconds(duration);
+        if (fxObject == null)
+            yield break;
         RemoveEffect(ownerId, fxObject);
     }
     #endregion
@@ -191,6 +201,7 @@ public class EffectFXManager : MonoBehaviour
         switch (data.target)
         {
             case EEffectTarget.Self:
+            case EEffectTarget.Enemy:
                 parentTransform = casterTransform;
                 return casterTransform.position + data.position;
 
@@ -206,7 +217,6 @@ public class EffectFXManager : MonoBehaviour
             case EEffectTarget.Shot:
                 parentTransform = null;
                 return casterTransform.position + data.position;
-
             default:
                 parentTransform = null;
                 return Vector3.zero;
@@ -217,6 +227,7 @@ public class EffectFXManager : MonoBehaviour
         switch (data.target)
         {
             case EEffectTarget.Self:
+            case EEffectTarget.Enemy:
                 return casterTransform.rotation;
 
             case EEffectTarget.Target:
@@ -280,12 +291,30 @@ public class EffectFXManager : MonoBehaviour
 
         if (currentlyPlayingEffects.TryGetValue(packet.ObjectId, out List<GameObject> activeFxList))
         {
-            foreach (EffectData data in myEffectList.Caster) 
+            if(packet.IsCaster)
             {
-                GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+                foreach (EffectData data in myEffectList.Caster)
+                {
+                    GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
 
-                if (fxObjectToRemove != null)
-                    RemoveEffect(packet.ObjectId, fxObjectToRemove);
+                    if (fxObjectToRemove != null)
+                        RemoveEffect(packet.ObjectId, fxObjectToRemove);
+                }
+            }
+            else
+            {
+                foreach (EffectData data in myEffectList.Select)
+                {
+                    if(data.prefabName == packet.FxName)
+                    {
+                        GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+
+                        if (fxObjectToRemove != null)
+                            RemoveEffect(packet.ObjectId, fxObjectToRemove);
+
+                        break;
+                    }                    
+                }
             }
         }
     }

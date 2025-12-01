@@ -40,6 +40,7 @@ namespace Server.Data
             T = 116,  // UnityEngine.KeyCode.T
             F1 = 282,
             F2 = 283,
+            F3 = 284,
         }
     }
 }

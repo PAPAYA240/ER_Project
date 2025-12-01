@@ -218,7 +218,14 @@ public class PlayerController : CreatureController
 
     #endregion
 
-   
+    CombatState _combatMode;
+    public virtual CombatState CombatStat
+    {
+        get { return _combatMode; }
+        set { _combatMode = value; }
+    }
+
+
     public bool IsKeyInput
     {
         get { return _isKeyInput; }
@@ -474,11 +481,24 @@ public class PlayerController : CreatureController
     }
     public void PlayEffectFromServer(S_Fx packet, Vector3 mousePos, Vector3 targetPos = new Vector3(), Quaternion targetRot = default(Quaternion))
     {
+        Transform targetTransform = null;
+        if(packet.UseTargetTransform)
+        {
+            if (packet.TargetId == 0)
+                return;
+
+            GameObject go = Managers.Object.FindById(packet.TargetId);
+            if (go == null)
+                return;
+
+            targetTransform = go.transform;
+        }
+
         if (packet.Type == "Caster")
-            PlaySkillEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot);
+            PlaySkillEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot, targetTransform: targetTransform);
 
         else if(packet.Type == "Select")
-            PlaySelectEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot, packet.FxName);
+            PlaySelectEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot, packet.FxName, targetTransform: targetTransform);
     }
     #endregion
     public void LookAtMouse()
@@ -632,7 +652,7 @@ public class PlayerController : CreatureController
 
     #region Effect
     // 기본 스킬 이펙트 호출 : Caster Type
-    public void PlaySkillEffect(KeyCode skillKey, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot = default(Quaternion))
+    public void PlaySkillEffect(KeyCode skillKey, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot = default(Quaternion), Transform targetTransform = null)
     {
         CharacterType type = ObjInfo.Player.CharType;
         CreatureState state = CreatureState.Skill;
@@ -651,11 +671,11 @@ public class PlayerController : CreatureController
             dataList.Add(effect);
         }
 
-        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, transform, mousePos);
+        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, targetTransform ? targetTransform : transform, mousePos);
     }
 
     // 직접 선택해서 호출하는 이펙트 : Type Select
-    public void PlaySelectEffect(KeyCode skillKey, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot, string fxName)
+    public void PlaySelectEffect(KeyCode skillKey, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot, string fxName, Transform targetTransform = null)
     {
         CharacterType type = ObjInfo.Player.CharType;
         CreatureState state = CreatureState.Skill;
@@ -675,7 +695,7 @@ public class PlayerController : CreatureController
                 dataList.Add(effect);
         }
 
-        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, transform, mousePos, targetPos, targetRot);
+        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, targetTransform ? targetTransform : transform, mousePos, targetPos, targetRot);
     }
     #endregion
 
