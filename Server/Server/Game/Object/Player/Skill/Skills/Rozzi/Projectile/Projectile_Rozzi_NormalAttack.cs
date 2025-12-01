@@ -28,8 +28,6 @@ public class Projectile_Rozzi_NormalAttack : Projectile
             return;
 
         _endTime = Environment.TickCount64 + 1000;
-        //_endTime = Environment.TickCount64 + 500;
-        //_lastTickTime = Environment.TickCount64;
 
         // Owner의 현재 위치를 복사
         Info.PosInfo = new PositionInfo
@@ -75,11 +73,6 @@ public class Projectile_Rozzi_NormalAttack : Projectile
 
     private void SendFxPacket(Player owner, int projectileId)
     {
-        //owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: _keyCode, sendLookatMousePacket: true,
-        //        targetPos: default, targetRot: default,
-        //        type: "Select", "Projectile_FX_BI_Rozzi_NormalAttack",
-        //        useTargetTransform: true, targetId: projectileId);
-
         owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: _keyCode, sendLookatMousePacket: true,
                 targetPos: default, targetRot: default,
                 type: "Select", "FX_BI_Rozzi_NormalAttack_Shot",
