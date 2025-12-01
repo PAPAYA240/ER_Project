@@ -137,7 +137,6 @@ public class EnvSaverEditor : MonoBehaviour
         }
 
         GameObject TurbineSpawnPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(_Turbinepath);
-
         if (TurbineSpawnPrefab == null)
         {
             Debug.LogError("Error: Turbine 프리팹을 찾을 수 없습니다. 경로를 확인하세요: " + _Turbinepath);

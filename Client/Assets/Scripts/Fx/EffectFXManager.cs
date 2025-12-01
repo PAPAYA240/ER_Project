@@ -1,5 +1,6 @@
 ﻿using Data;
 using Google.Protobuf.Protocol;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -275,17 +276,31 @@ public class EffectFXManager : MonoBehaviour
         PlayerController pc = go.GetComponentInChildren<PlayerController>();
         if (pc == null) return;
 
-        SkillEffectList myEffectList = DataManager.PlayerFxDict[pc.ObjInfo.Player.CharType][CreatureState.Skill][(KeyCode)packet.KeyCode];
-        List<EffectData> dataList = new List<EffectData>();
+        if (!currentlyPlayingEffects.TryGetValue(packet.ObjectId, out List<GameObject> activeFxList))
+            return;
 
-        if (currentlyPlayingEffects.TryGetValue(packet.ObjectId, out List<GameObject> activeFxList))
+        if (!DataManager.PlayerFxDict.TryGetValue(pc.ObjInfo.Player.CharType, out var stateDict)) return;
+        if (!stateDict.TryGetValue(CreatureState.Skill, out var skillDict)) return;
+        if (!skillDict.TryGetValue((KeyCode)packet.KeyCode, out SkillEffectList myEffectList)) return;
+
+        List<EffectData> dataList = null;
+        if (packet.Type == "Caster")
         {
-            foreach (EffectData data in myEffectList.Caster) 
-            {
-                GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+            dataList = myEffectList.Caster;
+        }
+        else if (packet.Type == "Select")
+        {
+            dataList = myEffectList.Select;
+        }
+        else
+            dataList = myEffectList.HitTarget;
 
-                if (fxObjectToRemove != null)
-                    RemoveEffect(packet.ObjectId, fxObjectToRemove);
+        foreach (EffectData data in dataList)
+        {
+            GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+            if (fxObjectToRemove != null)
+            {
+                RemoveEffect(packet.ObjectId, fxObjectToRemove);
             }
         }
     }

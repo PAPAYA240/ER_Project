@@ -1373,12 +1373,12 @@ namespace Server.Game
             Room.Push(Session.Send, packet);
         }
 
-        public void SendRemoveEffect(KeyCode keyCode)
+        public void SendRemoveEffect(KeyCode keyCode, string type = "Caster")
         {
             S_RemoveEffect packet = new S_RemoveEffect();
             packet.ObjectId = Id;
             packet.KeyCode = (int)keyCode;
-
+            packet.Type = type;
             Room.Push(Room.Broadcast, packet);
         }
         #endregion
