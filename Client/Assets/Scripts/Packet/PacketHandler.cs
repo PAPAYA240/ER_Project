@@ -371,6 +371,8 @@ class PacketHandler
             mpc.UI.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
             mpc.UpdateLevel();
             mpc.UI.PlayerInterface.UpdateStat();
+            mpc.Exp = levelUpPkt.CurExp;
+            mpc.MaxExp = levelUpPkt.NextMaxExp;
             Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(mpc.Id);
             return;
         }
@@ -1274,6 +1276,14 @@ class PacketHandler
         if (pickScene == null) return;
 
         pickScene.PlaySelectedSound(pickSoundPkt.CharType);
+    }
+
+    public static void S_ChangeExpHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_ChangeExpHandler(session, packet))) return;
+
+        S_ChangeExp changeExpPacket = packet as S_ChangeExp;
+        Managers.Object.MyPlayer.Exp = changeExpPacket.Exp;
     }
 
     static float GetCurrentEstimatedOneWayLatency()

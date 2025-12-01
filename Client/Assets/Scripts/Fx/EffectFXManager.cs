@@ -2,17 +2,14 @@
 using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Sprites;
 using UnityEngine;
 using static Data.EffectData;
-using static UnityEngine.Rendering.DebugUI.Table;
 
 public class EffectFXManager : MonoBehaviour
 {
     private Dictionary<int, List<GameObject>> currentlyPlayingEffects = new Dictionary<int, List<GameObject>>();
-    private Dictionary<GameObject, Coroutine> activeCoroutines = new Dictionary<GameObject, Coroutine>();
+    private Dictionary<int, Coroutine> activeCoroutines = new Dictionary<int, Coroutine>();
     private int fxLayer;
-
 
     public void Init()
     {
@@ -113,7 +110,7 @@ public class EffectFXManager : MonoBehaviour
 
         fxObject.SetActive(false);
 
-        activeCoroutines[fxObject] = StartCoroutine(ReturnToPoolAfterDelay(ownerId, fxObject, data.prefabName, data.delayTime, data.duration, casterTransform));
+        activeCoroutines[fxObject.GetInstanceID()] = StartCoroutine(ReturnToPoolAfterDelay(ownerId, fxObject, data.prefabName, data.delayTime, data.duration, casterTransform));
 
         if (data.target == EEffectTarget.Shot)
         {
@@ -159,28 +156,15 @@ public class EffectFXManager : MonoBehaviour
         }
     }
 
-    //public void StopAndReturnEffect(GameObject effect)
-    //{
-    //    if (effect == null)
-    //        return;
-
-    //    if (activeCoroutines.ContainsKey(effect))
-    //    {
-    //        effect.SetActive(false);
-    //        StopCoroutine(activeCoroutines[effect]);
-    //        activeCoroutines.Remove(effect);
-    //    }
-    //}
-
     public void StopAndReturnEffect(GameObject effect)
     {
         if (effect == null)
             return;
 
-        if (activeCoroutines.ContainsKey(effect))
+        if (activeCoroutines.ContainsKey(effect.GetInstanceID()))
         {
-            StopCoroutine(activeCoroutines[effect]);
-            activeCoroutines.Remove(effect);
+            StopCoroutine(activeCoroutines[effect.GetInstanceID()]);
+            activeCoroutines.Remove(effect.GetInstanceID());
         }
 
         Managers.FX.Push(effect);
@@ -294,49 +278,15 @@ public class EffectFXManager : MonoBehaviour
         SkillEffectList myEffectList = DataManager.PlayerFxDict[pc.ObjInfo.Player.CharType][CreatureState.Skill][(KeyCode)packet.KeyCode];
         List<EffectData> dataList = new List<EffectData>();
 
-        foreach (EffectData effect in myEffectList.Caster)
+        if (currentlyPlayingEffects.TryGetValue(packet.ObjectId, out List<GameObject> activeFxList))
         {
-            dataList.Add(effect);
-        }
-
-        foreach (EffectData data in dataList)
-        {
-            GameObject fxPrefab = Managers.FX.Effect.GetFxPrefab(packet.ObjectId, data.prefabName);
-            if (fxPrefab == null)
+            foreach (EffectData data in myEffectList.Caster) 
             {
-                Debug.LogWarning($"FX Prefab not found: {data.prefabName}");
-                continue;
+                GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+
+                if (fxObjectToRemove != null)
+                    RemoveEffect(packet.ObjectId, fxObjectToRemove);
             }
-
-            GameObject fxObject = Managers.FX.Pop(fxPrefab, null);
-            if (fxObject == null)
-            {
-                Debug.LogError($"Failed to pop FX from pool: {data.prefabName}");
-                continue;
-            }
-
-            Debug.Log($"packet.ObjectId : {packet.ObjectId}");
-
-            //fxObject.SetActive(false);
-
-            //if (currentlyPlayingEffects.TryGetValue(packet.ObjectId, out List<GameObject> effectList))
-            //{
-            //    StopAndReturnEffect(fxObject);
-            //    effectList.Remove(fxObject);
-
-            //    Debug.Log($"currentlyPlayingEffects Remove Ing");
-
-            //    if (effectList.Count == 0)
-            //    {
-            //        foreach (var obj in currentlyPlayingEffects[packet.ObjectId])
-            //        {
-            //            Managers.Resource.Destroy(obj);
-            //        }
-            //        currentlyPlayingEffects[packet.ObjectId].Clear();
-            //        currentlyPlayingEffects.Remove(packet.ObjectId);
-            //    }
-            //}
-            RemoveEffect(packet.ObjectId, fxObject);
         }
     }
     private void LoadFxPrefabs()

@@ -461,6 +461,11 @@ namespace Server.Game
             }
 
             Room.Broadcast(KdaPacket);
+
+            // 경험치
+
+            // 스코어
+
         }
         #endregion
 

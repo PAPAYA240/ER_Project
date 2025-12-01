@@ -298,6 +298,16 @@ public class PlayerUIController : MonoBehaviour
         PlayerInterface.SetSkillCool(GameObjects.DSkill, _coolDownDict[KeyCode.D].coolTime);
         PlayerInterface.SetSkillCool(GameObjects.FSkill, _coolDownDict[KeyCode.F].coolTime);
     }
+
+    public void UpdateExp(int value)
+    {
+        PlayerInterface.SetExp(value);
+    }
+
+    public void UpdateMaxExp(int value)
+    {
+        PlayerInterface.SetMaxExp(value);
+    }
     #endregion
 
     public void SetTimer(int phase, float clientLocalTargetRealtimeSinceStartupEnd)

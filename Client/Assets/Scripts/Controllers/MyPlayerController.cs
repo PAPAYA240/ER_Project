@@ -218,6 +218,9 @@ public class MyPlayerController : PlayerController
             return;
         UI.PlayerInterface.Equip(DataManager.ItemDict[itemId] as EquipItemInfo);
     }
+
+    public int Exp { get { return Stat.Exp; } set { Stat.Exp = value; UI.UpdateExp(Stat.Exp); } }
+    public int MaxExp { get { return 0; } set { UI.UpdateMaxExp(value); } }
     #endregion
 
     #region Inventory, EquipItem    
