@@ -251,12 +251,28 @@ namespace Server.Game
             {
                 foreach (Hitbox hitbox in set)
                 {
-                    UpdatePosProjectile(hitbox);
-
                     if (hitbox.Creature == null || hitbox.Data == null)
                         continue;
                     if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
-                        continue;                      
+                        continue;
+                    if (type == SkillType.SkillProjectile)
+                    {
+                        UpdatePosProjectile(hitbox);
+                        continue;
+                    }
+
+                    Quaternion rot = new Quaternion(
+                    hitbox.Creature.RotInfo.Qx,
+                    hitbox.Creature.RotInfo.Qy,
+                    hitbox.Creature.RotInfo.Qz,
+                    hitbox.Creature.RotInfo.Qw);
+
+                    Vector3 offset = new Vector3(hitbox.Data.RightOffset, 0, hitbox.Data.LookOffset);
+
+                    Vector3 rotatedOffset = Vector3.Transform(offset, rot);
+
+                    hitbox.PosX = hitbox.Creature.PosInfo.PosX + rotatedOffset.X;
+                    hitbox.PosZ = hitbox.Creature.PosInfo.PosZ + rotatedOffset.Z;
                 }
             }
         }
@@ -773,13 +789,15 @@ namespace Server.Game
 
         void HandleAllyHit(Hitbox hitbox, ConcurrentDictionary<int, Player> targets)
         {
+            if (!_allyHitSkillDict.TryGetValue(hitbox.CharType, out HashSet<KeyCode> keySet))
+                return;
+            if (!keySet.Contains(hitbox.KeyCode))
+                return;
+
             foreach (var targetKvp in targets)
             {
                 Player target = targetKvp.Value;
                 if (hitbox.HitObjs.ContainsKey(targetKvp.Key) || true == hitbox.IsUsed)
-                    continue;
-
-                if (hitbox.Creature.CharType == CharacterType.Rozzi)
                     continue;
 
                 if (CheckCollision(hitbox, target))
@@ -973,17 +991,14 @@ namespace Server.Game
         
         private void UpdatePosProjectile(Hitbox hitbox)
         {
-            if (Enum.TryParse<SkillType>(hitbox.Data.Type, out var type) && type == SkillType.SkillProjectile)
-            {
-                Quaternion rot = hitbox.Creature.RotInfo.GetQuatFromRotInfo();
+            Quaternion rot = hitbox.Creature.RotInfo.GetQuatFromRotInfo();
 
-                Vector3 toForward = Vector3.Transform(new Vector3(0, 0, 1), rot);
-                const float TickInterval = 1.0f / 70.0f;
-                float deltaMove = hitbox.Data.Speed * TickInterval;
+            Vector3 toForward = Vector3.Transform(new Vector3(0, 0, 1), rot);
+            const float TickInterval = 1.0f / 70.0f;
+            float deltaMove = hitbox.Data.Speed * TickInterval;
 
-                hitbox.PosX += toForward.X * deltaMove;
-                hitbox.PosZ += toForward.Z * deltaMove;
-            }
+            hitbox.PosX += toForward.X * deltaMove;
+            hitbox.PosZ += toForward.Z * deltaMove;
         }
         bool CheckCollision(Hitbox myHitbox, Hitbox targetHitbox)
         {

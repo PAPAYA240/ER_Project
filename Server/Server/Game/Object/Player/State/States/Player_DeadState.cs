@@ -13,6 +13,9 @@ public class Player_DeadState : IPlayerState
         //UI
 
         RespawnTime(player);
+
+        if(player.Info.Player.CharType == CharacterType.Abigail)
+            player.Room.BroadcastAbigailSound(player, AbigailSound.Dead, 1);
     }
 
     public void Execute(Player player)

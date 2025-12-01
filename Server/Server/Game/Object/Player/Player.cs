@@ -59,7 +59,8 @@ namespace Server.Game
 
         public override float AttackSpeed
         {
-            get { return ComposeFinal(STAT_ATTACK_SPEED, (Stat.AttackSpeed + DataManager.WeaponDict[Info.Player.Weapon].AttackSpeed) * (1 + _totalItemStat.AttackSpeed), false, _mulBuffOffset); }
+            get { return ComposeFinal(STAT_ATTACK_SPEED, (Stat.AttackSpeed + DataManager.WeaponDict[Info.Player.Weapon].AttackSpeed) * 
+                (1 + _totalItemStat.AttackSpeed + (DataManager.WeaponMasteryDict[Info.Player.CharType][Info.Player.Weapon].AttackSpeed * 0.01f * Stat.Level ) ), false, _mulBuffOffset); }
             set { base.AttackSpeed = value; }
         }
 
@@ -352,6 +353,8 @@ namespace Server.Game
 
             var cd = new CooldownController_Tick(this);
             Skill = new SkillController(this, cd);
+
+            UpdateStatusFlag();
         }
 
         public override void Update()

@@ -28,10 +28,12 @@ public class Player_RestState : IPlayerState
         if (_isRest == true)
         {
             _animName = "REST_START";
+
+            if (player.Info.Player.CharType == CharacterType.Abigail)
+                player.Room.BroadcastAbigailSound(player, AbigailSound.Rest, 1);
         }
         else
         {
-            Console.WriteLine("휴식 끝");
             _animName = "REST_END";
         }
 
@@ -60,7 +62,6 @@ public class Player_RestState : IPlayerState
             restPkt.IsRest = false;
             player.SendRestPacket(restPkt);
 
-            Console.WriteLine("맞아서 휴식 풀림 진입");
             player.ChangeState(new Player_RestState(false));
             return;
         }
