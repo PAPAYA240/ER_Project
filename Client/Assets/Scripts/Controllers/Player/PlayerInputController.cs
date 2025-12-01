@@ -321,15 +321,13 @@ public class PlayerInputController : MonoBehaviour
     public C_Rest GetRestCommand()
     {
         if (_player.CombatStat == CombatState.Combat)
-        {
-            Debug.Log("전투모드");
             return null;
-        }
 
         if (_player.IsRest == false && _player.State != CreatureState.Rest)
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
+                Debug.Log("휴식 진입");
                 _player.IsRest = true;
                 return new C_Rest() { IsRest = _player.IsRest };
             }

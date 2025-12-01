@@ -55,12 +55,13 @@ public class Player_RestState : IPlayerState
 
         else if (player.IsHit == true)
         {
+            player.IsHit = false;
+
             S_Rest restPkt = new S_Rest();
             restPkt.ObjectId = player.Id;
             restPkt.IsRest = false;
             player.SendRestPacket(restPkt);
 
-            Console.WriteLine("맞아서 휴식 풀림 진입");
             player.ChangeState(new Player_RestState(false));
             return;
         }
