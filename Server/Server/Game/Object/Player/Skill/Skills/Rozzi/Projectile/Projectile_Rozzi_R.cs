@@ -276,6 +276,9 @@ public class Projectile_Rozzi_R : Projectile
             _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: true,
                 targetPos: default, targetRot: default,
                 type: "Select", "FX_BI_Rozzi_Skill04_Buff");
+
+            _owner.SendRemoveEffect(KeyCode.R, false, "FX_BI_Rozzi_Skill04_Set_Character");
+            _owner.SendRemoveEffect(KeyCode.R, false, "FX_BI_Rozzi_Skill04_Set_Character_Count");
         }
         if (early && mainTarget != null && !mainTarget.IsDead)
             ApplyEarlyExplosionEffects(mainTarget);

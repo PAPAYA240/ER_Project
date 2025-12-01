@@ -2,6 +2,7 @@
 using Google.Protobuf.Protocol;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using static Data.EffectData;
 
@@ -96,6 +97,8 @@ public class EffectFXManager : MonoBehaviour
             SettingLayer(fxObject, fxLayer);
             StartEffectLogic(ownerId, fxObject, data, copyTransform);
             effectList.Add(fxObject);
+
+            Debug.Log($"FX : {data.prefabName}, Pos : {spawnPos}, Rot : {spawnRot}, Transform : {casterTransform}");
         }
 
         // 진행 중인 이펙트 리스트
@@ -290,12 +293,30 @@ public class EffectFXManager : MonoBehaviour
 
         if (currentlyPlayingEffects.TryGetValue(packet.ObjectId, out List<GameObject> activeFxList))
         {
-            foreach (EffectData data in myEffectList.Caster) 
+            if(packet.IsCaster)
             {
-                GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+                foreach (EffectData data in myEffectList.Caster)
+                {
+                    GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
 
-                if (fxObjectToRemove != null)
-                    RemoveEffect(packet.ObjectId, fxObjectToRemove);
+                    if (fxObjectToRemove != null)
+                        RemoveEffect(packet.ObjectId, fxObjectToRemove);
+                }
+            }
+            else
+            {
+                foreach (EffectData data in myEffectList.Select)
+                {
+                    if(data.prefabName == packet.FxName)
+                    {
+                        GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+
+                        if (fxObjectToRemove != null)
+                            RemoveEffect(packet.ObjectId, fxObjectToRemove);
+
+                        break;
+                    }                    
+                }
             }
         }
     }
