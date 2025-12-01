@@ -28,6 +28,7 @@ public class Player_RestState : IPlayerState
         if (_isRest == true)
         {
             _animName = "REST_START";
+            player.IsHit = false;
         }
         else
         {

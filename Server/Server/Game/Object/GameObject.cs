@@ -217,6 +217,25 @@ namespace Server.Game
             set { PosInfo.State = value; }
         }
 
+        #region CombatState
+        // CombatState
+        protected float _combatTime = 0f;
+        protected readonly float _nonCombatTime = 5f;
+        public float CombatTime
+        {
+            get { return _combatTime; }
+            set { _combatTime = value; }
+        }
+
+        private CombatState _curCombat;
+
+        public CombatState CombatState
+        {
+            get { return _curCombat; }
+            set { _curCombat = value; }
+        }
+        #endregion
+
         float _radius = 0.55f;
 
         public virtual float Radius // 피격 반경
@@ -270,6 +289,15 @@ namespace Server.Game
                 OnDamaged(attacker, finalDamage, isBasicAttack);
             }
 
+            Player player = this as Player;
+            if (player != null)
+            {
+                CombatState = CombatState.Combat;
+                S_CombatMode combatModePkt = new S_CombatMode();
+                combatModePkt.CombatMode = CombatState;
+                Room.Push(player.Session.Send, combatModePkt);
+                CombatTime = 0f;
+            }
             IsHit = true;
         }
 

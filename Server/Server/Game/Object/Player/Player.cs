@@ -174,25 +174,6 @@ namespace Server.Game
             }
         }
 
-        #region CombatState
-        // CombatState
-        // 전투 시간 (용수야 여기야)
-        private float _combatTime = 0f;
-        private readonly float _nonCombatTime = 5f;
-        public float CombatTime
-        {
-            get { return _combatTime; }
-            set { _combatTime = value; }
-        }
-
-        private CombatState _curCombat;
-        public CombatState CombatState
-        {
-            get { return _curCombat; }
-            set { _curCombat = value; }
-        }
-        #endregion
-
         #region Yuki Privacy
         // 유키 단추용
         private static readonly int MaxStud = 4;
