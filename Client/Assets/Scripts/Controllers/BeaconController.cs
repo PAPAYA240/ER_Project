@@ -1,12 +1,173 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Collections;
+using UnityEngine;
 
 public class BeaconController : BaseController
 {
+    [Header("Beacon Settings")]
+    [SerializeField] private Renderer beaconRenderer;
+    private float captureSpeed = 0.203f;
 
+    private Material beaconMaterial;
+    private int currentCapturingTeam = 0;
+    private int currentOwningTeam = 0;
+    private float currentCaptureAmount = 0f;
+    private bool isCapturing = false;
+    private Coroutine captureCoroutine;
 
+    private static readonly int ShaderProgress = Shader.PropertyToID("_CaptureProgress");
+    private static readonly int ShaderTeam = Shader.PropertyToID("_CaptureTeam");
+    private static readonly int ShaderOwningTeam = Shader.PropertyToID("_OwningTeam");
+
+    public System.Action<int, float> OnCaptureProgressChanged;
+    public System.Action<int> OnCaptureCompleted;
+    public System.Action OnCaptureFailed;
+
+    void Start()
+    {
+        if (beaconRenderer != null)
+        {
+            beaconMaterial = beaconRenderer.material; // .material 사용하면 인스턴스 생성됨
+            ResetCaptureState();
+        }
+        else
+        {
+            Debug.LogError("BeaconRenderer is not assigned!", this);
+        }
+    }
+
+    public void StartCapture(int team)
+    {
+        if (team != 1 && team != 2) return;
+
+        if (isCapturing && currentCapturingTeam == team) return;
+
+        if (captureCoroutine != null)
+        {
+            StopCoroutine(captureCoroutine);
+        }
+
+        currentCaptureAmount = 0f;
+        currentCapturingTeam = team;
+        isCapturing = true;
+
+        if (beaconMaterial != null)
+        {
+            int shaderTeamValue = GetShaderTeamValue(team);
+            beaconMaterial.SetInt(ShaderTeam, shaderTeamValue);
+        }
+
+        captureCoroutine = StartCoroutine(CaptureRoutine());
+    }
+
+    public void CompleteCapture(int Team)
+    {
+        currentCaptureAmount = 1f;
+        currentOwningTeam = Team;
+        isCapturing = false;
+
+        UpdateShaderProperties();
+        OnCaptureCompleted?.Invoke(Team);
+    }
+
+    public void FailCapture()
+    {
+        if (!isCapturing) return;
+
+        if (captureCoroutine != null)
+        {
+            StopCoroutine(captureCoroutine);
+            captureCoroutine = null;
+        }
+
+        currentCaptureAmount = currentOwningTeam > 0 ? 1f : 0f;
+        isCapturing = false;
+        UpdateShaderProperties();
+
+        OnCaptureFailed?.Invoke();
+    }
+
+    public void ResetBeacon()
+    {
+        if (captureCoroutine != null)
+        {
+            StopCoroutine(captureCoroutine);
+            captureCoroutine = null;
+        }
+
+        ResetCaptureState();
+    }
+
+    private IEnumerator CaptureRoutine()
+    {
+        while (isCapturing && currentCaptureAmount < 1f)
+        {
+            currentCaptureAmount += captureSpeed * Time.deltaTime;
+            currentCaptureAmount = Mathf.Clamp01(currentCaptureAmount);
+
+            UpdateShaderProperties();
+            OnCaptureProgressChanged?.Invoke(currentCapturingTeam, currentCaptureAmount);
+
+            yield return null;
+        }
+    }
+
+    private void UpdateShaderProperties()
+    {
+        if (beaconMaterial != null)
+        {
+            beaconMaterial.SetFloat(ShaderProgress, currentCaptureAmount);
+            int shaderOwningTeamValue = currentOwningTeam > 0 ? GetShaderTeamValue(currentOwningTeam) : 0;
+            beaconMaterial.SetInt(ShaderOwningTeam, shaderOwningTeamValue);
+
+            if (isCapturing)
+            {
+                // 점령 중일 때는 점령 시도하는 팀 색상
+                int shaderTeamValue = GetShaderTeamValue(currentCapturingTeam);
+                beaconMaterial.SetInt(ShaderTeam, shaderTeamValue);
+            }
+            else
+            {
+                // 점령 중이 아닐 때는 소유 팀 색상 (소유 팀이 없으면 0)
+                int shaderTeamValue = currentOwningTeam > 0 ? GetShaderTeamValue(currentOwningTeam) : 0;
+                beaconMaterial.SetInt(ShaderTeam, shaderTeamValue);
+            }
+        }
+    }
+
+    private int GetShaderTeamValue(int capturingTeam)
+    {
+        int myTeam = Managers.Info.Team;
+        int result = capturingTeam == myTeam ? 1 : 2;
+        return result;
+    }
+
+    private void ResetCaptureState()
+    {
+        currentCaptureAmount = 0f;
+        currentCapturingTeam = 0;
+        currentOwningTeam = 0;
+        isCapturing = false;
+
+        UpdateShaderProperties();
+    }
+
+    public bool IsCapturing => isCapturing;
+    public int CurrentCapturingTeam => currentCapturingTeam;
+    public int CurrentOwningTeam => currentOwningTeam;
+    public float CaptureAmount => currentCaptureAmount;
+    public bool IsFullyCaptured => currentCaptureAmount >= 1f;
+
+    void OnDestroy()
+    {
+        if (captureCoroutine != null)
+        {
+            StopCoroutine(captureCoroutine);
+        }
+
+        if (beaconMaterial != null)
+        {
+            Destroy(beaconMaterial);
+        }
+    }
 }

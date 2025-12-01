@@ -1,17 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Collections;
-using UnityEngine;
-using Data;
-using static Data.EffectData;
+﻿using Data;
 using Google.Protobuf.Protocol;
-using UnityEditor.Sprites;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using static Data.EffectData;
 
 public class EffectFXManager : MonoBehaviour
 {
     private Dictionary<int, List<GameObject>> currentlyPlayingEffects = new Dictionary<int, List<GameObject>>();
-    private Dictionary<GameObject, Coroutine> activeCoroutines = new Dictionary<GameObject, Coroutine>();
+    private Dictionary<int, Coroutine> activeCoroutines = new Dictionary<int, Coroutine>();
     private int fxLayer;
-
 
     public void Init()
     {
@@ -117,7 +115,7 @@ public class EffectFXManager : MonoBehaviour
 
         fxObject.SetActive(false);
 
-        activeCoroutines[fxObject] = StartCoroutine(ReturnToPoolAfterDelay(ownerId, fxObject, data.prefabName, data.delayTime, data.duration, casterTransform));
+        activeCoroutines[fxObject.GetInstanceID()] = StartCoroutine(ReturnToPoolAfterDelay(ownerId, fxObject, data.prefabName, data.delayTime, data.duration, casterTransform));
 
         if (data.target == EEffectTarget.Shot)
         {
@@ -168,13 +166,17 @@ public class EffectFXManager : MonoBehaviour
         if (effect == null)
             return;
 
-        if (activeCoroutines.ContainsKey(effect))
+        if (activeCoroutines.ContainsKey(effect.GetInstanceID()))
         {
-            effect.SetActive(false);
-            StopCoroutine(activeCoroutines[effect]);
-            activeCoroutines.Remove(effect);
+            StopCoroutine(activeCoroutines[effect.GetInstanceID()]);
+            activeCoroutines.Remove(effect.GetInstanceID());
         }
+
+        Managers.FX.Push(effect);
+
+        effect.transform.SetParent(null);
     }
+
     private IEnumerator ReturnToPoolAfterDelay(int ownerId, GameObject fxObject, string prefabName, float delayTime, float duration, Transform casterTransform)
     {
         if (fxObject == null)
@@ -273,6 +275,28 @@ public class EffectFXManager : MonoBehaviour
 
             if (effectList.Count == 0)
                 currentlyPlayingEffects.Remove(ownerId);
+        }
+    }
+    public void RemoveEffect(S_RemoveEffect packet)
+    {
+        GameObject go = Managers.Object.FindById(packet.ObjectId);
+        if (go == null) return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null) return;
+
+        SkillEffectList myEffectList = DataManager.PlayerFxDict[pc.ObjInfo.Player.CharType][CreatureState.Skill][(KeyCode)packet.KeyCode];
+        List<EffectData> dataList = new List<EffectData>();
+
+        if (currentlyPlayingEffects.TryGetValue(packet.ObjectId, out List<GameObject> activeFxList))
+        {
+            foreach (EffectData data in myEffectList.Caster) 
+            {
+                GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+
+                if (fxObjectToRemove != null)
+                    RemoveEffect(packet.ObjectId, fxObjectToRemove);
+            }
         }
     }
     private void LoadFxPrefabs()

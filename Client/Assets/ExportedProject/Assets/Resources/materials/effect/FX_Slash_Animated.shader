@@ -1,4 +1,4 @@
-Shader "ERBS_FX/FX_Slash_Particle_RightToLeft_Final"
+Shader "ERBS_FX/FX_Slash_Animated"
 {
     Properties
     {

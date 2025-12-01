@@ -127,6 +127,8 @@ namespace Server.Game
                         _isAllReady = true;
                         _count = 5;
 
+                        SendPickSoundPkts();
+
                         SendPickAllReadyPkt(0, 4, 4, _maxPlayer);
                         SendPickAllReadyPkt(4, _maxPlayer, 0, 4);
                     }
@@ -191,6 +193,8 @@ namespace Server.Game
 
             S_ReadyBtn readyBtn = new S_ReadyBtn();
             pp.Session.Send(readyBtn);
+
+            SendPickSoundPkt(pp.Session);
         }
 
         void EnterGame(GameRoom room)
@@ -338,6 +342,26 @@ namespace Server.Game
                 return false;
 
             return _pickPlayers[pickIdx].IsReady;
+        }
+
+        void SendPickSoundPkts()
+        {
+            for(int i = 0; i < _maxPlayer; ++i)
+            {
+                if (_pickPlayers[i] == null)
+                    continue;
+                if (_pickPlayers[i].IsReady)
+                    continue;
+
+                SendPickSoundPkt(_pickPlayers[i].Session);
+            }
+        }
+
+        void SendPickSoundPkt(ClientSession session)
+        {
+            S_PickSound pickSound = new S_PickSound();
+            pickSound.CharType = session.MyCharacter;
+            session.Send(pickSound);
         }
     }
 }

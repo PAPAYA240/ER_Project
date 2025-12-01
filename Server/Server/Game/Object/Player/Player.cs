@@ -1,11 +1,11 @@
-using Google.Protobuf.Protocol;
-using Server.Data;
 using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
+using Google.Protobuf.Protocol;
+using Server.Data;
+using ServerCore;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -36,6 +36,7 @@ namespace Server.Game
         public ItemStat TotalItemStat { get { return _totalItemStat; } }
         List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
         static int MaxInventorySlot = 10;
+        private bool _wasPassiveReady = true;
 
         #region Stat Property
         public override float Attack
@@ -392,6 +393,8 @@ namespace Server.Game
 
                 if (_attactActiveTime > _nonCombatTime)
                 {
+                    // 이펙트 멈추기
+                    SendYukiSkillEffect(SkillEffectType.QBuff, false);
                     AttackActive = false;
                 }
             }
@@ -518,14 +521,30 @@ namespace Server.Game
         void UpdateAttackRange()
         {
             float prevAttackRange = AttackRange;
+            bool isPassiveAttackReady = false;
 
             switch (Info.Player.CharType)
             {
                 case CharacterType.Yuki:
-                    // Q 활성화 되어있으면 BonusAttackRange = 0.25f
+                    if (AttackActive)
+                        BonusAttackRange = 0.25f;
+                    else
+                        BonusAttackRange = 0f;
                     break;
                 case CharacterType.Abigail:
-                    if (Skill.IsPassiveAttackReady())
+                    isPassiveAttackReady = Skill.IsPassiveAttackReady();
+
+                    if(!_wasPassiveReady && isPassiveAttackReady)
+                    {
+                        S_AbigailSound abigailSound = new S_AbigailSound();
+                        abigailSound.ObjectId = Id;
+                        abigailSound.Sound = AbigailSound.PassiveReady;
+                        Room.Push(Session.Send, abigailSound);
+                    }
+
+                    _wasPassiveReady = isPassiveAttackReady;
+
+                    if (isPassiveAttackReady)
                         BonusAttackRange = 0.1f;
                     else
                         BonusAttackRange = 0f;
@@ -1356,6 +1375,15 @@ namespace Server.Game
             };
 
             Room.Push(Session.Send, packet);
+        }
+
+        public void SendRemoveEffect(KeyCode keyCode)
+        {
+            S_RemoveEffect packet = new S_RemoveEffect();
+            packet.ObjectId = Id;
+            packet.KeyCode = (int)keyCode;
+
+            Room.Push(Room.Broadcast, packet);
         }
         #endregion
     }

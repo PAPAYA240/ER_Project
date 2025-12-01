@@ -1,11 +1,15 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Data;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using ServerCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Data.EffectData;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 class PacketHandler
 {
@@ -385,15 +389,19 @@ class PacketHandler
         if (!IsSceneReady("Game", () => S_FxHandler(session, packet))) return;
         S_Fx fxPacket = packet as S_Fx;
         GameObject go = Managers.Object.FindById(fxPacket.ObjectId);
-        if (go == null)     return;
+        if (go == null)     
+            return;
+
         PlayerController pc = go.GetComponent<PlayerController>();
-        if (pc == null)      return;
+        if (pc == null)      
+            return;
 
         Vector3 mousePos = new Vector3(fxPacket.MousePosX, 0, fxPacket.MousePosZ);
         Vector3 targetPos = fxPacket.TargetPosition.ToVector();
         Quaternion targetRot = fxPacket.TargetRotation;
 
-        pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));
+        if(fxPacket.CanLookatMouse == true)
+            pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));
         pc.PlayEffectFromServer(fxPacket, mousePos, targetPos, targetRot);
     }
 
@@ -602,12 +610,17 @@ class PacketHandler
         GameObject go = Managers.Object.FindById(revPacket.ObjectId);
         if (go == null)
             return;
-
         EnvController ec = go.GetComponent<EnvController>();
-        if (ec == null)
+
+        GameObject tc = Managers.Object.FindById(revPacket.TargetId);
+        if (tc == null)
             return;
 
-        ec.OnInteractionAuthorized();
+        PlayerController pc = tc.GetComponent<PlayerController>();
+        if (pc == null)
+            return;
+
+        ec.OnInteractionAuthorized(pc);
     }
     
     public static void S_ChangeInventoryHandler(PacketSession session, IMessage packet)
@@ -629,10 +642,6 @@ class PacketHandler
         // *Sound
         S_AttackInfo atkInfoPacket = packet as S_AttackInfo;
 
-        if ("MsDroneAttack1" == atkInfoPacket.AttackType)
-        {
-            int ac = 3;
-        }
         BaseController bc = Managers.Object.FindById(atkInfoPacket.AttackerId)?.GetComponentInChildren<BaseController>();
         if (bc == null)
             return;
@@ -795,12 +804,11 @@ class PacketHandler
             return;
 
         yukiPyosik.ActivateYukiPyosik(go);
-        SkillEffectHandler.HandleEffect(SkillEffectType.YukiRShadow, attackerGo);
-        SkillEffectHandler.HandleEffect(SkillEffectType.YukiRAttack, attackerGo);
     }
     
     public static void S_SoundHandler(PacketSession session, IMessage packet)
     {
+        if (!IsSceneReady("Game", () => S_SoundHandler(session, packet))) return;
         S_Sound soundPkt = packet as S_Sound;
         GameObject go = Managers.Object.FindById(soundPkt.ObjectId);
         if (go == null) return;
@@ -827,7 +835,10 @@ class PacketHandler
         if (go == null)
             return;
 
-        SkillEffectHandler.HandleEffect((SkillEffectType)YukiSkillEffectPkt.EffectType, go);
+        if (YukiSkillEffectPkt.IsPlay)
+            Managers.EffectHandler.PlayEffect((SkillEffectType)YukiSkillEffectPkt.EffectType);
+        else
+            Managers.EffectHandler.StopEffect((SkillEffectType)YukiSkillEffectPkt.EffectType);
     }
 
     public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)
@@ -836,6 +847,13 @@ class PacketHandler
         S_OccupyBeacon occupyBeaconPkt = packet as S_OccupyBeacon;
         if(Enum.TryParse<Beacon>(occupyBeaconPkt.BeaconName, out Beacon result))
             Managers.Object.MyPlayer.UI.PlayerHUD.CaptureTurbine(result, occupyBeaconPkt.Team);
+
+        GameObject beacon = GameObject.Find("Beacon_" + occupyBeaconPkt.BeaconName);
+        if (beacon == null) return;
+        BeaconController bc = beacon.GetComponent<BeaconController>();
+        if (bc == null) return;
+
+        bc.CompleteCapture(occupyBeaconPkt.Team);
     }
 
     public static void S_ChangeBeaconTimeHandler(PacketSession session, IMessage packet)
@@ -1195,16 +1213,71 @@ class PacketHandler
         S_SpawnWard wardPacket = packet as S_SpawnWard;
 
         Managers.Object.AddWard(wardPacket.ObjInfo, wardPacket.TeamIndex);
+    }
 
-        //GameObject go = Managers.Object.FindById(yukiStudPacket.ObjectId);
-        //if (go == null)
-        //    return;
+    public static void S_RemoveEffectHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_RemoveEffectHandler(session, packet))) return;
 
-        //PlayerController pc = go.GetComponentInChildren<PlayerController>();
-        //if (pc == null)
-        //    return;
+        S_RemoveEffect removeEffectPacket = packet as S_RemoveEffect;
 
-        //yukiStudPacket.StudCnt;
+        
+        Managers.FX.Effect.RemoveEffect(removeEffectPacket);
+    }
+
+    public static void S_StartOperateHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_StartOperateHandler(session, packet))) return;
+
+        S_StartOperate startOperatePkt = packet as S_StartOperate;
+
+        GameObject beacon = GameObject.Find(startOperatePkt.BeaconName);
+        
+        if (beacon == null) return;
+        BeaconController bc = beacon.GetComponent<BeaconController>();
+        if (bc == null) return;
+
+        bc.StartCapture(startOperatePkt.Team);
+    }
+
+    public static void S_StopOperateHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_StopOperateHandler(session, packet))) return;
+
+        S_StopOperate stopOperatePkt = packet as S_StopOperate;
+        GameObject beacon = GameObject.Find(stopOperatePkt.BeaconName);
+        
+        if (beacon == null) return;
+        BeaconController bc = beacon.GetComponent<BeaconController>();
+        if (bc == null) return;
+
+        bc.FailCapture();
+    }
+
+    public static void S_AbigailSoundHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_AbigailSoundHandler(session, packet))) return;
+
+        S_AbigailSound abigailSoundPkt = packet as S_AbigailSound;
+        GameObject go = Managers.Object.FindById(abigailSoundPkt.ObjectId);
+        if (go == null) return;
+        AbigailAudioManager aam = go.GetComponentInChildren<AbigailAudioManager>();
+        if(aam == null) return;
+
+        aam.Play(abigailSoundPkt.ObjectId, abigailSoundPkt.Sound, abigailSoundPkt.Pos.ToVector());
+    }
+
+    public static void S_PickSoundHandler(PacketSession session, IMessage packet)
+    {
+        S_PickSound pickSoundPkt = packet as S_PickSound;
+
+        GameObject go = GameObject.Find("PickScene");
+        if (go == null) return;
+
+        PickScene pickScene = go.GetComponent<PickScene>();
+        if (pickScene == null) return;
+
+        pickScene.PlaySelectedSound(pickSoundPkt.CharType);
     }
 
     public static void S_RozziNormalAttackHandler(PacketSession session, IMessage packet)

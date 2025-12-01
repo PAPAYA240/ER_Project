@@ -5,16 +5,16 @@
         "Q": {
           "Caster": [
             {
-              "prefabName": "FX_Charging",
+              "prefabName": "FX_SkillFire",
               "target": "Self",
-              "duration": 5.0,
+              "duration": 2.5,
               "attachBoneName": "ShotPoint"
             },
             {
               "prefabName": "FX_linoleum",
               "target": "Self",
               "delayTime": 0.3,
-              "duration": 0.8,
+              "duration": 0.6,
               "position": {
                 "x": 0,
                 "y": 0,
@@ -31,9 +31,9 @@
           ],
           "Select": [
             {
-              "prefabName": "FX_SkillFire",
+              "prefabName": "FX_Charging",
               "target": "Self",
-              "duration": 2.5,
+              "duration": 5.0,
               "attachBoneName": "ShotPoint"
             },
             {
@@ -83,7 +83,7 @@
               "prefabName": "FX_RSkill_linoleum",
               "target": "Self",
               "delayTime": 0.5,
-              "duration": 2,
+              "duration": 0.8,
               "position": {
                 "x": 0,
                 "y": 0,
@@ -108,6 +108,63 @@
               }
             }
           ],
+          "HitTarget": []
+        },
+        "F1": {
+          "Caster": [
+            {
+              "prefabName": "FX_PassiveShideld",
+              "target": "Self",
+              "duration": 2.5,
+              "delayTime": 0,
+              "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ]
+        }
+      }
+      },
+    "Hyunwoo": {
+      "Skill": {
+        "Q": {
+          "Caster": [
+            {
+              "prefabName": "FX_BI_Hyunwoo_Skill01_Attack_Ys",
+              "target": "Self",
+              "duration": 1.0
+            }
+          ],
+          "HitTarget": []
+        },
+        "W": {
+          "Caster": [
+            {
+              "prefabName": "FX_BI_Hyunwoo_Skill02_Buff01_Ys",
+              "target": "Self",
+              "duration": 2.5
+            }
+          ],
+          "HitTarget": []
+        },
+        "E": {
+          "Caster": [],
+          "HitTarget": []
+        },
+        "R": {
+          "Caster": [
+            {
+              "prefabName": "FX_BI_Hyunwoo_Skill04_Range_Ys",
+              "target": "Self",
+              "duration": 2.5
+            }
+          ],
+          "HitTarget": []
+        },
+        "D": {
+          "Caster": [],
           "HitTarget": []
         }
       }

@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FX_BI_Yuki_S004_01
-  m_Shader: {fileID: 4800000, guid: 357114c381b23334bb89003fa5272ffb, type: 3}
+  m_Shader: {fileID: 4800000, guid: 5c342276ae58a0e42a44b02227e4470b, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -55,6 +55,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Alpha: 1
+    - _AlphaCutoff: 0.05
     - _AlphaStrength: 4
     - _AlphaU: 0
     - _AlphaV: 0

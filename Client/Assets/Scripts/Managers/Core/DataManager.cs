@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using static Data.SkillEffectList;
 
@@ -26,6 +27,7 @@ public class DataManager
 
     public static Dictionary<CharacterType, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>> SoundDict { get; private set; }
          = new Dictionary<CharacterType, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>>();
+
     public static Dictionary<MonsterType, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>> SoundMcDict { get; private set; }
      = new Dictionary<MonsterType, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>>();
 
@@ -41,6 +43,8 @@ public class DataManager
         = new Dictionary<CharacterType, Dictionary<KeyCode, SkillIndicatorConfig>>();
 
     public static Dictionary<int, ItemInfoBase> ItemDict { get; private set; } = new Dictionary<int, ItemInfoBase>();
+
+    public static Dictionary<AbigailSound, List<string>> AbigailAudioDict = new Dictionary<AbigailSound, List<string>>();
 
     public void Init()
     {
@@ -63,6 +67,9 @@ public class DataManager
         // For Item
         JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
         ItemDict = LoadJson<Data.ItemDict, int, ItemInfoBase>("ItemData", "player", settings).MakeDict();
+
+        // For Sound
+        AbigailAudioDict = LoadJson<Data.AbigailSoundData, AbigailSound, List<string>>("AbigailSound").MakeDict();
     }
 
     Loader LoadJson<Loader, Key, Value>(string path) where Loader : ILoader<Key, Value>

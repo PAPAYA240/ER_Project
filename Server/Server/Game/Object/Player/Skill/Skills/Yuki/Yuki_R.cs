@@ -23,7 +23,8 @@ public sealed class Yuki_R : SkillHandlerBase
 
         SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
-        p.SendYukiSkillEffect(SkillEffectType.YukiR);
+
+        p.SendYukiSkillEffect(SkillEffectType.RRange);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

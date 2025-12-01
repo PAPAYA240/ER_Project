@@ -42,23 +42,7 @@ public sealed class Theodore_W : SkillHandlerBase
 
     private void CommitMotionOnce(Player p, Vector3 from, Vector3 end)
     {
-        //_finalEnd = end;
-
-        //float dist = Vector3.Distance(from, end);
-        //float speed = 4.0f;
-        //float duration = MathF.Max(0.05f, dist / speed);
-
-        //p.SendSkillMotion(
-        //     type: SkillMotionType.Dash,
-        //     start: from,
-        //     end: _finalEnd,
-        //     duration: duration,
-        //     anim: ""/*spec.AnimName*/,
-        //     curveId: "EaseOutCubic",
-        //     serverCollision: true,
-        //     authoritativeEnd: true);
-
-        //p.Flags.IsInSkillMotion = true;
+       
     }
 }
 

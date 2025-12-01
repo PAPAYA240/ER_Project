@@ -1,7 +1,24 @@
 {
   "effectData": [
     {
-      "prefabName": "FX_BI_Gamma_skill01_Laser",
+      "prefabName": "FX_BI_Gamma_skill02_Shot",
+      "skillType": "MsGammaAttack1",
+      "target": "Self",
+      "attachBoneName": "Fx_Shot_L",
+      "duration": 0,
+      "delayTime": 0
+    },
+    {
+      "prefabName": "FX_BI_Gamma_skill02_Shot",
+      "skillType": "MsGammaAttack1",
+      "target": "Self",
+      "attachBoneName": "Fx_Shot_R",
+      "duration": 0,
+      "delayTime": 0
+    },
+
+    {
+      "prefabName": "FX_BI_Gamma_skill01_Laser", // 수정 필요
       "skillType": "MsGammaSkill1",
       "target": "Self",
       "duration": 3.3,
@@ -13,14 +30,14 @@
       }
     },
     {
-      "prefabName": "FX_Gamma_Skill2",
+      "prefabName": "FX_BI_Gamma_skill02_Attack",
       "skillType": "MsGammaSkill2",
       "target": "Self",
       "duration": 5,
       "delayTime": 1.8,
       "position": {
         "x": 0,
-        "y": 1,
+        "y": 0.3,
         "z": 1
       }
     },

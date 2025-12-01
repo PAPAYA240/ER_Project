@@ -318,7 +318,7 @@ class PacketHandler
         {
             ObjectId = envPacket.ObjectId,
             EnvType = envPacket.EnvType,
-            TargetId = player.Id,
+            TargetId = envPacket.TargetId
         };
         room.Push(room.Broadcast, sendPacket);
     }

@@ -110,10 +110,9 @@ namespace Server.Game
                 if (kvp.Key == objectId)
                     return kvp.Value;
             }
-
             return -1;
         }
-        
+      
         public int GetPlayerCount()
         {
             return _players.Count;

@@ -1,8 +1,9 @@
+using Google.Protobuf.Protocol;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class YukiSkillRange : MonoBehaviour
+public class YukiSkillRange : MonoBehaviour, IEffect
 {
     private Coroutine _co;
     public Image _backgroundImage;
@@ -13,18 +14,18 @@ public class YukiSkillRange : MonoBehaviour
         transform.localPosition = Vector3.zero;
 
         _backgroundImage.type = Image.Type.Filled;
-        _backgroundImage.fillMethod = Image.FillMethod.Radial360; // ¿øÇü
-        _backgroundImage.fillOrigin = 3; // 0: À§
-        _backgroundImage.fillClockwise = true; // ½Ã°è¹æÇâ
-        _backgroundImage.fillAmount = 0f; // ½ÃÀÛÀº ºñ¾îÀÖ°Ô
+        _backgroundImage.fillMethod = Image.FillMethod.Radial360; // ï¿½ï¿½ï¿½ï¿½
+        _backgroundImage.fillOrigin = 3; // 0: ï¿½ï¿½
+        _backgroundImage.fillClockwise = true; // ï¿½Ã°ï¿½ï¿½ï¿½ï¿½
+        _backgroundImage.fillAmount = 0f; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ö°ï¿½
 
         _foregroundImage.type = Image.Type.Filled;
         _foregroundImage.fillMethod = Image.FillMethod.Vertical;
-        _foregroundImage.fillOrigin = 1; // 0: ¿ÞÂÊ, 1: ¿À¸¥ÂÊ
-        _foregroundImage.fillAmount = 0.5f; // 50%¸¸ ±×¸®±â
+        _foregroundImage.fillOrigin = 1; // 0: ï¿½ï¿½ï¿½ï¿½, 1: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        _foregroundImage.fillAmount = 0.5f; // 50%ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½
     }
 
-    public void PlayEffectOneSecond()
+    public void Play()
     {
         gameObject.SetActive(true);
 
@@ -39,7 +40,7 @@ public class YukiSkillRange : MonoBehaviour
         float timer = 0f;
         _backgroundImage.fillAmount = 0.0f;
 
-        // 0~0.5 ¹üÀ§·Î 1ÃÊ µ¿¾È Ã¤¿ì±â
+        // 0~0.5 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½ï¿½
         while (timer < duration)
         {
             timer += Time.deltaTime;
@@ -47,12 +48,20 @@ public class YukiSkillRange : MonoBehaviour
             yield return null;
         }
 
-        _backgroundImage.fillAmount = 0.5f; // È®½ÇÇÏ°Ô ¹Ý¸¸ Ã¤¿ò
+        Managers.EffectHandler.PlayEffect(SkillEffectType.RShadow);
+        Managers.EffectHandler.PlayEffect(SkillEffectType.RAttack);
 
-        // Àá±ñ º¸¿©ÁÖ°í ¼û±â±â
+        _backgroundImage.fillAmount = 0.5f; // È®ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ý¸ï¿½ Ã¤ï¿½ï¿½
+
+        // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
         yield return new WaitForSeconds(0.1f);
 
         gameObject.SetActive(false);
         _co = null;
+    }
+
+    public void Stop()
+    {
+        throw new System.NotImplementedException();
     }
 }

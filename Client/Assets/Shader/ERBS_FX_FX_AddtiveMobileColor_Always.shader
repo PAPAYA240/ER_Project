@@ -1,70 +1,58 @@
-Shader "ERBS_FX/FX_AdditiveUI"
-{
-    Properties
-    {
-        _Color ("Color", Color) = (1,1,1,1)
-        _MainTex ("MainTex", 2D) = "white" {}
-    }
+Shader "ERBS_FX/FX_AddtiveMobileColor_Always" {
+	Properties {
+		_Color ("Color", Vector) = (0.5,0.5,0.5,1)
+		_MainTex ("MainTex", 2D) = "white" {}
+	}
+	//DummyShaderTextExporter
+	SubShader{
+		Tags { "RenderType"="Opaque" }
+		LOD 200
 
-    SubShader
-    {
-        Tags
-        {
-            "Queue" = "Transparent"
-            "IgnoreProjector" = "True"
-            "RenderType" = "Transparent"
-            "PreviewType" = "Plane"
-            "CanUseSpriteAtlas" = "True"
-        }
+		Pass
+		{
+			HLSLPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
 
-        Cull Off
-        Lighting Off
-        ZWrite Off
-        Blend One One
+			float4x4 unity_ObjectToWorld;
+			float4x4 unity_MatrixVP;
+			float4 _MainTex_ST;
 
-        Pass
-        {
-            HLSLPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
+			struct Vertex_Stage_Input
+			{
+				float4 pos : POSITION;
+				float2 uv : TEXCOORD0;
+			};
 
-            float4x4 unity_ObjectToWorld;
-            float4x4 unity_MatrixVP;
-            float4 _MainTex_ST;
+			struct Vertex_Stage_Output
+			{
+				float2 uv : TEXCOORD0;
+				float4 pos : SV_POSITION;
+			};
 
-            struct Vertex_Stage_Input
-            {
-                float4 pos : POSITION;
-                float2 uv : TEXCOORD0;
-            };
+			Vertex_Stage_Output vert(Vertex_Stage_Input input)
+			{
+				Vertex_Stage_Output output;
+				output.uv = (input.uv.xy * _MainTex_ST.xy) + _MainTex_ST.zw;
+				output.pos = mul(unity_MatrixVP, mul(unity_ObjectToWorld, input.pos));
+				return output;
+			}
 
-            struct Vertex_Stage_Output
-            {
-                float2 uv : TEXCOORD0;
-                float4 pos : SV_POSITION;
-            };
+			Texture2D<float4> _MainTex;
+			SamplerState sampler_MainTex;
+			float4 _Color;
 
-            Vertex_Stage_Output vert(Vertex_Stage_Input input)
-            {
-                Vertex_Stage_Output output;
-                output.uv = (input.uv * _MainTex_ST.xy) + _MainTex_ST.zw;
-                output.pos = mul(unity_MatrixVP, mul(unity_ObjectToWorld, input.pos));
-                return output;
-            }
+			struct Fragment_Stage_Input
+			{
+				float2 uv : TEXCOORD0;
+			};
 
-            Texture2D<float4> _MainTex;
-            SamplerState sampler_MainTex;
-            float4 _Color;
+			float4 frag(Fragment_Stage_Input input) : SV_TARGET
+			{
+				return _MainTex.Sample(sampler_MainTex, input.uv.xy) * _Color;
+			}
 
-            float4 frag(Vertex_Stage_Output input) : SV_Target
-            {
-                float4 tex = _MainTex.Sample(sampler_MainTex, input.uv);
-                tex *= _Color;
-                tex.rgb *= _Color.a * 0.6;
-                return tex;
-            }
-
-            ENDHLSL
-        }
-    }
+			ENDHLSL
+		}
+	}
 }

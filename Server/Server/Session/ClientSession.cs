@@ -34,19 +34,52 @@ namespace Server
 
 		public string UserName {  get; set; }
 
-		public void Send(IMessage packet)
-		{
-			string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
-			MsgId msgId = (MsgId)Enum.Parse(typeof(MsgId), msgName);
-            ushort size = (ushort)packet.CalculateSize();
-            byte[] sendBuffer = new byte[size + 4];
-            Array.Copy(BitConverter.GetBytes((ushort)size + 4), 0, sendBuffer, 0, sizeof(ushort));
-            Array.Copy(BitConverter.GetBytes((ushort)msgId), 0, sendBuffer, 2, sizeof(ushort));
-            Array.Copy(packet.ToByteArray(), 0, sendBuffer, 4, size);
-            Send(new ArraySegment<byte>(sendBuffer));
+        public void Send(IMessage packet)
+        {
+            try
+            {
+                // 1) 크기 출력
+                int calcSize = packet.CalculateSize();
+                Console.WriteLine($"[DEBUG] Sending {packet.GetType().Name}, CalcSize={calcSize}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] CalculateSize FAILED: {ex}");
+                Console.WriteLine($"[PACKET DUMP]\n{packet}");
+                throw;
+            }
+
+            try
+            {
+                // 2) 패킷 직렬화 시도
+                byte[] body = packet.ToByteArray(); // 여기서 주로 터짐
+
+                Console.WriteLine($"[DEBUG] ToByteArray OK: {body.Length} bytes");
+
+                // 3) 정상 직렬화되면 이후 로직 수행
+                ushort size = (ushort)body.Length;
+                byte[] sendBuffer = new byte[size + 4];
+
+                Array.Copy(BitConverter.GetBytes((ushort)(size + 4)), 0, sendBuffer, 0, 2);
+                string msgName = packet.Descriptor.Name.Replace("_", string.Empty);
+                MsgId msgId = (MsgId)Enum.Parse(typeof(MsgId), msgName);
+                Array.Copy(BitConverter.GetBytes((ushort)msgId), 0, sendBuffer, 2, 2);
+                Array.Copy(body, 0, sendBuffer, 4, size);
+
+                Send(new ArraySegment<byte>(sendBuffer));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] ToByteArray FAILED: {ex}");
+                Console.WriteLine("=========== PACKET DUMP START =============");
+                Console.WriteLine(packet.ToString());
+                Console.WriteLine("=========== PACKET DUMP END ===============");
+                throw;
+            }
         }
 
-		public override void OnConnected(EndPoint endPoint)
+
+        public override void OnConnected(EndPoint endPoint)
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");
 
