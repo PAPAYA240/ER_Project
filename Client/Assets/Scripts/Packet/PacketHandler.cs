@@ -1008,22 +1008,17 @@ class PacketHandler
         if (!IsSceneReady("Game", () => S_CombatModeHandler(session, packet))) return;
         S_CombatMode combatModePkt = packet as S_CombatMode;
 
-        GameObject go = Managers.Object.FindById(combatModePkt.ObjectId);
-        if (go == null)
-            return;
-
-        PlayerController pc = go.GetComponentInChildren<PlayerController>();
-        if (pc == null)
-            return;
-
-        switch (pc.CombatStat = combatModePkt.CombatMode)
+        if(Managers.Object.MyPlayer != null)
         {
-            case CombatState.Combat:
-                Managers.Object.MyPlayer.UI.PlayerInterface.ActivateCombatImg(true);
-                break;
-            case CombatState.NonCombat:
-                Managers.Object.MyPlayer.UI.PlayerInterface.ActivateCombatImg(false);
-                break;
+            switch (Managers.Object.MyPlayer.CombatStat = combatModePkt.CombatMode)
+            {
+                case CombatState.Combat:
+                    Managers.Object.MyPlayer.UI.PlayerInterface.ActivateCombatImg(true);
+                    break;
+                case CombatState.NonCombat:
+                    Managers.Object.MyPlayer.UI.PlayerInterface.ActivateCombatImg(false);
+                    break;
+            }
         }
     }
 

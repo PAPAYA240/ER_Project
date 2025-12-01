@@ -1105,8 +1105,7 @@ message S_Untargetable{
 }
 
 message S_CombatMode {
-	int32 objectId = 1;
-	CombatState combatMode = 2;
+	CombatState combatMode = 1;
 }
 
 message C_Chat {
