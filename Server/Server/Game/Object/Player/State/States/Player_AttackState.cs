@@ -248,9 +248,8 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         {
             p.CombatState = CombatState.Combat;
             S_CombatMode combatModePkt = new S_CombatMode();
-            combatModePkt.ObjectId = p.Id;
             combatModePkt.CombatMode = p.CombatState;
-            p.Room.Broadcast(combatModePkt);
+            p.Room.Push(p.Session.Send, combatModePkt);
             p.CombatTime = 0f;
         }
 

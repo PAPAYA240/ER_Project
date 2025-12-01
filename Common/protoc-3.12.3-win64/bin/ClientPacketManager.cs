@@ -180,7 +180,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SRemoveEffect, MakePacket<S_RemoveEffect>);
 		_handler.Add((ushort)MsgId.SRemoveEffect, PacketHandler.S_RemoveEffectHandler);		
 		_onRecv.Add((ushort)MsgId.SRozziNormalAttack, MakePacket<S_RozziNormalAttack>);
-		_handler.Add((ushort)MsgId.SRozziNormalAttack, PacketHandler.S_RozziNormalAttackHandler);
+		_handler.Add((ushort)MsgId.SRozziNormalAttack, PacketHandler.S_RozziNormalAttackHandler);		
+		_onRecv.Add((ushort)MsgId.SChangeExp, MakePacket<S_ChangeExp>);
+		_handler.Add((ushort)MsgId.SChangeExp, PacketHandler.S_ChangeExpHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

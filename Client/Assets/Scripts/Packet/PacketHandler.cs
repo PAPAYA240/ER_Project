@@ -371,6 +371,8 @@ class PacketHandler
             mpc.UI.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
             mpc.UpdateLevel();
             mpc.UI.PlayerInterface.UpdateStat();
+            mpc.Exp = levelUpPkt.CurExp;
+            mpc.MaxExp = levelUpPkt.NextMaxExp;
             Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(mpc.Id);
             return;
         }
@@ -1006,22 +1008,17 @@ class PacketHandler
         if (!IsSceneReady("Game", () => S_CombatModeHandler(session, packet))) return;
         S_CombatMode combatModePkt = packet as S_CombatMode;
 
-        GameObject go = Managers.Object.FindById(combatModePkt.ObjectId);
-        if (go == null)
-            return;
-
-        PlayerController pc = go.GetComponentInChildren<PlayerController>();
-        if (pc == null)
-            return;
-
-        switch (pc.CombatStat = combatModePkt.CombatMode)
+        if(Managers.Object.MyPlayer != null)
         {
-            case CombatState.Combat:
-                Managers.Object.MyPlayer.UI.PlayerInterface.ActivateCombatImg(true);
-                break;
-            case CombatState.NonCombat:
-                Managers.Object.MyPlayer.UI.PlayerInterface.ActivateCombatImg(false);
-                break;
+            switch (Managers.Object.MyPlayer.CombatStat = combatModePkt.CombatMode)
+            {
+                case CombatState.Combat:
+                    Managers.Object.MyPlayer.UI.PlayerInterface.ActivateCombatImg(true);
+                    break;
+                case CombatState.NonCombat:
+                    Managers.Object.MyPlayer.UI.PlayerInterface.ActivateCombatImg(false);
+                    break;
+            }
         }
     }
 
@@ -1304,6 +1301,14 @@ class PacketHandler
             return;
 
         pr.Init(attackPacket);
+    }
+
+    public static void S_ChangeExpHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_ChangeExpHandler(session, packet))) return;
+
+        S_ChangeExp changeExpPacket = packet as S_ChangeExp;
+        Managers.Object.MyPlayer.Exp = changeExpPacket.Exp;
     }
 
     static float GetCurrentEstimatedOneWayLatency()

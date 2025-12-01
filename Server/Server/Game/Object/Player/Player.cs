@@ -372,9 +372,8 @@ namespace Server.Game
 
                     CombatState = CombatState.NonCombat;
                     S_CombatMode combatModePkt = new S_CombatMode();
-                    combatModePkt.ObjectId = Id;
                     combatModePkt.CombatMode = CombatState;
-                    Room.Broadcast(combatModePkt);
+                    Room.Push(Session.Send, combatModePkt);
 
                     // 유키 단추용
                     if (Info.Player.CharType == CharacterType.Yuki)
@@ -461,6 +460,11 @@ namespace Server.Game
             }
 
             Room.Broadcast(KdaPacket);
+
+            // 경험치
+
+            // 스코어
+
         }
         #endregion
 
@@ -1377,7 +1381,7 @@ namespace Server.Game
             Room.Push(Session.Send, packet);
         }
 
-        public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = null)
+        public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = "")
         {
             S_RemoveEffect packet = new S_RemoveEffect();
             packet.ObjectId = Id;
