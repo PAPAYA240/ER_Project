@@ -76,7 +76,7 @@ public class SoundManager
 
         AudioSource audioSource = go.AddComponent<AudioSource>();
         audioSource.volume = volume;
-        audioSource.spatialBlend = 0.05f;
+        audioSource.spatialBlend = 1f;
 
         audioSource.rolloffMode = AudioRolloffMode.Logarithmic; // 감쇠 모드
         audioSource.minDistance = 2f;            // 이 거리까지는 최대 음량
