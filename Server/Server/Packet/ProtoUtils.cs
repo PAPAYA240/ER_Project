@@ -39,6 +39,14 @@ namespace Google.Protobuf.Protocol
             float dz = PosZ - pos.Y;
             return MathF.Sqrt(dx * dx + dz * dz);
         }
+        public float GetDistanceSq(PositionInfo other)
+        {
+            float diffX = this.PosX - other.PosX;
+            float diffY = this.PosY - other.PosY;
+            float diffZ = this.PosZ - other.PosZ;
+
+            return (diffX * diffX) + (diffY * diffY) + (diffZ * diffZ);
+        }
     }
 
     public sealed partial class StatInfo

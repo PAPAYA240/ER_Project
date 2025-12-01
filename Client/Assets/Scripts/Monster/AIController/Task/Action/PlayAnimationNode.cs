@@ -67,6 +67,7 @@ public class PlayAnimation : AnimationControlNode
     {
         if(!_play)
         {
+            Debug.Log("다시 Play");
              int animHash = Animator.StringToHash(chainAnimNames[_currentChainIndex]);
             if(_animator.HasState(0, animHash))
                 Play(chainAnimNames[_currentChainIndex]); 
@@ -101,8 +102,6 @@ public class PlayAnimation : AnimationControlNode
         _currentAnimName = anim;
         _animator.CrossFadeInFixedTime(anim, 0.1f, 0);
 
-        if (_controller.Type == MonsterType.Turret)
-            Debug.Log($"{_currentAnimName}");
         _controller.Sound.GetEffect3D(_currentAnimName, _controller.transform.position);
     }
 
@@ -117,6 +116,7 @@ public class PlayAnimation : AnimationControlNode
     }
     public override void Exit(GameObject obj, bool clear)
     {
+        Debug.Log("호출?");
         ClearAnim();
         _currentAnimName = string.Empty;
         _currentChainIndex = 0;

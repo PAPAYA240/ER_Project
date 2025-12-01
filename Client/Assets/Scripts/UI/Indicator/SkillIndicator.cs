@@ -186,12 +186,9 @@ public class SkillIndicator : UI_Base
         // 제한 범위 내에 넘어가지 않았다면
         if (currentAngle >= LAngle && currentAngle <= RAngle)
         {
-            Debug.Log("넘어가지 않음");
         }
-        // 넘어갔다면?
         else
         {
-            Debug.Log("넘어감");
             float clampedAngle
                 = Mathf.Clamp(currentAngle, LAngle, RAngle);
 

@@ -196,6 +196,11 @@ public class PlayerController : CreatureController
     // 화살
     protected Transform _equipTransform = null;
 
+    // Bush Material
+    private Transform _lodTransform = null;
+    private Material[] _originMaterials = null;
+    private Material _playerBushMaterial = null;
+    public bool HidingInBush = false;
     #region KDA
 
     public int KillAmount { get; private set; } = 0; 
@@ -272,6 +277,7 @@ public class PlayerController : CreatureController
         // 장비 슬롯
         InitEquipItem();
         InitializeXRay();
+        InitBushRenderSetting();
 
         // NavMesh Agent
         _agent = GetComponent<NavMeshAgent>();
@@ -436,10 +442,29 @@ public class PlayerController : CreatureController
             return;
         }
 
+        AnimCondition(animInfo.Name);
+
         _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio);
 
         if (animInfo.IsChangeSpeed == true)
             _animator.SetFloat("AttackSpeed", animInfo.Speed);
+    }
+
+    private void AnimCondition(string name)
+    {
+        if (ObjInfo.Player.CharType == CharacterType.Theodore)
+        {
+            // *todo. operate 조건이 자꾸 true로 만들어서 애니메이션으로 조정
+            if (name == "OPERATE" && _eqipWeapon.gameObject.activeInHierarchy == true)
+            {
+                _eqipWeapon.gameObject.SetActive(false);
+            }
+            else if (_eqipWeapon.gameObject.activeInHierarchy == false)
+            {
+                _eqipWeapon.gameObject.SetActive(true);
+                ActiveRenderer(true);
+            }
+        }
     }
 
     public void ChangeSpeed(string paramName, float speed)
@@ -658,7 +683,7 @@ public class PlayerController : CreatureController
     public IEnumerator CoRotateToPosition(Vector3 targetPos)
     {
         float rotateSpeed = 15f;
-
+       
         while (true)
         {
             if (State == CreatureState.Moving)
@@ -831,4 +856,88 @@ public class PlayerController : CreatureController
         return;
     }
 
+    #region Bush Renderer
+    private void InitBushRenderSetting()
+    {
+        Renderer playerRenderer = this.GetComponentInChildren<Renderer>();
+        if (playerRenderer != null)
+            _originMaterials = playerRenderer.materials;
+        _playerBushMaterial = Resources.Load<Material>("Material/ghostMaterial");
+        foreach (Transform child in transform)
+        {
+            if (child.name.Contains("LOD"))
+            {
+                _lodTransform = child;
+                break;
+            }
+        }
+    }
+    Coroutine _coRenderer = null;
+    public void ActiveRenderer(bool active, float duration = 0f)
+    {
+        if (active == false)
+        {
+            MakeInvisible();
+        }
+        else
+        {
+            if (_coRenderer != null)
+                StopCoroutine(_coRenderer);
+
+            _coRenderer = StartCoroutine(MakeVisible(duration));
+        }
+    }
+
+    // 렌더러 비활성화
+    private void MakeInvisible()
+    {
+        if (_lodTransform == null)
+            return;
+
+        HidingInBush = true;
+        _nameTag.gameObject.SetActive(false);
+
+        Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.enabled = false;
+        }
+    }
+   
+    // 렌더러 활성화
+    private IEnumerator MakeVisible(float duration = 0f)
+    {
+        if (_lodTransform == null)
+            yield break;
+
+        yield return new WaitForSeconds(duration);
+
+        HidingInBush = false;
+        _nameTag.gameObject.SetActive(true);
+
+        Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.enabled = true;
+            renderer.materials = _originMaterials;
+        }
+    }
+
+    public void ChangeBushRenderer()
+    {
+        if (_lodTransform == null)
+            return;
+
+        HidingInBush = true;
+        Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
+        Material[] newMaterials = new Material[] { _playerBushMaterial };
+
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.enabled = true;
+            renderer.materials = newMaterials;
+        }
+
+    }
+    #endregion
 }

@@ -14,15 +14,15 @@ public class YukiSkillRange : MonoBehaviour, IEffect
         transform.localPosition = Vector3.zero;
 
         _backgroundImage.type = Image.Type.Filled;
-        _backgroundImage.fillMethod = Image.FillMethod.Radial360; // ¿øÇü
-        _backgroundImage.fillOrigin = 3; // 0: À§
-        _backgroundImage.fillClockwise = true; // ½Ã°è¹æÇâ
-        _backgroundImage.fillAmount = 0f; // ½ÃÀÛÀº ºñ¾îÀÖ°Ô
+        _backgroundImage.fillMethod = Image.FillMethod.Radial360; // ï¿½ï¿½ï¿½ï¿½
+        _backgroundImage.fillOrigin = 3; // 0: ï¿½ï¿½
+        _backgroundImage.fillClockwise = true; // ï¿½Ã°ï¿½ï¿½ï¿½ï¿½
+        _backgroundImage.fillAmount = 0f; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ö°ï¿½
 
         _foregroundImage.type = Image.Type.Filled;
         _foregroundImage.fillMethod = Image.FillMethod.Vertical;
-        _foregroundImage.fillOrigin = 1; // 0: ¿ÞÂÊ, 1: ¿À¸¥ÂÊ
-        _foregroundImage.fillAmount = 0.5f; // 50%¸¸ ±×¸®±â
+        _foregroundImage.fillOrigin = 1; // 0: ï¿½ï¿½ï¿½ï¿½, 1: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        _foregroundImage.fillAmount = 0.5f; // 50%ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½
     }
 
     public void Play()
@@ -40,7 +40,7 @@ public class YukiSkillRange : MonoBehaviour, IEffect
         float timer = 0f;
         _backgroundImage.fillAmount = 0.0f;
 
-        // 0~0.5 ¹üÀ§·Î 1ÃÊ µ¿¾È Ã¤¿ì±â
+        // 0~0.5 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½ï¿½
         while (timer < duration)
         {
             timer += Time.deltaTime;
@@ -51,9 +51,9 @@ public class YukiSkillRange : MonoBehaviour, IEffect
         Managers.EffectHandler.PlayEffect(SkillEffectType.RShadow);
         Managers.EffectHandler.PlayEffect(SkillEffectType.RAttack);
 
-        _backgroundImage.fillAmount = 0.5f; // È®½ÇÇÏ°Ô ¹Ý¸¸ Ã¤¿ò
+        _backgroundImage.fillAmount = 0.5f; // È®ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ý¸ï¿½ Ã¤ï¿½ï¿½
 
-        // Àá±ñ º¸¿©ÁÖ°í ¼û±â±â
+        // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
         yield return new WaitForSeconds(0.1f);
 
         gameObject.SetActive(false);

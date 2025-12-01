@@ -13,6 +13,7 @@ namespace Server.Game
         public EnvType envType;
         public Vector3 posInfo;
         public Quaternion rotInfo;
+        public Vector3 scaled;
     }
 
     public class RawEnvList
@@ -45,7 +46,8 @@ namespace Server.Game
                 {
                     envType = monsterTypeName,
                     posInfo = rawData.posInfo,
-                    rotInfo = rawData.rotInfo
+                    rotInfo = rawData.rotInfo,
+                    scaled = rawData.scaled
                 });
             }
             return cleanedList;
@@ -76,7 +78,8 @@ namespace Server.Game
                 case EnvType.HealPack:
                     player.Room.Push(player.OnHeal, player, 650f);
                     break;
-
+                case EnvType.Bush:
+                    break;
                 default:
                     break;
             }
@@ -99,6 +102,10 @@ namespace Server.Game
                 env.Info.RotInfo.Qy = eData.rotInfo.Y;
                 env.Info.RotInfo.Qz = eData.rotInfo.Z;
                 env.Info.RotInfo.Qw = eData.rotInfo.W;
+
+                env.Info.ScaleInfo.ScaledX = eData.scaled.X; 
+                env.Info.ScaleInfo.ScaledY = eData.scaled.Y; 
+                env.Info.ScaleInfo.ScaledZ = eData.scaled.Z;
 
                 env.Info.Env = new EnvInfo();
                 env.Info.Env.EnvType = eData.envType;
