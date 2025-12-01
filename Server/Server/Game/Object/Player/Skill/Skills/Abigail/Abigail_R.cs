@@ -24,6 +24,9 @@ public sealed class Abigail_R : Skill_Abigail
         SendSkillConfirmPacket(p);
         p.SendCanStopSkillPacket(false);
         p.Room.AddStatusEffect(p, p, _keyCode, null); // 지정불가
+
+        p.Room.BroadcastAbigailSound(p, AbigailSound.R, 1f);
+        p.Room.BroadcastAbigailSound(p, AbigailSound.Rvoice, 1f);
     }
 
     public override void OnTick(Player p, SkillContext ctx)

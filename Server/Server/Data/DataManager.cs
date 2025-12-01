@@ -46,6 +46,8 @@ namespace Server.Data
        
         public static Dictionary<CharacterType, List<List<int>>> ItemSetDict { get; private set; } = new Dictionary<CharacterType, List<List<int>>>();
 
+        public static Dictionary<AbigailSound, List<string>> AbigailAudioDict = new Dictionary<AbigailSound, List<string>>();
+
         public static void LoadData()
         {
             // For PlayerData
@@ -75,6 +77,9 @@ namespace Server.Data
             // For System
             PhaseDict = LoadJson<Data.PhaseData, int, int>("PhaseData", "player").MakeDict();
             RespawnDict = LoadJson<Data.RespawnData, int, int>("RespawnData", "player").MakeDict();
+
+            // For Sound
+            AbigailAudioDict = LoadJson<Data.AbigailSoundData, AbigailSound, List<string>>("AbigailSound", "player").MakeDict();
         }
         
 

@@ -11,3 +11,4 @@ COPY /Y "..\..\..\Server\Server\Data\json\SkillSpecData.json" "..\..\..\Client\A
 COPY /Y "..\..\..\Server\Server\Data\json\StatData.json"  "..\..\..\Client\Assets\Resources\Data\StatData.json"
 COPY /Y "..\..\..\Server\Server\Data\json\HitboxData.json"  "..\..\..\Client\Assets\Resources\Data\HitboxData.json"
 COPY /Y "..\..\..\Server\Server\Data\json\MonsterHitboxData.json"  "..\..\..\Client\Assets\Resources\Data\MonsterData\MonsterHitboxData.json"
+COPY /Y "..\..\..\Server\Server\Data\json\AbigailSound.json"  "..\..\..\Client\Assets\Resources\Data\AbigailSound.json"

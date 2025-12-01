@@ -25,6 +25,8 @@ public class Abigail_AttackState : Player_AttackState
 
     protected override void StartSwing(Player p, DateTime now)
     {
+        CheckPassive(p);
+
         _swingActive = true;
         _damageApplied = false;
 
@@ -35,19 +37,21 @@ public class Abigail_AttackState : Player_AttackState
         // 애니 송출(서버 권한)
         string animName = AnimAttackT;
 
-        CheckPassive(p);
+        GameRoom room = p.Room;
 
         if (IsPassiveAttack)
         {
             animName = AnimAttackT;
-            p.Skill.StartCooldown(_keyCode);
-            p.SendSkillCostPacket(_keyCode, p.Skill.GetCooldown(_keyCode));
-            IsPassiveAttack = false;
+            room.Push(room.BroadcastAbigailSound, p, AbigailSound.PassiveAttack, 1f);
         }
         else
         {
             animName = (_attackIndex == 0) ? AnimAttackA : AnimAttackB;
             _attackIndex = 1 - _attackIndex;
+
+            room.Push(room.BroadcastAbigailSound, p, AbigailSound.Attack1 + _attackIndex, 1f);
+            room.Push(room.BroadcastAbigailSound, p, AbigailSound.AttackVoice, 0.6f);
+            p.BonusAttackRange = 0;
         }
 
         // 전투 상태 평타 칠 때마다 갱신
@@ -73,10 +77,22 @@ public class Abigail_AttackState : Player_AttackState
         // 스킬 데미지
         if (IsPassiveAttack)
         {
-            room.Push(room.AttackSkillTarget, p, target, _keyCode);
-            room.Push(room.AddStatusEffect, p, target, _keyCode, "Hit"); // 방깎
+            if (p.Skill.IsPassiveAttackReady())
+            {
+                p.Skill.StartCooldown(_keyCode);
+                p.SendSkillCostPacket(_keyCode, p.Skill.GetCooldown(_keyCode));
+
+                room.Push(room.AttackSkillTarget, p, target, _keyCode);
+                room.Push(room.AddStatusEffect, p, target, _keyCode, "Hit"); // 방깎
+
+                room.Push(room.BroadcastAbigailSound, p, AbigailSound.PassiveAttackHit, 1f);
+            }
+            else
+                room.Push(room.BroadcastAbigailSound, p, AbigailSound.AttackHit, 1f);
         }
-        
+        else
+            room.Push(room.BroadcastAbigailSound, p, AbigailSound.AttackHit, 1f);
+
         // 평타 데미지
         room.Push(target.OnDamaged, p, p.Attack, false, true);
     }
@@ -93,5 +109,12 @@ public class Abigail_AttackState : Player_AttackState
             player.BonusAttackRange = 0;
             IsPassiveAttack = false;
         }
+    }
+
+    public override void Exit(Player player)
+    {
+        base.Exit(player);
+
+        CheckPassive(player);
     }
 }

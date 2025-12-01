@@ -29,10 +29,12 @@ public class Player_RestState : IPlayerState
         {
             _animName = "REST_START";
             player.IsHit = false;
+
+            if (player.Info.Player.CharType == CharacterType.Abigail)
+                player.Room.BroadcastAbigailSound(player, AbigailSound.Rest, 1);
         }
         else
         {
-            Console.WriteLine("휴식 끝");
             _animName = "REST_END";
         }
 

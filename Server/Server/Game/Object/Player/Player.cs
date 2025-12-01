@@ -59,7 +59,8 @@ namespace Server.Game
 
         public override float AttackSpeed
         {
-            get { return ComposeFinal(STAT_ATTACK_SPEED, (Stat.AttackSpeed + DataManager.WeaponDict[Info.Player.Weapon].AttackSpeed) * (1 + _totalItemStat.AttackSpeed), false, _mulBuffOffset); }
+            get { return ComposeFinal(STAT_ATTACK_SPEED, (Stat.AttackSpeed + DataManager.WeaponDict[Info.Player.Weapon].AttackSpeed) * 
+                (1 + _totalItemStat.AttackSpeed + (DataManager.WeaponMasteryDict[Info.Player.CharType][Info.Player.Weapon].AttackSpeed * 0.01f * Stat.Level ) ), false, _mulBuffOffset); }
             set { base.AttackSpeed = value; }
         }
 
@@ -333,6 +334,8 @@ namespace Server.Game
 
             var cd = new CooldownController_Tick(this);
             Skill = new SkillController(this, cd);
+
+            UpdateStatusFlag();
         }
 
         public override void Update()
@@ -517,15 +520,12 @@ namespace Server.Game
                         BonusAttackRange = 0f;
                     break;
                 case CharacterType.Abigail:
+                    if (null == Skill)
+                        break;
                     isPassiveAttackReady = Skill.IsPassiveAttackReady();
 
-                    if(!_wasPassiveReady && isPassiveAttackReady)
-                    {
-                        S_AbigailSound abigailSound = new S_AbigailSound();
-                        abigailSound.ObjectId = Id;
-                        abigailSound.Sound = AbigailSound.PassiveReady;
-                        Room.Push(Session.Send, abigailSound);
-                    }
+                    if(!_wasPassiveReady && isPassiveAttackReady && !IsDead)
+                        Room.Push(Room.BroadcastAbigailSound, this, AbigailSound.PassiveReady, 1f);
 
                     _wasPassiveReady = isPassiveAttackReady;
 
@@ -959,20 +959,36 @@ namespace Server.Game
         #endregion
 
         #region Level
+        private readonly object _lock = new object();
+
+        bool CanLevelUp()
+        {
+            return DataManager.ExpDict.ContainsKey(Stat.Level) &&
+                   Stat.Exp >= DataManager.ExpDict[Stat.Level];
+        }
+
         public int CheckLevelUp()
         {
-            int levelUp = 0;
-            while (DataManager.ExpDict.ContainsKey(Stat.Level) &&
-                Stat.Exp >= DataManager.ExpDict[Stat.Level])
-            {
-                Stat.Exp -= DataManager.ExpDict[Stat.Level];
-                Stat.Level++;
-                StatInfo statInfo = DataManager.StatGrowthDict[Info.Player.CharType];
-                Stat.AddStat(statInfo);
-                levelUp++;
-            }
+            if (!CanLevelUp())
+                return 0;
 
-            return levelUp;
+            lock (_lock)
+            {
+                if (!CanLevelUp())
+                    return 0;
+
+                int levelUp = 0;
+                while (DataManager.ExpDict.ContainsKey(Stat.Level) &&
+                    Stat.Exp >= DataManager.ExpDict[Stat.Level])
+                {
+                    Stat.Exp -= DataManager.ExpDict[Stat.Level];
+                    Stat.Level++;
+                    StatInfo statInfo = DataManager.StatGrowthDict[Info.Player.CharType];
+                    Stat.AddStat(statInfo);
+                    levelUp++;
+                }
+                return levelUp;
+            }
         }
         #endregion
 
