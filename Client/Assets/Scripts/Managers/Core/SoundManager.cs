@@ -117,7 +117,7 @@ public class SoundManager
         audioSource.Play();
 
         Object.Destroy(go, audioClip.length + 0.1f);
-        return audioClip.length;
+        return audioClip.length; 
     }
 
     public AudioClip PlayLoop(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, float volume = 0.15f)

@@ -314,8 +314,26 @@ namespace Server.Game
                         continue;
 
                     List<T> hitTargets = new List<T>();
+                    if (hitbox.Creature is Monster)
+                    {
+                        Dictionary<int, T> filteredTargets = new Dictionary<int, T>();
+                        foreach (var kvp in targets)
+                        {
+                            T target = kvp.Value;
 
-                    HandleCollision<T>(hitbox, targets, hitTargets, damageDict);
+                            if (target is Monster targetMonster)
+                            {
+                                if (targetMonster.MonsterTeam == hitbox.Team)
+                                    continue;
+                            }
+
+                            filteredTargets.Add(kvp.Key, target);
+                        }
+                        HandleCollision<T>(hitbox, filteredTargets, hitTargets, damageDict);
+                    }
+                    else
+                        HandleCollision<T>(hitbox, targets, hitTargets, damageDict);
+
                     if (hitTargets.Count > 0)
                     {
                         HandleDamage<T>(hitbox, hitTargets, damageDict);

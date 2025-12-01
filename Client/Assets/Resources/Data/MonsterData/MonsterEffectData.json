@@ -30,9 +30,10 @@
     //  }
     //},
     {
-      "prefabName": "FX_BI_Gamma_skill02_Attack",
+      "prefabName": "FX_Gamma_Skill2",
       "skillType": "MsGammaSkill2",
       "target": "Self",
+      "attachBoneName": "ShotPoint",
       "duration": 5,
       "delayTime": 1.8,
       "position": {

@@ -151,7 +151,7 @@ namespace Server.Game
             int skillIdx = new Random().Next(0, _skills.Count);
             MonsterSkill skillName = _skills[skillIdx];
 
-            if (DataManager.MonsterSkillDict.TryGetValue(skillName, out MonsterSkillData skillData) == false)
+            if (DataManager.MonsterSkillDict.TryGetValue(MonsterSkill.MsGammaSkill2, out MonsterSkillData skillData) == false)
                 return null;
 
             return skillData;

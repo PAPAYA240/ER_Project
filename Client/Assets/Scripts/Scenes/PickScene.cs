@@ -163,6 +163,8 @@ public class PickScene : BaseScene
     {
         AudioClip abigail = Resources.Load<AudioClip>("Abigail/voice/Abigail_selected_1_ko");
         _selectedAudios[CharacterType.Abigail] = abigail;
+        AudioClip theodore = Resources.Load<AudioClip>("sound/voice/theodore/s000/ko/Theodore_selected_1_ko");
+        _selectedAudios[CharacterType.Theodore] = theodore;
     }
 
     public void PlaySelectedSound(CharacterType charType)

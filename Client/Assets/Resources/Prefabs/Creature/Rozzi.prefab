@@ -555,7 +555,7 @@ GameObject:
   - component: {fileID: 710356719923666424}
   - component: {fileID: 5021250955521430936}
   m_Layer: 3
-  m_Name: Rozzi_S002
+  m_Name: Rozzi_S002_LOD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2751,6 +2751,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55e86d03b5ee90343aeb5c705c87e670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Sound: {fileID: 0}
+  HidingInBush: 0
+  xRayIgnoreStencilID: 100
 --- !u!1 &4552065746279300795
 GameObject:
   m_ObjectHideFlags: 0

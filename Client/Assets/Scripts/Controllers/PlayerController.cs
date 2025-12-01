@@ -197,9 +197,10 @@ public class PlayerController : CreatureController
     protected Transform _equipTransform = null;
 
     // Bush Material
-    private Transform _lodTransform = null;
-    private Material[] _originMaterials = null;
-    private Material _playerBushMaterial = null;
+    private Dictionary<Renderer, Material[]> _originalMaterialsDict = new Dictionary<Renderer, Material[]>();
+    private Material _playerBushMaterial;
+    private Transform _lodTransform;
+
     public bool HidingInBush = false;
     #region KDA
 
@@ -859,16 +860,23 @@ public class PlayerController : CreatureController
     #region Bush Renderer
     private void InitBushRenderSetting()
     {
-        Renderer playerRenderer = this.GetComponentInChildren<Renderer>();
-        if (playerRenderer != null)
-            _originMaterials = playerRenderer.materials;
         _playerBushMaterial = Resources.Load<Material>("Material/ghostMaterial");
+
         foreach (Transform child in transform)
         {
             if (child.name.Contains("LOD"))
             {
                 _lodTransform = child;
                 break;
+            }
+        }
+
+        if (_lodTransform != null)
+        {
+            Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
+            foreach (Renderer renderer in renderers)
+            {
+                _originalMaterialsDict[renderer] = renderer.materials;
             }
         }
     }
@@ -903,7 +911,7 @@ public class PlayerController : CreatureController
             renderer.enabled = false;
         }
     }
-   
+
     // 렌더러 활성화
     private IEnumerator MakeVisible(float duration = 0f)
     {
@@ -911,7 +919,6 @@ public class PlayerController : CreatureController
             yield break;
 
         yield return new WaitForSeconds(duration);
-
         HidingInBush = false;
         _nameTag.gameObject.SetActive(true);
 
@@ -919,7 +926,12 @@ public class PlayerController : CreatureController
         foreach (Renderer renderer in renderers)
         {
             renderer.enabled = true;
-            renderer.materials = _originMaterials;
+
+            // 각 Renderer의 원본 Material 복원
+            if (_originalMaterialsDict.TryGetValue(renderer, out Material[] originalMaterials))
+            {
+                renderer.materials = originalMaterials;
+            }
         }
     }
 
@@ -930,14 +942,19 @@ public class PlayerController : CreatureController
 
         HidingInBush = true;
         Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
-        Material[] newMaterials = new Material[] { _playerBushMaterial };
 
         foreach (Renderer renderer in renderers)
         {
             renderer.enabled = true;
-            renderer.materials = newMaterials;
-        }
 
+            int materialCount = renderer.sharedMaterials.Length;
+            Material[] ghostMaterials = new Material[materialCount];
+            for (int i = 0; i < materialCount; i++)
+            {
+                ghostMaterials[i] = _playerBushMaterial;
+            }
+            renderer.sharedMaterials = ghostMaterials;
+        }
     }
     #endregion
 }

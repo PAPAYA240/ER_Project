@@ -556,7 +556,7 @@ GameObject:
   - component: {fileID: 5021250955521430936}
   - component: {fileID: 6029281910509001356}
   m_Layer: 0
-  m_Name: Rozzi_S002
+  m_Name: Rozzi_S002_LOD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -613,7 +613,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38bbf0c8ec18e0747b035ba9e225aad8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _controller: {fileID: 0}
 --- !u!1 &911785483801927538
 GameObject:
   m_ObjectHideFlags: 0
@@ -2765,8 +2764,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d07a4ac14489814e9692da7473da8c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerWeaponStencilID: 100
-  disablePlayerWeaponXRay: 1
+  Sound: {fileID: 0}
+  HidingInBush: 0
+  xRayIgnoreStencilID: 100
 --- !u!1 &4552065746279300795
 GameObject:
   m_ObjectHideFlags: 0
