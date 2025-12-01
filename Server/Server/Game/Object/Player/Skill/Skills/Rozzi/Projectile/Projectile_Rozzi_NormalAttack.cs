@@ -22,6 +22,43 @@ public class Projectile_Rozzi_NormalAttack : Projectile
         SendFxPacket(owner, projectileId);
     }
 
+    public override void Init()
+    {
+        if (Owner == null)
+            return;
+
+        _endTime = Environment.TickCount64 + 1000;
+        //_endTime = Environment.TickCount64 + 500;
+        //_lastTickTime = Environment.TickCount64;
+
+        // Owner의 현재 위치를 복사
+        Info.PosInfo = new PositionInfo
+        {
+            PosX = Owner.PosInfo.PosX,
+            PosY = Owner.PosInfo.PosY,
+            PosZ = Owner.PosInfo.PosZ
+        };
+        Info.RotInfo = new RotationInfo
+        {
+            Qx = Owner.RotInfo.Qx,
+            Qy = Owner.RotInfo.Qy,
+            Qz = Owner.RotInfo.Qz,
+            Qw = Owner.RotInfo.Qw
+        };
+    }
+
+    public override void Update()
+    {
+        if (Owner == null)
+            return;
+
+        if (Deactivation())
+        {
+            Room.Push(Room.LeaveGame, Id);
+            return;
+        }
+    }
+
     private void SendAddPacket(Player owner, int targetId, bool isLWeapon, float speed)
     {
         S_RozziNormalAttack packet = new S_RozziNormalAttack()

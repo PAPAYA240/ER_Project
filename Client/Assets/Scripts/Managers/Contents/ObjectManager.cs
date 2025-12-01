@@ -164,6 +164,7 @@ public class ObjectManager
                 pc.Stat = info.StatInfo;
                 pc.Type = info.Projectile.ProjectileType;
                 pc.Owner = Managers.Object.FindById(info.Projectile.OwnerId);
+                pc.Id = info.ObjectId;
 
                 // 3) 딕셔너리에 등록
                 _objects.Add(info.ObjectId, go);
@@ -425,7 +426,6 @@ public class ObjectManager
         }
 
         proj.gameObject.SetActive(true);
-        Debug.Log($"[POOL] Activate {proj.gameObject.name}");
 
         if (proj is Projectile_Rozzi_NormalAttack normal)
             normal.ResetForPool();
@@ -436,7 +436,6 @@ public class ObjectManager
     private void ReturnProjectileToPool(Projectile proj)
     {
         proj.gameObject.SetActive(false);
-        Debug.Log($"[POOL] Deactivate {proj.gameObject.name}");
 
         Queue<Projectile> queue;
         if (!_projectilePool.TryGetValue(proj.Type, out queue))

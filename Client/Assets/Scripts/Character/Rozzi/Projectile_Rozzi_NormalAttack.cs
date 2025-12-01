@@ -24,18 +24,9 @@ public class Projectile_Rozzi_NormalAttack : Projectile
     private bool _packetSent = false; // 서버로 C_RozziNormalAttack 보낸 적 있는지
 
     private float _maxTravelTime = 1f;
-    private float _elapsed = 0f;
-
     private float _deltaScale = 0.05f;
 
-    [SerializeField] Renderer[] _renderers;
-    //[SerializeField] TrailRenderer _trail;
-
-    private void Awake()
-    {
-        if (_renderers == null || _renderers.Length == 0)
-            _renderers = GetComponentsInChildren<Renderer>();
-    }
+    private float _elapsed = 0f;
 
     // 풀에서 꺼낼 때 항상 호출해줄 리셋 함수
     public void ResetForPool()
@@ -44,19 +35,7 @@ public class Projectile_Rozzi_NormalAttack : Projectile
         _speed = 1f;
         _hasHit = false;
         _packetSent = false;
-
-        var renderers = GetComponentsInChildren<Renderer>(true);
-        foreach (var r in renderers)
-            r.enabled = true;
-
-        var particles = GetComponentsInChildren<ParticleSystem>(true);
-        foreach (var ps in particles)
-        {
-            ps.Clear();
-            ps.Play();
-        }
-        //gameObject.SetActive(true);
-        //Debug.Log($"@ ResetForPool - true : {Id}");
+        _elapsed = 0f;
     }
 
     public void Init(S_RozziNormalAttack packet)
@@ -72,33 +51,34 @@ public class Projectile_Rozzi_NormalAttack : Projectile
 
     private void Update()
     {
-        if (_hasHit || _targetId == 0)
-            return;
-
         GameObject target = Managers.Object.FindById(_targetId);
-        if(target == null)
+        if (_hasHit ||_targetId == 0 || target == null)
         {
-            //OnHit(false);
+            OnHit(false);
             return;
         }
 
-        //Vector3 finPos = Vector3.MoveTowards(transform.position, target.transform.position, _speed * 0.8f);
+        Vector3 finPos = transform.position;
+        Quaternion finRot = transform.rotation;
 
+        // Position
         _elapsed += _speed * Time.deltaTime * _deltaScale;
-        if(_elapsed >= _maxTravelTime)
-        {
-            CellPos = target.transform.position;
-            SyncPos();
-        }
+        if (_elapsed >= _maxTravelTime)
+            finPos = target.transform.position;
         else
-        {
-            Vector3 finPos = Vector3.Lerp(transform.position, target.transform.position, _elapsed / _maxTravelTime);
+            finPos = Vector3.Lerp(transform.position, target.transform.position, _elapsed / _maxTravelTime);
 
-            CellPos = finPos;
-            SyncPos();
-        }
-            
-        float dist = Vector2.Distance(  new Vector2(transform.position.x, transform.position.z), 
+        // Rotation
+        Vector3 dir = target.transform.position - transform.position;
+        finRot = Quaternion.LookRotation(dir, Vector3.up);
+
+        // Sync
+        CellPos = finPos;
+        RotInfo = finRot;
+        SyncPos();
+
+        // Distance
+        float dist = Vector2.Distance(new Vector2(transform.position.x, transform.position.z),
                                         new Vector2(target.transform.position.x, target.transform.position.z));
 
         if (dist <= _hitRadius)
@@ -112,6 +92,8 @@ public class Projectile_Rozzi_NormalAttack : Projectile
             return;
 
         transform.position = boneTransform.position;
+        CellPos = boneTransform.position;
+        SyncPos();  
     }
 
     private void OnHit(bool hasHit)
@@ -120,9 +102,7 @@ public class Projectile_Rozzi_NormalAttack : Projectile
             return;        
         _hasHit = true;
 
-        //gameObject.SetActive(false);
-        //Debug.Log($"[OnHit] Deactivate {gameObject.name}");
-        HideVisual();
+        gameObject.SetActive(false);
         TrySendHitPacket(hasHit);
     }
 
@@ -148,30 +128,5 @@ public class Projectile_Rozzi_NormalAttack : Projectile
             HasHit = hasHit
         };
         Managers.Network.Send(packet);
-    }
-
-    private void HideVisual()
-    {
-        var renderers = GetComponentsInChildren<Renderer>(true);
-        Debug.Log($"[Proj] HideVisual {gameObject.name}, renderers={renderers.Length}");
-
-        foreach (var r in renderers)
-            r.enabled = false;
-
-        var particles = GetComponentsInChildren<ParticleSystem>(true);
-        foreach (var ps in particles)
-        {
-            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        }
-    }
-
-    void OnEnable()
-    {
-        Debug.Log($"[Proj] OnEnable - {gameObject.name}");
-    }
-
-    void OnDisable()
-    {
-        Debug.Log($"[Proj] OnDisable - {gameObject.name}");
     }
 }
