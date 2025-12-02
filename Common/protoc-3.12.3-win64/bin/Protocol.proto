@@ -550,6 +550,8 @@ message S_Fx{
 	string type = 9; // Caster, HitTarget, Select 중 하나, 기본은 Caster
 	bool useTargetTransform = 10;
 	int32 targetId = 11;
+	bool isCommon = 12;
+	string commonName = 13;
 }
 
 message C_Anim{
@@ -1240,6 +1242,8 @@ message S_RemoveEffect{
 	int32 keyCode = 2; 
 	bool isCaster = 3;
 	string fxName = 4;
+	bool isCommon = 5;
+	string commonName = 6;
 }
 
 message S_RozziNormalAttack {

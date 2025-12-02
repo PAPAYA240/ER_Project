@@ -1220,9 +1220,11 @@ class PacketHandler
         if (!IsSceneReady("Game", () => S_RemoveEffectHandler(session, packet))) return;
 
         S_RemoveEffect removeEffectPacket = packet as S_RemoveEffect;
-
-        
-        Managers.FX.Effect.RemoveEffect(removeEffectPacket);
+       
+        if(!removeEffectPacket.IsCommon)
+            Managers.FX.Effect.RemoveEffect(removeEffectPacket);
+        else
+            Managers.FX.Effect.RemoveCommonEffect(removeEffectPacket);
     }
 
     public static void S_StartOperateHandler(PacketSession session, IMessage packet)

@@ -2,6 +2,7 @@
 using Google.Protobuf.Protocol;
 using Server.Data;
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -379,6 +380,17 @@ namespace Server.Game
             {
                 if (_projectiles.TryRemove(objectId, out Projectile projectile) && projectile != null)
                 {
+                    // 본인한테 정보 전송
+                    {
+                        S_Despawn despawnPacket = new S_Despawn();
+                        despawnPacket.ObjectIds.Add(objectId);
+                        Player player = projectile.Owner as Player;
+                        if(player != null)
+                        {
+                            Push(player.Session.Send, despawnPacket);
+                        }                      
+                    }
+
                     projectile.Room = null;
                     projectile.Owner = null;
                 }

@@ -552,6 +552,8 @@ namespace Server.Game
                         {
                             RegisterFlat(statusEffect, statusEffect.stat, statusEffect.value);
                         }
+
+                        RegisterCommonEffect(statusEffect, statusEffect.stat);
                     }
                     else if(statusEffect.type == "Untargetable")
                     {
@@ -678,6 +680,8 @@ namespace Server.Game
                     UnregisterMultiplier(statusEffect);
                 else
                     UnregisterFlat(statusEffect);
+
+                UnregisterCommonEffect(statusEffect, statusEffect.stat);
             }
             else if (statusEffect.type == "Untargetable")
             {
@@ -892,6 +896,36 @@ namespace Server.Game
 
             UpdateStatusFlag();
         }
+
+        // 이펙트 등록
+        protected void RegisterCommonEffect(StatusEffect inst, string key)
+        {
+            string fxName = ResolveCommonEffect(inst, key);
+            SendCommonSkillEffect(default, commonName: fxName, type: "Caster");     
+        }
+
+        // 이펙트 제거
+        protected void UnregisterCommonEffect(StatusEffect inst, string key)
+        {
+            string fxName = ResolveCommonEffect(inst, key);
+            SendRemoveCommonEffect(isCaster: true, commonName: fxName);
+        }
+
+        protected string ResolveCommonEffect(StatusEffect inst, string key)
+        {
+            if (inst.type == "Debuff")
+            {
+                switch (key)
+                {
+                    case "MoveSpeed":
+                        return "Debuff_Slow";
+                    case "Healing":
+                        return "Debuff_HealedDecrease";
+                }
+            }
+
+            return "";
+        }
         #endregion
 
         #region Packet
@@ -918,6 +952,11 @@ namespace Server.Game
 
             Room.Push(Room.Broadcast, pkt);
         }
+
+        public virtual void SendCommonSkillEffect( Vector2 mousePos, string commonName = "", string type = "Caster", 
+            string fxName = "", bool useTargetTransform = false, int targetId = 0) { }
+
+        public virtual void SendRemoveCommonEffect(bool isCaster, string commonName, string fxName = "") { }
         #endregion
     }
 }

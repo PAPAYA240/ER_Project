@@ -39,6 +39,9 @@ public class DataManager
     public static Dictionary<CharacterType, Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>> PlayerFxDict { get; private set; }
         = new Dictionary<CharacterType, Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>>();
 
+    public static Dictionary<string, SkillEffectList> CommonFxDict { get; private set; }
+        = new Dictionary<string, SkillEffectList>();
+
     public static Dictionary<CharacterType, Dictionary<KeyCode, SkillIndicatorConfig>> IndicatorDict { get; private set; }
         = new Dictionary<CharacterType, Dictionary<KeyCode, SkillIndicatorConfig>>();
 
@@ -58,6 +61,7 @@ public class DataManager
         SkillHitboxDict = LoadJson<Data.HitboxData, CharacterType, Dictionary<KeyCode, SkillHitbox>>("HitboxData").MakeDict();
         SoundDict = LoadJson<Data.SoundDict, CharacterType, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>>("SoundData").MakeDict();
         PlayerFxDict = LoadJson<Data.PlayerEffectDict, CharacterType, Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>>("PlayerEffectData").MakeDict();
+        CommonFxDict = LoadJson<Data.PlayerEffectDict, CharacterType, Dictionary<CreatureState, Dictionary<KeyCode, SkillEffectList>>>("PlayerEffectData").MakeCommonDict();
 
         // For Monster Data
         MonsterSkillDict = LoadJson<Data.MonsterEffectDict, MonsterSkill, List<EffectData>>("MonsterData/MonsterEffectData").MakeDict();

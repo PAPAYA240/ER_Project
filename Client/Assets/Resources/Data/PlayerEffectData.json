@@ -421,7 +421,12 @@
             {
               "prefabName": "FX_Common_Debuff_Stun",
               "target": "Enemy",
-              "duration": 5.0
+              "duration": 5.0,
+              "position": {
+                "x": 0,
+                "y": 2,
+                "z": 0
+              }
             }
           ]
         },
@@ -429,8 +434,13 @@
           "Caster": [
             {
               "prefabName": "FX_Common_Debuff_HealedDecrease",
-              "target": "Enemy",
-              "duration": 2.0
+              "target": "TargetUI",
+              "duration": 2.0,
+              "position": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              }
             }
           ]
         }

@@ -140,6 +140,7 @@ public class Projectile_Rozzi_R : Projectile
                 {
                     Room.LeaveGame(Id);
                     _isLeaveGamePending = false;
+                    Console.WriteLine($"@ Rozzi R Projectile : LeaveGame - {Id}");
                 }
                 break;
         }

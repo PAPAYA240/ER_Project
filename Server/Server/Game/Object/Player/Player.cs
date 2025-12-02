@@ -1058,6 +1058,7 @@ namespace Server.Game
             };
             Room.Push(Room.Broadcast, packet);
         }
+
         public void SendSoundPakcet(string name, string type = "Effect")
         {
             S_Sound packet = new S_Sound()
@@ -1068,6 +1069,7 @@ namespace Server.Game
             };
             Room.Push(Room.Broadcast, packet);
         }
+
         public void SendAnimPacket(string animName, float ratio = 0.05f, float speed = 0, bool isChangeSpeed = false)
         {
             S_Anim packet = new S_Anim()
@@ -1119,52 +1121,6 @@ namespace Server.Game
             Room.Push(Room.Broadcast, pkt);
         }
 
-        public void SendSkillEffect(
-            Vector2 mousePos,
-            KeyCode keyCode = KeyCode.None, 
-            bool sendLookatMousePacket = false,
-            Vector3 targetPos = new Vector3(),
-            Quaternion targetRot = default(Quaternion),
-            string type = "Caster", 
-            string name = "",
-            bool useTargetTransform = false,
-            int targetId = 0)
-        {
-            Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
-            Vector2 dir = mousePos - myPos;
-            if (dir.LengthSquared() < 0.0001f)
-                return;
-
-            float angle = (float)Math.Atan2(dir.Y, dir.X);
-            Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle);
-
-            RotationInfo newRot = new RotationInfo
-            {
-                Qx = rot.X,
-                Qy = rot.Y,
-                Qz = rot.Z,
-                Qw = rot.W
-            };
-            RotInfo = newRot;
-
-            S_Fx fxPacket = new S_Fx
-            {
-                ObjectId = Id,
-                CanLookatMouse = sendLookatMousePacket,
-                SkillKey = (int)keyCode,
-                MousePosX = mousePos.X,
-                MousePosZ = mousePos.Y,
-                TargetPosition = new PositionInfo { PosX = targetPos.X, PosY = targetPos.Y, PosZ = targetPos.Z },
-                TargetRotation = new RotationInfo { Qx = targetRot.X, Qy = targetRot.Y, Qz = targetRot.Z, Qw = targetRot.W },
-                Type = type,
-                FxName = name,
-                UseTargetTransform = useTargetTransform,
-                TargetId = targetId,
-            };
-
-            Room.Push(Room.Broadcast, fxPacket);
-        }
-
         public void SendSkillConfirmPacket
             (bool canUse, 
             KeyCode keyCode = KeyCode.None, 
@@ -1197,11 +1153,6 @@ namespace Server.Game
             }
 
             Room.Push(Session.Send, packet);
-        }
-
-        public void SendFxPacket()
-        {
-
         }
 
         public void SendDeadPacket(S_Respawn packet)
@@ -1376,15 +1327,85 @@ namespace Server.Game
 
             Room.Push(Session.Send, packet);
         }
+        #endregion
 
-        public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = "")
+        #region FX
+        public override void SendCommonSkillEffect(
+           Vector2 mousePos,
+           string commonName = "",
+           string type = "Caster",
+           string fxName = "",
+           bool useTargetTransform = false,
+           int targetId = 0)
+        {
+            SendSkillEffect(mousePos, KeyCode.None, sendLookatMousePacket: false, targetPos: default, targetRot: default,
+                type: type, name: fxName, useTargetTransform: useTargetTransform, targetId: targetId, isCommon: true, commonName: commonName);
+        }
+
+        public void SendSkillEffect(
+            Vector2 mousePos,
+            KeyCode keyCode = KeyCode.None,
+            bool sendLookatMousePacket = false,
+            Vector3 targetPos = new Vector3(),
+            Quaternion targetRot = default(Quaternion),
+            string type = "Caster",
+            string name = "",
+            bool useTargetTransform = false,
+            int targetId = 0,
+            bool isCommon = false,
+            string commonName = "")
+        {
+            Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
+            Vector2 dir = mousePos - myPos;
+            if (dir.LengthSquared() < 0.0001f)
+                return;
+
+            float angle = (float)Math.Atan2(dir.Y, dir.X);
+            Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle);
+
+            RotationInfo newRot = new RotationInfo
+            {
+                Qx = rot.X,
+                Qy = rot.Y,
+                Qz = rot.Z,
+                Qw = rot.W
+            };
+            RotInfo = newRot;
+
+            S_Fx fxPacket = new S_Fx
+            {
+                ObjectId = Id,
+                CanLookatMouse = sendLookatMousePacket,
+                SkillKey = (int)keyCode,
+                MousePosX = mousePos.X,
+                MousePosZ = mousePos.Y,
+                TargetPosition = new PositionInfo { PosX = targetPos.X, PosY = targetPos.Y, PosZ = targetPos.Z },
+                TargetRotation = new RotationInfo { Qx = targetRot.X, Qy = targetRot.Y, Qz = targetRot.Z, Qw = targetRot.W },
+                Type = type,
+                FxName = name,
+                UseTargetTransform = useTargetTransform,
+                TargetId = targetId,
+                IsCommon = isCommon,
+                CommonName = commonName,
+            };
+
+            Room.Push(Room.Broadcast, fxPacket);
+        }
+
+        public override void SendRemoveCommonEffect(bool isCaster, string commonName, string fxName = "")
+        {
+            SendRemoveEffect(KeyCode.None, isCaster, fxName, isCommon: true, commonName);
+        }
+
+        public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = "", bool isCommon = false, string commonName = "")
         {
             S_RemoveEffect packet = new S_RemoveEffect();
             packet.ObjectId = Id;
             packet.KeyCode = (int)keyCode;
-            packet.IsCaster = isCaster; 
+            packet.IsCaster = isCaster;
             packet.FxName = fxName ?? "";
-
+            packet.IsCommon = isCommon;
+            packet.CommonName = commonName;
             Room.Push(Room.Broadcast, packet);
         }
         #endregion
