@@ -264,14 +264,17 @@ namespace Server.Game
                         continue;
                     }
 
-                     UpdateTransformRay(hitbox);
+                    if (hitbox.Creature is Monster)
+                        UpdateTransformRay(hitbox);
+                    else
+                    {
+                        Quaternion rot = hitbox.Creature.RotInfo.GetQuatFromRotInfo();
+                        Vector3 offset = new Vector3(hitbox.Data.RightOffset, 0, hitbox.Data.LookOffset);
+                        Vector3 rotatedOffset = Vector3.Transform(offset, rot);
 
-                     Quaternion rot = hitbox.Creature.RotInfo.GetQuatFromRotInfo();
-                     Vector3 offset = new Vector3(hitbox.Data.RightOffset, 0, hitbox.Data.LookOffset);
-                     Vector3 rotatedOffset = Vector3.Transform(offset, rot);
-
-                     hitbox.PosX = hitbox.Creature.PosInfo.PosX + rotatedOffset.X;
-                     hitbox.PosZ = hitbox.Creature.PosInfo.PosZ + rotatedOffset.Z;
+                        hitbox.PosX = hitbox.Creature.PosInfo.PosX + rotatedOffset.X;
+                        hitbox.PosZ = hitbox.Creature.PosInfo.PosZ + rotatedOffset.Z;
+                    }
                 }
             }
         }
@@ -966,16 +969,18 @@ namespace Server.Game
                     Interactions = ConvertProtoInteractionsToKeyCodeDictionary(skillHitbox.Interactions)
                 };
 
-                if (System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
-                {
-                    if (type == SkillType.SkillTrack)
-                    {
-                        hitbox.PosX = targetPos.X;
-                        hitbox.PosZ = targetPos.Y;
-                    }
-                }
+                //if (System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
+                //{
+                //    if (type == SkillType.SkillTrack)
+                //    {
+                //        hitbox.PosX = targetPos.X;
+                //        hitbox.PosZ = targetPos.Y;
+                //    }
+                //}
 
+                UpdateTransformRay(hitbox);
                 SettingType(hitbox);
+
                 _pendingHitboxes.Add(hitbox);
             }
             return hitbox;
@@ -1223,7 +1228,7 @@ namespace Server.Game
             if (CurTick < hitbox.StartTick)
                 return;
 
-            if (hitbox.MonsterSkillType == MonsterSkill.MsGammaSkill2)
+            //if (hitbox.MonsterSkillType == MonsterSkill.MsGammaSkill2)
             {
                 Quaternion rot = hitbox.Creature.RotInfo.GetQuatFromRotInfo();
                 Vector3 localForward = new Vector3(0, 0, 1);
