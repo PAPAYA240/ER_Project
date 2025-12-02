@@ -247,15 +247,12 @@ namespace Server.Game
                 }
             }
         }
-
         public void UpdatePos()
         {
             foreach (var set in _hitboxDict.Values)
             {
                 foreach (Hitbox hitbox in set)
                 {
-                    UpdateTransformRay(hitbox);
-
                     if (hitbox.Creature == null || hitbox.Data == null)
                         continue;
                     if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
@@ -265,6 +262,10 @@ namespace Server.Game
                         UpdatePosProjectile(hitbox);
                         continue;
                     }
+                    UpdateTransformRay(hitbox);
+
+                    if (hitbox.Creature is Monster)
+                        continue;
 
                     Quaternion rot = new Quaternion(
                     hitbox.Creature.RotInfo.Qx,
@@ -782,6 +783,7 @@ namespace Server.Game
 
                     pendingHitbox.StartTick = CurTick + (int)((pendingHitbox.Data.StartFrame / (float)pendingHitbox.Data.Fps) * 1000);
                     pendingHitbox.EndTick = CurTick + (int)((pendingHitbox.Data.EndFrame / (float)pendingHitbox.Data.Fps) * 1000);
+
 
                     set.Add(pendingHitbox);
                 }
