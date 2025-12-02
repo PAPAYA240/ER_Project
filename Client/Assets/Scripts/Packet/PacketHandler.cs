@@ -363,6 +363,10 @@ class PacketHandler
 
         cc.ChangeStat(levelUpPkt.StatGrowth);
 
+        Debug.Log($" Id {cc.Id} ");
+        Debug.Log($" LevelUpCnt : {levelUpPkt.LevelUpCnt}, After Level : {cc.Stat.Level} ");
+        Debug.Log($" MaxHp : {levelUpPkt.StatGrowth.MaxHp}, MaxStamina : {levelUpPkt.StatGrowth.MaxStamina} ");
+
         //아래는 레벨이 제대로 표시되게 하는 코드
         //마이 플레이어면 업데이트 하고 리턴
         MyPlayerController mpc = go.GetComponent<MyPlayerController>();

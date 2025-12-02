@@ -144,12 +144,12 @@ public class CreatureController : BaseController
     {
         Stat.Attack += growth.Attack;
         Stat.Defense += growth.Defense;
-        MaxHp += growth.MaxHp;
-        Stat.HpRegen += growth.HpRegen;
-        Stamina += growth.MaxStamina;
-        MaxStamina += growth.MaxStamina;
-        Stat.StaminaRegen += growth.StaminaRegen;
+        Stat.MaxHp += growth.MaxHp;
         Hp += growth.MaxHp;
+        Stat.HpRegen += growth.HpRegen;
+        Stat.MaxStamina += growth.MaxStamina;
+        Stamina += growth.MaxStamina;
+        Stat.StaminaRegen += growth.StaminaRegen;
     }
 
     public bool IsAttackable(GameObject targetObject)
