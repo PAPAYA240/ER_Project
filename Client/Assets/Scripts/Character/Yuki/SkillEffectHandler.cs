@@ -58,6 +58,9 @@ public class SkillEffectHandler
             RegisterEffectBone(AbigailFx.RRange, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Range", "Fx_Bottom");
             RegisterEffectBone(AbigailFx.RStart, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Start", "Fx_Center");
             RegisterEffectBone(AbigailFx.WpnSkill, player, "Effect/Abigail/FX_BI_Abigail_WSkill_Axe_02", "Fx_Center");
+
+            foreach (var effect in _effectMap.Values)
+                (effect as MonoBehaviour).transform.localPosition = Vector3.zero;
         }
 
         // ��� ����Ʈ �ʱ� ��Ȱ��ȭ

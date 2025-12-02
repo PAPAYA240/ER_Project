@@ -1324,8 +1324,9 @@ class PacketHandler
 
         GameObject go = Managers.Object.FindById(abigailFx.ObjectId);
         if (go == null) return;
-
-        Managers.EffectHandler.PlayEffect(abigailFx.Fx, abigailFx.Duration);
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null) return;
+        pc.YukiEffects.PlayEffect(abigailFx.Fx, abigailFx.Duration);
     }
 
     public static void S_StopAbglFxHandler(PacketSession session, IMessage packet)
@@ -1334,8 +1335,9 @@ class PacketHandler
         S_StopAbglFx stopAbglFx = packet as S_StopAbglFx;
         GameObject go = Managers.Object.FindById(stopAbglFx.ObjectId);
         if (go == null) return;
-
-        Managers.EffectHandler.StopEffect(stopAbglFx.Fx);
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null) return;
+        pc.YukiEffects.StopEffect(stopAbglFx.Fx);
     }
 
     static float GetCurrentEstimatedOneWayLatency()
