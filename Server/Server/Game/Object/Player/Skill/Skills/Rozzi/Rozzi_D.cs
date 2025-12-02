@@ -10,9 +10,7 @@ public sealed class Rozzi_D : SkillHandlerBase
     private float _elapsed;
     private float _StopSkillTime = 1.0f;
 
-    private bool _onMoveCmd, _hasSentRunAnimation;
-    private Vector3 _targetPosition;
-    private const float STOP_RANGE = 0.1f; 
+    private bool  _hasSentRunAnimation;
 
     private string ANIM_RUN = "RUN";
     private string ANIM_IDLE = "WAIT";
@@ -29,8 +27,6 @@ public sealed class Rozzi_D : SkillHandlerBase
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
-        //base.OnEnter(p, ctx);
-
         // 전투 모드
         {
             p.CombatState = CombatState.Combat;
@@ -70,37 +66,6 @@ public sealed class Rozzi_D : SkillHandlerBase
             p.SendCanStopSkillPacket(CanStopSkill);
             return;
         }
-
-        if (_onMoveCmd)
-        {
-            if(!_hasSentRunAnimation)
-            {
-                p.SendAnimPacket(ANIM_RUN);
-                _hasSentRunAnimation = true;
-            }
-        }
-        else
-        {
-            if(_hasSentRunAnimation)
-            {
-                if(Vector3.Distance(p.Position, _targetPosition) <= STOP_RANGE)
-                {
-                    p.SendAnimPacket(ANIM_IDLE);
-                    p.SendStopPacket();
-                    _hasSentRunAnimation = false;
-                }               
-            }
-        }
-
-        _onMoveCmd = false;
-         
-        return;
-    }
-
-    public override void OnMove(Player p, C_Move packet)   // OnTick 보다 먼저 실행(Flush)
-    {
-        _onMoveCmd = true;
-        _targetPosition = packet.TargetPosition.ToVector();
     }
 
     public override void OnExit(Player p, SkillContext ctx)
@@ -108,6 +73,24 @@ public sealed class Rozzi_D : SkillHandlerBase
         base.OnExit(p, ctx);
 
         p.AttackSpeedBuff(0.7f, 2);
+    }
+
+    public override void OnMove(Player p, C_Move packet)
+    {
+        if (!_hasSentRunAnimation)
+        {
+            p.SendAnimPacket(ANIM_RUN);
+            _hasSentRunAnimation = true;
+        }
+    }
+
+    public override void OnStop(Player p)
+    {
+        if (_hasSentRunAnimation)
+        {
+            p.SendAnimPacket(ANIM_IDLE);
+            _hasSentRunAnimation = false;
+        }
     }
 }
 

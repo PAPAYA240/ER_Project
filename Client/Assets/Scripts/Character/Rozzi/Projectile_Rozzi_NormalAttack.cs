@@ -24,7 +24,7 @@ public class Projectile_Rozzi_NormalAttack : Projectile
     private bool _packetSent = false; // 서버로 C_RozziNormalAttack 보낸 적 있는지
 
     private float _maxTravelTime = 1f;
-    private float _deltaScale = 0.05f;
+    private float _deltaScale = 0.07f;
 
     private float _elapsed = 0f;
 

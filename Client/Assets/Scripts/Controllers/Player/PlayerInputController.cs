@@ -53,7 +53,8 @@ public class PlayerInputController : MonoBehaviour
             || _player.State == CreatureState.Moving 
             || _player.State == CreatureState.Attack 
             || _player.State == CreatureState.Skill 
-            || _player.State == CreatureState.Operate)
+            || _player.State == CreatureState.Operate
+            || _player.State == CreatureState.Teleport)
         {
             if (!Input.GetMouseButton(1))
                 return null;

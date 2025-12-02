@@ -159,6 +159,7 @@ enum CreatureState{
   APPEAR = 7;
   OPERATE = 8;
   STUN = 9;
+  TELEPORT = 10;
 }
 
 enum SkillInputType

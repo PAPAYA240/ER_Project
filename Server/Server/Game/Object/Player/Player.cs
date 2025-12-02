@@ -1377,13 +1377,13 @@ namespace Server.Game
             Room.Push(Session.Send, packet);
         }
 
-        public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = null)
+        public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = "")
         {
             S_RemoveEffect packet = new S_RemoveEffect();
             packet.ObjectId = Id;
             packet.KeyCode = (int)keyCode;
             packet.IsCaster = isCaster; 
-            packet.FxName = fxName;
+            packet.FxName = fxName ?? "";
 
             Room.Push(Room.Broadcast, packet);
         }
