@@ -49,8 +49,8 @@ public class SkillEffectHandler
             RegisterEffectBone(AbigailFx.Attack02, player, "Effect/Abigail/FX_BI_Abigail_NormalAttack_02_Axe", "Fx_Center");
             RegisterEffectBone(AbigailFx.RestEnd, player, "Effect/Abigail/FX_BI_Abigail_Rest_End", "Fx_Center");
             RegisterEffectBone(AbigailFx.RestStart, player, "Effect/Abigail/FX_BI_Abigail_Rest_Start", "Fx_Center");
-            RegisterEffectBone(AbigailFx.QAttack, player, "Effect/Abigail/FX_BI_Abigail_Skill01_02_Attack", "Fx_Center");
-            RegisterEffectBone(AbigailFx.QAttack2, player, "Effect/Abigail/FX_BI_Abigail_Skill01_02_Attack_Second", "Fx_Center");
+            RegisterEffectBone(AbigailFx.QAttack, player, "Effect/Abigail/FX_BI_Abigail_Skill01_02_Attack", "Fx_Bottom");
+            RegisterEffectBone(AbigailFx.QAttack2, player, "Effect/Abigail/FX_BI_Abigail_Skill01_02_Attack_Second", "Fx_Bottom");
             RegisterEffectBone(AbigailFx.QRange, player, "Effect/Abigail/FX_BI_Abigail_Skill01_02_Range", "Fx_Bottom");
             RegisterEffectBone(AbigailFx.WAttack, player, "Effect/Abigail/FX_BI_Abigail_Skill02_02_Attack", "Fx_Center");
             RegisterEffectBone(AbigailFx.WRange, player, "Effect/Abigail/FX_BI_Abigail_Skill02_02_Range", "Fx_Bottom");

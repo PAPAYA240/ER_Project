@@ -153,12 +153,6 @@ public class BeaconController : BaseController
         UpdateShaderProperties();
     }
 
-    public bool IsCapturing => isCapturing;
-    public int CurrentCapturingTeam => currentCapturingTeam;
-    public int CurrentOwningTeam => currentOwningTeam;
-    public float CaptureAmount => currentCaptureAmount;
-    public bool IsFullyCaptured => currentCaptureAmount >= 1f;
-
     void OnDestroy()
     {
         if (captureCoroutine != null)

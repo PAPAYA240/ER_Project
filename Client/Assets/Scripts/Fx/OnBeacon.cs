@@ -11,9 +11,9 @@ public class OnBeacon : MonoBehaviour
     private Texture2D _cursorDefault;
     private Texture2D _cursorEnemy;
 
-    private Renderer[] _allRenderers;
+    private Renderer _renderer;
     private Material _outlineMaterialInstance;
-    private Material[][] _originalMaterials;
+    private Material[] _originalMaterials;
 
     private bool _isHighlighted = false;
     private bool _isDeactivated = false;
@@ -61,19 +61,29 @@ public class OnBeacon : MonoBehaviour
 
     private void InitializeRenderersAndMaterials()
     {
-        _allRenderers = GetComponentsInChildren<Renderer>();
+        Renderer[] allChildRenderers = GetComponentsInChildren<Renderer>(true);
+        Renderer[] targetRenderers = allChildRenderers
+            .Where(r => r.gameObject.name == "Cobalt_OBJ_Turbine_01_Base")
+            .ToArray();
 
-        if (_allRenderers == null || _allRenderers.Length == 0)
+        if (targetRenderers == null || targetRenderers.Length == 0)
         {
             Debug.LogWarning($"{gameObject.name}에 렌더러가 없습니다. OnBeacon을 적용할 수 없습니다.");
             enabled = false;
             return;
         }
 
+        _renderer = targetRenderers[0];
+
+        if (targetRenderers.Length > 1)
+        {
+            Debug.LogWarning($"'{gameObject.name}'에 'Cobalt_OBJ_Turbine_01_Base' 이름의 렌더러가 {targetRenderers.Length}개 있습니다. 첫 번째만 사용합니다.");
+        }
+
         Shader outlineShader = Shader.Find("Custom/BeaconOutline");
         if (outlineShader == null)
         {
-            Debug.LogError("Custom/BeaconOutline 셰이더를 찾을 수 없습니다. 프로젝트에 이 셰이더 파일이 있고 이름이 'Custom/BeaconOutline'인지 확인해주세요!");
+            Debug.LogError("Custom/BeaconOutline 셰이더를 찾을 수 없습니다!");
             enabled = false;
             return;
         }
@@ -82,56 +92,44 @@ public class OnBeacon : MonoBehaviour
         _outlineMaterialInstance.SetFloat("_Width", _beaconOutlineWidth);
         _outlineMaterialInstance.SetColor("_OutlineColor", _beaconOutlineColor);
 
-        _originalMaterials = new Material[_allRenderers.Length][];
-        for (int i = 0; i < _allRenderers.Length; i++)
+        // 원본 머티리얼 저장 (단일 배열)
+        if (_renderer != null)
         {
-            if (_allRenderers[i] != null)
-            {
-                _originalMaterials[i] = _allRenderers[i].sharedMaterials;
-            }
-            else
-            {
-                _originalMaterials[i] = new Material[0];
-            }
+            _originalMaterials = _renderer.sharedMaterials;
+        }
+        else
+        {
+            _originalMaterials = new Material[0];
         }
     }
 
     private void InitializeCursorTextures()
     {
         _cursorDefault = Managers.Resource?.Load<Texture2D>("Cursor/Cursor_01") ?? Resources.Load<Texture2D>("Cursor/Cursor_01");
-        _cursorEnemy = Managers.Resource?.Load<Texture2D>("Cursor/Cursor_05") ?? Resources.Load<Texture2D>("Cursor/Cursor_05");
+        _cursorEnemy = Managers.Resource?.Load<Texture2D>("Cursor/Cursor_12") ?? Resources.Load<Texture2D>("Cursor/Cursor_12");
 
         if (_cursorDefault == null) Debug.LogWarning("기본 커서 텍스처를 찾을 수 없습니다. Resources/Cursor/Cursor_01 경로 확인.");
-        if (_cursorEnemy == null) Debug.LogWarning("적 커서 텍스처를 찾을 수 없습니다. Resources/Cursor/Cursor_05 경로 확인.");
+        if (_cursorEnemy == null) Debug.LogWarning("적 커서 텍스처를 찾을 수 없습니다. Resources/Cursor/Cursor_12 경로 확인.");
     }
 
 
     private void ApplyOutlineEffect()
     {
-        if (_outlineMaterialInstance == null) return;
+        if (_outlineMaterialInstance == null || _renderer == null) return;
 
-        foreach (var renderer in _allRenderers)
+        // 현재 머티리얼에 아웃라인 머티리얼이 없는 경우 추가
+        if (!_renderer.materials.Contains(_outlineMaterialInstance))
         {
-            if (renderer == null) continue;
-
-            if (!renderer.materials.Contains(_outlineMaterialInstance))
-            {
-                renderer.materials = renderer.materials.Append(_outlineMaterialInstance).ToArray();
-            }
+            _renderer.materials = _renderer.materials.Append(_outlineMaterialInstance).ToArray();
         }
     }
 
     private void RemoveOutlineEffect(bool isDestroying = false)
     {
-        if (_allRenderers == null || _originalMaterials == null) return;
+        if (_renderer == null || _originalMaterials == null) return;
 
-        for (int i = 0; i < _allRenderers.Length; i++)
-        {
-            var renderer = _allRenderers[i];
-            if (renderer == null || i >= _originalMaterials.Length || _originalMaterials[i] == null) continue;
-
-            renderer.materials = _originalMaterials[i];
-        }
+        // 원본 머티리얼로 복원
+        _renderer.materials = _originalMaterials;
     }
 
     private void SetCursor(bool isEnemy)
@@ -152,7 +150,7 @@ public class OnBeacon : MonoBehaviour
 
     private bool CheckHighlightCondition()
     {
-        if (_allRenderers == null || _allRenderers.Length == 0 || _isDeactivated)
+        if (_renderer == null || _isDeactivated)
             return false;
 
         return true;
