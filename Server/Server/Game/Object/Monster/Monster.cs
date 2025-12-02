@@ -46,6 +46,11 @@ namespace Server.Game
         // Events
         public Action<GameObject> OnAttacked;
 
+        // ExpInfo
+        const int DroneExp = 500;
+        const int OmegaExp = 4000;
+        const int GammaExp = 8000;
+
         #endregion
 
         public Monster()
@@ -104,6 +109,40 @@ namespace Server.Game
 
             State = CreatureState.Dead;
             ChangeState(new DeadState());
+
+            // exp and score
+            switch (Info.Monster.MonsterType)
+            {
+                case MonsterType.Drone:
+                    attacker.Room.GetTeamExp(attacker.Team, DroneExp);
+                    break;
+                case MonsterType.Omega:
+                    {
+                        attacker.Room.GetTeamExp(attacker.Team, OmegaExp);
+
+                        int OmegaScore = 5;
+                        int Team = attacker.Team == 1 ? 2 : 1; // 상대팀 점수 차감
+                        int score = attacker.Room.ReduceScore(Team, OmegaScore);
+                        S_ChangeScore changeScorePacket = new S_ChangeScore();
+                        changeScorePacket.Team = Team;
+                        changeScorePacket.Score = score;
+                        Room.Push(Room.Broadcast, changeScorePacket);
+                    }
+                    break;
+                case MonsterType.Gamma:
+                    {
+                        attacker.Room.GetTeamExp(attacker.Team, GammaExp);
+
+                        int GammaScore = 10;
+                        int Team = attacker.Team == 1 ? 2 : 1; // 상대팀 점수 차감
+                        int score = attacker.Room.ReduceScore(Team, GammaScore);
+                        S_ChangeScore changeScorePacket = new S_ChangeScore();
+                        changeScorePacket.Team = Team;
+                        changeScorePacket.Score = score;
+                        Room.Push(Room.Broadcast, changeScorePacket);
+                    }
+                    break;
+            }
         }
         #endregion
 
