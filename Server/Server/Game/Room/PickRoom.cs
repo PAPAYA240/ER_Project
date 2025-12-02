@@ -239,6 +239,14 @@ namespace Server.Game
                 clientSession.CurRoom = room.RoomId;
                 room.Push(room.EnterGame, player, _pickPlayers[i].Team);
             }
+
+            for (int i = 0; i < _maxPlayer; ++i)
+            {
+                if (_pickPlayers[i] == null)
+                    continue;
+
+                LeavePick(i);
+            }
         }
 
         public override void CheckLastPing()

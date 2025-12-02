@@ -1269,7 +1269,8 @@ class PacketHandler
         AbigailAudioManager aam = go.GetComponentInChildren<AbigailAudioManager>();
         if(aam == null) return;
 
-        aam.Play(abigailSoundPkt.ObjectId, abigailSoundPkt.Sound, abigailSoundPkt.Pos.ToVector());
+        aam.Play(abigailSoundPkt.ObjectId, abigailSoundPkt.Sound, abigailSoundPkt.Pos.ToVector(), abigailSoundPkt.Idx);
+        Debug.Log(abigailSoundPkt.Sound.ToString());
     }
 
     public static void S_PickSoundHandler(PacketSession session, IMessage packet)

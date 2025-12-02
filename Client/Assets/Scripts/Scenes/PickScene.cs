@@ -166,6 +166,9 @@ public class PickScene : BaseScene
 
         AudioClip hyunwoo = Managers.Resource.Load<AudioClip>("Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_selected_1_ko");
         _selectedAudios[CharacterType.Hyunwoo] = hyunwoo;
+
+        AudioClip yuki = Managers.Resource.Load<AudioClip>("Yuki/sound/yuki/s000/ko/Yuki_selected_1_ko");
+        _selectedAudios[CharacterType.Yuki] = yuki;
     }
 
     public void PlaySelectedSound(CharacterType charType)
