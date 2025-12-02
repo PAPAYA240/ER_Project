@@ -3,6 +3,9 @@ using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -359,6 +362,23 @@ public class PlayerController : CreatureController
         Debug.Log("Player HIT !");
     }
 
+    public void OnHit(S_AttackInfo atkInfoPacket)
+    {
+        BaseController tbc = Managers.Object.FindById(atkInfoPacket.ObjectId)?.GetComponentInChildren<BaseController>();
+        if (tbc == null)
+            return;
+        Vector3 targetPosition = tbc.transform.position;
+
+        // 사용 중인 키(Player)/몬스터 스킬(Monster) 이름 + hit
+        // ex. Q_Hit, W_Hit, 
+        if (Sound != null)
+            Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
+
+        if (Enum.TryParse<KeyCode>(atkInfoPacket.AttackType, out KeyCode key))
+            PlaySelectEffect(key, default(Vector3), default(Vector3), default(Quaternion), $"FX_{key}_Hit", tbc.transform);
+
+    }
+
     public void OnStop(S_Stop packet)
     {
         if (_agent == null || !_agent.isOnNavMesh)
@@ -429,7 +449,7 @@ public class PlayerController : CreatureController
         // Animation에 맞는 Sound
         if (Sound != null)
         {
-            Sound.GetEffect3D(animInfo.Name, transform.position, true);
+            Sound.GetEffect3D(animInfo.Name, transform.position);
             Sound.GetRandomVoice(animInfo.Name);
         }
 
@@ -477,7 +497,7 @@ public class PlayerController : CreatureController
             PlaySkillEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot);
 
         else if(packet.Type == "Select")
-            PlaySelectEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot, packet.FxName);
+            PlaySelectEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot, packet.FxName, transform);
     }
     #endregion
     public void LookAtMouse()
@@ -654,7 +674,7 @@ public class PlayerController : CreatureController
     }
 
     // 직접 선택해서 호출하는 이펙트 : Type Select
-    public void PlaySelectEffect(KeyCode skillKey, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot, string fxName)
+    public void PlaySelectEffect(KeyCode skillKey, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot, string fxName, Transform targetTransform)
     {
         CharacterType type = ObjInfo.Player.CharType;
         CreatureState state = CreatureState.Skill;
@@ -667,14 +687,17 @@ public class PlayerController : CreatureController
             return;
 
         SkillEffectList myEffectList = DataManager.PlayerFxDict[type][state][skillKey];
-        List<EffectData> dataList = new List<EffectData>();
-        foreach (EffectData effect in myEffectList.Select)
-        {
-            if(fxName == effect.prefabName)
-                dataList.Add(effect);
-        }
+        if (myEffectList?.Select == null)
+            return;
 
-        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, transform, mousePos, targetPos, targetRot);
+        List<EffectData> dataList = myEffectList.Select
+       .Where(effect => effect != null && effect.prefabName == fxName)
+       .ToList();
+
+        if (dataList.Count == 0)
+            return;
+
+        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, targetTransform, mousePos, targetPos, targetRot);
     }
     #endregion
 

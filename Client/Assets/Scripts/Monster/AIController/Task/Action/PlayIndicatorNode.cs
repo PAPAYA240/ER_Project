@@ -6,7 +6,6 @@ public class PlayIndicatorNode : ActionNode
     public float delayTime;
 
     private GameObject indicator = null;
-    private Canvas canvs = null;
     private bool _isActive = false;
     private float _elapsedTime = 0f;
 
@@ -25,10 +24,7 @@ public class PlayIndicatorNode : ActionNode
             return NodeStatus.Failure;
 
         if (indicator == null)
-        {
-            Debug.LogWarning("Monster Indicator를 찾지 못함");
             return NodeStatus.Failure;
-        }
 
         if (!_isActive)
         {

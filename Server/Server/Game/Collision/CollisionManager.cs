@@ -616,9 +616,9 @@ namespace Server.Game
             {
                 dmg = CalcDamage(hitbox.Creature, target.Stat, hitbox.KeyCode);
             }
-            else if (hitbox.Creature is Monster)
+            else if (hitbox.Creature is Monster mc)
             {
-                dmg = CalcDamage(hitbox.Creature, target as Creature);
+                dmg = mc.CalcDamage(hitbox.Creature, target as Creature);
             }
 
 
@@ -663,20 +663,6 @@ namespace Server.Game
             info.Defense = target.Defense;
             info.MaxHp = target.MaxHp;
             return CalcDamage(attacker, info, keyCode);
-        }
-
-        public float CalcDamage(Creature attacker, Creature target)
-        {
-            Monster monsterAttacker = attacker as Monster;
-            if (monsterAttacker == null) 
-                return 0f;
-            if (!DataManager.MonsterSkillDict.ContainsKey(monsterAttacker.CurrentSkill))
-                return 0f;
-
-            if(target is Player)
-                return DataManager.MonsterSkillDict[monsterAttacker.CurrentSkill].damage;
-            else
-                return 0f;
         }
 
         public float CalcDamage(Creature attacker, StatInfo target, KeyCode keyCode)

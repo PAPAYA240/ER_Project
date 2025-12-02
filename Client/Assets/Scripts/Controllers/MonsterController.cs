@@ -1,6 +1,8 @@
+using Data;
 using Google.Protobuf.Protocol;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -120,6 +122,30 @@ public class MonsterController : CreatureController
     {
     }
 
+    public void OnHit(S_AttackInfo atkInfoPacket)
+    {
+        BaseController tbc = Managers.Object.FindById(atkInfoPacket.ObjectId)?.GetComponentInChildren<BaseController>();
+        if (tbc == null)
+            return;
+
+        Vector3 targetPosition = tbc.transform.position;
+
+        // *Monster Sound
+        if (Sound != null)
+            Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
+
+        // *Monster Effect
+        if (DataManager.MonsterEffectDict.TryGetValue(Skill, out List<EffectData> data))
+        {
+            List<EffectData> hitEffects = data.Where(effect =>
+                !string.IsNullOrEmpty(effect.prefabName) &&
+                effect.prefabName.IndexOf("Hit", StringComparison.OrdinalIgnoreCase) >= 0
+            ).ToList();
+
+            if (hitEffects.Count > 0)
+                Managers.FX.PlayEffect(atkInfoPacket.AttackerId, hitEffects, tbc.transform, TargetPosition, TargetPosition);
+        }
+    }
     public override void OnDead()
     {
         if (State != CreatureState.Dead)
@@ -158,7 +184,7 @@ public class MonsterController : CreatureController
     public void OnSkillPacket(S_State packet)
     {
         Skill = packet.Skilltype;
-        if (Type == MonsterType.Drone)
+        if (Type == MonsterType.Drone || Type == MonsterType.Turret)
         {
             OnStateChanged?.Invoke(false);
         }

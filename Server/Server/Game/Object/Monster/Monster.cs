@@ -70,6 +70,12 @@ namespace Server.Game
                 _appeared = true;
             }
             _currentState?.Execute(this);
+
+            if (Target != null)
+            {
+                if (Target.State == CreatureState.Dead)
+                    Target = null;
+            }
         }
 
         #region State
@@ -151,7 +157,7 @@ namespace Server.Game
             int skillIdx = new Random().Next(0, _skills.Count);
             MonsterSkill skillName = _skills[skillIdx];
 
-            if (DataManager.MonsterSkillDict.TryGetValue(MonsterSkill.MsGammaSkill1, out MonsterSkillData skillData) == false)
+            if (DataManager.MonsterSkillDict.TryGetValue(skillName, out MonsterSkillData skillData) == false)
                 return null;
 
             return skillData;
@@ -174,6 +180,20 @@ namespace Server.Game
 
             object instance = Activator.CreateInstance(type);
             return instance as ISkillBehavior;
+        }
+
+        public float CalcDamage(Creature attacker, Creature target)
+        {
+            Monster monsterAttacker = attacker as Monster;
+            if (monsterAttacker == null)
+                return 0f;
+            if (!DataManager.MonsterSkillDict.ContainsKey(monsterAttacker.CurrentSkill))
+                return 0f;
+
+            if (target is Player)
+                return DataManager.MonsterSkillDict[monsterAttacker.CurrentSkill].damage;
+            else
+                return 0f;
         }
         #endregion
 

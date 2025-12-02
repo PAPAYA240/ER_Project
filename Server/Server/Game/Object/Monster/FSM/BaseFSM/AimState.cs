@@ -3,6 +3,7 @@ using J2N;
 using Server.Data;
 using System;
 using System.Numerics;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.Game
 {
@@ -49,13 +50,22 @@ namespace Server.Game
                     _initialDirection = Vector3.Normalize(_initialDirection);
             }
 
-            monster.Room.CollManager.AddHitbox(monster, _skillData.skillType, new Vector2(monster.Target.PosInfo.PosX, monster.Target.PosInfo.PosZ));
+            if (monster.Info.Monster.MonsterType == MonsterType.Turret)
+            {
+                float damage = monster.CalcDamage(monster, monster.Target);
+                monster.Target.Room.Push(monster.Target.OnDamaged, monster, damage, false, false);
+            }
+            else
+            {
+                monster.Room.CollManager.AddHitbox(monster, _skillData.skillType, new Vector2(monster.Target.PosInfo.PosX, monster.Target.PosInfo.PosZ));
+            }
+
             monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), _skillData);
         }
 
         public void Execute(Monster monster)
         {
-            if(monster.CurrentSkill == MonsterSkill.MsGammaSkill2)
+            if (monster.CurrentSkill == MonsterSkill.MsGammaSkill2)
                 RotationSkill(monster);
 
             if (IsSkillFinished())
@@ -86,7 +96,6 @@ namespace Server.Game
             _oscillationAngle = 0f;
             _oscillationDirection = 1f;
         }
-
      
 
         #region Private Methods

@@ -511,7 +511,7 @@ namespace Data
     public class ClipInfo
     {
         public AudioClip Clip;
-        public float Duration; 
+        public float Duration;
     }
     [Serializable]
     public class SoundDict : ILoader<CharacterType, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>>

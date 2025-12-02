@@ -639,9 +639,7 @@ class PacketHandler
     {
         if (!IsSceneReady("Game", () => S_AttackInfoHandler(session, packet))) return;
 
-        // *Sound
         S_AttackInfo atkInfoPacket = packet as S_AttackInfo;
-
         BaseController bc = Managers.Object.FindById(atkInfoPacket.AttackerId)?.GetComponentInChildren<BaseController>();
         if (bc == null)
             return;
@@ -653,24 +651,19 @@ class PacketHandler
         if (attackerObjType == GameObjectType.Player)
         {
             PlayerController atkPlayer = (PlayerController)bc;
-            if (atkPlayer == null) return;
+            if (atkPlayer == null) 
+                    return;
 
-            Vector3 targetPosition = tbc.transform.position;
-
-            // 사용 중인 키(Player)/몬스터 스킬(Monster) 이름 + hit
-            // ex. Q_Hit, W_Hit, 
-            if (atkPlayer.Sound != null)
-                atkPlayer.Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
+            atkPlayer.OnHit(atkInfoPacket);
         }
+        // *Monster 
         else if (attackerObjType == GameObjectType.Monster)
         {
             MonsterController atkMonster = (MonsterController)bc;
-            if (atkMonster == null) return;
+            if (atkMonster == null) 
+                return;
 
-            Vector3 targetPosition = tbc.transform.position;
-
-            if (atkMonster.Sound != null)
-                atkMonster.Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
+            atkMonster.OnHit(atkInfoPacket);
         }
     }
 

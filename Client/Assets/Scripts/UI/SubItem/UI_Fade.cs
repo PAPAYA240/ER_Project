@@ -21,6 +21,4 @@ public class UI_Fade : UI_Base
         imageColor.a = 0.5f + 0.5f * Mathf.Sin(Time.time * _fadeSpeed);
         GetImage((int)Images.Fade).color = imageColor;
     }
-
-
 }
