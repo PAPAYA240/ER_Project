@@ -1244,6 +1244,7 @@ message S_RemoveEffect{
 	int32 keyCode = 2; 
 	bool isCaster = 3;
 	string fxName = 4;
+	string type = 5;
 }
 
 message S_RozziNormalAttack {

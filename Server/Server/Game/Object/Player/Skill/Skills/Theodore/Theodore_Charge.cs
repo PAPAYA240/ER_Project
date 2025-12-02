@@ -38,11 +38,11 @@ public sealed class Theodore_Charge : SkillHandlerBase
 
     public override void OnExit(Player p, SkillContext ctx)
     {
-        // Skill_Q 로 이동했을 때 위치가 초기화 된다. 이유는 don't know.
+        // Skill_Q 로 이동했을 때 위치가 초기화 된다. 
         //base.OnExit(p, ctx); 
 
         // *todo : 나중에 Effect Remove 해주기
-        p.SendRemoveEffect(KeyCode.Q, "Select");
+        p.SendRemoveEffect(KeyCode.Q, type : "Select");
     }
 
     // 스킬 중에 애니메이션 변동을 필요로 하는 조건으로 움직임, 
