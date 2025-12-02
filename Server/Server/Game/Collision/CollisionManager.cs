@@ -257,28 +257,21 @@ namespace Server.Game
                         continue;
                     if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
                         continue;
+
                     if (type == SkillType.SkillProjectile)
                     {
                         UpdatePosProjectile(hitbox);
                         continue;
                     }
-                    UpdateTransformRay(hitbox);
 
-                    if (hitbox.Creature is Monster)
-                        continue;
+                     UpdateTransformRay(hitbox);
 
-                    Quaternion rot = new Quaternion(
-                    hitbox.Creature.RotInfo.Qx,
-                    hitbox.Creature.RotInfo.Qy,
-                    hitbox.Creature.RotInfo.Qz,
-                    hitbox.Creature.RotInfo.Qw);
+                     Quaternion rot = hitbox.Creature.RotInfo.GetQuatFromRotInfo();
+                     Vector3 offset = new Vector3(hitbox.Data.RightOffset, 0, hitbox.Data.LookOffset);
+                     Vector3 rotatedOffset = Vector3.Transform(offset, rot);
 
-                    Vector3 offset = new Vector3(hitbox.Data.RightOffset, 0, hitbox.Data.LookOffset);
-
-                    Vector3 rotatedOffset = Vector3.Transform(offset, rot);
-
-                    hitbox.PosX = hitbox.Creature.PosInfo.PosX + rotatedOffset.X;
-                    hitbox.PosZ = hitbox.Creature.PosInfo.PosZ + rotatedOffset.Z;
+                     hitbox.PosX = hitbox.Creature.PosInfo.PosX + rotatedOffset.X;
+                     hitbox.PosZ = hitbox.Creature.PosInfo.PosZ + rotatedOffset.Z;
                 }
             }
         }
@@ -379,7 +372,7 @@ namespace Server.Game
             }
         }
 
-      
+
         void HandleCollision<T>(Hitbox hitbox, IDictionary<int, T> targets, List<T> hitTargets, Dictionary<int, Dictionary<int, float>> damageDict) where T : GameObject, new()
         {
             foreach (var targetKvp in targets)
@@ -405,34 +398,16 @@ namespace Server.Game
                     {
                         hitbox.LastHitTicks[targetKvp.Key] = CurTick;
                     }
+                    hitTargets.Add(target);
                 }
                 else
                 {
                     if (!hitbox.HitObjs.TryAdd(targetKvp.Key, 1))
                         continue;
-                }
 
-                if (hitbox.Creature is Monster m)
-                {
-                    if (m.MonsterTeam != target.Team)
-                        hitTargets.Add(target);
-                }
-                else
                     hitTargets.Add(target);
-
-                /*
-                 * if (!hitbox.HitObjs.TryAdd(targetKvp.Key, 1))
-                    continue;
-
-                if (hitbox.Creature is Monster m)
-                {
-                    if(m.MonsterTeam != target.Team)
-                        hitTargets.Add(target);
+                    HandlerInteraction(hitbox, target);
                 }
-                else
-                    hitTargets.Add(target);
-                 */
-                HandlerInteraction(hitbox, target);
             }
         }
 
