@@ -5,8 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Rendering;
-using static Data.SkillEffectList;
 
 
 public class PlayerController : CreatureController
@@ -41,6 +39,9 @@ public class PlayerController : CreatureController
     protected GameObject _eqipWeapon = null;
 
     public SoundController Sound;
+
+    // 유키 스킬 이펙트
+    public SkillEffectHandler YukiEffects { get; private set; } = new SkillEffectHandler();
 
     // Kill Count : 20초 안에 얼만큼의 처치했는는가?
     public float CurrentMultiKillCnt
@@ -275,7 +276,7 @@ public class PlayerController : CreatureController
         InitNameTag();
 
         // 유키용
-        Managers.EffectHandler.InitEffects(this);
+        YukiEffects.InitEffects(this);
 
         // Chat
         GameObject goChat = Managers.Resource.Instantiate("UI/Chat/ChatBackground");

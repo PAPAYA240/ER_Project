@@ -562,7 +562,8 @@ namespace Server.Game
                         Room.Broadcast(yukiPyosikPkt);
 
                         Player player = statusEffect.attacker as Player;
-
+                        player.Room.Push(player.Room.BroadcastAbigailSound, player, AbigailSound.YukiRattack, 1f);
+                        player.Room.Push(player.Room.BroadcastAbigailSound, player, AbigailSound.YukiRdebuff, 1f);
                         // 유키 궁 표식 데미지
                         int curLevel = player.GetSkillLevel(Data.DataUtils.KeyCode.R);
                         float curAttack = player.Attack;
@@ -610,6 +611,8 @@ namespace Server.Game
             await Task.Delay(delayMs);
 
             SendYukiSkillEffect(SkillEffectType.RHit);
+            atk.Room.Push(atk.Room.BroadcastAbigailSound, atk, AbigailSound.YukiRdebuffHit, 1f);
+            atk.Room.Push(atk.Room.BroadcastAbigailSound, atk, AbigailSound.YukiRend, 1f);
 
             float damage = MaxHp * (FixedDamage[curLevel - 1] + (curAttack * 0.05f) * 0.01f);
             Room.Push(OnDamaged, atk, damage, true, false);

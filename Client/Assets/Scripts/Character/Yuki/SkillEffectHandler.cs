@@ -38,10 +38,6 @@ public class SkillEffectHandler
             (_effectMap[SkillEffectType.RAttack] as MonoBehaviour).transform.localPosition = new Vector3(0, 1f, 0);
             (_effectMap[SkillEffectType.QAttack] as MonoBehaviour).transform.localPosition = new Vector3(0, 1f, 1f);
         }
-
-        // ��� ����Ʈ �ʱ� ��Ȱ��ȭ
-        foreach (var effect in _effectMap.Values)
-            (effect as MonoBehaviour).gameObject.SetActive(false);
     }
 
     private void RegisterEffect(SkillEffectType type, PlayerController player, string prefabPath)

@@ -3,8 +3,11 @@ using UnityEngine;
 
 public class AnimatorEvent : MonoBehaviour
 {
+    [SerializeField]
+    private PlayerController _player;
+
     public void OnSkillEnd()
     {
-        Managers.EffectHandler.PlayEffect(SkillEffectType.QAttack);
+        _player.YukiEffects.PlayEffect(SkillEffectType.QAttack);
     }
 }

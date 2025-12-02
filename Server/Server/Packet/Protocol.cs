@@ -392,7 +392,7 @@ namespace Google.Protobuf.Protocol {
             "ARIMCghSX0FUVEFDSxACEgsKB1JfUkFOR0UQAxIMCghRX0FUVEFDSxAEEgoK",
             "BlFfQnVmZhAFEgwKCFdfRmxvd2VyEAYSDAoIV19FRkZFQ1QQBxIICgREQVNI",
             "EAgSBwoDSGl0EAkqPwoOU3Bhd25Qb2ludFR5cGUSDQoJQmFzZVNwYXduEAAS",
-            "EAoMQnVzaFRlbGVwb3J0EAESDAoIQnVzaE5vbmUQAirzAgoMQWJpZ2FpbFNv",
+            "EAoMQnVzaFRlbGVwb3J0EAESDAoIQnVzaE5vbmUQAiqRBQoMQWJpZ2FpbFNv",
             "dW5kEgUKAVEQABINCglRZmlyc3RIaXQQARIOCgpRc2Vjb25kSGl0EAISCgoG",
             "UXZvaWNlEAMSBQoBVxAEEggKBFdoaXQQBRIKCgZXdm9pY2UQBhIFCgFFEAcS",
             "CAoERWhpdBAIEgoKBkVWb2ljZRAJEgUKAVIQChIICgRSaGl0EAsSCgoGUnZv",
@@ -401,7 +401,14 @@ namespace Google.Protobuf.Protocol {
             "dmVBdHRhY2sQEhIUChBQYXNzaXZlQXR0YWNrSGl0EBMSDwoLV2VhcG9uU2tp",
             "bGwQFBIMCghTZWxlY3RlZBAVEggKBERlYWQQFhIICgRLaWxsEBcSDwoLS2ls",
             "bE1vbnN0ZXIQGBIICgRSZXN0EBkSCwoHVmljdG9yeRAaEgoKBkRlZmVhdBAb",
-            "QhuqAhhHb29nbGUuUHJvdG9idWYuUHJvdG9jb2xiBnByb3RvMw=="));
+            "Eg8KC1l1a2lBdHRhY2sxEBwSDwoLWXVraUF0dGFjazIQHRIRCg1ZdWtpQXR0",
+            "YWNrSGl0EB4SDwoLWXVraVFBdHRhY2sQHxISCg5ZdWtpUUF0dGFja0hpdBAg",
+            "Eg8KC1l1a2lRYWN0aXZlECESDwoLWXVraVdhY3RpdmUQIhINCglZdWtpRW1v",
+            "dmUQIxIPCgtZdWtpRWF0dGFjaxAkEgwKCFl1a2lFaGl0ECUSDwoLWXVraVJh",
+            "Y3RpdmUQJhIPCgtZdWtpUmF0dGFjaxAnEg8KC1l1a2lSZGVidWZmECgSEgoO",
+            "WXVraVJkZWJ1ZmZIaXQQKRIMCghZdWtpUmVuZBAqEg8KC1l1a2lWaWN0b3J5",
+            "ECsSDAoIWXVraVJlc3QQLEIbqgIYR29vZ2xlLlByb3RvYnVmLlByb3RvY29s",
+            "YgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CombatState), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.SkillInputType), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.EnvType), typeof(global::Google.Protobuf.Protocol.ProjectileType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.MonsterSkill), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.Weapon), typeof(global::Google.Protobuf.Protocol.SkillShape), typeof(global::Google.Protobuf.Protocol.TraitType), typeof(global::Google.Protobuf.Protocol.EquipItemType), typeof(global::Google.Protobuf.Protocol.ItemGrade), typeof(global::Google.Protobuf.Protocol.StopReason), typeof(global::Google.Protobuf.Protocol.SkillMotionType), typeof(global::Google.Protobuf.Protocol.CollisionType), typeof(global::Google.Protobuf.Protocol.VariantKey), typeof(global::Google.Protobuf.Protocol.CombatTextType), typeof(global::Google.Protobuf.Protocol.Beacon), typeof(global::Google.Protobuf.Protocol.BOMB_ROZZI), typeof(global::Google.Protobuf.Protocol.SkillEffectType), typeof(global::Google.Protobuf.Protocol.SpawnPointType), typeof(global::Google.Protobuf.Protocol.AbigailSound), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -948,6 +955,23 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("Rest")] Rest = 25,
     [pbr::OriginalName("Victory")] Victory = 26,
     [pbr::OriginalName("Defeat")] Defeat = 27,
+    [pbr::OriginalName("YukiAttack1")] YukiAttack1 = 28,
+    [pbr::OriginalName("YukiAttack2")] YukiAttack2 = 29,
+    [pbr::OriginalName("YukiAttackHit")] YukiAttackHit = 30,
+    [pbr::OriginalName("YukiQAttack")] YukiQattack = 31,
+    [pbr::OriginalName("YukiQAttackHit")] YukiQattackHit = 32,
+    [pbr::OriginalName("YukiQactive")] YukiQactive = 33,
+    [pbr::OriginalName("YukiWactive")] YukiWactive = 34,
+    [pbr::OriginalName("YukiEmove")] YukiEmove = 35,
+    [pbr::OriginalName("YukiEattack")] YukiEattack = 36,
+    [pbr::OriginalName("YukiEhit")] YukiEhit = 37,
+    [pbr::OriginalName("YukiRactive")] YukiRactive = 38,
+    [pbr::OriginalName("YukiRattack")] YukiRattack = 39,
+    [pbr::OriginalName("YukiRdebuff")] YukiRdebuff = 40,
+    [pbr::OriginalName("YukiRdebuffHit")] YukiRdebuffHit = 41,
+    [pbr::OriginalName("YukiRend")] YukiRend = 42,
+    [pbr::OriginalName("YukiVictory")] YukiVictory = 43,
+    [pbr::OriginalName("YukiRest")] YukiRest = 44,
   }
 
   #endregion

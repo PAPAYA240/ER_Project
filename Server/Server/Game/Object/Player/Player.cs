@@ -376,6 +376,7 @@ namespace Server.Game
 
                 if (_attactActiveTime > _nonCombatTime)
                 {
+                    _attactActiveTime = 0f;
                     // 이펙트 멈추기
                     SendYukiSkillEffect(SkillEffectType.QBuff, false);
                     AttackActive = false;

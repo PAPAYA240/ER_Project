@@ -837,10 +837,13 @@ class PacketHandler
         if (go == null)
             return;
 
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null) return;
+
         if (YukiSkillEffectPkt.IsPlay)
-            Managers.EffectHandler.PlayEffect((SkillEffectType)YukiSkillEffectPkt.EffectType);
+            pc.YukiEffects.PlayEffect((SkillEffectType)YukiSkillEffectPkt.EffectType);
         else
-            Managers.EffectHandler.StopEffect((SkillEffectType)YukiSkillEffectPkt.EffectType);
+            pc.YukiEffects.StopEffect((SkillEffectType)YukiSkillEffectPkt.EffectType);
     }
 
     public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)
