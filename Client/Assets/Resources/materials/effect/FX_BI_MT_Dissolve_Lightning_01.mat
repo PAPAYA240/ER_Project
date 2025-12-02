@@ -20,52 +20,53 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties:
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-      _DissolveTexture:
+    - _DissolveTexture:
         m_Texture: {fileID: 2800000, guid: e18669bd856bcae4c8425541954884af, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-      _DissolveTexture_gradiant:
+    - _DissolveTexture_gradiant:
         m_Texture: {fileID: 2800000, guid: 14595e4cbfb87d14f975dee786673587, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-      _MaskTexture01:
+    - _MaskTexture01:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-      _MaskTexture02:
+    - _MaskTexture02:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Ints: {}
+    m_Ints: []
     m_Floats:
-      _Float0: 0.08
-      _Float3: 1
-      _Float4: 0.5
-      _Float5: 1
-      _Keyword0: 1
-      _LimitCustomY: 0
-      _MulVal_Alpha: 0.25
-      _ZTestMode: 2
-      __dirty: 0
-      _dissolve2Path: 0
-      _gra: 1
-      _gradiant: 0
-      _hard: 1
-      _mask: 1
-      _mask01: 1
-      _mask02: 0
-      _mu: 0
-      _mv: 0
-      _no_gra: 0
-      _soft: 1
-      _su: 0.75
-      _sv: 1
-      _u: 2.96
-      _v: 1
-      _v1: 1
-    m_Colors: {}
+    - _Float0: 0.08
+    - _Float3: 1
+    - _Float4: 0.5
+    - _Float5: 1
+    - _Keyword0: 1
+    - _LimitCustomY: 0
+    - _MulVal_Alpha: 0.25
+    - _ZTestMode: 2
+    - __dirty: 0
+    - _dissolve2Path: 0
+    - _gra: 1
+    - _gradiant: 0
+    - _hard: 1
+    - _mask: 1
+    - _mask01: 1
+    - _mask02: 0
+    - _mu: 0
+    - _mv: 0
+    - _no_gra: 0
+    - _soft: 1
+    - _su: 0.75
+    - _sv: 1
+    - _u: 2.96
+    - _v: 1
+    - _v1: 1
+    m_Colors: []
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

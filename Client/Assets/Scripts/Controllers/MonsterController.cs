@@ -158,8 +158,6 @@ public class MonsterController : CreatureController
     public void OnSkillPacket(S_State packet)
     {
         Skill = packet.Skilltype;
-
-
         if (Type == MonsterType.Drone)
         {
             OnStateChanged?.Invoke(false);
@@ -168,24 +166,33 @@ public class MonsterController : CreatureController
         {
             OnStateChanged?.Invoke(true);
         }
-
+        
+        
         if (_agent != null)
         {
            _agent.ResetPath();
            _agent.SetDestination(packet.PosInfo.ToVector());
         }
 
-        if(packet.RotInfo != null)
+        if (packet.RotInfo != null)
             _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
 
+    private void ChangeTransformInfo(S_State packet)
+    {
+        if (packet.RotInfo != null)
+            _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
+    }
     public void OnRecvStatePacket(S_State packet)
     {
-        if (State == CreatureState.Appear &&
-            packet.MyState == CreatureState.Idle)
+        if (packet.ChangeState == false)
         {
-            OnStateChanged?.Invoke(true);
+            ChangeTransformInfo(packet);
+            return;
         }
+
+        if (State == CreatureState.Appear && packet.MyState == CreatureState.Idle)
+            OnStateChanged?.Invoke(true);
 
         State = packet.MyState;
         if (packet.TargetPosition != null)

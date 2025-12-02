@@ -17,18 +17,18 @@
       "delayTime": 0
     },
 
-    //{
-    //  "prefabName": "FX_BI_Gamma_skill01_Laser", // 수정 필요
-    //  "skillType": "MsGammaSkill1",
-    //  "target": "Self",
-    //  "duration": 3.3,
-    //  "delayTime": 1.25,
-    //  "position": {
-    //    "x": 0,
-    //    "y": 0,
-    //    "z": 0
-    //  }
-    //},
+   {
+     "prefabName": "FX_BI_Gamma_skill01_Laser", 
+     "skillType": "MsGammaSkill1",
+     "target": "Self",
+     "duration": 3.3,
+     "delayTime": 1.25,
+     "position": {
+       "x": 0,
+       "y": 0,
+       "z": 0
+     }
+   },
     {
       "prefabName": "FX_Gamma_Skill2",
       "skillType": "MsGammaSkill2",

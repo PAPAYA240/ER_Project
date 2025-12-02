@@ -57,14 +57,15 @@ public class MyPlayerController : PlayerController
             _input = gameObject.GetOrAddComponent<HyunwooInputController>();
         }
 
+        // 스킬 인디케이터
+        if (ObjInfo.Player.CharType == CharacterType.Theodore)
+            _skillIndicator = gameObject.GetOrAddComponent<SkillIndicator>();
+
         Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
         _skill.Init();
         _UI.Init();
 
         _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHPColor();
-
-        // 스킬 인디케이터
-        _skillIndicator = gameObject.GetOrAddComponent<SkillIndicator>();
 
         // 전장의 안개 카메라 설정
         GameObject fogCamGo = GameObject.Find("FogCamera");

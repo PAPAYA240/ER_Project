@@ -80,7 +80,7 @@ public class SoundManager
 
         audioSource.rolloffMode = AudioRolloffMode.Logarithmic; // 감쇠 모드
         audioSource.minDistance = 2f;            // 이 거리까지는 최대 음량
-        audioSource.maxDistance = 20f;           // 이 거리까지는 서서히 작아짐
+        audioSource.maxDistance = 20f;          // 이 거리까지는 서서히 작아짐
 
         audioSource.dopplerLevel = 0f;           // 도플러 효과 없음
         audioSource.spread = 180f;               // 최대 넓이로 스테레오 유지

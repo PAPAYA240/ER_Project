@@ -151,7 +151,7 @@ namespace Server.Game
             int skillIdx = new Random().Next(0, _skills.Count);
             MonsterSkill skillName = _skills[skillIdx];
 
-            if (DataManager.MonsterSkillDict.TryGetValue(skillName, out MonsterSkillData skillData) == false)
+            if (DataManager.MonsterSkillDict.TryGetValue(MonsterSkill.MsGammaSkill1, out MonsterSkillData skillData) == false)
                 return null;
 
             return skillData;
@@ -206,12 +206,12 @@ namespace Server.Game
         #endregion
 
         #region 패킷 전달
-        public void PushState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null)
+        public void PushState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null, bool stateChange = true)
         {
-             Room?.Push(() => BroadcastState(newState, posInfo, rotInfo, skillData));
+             Room?.Push(() => BroadcastState(newState, posInfo, rotInfo, skillData, stateChange));
         }
 
-        private void BroadcastState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null)
+        private void BroadcastState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null, bool stateChange = true)
         {
             _sequenceId++;
             S_State statePacket = new S_State
@@ -220,7 +220,8 @@ namespace Server.Game
                 SequenceId = _sequenceId,
                 MyState = newState,
                 PosInfo = posInfo,
-                RotInfo = rotInfo
+                RotInfo = rotInfo,
+                ChangeState = stateChange
             };
 
             if (Target != null)

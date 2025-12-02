@@ -5,8 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Rendering;
-using static Data.SkillEffectList;
 
 
 public class PlayerController : CreatureController
