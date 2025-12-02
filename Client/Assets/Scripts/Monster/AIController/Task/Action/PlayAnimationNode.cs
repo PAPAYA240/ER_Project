@@ -116,7 +116,7 @@ public class PlayAnimation : AnimationControlNode
     }
     public override void Exit(GameObject obj, bool clear)
     {
-        Debug.Log("호출?");
+        //Debug.Log("호출?");
         ClearAnim();
         _currentAnimName = string.Empty;
         _currentChainIndex = 0;

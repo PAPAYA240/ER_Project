@@ -30,6 +30,10 @@ namespace Server.Game
             set { _isDeath = value; }
         }
 
+        // Exp
+        const int KillExp = 1000;
+        const int AsistExp = 500;
+
         // Inventory
         Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
         ItemStat _totalItemStat = new ItemStat();
@@ -146,6 +150,7 @@ namespace Server.Game
             } 
         }
 
+        public int Exp { get { return Stat.Exp; } set { Stat.Exp = value; SendExpPacket(); } }
         #endregion
 
         // StateMachine
@@ -426,6 +431,15 @@ namespace Server.Game
             {
                 ++attackPlayer.KillAmount;
                 KdaPacket.KDAs.Add(new KDAInfo { ObjectId = attackPlayer.Id, Kill = attackPlayer.KillAmount, Death = attackPlayer.DeathAmount, Asist = attackPlayer.AsistAmount });
+
+                attackPlayer.Exp += KillExp;
+
+                // 스코어 
+                int score = Room.ReduceScore(Team, 1);
+                S_ChangeScore changeScorePacket = new S_ChangeScore();
+                changeScorePacket.Team = Team;
+                changeScorePacket.Score = score;
+                Room.Push(Room.Broadcast, changeScorePacket);
             }
 
             // 어시 처리
@@ -440,16 +454,13 @@ namespace Server.Game
                     {
                         ++asistPlayer.AsistAmount;
                         KdaPacket.KDAs.Add(new KDAInfo { ObjectId = asistPlayer.Id, Kill = asistPlayer.KillAmount, Death = asistPlayer.DeathAmount, Asist = asistPlayer.AsistAmount });
+
+                        asistPlayer.Exp += AsistExp;
                     }
                 }
             }
 
             Room.Broadcast(KdaPacket);
-
-            // 경험치
-
-            // 스코어
-
         }
         #endregion
 
@@ -1317,6 +1328,14 @@ namespace Server.Game
             unstoppablePkt.ObjectId = Id;
             unstoppablePkt.Unstoppable = IsUnstoppable;
             Room.Push(Room.Broadcast, unstoppablePkt);
+        }
+
+        public void SendExpPacket()
+        {
+            S_ChangeExp packet = new S_ChangeExp();
+            packet.Exp = Exp;
+
+            Room.Push(Session.Send, packet);
         }
 
         #endregion
