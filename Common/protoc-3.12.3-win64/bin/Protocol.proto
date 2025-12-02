@@ -459,6 +459,7 @@ message S_State {
 	MonsterSkill skilltype = 5;
 	int32 sequenceId = 6;
 	PositionInfo targetPosition = 7;
+	bool changeState = 8;
 }
 
 message C_SkillPrepare{
@@ -895,6 +896,7 @@ message SkillHitbox{
 	float maxRange = 15;
 	bool isOneTimeUse = 16;
 	map<string, InteractionList> interactions = 17;
+	bool repeatingDamage =  18;
 }
 
 message CostInfo{

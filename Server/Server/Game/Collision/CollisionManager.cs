@@ -85,6 +85,9 @@ namespace Server.Game
         public bool IsInteracted = true;
         public float OffsetRadius = 0;
         public Vector3 FixedPosition = new Vector3();
+
+        public float HitInterval { get; set; } = 500.0f;
+        public ConcurrentDictionary<int, long> LastHitTicks = new ConcurrentDictionary<int, long>();
         #endregion
     }
 
@@ -251,6 +254,8 @@ namespace Server.Game
             {
                 foreach (Hitbox hitbox in set)
                 {
+                    UpdateTransformRay(hitbox);
+
                     if (hitbox.Creature == null || hitbox.Data == null)
                         continue;
                     if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
@@ -361,6 +366,7 @@ namespace Server.Game
                     List<T> hitTargets = new List<T>();
 
                     HandleCollision<T>(hitbox, targets, hitTargets, damageDict);
+
                     if (hitTargets.Count > 0)
                     {
                         HandleDamage<T>(hitbox, hitTargets, damageDict);
@@ -385,10 +391,46 @@ namespace Server.Game
                 if (!CheckCollision(hitbox, target))
                     continue;
 
-                if (!hitbox.HitObjs.TryAdd(targetKvp.Key, 1))
+                if (hitbox.Data.RepeatingDamage)
+                {
+                    if (hitbox.LastHitTicks.TryGetValue(targetKvp.Key, out long lastHitTick))
+                    {
+                        if (CurTick - lastHitTick < hitbox.HitInterval)
+                            continue;
+
+                        hitbox.LastHitTicks[targetKvp.Key] = CurTick;
+                    }
+                    else
+                    {
+                        hitbox.LastHitTicks[targetKvp.Key] = CurTick;
+                    }
+                }
+                else
+                {
+                    if (!hitbox.HitObjs.TryAdd(targetKvp.Key, 1))
+                        continue;
+                }
+
+                if (hitbox.Creature is Monster m)
+                {
+                    if (m.MonsterTeam != target.Team)
+                        hitTargets.Add(target);
+                }
+                else
+                    hitTargets.Add(target);
+
+                /*
+                 * if (!hitbox.HitObjs.TryAdd(targetKvp.Key, 1))
                     continue;
 
-                hitTargets.Add(target);
+                if (hitbox.Creature is Monster m)
+                {
+                    if(m.MonsterTeam != target.Team)
+                        hitTargets.Add(target);
+                }
+                else
+                    hitTargets.Add(target);
+                 */
                 HandlerInteraction(hitbox, target);
             }
         }
@@ -416,7 +458,7 @@ namespace Server.Game
 
                 if (hitbox.Creature is Monster)
                 {
-                    if (target is Player)
+                    if (target is Player && target.Team != hitbox.Creature.MonsterTeam)
                         hitbox.IsUsed = true;
                 }
                 else
@@ -625,9 +667,9 @@ namespace Server.Game
             {
                 dmg = CalcDamage(hitbox.Creature, target.Stat, hitbox.KeyCode);
             }
-            else if (hitbox.Creature is Monster)
+            else if (hitbox.Creature is Monster mc)
             {
-                dmg = CalcDamage(hitbox.Creature, target as Creature);
+                dmg = mc.CalcDamage(hitbox.Creature, target as Creature);
             }
 
 
@@ -672,20 +714,6 @@ namespace Server.Game
             info.Defense = target.Defense;
             info.MaxHp = target.MaxHp;
             return CalcDamage(attacker, info, keyCode);
-        }
-
-        public float CalcDamage(Creature attacker, Creature target)
-        {
-            Monster monsterAttacker = attacker as Monster;
-            if (monsterAttacker == null) 
-                return 0f;
-            if (!DataManager.MonsterSkillDict.ContainsKey(monsterAttacker.CurrentSkill))
-                return 0f;
-
-            if(target is Player)
-                return DataManager.MonsterSkillDict[monsterAttacker.CurrentSkill].damage;
-            else
-                return 0f;
         }
 
         public float CalcDamage(Creature attacker, StatInfo target, KeyCode keyCode)
@@ -1207,7 +1235,31 @@ namespace Server.Game
             _interactionManager.HandleInteraction(hitbox, target);
         }
 
+        private void UpdateTransformRay(Hitbox hitbox)
+        {
+            if (!System.Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
+                return;
 
+            if (shape != SkillShape.Ray)
+                return;
+
+            if (CurTick < hitbox.StartTick)
+                return;
+
+            if (hitbox.MonsterSkillType == MonsterSkill.MsGammaSkill2)
+            {
+                Quaternion rot = hitbox.Creature.RotInfo.GetQuatFromRotInfo();
+                Vector3 localForward = new Vector3(0, 0, 1);
+                Vector3 forward3D = Vector3.Transform(localForward, rot);
+
+                Vector2 currentForward = new Vector2(forward3D.X, forward3D.Z);
+                Vector2 origin = new Vector2(hitbox.Creature.PosInfo.PosX, hitbox.Creature.PosInfo.PosZ);
+
+                hitbox.MousePos = origin + currentForward * hitbox.Data.MaxRange;
+                hitbox.PosX = origin.X;
+                hitbox.PosZ = origin.Y;
+            }
+        }
         #endregion
 
         #region 사운드 패킷

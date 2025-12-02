@@ -42,6 +42,7 @@ public sealed class Theodore_Charge : SkillHandlerBase
         //base.OnExit(p, ctx); 
 
         // *todo : 나중에 Effect Remove 해주기
+        p.SendRemoveEffect(KeyCode.Q, "Select");
     }
 
     // 스킬 중에 애니메이션 변동을 필요로 하는 조건으로 움직임, 

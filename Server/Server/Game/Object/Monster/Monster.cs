@@ -75,6 +75,12 @@ namespace Server.Game
                 _appeared = true;
             }
             _currentState?.Execute(this);
+
+            if (Target != null)
+            {
+                if (Target.State == CreatureState.Dead)
+                    Target = null;
+            }
         }
 
         #region State
@@ -214,6 +220,20 @@ namespace Server.Game
             object instance = Activator.CreateInstance(type);
             return instance as ISkillBehavior;
         }
+
+        public float CalcDamage(Creature attacker, Creature target)
+        {
+            Monster monsterAttacker = attacker as Monster;
+            if (monsterAttacker == null)
+                return 0f;
+            if (!DataManager.MonsterSkillDict.ContainsKey(monsterAttacker.CurrentSkill))
+                return 0f;
+
+            if (target is Player)
+                return DataManager.MonsterSkillDict[monsterAttacker.CurrentSkill].damage;
+            else
+                return 0f;
+        }
         #endregion
 
         #region 범위 검색
@@ -245,12 +265,12 @@ namespace Server.Game
         #endregion
 
         #region 패킷 전달
-        public void PushState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null)
+        public void PushState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null, bool stateChange = true)
         {
-             Room?.Push(() => BroadcastState(newState, posInfo, rotInfo, skillData));
+             Room?.Push(() => BroadcastState(newState, posInfo, rotInfo, skillData, stateChange));
         }
 
-        private void BroadcastState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null)
+        private void BroadcastState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null, bool stateChange = true)
         {
             _sequenceId++;
             S_State statePacket = new S_State
@@ -259,7 +279,8 @@ namespace Server.Game
                 SequenceId = _sequenceId,
                 MyState = newState,
                 PosInfo = posInfo,
-                RotInfo = rotInfo
+                RotInfo = rotInfo,
+                ChangeState = stateChange
             };
 
             if (Target != null)

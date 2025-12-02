@@ -1246,6 +1246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Sound: {fileID: 0}
+  HidingInBush: 0
   xRayIgnoreStencilID: 100
 --- !u!114 &6165833819830594196
 MonoBehaviour:
@@ -10188,7 +10189,7 @@ GameObject:
   - component: {fileID: 6622066339837652360}
   - component: {fileID: 229336825956480007}
   m_Layer: 0
-  m_Name: Abigail_S002
+  m_Name: Abigail_S002_LOD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

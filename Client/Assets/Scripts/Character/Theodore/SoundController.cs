@@ -64,7 +64,7 @@ public class SoundController : MonoBehaviour
         }
     }
 
-    public void GetEffect3D(string soundName, Vector3 position, bool isf= false)
+    public void GetEffect3D(string soundName, Vector3 position)
     {
         if (!SoundClipDict.ContainsKey(Define.Sound.Effect))
             return;
