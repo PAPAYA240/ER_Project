@@ -43,7 +43,7 @@
     "Gamma": {
       "MsGammaAttack1": {
         "shape": "Ray",
-        "type": "SkillTrack",
+        "type": "SkillStatic",
         "width": 3,
         "height": 3,
         "startFrame": 7,
@@ -53,8 +53,8 @@
       },
       "MsGammaSkill1": {
         "shape": "Ray",
-        "type": "SkillTrack",
-        "width": 3,
+        "type": "SkillStatic",
+        "width": 1,
         "height": 4,
         "startFrame": 70,
         "endFrame": 90,
@@ -63,7 +63,8 @@
       },
       "MsGammaSkill2": {
         "shape": "Ray",
-        "type": "SkillTrack",
+        "type": "SkillStatic",
+        "RepeatingDamage": true,
         "width": 3,
         "height": 4,
         "startFrame": 60,
@@ -102,18 +103,18 @@
         "fps": 60,
         "isOneTimeUse": true
       }
-    },
-    "Turret": {
-      "MsTurretAttack": {
-        "shape": "Circle",
-        "type": "SkillProjectile",
-        "radius": 0.5,
-        "speed": 10,
-        "startFrame": 1,
-        "endFrame": 100,
-        "fps": 60,
-        "isOneTimeUse": true
-      }
     }
+    //"Turret": {
+    //  "MsTurretAttack": {
+    //    "shape": "Circle",
+    //    "type": "SkillProjectile",
+    //    "radius": 0.5,
+    //    "speed": 10,
+    //    "startFrame": 1,
+    //    "endFrame": 100,
+    //    "fps": 60,
+    //    "isOneTimeUse": true
+    //  }
+    //}
   }
 }

@@ -222,12 +222,16 @@
                   "Properties": { "chainAnimNames": [ "SKILL1", "SKILL1_ATTACK" ] }
                 },
                 {
-                  "Name": "Indicator",
-                  "Type": "PlayIndicatorNode",
-                  "Properties": {
-                    "indicatorPrefabPath": "UI/Character/Monster/Gamma_Indicator_Skill1",
-                    "delayTime" : 0.12 }
-                  }
+                  "Name": "Effect",
+                  "Type": "PlayEffectNode"
+                }
+                //{
+                //  "Name": "Indicator",
+                //  "Type": "PlayIndicatorNode",
+                //  "Properties": {
+                //    "indicatorPrefabPath": "UI/Character/Monster/Gamma_Indicator_Skill1",
+                //    "delayTime" : 0.12 }
+                //  }
               ]
             }
           ]

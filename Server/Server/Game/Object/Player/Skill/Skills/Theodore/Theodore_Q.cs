@@ -17,6 +17,7 @@ public sealed class Theodore_Q : SkillHandlerBase
         base.OnEnter(p, ctx);
 
         SendSkillConfirmPacket(p);
+        p.LookAtMouse(ctx.MousePos);
         p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode);
     }
 

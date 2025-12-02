@@ -1,6 +1,8 @@
 ﻿using Data;
 using Google.Protobuf.Protocol;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PlayEffectNode : ActionNode
@@ -15,9 +17,17 @@ public class PlayEffectNode : ActionNode
          if (monster == null)
             return NodeStatus.Failure;
 
-        if (DataManager.MonsterSkillDict.TryGetValue(monster.Skill, out List<EffectData> data))
+        if (DataManager.MonsterEffectDict.TryGetValue(monster.Skill, out List<EffectData> data))
         {
-            Managers.FX.PlayEffect(monster.ObjInfo.ObjectId, data, monster.transform, monster.TargetPosition, monster.TargetPosition);
+            List<EffectData> nonHitEffects = data.Where(effect =>
+                string.IsNullOrEmpty(effect.prefabName) ||
+                effect.prefabName.IndexOf("hit", StringComparison.OrdinalIgnoreCase) < 0
+            ).ToList();
+
+            if (nonHitEffects.Count > 0)
+            {
+                Managers.FX.PlayEffect(monster.ObjInfo.ObjectId, nonHitEffects, monster.transform, monster.TargetPosition, monster.TargetPosition);
+            }
         }
 
         return NodeStatus.Success;

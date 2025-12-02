@@ -78,10 +78,6 @@ public class SkillEffectHandler
         {
             effect.Play();
         }
-        else
-        {
-            Debug.LogWarning($"SkillEffect not found: {type}");
-        }
     }
 
     public void StopEffect(SkillEffectType type)
