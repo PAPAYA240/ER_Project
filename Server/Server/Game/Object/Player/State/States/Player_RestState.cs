@@ -31,14 +31,15 @@ public class Player_RestState : IPlayerState
             player.IsHit = false;
 
             if (player.Info.Player.CharType == CharacterType.Abigail)
-                player.Room.BroadcastAbigailSound(player, AbigailSound.Rest, 1);
+                player.Room.BroadcastAbigailSound(player, AbigailSound.Rest, 1f);
+            else if (player.Info.Player.CharType == CharacterType.Yuki)
+                player.Room.BroadcastAbigailSound(player, AbigailSound.YukiRest, 1f);
         }
         else
         {
             _animName = "REST_END";
         }
 
-        Console.WriteLine(_animName);
         player.SendAnimPacket(_animName, 0.1f);
         _duration = DataManager.AnimLengthInfoDict[player.Info.Player.CharType][_animName].Length;
     }

@@ -30,6 +30,8 @@ public sealed class Yuki_W : SkillHandlerBase
         p.Room.AddStatusEffect(p, p, _keyCode, null);
 
         p.SendYukiSkillEffect(SkillEffectType.WFlower);
+
+        p.Room.Push(p.Room.BroadcastAbigailSound, p, AbigailSound.YukiWactive, 1f);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

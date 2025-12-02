@@ -8,13 +8,15 @@ Shader "ERBS_FX/FX_AdditiveMobile" {
 		_StencilReadMask ("Stencil Read Mask", Float) = 255
 		_ColorMask ("Color Mask", Float) = 15
 	}
-	//DummyShaderTextExporter
 	SubShader{
-		Tags { "RenderType"="Opaque" }
+		Tags { "RenderType"="Transparent" } 
 		LOD 200
 
 		Pass
 		{
+            Blend One One 
+            ZWrite Off
+
 			HLSLPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag

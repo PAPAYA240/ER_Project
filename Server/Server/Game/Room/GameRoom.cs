@@ -40,7 +40,7 @@ namespace Server.Game
         public TeleportSystem Teleport { get; private set; }
         #endregion
 
-        #region Phase, Time
+        #region Phase, Time, Exp
 
         private long _startTick;         // 게임 시작 기준 Tick
         private long _phaseStartTick;    // 현재 페이즈 시작 Tick
@@ -122,16 +122,10 @@ namespace Server.Game
 
         public void GetTickExp(object state = null)
         {
-            S_ChangeExp expPacket = new S_ChangeExp();
-
             lock (this)
             {
                 foreach (var p in _players.Values)
-                {
-                    p.Stat.Exp += 50;
-                    expPacket.Exp = p.Stat.Exp;
-                    Push(p.Session.Send, expPacket);
-                }
+                    p.Exp += 100;
             }
         }
 
@@ -165,6 +159,14 @@ namespace Server.Game
             _expTimer?.Stop();
             _expTimer?.Dispose();
             _expTimer = null;
+        }
+
+        public void GetTeamExp(int teamIndex, int exp)
+        {
+            foreach (Player p in _teams[teamIndex].Values)
+            {
+                p.Exp += exp;
+            }
         }
         #endregion
 
@@ -720,7 +722,7 @@ namespace Server.Game
             levelUpPkt.StatGrowth = statInfo;
 
             levelUpPkt.NextMaxExp = DataManager.ExpDict[player.Stat.Level];
-            levelUpPkt.CurExp = player.Stat.Exp;
+            levelUpPkt.CurExp = player.Exp;
 
             Broadcast(levelUpPkt);
         }

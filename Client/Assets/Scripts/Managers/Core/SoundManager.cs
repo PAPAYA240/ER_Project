@@ -123,11 +123,20 @@ public class SoundManager
         audioSource.Play();
 
         Object.Destroy(go, audioClip.length + 0.1f);
-        return audioClip.length;
+        return audioClip.length; 
     }
 
     public AudioClip PlayLoop(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, float volume = 0.15f)
     {
+        if (audioClip == null)
+            return null;
+
+        if(_loopSources == null)
+            _loopSources = new Dictionary<string, AudioSource>();
+
+        if (_loopSources != null && _loopSources.ContainsKey(audioClip.name))
+            StopLoopSound(audioClip.name);
+
         GameObject loopObject = new GameObject($"LoopSound_{audioClip.name}");
         AudioSource loopSource = loopObject.AddComponent<AudioSource>();
 

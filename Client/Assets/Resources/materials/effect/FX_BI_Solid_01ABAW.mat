@@ -8,10 +8,11 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FX_BI_Solid_01ABAW
-  m_Shader: {fileID: 4800000, guid: 081e71f3f038fba409f8585a6a9533c3, type: 3}
+  m_Shader: {fileID: 4800000, guid: 30bc8fd703be46640bd61c9fef44f54f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _MASK_SELECTS_GRADETION
   m_InvalidKeywords: []
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
@@ -24,8 +25,12 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: e06d43a31344c2443a35682c161d06c8, type: 3}
+        m_Texture: {fileID: 2800000, guid: 0e88b28f81deeb441b01f2d22185b05e, type: 3}
         m_Scale: {x: 3, y: 3}
+        m_Offset: {x: 0, y: 0}
+    - _Noise:
+        m_Texture: {fileID: 2800000, guid: 0e88b28f81deeb441b01f2d22185b05e, type: 3}
+        m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
@@ -46,20 +51,39 @@ Material:
     - _DstBlend: 0
     - _EmissionEnabled: 0
     - _FlipbookMode: 0
+    - _Fllipbook_Columns: 0
+    - _Fllipbook_Emissive: 1
+    - _Fllipbook_Opacity: 1
+    - _Fllipbook_Rows: 0
+    - _Fllipbook_speed: 1
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
+    - _Gradetion_Noise_Opacity: 3.12906
+    - _Gradetion_Noise_Speed: 1
     - _InvFade: 3
     - _LightingEnabled: 0
+    - _MASK_SELECTS: 0
+    - _Mask_Gradetion_PawerA: 3.95
+    - _Mask_Gradetion_PawerB: 3.95
+    - _Mask_SphereCenter: 0
+    - _Mask_SphereSize: 0.2
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
+    - _Opacity_Alpha: 1
+    - _Opacity_RGB: 0
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SoftParticlesEnabled: 0
     - _SoftParticlesFarFadeDistance: 1
     - _SoftParticlesNearFadeDistance: 0
     - _SpecularHighlights: 1
+    - _Sphere_NoiseRotate_Speed: 0.5
+    - _Sphere_Noise_Opacity: 3.12906
+    - _Sphere_Twister_Opacity: 0
+    - _Sphere_Twister_Size: 1.457462
+    - _Sphere_Twister_Speed: 0
     - _SrcBlend: 1
     - _Stencil: 0
     - _StencilComp: 8
@@ -74,6 +98,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorAddSubDiff: {r: -1, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Gradetion_NoisexyTilingyzOffset: {r: 1, g: 1, b: 0, a: 0}
     - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
     - _TintColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

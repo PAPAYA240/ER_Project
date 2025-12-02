@@ -30,6 +30,10 @@ namespace Server.Game
             set { _isDeath = value; }
         }
 
+        // Exp
+        const int KillExp = 1000;
+        const int AsistExp = 500;
+
         // Inventory
         Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
         ItemStat _totalItemStat = new ItemStat();
@@ -146,6 +150,7 @@ namespace Server.Game
             } 
         }
 
+        public int Exp { get { return Stat.Exp; } set { Stat.Exp = value; SendExpPacket(); } }
         #endregion
 
         // StateMachine
@@ -376,6 +381,7 @@ namespace Server.Game
 
                 if (_attactActiveTime > _nonCombatTime)
                 {
+                    _attactActiveTime = 0f;
                     // 이펙트 멈추기
                     SendYukiSkillEffect(SkillEffectType.QBuff, false);
                     AttackActive = false;
@@ -426,6 +432,15 @@ namespace Server.Game
                 ++attackPlayer.KillAmount;
                 KdaPacket.KDAs.Add(new KDAInfo { ObjectId = attackPlayer.Id, Kill = attackPlayer.KillAmount, Death = attackPlayer.DeathAmount, Asist = attackPlayer.AsistAmount });
 
+                attackPlayer.Exp += KillExp;
+
+                // 스코어 
+                int score = Room.ReduceScore(Team, 1);
+                S_ChangeScore changeScorePacket = new S_ChangeScore();
+                changeScorePacket.Team = Team;
+                changeScorePacket.Score = score;
+                Room.Push(Room.Broadcast, changeScorePacket);
+
                 if (attackPlayer.Info.Player.CharType == CharacterType.Abigail)
                     attackPlayer.Room.Push(attackPlayer.Room.BroadcastAbigailSound, attackPlayer, AbigailSound.Kill, 1f);
             }
@@ -442,16 +457,13 @@ namespace Server.Game
                     {
                         ++asistPlayer.AsistAmount;
                         KdaPacket.KDAs.Add(new KDAInfo { ObjectId = asistPlayer.Id, Kill = asistPlayer.KillAmount, Death = asistPlayer.DeathAmount, Asist = asistPlayer.AsistAmount });
+
+                        asistPlayer.Exp += AsistExp;
                     }
                 }
             }
 
             Room.Broadcast(KdaPacket);
-
-            // 경험치
-
-            // 스코어
-
         }
         #endregion
 
@@ -1321,6 +1333,14 @@ namespace Server.Game
             Room.Push(Room.Broadcast, unstoppablePkt);
         }
 
+        public void SendExpPacket()
+        {
+            S_ChangeExp packet = new S_ChangeExp();
+            packet.Exp = Exp;
+
+            Room.Push(Session.Send, packet);
+        }
+
         #endregion
 
         #region StatusEffect(버프, 디버프), Barrier(방어막) 관련
@@ -1380,14 +1400,14 @@ namespace Server.Game
             Room.Push(Session.Send, packet);
         }
 
-        public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = "")
+        public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = "", string type = "Caster")
         {
             S_RemoveEffect packet = new S_RemoveEffect();
             packet.ObjectId = Id;
             packet.KeyCode = (int)keyCode;
             packet.IsCaster = isCaster; 
             packet.FxName = fxName;
-
+            packet.Type = type;
             Room.Push(Room.Broadcast, packet);
         }
         #endregion

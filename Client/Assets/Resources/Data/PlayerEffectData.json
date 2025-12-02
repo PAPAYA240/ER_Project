@@ -48,6 +48,13 @@
               }
             },
             {
+              "prefabName": "FX_Q_Hit",
+              "target": "Self",
+              "attachBoneName": "Fx_Center",
+              "duration": 1,
+              "delayTime": 0
+            },
+            {
               "prefabName": "FX_QSkill_Indicator",
               "target": "Target",
               "duration": 2.5,
@@ -75,7 +82,15 @@
         },
         "E": {
           "Caster": [],
-          "HitTarget": []
+          "Select": [
+            {
+              "prefabName": "FX_E_Hit",
+              "target": "Self",
+              "attachBoneName": "Fx_Center",
+              "duration": 0.05,
+              "delayTime": 0
+            }
+          ]
         },
         "R": {
           "Caster": [

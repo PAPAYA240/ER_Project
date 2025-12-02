@@ -5,12 +5,16 @@ using UnityEngine.UI;
 
 public class YukiSkillRange : MonoBehaviour, IEffect
 {
+    private PlayerController _player;
+
     private Coroutine _co;
     public Image _backgroundImage;
     public Image _foregroundImage;
 
     void Start()
     {
+        _player = GetComponentInParent<PlayerController>();
+
         transform.localPosition = Vector3.zero;
 
         _backgroundImage.type = Image.Type.Filled;
@@ -23,6 +27,8 @@ public class YukiSkillRange : MonoBehaviour, IEffect
         _foregroundImage.fillMethod = Image.FillMethod.Vertical;
         _foregroundImage.fillOrigin = 1; // 0: ����, 1: ������
         _foregroundImage.fillAmount = 0.5f; // 50%�� �׸���
+
+        gameObject.SetActive(false);
     }
 
     public void Play()
@@ -32,10 +38,10 @@ public class YukiSkillRange : MonoBehaviour, IEffect
         if (_co != null)
             StopCoroutine(_co);
 
-        _co = StartCoroutine(FillAndHide(1f));
+        _co = StartCoroutine(FillAndHide(_player, 1f));
     }
 
-    private IEnumerator FillAndHide(float duration)
+    private IEnumerator FillAndHide(PlayerController player, float duration)
     {
         float timer = 0f;
         _backgroundImage.fillAmount = 0.0f;
@@ -48,8 +54,8 @@ public class YukiSkillRange : MonoBehaviour, IEffect
             yield return null;
         }
 
-        Managers.EffectHandler.PlayEffect(SkillEffectType.RShadow);
-        Managers.EffectHandler.PlayEffect(SkillEffectType.RAttack);
+        player.YukiEffects.PlayEffect(SkillEffectType.RShadow);
+        player.YukiEffects.PlayEffect(SkillEffectType.RAttack);
 
         _backgroundImage.fillAmount = 0.5f; // Ȯ���ϰ� �ݸ� ä��
 

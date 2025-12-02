@@ -16,7 +16,6 @@ public sealed class Yuki_Q : InstantHandlerBase
     {
         p.AttackActive = true;
         p.SendYukiSkillEffect(SkillEffectType.QBuff);
-
-        Console.WriteLine("Yuki Q Active");
+        p.Room.Push(p.Room.BroadcastAbigailSound, p, AbigailSound.YukiQactive, 1f);
     }
 }

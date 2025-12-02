@@ -21,10 +21,9 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FX_BI_MT_Gamma_Scan_01Aw
-  m_Shader: {fileID: -6465566751694194690, guid: aabb51993ed7236408299d845f8a54e7,
-    type: 3}
-  m_Parent: {fileID: 2100000, guid: 21390707ef2c124468516e0294d5583e, type: 2}
-  m_ModifiedSerializedProperties: 2
+  m_Shader: {fileID: 4800000, guid: dfd57e22abec0674dae80a0d639d9377, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _EMISSION
@@ -39,21 +38,61 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 44b32d6fcf0617148bc3c1f5a632dc17, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: fbeb0f4580e6d07449c3a27d0706c358, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_2d42cba8a24840ab8cf4edf712ecd0d1_Out_0_Texture2D:
+        m_Texture: {fileID: 2800000, guid: dded0a5ce81311942a5dae1764b8b28a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _aura_texture:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: fbeb0f4580e6d07449c3a27d0706c358, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _base_texture:
+        m_Texture: {fileID: 2800000, guid: 44b32d6fcf0617148bc3c1f5a632dc17, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _foam_taxture:
+        m_Texture: {fileID: 2800000, guid: 1aa3d53278760ae4f947629eae95f041, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Cull: 0
+    - _MulVal_alpha: 2.73
+    - _MulVal_rgb: 4.7
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _Scalar_Bias: 0
+    - _ScrollSpeed: 1
+    - _ZTestMode: 2
     - _edge_threshold: 0.1
     - _fading_amount: 1.8
     - _fading_speed: 1
+    - _wobble_frequency: 2
+    - _wobble_speed: 0.5
     m_Colors:
+    - _Color: {r: 0.63, g: 0.38, b: 0.51, a: 0.95}
     - _aura_base_color: {r: 0, g: 1, b: 0.1609704, a: 0}
+    - _base_color: {r: 0, g: 0, b: 0, a: 0}
     - _glow_color: {r: 2, g: 1.266424, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

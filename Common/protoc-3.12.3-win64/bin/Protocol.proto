@@ -428,6 +428,24 @@ enum AbigailSound{
 	Rest = 25;
 	Victory = 26;
 	Defeat = 27;
+
+	YukiAttack1 = 28;
+	YukiAttack2 = 29;
+	YukiAttackHit = 30;
+	YukiQAttack = 31;
+	YukiQAttackHit = 32;
+	YukiQactive = 33;
+	YukiWactive = 34;
+	YukiEmove = 35;
+	YukiEattack = 36;
+	YukiEhit = 37;
+	YukiRactive = 38;
+	YukiRattack = 39;
+	YukiRdebuff = 40;
+	YukiRdebuffHit = 41;
+	YukiRend = 42;
+	YukiVictory = 43;
+	YukiRest = 44;
 }
 
 enum AbigailFx{
@@ -477,6 +495,7 @@ message S_State {
 	MonsterSkill skilltype = 5;
 	int32 sequenceId = 6;
 	PositionInfo targetPosition = 7;
+	bool changeState = 8;
 }
 
 message C_SkillPrepare{
@@ -913,6 +932,7 @@ message SkillHitbox{
 	float maxRange = 15;
 	bool isOneTimeUse = 16;
 	map<string, InteractionList> interactions = 17;
+	bool repeatingDamage =  18;
 }
 
 message CostInfo{
@@ -1260,6 +1280,7 @@ message S_RemoveEffect{
 	int32 keyCode = 2; 
 	bool isCaster = 3;
 	string fxName = 4;
+	string type = 5;
 }
 
 message S_RozziNormalAttack {

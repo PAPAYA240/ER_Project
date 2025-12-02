@@ -1,10 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
-using Google.Protobuf.WellKnownTypes;
 using Server.Game;
-using System;
-using System.Collections.Generic;
-using System.Numerics;
-using System.Text;
 using static Server.Data.DataUtils;
 
 public sealed class Yuki_R : SkillHandlerBase
@@ -25,6 +20,8 @@ public sealed class Yuki_R : SkillHandlerBase
         p.LookAtMouse(ctx.MousePos);
 
         p.SendYukiSkillEffect(SkillEffectType.RRange);
+
+        p.Room.Push(p.Room.BroadcastAbigailSound, p, AbigailSound.YukiRactive, 1f);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

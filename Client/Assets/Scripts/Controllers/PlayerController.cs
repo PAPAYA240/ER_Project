@@ -6,8 +6,6 @@ using Data;
 using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Rendering;
-using static Data.SkillEffectList;
 
 
 public class PlayerController : CreatureController
@@ -46,6 +44,9 @@ public class PlayerController : CreatureController
     protected Animator _weaponAnimator = null;
 
     public SoundController Sound;
+
+    // 유키 스킬 이펙트
+    public SkillEffectHandler YukiEffects { get; private set; } = new SkillEffectHandler();
 
     // Kill Count : 20초 안에 얼만큼의 처치했는는가?
     public float CurrentMultiKillCnt
@@ -202,9 +203,10 @@ public class PlayerController : CreatureController
     protected Transform _equipTransform = null;
 
     // Bush Material
-    private Transform _lodTransform = null;
-    private Material[] _originMaterials = null;
-    private Material _playerBushMaterial = null;
+    private Dictionary<Renderer, Material[]> _originalMaterialsDict = new Dictionary<Renderer, Material[]>();
+    private Material _playerBushMaterial;
+    private Transform _lodTransform;
+
     public bool HidingInBush = false;
     #region KDA
 
@@ -280,7 +282,7 @@ public class PlayerController : CreatureController
         InitNameTag();
 
         // 유키용
-        Managers.EffectHandler.InitEffects(this);
+        YukiEffects.InitEffects(this);
 
         // Chat
         GameObject goChat = Managers.Resource.Instantiate("UI/Chat/ChatBackground");
@@ -379,6 +381,23 @@ public class PlayerController : CreatureController
         Debug.Log("Player HIT !");
     }
 
+    public void OnHit(S_AttackInfo atkInfoPacket)
+    {
+        BaseController tbc = Managers.Object.FindById(atkInfoPacket.ObjectId)?.GetComponentInChildren<BaseController>();
+        if (tbc == null)
+            return;
+        Vector3 targetPosition = tbc.transform.position;
+
+        // 사용 중인 키(Player)/몬스터 스킬(Monster) 이름 + hit
+        // ex. Q_Hit, W_Hit, 
+        if (Sound != null)
+            Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
+
+        if (Enum.TryParse<KeyCode>(atkInfoPacket.AttackType, out KeyCode key))
+            PlaySelectEffect(key, default(Vector3), default(Vector3), default(Quaternion), $"FX_{key}_Hit", tbc.transform);
+
+    }
+
     public void OnStop(S_Stop packet)
     {
         if (_agent == null || !_agent.isOnNavMesh)
@@ -449,7 +468,7 @@ public class PlayerController : CreatureController
         // Animation에 맞는 Sound
         if (Sound != null)
         {
-            Sound.GetEffect3D(animInfo.Name, transform.position, true);
+            Sound.GetEffect3D(animInfo.Name, transform.position);
             Sound.GetRandomVoice(animInfo.Name);
         }
 
@@ -709,12 +728,15 @@ public class PlayerController : CreatureController
             return;
 
         SkillEffectList myEffectList = DataManager.PlayerFxDict[type][state][skillKey];
-        List<EffectData> dataList = new List<EffectData>();
-        foreach (EffectData effect in myEffectList.Select)
-        {
-            if(fxName == effect.prefabName)
-                dataList.Add(effect);
-        }
+        if (myEffectList?.Select == null)
+            return;
+
+        List<EffectData> dataList = myEffectList.Select
+       .Where(effect => effect != null && effect.prefabName == fxName)
+       .ToList();
+
+        if (dataList.Count == 0)
+            return;
 
         Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, targetTransform ? targetTransform : transform, mousePos, targetPos, targetRot);
     }
@@ -900,16 +922,23 @@ public class PlayerController : CreatureController
     #region Bush Renderer
     private void InitBushRenderSetting()
     {
-        Renderer playerRenderer = this.GetComponentInChildren<Renderer>();
-        if (playerRenderer != null)
-            _originMaterials = playerRenderer.materials;
         _playerBushMaterial = Resources.Load<Material>("Material/ghostMaterial");
+
         foreach (Transform child in transform)
         {
             if (child.name.Contains("LOD"))
             {
                 _lodTransform = child;
                 break;
+            }
+        }
+
+        if (_lodTransform != null)
+        {
+            Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
+            foreach (Renderer renderer in renderers)
+            {
+                _originalMaterialsDict[renderer] = renderer.materials;
             }
         }
     }
@@ -944,7 +973,7 @@ public class PlayerController : CreatureController
             renderer.enabled = false;
         }
     }
-   
+
     // 렌더러 활성화
     private IEnumerator MakeVisible(float duration = 0f)
     {
@@ -952,7 +981,6 @@ public class PlayerController : CreatureController
             yield break;
 
         yield return new WaitForSeconds(duration);
-
         HidingInBush = false;
         _nameTag.gameObject.SetActive(true);
 
@@ -960,7 +988,12 @@ public class PlayerController : CreatureController
         foreach (Renderer renderer in renderers)
         {
             renderer.enabled = true;
-            renderer.materials = _originMaterials;
+
+            // 각 Renderer의 원본 Material 복원
+            if (_originalMaterialsDict.TryGetValue(renderer, out Material[] originalMaterials))
+            {
+                renderer.materials = originalMaterials;
+            }
         }
     }
 
@@ -971,14 +1004,19 @@ public class PlayerController : CreatureController
 
         HidingInBush = true;
         Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
-        Material[] newMaterials = new Material[] { _playerBushMaterial };
 
         foreach (Renderer renderer in renderers)
         {
             renderer.enabled = true;
-            renderer.materials = newMaterials;
-        }
 
+            int materialCount = renderer.sharedMaterials.Length;
+            Material[] ghostMaterials = new Material[materialCount];
+            for (int i = 0; i < materialCount; i++)
+            {
+                ghostMaterials[i] = _playerBushMaterial;
+            }
+            renderer.sharedMaterials = ghostMaterials;
+        }
     }
     #endregion
 

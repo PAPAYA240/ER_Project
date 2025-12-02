@@ -57,14 +57,15 @@ public class MyPlayerController : PlayerController
             _input = gameObject.GetOrAddComponent<HyunwooInputController>();
         }
 
+        // 스킬 인디케이터
+        if (ObjInfo.Player.CharType == CharacterType.Theodore)
+            _skillIndicator = gameObject.GetOrAddComponent<SkillIndicator>();
+
         Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
         _skill.Init();
         _UI.Init();
 
         _nameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHPColor();
-
-        // 스킬 인디케이터
-        _skillIndicator = gameObject.GetOrAddComponent<SkillIndicator>();
 
         // 전장의 안개 카메라 설정
         GameObject fogCamGo = GameObject.Find("FogCamera");
@@ -356,7 +357,7 @@ public class MyPlayerController : PlayerController
     protected override void UpdateHp() { base.UpdateHp(); _UI.UpdateHp(); }
     protected override void UpdateMaxHp() { base.UpdateMaxHp(); _UI.UpdateMaxHp(); } 
     protected override void UpdateStamina() { base.UpdateStamina(); _UI.UpdateStamina(); }
-    protected override void UpdateMaxStamina() { base.UpdateMaxStamina(); _UI.UpdateMaxStamina(); }
+    protected override void UpdateMaxStamina() { base.UpdateMaxStamina(); _UI.UpdateMaxStamina(); Debug.Log($"Stamina : {Stamina}, MaxStamina {MaxStamina}, Stat.MaxStamina : {Stat.MaxStamina}, ItemStat.MaxStamina : {ItemStat.MaxStamina}"); }
     public void UpdateLevel() { _UI.UpdateLevel(); }
     public void UpdateCool() { _UI.UpdateCool(); }
 }

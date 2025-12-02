@@ -363,6 +363,10 @@ class PacketHandler
 
         cc.ChangeStat(levelUpPkt.StatGrowth);
 
+        Debug.Log($" Id {cc.Id} ");
+        Debug.Log($" LevelUpCnt : {levelUpPkt.LevelUpCnt}, After Level : {cc.Stat.Level} ");
+        Debug.Log($" MaxHp : {levelUpPkt.StatGrowth.MaxHp}, MaxStamina : {levelUpPkt.StatGrowth.MaxStamina} ");
+
         //아래는 레벨이 제대로 표시되게 하는 코드
         //마이 플레이어면 업데이트 하고 리턴
         MyPlayerController mpc = go.GetComponent<MyPlayerController>();
@@ -641,9 +645,7 @@ class PacketHandler
     {
         if (!IsSceneReady("Game", () => S_AttackInfoHandler(session, packet))) return;
 
-        // *Sound
         S_AttackInfo atkInfoPacket = packet as S_AttackInfo;
-
         BaseController bc = Managers.Object.FindById(atkInfoPacket.AttackerId)?.GetComponentInChildren<BaseController>();
         if (bc == null)
             return;
@@ -655,24 +657,19 @@ class PacketHandler
         if (attackerObjType == GameObjectType.Player)
         {
             PlayerController atkPlayer = (PlayerController)bc;
-            if (atkPlayer == null) return;
+            if (atkPlayer == null) 
+                    return;
 
-            Vector3 targetPosition = tbc.transform.position;
-
-            // 사용 중인 키(Player)/몬스터 스킬(Monster) 이름 + hit
-            // ex. Q_Hit, W_Hit, 
-            if (atkPlayer.Sound != null)
-                atkPlayer.Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
+            atkPlayer.OnHit(atkInfoPacket);
         }
+        // *Monster 
         else if (attackerObjType == GameObjectType.Monster)
         {
             MonsterController atkMonster = (MonsterController)bc;
-            if (atkMonster == null) return;
+            if (atkMonster == null) 
+                return;
 
-            Vector3 targetPosition = tbc.transform.position;
-
-            if (atkMonster.Sound != null)
-                atkMonster.Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
+            atkMonster.OnHit(atkInfoPacket);
         }
     }
 
@@ -840,10 +837,13 @@ class PacketHandler
         if (go == null)
             return;
 
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null) return;
+
         if (YukiSkillEffectPkt.IsPlay)
-            Managers.EffectHandler.PlayEffect((SkillEffectType)YukiSkillEffectPkt.EffectType);
+            pc.YukiEffects.PlayEffect((SkillEffectType)YukiSkillEffectPkt.EffectType);
         else
-            Managers.EffectHandler.StopEffect((SkillEffectType)YukiSkillEffectPkt.EffectType);
+            pc.YukiEffects.StopEffect((SkillEffectType)YukiSkillEffectPkt.EffectType);
     }
 
     public static void S_OccupyBeaconHandler(PacketSession session, IMessage packet)
