@@ -1,0 +1,214 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FX_BI_Sissela_04AW
+  m_Shader: {fileID: 4800000, guid: 6bf95a06ba44aa944882be4e15851b7a, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 0
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties:
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+      _MainTex:
+        m_Texture: {fileID: 2800000, guid: d53858c1b47fd434988d71d1ea6d63fd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: {}
+    m_Floats:
+      _A_Amplitube: 0.5
+      _A_AmptDuration: 0.2
+      _A_Offset: 0.12
+      _A_Pitch: 0
+      _A_Roll: -0.52
+      _Amount: 8
+      _Amplitude_A: 0
+      _BG_Opacity: 0.2
+      _B_Offset: -0.45
+      _B_Pitch: 1
+      _B_Roll: 1.5
+      _B_Roll_copy: 2
+      _BumpScale: 1
+      _CenterMask: 0.8
+      _CenterRadius: 0.214
+      _CircleA_Speed: -2
+      _CircleB_Speed: 2
+      _ColorRampContrast: 0.957
+      _CoreSize: 0.5
+      _Cull: 0
+      _Cutoff: 0.5
+      _CycleTime: 1
+      _DashAmount: 120
+      _DashSpeed: 0.5
+      _Dash_Length: 0.75
+      _Density: 128
+      _DetailNormalMapScale: 1
+      _Direction: 0
+      _DstBlend: 0
+      _Emission: 3.06
+      _FadeIn: 0.074
+      _FloaSpeed_A: 2.21
+      _FloatSpeed_A: 1
+      _G_Offset: -0.12
+      _G_Pitch: 1
+      _G_Roll: 0
+      _Gap: 0.38
+      _GlossMapScale: 1
+      _Glossiness: 0.5
+      _GlossyReflections: 1
+      _GlowUp: 0
+      _GridOpacity: 0.5
+      _Grid_Width: 0.1
+      _LadarSpeed: 0.1
+      _Length: 1.67
+      _Level: 4.11
+      _Loading_Percentage: 0
+      _Metallic: 0
+      _Mode: 0
+      _OcclusionStrength: 1
+      _Offset_A: 0
+      _Offset_B: 0
+      _Offset_G: 0
+      _Offset_R: 0
+      _Opacity: 1
+      _PanSpeed: 0.5
+      _Parallax: 0.02
+      _Percentage: 1
+      _PingpongSpeed: 1
+      _Pitch: 0
+      _PitchSpeed_A: 0
+      _PitchSpeed_B: 2
+      _PitchSpeed_G: 0
+      _PitchSpeed_R: -2
+      _Pitch_A: 0.1
+      _Pitch_B: 0
+      _Pitch_G: 0.24
+      _Pitch_R: 0.039
+      _R_Offset: 0.4
+      _R_Pitch: 0
+      _R_Roll: 1
+      _RadialGrid_X: 32
+      _RadialGrid_Y: 4
+      _Radius: 1
+      _Radius_inside: 0.4456896
+      _Ring_Thickness: 0.1
+      _RoadingLevel: 8
+      _Roll: 1
+      _Roll_A: 0
+      _Roll_B: 0
+      _Roll_G: 0
+      _Roll_R: 0
+      _Scale: 0.984
+      _ScaleIcon: 0.3
+      _Scale_A: 0.83
+      _Scale_B: 0.718
+      _Scale_G: 0.75
+      _Scale_R: 0.758
+      _ShinnyAmount: 0.1
+      _ShinnySpeed: 1
+      _SmoothnessTextureChannel: 0
+      _SpecularHighlights: 1
+      _Speed: 1.34
+      _Speed_A: 0.21
+      _Speed_B: 0.09
+      _Speed_G: -0.5
+      _Speed_R: 0.82
+      _SrcBlend: 1
+      _Step: 6
+      _SurfSpeed_A: 1
+      _TargetSize: 0.5
+      _TargetSpeed: 0.5
+      _TimeScale: 1
+      _UVSec: 0
+      _UseCore: 1
+      _UseCycle_B: 0
+      _UseCycle_G: 0
+      _UseCycle_R: 0
+      _UseFloat_A: 1
+      _UseIcon: 0
+      _UsePattern: 0
+      _UsePercentage: 0
+      _UsePingpong: 0
+      _UseRectangle: 1.624514
+      _UseSin: 1
+      _UseTarget: 0
+      _UseTime: 1
+      _UseTimeForPan: 1
+      _WaveOpacity: 0
+      _WaveSpeed: 1
+      _Width: 0.2
+      _ZTestMode: 2
+      _ZWrite: 1
+      _node_1110: 1
+      _node_1146: 0
+      _node_1156: 0
+      _node_1462: -0.17
+      _node_1549: 2
+      _node_1607: 0.5
+      _node_1777: -1.5
+      _node_1838: 0
+      _node_2147: -2
+      _node_2147_copy: 2
+      _node_2292: 4
+      _node_2643: 0
+      _node_2692: 1
+      _node_3012: 0.1
+      _node_306: -0.2
+      _node_321: 1
+      _node_321_copy: 1
+      _node_3303: 0.75
+      _node_3477: 1
+      _node_3758: 0
+      _node_4265: -0.99
+      _node_481: 0.5
+      _node_4880: 2.5
+      _node_502: 0.5
+      _node_5429: 1
+      _node_5456: 0.13
+      _node_5625: 1
+      _node_5694: 0
+      _node_5813: 4
+      _node_5975: -0.1
+      _node_6056: 0.177
+      _node_6391: 0.1
+      _node_6396: 0
+      _node_6749: -0.33
+      _node_6763: 2.27
+      _node_6906: 1
+      _node_7086: 0.1
+      _node_755: 0.1
+      _node_79: 0
+      _node_8197: 0.35
+      _node_8584: 0.047
+      _node_866: -0.125
+      _node_8721: 0.15
+      _node_8788: 0.5
+      _node_9104: 1
+      _node_9185: 1
+      _node_9314: 0.832
+      _node_9624: 1
+      _node_9731: 0
+      _node_9731_copy: 0
+      _node_9774: 8
+    m_Colors:
+      _Color: {r: 1, g: 1, b: 1, a: 1}
+      _Color1: {r: 0.078431346, g: 0.39215687, b: 0.7843137, a: 1}
+      _Color2: {r: 1, g: 0, b: 0, a: 1}
+      _ColorInside: {r: 0.9811321, g: 0.42114633, b: 0.65127736, a: 1}
+      _ColorOutside: {r: 0.6509434, g: 0, b: 0.5764116, a: 1}
+      _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+      _node_5660: {r: 0.6137934, g: 0, b: 1, a: 1}
+  m_BuildTextureStacks: []

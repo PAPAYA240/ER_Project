@@ -1,8 +1,9 @@
-﻿using Data;
-using Google.Protobuf.Protocol;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Data;
+using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering;
@@ -38,7 +39,11 @@ public class PlayerController : CreatureController
     private Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
     public Dictionary<EquipItemType, EquipItemInfo> EquipItemSlot { get { return _equipItemSlot; } }
     public ItemStat ItemStat { get; private set; } = new ItemStat();
+
+    // 애니메이션 관련
     protected GameObject _eqipWeapon = null;
+    protected GameObject _restItem = null;
+    protected Animator _weaponAnimator = null;
 
     public SoundController Sound;
 
@@ -297,7 +302,14 @@ public class PlayerController : CreatureController
         Sound = gameObject.GetComponent<SoundController>();
         if (Sound != null)
             Sound.PreloadCharAllSounds(ObjInfo.Player.CharType);
+
+        // Rest Item
+        RegisterRestItem();
+
+        // Weapon Anim
+        RegisterWeaponAnimator();           
     }
+
     private void InitEquipItem()
     {
         for (int i = 0; i < (int)EquipItemType.End; ++i)
@@ -455,6 +467,8 @@ public class PlayerController : CreatureController
 
         if (animInfo.IsChangeSpeed == true)
             _animator.SetFloat("AttackSpeed", animInfo.Speed);
+
+        WeaponAnim(animInfo.Name, animInfo.Ratio, animInfo.IsChangeSpeed, animInfo.Speed);
     }
 
     private void AnimCondition(string name)
@@ -471,6 +485,13 @@ public class PlayerController : CreatureController
                 _eqipWeapon.gameObject.SetActive(true);
                 ActiveRenderer(true);
             }
+        }
+        else if(ObjInfo.Player.CharType == CharacterType.Abigail)
+        {
+            if (name == "REST_START" || name == "REST_LOOP")
+                RenderRestItem(true);
+            else
+                RenderRestItem(false);
         }
     }
 
@@ -958,6 +979,64 @@ public class PlayerController : CreatureController
             renderer.materials = newMaterials;
         }
 
+    }
+    #endregion
+
+    #region State: Rest
+    void RegisterRestItem()
+    {
+        if(ObjInfo.Player.CharType == CharacterType.Abigail)
+        {
+            foreach (Transform child in transform.GetComponentsInChildren<Transform>(true))
+            {
+                if (child.name == "AbigailTable")
+                {
+                    _restItem = child.gameObject;
+                    RenderRestItem(false);
+                    return;
+                }
+            }
+        }
+    }
+
+    public void RenderRestItem(bool render)
+    {
+        if (_restItem == null)
+            return;
+        _restItem.SetActive(render);
+    }
+    #endregion
+
+    #region WeaponAnim
+    void RegisterWeaponAnimator()
+    {
+        if (ObjInfo.Player.CharType == CharacterType.Abigail)
+        {
+            Transform weaponTransform = GetComponentsInChildren<Transform>(true)
+            .FirstOrDefault(t => t.name == "AbigailWeapon");
+            if (weaponTransform != null)
+            {
+                // AbigailWeapon의 자식에서 Animator 찾기
+                _weaponAnimator = weaponTransform.GetComponentInChildren<Animator>();
+
+                if (_weaponAnimator == null)
+                    Debug.LogWarning("AbigailWeapon 자식에서 Animator를 찾을 수 없습니다.");
+            }
+        }
+    }
+
+    void WeaponAnim(string animName, float transDuration, bool speedChanged, float speed)
+    {
+        if (_weaponAnimator == null)
+            return;
+
+        if(speedChanged)
+            _weaponAnimator.SetFloat("AttackSpeed", speed);
+
+        if(animName == "SKILL_T" || animName == "SKILL_Q" || animName == "SKILL_W")
+            _weaponAnimator.CrossFadeInFixedTime(animName, transDuration);
+        else
+            _weaponAnimator.CrossFadeInFixedTime("WAIT", transDuration);
     }
     #endregion
 }

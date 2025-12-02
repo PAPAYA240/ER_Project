@@ -5,10 +5,11 @@ using UnityEngine;
 public class BeaconController : BaseController
 {
     [Header("Beacon Settings")]
-    [SerializeField] private Renderer beaconRenderer;
+    [SerializeField] private Renderer gaugeRenderer;
+
     private float captureSpeed = 0.203f;
 
-    private Material beaconMaterial;
+    private Material gaugeMaterial;
     private int currentCapturingTeam = 0;
     private int currentOwningTeam = 0;
     private float currentCaptureAmount = 0f;
@@ -25,14 +26,14 @@ public class BeaconController : BaseController
 
     void Start()
     {
-        if (beaconRenderer != null)
+        if (gaugeRenderer != null)
         {
-            beaconMaterial = beaconRenderer.material; // .material 사용하면 인스턴스 생성됨
+            gaugeMaterial = gaugeRenderer.material; // .material 사용하면 인스턴스 생성됨
             ResetCaptureState();
         }
         else
         {
-            Debug.LogError("BeaconRenderer is not assigned!", this);
+            Debug.LogError("GaugeRenderer is not assigned!", this);
         }
     }
 
@@ -51,10 +52,10 @@ public class BeaconController : BaseController
         currentCapturingTeam = team;
         isCapturing = true;
 
-        if (beaconMaterial != null)
+        if (gaugeMaterial != null)
         {
             int shaderTeamValue = GetShaderTeamValue(team);
-            beaconMaterial.SetInt(ShaderTeam, shaderTeamValue);
+            gaugeMaterial.SetInt(ShaderTeam, shaderTeamValue);
         }
 
         captureCoroutine = StartCoroutine(CaptureRoutine());
@@ -114,23 +115,23 @@ public class BeaconController : BaseController
 
     private void UpdateShaderProperties()
     {
-        if (beaconMaterial != null)
+        if (gaugeMaterial != null)
         {
-            beaconMaterial.SetFloat(ShaderProgress, currentCaptureAmount);
+            gaugeMaterial.SetFloat(ShaderProgress, currentCaptureAmount);
             int shaderOwningTeamValue = currentOwningTeam > 0 ? GetShaderTeamValue(currentOwningTeam) : 0;
-            beaconMaterial.SetInt(ShaderOwningTeam, shaderOwningTeamValue);
+            gaugeMaterial.SetInt(ShaderOwningTeam, shaderOwningTeamValue);
 
             if (isCapturing)
             {
                 // 점령 중일 때는 점령 시도하는 팀 색상
                 int shaderTeamValue = GetShaderTeamValue(currentCapturingTeam);
-                beaconMaterial.SetInt(ShaderTeam, shaderTeamValue);
+                gaugeMaterial.SetInt(ShaderTeam, shaderTeamValue);
             }
             else
             {
                 // 점령 중이 아닐 때는 소유 팀 색상 (소유 팀이 없으면 0)
                 int shaderTeamValue = currentOwningTeam > 0 ? GetShaderTeamValue(currentOwningTeam) : 0;
-                beaconMaterial.SetInt(ShaderTeam, shaderTeamValue);
+                gaugeMaterial.SetInt(ShaderTeam, shaderTeamValue);
             }
         }
     }
@@ -165,9 +166,9 @@ public class BeaconController : BaseController
             StopCoroutine(captureCoroutine);
         }
 
-        if (beaconMaterial != null)
+        if (gaugeMaterial != null)
         {
-            Destroy(beaconMaterial);
+            Destroy(gaugeMaterial);
         }
     }
 }

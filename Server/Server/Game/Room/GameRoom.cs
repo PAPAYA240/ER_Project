@@ -300,7 +300,7 @@ namespace Server.Game
                     player.Info.PosInfo = Spawn.GetSpawnPoint(player.Team).ToPositionInfo();
 
                     S_EnterGame enterPacket = new S_EnterGame();
-                    enterPacket.Player = player.Info;
+                    enterPacket.ObjInfo = player.Info;
                     player.Session.Send(enterPacket);
 
                     S_Spawn spawnPacket = new S_Spawn();
@@ -897,6 +897,7 @@ namespace Server.Game
 
         }
 
+        #region AbigailPkts
         public void BroadcastAbigailSound(Player player, AbigailSound sound, float prob)
         {
             if (!DataManager.AbigailAudioDict.TryGetValue(sound, out List<string> paths))
@@ -913,6 +914,24 @@ namespace Server.Game
             abigailSound.Idx = Random.Shared.Next(0, paths.Count);
             Broadcast(abigailSound);
         }
+
+        public void BroadcastAbigailFx(Player player, AbigailFx fx, float duration)
+        {
+            S_AbigailFx abigailFx = new S_AbigailFx();
+            abigailFx.ObjectId = player.Id;
+            abigailFx.Fx = fx;
+            abigailFx.Duration = duration;
+            Broadcast(abigailFx);
+        }
+
+        public void BroadcastStopAbglFx(Player player, AbigailFx fx)
+        {
+            S_StopAbglFx stopFx = new S_StopAbglFx();
+            stopFx.ObjectId = player.Id;
+            stopFx.Fx = fx;
+            Broadcast(stopFx);
+        }
+        #endregion
 
         public Player FindViableTarget(Monster monster, float range)
         {

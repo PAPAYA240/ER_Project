@@ -142,6 +142,8 @@ enum MsgId {
   S_ROZZI_NORMAL_ATTACK = 111;
   C_ROZZI_NORMAL_ATTACK = 112;
   S_CHANGE_EXP = 113;
+  S_ABIGAIL_FX = 114;
+  S_STOP_ABGL_FX = 115;
 }
 
 enum CombatState{
@@ -428,6 +430,22 @@ enum AbigailSound{
 	Defeat = 27;
 }
 
+enum AbigailFx{
+	Attack01 = 0;
+	Attack02 = 1;
+	Rest_End = 2;
+	Rest_Start = 3;
+	Q_Attack = 4;
+	Q_Attack2 = 5;
+	Q_Range = 6;
+	W_Attack = 7;
+	W_Range = 8;
+	E_Portal = 9;
+	R_Range = 10;
+	R_Start = 11;
+	WpnSkill = 12;
+}
+
 message C_Interact {
     int32 objectId = 1;
 }
@@ -444,7 +462,7 @@ message C_ReadyBtn {
 }
 
 message S_EnterGame {
-	ObjectInfo player = 1;
+	ObjectInfo objInfo = 1;
 }
 
 message S_LeaveGame{
@@ -836,8 +854,8 @@ message ObjectInfo{
         PlayerInfo player = 6;
         MonsterInfo monster = 7;
         EnvInfo env = 8;
-	ProjectileInfo projectile = 9;
-    	}
+		ProjectileInfo projectile = 9;
+    }
 	ScaledInfo scaleInfo = 10;
 }
 
@@ -1259,4 +1277,15 @@ message C_RozziNormalAttack {
 
 message S_ChangeExp{
 	int32 exp = 1;
+}
+
+message S_AbigailFx{
+	int32 objectId = 1;
+	AbigailFx fx = 2;
+	float duration = 3;
+}
+
+message S_StopAbglFx{
+	int32 objectId = 1;
+	AbigailFx fx = 2;
 }

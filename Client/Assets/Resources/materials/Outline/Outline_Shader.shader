@@ -33,6 +33,7 @@ Shader "Custom/Outline_Shader"
             };
 
             fixed4 _OutlineColor;
+
             float _Width;
 
             v2f vert (appdata v)

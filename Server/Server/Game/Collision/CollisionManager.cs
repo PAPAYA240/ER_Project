@@ -813,7 +813,7 @@ namespace Server.Game
                         if (effect.type == "Heal")
                         {
                             target.Room.Push(target.OnHeal, target, effect.value);
-                            target.SendSoundPakcet("SKILL_HEAL");
+                            target.SendSoundPacket("SKILL_HEAL");
                         }
                     }
 

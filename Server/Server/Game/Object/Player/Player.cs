@@ -425,6 +425,9 @@ namespace Server.Game
             {
                 ++attackPlayer.KillAmount;
                 KdaPacket.KDAs.Add(new KDAInfo { ObjectId = attackPlayer.Id, Kill = attackPlayer.KillAmount, Death = attackPlayer.DeathAmount, Asist = attackPlayer.AsistAmount });
+
+                if (attackPlayer.Info.Player.CharType == CharacterType.Abigail)
+                    attackPlayer.Room.Push(attackPlayer.Room.BroadcastAbigailSound, attackPlayer, AbigailSound.Kill, 1f);
             }
 
             // 어시 처리
@@ -1059,7 +1062,7 @@ namespace Server.Game
             };
             Room.Push(Room.Broadcast, packet);
         }
-        public void SendSoundPakcet(string name, string type = "Effect")
+        public void SendSoundPacket(string name, string type = "Effect")
         {
             S_Sound packet = new S_Sound()
             {
@@ -1358,7 +1361,6 @@ namespace Server.Game
 
                 Room.Push(Session.Send, packet);
                 _isUpdatedStatus = false;
-                Console.WriteLine($"AttackSpeed : {AttackSpeed}");
             }
         }
 
