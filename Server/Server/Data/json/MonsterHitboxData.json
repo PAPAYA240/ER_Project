@@ -43,7 +43,7 @@
     "Gamma": {
       "MsGammaAttack1": {
         "shape": "Ray",
-        "type": "SkillTrack",
+        "type": "SkillStatic",
         "width": 3,
         "height": 3,
         "startFrame": 7,
@@ -53,7 +53,7 @@
       },
       "MsGammaSkill1": {
         "shape": "Ray",
-        "type": "SkillTrack",
+        "type": "SkillStatic",
         "width": 3,
         "height": 4,
         "startFrame": 70,
@@ -63,8 +63,8 @@
       },
       "MsGammaSkill2": {
         "shape": "Ray",
-        "type": "SkillTrack",
-        "RepeatingDamage" : true,
+        "type": "SkillStatic",
+        "RepeatingDamage": true,
         "width": 3,
         "height": 4,
         "startFrame": 60,

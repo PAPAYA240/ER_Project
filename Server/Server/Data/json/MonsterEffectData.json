@@ -16,6 +16,19 @@
       "duration": 0,
       "delayTime": 0
     },
+    {
+      "prefabName": "FX_GammaAttack1_Hit",
+      "skillType": "MsGammaAttack1",
+      "attachBoneName": "Fx_Center",
+      "target": "Self",
+      "duration": 1,
+      "delayTime": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
 
     {
       "prefabName": "FX_BI_Gamma_skill01_Laser",
@@ -23,6 +36,19 @@
       "target": "Self",
       "duration": 3.3,
       "delayTime": 1.25,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "prefabName": "FX_GammaSkill1_Hit",
+      "skillType": "MsGammaSkill1",
+      "attachBoneName": "Fx_Center",
+      "target": "Self",
+      "duration": 1,
+      "delayTime": 0,
       "position": {
         "x": 0,
         "y": 0,
@@ -40,6 +66,19 @@
         "x": 0,
         "y": 0.3,
         "z": 1
+      }
+    },
+    {
+      "prefabName": "FX_GammaSkill2_Hit",
+      "skillType": "MsGammaSkill2",
+      "attachBoneName": "Fx_Center",
+      "target": "Self",
+      "duration": 0.15,
+      "delayTime": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
       }
     },
 
@@ -61,6 +100,19 @@
       "target": "Target",
       "duration": 0.5,
       "delayTime": 1.5,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "prefabName": "FX_GammaAttack1_Hit",
+      "skillType": "MsGammaSkill3",
+      "attachBoneName": "Fx_Center",
+      "target": "Self",
+      "duration": 1,
+      "delayTime": 0,
       "position": {
         "x": 0,
         "y": 0,
@@ -154,11 +206,25 @@
       }
     },
     {
-      "prefabName": "FX_Attack",
+      "prefabName": "FX_Drone_Hit",
+      "skillType": "MsDroneAttack1",
+      "attachBoneName": "Fx_Center",
+      "target": "Self",
+      "duration": 1,
+      "delayTime": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+
+    {
+      "prefabName": "FX_Hit",
       "skillType": "MsTurretAttack",
-      "attachBoneName": "ShotPoint",
-      "target": "Shot",
-      "duration": 0.5,
+      "attachBoneName": "Fx_Center",
+      "target": "Self",
+      "duration": 0.05,
       "delayTime": 0,
       "position": {
         "x": 0,
