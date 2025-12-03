@@ -1,5 +1,32 @@
 {
   "soundDict": {
+    // 공용
+    "CharacterNone": {
+      "Voice": {
+        "Phase1": [ { "Path": "Sounds/Announce/Announce_Phase1_01" } ],
+        "Phase2": [ { "Path": "Sounds/Announce/Announce_Phase2_02" } ],
+        "Phase3": [ { "Path": "Sounds/Announce/Announce_Phase3_01" } ],
+
+        "Player_Kill": [ { "Path": "Sounds/Announce/Announce_Player_Kill_01" } ]
+      },
+      "Effect": {
+        "FootStep": [
+          { "Path": "Theodore/Resources/sound/fx/theodore/common/footstepAsphalt_s1" },
+          { "Path": "Theodore/Resources/sound/fx/theodore/common/footstepAsphalt_s2" },
+          { "Path": "Theodore/Resources/sound/fx/theodore/common/footstepAsphalt_s3" },
+          { "Path": "Theodore/Resources/sound/fx/theodore/common/footstepAsphalt_w1" },
+          { "Path": "Theodore/Resources/sound/fx/theodore/common/footstepAsphalt_w2" },
+          { "Path": "Theodore/Resources/sound/fx/theodore/common/footstepAsphalt_w3" }
+        ],
+        "HealPackSpawn": [ { "Path": "Theodore/Resources/sound/fx/theodore/common/HealPackSpawn" } ],
+        "HealPackUse": [ { "Path": "Theodore/Resources/sound/fx/theodore/common/HealPackUse" } ],
+
+        "Beacon_Idle": [ { "Path": "Theodore/Resources/sound/fx/theodore/common/TurbineIdle" } ],
+        "Beacon_Active": [ { "Path": "Theodore/Resources/sound/fx/theodore/common/TurbineInitialActivate" } ]
+      }
+    },
+
+    // 테오도르
     "Theodore": {
       "Voice": {
         "SKILL_Q": [
@@ -22,6 +49,7 @@
           { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062500seq0_1_ko" },
           { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_playskill1062500seq0_3_ko" }
         ],
+        "SKILL_D_START": [ { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_targeton_1_ko" } ],
         "DEAD": [
           { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_Dead_1_ko" },
           { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_Dead_2_ko" },
@@ -38,7 +66,8 @@
         "Kill2": [ { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_kill2player_1_ko" } ],
         "Kill3": [ { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_kill3player_1_ko" } ],
         "Kill4": [ { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_kill4player_1_ko" } ],
-        "Kill5": [ { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_kill5player_1_ko" } ]
+        "Kill5": [ { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_kill5player_1_ko" } ],
+        "REST_START": [ { "Path": "Theodore/Resources/sound/voice/theodore/s000/ko/Theodore_rest_1_ko" } ]
       },
       "Effect": {
         "ATTACK_1": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_NormalAttack_Shot" } ],
@@ -73,6 +102,7 @@
       }
     },
 
+    // 현우
     "Hyunwoo": {
       "Voice": {
         "SKILL_Q": [
@@ -99,5 +129,7 @@
       "Effect": {
       }
     }
+
+
   }
 } 

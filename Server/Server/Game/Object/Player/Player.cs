@@ -1400,12 +1400,11 @@ namespace Server.Game
             Room.Push(Session.Send, packet);
         }
 
-        public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = "", string type = "Caster")
+        public void SendRemoveEffect(KeyCode keyCode, string fxName = "", string type = "Caster")
         {
             S_RemoveEffect packet = new S_RemoveEffect();
             packet.ObjectId = Id;
             packet.KeyCode = (int)keyCode;
-            packet.IsCaster = isCaster; 
             packet.FxName = fxName;
             packet.Type = type;
             Room.Push(Room.Broadcast, packet);

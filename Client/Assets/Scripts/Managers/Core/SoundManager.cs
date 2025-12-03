@@ -150,6 +150,42 @@ public class SoundManager
         _loopSources.Add(audioClip.name, loopSource);
         return audioClip;
     }
+    public AudioClip Play3DSoundLoop(AudioClip audioClip, Vector3 position, Define.Sound type = Define.Sound.Effect, float volume = 0.15f)
+    {
+        if (audioClip == null)
+            return null;
+
+        if (_loopSources == null)
+            _loopSources = new Dictionary<string, AudioSource>();
+
+        if (_loopSources != null && _loopSources.ContainsKey(audioClip.name))
+            StopLoopSound(audioClip.name);
+
+        GameObject loopObject = new GameObject($"LoopSound_{audioClip.name}");
+        loopObject.transform.position = position;
+
+        AudioSource loopSource = loopObject.AddComponent<AudioSource>();
+        loopSource.volume = volume;
+        loopSource.spatialBlend = 1f; ;
+        loopSource.pitch = 1;
+        loopSource.clip = audioClip;
+        loopSource.loop = true;
+
+        loopSource.rolloffMode = AudioRolloffMode.Linear; 
+        loopSource.minDistance = 4f;          
+        loopSource.maxDistance = 20f;        
+
+        loopSource.dopplerLevel = 0f;         
+        loopSource.spread = 0;           
+
+        loopSource.spatialize = true;           
+        loopSource.spatializePostEffects = true; 
+
+        loopSource.Play();
+
+        _loopSources.Add(audioClip.name, loopSource);
+        return audioClip;
+    }
 
     public void Play(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, 
         float volume = 0.15f, bool forcePlay = false)
