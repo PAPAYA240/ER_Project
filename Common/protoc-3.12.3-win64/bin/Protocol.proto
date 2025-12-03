@@ -142,6 +142,8 @@ enum MsgId {
   S_ROZZI_NORMAL_ATTACK = 111;
   C_ROZZI_NORMAL_ATTACK = 112;
   S_CHANGE_EXP = 113;
+  S_ABIGAIL_FX = 114;
+  S_STOP_ABGL_FX = 115;
 }
 
 enum CombatState{
@@ -426,6 +428,40 @@ enum AbigailSound{
 	Rest = 25;
 	Victory = 26;
 	Defeat = 27;
+
+	YukiAttack1 = 28;
+	YukiAttack2 = 29;
+	YukiAttackHit = 30;
+	YukiQAttack = 31;
+	YukiQAttackHit = 32;
+	YukiQactive = 33;
+	YukiWactive = 34;
+	YukiEmove = 35;
+	YukiEattack = 36;
+	YukiEhit = 37;
+	YukiRactive = 38;
+	YukiRattack = 39;
+	YukiRdebuff = 40;
+	YukiRdebuffHit = 41;
+	YukiRend = 42;
+	YukiVictory = 43;
+	YukiRest = 44;
+}
+
+enum AbigailFx{
+	Attack01 = 0;
+	Attack02 = 1;
+	Rest_End = 2;
+	Rest_Start = 3;
+	Q_Attack = 4;
+	Q_Attack2 = 5;
+	Q_Range = 6;
+	W_Attack = 7;
+	W_Range = 8;
+	E_Portal = 9;
+	R_Range = 10;
+	R_Start = 11;
+	WpnSkill = 12;
 }
 
 message C_Interact {
@@ -444,7 +480,7 @@ message C_ReadyBtn {
 }
 
 message S_EnterGame {
-	ObjectInfo player = 1;
+	ObjectInfo objInfo = 1;
 }
 
 message S_LeaveGame{
@@ -459,6 +495,7 @@ message S_State {
 	MonsterSkill skilltype = 5;
 	int32 sequenceId = 6;
 	PositionInfo targetPosition = 7;
+	bool changeState = 8;
 }
 
 message C_SkillPrepare{
@@ -836,8 +873,8 @@ message ObjectInfo{
         PlayerInfo player = 6;
         MonsterInfo monster = 7;
         EnvInfo env = 8;
-	ProjectileInfo projectile = 9;
-    	}
+		ProjectileInfo projectile = 9;
+    }
 	ScaledInfo scaleInfo = 10;
 }
 
@@ -895,6 +932,7 @@ message SkillHitbox{
 	float maxRange = 15;
 	bool isOneTimeUse = 16;
 	map<string, InteractionList> interactions = 17;
+	bool repeatingDamage =  18;
 }
 
 message CostInfo{
@@ -1242,6 +1280,7 @@ message S_RemoveEffect{
 	int32 keyCode = 2; 
 	bool isCaster = 3;
 	string fxName = 4;
+	string type = 5;
 }
 
 message S_RozziNormalAttack {
@@ -1259,4 +1298,15 @@ message C_RozziNormalAttack {
 
 message S_ChangeExp{
 	int32 exp = 1;
+}
+
+message S_AbigailFx{
+	int32 objectId = 1;
+	AbigailFx fx = 2;
+	float duration = 3;
+}
+
+message S_StopAbglFx{
+	int32 objectId = 1;
+	AbigailFx fx = 2;
 }

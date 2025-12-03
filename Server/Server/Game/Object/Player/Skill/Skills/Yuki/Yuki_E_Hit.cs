@@ -41,6 +41,8 @@ public sealed class Yuki_E_Hit : SkillHandlerBase
         _duration = distance / _speed;
 
         SendSkillCollisionRequestPacket(p, CollisionType.Block, _startPos, _endPos);
+
+        p.Room.Push(p.Room.BroadcastAbigailSound, p, AbigailSound.YukiEhit, 1f);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

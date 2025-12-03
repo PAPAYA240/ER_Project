@@ -76,6 +76,7 @@ GameObject:
   - component: {fileID: 7642596804028868247}
   - component: {fileID: 2679619122953559633}
   - component: {fileID: -7218101362907159245}
+  - component: {fileID: 7547593907118100320}
   m_Layer: 0
   m_Name: MyYuki
   m_TagString: Untagged
@@ -157,7 +158,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Sound: {fileID: 0}
+  HidingInBush: 0
   xRayIgnoreStencilID: 100
+--- !u!114 &7547593907118100320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 128468080864130828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48183e92a69139743a1f7b5484a9a8fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &192128894160809612
 GameObject:
   m_ObjectHideFlags: 0
@@ -4420,6 +4434,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38bbf0c8ec18e0747b035ba9e225aad8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _player: {fileID: -7218101362907159245}
 --- !u!1 &8039773792476112242
 GameObject:
   m_ObjectHideFlags: 0

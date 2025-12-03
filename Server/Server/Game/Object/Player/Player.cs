@@ -381,6 +381,7 @@ namespace Server.Game
 
                 if (_attactActiveTime > _nonCombatTime)
                 {
+                    _attactActiveTime = 0f;
                     // 이펙트 멈추기
                     SendYukiSkillEffect(SkillEffectType.QBuff, false);
                     AttackActive = false;
@@ -439,6 +440,9 @@ namespace Server.Game
                 changeScorePacket.Team = Team;
                 changeScorePacket.Score = score;
                 Room.Push(Room.Broadcast, changeScorePacket);
+
+                if (attackPlayer.Info.Player.CharType == CharacterType.Abigail)
+                    attackPlayer.Room.Push(attackPlayer.Room.BroadcastAbigailSound, attackPlayer, AbigailSound.Kill, 1f);
             }
 
             // 어시 처리
@@ -1070,7 +1074,7 @@ namespace Server.Game
             };
             Room.Push(Room.Broadcast, packet);
         }
-        public void SendSoundPakcet(string name, string type = "Effect")
+        public void SendSoundPacket(string name, string type = "Effect")
         {
             S_Sound packet = new S_Sound()
             {
@@ -1377,7 +1381,6 @@ namespace Server.Game
 
                 Room.Push(Session.Send, packet);
                 _isUpdatedStatus = false;
-                Console.WriteLine($"AttackSpeed : {AttackSpeed}");
             }
         }
 
@@ -1397,14 +1400,14 @@ namespace Server.Game
             Room.Push(Session.Send, packet);
         }
 
-        public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = "")
+        public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = "", string type = "Caster")
         {
             S_RemoveEffect packet = new S_RemoveEffect();
             packet.ObjectId = Id;
             packet.KeyCode = (int)keyCode;
             packet.IsCaster = isCaster; 
             packet.FxName = fxName;
-
+            packet.Type = type;
             Room.Push(Room.Broadcast, packet);
         }
         #endregion

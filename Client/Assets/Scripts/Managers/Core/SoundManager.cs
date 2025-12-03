@@ -16,6 +16,8 @@ public class SoundManager
     // MP3 음원     -> AudioClip
     // 관객(귀)     -> AudioListener
 
+    AudioClip _blink = null;
+
     public void Init()
     {
         GameObject root = GameObject.Find("@Sound");
@@ -33,6 +35,8 @@ public class SoundManager
             }
 
             _audioSources[(int)Define.Sound.Bgm].loop = true;
+
+            _blink = Managers.Resource.Load<AudioClip>("sound/fx/common/TacticalSkill_Blink");
         }
     }
 
@@ -119,11 +123,20 @@ public class SoundManager
         audioSource.Play();
 
         Object.Destroy(go, audioClip.length + 0.1f);
-        return audioClip.length;
+        return audioClip.length; 
     }
 
     public AudioClip PlayLoop(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, float volume = 0.15f)
     {
+        if (audioClip == null)
+            return null;
+
+        if(_loopSources == null)
+            _loopSources = new Dictionary<string, AudioSource>();
+
+        if (_loopSources != null && _loopSources.ContainsKey(audioClip.name))
+            StopLoopSound(audioClip.name);
+
         GameObject loopObject = new GameObject($"LoopSound_{audioClip.name}");
         AudioSource loopSource = loopObject.AddComponent<AudioSource>();
 
@@ -266,6 +279,16 @@ public class SoundManager
                 source.Stop();
         }
         _voiceSources.Clear();
+    }
+    #endregion
+
+    #region 공용
+    public void Blink(int id, Vector3 pos)
+    {
+        if (id == Managers.Object.MyPlayer.Id)
+            Play(_blink, Define.Sound.Effect, 0.35f);
+        else
+            Play3D(_blink, pos, Define.Sound.Effect, 0.35f);
     }
     #endregion
 }

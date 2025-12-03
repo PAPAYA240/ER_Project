@@ -62,7 +62,7 @@
           { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill04_Fire" },
           {
             "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill04_Loop",
-            "Duration": 7.0
+            "Duration": 2.0
           } //"Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill04_Ing",
         ],
         "SKILL_D": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/skillSniperRifle_v1" } ],
@@ -74,6 +74,33 @@
     },
 
     "Hyunwoo": {
+      "Voice": {
+        "SKILL_Q": [
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007200Seq0_1_ko" },
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007200Seq0_2_ko" },
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007200Seq0_3_ko" }
+        ],
+        "SKILL_W": [
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007300Seq0_1_ko" },
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007300Seq0_2_ko" },
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007300Seq0_3_ko" }
+        ],
+        "SKILL_E": [
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007400Seq0_1_ko" },
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007400Seq0_2_ko" },
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007400Seq0_3_ko" }
+        ],
+        "SKILL_R": [
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007500Seq0_1_ko" },
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007500Seq0_2_ko" },
+          { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007500Seq0_3_ko" }
+        ]
+      },
+      "Effect": {
+      }
+    },
+
+    "Yuki": {
       "Voice": {
         "SKILL_Q": [
           { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007200Seq0_1_ko" },
