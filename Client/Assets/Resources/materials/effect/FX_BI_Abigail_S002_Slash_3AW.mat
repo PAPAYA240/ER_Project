@@ -54,10 +54,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AlphaBoost: 3
     - _AlphaCutoff: 0.05
+    - _AlphaMultiplier: 1.5
     - _AssignDissolveUV: 0
     - _AssignNoiseUV: 0
+    - _BaseBrightness: 3
     - _Brightness: 1
+    - _CenterBoost: 2
+    - _CenterBrightness: 8
+    - _ColorBlend: 0.5
     - _Contrast: 1.5
     - _Cull: 0
     - _DestBlend: 10
@@ -71,29 +77,44 @@ Material:
     - _DissolveSmoothRange: 0.4
     - _DissolveSpeed: 0.5
     - _DissolveTiling: 1
+    - _DissolveWidth: 0.1
+    - _EdgeFade: 0.3
     - _GradientOffset: 0
     - _GradientPower: 1
     - _HighlightIntensity: 3
+    - _Intensity: 3
     - _InvertMask: 0
     - _IsDissolve: 1
     - _IsNoise: 1
     - _IsNoiseComplex: 1
     - _MainAlpha_To_R: 0.255
     - _MainColor_To_Alpha_Amount: 0
+    - _MaskAlphaBoost: 2
+    - _MaskBoost: 5
+    - _MaskCenterBoost: 2
+    - _MaskContrast: 1
     - _MaskCutoff: 0.5
+    - _MaskPower: 1
     - _MaskSoftness: 0.1
     - _MaskThreshold: 0.1
     - _MaskTiling: 1
+    - _MinAlpha: 0.4
+    - _MinBrightness: 0.1
     - _MulAlpha: 1
     - _MulVal_Color: 2.39
     - _MulVal_Noise: -0.35
     - _NoiseIntensity: 1
+    - _NoisePower: 1
+    - _NoiseScale: 0.5
     - _NoiseScale_1: 1
     - _NoiseScale_2: 1
     - _NoiseScrollSpeed: 0.2
+    - _NoiseSpeed: 0.1
     - _NoiseTiling: 1
     - _OverallBrightness: 1
     - _Progress: 0
+    - _PulseAmount: 0.1
+    - _PulseSpeed: 1
     - _QueueControl: 0
     - _QueueOffset: 0
     - _Rotate: 0
@@ -104,10 +125,12 @@ Material:
     - _ZTest: 8
     - _ZWrite: 0
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.969115, g: 0.740566, b: 1, a: 1}
+    - _DissolveDirection: {r: 0, g: 1, b: 0, a: 0}
     - _DissolveEdgeColor: {r: 1, g: 0.5, b: 0, a: 1}
     - _DissolveGlowColor: {r: 1, g: 0.8, b: 0.3, a: 1}
     - _MaskScrollSpeed: {r: 0, g: 0, b: 0, a: 0}
+    - _NoiseColor: {r: 1, g: 1, b: 1, a: 1}
     - _NoiseScrollSpeed_1: {r: 0, g: 0, b: 0, a: 0}
     - _NoiseScrollSpeed_2: {r: 0, g: 0, b: 0, a: 0}
     - _TintColor: {r: 1, g: 1, b: 1, a: 1}
