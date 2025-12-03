@@ -43,7 +43,7 @@ public static class SkillSoundRouter
 
         string soundKey = BuildSoundKey(type, skillKey, evt);
 
-        player.Sound.GetEffect3D(soundKey, position, true);
+        player.Sound.GetEffect3D(soundKey, position);
     }
 
     private static string BuildSoundKey(CharacterType charType, KeyCode skillKey, SkillSoundEvent evt)

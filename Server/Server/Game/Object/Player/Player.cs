@@ -1417,7 +1417,8 @@ namespace Server.Game
 
         public override void SendRemoveCommonEffect(bool isCaster, string commonName, string fxName = "")
         {
-            SendRemoveEffect(KeyCode.None, isCaster, fxName, isCommon: true, commonName);
+            string type = isCaster ? "Caster" : "Select";
+            SendRemoveEffect(KeyCode.None, isCaster, fxName, type: type, isCommon: true, commonName);
         }
 
         public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = "", string type = "Caster", bool isCommon = false, string commonName = "")
