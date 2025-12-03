@@ -23,7 +23,7 @@ namespace Server.Game
             if (Owner == null)
                 return;
 
-            _endTime = Environment.TickCount64 + 500;
+            _endTime = Environment.TickCount64 + 1000;
             _lastTickTime = Environment.TickCount64;
 
             // Owner의 현재 위치를 복사

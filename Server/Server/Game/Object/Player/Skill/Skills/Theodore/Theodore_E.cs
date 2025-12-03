@@ -25,9 +25,9 @@ public sealed class Theodore_E : SkillHandlerBase
         base.OnEnter(p, ctx);
         p.LookAtMouse(ctx.MousePos);
         SendSkillConfirmPacket(p);
-        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode);
 
         CreateProjectile(p, ctx);
+        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode);
     }
     private void CreateProjectile(Player p, SkillContext ctx)
     {
