@@ -8,72 +8,92 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FX_BI_Ring_25ABAW
-  m_Shader: {fileID: 4800000, guid: 246770aea9423174a9a1a2637704e18d, type: 3}
+  m_Shader: {fileID: 4800000, guid: 5022c221a2377cf46adf782fc0fe2d16, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _INVERTMASK_ON
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties:
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-      _MainTex:
+    - _MainTex:
         m_Texture: {fileID: 2800000, guid: 1d93a05983b29c746bfd5f240320073b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-      _MaskTex:
+    - _MaskTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Ints: {}
+    m_Ints: []
     m_Floats:
-      _BlendOp: 0
-      _BumpScale: 1
-      _CameraFadingEnabled: 0
-      _CameraFarFadeDistance: 2
-      _CameraNearFadeDistance: 1
-      _ColorMode: 5
-      _Cull: 0
-      _Cutoff: 0.5
-      _DetailNormalMapScale: 1
-      _DistortionBlend: 0.5
-      _DistortionEnabled: 0
-      _DistortionStrength: 1
-      _DistortionStrengthScaled: 0.1
-      _DstBlend: 0
-      _EmissionEnabled: 0
-      _FlipbookMode: 0
-      _GlossMapScale: 1
-      _Glossiness: 0
-      _GlossyReflections: 1
-      _InvFade: 3
-      _LightingEnabled: 0
-      _Metallic: 0
-      _Mode: 0
-      _MulVal_alpha: 1
-      _MulVal_rgb: 1
-      _OcclusionStrength: 1
-      _Parallax: 0.02
-      _SmoothnessTextureChannel: 0
-      _SoftParticlesEnabled: 0
-      _SoftParticlesFarFadeDistance: 1
-      _SoftParticlesNearFadeDistance: 0
-      _SpecularHighlights: 1
-      _SrcBlend: 1
-      _UVSec: 0
-      _ZTestMode: 6
-      _ZWrite: 1
+    - _AlphaCutoff: 0.01
+    - _BlendOp: 0
+    - _Brightness: 2
+    - _BumpScale: 1
+    - _CameraFadingEnabled: 0
+    - _CameraFarFadeDistance: 2
+    - _CameraNearFadeDistance: 1
+    - _ColorMode: 5
+    - _Cull: 0
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DistortionBlend: 0.5
+    - _DistortionEnabled: 0
+    - _DistortionStrength: 1
+    - _DistortionStrengthScaled: 0.1
+    - _DstBlend: 0
+    - _EdgeSharpness: 2
+    - _EdgeSoftness: 0.2
+    - _EffectTime: 0
+    - _EmissionEnabled: 0
+    - _FinalIntensity: 1
+    - _FlipbookMode: 0
+    - _GlossMapScale: 1
+    - _Glossiness: 0
+    - _GlossyReflections: 1
+    - _InnerBrightness: 2
+    - _Intensity: 2
+    - _InvFade: 3
+    - _InvertMask: 1
+    - _LightingEnabled: 0
+    - _MaxBrightness: 1.9
+    - _Metallic: 0
+    - _MinBrightness: 1
+    - _Mode: 0
+    - _MulVal_alpha: 1
+    - _MulVal_rgb: 1
+    - _OcclusionStrength: 1
+    - _OuterGlow: 0.3
+    - _OverallSaturation: 1
+    - _Parallax: 0.02
+    - _PulseEffect: 0.2
+    - _PulseSpeed: 2
+    - _RangeEdge: 2
+    - _ScrollSpeed: 0.5
+    - _SmoothnessTextureChannel: 0
+    - _SoftParticlesEnabled: 0
+    - _SoftParticlesFarFadeDistance: 1
+    - _SoftParticlesNearFadeDistance: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _UVSec: 0
+    - _ZTestMode: 6
+    - _ZWrite: 1
     m_Colors:
-      _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-      _Color: {r: 1, g: 1, b: 1, a: 1}
-      _ColorAddSubDiff: {r: -1, g: 1, b: 0, a: 0}
-      _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-      _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
-      _TintColor: {r: 1, g: 1, b: 1, a: 1}
+    - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
+    - _Color: {r: 0.6156863, g: 0.30588236, b: 0.8666667, a: 1}
+    - _ColorAddSubDiff: {r: -1, g: 1, b: 0, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ScrollSpeed: {r: 1, g: 1, b: -1, a: -1}
+    - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
+    - _TintColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

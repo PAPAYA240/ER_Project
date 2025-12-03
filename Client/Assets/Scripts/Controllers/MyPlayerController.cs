@@ -28,16 +28,28 @@ public class MyPlayerController : PlayerController
     public float ItemAttackSpeed { get; set; } = 0;
 
     public bool CanStopSkill { get; set; } = false;
-
+    
     float _lastAttackTime;
     readonly float _attackLockTime = 0.1f;
 
     float _lastOperateTime;
     readonly float _operateLockTime = 0.1f;
 
-    public int CurPhase { get; set; } = 999;
+    private int _currentPhase = 999;
+    public int CurPhase 
+    {
+        get
+        {
+            return _currentPhase;
+        }
+        set
+        {
+            _currentPhase = value;
 
- 
+            if (Sound)
+                Sound.GetRandomVoice($"Phase{_currentPhase}");
+        }
+    } 
 
     private void Awake()
     {

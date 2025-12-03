@@ -178,10 +178,6 @@ class PacketHandler
             cc.Hp = changePacket.Hp;
             cc.Barrier = changePacket.Barrier;
 
-            // * Damage Screen
-            if (changePacket.ObjectId == Managers.Object.MyPlayer.Id)
-                Managers.Object.MyPlayer.UI.SetDamageOverlay();
-
             //foreach(var v in changePacket.Damages)
             //    Managers.CombatText.SetCombatText(CombatTextManager.TextType.AdDamage, v.Damage, cc.transform.position);
         }
@@ -201,6 +197,9 @@ class PacketHandler
             cc.Hp = 0;
             cc.OnDead();
         }
+        
+        if (Managers.Object.MyPlayer.Sound)
+            Managers.Object.MyPlayer.Sound.GetRandomVoice("Player_Kill");
 
         if (Managers.Object.MyPlayer != null)
         {
@@ -223,14 +222,10 @@ class PacketHandler
             if (attPc == null)
                 return;
 
-            // Kill 수에 따라 다른 Sound 호출
-            if (Managers.Object.MyPlayer.Id == diePacket.AttackerId && Managers.Object.MyPlayer.Id == diePacket.ObjectId)
+            if (attPc.Sound != null)
             {
-                if (attPc.Sound != null)
-                {
-                    attPc.CurrentMultiKillCnt++;
-                    attPc.Sound.GetRandomVoice($"Kill{attPc.CurrentMultiKillCnt}");
-                }
+                attPc.CurrentMultiKillCnt++;
+                attPc.Sound.GetRandom3DVoice($"Kill{attPc.CurrentMultiKillCnt}", attPc.transform.position);
             }
             Managers.Object.MyPlayer.UI.NotifyKill(attPc, pc); 
         }
@@ -378,6 +373,7 @@ class PacketHandler
             mpc.Exp = levelUpPkt.CurExp;
             mpc.MaxExp = levelUpPkt.NextMaxExp;
             Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(mpc.Id);
+            Managers.Sound.Play("sound/ui/effect_levelup");
             return;
         }
 
@@ -387,6 +383,7 @@ class PacketHandler
         {
             pc.SetNameTagLevel();
             Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(pc.Id);
+            Managers.Sound.Play3D("sound/ui/effect_levelup", pc.transform.position);
         }
     }
 
@@ -439,6 +436,7 @@ class PacketHandler
 
         Managers.Object.MyPlayer.UI.PlayerInterface.SpecificSkillLevelUp(key);
         Managers.Object.MyPlayer.UI.UpdateSkillMaxCool();
+        Managers.Sound.Play("sound/ui/SkillUp");
     }
 
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
@@ -660,6 +658,10 @@ class PacketHandler
             if (atkPlayer == null) 
                     return;
 
+            // * Damage Screen
+            if (atkInfoPacket.ObjectId == Managers.Object.MyPlayer.Id)
+                Managers.Object.MyPlayer.UI.SetDamageOverlay();
+
             atkPlayer.OnHit(atkInfoPacket);
         }
         // *Monster 
@@ -814,6 +816,12 @@ class PacketHandler
 
         PlayerController pc = go.GetComponentInChildren<PlayerController>();
         if (pc == null) return;
+
+        if(soundPkt.Name.Contains("BGM"))
+        {
+            Managers.Sound.Play($"sound/bgm/P{Managers.Object.MyPlayer.CurPhase}", Define.Sound.Bgm);
+            return;
+        }
 
         if (pc.Sound != null)
         {

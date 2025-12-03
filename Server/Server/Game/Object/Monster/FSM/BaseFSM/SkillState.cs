@@ -34,12 +34,7 @@ namespace Server.Game
         public void Execute(Monster monster)
         {
             if (IsSkillFinished())
-            {
-                if (monster.IsInSkillRange())
-                    monster.ChangeState(FSMManager.Instance.GetSkillState(monster.Info.Monster.MonsterType));
-                else
-                    monster.ChangeState(FSMManager.Instance.GetIdleState());
-            }
+                 monster.ChangeState(FSMManager.Instance.GetIdleState());
         }
         public void OnHit(Monster monster, Creature target)
         {
