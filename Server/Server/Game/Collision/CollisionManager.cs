@@ -1009,6 +1009,8 @@ namespace Server.Game
 
             hitbox.PosX += toForward.X * deltaMove;
             hitbox.PosZ += toForward.Z * deltaMove;
+
+            Console.WriteLine($"@ UpdatePosProjectile : {hitbox.PosX}, {hitbox.PosZ}");
         }
         bool CheckCollision(Hitbox myHitbox, Hitbox targetHitbox)
         {

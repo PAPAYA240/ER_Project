@@ -44,8 +44,8 @@ namespace Server
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ERROR] CalculateSize FAILED: {ex}");
-                Console.WriteLine($"[PACKET DUMP]\n{packet}");
+                //Console.WriteLine($"[ERROR] CalculateSize FAILED: {ex}");
+                //Console.WriteLine($"[PACKET DUMP]\n{packet}");
                 throw;
             }
 
@@ -70,10 +70,10 @@ namespace Server
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ERROR] ToByteArray FAILED: {ex}");
-                Console.WriteLine("=========== PACKET DUMP START =============");
-                Console.WriteLine(packet.ToString());
-                Console.WriteLine("=========== PACKET DUMP END ===============");
+                //Console.WriteLine($"[ERROR] ToByteArray FAILED: {ex}");
+                //Console.WriteLine("=========== PACKET DUMP START =============");
+                //Console.WriteLine(packet.ToString());
+                //Console.WriteLine("=========== PACKET DUMP END ===============");
                 throw;
             }
         }
@@ -116,7 +116,7 @@ namespace Server
 
 		public override void OnSend(int numOfBytes)
 		{
-			Console.WriteLine($"Transferred bytes: {numOfBytes}");
+			//Console.WriteLine($"Transferred bytes: {numOfBytes}");
 		}
 
 		public bool CheckTimeout(int secs = 10)

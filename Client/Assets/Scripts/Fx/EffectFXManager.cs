@@ -80,11 +80,15 @@ public class EffectFXManager : MonoBehaviour
                 copyTransform = Util.FindChildByName(casterTransform, data.attachBoneName).transform;
             }
 
+            Debug.Log($"@CopyTransform : name - {copyTransform.name}, pos - {copyTransform.position}, rot - {copyTransform.rotation}");
+
             // Transform 설정
             Quaternion spawnRot
                 = GetSpawnRotation(data, copyTransform, rot);
             Vector3 spawnPos 
                 = GetSpawnPosition(ownerId, data, copyTransform, mousePos, targetPos, spawnRot, out Transform parentTransform);
+
+            Debug.Log($"@GetSpawn : pos - {spawnPos}, rot - {spawnRot}");
 
             if (data.target == EEffectTarget.Self)
             {

@@ -48,6 +48,7 @@ public sealed class Rozzi_R : RozziSkillHandler
         {
             CanStopSkill = true;
             p.SendCanStopSkillPacket(CanStopSkill);
+            p.SendRemoveEffect(_keyCode);
         }
     }
 
