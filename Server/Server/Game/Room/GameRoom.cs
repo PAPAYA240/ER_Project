@@ -89,6 +89,9 @@ namespace Server.Game
             // 특별한 페이즈 로직
             switch (newPhase)
             {
+                case 0:
+                    PlayBGMByPhase(newPhase);
+                    break;
                 case 1:
                     {
                         foreach (var p in _players)
@@ -97,6 +100,7 @@ namespace Server.Game
                             Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
                         }
                         StartExpTimer(); // 1페이즈부터 경험치 획득
+                        PlayBGMByPhase(newPhase);
                         break;
                     }
                 case 2:
@@ -106,6 +110,7 @@ namespace Server.Game
                         p.Value.AcquireItem(new WardInfo()/*DataManager.ItemDict[502212] as WardInfo*/);
                         Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
                     }
+                    PlayBGMByPhase(newPhase);
                     break;
             }
         }
@@ -167,6 +172,19 @@ namespace Server.Game
             foreach (Player p in _teams[teamIndex].Values)
             {
                 p.Exp += exp;
+            }
+        }
+
+        public void PlayBGMByPhase(int phase)
+        {
+            foreach(Player p in _players.Values)
+            {
+                S_Sound soundPacket = new S_Sound();
+                soundPacket.ObjectId = p.Id;
+                soundPacket.Name = "BGM";
+                soundPacket.Type = "BGM";
+
+                Push(p.Session.Send, soundPacket);
             }
         }
         #endregion

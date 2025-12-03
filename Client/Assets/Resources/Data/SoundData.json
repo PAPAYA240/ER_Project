@@ -94,9 +94,25 @@
           { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007500Seq0_1_ko" },
           { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007500Seq0_2_ko" },
           { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_PlaySkill1007500Seq0_3_ko" }
-        ]
+        ],
+        "REST_START": [ { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_rest_1_ko" } ],
+        "DEAD": [ { "Path": "Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_setting6_1_ko" } ]
       },
       "Effect": {
+        "SKILL_Q": [ { "Path": "sound/fx/hyunwoo/s000/hyunwoo_Skill01_Hit" } ],
+        "SKILL_W": [ { "Path": "sound/fx/hyunwoo/s000/hyunwoo_Skill02_Activation" } ],
+        "SKILL_E": [ { "Path": "sound/fx/hyunwoo/s000/hyunwoo_Skill03_Slide" } ],
+        "SKILL_E_END": [ { "Path": "sound/fx/hyunwoo/s000/hyunwoo_Skill03_Collision_Hit" } ],
+        "SKILL_R_END": [
+          { "Path": "sound/fx/hyunwoo/s000/hyunwoo_Skill04_Hit" },
+          { "Path": "sound/fx/hyunwoo/s000/hyunwoo_Skill04_Attack" }
+        ],
+        "SKILL_R_END_SHORT": [
+          { "Path": "sound/fx/hyunwoo/s000/hyunwoo_Skill04_Hit" },
+          { "Path": "sound/fx/hyunwoo/s000/hyunwoo_Skill04_Attack" }
+        ],
+        "E_HIT": [ { "Path": "sound/fx/hyunwoo/s000/hyunwoo_Skill03_Hit" } ],
+        "T_Heal": [ { "Path": "sound/fx/hyunwoo/s000/hyunwoo_Passive_Heal" } ]
       }
     },
 

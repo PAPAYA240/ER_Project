@@ -378,6 +378,7 @@ class PacketHandler
             mpc.Exp = levelUpPkt.CurExp;
             mpc.MaxExp = levelUpPkt.NextMaxExp;
             Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(mpc.Id);
+            Managers.Sound.Play("sound/ui/effect_levelup");
             return;
         }
 
@@ -387,6 +388,7 @@ class PacketHandler
         {
             pc.SetNameTagLevel();
             Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(pc.Id);
+            Managers.Sound.Play3D("sound/ui/effect_levelup", pc.transform.position);
         }
     }
 
@@ -439,6 +441,7 @@ class PacketHandler
 
         Managers.Object.MyPlayer.UI.PlayerInterface.SpecificSkillLevelUp(key);
         Managers.Object.MyPlayer.UI.UpdateSkillMaxCool();
+        Managers.Sound.Play("sound/ui/SkillUp");
     }
 
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
@@ -814,6 +817,12 @@ class PacketHandler
 
         PlayerController pc = go.GetComponentInChildren<PlayerController>();
         if (pc == null) return;
+
+        if(soundPkt.Name.Contains("BGM"))
+        {
+            Managers.Sound.Play($"sound/bgm/P{Managers.Object.MyPlayer.CurPhase}", Define.Sound.Bgm);
+            return;
+        }
 
         if (pc.Sound != null)
         {
