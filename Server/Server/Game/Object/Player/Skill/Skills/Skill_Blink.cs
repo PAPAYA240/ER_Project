@@ -28,6 +28,7 @@ public sealed class Skill_Blink : SkillHandlerBase
 
         SendSkillCollisionRequestPacket(p, CollisionType.Pass, p.Position, targetPos);
 
+        p.SendCommonSkillEffect(ctx.MousePos, commonName: "Blink", type: "Caster");
         p.SendSoundPacket("Blink");
     }
 
@@ -42,10 +43,16 @@ public sealed class Skill_Blink : SkillHandlerBase
         {
             if (TryConsumeLatest(ref _commitId, out SkillCollisionProposal prop))
             {
+                Vector2 targetPos = new Vector2(prop.collisionPos.X, prop.collisionPos.Z);
+                p.LookAtMouse(targetPos);
+
                 p.SendSkillMotion(
                     type: SkillMotionType.Transform,
                     start: p.Position,
                     end: prop.collisionPos);
+
+                p.SendCommonSkillEffect(targetPos, commonName: "Blink", type: "Select", fxName: "FX_BI_Blink_Swift");
+                p.SendCommonSkillEffect(targetPos, commonName: "Blink", type: "Select", fxName: "FX_BI_Blink_End");
             }
         }
     }
@@ -53,6 +60,7 @@ public sealed class Skill_Blink : SkillHandlerBase
     public override void OnExit(Player p, SkillContext ctx)
     {
         base.OnExit(p, ctx);
+        p.SendRemoveCommonEffect(isCaster: false, commonName: "Blink", fxName: "FX_BI_Blink_End");
     }
 }
 

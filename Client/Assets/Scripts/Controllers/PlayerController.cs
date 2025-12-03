@@ -6,7 +6,9 @@ using Data;
 using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
-
+using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using static Data.SkillEffectList;
 
 public class PlayerController : CreatureController
 {
@@ -476,7 +478,7 @@ public class PlayerController : CreatureController
         if (isUpperBodySkill)
         {
             int upperLayer = _animator.GetLayerIndex("UpperBody");
-            _animator.CrossFadeInFixedTime(animInfo.Name, 0.05f, upperLayer);
+            _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio, upperLayer);
             return;
         }
 
@@ -534,11 +536,20 @@ public class PlayerController : CreatureController
             targetTransform = go.transform;
         }
 
-        if (packet.Type == "Caster")
-            PlaySkillEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot, targetTransform: targetTransform);
-
-        else if(packet.Type == "Select")
-            PlaySelectEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot, packet.FxName, targetTransform: targetTransform);
+        if(!packet.IsCommon)
+        {
+            if (packet.Type == "Caster")
+                PlaySkillEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot, targetTransform: targetTransform);
+            else if (packet.Type == "Select")
+                PlaySelectEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot, packet.FxName, targetTransform: targetTransform);
+        }
+        else
+        {
+            if (packet.Type == "Caster")
+                PlayCommonCasterEffect(packet.CommonName, mousePos, targetPos, targetRot);
+            else if(packet.Type == "Select")
+                PlayCommonSelectEffect(packet.CommonName, packet.FxName, mousePos, targetPos, targetRot);
+        }
     }
     #endregion
     public void LookAtMouse()
@@ -739,6 +750,48 @@ public class PlayerController : CreatureController
             return;
 
         Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, targetTransform ? targetTransform : transform, mousePos, targetPos, targetRot);
+    }
+
+    // 공통 이펙트 : Type Common - Caster
+    public void PlayCommonCasterEffect(string commonName, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot, Transform targetTransform = null)
+    {
+        if (DataManager.CommonFxDict == null)
+            return;
+
+        if (!DataManager.CommonFxDict.TryGetValue(commonName, out SkillEffectList effectList))
+            return;
+
+        var dataList = new List<EffectData>();
+        if (effectList.Caster != null)
+            dataList.AddRange(effectList.Caster);
+
+        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, targetTransform ? targetTransform : transform, mousePos, targetPos, targetRot, isCommon: true);
+    }
+
+    // 공통 이펙트 : Type Common - Select
+    public void PlayCommonSelectEffect(string commonName, string fxName, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot, Transform targetTransform = null)
+    {
+        if (DataManager.CommonFxDict == null)
+            return;
+
+        if (!DataManager.CommonFxDict.TryGetValue(commonName, out SkillEffectList effectList))
+            return;
+
+        var dataList = new List<EffectData>();
+
+        if (effectList.Select != null)
+        {
+            foreach (EffectData effect in effectList.Select)
+            {
+                if (effect.prefabName == fxName)
+                    dataList.Add(effect);
+            }
+        }
+
+        if (dataList.Count == 0)
+            return;
+
+        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, targetTransform ? targetTransform : transform, mousePos, targetPos, targetRot, isCommon: true);
     }
     #endregion
 

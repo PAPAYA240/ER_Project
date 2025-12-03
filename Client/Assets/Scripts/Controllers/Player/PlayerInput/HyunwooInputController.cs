@@ -20,7 +20,7 @@ public class HyunwooInputController : PlayerInputController
             if (!Input.GetKeyDown(key))
                 continue;
 
-            if (key == KeyCode.R)
+            if (key == KeyCode.R && _skill.SkillDict[KeyCode.R].CurLevel > 0)
             {
                 if(null != _coCharge)
                 {

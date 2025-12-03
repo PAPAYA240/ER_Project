@@ -3,6 +3,7 @@ using Google.Protobuf.Protocol;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.Intrinsics;
 using UnityEditor;
 using UnityEngine;
 using static Data.EffectData;
@@ -19,15 +20,22 @@ public class EffectFXManager : MonoBehaviour
         fxLayer = LayerMask.NameToLayer("FX");
     }
 
-    private GameObject GetFxPrefab(int ownerId, string prefabName)
+    private GameObject GetFxPrefab(int ownerId, string prefabName, bool isCommon = false)
     {
         GameObject owner = Managers.Object.FindById(ownerId);
         CreatureController ownerCreature = owner?.GetComponent<CreatureController>();
         GameObject fxPrefab = null;
         if (ownerCreature is PlayerController)
         {
-            CharacterType type = ownerCreature.ObjInfo.Player.CharType;
-            fxPrefab = Managers.Resource.Load<GameObject>($"effects/prefab/{type}/{prefabName}");
+            if(!isCommon)
+            {
+                CharacterType type = ownerCreature.ObjInfo.Player.CharType;
+                fxPrefab = Managers.Resource.Load<GameObject>($"effects/prefab/{type}/{prefabName}");
+            }
+            else
+            {
+                fxPrefab = Managers.Resource.Load<GameObject>($"effects/prefab/Common/{prefabName}");
+            }
         }
         else
             fxPrefab = Managers.Resource.Load<GameObject>($"effects/prefab/Monster/{prefabName}");
@@ -41,7 +49,8 @@ public class EffectFXManager : MonoBehaviour
         Transform casterTransform,
         Vector3 mousePos,
         Vector3 targetPos, 
-        Quaternion rot = new Quaternion())
+        Quaternion rot = new Quaternion(),
+        bool isCommon = false)
     {
         if (effectData == null || effectData.Count == 0)
             return null;
@@ -50,7 +59,7 @@ public class EffectFXManager : MonoBehaviour
 
         foreach (EffectData data in effectData)
         {
-            GameObject fxPrefab = GetFxPrefab(ownerId, data.prefabName);
+            GameObject fxPrefab = GetFxPrefab(ownerId, data.prefabName, isCommon);
             if(fxPrefab == null)
             {
                 Debug.LogWarning($"FX Prefab not found: {data.prefabName}");
@@ -203,6 +212,7 @@ public class EffectFXManager : MonoBehaviour
         {
             case EEffectTarget.Self:
             case EEffectTarget.Enemy:
+            case EEffectTarget.EnemyHit:
                 parentTransform = casterTransform;
                 return casterTransform.position + data.position;
 
@@ -229,6 +239,7 @@ public class EffectFXManager : MonoBehaviour
         {
             case EEffectTarget.Self:
             case EEffectTarget.Enemy:
+            case EEffectTarget.EnemyHit:
                 return casterTransform.rotation;
 
             case EEffectTarget.Target:
@@ -251,6 +262,9 @@ public class EffectFXManager : MonoBehaviour
         {
             foreach (GameObject effect in effectList)
             {
+                if (effect == null)
+                    continue;
+
                 if (effect.name.Replace("(Clone)", "") == prefabName)
                     return effect;
             }
@@ -328,6 +342,57 @@ public class EffectFXManager : MonoBehaviour
             }
         }
     }
+
+    public void RemoveCommonEffect(S_RemoveEffect packet)
+    {
+        if (!packet.IsCommon)
+            return;
+
+        GameObject go = Managers.Object.FindById(packet.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null)
+            return;
+
+        SkillEffectList myEffectList = null;
+
+        // 공통 이펙트: CommonFxDict에서 가져오기
+        if (!DataManager.CommonFxDict.TryGetValue(packet.CommonName, out myEffectList))
+            return;
+
+        // 1) 실제로 재생 중인 FX 목록 있는지 체크
+        if (!currentlyPlayingEffects.TryGetValue(packet.ObjectId, out List<GameObject> activeFxList))
+            return;
+
+        // 2) Caster / Select 기준으로 제거
+        if (packet.IsCaster)
+        {
+            // Caster 그룹 전체 제거
+            foreach (EffectData data in myEffectList.Caster)
+            {
+                GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+                if (fxObjectToRemove != null)
+                    RemoveEffect(packet.ObjectId, fxObjectToRemove);
+            }
+        }
+        else
+        {
+            // Select 그룹에서 FxName과 일치하는 FX만 제거
+            foreach (EffectData data in myEffectList.Select)
+            {
+                if (data.prefabName == packet.FxName)
+                {
+                    GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+                    if (fxObjectToRemove != null)
+                        RemoveEffect(packet.ObjectId, fxObjectToRemove);
+                    break;
+                }
+            }
+        }
+    }
+
     private void LoadFxPrefabs()
     {
         GameObject[] loadedPrefabs = Resources.LoadAll<GameObject>("effects/prefab");

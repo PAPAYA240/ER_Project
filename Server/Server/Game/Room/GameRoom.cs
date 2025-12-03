@@ -2,6 +2,7 @@
 using Google.Protobuf.Protocol;
 using Server.Data;
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -88,6 +89,9 @@ namespace Server.Game
             // 특별한 페이즈 로직
             switch (newPhase)
             {
+                case 0:
+                    PlayBGMByPhase(newPhase);
+                    break;
                 case 1:
                     {
                         foreach (var p in _players)
@@ -96,6 +100,7 @@ namespace Server.Game
                             Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
                         }
                         StartExpTimer(); // 1페이즈부터 경험치 획득
+                        PlayBGMByPhase(newPhase);
                         break;
                     }
                 case 2:
@@ -105,6 +110,7 @@ namespace Server.Game
                         p.Value.AcquireItem(new WardInfo()/*DataManager.ItemDict[502212] as WardInfo*/);
                         Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
                     }
+                    PlayBGMByPhase(newPhase);
                     break;
             }
         }
@@ -166,6 +172,19 @@ namespace Server.Game
             foreach (Player p in _teams[teamIndex].Values)
             {
                 p.Exp += exp;
+            }
+        }
+
+        public void PlayBGMByPhase(int phase)
+        {
+            foreach(Player p in _players.Values)
+            {
+                S_Sound soundPacket = new S_Sound();
+                soundPacket.ObjectId = p.Id;
+                soundPacket.Name = "BGM";
+                soundPacket.Type = "BGM";
+
+                Push(p.Session.Send, soundPacket);
             }
         }
         #endregion
@@ -430,6 +449,17 @@ namespace Server.Game
             {
                 if (_projectiles.TryRemove(objectId, out Projectile projectile) && projectile != null)
                 {
+                    // 본인한테 정보 전송
+                    {
+                        S_Despawn despawnPacket = new S_Despawn();
+                        despawnPacket.ObjectIds.Add(objectId);
+                        Player player = projectile.Owner as Player;
+                        if(player != null)
+                        {
+                            Push(player.Session.Send, despawnPacket);
+                        }                      
+                    }
+
                     projectile.Room = null;
                     projectile.Owner = null;
                 }
@@ -889,14 +919,17 @@ namespace Server.Game
 
         private void SpawnRegister()
         {
-            SpawnRegistry = new SpawnPointRegistry(spawnCooldownSec: 5.0);
+            if(SpawnRegistry == null)
+                SpawnRegistry = new SpawnPointRegistry(spawnCooldownSec: 5.0);
 
             // JSON 로드해서 스폰 포인트 채우기
-            SpawnPointLoader.LoadSpawnPoints("Data/json/SpawnPoints.json", SpawnRegistry);
+            if(!SpawnRegistry.IsSpawnDataLoaded())
+                SpawnPointLoader.LoadSpawnPoints("Data/json/SpawnPoints.json", SpawnRegistry);
 
-            Spawn = new SpawnSystem(SpawnRegistry);
-            Teleport = new TeleportSystem(SpawnRegistry);
-
+            if(Spawn == null)
+                Spawn = new SpawnSystem(SpawnRegistry);
+            if(Teleport == null)
+                Teleport = new TeleportSystem(SpawnRegistry);
         }
 
         #region AbigailPkts

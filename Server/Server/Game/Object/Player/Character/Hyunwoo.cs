@@ -47,6 +47,8 @@ namespace Server.Game
 
                     Room.Broadcast(packet);
 
+                    SendSoundPacket("T_Heal");
+
                     //Console.WriteLine("현우 패시브 발동!");
                 }
             }

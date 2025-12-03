@@ -141,7 +141,7 @@
           ]
         }
       }
-      },
+    },
     "Hyunwoo": {
       "Skill": {
         "Q": {
@@ -335,7 +335,7 @@
             },
             {
               "prefabName": "FX_BI_Rozzi_Skill04_Set_Character_Hit",
-              "target": "Enemy",
+              "target": "EnemyHit",
               "duration": 1
             }
           ]
@@ -391,6 +391,69 @@
               "position": {
                 "x": 0,
                 "y": 1,
+                "z": 0
+              }
+            }
+          ]
+        }
+      }
+    },
+
+    "Common": {
+      "Fx": {
+        "Blink": {
+          "Caster": [
+            {
+              "prefabName": "FX_BI_Blink_Start",
+              "target": "Self",
+              "duration": 5
+            }
+          ],
+          "Select": [
+            {
+              "prefabName": "FX_BI_Blink_Swift",
+              "target": "Self",
+              "duration": 1
+            },
+            {
+              "prefabName": "FX_BI_Blink_End",
+              "target": "Self",
+              "duration": 1
+            }
+          ]
+        },
+        "Debuff_Slow": {
+          "Caster": [
+            {
+              "prefabName": "FX_Common_Debuff_Slow",
+              "target": "Enemy",
+              "duration": 5.0
+            }
+          ]
+        },
+        "Debuff_Stun": {
+          "Caster": [
+            {
+              "prefabName": "FX_Common_Debuff_Stun",
+              "target": "Enemy",
+              "duration": 5.0,
+              "position": {
+                "x": 0,
+                "y": 2,
+                "z": 0
+              }
+            }
+          ]
+        },
+        "Debuff_HealedDecrease": {
+          "Caster": [
+            {
+              "prefabName": "FX_Common_Debuff_HealedDecrease",
+              "target": "Self",
+              "duration": 3,
+              "position": {
+                "x": 0,
+                "y": -1,
                 "z": 0
               }
             }

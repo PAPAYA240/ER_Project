@@ -17,7 +17,6 @@ public class PlayerStateMachine
         _currentState?.Enter(player);
 
         player.CurrentState = _currentState;
-
     }
 
     public void Update(Player player)
@@ -36,6 +35,7 @@ public class PlayerStateMachine
         else if (newState is Player_RestState)      player.State = CreatureState.Rest;
         else if (newState is Player_StunState)      player.State = CreatureState.Stun;
         else if (newState is Player_DeadState)      player.State = CreatureState.Dead;
+        else if (newState is Player_TeleportState)  player.State = CreatureState.Teleport;
 
         player.SendStatePacket();
     }

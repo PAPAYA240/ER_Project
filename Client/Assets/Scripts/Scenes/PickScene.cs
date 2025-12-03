@@ -45,6 +45,9 @@ public class PickScene : BaseScene
 
         foreach (PickScenePlayerInfo pspi in Managers.Info._pspiList)
             Spawn(pspi);
+
+
+        Managers.Sound.Play("sound/bgm/BGM_Lobby", Define.Sound.Bgm);
     }
 
     private void Start()
@@ -163,6 +166,9 @@ public class PickScene : BaseScene
     {
         AudioClip abigail = Managers.Resource.Load<AudioClip>("Abigail/voice/Abigail_selected_1_ko");
         _selectedAudios[CharacterType.Abigail] = abigail;
+
+        AudioClip rozzi = Resources.Load<AudioClip>("Rozzi/Sound/Voice/Rozzi_selected_1_ko");
+        _selectedAudios[CharacterType.Rozzi] = rozzi;
 
         AudioClip hyunwoo = Managers.Resource.Load<AudioClip>("Hyunwoo/Resources/sound/voice/hyunwoo/s000/ko/Hyunwoo_selected_1_ko");
         _selectedAudios[CharacterType.Hyunwoo] = hyunwoo;

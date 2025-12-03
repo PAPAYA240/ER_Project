@@ -36,24 +36,26 @@ public class FXManager : MonoBehaviour
 
     public List<GameObject> PlayEffect
         (int ownerId,                           // owner ID
-        List<EffectData> effectData,       // Effect List
-        Transform casterTransform,        // 대상 transform
-        Vector3 mousePos                   // 마우스 위치
+        List<EffectData> effectData,            // Effect List
+        Transform casterTransform,              // 대상 transform
+        Vector3 mousePos,                       // 마우스 위치
+        bool isCommon = false                    // 공통 이펙트
         )
     {
-        return Effect.PlayEffect(ownerId, effectData, casterTransform, mousePos, new Vector3(), GetPlayerRotation(casterTransform));
+        return Effect.PlayEffect(ownerId, effectData, casterTransform, mousePos, new Vector3(), GetPlayerRotation(casterTransform), isCommon);
     }
 
     public List<GameObject> PlayEffect
-       (int ownerId,                           // owner ID
-       List<EffectData> effectData,       // Effect List
-       Transform casterTransform,        // 대상 transform
-       Vector3 mousePos,                   // 마우스 위치
-       Vector3 targetPos,                  // 이펙트 목표 위치
-       Quaternion rot = default(Quaternion)// 이펙트 회전 값
+       (int ownerId,                            // owner ID
+       List<EffectData> effectData,             // Effect List
+       Transform casterTransform,               // 대상 transform
+       Vector3 mousePos,                        // 마우스 위치
+       Vector3 targetPos,                       // 이펙트 목표 위치
+       Quaternion rot = default(Quaternion),    // 이펙트 회전 값
+       bool isCommon = false                    // 공통 이펙트
        )
     {
-        return Effect.PlayEffect(ownerId, effectData, casterTransform, mousePos, targetPos, rot);
+        return Effect.PlayEffect(ownerId, effectData, casterTransform, mousePos, targetPos, rot, isCommon);
     }
 
 
