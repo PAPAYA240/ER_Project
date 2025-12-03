@@ -554,9 +554,9 @@ GameObject:
   m_Component:
   - component: {fileID: 710356719923666424}
   - component: {fileID: 5021250955521430936}
-  - component: {fileID: 6029281910509001356}
+  - component: {fileID: 933686098751846}
   m_Layer: 0
-  m_Name: Rozzi_S002
+  m_Name: Rozzi_S002_LOD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -601,7 +601,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &6029281910509001356
+--- !u!114 &933686098751846
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -610,7 +610,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 897187067598497633}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38bbf0c8ec18e0747b035ba9e225aad8, type: 3}
+  m_Script: {fileID: 11500000, guid: 23f336bac03b38e48b9a7110b49faf73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &911785483801927538
@@ -2715,6 +2715,7 @@ GameObject:
   - component: {fileID: 7715207981999100302}
   - component: {fileID: 8649169367258116997}
   - component: {fileID: 603066989652546787}
+  - component: {fileID: 7562311476025750402}
   m_Layer: 0
   m_Name: MyRozzi
   m_TagString: Untagged
@@ -2798,6 +2799,18 @@ MonoBehaviour:
   Sound: {fileID: 0}
   HidingInBush: 0
   xRayIgnoreStencilID: 100
+--- !u!114 &7562311476025750402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4507760152863837473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 176bdf16fd35b524bb656781b4f2a89f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4552065746279300795
 GameObject:
   m_ObjectHideFlags: 0

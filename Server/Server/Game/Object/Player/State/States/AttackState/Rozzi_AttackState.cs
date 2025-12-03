@@ -244,7 +244,7 @@ public class Rozzi_AttackState : Player_AttackState
         if (pj != null && pj.Target != null && pj.Target == target)
             pj.RegisterOwnerHit(isSkillHit: false);
 
-        p.SendSkillEffect(new Vector2(target.Position.X, target.Position.Z), keyCode: _keyCode, sendLookatMousePacket: true,
+        p.SendSkillEffect(new Vector2(target.Position.X, target.Position.Z), keyCode: _keyCode, sendLookatMousePacket: false,
                 targetPos: default, targetRot: default,
                 type: "Select",  name: "FX_BI_Rozzi_NormalAttack_Hit",
                 useTargetTransform: true, targetId: target.Id);

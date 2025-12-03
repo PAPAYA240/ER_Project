@@ -47,7 +47,6 @@ public interface ISkill
     void OnStop(Player p);
 
     bool CanMoveDuringCast { get; }
-    float MoveSpeedMultiplier { get; }
 
     bool CanStopSkill { get; }
     #region Utils

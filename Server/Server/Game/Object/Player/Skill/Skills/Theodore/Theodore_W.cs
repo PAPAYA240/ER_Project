@@ -6,7 +6,6 @@ using static Server.Data.DataUtils;
 public sealed class Theodore_W : SkillHandlerBase
 {
     public override bool CanMoveDuringCast => true;
-    public override float MoveSpeedMultiplier => 1.2f;
 
     public Theodore_W()
     {

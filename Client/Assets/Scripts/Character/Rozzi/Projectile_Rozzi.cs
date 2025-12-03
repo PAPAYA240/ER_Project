@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using static UnityEngine.UI.GridLayoutGroup;
 
 public class Projectile_Rozzi : Projectile
 {
@@ -51,14 +53,18 @@ public class Projectile_Rozzi : Projectile
                             _visionCircle.gameObject.layer = _layer1Team;
                         }
                     }
+
+                    SkillSoundRouter.Play(Owner, KeyCode.R, SkillSoundEvent.ProjectileAttach, transform.position);
+                    SkillSoundRouter.Play(Owner, KeyCode.R, SkillSoundEvent.ProjectileCount, transform.position);
                 }
                 break;
             case BOMB_ROZZI.StuckOnGround:
-
+                SkillSoundRouter.Play(Owner, KeyCode.R, SkillSoundEvent.ProjectileCount, transform.position);
                 break;
             case BOMB_ROZZI.Exploded:   // 폭발
                 if (_visionCircle != null)
                     _visionCircle.SetActivate(false);
+                SkillSoundRouter.Play(Owner, KeyCode.R, SkillSoundEvent.ProjectileExplode, transform.position);
                 break;
             default:
 

@@ -366,6 +366,7 @@ namespace Data
             Mouse,      // 마우스 따라감
             Shot,       // 발사체
             Enemy,      // 적에게 부착
+            EnemyHit,   // 처음 재생할 때만 타겟 transform 반영
         }
         public string prefabName;
         public float delayTime;
@@ -446,6 +447,27 @@ namespace Data
             }
             return finalDict;
         }
+
+        public Dictionary<string, SkillEffectList> MakeCommonDict()
+        {
+            var commonDict = new Dictionary<string, SkillEffectList>();
+
+            if (!effects.TryGetValue("Common", out var commonNode))
+                return commonDict;
+
+            if (!commonNode.TryGetValue("Fx", out var fxNode))
+                return commonDict;
+
+            foreach (var fxEntry in fxNode)
+            {
+                string fxName = fxEntry.Key;            // Blink, Debuff_Slow ...
+                SkillEffectList list = fxEntry.Value;   // Caster / HitTarget / Select
+
+                commonDict[fxName] = list;
+            }
+
+            return commonDict;
+        }
     }
     #endregion
 
@@ -512,7 +534,7 @@ namespace Data
     public class ClipInfo
     {
         public AudioClip Clip;
-        public float Duration; 
+        public float Duration;
     }
     [Serializable]
     public class SoundDict : ILoader<CharacterType, Dictionary<Define.Sound, Dictionary<string, List<SoundData>>>>

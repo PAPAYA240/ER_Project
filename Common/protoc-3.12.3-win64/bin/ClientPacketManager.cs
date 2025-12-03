@@ -182,7 +182,11 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SRozziNormalAttack, MakePacket<S_RozziNormalAttack>);
 		_handler.Add((ushort)MsgId.SRozziNormalAttack, PacketHandler.S_RozziNormalAttackHandler);		
 		_onRecv.Add((ushort)MsgId.SChangeExp, MakePacket<S_ChangeExp>);
-		_handler.Add((ushort)MsgId.SChangeExp, PacketHandler.S_ChangeExpHandler);
+		_handler.Add((ushort)MsgId.SChangeExp, PacketHandler.S_ChangeExpHandler);		
+		_onRecv.Add((ushort)MsgId.SAbigailFx, MakePacket<S_AbigailFx>);
+		_handler.Add((ushort)MsgId.SAbigailFx, PacketHandler.S_AbigailFxHandler);		
+		_onRecv.Add((ushort)MsgId.SStopAbglFx, MakePacket<S_StopAbglFx>);
+		_handler.Add((ushort)MsgId.SStopAbglFx, PacketHandler.S_StopAbglFxHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

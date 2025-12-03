@@ -51,4 +51,10 @@ public sealed class TimeUtil
         long now = Interlocked.Read(ref _lastTick); // atomic 읽기
         return unchecked(now - target) >= 0;
     }
+
+    public static float FrameToSec(int frames, float fps = 30f)
+    {
+        if (fps <= 0) return 0f;
+        return frames / fps;
+    }
 }

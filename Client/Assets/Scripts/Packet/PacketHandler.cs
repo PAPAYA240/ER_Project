@@ -22,7 +22,7 @@ class PacketHandler
 	{
         if (!IsSceneReady("Game", () => S_EnterGameHandler(session, packet))) return;
         S_EnterGame enterGamePacket = packet as S_EnterGame;
-        Managers.Object.Add(enterGamePacket.Player, myPlayer: true);
+        Managers.Object.Add(enterGamePacket.ObjInfo, myPlayer: true);
     }
 
     public static void S_LeaveGameHandler(PacketSession session, IMessage packet)
@@ -645,9 +645,7 @@ class PacketHandler
     {
         if (!IsSceneReady("Game", () => S_AttackInfoHandler(session, packet))) return;
 
-        // *Sound
         S_AttackInfo atkInfoPacket = packet as S_AttackInfo;
-
         BaseController bc = Managers.Object.FindById(atkInfoPacket.AttackerId)?.GetComponentInChildren<BaseController>();
         if (bc == null)
             return;
@@ -659,24 +657,19 @@ class PacketHandler
         if (attackerObjType == GameObjectType.Player)
         {
             PlayerController atkPlayer = (PlayerController)bc;
-            if (atkPlayer == null) return;
+            if (atkPlayer == null) 
+                    return;
 
-            Vector3 targetPosition = tbc.transform.position;
-
-            // 사용 중인 키(Player)/몬스터 스킬(Monster) 이름 + hit
-            // ex. Q_Hit, W_Hit, 
-            if (atkPlayer.Sound != null)
-                atkPlayer.Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
+            atkPlayer.OnHit(atkInfoPacket);
         }
+        // *Monster 
         else if (attackerObjType == GameObjectType.Monster)
         {
             MonsterController atkMonster = (MonsterController)bc;
-            if (atkMonster == null) return;
+            if (atkMonster == null) 
+                return;
 
-            Vector3 targetPosition = tbc.transform.position;
-
-            if (atkMonster.Sound != null)
-                atkMonster.Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
+            atkMonster.OnHit(atkInfoPacket);
         }
     }
 
@@ -830,6 +823,9 @@ class PacketHandler
             else
                 pc.Sound.GetRandom3DEffect(name, pc.transform.position);
         }
+
+        if (soundPkt.Name == "Blink")
+            Managers.Sound.Blink(soundPkt.ObjectId, pc.CellPos);
     }
 
     public static void S_SkillEffectHandler(PacketSession session, IMessage packet)
@@ -1203,11 +1199,14 @@ class PacketHandler
         if (pickSceneUI == null) return;
 
         pickSceneUI.OnClickedPickButton.Invoke(randomPickPkt.CharType.ToString());
+
+        S_ReadyBtn readyBtnPkt = new S_ReadyBtn();
+        S_ReadyBtnHandler(session, readyBtnPkt);
     }
 
     public static void S_ReadyBtnHandler(PacketSession session, IMessage packet)
     {
-        S_RandomPick randomPickPkt = packet as S_RandomPick;
+        S_ReadyBtn readyBtn = packet as S_ReadyBtn;
         GameObject go = GameObject.Find("ReadyButton");
         if (go == null) return;
 
@@ -1232,9 +1231,11 @@ class PacketHandler
         if (!IsSceneReady("Game", () => S_RemoveEffectHandler(session, packet))) return;
 
         S_RemoveEffect removeEffectPacket = packet as S_RemoveEffect;
-
-        
-        Managers.FX.Effect.RemoveEffect(removeEffectPacket);
+       
+        if(!removeEffectPacket.IsCommon)
+            Managers.FX.Effect.RemoveEffect(removeEffectPacket);
+        else
+            Managers.FX.Effect.RemoveCommonEffect(removeEffectPacket);
     }
 
     public static void S_StartOperateHandler(PacketSession session, IMessage packet)
@@ -1277,7 +1278,6 @@ class PacketHandler
         if(aam == null) return;
 
         aam.Play(abigailSoundPkt.ObjectId, abigailSoundPkt.Sound, abigailSoundPkt.Pos.ToVector(), abigailSoundPkt.Idx);
-        Debug.Log(abigailSoundPkt.Sound.ToString());
     }
 
     public static void S_PickSoundHandler(PacketSession session, IMessage packet)
@@ -1317,6 +1317,29 @@ class PacketHandler
 
         S_ChangeExp changeExpPacket = packet as S_ChangeExp;
         Managers.Object.MyPlayer.Exp = changeExpPacket.Exp;
+    }
+
+    public static void S_AbigailFxHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_AbigailFxHandler(session, packet))) return;
+        S_AbigailFx abigailFx = packet as S_AbigailFx;
+
+        GameObject go = Managers.Object.FindById(abigailFx.ObjectId);
+        if (go == null) return;
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null) return;
+        pc.YukiEffects.PlayEffect(abigailFx.Fx, abigailFx.Duration);
+    }
+
+    public static void S_StopAbglFxHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_StopAbglFxHandler(session, packet))) return;
+        S_StopAbglFx stopAbglFx = packet as S_StopAbglFx;
+        GameObject go = Managers.Object.FindById(stopAbglFx.ObjectId);
+        if (go == null) return;
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null) return;
+        pc.YukiEffects.StopEffect(stopAbglFx.Fx);
     }
 
     static float GetCurrentEstimatedOneWayLatency()

@@ -62,7 +62,7 @@
           { "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill04_Fire" },
           {
             "Path": "Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill04_Loop",
-            "Duration": 7.0
+            "Duration": 2.0
           } //"Theodore/Resources/sound/fx/theodore/s000/Theodore_Skill04_Ing",
         ],
         "SKILL_D": [ { "Path": "Theodore/Resources/sound/fx/theodore/s000/skillSniperRifle_v1" } ],
@@ -97,6 +97,53 @@
         ]
       },
       "Effect": {
+      }
+    },
+
+    "Rozzi": {
+      "Voice": {
+        "SKILL_E": [
+          { "Path": "Rozzi/Sound/Voice/Rozzi_playskill1021400seq0_1_ko" },
+          { "Path": "Rozzi/Sound/Voice/Rozzi_playskill1021400seq0_2_ko" },
+          { "Path": "Rozzi/Sound/Voice/Rozzi_playskill1021400seq0_3_ko" }
+        ],
+        "SKILL_R": [
+          { "Path": "Rozzi/Sound/Voice/Rozzi_playskill1021500seq0_1_ko" },
+          { "Path": "Rozzi/Sound/Voice/Rozzi_playskill1021500seq0_2_ko" },
+          { "Path": "Rozzi/Sound/Voice/Rozzi_playskill1021500seq0_3_ko" }
+        ],
+        "REST_START": [
+          { "Path": "Rozzi/Sound/Voice/Rozzi_rest_1_ko" }
+        ],
+        "DEAD": [
+          { "Path": "Rozzi/Sound/Voice/Rozzi_Dead_1_ko" },
+          { "Path": "Rozzi/Sound/Voice/Rozzi_Dead_2_ko" },
+          { "Path": "Rozzi/Sound/Voice/Rozzi_Dead_3_ko" }
+        ]
+      },
+      "Effect": {
+        "Rozzi_Q_Cast": [ { "Path": "Rozzi/Sound/Fx/Rozzi_Skill01_Fire" } ],
+        "Rozzi_Q_Event": [ { "Path": "Rozzi/Sound/Fx/Rozzi_Skill01_Move" } ],
+        "Q_Hit": [ { "Path": "Rozzi/Sound/Fx/Rozzi_Skill01_Hit" } ],
+
+        "Rozzi_W_Cast": [ { "Path": "Rozzi/Sound/Fx/Rozzi_Skill02_Fire" } ],
+        "W_Hit": [ { "Path": "Rozzi/Sound/Fx/Rozzi_Skill02_Hit" } ],
+
+        "Rozzi_E_Cast": [ { "Path": "Rozzi/Sound/Fx/Rozzi_Skill03_Gun" } ],
+        "Rozzi_E_Cast2": [ { "Path": "Rozzi/Sound/Fx/Rozzi_Skill03_Start" } ],
+        "E_Hit": [ { "Path": "Rozzi/Sound/Fx/Rozzi_Skill03_Hit" } ],
+
+        "Rozzi_R_Cast": [ { "Path": "Rozzi/Sound/Fx/Rozzi_Skill04_Fire" } ],
+        "Rozzi_R_ProjectileExplode": [ { "Path": "Rozzi/Sound/Fx/Rozzi_Skill04_Bomb" } ],
+        "Rozzi_R_ProjectileCount": [ { "Path": "Rozzi/Sound/Fx/Rozzi_Skill04_Ground" } ],
+        "Rozzi_R_ProjectileAttach": [ { "Path": "Rozzi/Sound/Fx/Rozzi_Skill04_Time" } ],
+        "R_Hit": [ { "Path": "Rozzi/Sound/Fx/Rozzi_Skill04_Hit" } ],
+
+        "Rozzi_D_Cast": [ { "Path": "Rozzi/Sound/Fx/Pistol_skill_D" } ],
+        "Rozzi_F_Cast": [ { "Path": "Rozzi/Sound/Fx/TacticalSkill_Blink" } ],
+
+        "Rozzi_F3_Cast": [ { "Path": "Rozzi/Sound/Fx/Rozzi_Pistol_Shot" } ],
+        "Rozzi_F3_Hit": [ { "Path": "Rozzi/Sound/Fx/Rozzi_Pistol_Hit" } ]
       }
     }
   }

@@ -61,6 +61,11 @@ public sealed class SkillController
             _owner.SendSkillConfirmPacket(false);
             return false;
         }
+        if (_owner.CurrentState is Player_SkillState skill && !skill.CanStopSkill)
+        {
+            _owner.SendSkillConfirmPacket(false);
+            return false;
+        }
 
         // 2) 핸들러 결정 & 개별 핸들러의 추가 검증
         var handler = SkillRegistry.Resolve(_owner.Info.Player.CharType, key);

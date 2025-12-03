@@ -42,6 +42,8 @@ public class Player_StunState : IPlayerState
 
         player.SendAnimPacket("WAIT", 0.1f);
         player.SendStopPacket();
+
+        player.SendCommonSkillEffect(default, commonName: "Debuff_Stun", type: "Caster");
     }
 
     public void Execute(Player player)
@@ -51,7 +53,8 @@ public class Player_StunState : IPlayerState
         if (elapsedTime >= _desc.Duration)
         {
             // 기절 지속 시간 종료, IDLE 상태로 전환
-            player.ChangeState(new Player_IdleState()); 
+            player.SendRemoveCommonEffect(isCaster: true, commonName: "Debuff_Stun");
+            player.ChangeState(new Player_IdleState());
             return;
         }
         // 이동 처리 

@@ -2,6 +2,7 @@
 using Google.Protobuf.Protocol;
 using Server.Data;
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -302,7 +303,7 @@ namespace Server.Game
                     player.Info.PosInfo = Spawn.GetSpawnPoint(player.Team).ToPositionInfo();
 
                     S_EnterGame enterPacket = new S_EnterGame();
-                    enterPacket.Player = player.Info;
+                    enterPacket.ObjInfo = player.Info;
                     player.Session.Send(enterPacket);
 
                     S_Spawn spawnPacket = new S_Spawn();
@@ -433,6 +434,17 @@ namespace Server.Game
             {
                 if (_projectiles.TryRemove(objectId, out Projectile projectile) && projectile != null)
                 {
+                    // 본인한테 정보 전송
+                    {
+                        S_Despawn despawnPacket = new S_Despawn();
+                        despawnPacket.ObjectIds.Add(objectId);
+                        Player player = projectile.Owner as Player;
+                        if(player != null)
+                        {
+                            Push(player.Session.Send, despawnPacket);
+                        }                      
+                    }
+
                     projectile.Room = null;
                     projectile.Owner = null;
                 }
@@ -889,16 +901,20 @@ namespace Server.Game
 
         private void SpawnRegister()
         {
-            SpawnRegistry = new SpawnPointRegistry(spawnCooldownSec: 5.0);
+            if(SpawnRegistry == null)
+                SpawnRegistry = new SpawnPointRegistry(spawnCooldownSec: 5.0);
 
             // JSON 로드해서 스폰 포인트 채우기
-            SpawnPointLoader.LoadSpawnPoints("Data/json/SpawnPoints.json", SpawnRegistry);
+            if(!SpawnRegistry.IsSpawnDataLoaded())
+                SpawnPointLoader.LoadSpawnPoints("Data/json/SpawnPoints.json", SpawnRegistry);
 
-            Spawn = new SpawnSystem(SpawnRegistry);
-            Teleport = new TeleportSystem(SpawnRegistry);
-
+            if(Spawn == null)
+                Spawn = new SpawnSystem(SpawnRegistry);
+            if(Teleport == null)
+                Teleport = new TeleportSystem(SpawnRegistry);
         }
 
+        #region AbigailPkts
         public void BroadcastAbigailSound(Player player, AbigailSound sound, float prob)
         {
             if (!DataManager.AbigailAudioDict.TryGetValue(sound, out List<string> paths))
@@ -915,6 +931,24 @@ namespace Server.Game
             abigailSound.Idx = Random.Shared.Next(0, paths.Count);
             Broadcast(abigailSound);
         }
+
+        public void BroadcastAbigailFx(Player player, AbigailFx fx, float duration)
+        {
+            S_AbigailFx abigailFx = new S_AbigailFx();
+            abigailFx.ObjectId = player.Id;
+            abigailFx.Fx = fx;
+            abigailFx.Duration = duration;
+            Broadcast(abigailFx);
+        }
+
+        public void BroadcastStopAbglFx(Player player, AbigailFx fx)
+        {
+            S_StopAbglFx stopFx = new S_StopAbglFx();
+            stopFx.ObjectId = player.Id;
+            stopFx.Fx = fx;
+            Broadcast(stopFx);
+        }
+        #endregion
 
         public Player FindViableTarget(Monster monster, float range)
         {

@@ -1,11 +1,14 @@
-﻿using Data;
-using Google.Protobuf.Protocol;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Data;
+using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.AI;
-
+using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using static Data.SkillEffectList;
 
 public class PlayerController : CreatureController
 {
@@ -36,7 +39,11 @@ public class PlayerController : CreatureController
     private Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
     public Dictionary<EquipItemType, EquipItemInfo> EquipItemSlot { get { return _equipItemSlot; } }
     public ItemStat ItemStat { get; private set; } = new ItemStat();
+
+    // 애니메이션 관련
     protected GameObject _eqipWeapon = null;
+    protected GameObject _restItem = null;
+    protected Animator _weaponAnimator = null;
 
     public SoundController Sound;
 
@@ -198,9 +205,10 @@ public class PlayerController : CreatureController
     protected Transform _equipTransform = null;
 
     // Bush Material
-    private Transform _lodTransform = null;
-    private Material[] _originMaterials = null;
-    private Material _playerBushMaterial = null;
+    private Dictionary<Renderer, Material[]> _originalMaterialsDict = new Dictionary<Renderer, Material[]>();
+    private Material _playerBushMaterial;
+    private Transform _lodTransform;
+
     public bool HidingInBush = false;
     #region KDA
 
@@ -298,7 +306,14 @@ public class PlayerController : CreatureController
         Sound = gameObject.GetComponent<SoundController>();
         if (Sound != null)
             Sound.PreloadCharAllSounds(ObjInfo.Player.CharType);
+
+        // Rest Item
+        RegisterRestItem();
+
+        // Weapon Anim
+        RegisterWeaponAnimator();           
     }
+
     private void InitEquipItem()
     {
         for (int i = 0; i < (int)EquipItemType.End; ++i)
@@ -366,6 +381,23 @@ public class PlayerController : CreatureController
     public override void OnDamaged()
     {
         Debug.Log("Player HIT !");
+    }
+
+    public void OnHit(S_AttackInfo atkInfoPacket)
+    {
+        BaseController tbc = Managers.Object.FindById(atkInfoPacket.ObjectId)?.GetComponentInChildren<BaseController>();
+        if (tbc == null)
+            return;
+        Vector3 targetPosition = tbc.transform.position;
+
+        // 사용 중인 키(Player)/몬스터 스킬(Monster) 이름 + hit
+        // ex. Q_Hit, W_Hit, 
+        if (Sound != null)
+            Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
+
+        if (Enum.TryParse<KeyCode>(atkInfoPacket.AttackType, out KeyCode key))
+            PlaySelectEffect(key, default(Vector3), default(Vector3), default(Quaternion), $"FX_{key}_Hit", tbc.transform);
+
     }
 
     public void OnStop(S_Stop packet)
@@ -438,7 +470,7 @@ public class PlayerController : CreatureController
         // Animation에 맞는 Sound
         if (Sound != null)
         {
-            Sound.GetEffect3D(animInfo.Name, transform.position, true);
+            Sound.GetEffect3D(animInfo.Name, transform.position);
             Sound.GetRandomVoice(animInfo.Name);
         }
 
@@ -446,7 +478,7 @@ public class PlayerController : CreatureController
         if (isUpperBodySkill)
         {
             int upperLayer = _animator.GetLayerIndex("UpperBody");
-            _animator.CrossFadeInFixedTime(animInfo.Name, 0.05f, upperLayer);
+            _animator.CrossFadeInFixedTime(animInfo.Name, animInfo.Ratio, upperLayer);
             return;
         }
 
@@ -456,6 +488,8 @@ public class PlayerController : CreatureController
 
         if (animInfo.IsChangeSpeed == true)
             _animator.SetFloat("AttackSpeed", animInfo.Speed);
+
+        WeaponAnim(animInfo.Name, animInfo.Ratio, animInfo.IsChangeSpeed, animInfo.Speed);
     }
 
     private void AnimCondition(string name)
@@ -472,6 +506,13 @@ public class PlayerController : CreatureController
                 _eqipWeapon.gameObject.SetActive(true);
                 ActiveRenderer(true);
             }
+        }
+        else if(ObjInfo.Player.CharType == CharacterType.Abigail)
+        {
+            if (name == "REST_START" || name == "REST_LOOP")
+                RenderRestItem(true);
+            else
+                RenderRestItem(false);
         }
     }
 
@@ -495,11 +536,20 @@ public class PlayerController : CreatureController
             targetTransform = go.transform;
         }
 
-        if (packet.Type == "Caster")
-            PlaySkillEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot, targetTransform: targetTransform);
-
-        else if(packet.Type == "Select")
-            PlaySelectEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot, packet.FxName, targetTransform: targetTransform);
+        if(!packet.IsCommon)
+        {
+            if (packet.Type == "Caster")
+                PlaySkillEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot, targetTransform: targetTransform);
+            else if (packet.Type == "Select")
+                PlaySelectEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot, packet.FxName, targetTransform: targetTransform);
+        }
+        else
+        {
+            if (packet.Type == "Caster")
+                PlayCommonCasterEffect(packet.CommonName, mousePos, targetPos, targetRot);
+            else if(packet.Type == "Select")
+                PlayCommonSelectEffect(packet.CommonName, packet.FxName, mousePos, targetPos, targetRot);
+        }
     }
     #endregion
     public void LookAtMouse()
@@ -689,14 +739,59 @@ public class PlayerController : CreatureController
             return;
 
         SkillEffectList myEffectList = DataManager.PlayerFxDict[type][state][skillKey];
-        List<EffectData> dataList = new List<EffectData>();
-        foreach (EffectData effect in myEffectList.Select)
-        {
-            if(fxName == effect.prefabName)
-                dataList.Add(effect);
-        }
+        if (myEffectList?.Select == null)
+            return;
+
+        List<EffectData> dataList = myEffectList.Select
+       .Where(effect => effect != null && effect.prefabName == fxName)
+       .ToList();
+
+        if (dataList.Count == 0)
+            return;
 
         Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, targetTransform ? targetTransform : transform, mousePos, targetPos, targetRot);
+    }
+
+    // 공통 이펙트 : Type Common - Caster
+    public void PlayCommonCasterEffect(string commonName, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot, Transform targetTransform = null)
+    {
+        if (DataManager.CommonFxDict == null)
+            return;
+
+        if (!DataManager.CommonFxDict.TryGetValue(commonName, out SkillEffectList effectList))
+            return;
+
+        var dataList = new List<EffectData>();
+        if (effectList.Caster != null)
+            dataList.AddRange(effectList.Caster);
+
+        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, targetTransform ? targetTransform : transform, mousePos, targetPos, targetRot, isCommon: true);
+    }
+
+    // 공통 이펙트 : Type Common - Select
+    public void PlayCommonSelectEffect(string commonName, string fxName, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot, Transform targetTransform = null)
+    {
+        if (DataManager.CommonFxDict == null)
+            return;
+
+        if (!DataManager.CommonFxDict.TryGetValue(commonName, out SkillEffectList effectList))
+            return;
+
+        var dataList = new List<EffectData>();
+
+        if (effectList.Select != null)
+        {
+            foreach (EffectData effect in effectList.Select)
+            {
+                if (effect.prefabName == fxName)
+                    dataList.Add(effect);
+            }
+        }
+
+        if (dataList.Count == 0)
+            return;
+
+        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, targetTransform ? targetTransform : transform, mousePos, targetPos, targetRot, isCommon: true);
     }
     #endregion
 
@@ -880,16 +975,23 @@ public class PlayerController : CreatureController
     #region Bush Renderer
     private void InitBushRenderSetting()
     {
-        Renderer playerRenderer = this.GetComponentInChildren<Renderer>();
-        if (playerRenderer != null)
-            _originMaterials = playerRenderer.materials;
         _playerBushMaterial = Resources.Load<Material>("Material/ghostMaterial");
+
         foreach (Transform child in transform)
         {
             if (child.name.Contains("LOD"))
             {
                 _lodTransform = child;
                 break;
+            }
+        }
+
+        if (_lodTransform != null)
+        {
+            Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
+            foreach (Renderer renderer in renderers)
+            {
+                _originalMaterialsDict[renderer] = renderer.materials;
             }
         }
     }
@@ -924,7 +1026,7 @@ public class PlayerController : CreatureController
             renderer.enabled = false;
         }
     }
-   
+
     // 렌더러 활성화
     private IEnumerator MakeVisible(float duration = 0f)
     {
@@ -932,7 +1034,6 @@ public class PlayerController : CreatureController
             yield break;
 
         yield return new WaitForSeconds(duration);
-
         HidingInBush = false;
         _nameTag.gameObject.SetActive(true);
 
@@ -940,7 +1041,12 @@ public class PlayerController : CreatureController
         foreach (Renderer renderer in renderers)
         {
             renderer.enabled = true;
-            renderer.materials = _originMaterials;
+
+            // 각 Renderer의 원본 Material 복원
+            if (_originalMaterialsDict.TryGetValue(renderer, out Material[] originalMaterials))
+            {
+                renderer.materials = originalMaterials;
+            }
         }
     }
 
@@ -951,14 +1057,77 @@ public class PlayerController : CreatureController
 
         HidingInBush = true;
         Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
-        Material[] newMaterials = new Material[] { _playerBushMaterial };
 
         foreach (Renderer renderer in renderers)
         {
             renderer.enabled = true;
-            renderer.materials = newMaterials;
-        }
 
+            int materialCount = renderer.sharedMaterials.Length;
+            Material[] ghostMaterials = new Material[materialCount];
+            for (int i = 0; i < materialCount; i++)
+            {
+                ghostMaterials[i] = _playerBushMaterial;
+            }
+            renderer.sharedMaterials = ghostMaterials;
+        }
+    }
+    #endregion
+
+    #region State: Rest
+    void RegisterRestItem()
+    {
+        if(ObjInfo.Player.CharType == CharacterType.Abigail)
+        {
+            foreach (Transform child in transform.GetComponentsInChildren<Transform>(true))
+            {
+                if (child.name == "AbigailTable")
+                {
+                    _restItem = child.gameObject;
+                    RenderRestItem(false);
+                    return;
+                }
+            }
+        }
+    }
+
+    public void RenderRestItem(bool render)
+    {
+        if (_restItem == null)
+            return;
+        _restItem.SetActive(render);
+    }
+    #endregion
+
+    #region WeaponAnim
+    void RegisterWeaponAnimator()
+    {
+        if (ObjInfo.Player.CharType == CharacterType.Abigail)
+        {
+            Transform weaponTransform = GetComponentsInChildren<Transform>(true)
+            .FirstOrDefault(t => t.name == "AbigailWeapon");
+            if (weaponTransform != null)
+            {
+                // AbigailWeapon의 자식에서 Animator 찾기
+                _weaponAnimator = weaponTransform.GetComponentInChildren<Animator>();
+
+                if (_weaponAnimator == null)
+                    Debug.LogWarning("AbigailWeapon 자식에서 Animator를 찾을 수 없습니다.");
+            }
+        }
+    }
+
+    void WeaponAnim(string animName, float transDuration, bool speedChanged, float speed)
+    {
+        if (_weaponAnimator == null)
+            return;
+
+        if(speedChanged)
+            _weaponAnimator.SetFloat("AttackSpeed", speed);
+
+        if(animName == "SKILL_T" || animName == "SKILL_Q" || animName == "SKILL_W")
+            _weaponAnimator.CrossFadeInFixedTime(animName, transDuration);
+        else
+            _weaponAnimator.CrossFadeInFixedTime("WAIT", transDuration);
     }
     #endregion
 }
