@@ -79,7 +79,10 @@ namespace Server.Game
             if (Target != null)
             {
                 if (Target.State == CreatureState.Dead)
+                {
                     Target = null;
+                    ChangeState(FSMManager.Instance.GetIdleState());
+                }
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using Data;
 using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -117,6 +118,21 @@ public class EffectFXManager : MonoBehaviour
             currentlyPlayingEffects[ownerId].AddRange(effectList);
         }
         return effectList;
+    }
+    public void PlayEffect(string path, Transform casterTransform, float duration, Vector3 offset)
+    {
+        GameObject prefab = Managers.Resource.Load<GameObject>(path);
+        if (prefab == null)
+            return;
+
+        GameObject fx = GameObject.Instantiate(prefab);
+        fx.transform.SetParent(casterTransform);
+        fx.transform.localPosition = Vector3.zero;
+        fx.transform.localRotation = Quaternion.identity;
+        fx.transform.localPosition += offset;
+        fx.SetActive(true);
+
+        Destroy(fx, duration);
     }
 
     private void StartEffectLogic(int ownerId, GameObject fxObject, EffectData data, Transform casterTransform)
@@ -308,37 +324,29 @@ public class EffectFXManager : MonoBehaviour
         if (!stateDict.TryGetValue(CreatureState.Skill, out var skillDict)) return;
         if (!skillDict.TryGetValue((KeyCode)packet.KeyCode, out SkillEffectList myEffectList)) return;
 
-        List<EffectData> dataList = null;
-        if (packet.Type == "Caster")
+        if(packet.Type == "Caster")
         {
-            dataList = myEffectList.Caster;
-        }
-        else if (packet.Type == "Select")
-        {
-            if(packet.IsCaster)
+            foreach (EffectData data in myEffectList.Caster)
             {
-                foreach (EffectData data in myEffectList.Caster)
+                GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+
+                if (fxObjectToRemove != null)
+                    RemoveEffect(packet.ObjectId, fxObjectToRemove);
+            }
+        }
+        else if(packet.Type == "Select")
+        {
+            foreach (EffectData data in myEffectList.Select)
+            {
+                if(data.prefabName == packet.FxName)
                 {
                     GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
 
                     if (fxObjectToRemove != null)
                         RemoveEffect(packet.ObjectId, fxObjectToRemove);
-                }
-            }
-            else
-            {
-                foreach (EffectData data in myEffectList.Select)
-                {
-                    if(data.prefabName == packet.FxName)
-                    {
-                        GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
 
-                        if (fxObjectToRemove != null)
-                            RemoveEffect(packet.ObjectId, fxObjectToRemove);
-
-                        break;
-                    }                    
-                }
+                    break;
+                }                    
             }
         }
     }

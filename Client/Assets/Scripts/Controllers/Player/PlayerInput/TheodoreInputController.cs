@@ -7,6 +7,7 @@ using UnityEngine.AI;
 using UnityEngine.InputSystem;
 using static CameraController;
 using static Define;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class TheodoreInputController : PlayerInputController
 {
@@ -60,21 +61,18 @@ public class TheodoreInputController : PlayerInputController
                 StartCoroutine(ChargingSkill(key, onCancel: () => CancelSkill(key)));
                 break;
 
-        case KeyCode.D:
-                {
-                    StartCoroutine(InputSkill(key,
+            case KeyCode.D:
+                StartCoroutine(InputSkill(key,
                     onConfirm: () => ExecuteSniperSkill(key),
                     onCancel: () => CancelSkill(key)));
-                }
                 break;
-         case KeyCode.R:
-         case KeyCode.W:
+
+            case KeyCode.R:
+            case KeyCode.W:
             case KeyCode.E:
-                {
-                    StartCoroutine(InputSkill(key,
+                StartCoroutine(InputSkill(key,
                     onConfirm: () => ExecuteSkill(key),
                     onCancel: () => CancelSkill(key)));
-                }
                 break;
         }
     }
@@ -86,6 +84,7 @@ public class TheodoreInputController : PlayerInputController
 
         SendSkillInputPacket(key);
         _currentSkillKey = null;
+
     }
     private void ExecuteSniperSkill(KeyCode key)
     {
@@ -193,7 +192,6 @@ public class TheodoreInputController : PlayerInputController
     {
         _player.UI.PlayerInterface.SetChargingBar(DataManager.SkillDict[CharacterType.Theodore][key].name, 1.5f, EFFECT_DURATION);
         _player.Speed -= SKILL_CHARGE_SPEED;
-
 
         SendSkillPreparePacket(key);
         while (Input.GetKey(key) &&  _elapsedTime < EFFECT_DURATION)

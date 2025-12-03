@@ -8,6 +8,6 @@ public class AnimatorEvent : MonoBehaviour
 
     public void OnSkillEnd()
     {
-        _player.YukiEffects.PlayEffect(SkillEffectType.QAttack);
+        _player?.YukiEffects?.PlayEffect(SkillEffectType.QAttack);
     }
 }
