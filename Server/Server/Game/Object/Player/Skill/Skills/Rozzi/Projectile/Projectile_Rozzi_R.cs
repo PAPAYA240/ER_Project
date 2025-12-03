@@ -278,8 +278,8 @@ public class Projectile_Rozzi_R : Projectile
                 targetPos: default, targetRot: default,
                 type: "Select", "FX_BI_Rozzi_Skill04_Buff");
 
-            _owner.SendRemoveEffect(KeyCode.R, "FX_BI_Rozzi_Skill04_Set_Character", "Select");
-            _owner.SendRemoveEffect(KeyCode.R, "FX_BI_Rozzi_Skill04_Set_Character_Count", "Select");
+            _owner.SendRemoveEffect(KeyCode.R, false, "FX_BI_Rozzi_Skill04_Set_Character");
+            _owner.SendRemoveEffect(KeyCode.R, false, "FX_BI_Rozzi_Skill04_Set_Character_Count");
         }
         if (early && mainTarget != null && !mainTarget.IsDead)
             ApplyEarlyExplosionEffects(mainTarget);
