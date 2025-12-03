@@ -41,5 +41,12 @@ public sealed class Abigail_W : Skill_Abigail
 
         p.Room.BroadcastAbigailSound(p, AbigailSound.W, 1);
         p.Room.BroadcastAbigailSound(p, AbigailSound.Wvoice, 0.6f);
+
+        p.Room.BroadcastAbigailFx(p, AbigailFx.WRange, _animDuration);
+    }
+
+    public override void OnExit(Player p, SkillContext ctx)
+    {
+        p.Room.BroadcastStopAbglFx(p, AbigailFx.WRange);
     }
 }
