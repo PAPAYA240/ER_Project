@@ -441,7 +441,7 @@ class PacketHandler
 
         Managers.Object.MyPlayer.UI.PlayerInterface.SpecificSkillLevelUp(key);
         Managers.Object.MyPlayer.UI.UpdateSkillMaxCool();
-        Managers.Sound.Play("sound/ui/SkillUp");
+        Managers.Sound.Play("sound/ui/SkillUp", Define.Sound.Effect, 0.3f);
     }
 
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
