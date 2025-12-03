@@ -260,13 +260,13 @@
         },
         "E": {
           "Caster": [
-            {
-              "prefabName": "FX_BI_Rozzi_Skill03_JumpSmoke",
-              "target": "Self",
-              "duration": 1
-            }
           ],
           "Select": [
+            {
+              "prefabName": "FX_BI_Rozzi_Skill03_JumpSmoke",
+              "target": "Target",
+              "duration": 1
+            },
             {
               "prefabName": "FX_BI_Rozzi_Skill03_Ground",
               "target": "Enemy",
@@ -295,19 +295,19 @@
           ]
         },
         "R": {
-          "Caster": [
+          "Caster": [           
+          ],
+          "Select": [
             {
               "prefabName": "FX_BI_Rozzi_Skill04_Fire",
-              "target": "Self",
-              "duration": 3,
+              "target": "Target",
+              "duration": 1,
               "position": {
                 "x": 0,
                 "y": 1,
                 "z": 0
               }
-            }
-          ],
-          "Select": [
+            },
             {
               "prefabName": "FX_BI_Rozzi_Skill04_Buff",
               "target": "Self",
@@ -315,7 +315,7 @@
             },
             {
               "prefabName": "FX_BI_Rozzi_Skill04_Explore",
-              "target": "Enemy",
+              "target": "EnemyHit",
               "duration": 1
             },
             {
@@ -325,11 +325,11 @@
             },
             {
               "prefabName": "FX_BI_Rozzi_Skill04_Set_Character_Count",
-              "target": "Enemy",
+              "target": "TargetNoRotation",
               "duration": 3,
               "position": {
                 "x": 0,
-                "y": -0.5,
+                "y": -0.3,
                 "z": 0
               }
             },

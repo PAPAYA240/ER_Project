@@ -361,12 +361,13 @@ namespace Data
         #region 추가
         public enum EEffectTarget
         {
-            Self,       // 캐스터의 위치에 부착 (자식으로)
-            Target,     // 아직까지 Target만 따라감
-            Mouse,      // 마우스 따라감
-            Shot,       // 발사체
-            Enemy,      // 적에게 부착
-            EnemyHit,   // 처음 재생할 때만 타겟 transform 반영
+            Self,               // 캐스터의 위치에 부착 (자식으로)
+            Target,             // 아직까지 Target만 따라감
+            TargetNoRotation,   // 타겟 위치만 따라감, 회전 반영X
+            Mouse,              // 마우스 따라감
+            Shot,               // 발사체
+            Enemy,              // 적에게 부착
+            EnemyHit,           // 처음 재생할 때만 타겟 transform 반영
         }
         public string prefabName;
         public float delayTime;

@@ -48,7 +48,7 @@ public class Projectile_Rozzi_R : Projectile
     // 히트 스택
     private int _hitStack = 0;
     private const int MaxStack = 5;
-    private const int FuseMs = /*3000*/10000;
+    private const int FuseMs = 3000;
 
     // LeaveGame 대기
     private bool _isLeaveGamePending = false;
@@ -154,6 +154,7 @@ public class Projectile_Rozzi_R : Projectile
 
     private void AttachToTarget(Creature target)
     {
+        Console.WriteLine($"@ AttachToTarget! : {target.Id}");
         _target = target;
         BOMBSTATE = BOMB_ROZZI.AttachedToTarget;
 
@@ -244,25 +245,14 @@ public class Projectile_Rozzi_R : Projectile
             return;
         }
 
-        //Vector3 forwardVector = Info.RotInfo.Forward();
-        //Vector3 moveDistance = forwardVector * _speed * TimeUtil.Instance.DeltaTime;
-        //
-        //Vector3 myCurPosition = Info.PosInfo.ToVector();
-        //Vector3 targetPos = myCurPosition + moveDistance;
-
-        Quaternion rot = RotInfo.GetQuatFromRotInfo();
-        Vector3 toForward = Vector3.Transform(new Vector3(0, 0, 1), rot);
-        const float TickInterval = 1.0f / 70.0f;
-        float deltaMove = _speed * TickInterval;
-
-        Vector3 targetPos = Info.PosInfo.ToVector();
-        targetPos.X += toForward.X * deltaMove;
-        targetPos.Z += toForward.Z * deltaMove;
+        Vector3 forwardVector = Info.RotInfo.Forward();
+        Vector3 moveDistance = forwardVector * _speed * TimeUtil.Instance.DeltaTime;
+        
+        Vector3 myCurPosition = Info.PosInfo.ToVector();
+        Vector3 targetPos = myCurPosition + moveDistance;
 
         if (Vector3.Distance(targetPos, _startPosition) >= _maxDistance)
-            targetPos = _startPosition + toForward * _maxDistance;
-
-        Console.WriteLine($"@ Update : {targetPos}");
+            targetPos = _startPosition + forwardVector * _maxDistance;
 
         Info.PosInfo.SetPosInfoFromVector3(targetPos);
         Info.PosInfo.PosY = 1.5f;

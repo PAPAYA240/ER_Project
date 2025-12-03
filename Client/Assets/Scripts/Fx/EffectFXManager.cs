@@ -80,15 +80,11 @@ public class EffectFXManager : MonoBehaviour
                 copyTransform = Util.FindChildByName(casterTransform, data.attachBoneName).transform;
             }
 
-            Debug.Log($"@CopyTransform : name - {copyTransform.name}, pos - {copyTransform.position}, rot - {copyTransform.rotation}");
-
             // Transform 설정
             Quaternion spawnRot
                 = GetSpawnRotation(data, copyTransform, rot);
             Vector3 spawnPos 
                 = GetSpawnPosition(ownerId, data, copyTransform, mousePos, targetPos, spawnRot, out Transform parentTransform);
-
-            Debug.Log($"@GetSpawn : pos - {spawnPos}, rot - {spawnRot}");
 
             if (data.target == EEffectTarget.Self)
             {
@@ -100,6 +96,20 @@ public class EffectFXManager : MonoBehaviour
             {
                 fxObject.transform.SetParent(casterTransform);
                 fxObject.transform.SetPositionAndRotation(spawnPos, spawnRot);
+            }
+            else if (data.target == EEffectTarget.TargetNoRotation)
+            {
+                Transform followTarget = casterTransform;
+                fxObject.transform.position = spawnPos;
+                Quaternion fixedRot = Quaternion.identity;
+                fxObject.transform.rotation = fixedRot;
+
+                var follow = fxObject.GetComponent<FX_TargetNoRotation>();
+                if (follow == null)
+                    follow = fxObject.AddComponent<FX_TargetNoRotation>();
+
+                // data.position 을 world offset으로 쓰고 싶으면
+                follow.Setup(followTarget, data.position, fixedRot, faceCamera: false);
             }
             else
             {
