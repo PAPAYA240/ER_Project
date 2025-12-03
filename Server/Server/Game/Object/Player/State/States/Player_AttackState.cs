@@ -36,6 +36,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     protected DateTime _swingEndUtc;
     protected DateTime _nextAttackReadyUtc;
     protected DateTime _comboResetDeadlineUtc;
+    protected DateTime _rotateStartUtc;
 
     // 데미지
 
@@ -54,16 +55,29 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 
     public bool IsLookingAtTargetYawOnly(Vector3 myPos, Quaternion myRot, Vector3 targetPos, float toleranceDeg = 5f)
     {
-        // 쿼터니언에서 forward 꺼내기
-        Vector3 forward = Vector3.Transform(Vector3.UnitZ, myRot); // Z를 forward로 쓴다고 가정
+        // forward 계산
+        Vector3 forward = Vector3.Transform(Vector3.UnitZ, myRot);
         forward.Y = 0;
+
+        if (forward.LengthSquared() < 0.0001f)
+            return false;
+
         forward = Vector3.Normalize(forward);
 
+        // target 방향
         Vector3 toTarget = targetPos - myPos;
         toTarget.Y = 0;
+
+        if (toTarget.LengthSquared() < 0.0001f)
+            return false;
+
         toTarget = Vector3.Normalize(toTarget);
 
         float dot = Vector3.Dot(forward, toTarget);
+
+        if (float.IsNaN(dot))
+            return false;
+
         float cos = MathF.Cos(toleranceDeg * MathF.PI / 180f);
         return dot >= cos;
     }
@@ -76,9 +90,11 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 
         // 최초 타겟 변경 시 회전 패킷
         S_TargetChange pkt = new S_TargetChange();
+        Console.WriteLine(_targetId);
         pkt.TargetId = _targetId;
         player.SendTargetChangePacket(pkt);
         _isRotate = true;
+        _rotateStartUtc = DateTime.UtcNow;
 
         var now = DateTime.UtcNow;
         _nextAttackReadyUtc = now;              // 즉시 공격 가능
@@ -121,12 +137,19 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         Vector3 pos = new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ);
         Vector3 targetPos = new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ);
 
-        if (_isRotate == true)
+        if (_isRotate)
         {
-            if (IsLookingAtTargetYawOnly(player.Position, new Quaternion(player.RotInfo.Qx, player.RotInfo.Qy, player.RotInfo.Qz, player.RotInfo.Qw), targetPos))
+            // 회전 시작 0.1초 동안은 절대로 회전 완료 처리 금지
+            if ((DateTime.UtcNow - _rotateStartUtc).TotalSeconds < 0.1)
             {
-                _isRotate = false;
+                // 클라가 돌아오길 기다리는 시간
+                return;
             }
+
+            if (IsLookingAtTargetYawOnly(player.Position, new Quaternion(player.RotInfo.Qx, player.RotInfo.Qy, player.RotInfo.Qz, player.RotInfo.Qw), targetPos))
+                _isRotate = false;
+
+            return;
         }
         else
         {
@@ -144,7 +167,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
                         new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ),
                         new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ));
                     if (distNow <= player.AttackRange /* + player.HitTolerance 가능 */)
-                        //ApplyHit(player, target);
+                        ApplyHit(player, target);
 
                     _damageApplied = true;
                 }
@@ -162,11 +185,12 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
                         _targetId = _pendingTargetId.Value;
                         _pendingTargetId = null;
 
-                        // 타겟 변경 시 회전 패킷
                         S_TargetChange pkt = new S_TargetChange();
                         pkt.TargetId = _targetId;
                         player.SendTargetChangePacket(pkt);
+
                         _isRotate = true;
+                        _rotateStartUtc = DateTime.UtcNow;
                     }
                 }
                 return; // 스윙 중에는 추가 개시 없음

@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FX_BI_BG_Meteor_Fire_01AB_1024
-  m_Shader: {fileID: 4800000, guid: 246770aea9423174a9a1a2637704e18d, type: 3}
+  m_Shader: {fileID: 4800000, guid: 5a5a4290e8a00494095f23003abc3631, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -19,26 +19,53 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties:
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-      _MainTex:
+    - _MainTex:
         m_Texture: {fileID: 2800000, guid: 07ba305e20b15754c87808649191a5d9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-      _MaskTex:
+    - _Mask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
         m_Texture: {fileID: 2800000, guid: 8d72baecaa6e76c44976c9eb7e6d4c27, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Ints: {}
+    - _MaskTex02:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Noise01:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Noise02:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
-      _Cull: 0
-      _InvFade: 1
-      _MulVal_alpha: 2
-      _MulVal_rgb: 8
-      _ZTestMode: 2
+    - _Cull: 0
+    - _DistortStrength: 0.05
+    - _Glow: 0
+    - _InvFade: 1
+    - _IsPolar: 0
+    - _MulVal_alpha: 2
+    - _MulVal_rgb: 8
+    - _Noise: 0
+    - _Speed: 2
+    - _ZTestMode: 2
     m_Colors:
-      _Color: {r: 1, g: 1, b: 1, a: 1}
-      _TintColor: {r: 1, g: 1, b: 1, a: 0.5}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _MainTexUV_TilingSpeed: {r: 1, g: 1, b: 0, a: 0}
+    - _MaskUV_Tiling: {r: 1, g: 1, b: 0, a: 0}
+    - _Noise01UV_TilingSpeed: {r: 1, g: 1, b: 0, a: 0}
+    - _Noise02UV_TilingSpeed: {r: 1, g: 1, b: 0, a: 0}
+    - _ScrollSpeed: {r: 1, g: 1, b: -1, a: -1}
+    - _TintColor: {r: 1, g: 1, b: 1, a: 0.5}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

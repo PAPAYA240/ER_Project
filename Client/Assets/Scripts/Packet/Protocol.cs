@@ -400,7 +400,7 @@ namespace Google.Protobuf.Protocol {
             "Ul9SQU5HRRADEgwKCFFfQVRUQUNLEAQSCgoGUV9CdWZmEAUSDAoIV19GbG93",
             "ZXIQBhIMCghXX0VGRkVDVBAHEggKBERBU0gQCBIHCgNIaXQQCSo/Cg5TcGF3",
             "blBvaW50VHlwZRINCglCYXNlU3Bhd24QABIQCgxCdXNoVGVsZXBvcnQQARIM",
-            "CghCdXNoTm9uZRACKpEFCgxBYmlnYWlsU291bmQSBQoBURAAEg0KCVFmaXJz",
+            "CghCdXNoTm9uZRACKp8FCgxBYmlnYWlsU291bmQSBQoBURAAEg0KCVFmaXJz",
             "dEhpdBABEg4KClFzZWNvbmRIaXQQAhIKCgZRdm9pY2UQAxIFCgFXEAQSCAoE",
             "V2hpdBAFEgoKBld2b2ljZRAGEgUKAUUQBxIICgRFaGl0EAgSCgoGRVZvaWNl",
             "EAkSBQoBUhAKEggKBFJoaXQQCxIKCgZSdm9pY2UQDBILCgdBdHRhY2sxEA0S",
@@ -414,13 +414,13 @@ namespace Google.Protobuf.Protocol {
             "CgtZdWtpV2FjdGl2ZRAiEg0KCVl1a2lFbW92ZRAjEg8KC1l1a2lFYXR0YWNr",
             "ECQSDAoIWXVraUVoaXQQJRIPCgtZdWtpUmFjdGl2ZRAmEg8KC1l1a2lSYXR0",
             "YWNrECcSDwoLWXVraVJkZWJ1ZmYQKBISCg5ZdWtpUmRlYnVmZkhpdBApEgwK",
-            "CFl1a2lSZW5kECoSDwoLWXVraVZpY3RvcnkQKxIMCghZdWtpUmVzdBAsKsAB",
-            "CglBYmlnYWlsRngSDAoIQXR0YWNrMDEQABIMCghBdHRhY2swMhABEgwKCFJl",
-            "c3RfRW5kEAISDgoKUmVzdF9TdGFydBADEgwKCFFfQXR0YWNrEAQSDQoJUV9B",
-            "dHRhY2syEAUSCwoHUV9SYW5nZRAGEgwKCFdfQXR0YWNrEAcSCwoHV19SYW5n",
-            "ZRAIEgwKCEVfUG9ydGFsEAkSCwoHUl9SYW5nZRAKEgsKB1JfU3RhcnQQCxIM",
-            "CghXcG5Ta2lsbBAMQhuqAhhHb29nbGUuUHJvdG9idWYuUHJvdG9jb2xiBnBy",
-            "b3RvMw=="));
+            "CFl1a2lSZW5kECoSDwoLWXVraVZpY3RvcnkQKxIMCghZdWtpUmVzdBAsEgwK",
+            "CFl1a2lLaWxsEC0qwAEKCUFiaWdhaWxGeBIMCghBdHRhY2swMRAAEgwKCEF0",
+            "dGFjazAyEAESDAoIUmVzdF9FbmQQAhIOCgpSZXN0X1N0YXJ0EAMSDAoIUV9B",
+            "dHRhY2sQBBINCglRX0F0dGFjazIQBRILCgdRX1JhbmdlEAYSDAoIV19BdHRh",
+            "Y2sQBxILCgdXX1JhbmdlEAgSDAoIRV9Qb3J0YWwQCRILCgdSX1JhbmdlEAoS",
+            "CwoHUl9TdGFydBALEgwKCFdwblNraWxsEAxCG6oCGEdvb2dsZS5Qcm90b2J1",
+            "Zi5Qcm90b2NvbGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CombatState), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.SkillInputType), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.EnvType), typeof(global::Google.Protobuf.Protocol.ProjectileType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.MonsterSkill), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.Weapon), typeof(global::Google.Protobuf.Protocol.SkillShape), typeof(global::Google.Protobuf.Protocol.TraitType), typeof(global::Google.Protobuf.Protocol.EquipItemType), typeof(global::Google.Protobuf.Protocol.ItemGrade), typeof(global::Google.Protobuf.Protocol.StopReason), typeof(global::Google.Protobuf.Protocol.SkillMotionType), typeof(global::Google.Protobuf.Protocol.CollisionType), typeof(global::Google.Protobuf.Protocol.VariantKey), typeof(global::Google.Protobuf.Protocol.CombatTextType), typeof(global::Google.Protobuf.Protocol.Beacon), typeof(global::Google.Protobuf.Protocol.BOMB_ROZZI), typeof(global::Google.Protobuf.Protocol.SkillEffectType), typeof(global::Google.Protobuf.Protocol.SpawnPointType), typeof(global::Google.Protobuf.Protocol.AbigailSound), typeof(global::Google.Protobuf.Protocol.AbigailFx), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -989,6 +989,7 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("YukiRend")] YukiRend = 42,
     [pbr::OriginalName("YukiVictory")] YukiVictory = 43,
     [pbr::OriginalName("YukiRest")] YukiRest = 44,
+    [pbr::OriginalName("YukiKill")] YukiKill = 45,
   }
 
   public enum AbigailFx {

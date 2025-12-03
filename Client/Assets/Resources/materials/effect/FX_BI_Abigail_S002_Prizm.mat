@@ -19,72 +19,97 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties:
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-      _MainNoise:
+    - _Cube:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainNoise:
         m_Texture: {fileID: 2800000, guid: ff38856000eefc6449c70b11c9aa5448, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-      _Mask:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask:
         m_Texture: {fileID: 2800000, guid: 240cd05d7ae21674b85612aa9e7e8fb4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-      _ReflectTex:
+    - _ReflectTex:
+        m_Texture: {fileID: 8900000, guid: b437cf6f67f5f1c4e9f1876cbbb8aceb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-      _texcoord:
+    - _texcoord2:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-      _texcoord2:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: {}
+    m_Ints: []
     m_Floats:
-      _BumpScale: 1
-      _CloseTrueOrFalse: 0
-      _CullMode: 0
-      _Cutoff: 0.5
-      _DetailNormalMapScale: 1
-      _DstBlend: 0
-      _Float0: 8.9
-      _GlossMapScale: 1
-      _Glossiness: 0.5
-      _GlossyReflections: 1
-      _ISPARTICLESYTEM: 0
-      _MainIntancity: 1
-      _MainNoiseIntensity: 25
-      _MainNoiseTex_Speed_U: 0
-      _MainNoiseTex_Speed_V: 0.2
-      _MainTex_Speed_U: 0.1
-      _MainTex_Speed_U1: 0
-      _MainTex_Speed_V: 0
-      _MainTex_Speed_V1: 0
-      _MaxOffsetDistance: 50
-      _Metallic: 0
-      _Mode: 0
-      _OcclusionStrength: 1
-      _Parallax: 0.02
-      _Range: -0.37
-      _RoatationMult: 0
-      _RotationMax: 0
-      _SmoothnessTextureChannel: 0
-      _SpecularHighlights: 1
-      _SrcBlend: 1
-      _UVSec: 0
-      _VertexColor: 0
-      _ZWrite: 1
-      _ZWriteMode: 1
-      __dirty: 0
+    - _Alpha: 0.5
+    - _BumpScale: 1
+    - _CloseTrueOrFalse: 0
+    - _ColorMask: 15
+    - _CullMode: 0
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _Float0: 8.9
+    - _FresnelPower: 2
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _ISPARTICLESYTEM: 0
+    - _MainIntancity: 1
+    - _MainNoiseIntensity: 25
+    - _MainNoiseTex_Speed_U: 0
+    - _MainNoiseTex_Speed_V: 0.2
+    - _MainNoise_Intensity: 0.15
+    - _MainNoise_Speed: 0.2
+    - _MainNoise_Tiling: 1
+    - _MainTex_Speed_U: 0.1
+    - _MainTex_Speed_U1: 0
+    - _MainTex_Speed_V: 0
+    - _MainTex_Speed_V1: 0
+    - _MaxOffsetDistance: 50
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _Range: -0.37
+    - _ReflectIntensity: 1
+    - _ReflectStrength: 0.6
+    - _ReflectionIntensity: 0.8
+    - _RefractStrength: 0.03
+    - _RoatationMult: 0
+    - _RotationMax: 0
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOn: 0
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _UVSec: 0
+    - _VertexColor: 0
+    - _ZWrite: 1
+    - _ZWriteMode: 1
+    - __dirty: 0
     m_Colors:
-      _BPositionAdd: {r: 0.5, g: 0.5, b: 0.5, a: 0}
-      _Color: {r: 0.56590426, g: 0.67595446, b: 0.764151, a: 1}
-      _Color1: {r: 1, g: 1, b: 1, a: 1}
-      _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-      _Position: {r: -0.5, g: -0.5, b: -0.5, a: 0}
-      _RangeMask: {r: 0.1, g: 0.5, b: 0.1, a: 0}
+    - _BPositionAdd: {r: 0.5, g: 0.5, b: 0.5, a: 0}
+    - _Color: {r: 0.56590426, g: 0.67595446, b: 0.764151, a: 1}
+    - _Color1: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Position: {r: -0.5, g: -0.5, b: -0.5, a: 0}
+    - _RangeMask: {r: 0.1, g: 0.5, b: 0.1, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
