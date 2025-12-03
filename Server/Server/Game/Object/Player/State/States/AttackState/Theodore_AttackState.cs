@@ -20,7 +20,7 @@ public class Theodore_AttackState : Player_AttackState
     }
     private void CreateProjectile(Player p)
     {
-        Projectile_Theodore_NormalAttack projectile = ObjectManager.Instance.Add<Projectile_Theodore_NormalAttack>();
+        Projectile_Theodore_Attack projectile = ObjectManager.Instance.Add<Projectile_Theodore_Attack>();
         if (projectile != null)
         {
             projectile.ProjectileType = ProjectileType.ProjectileTheodoreNormalAttack;

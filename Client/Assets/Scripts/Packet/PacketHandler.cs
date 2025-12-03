@@ -1329,7 +1329,7 @@ class PacketHandler
         if (projectile == null)
             return;
 
-        Projectile_Theodore_NormalAttack pr = projectile.GetComponentInChildren<Projectile_Theodore_NormalAttack>();
+        Projectile_Theodore_Attack pr = projectile.GetComponentInChildren<Projectile_Theodore_Attack>();
         if (pr == null)
             return;
 

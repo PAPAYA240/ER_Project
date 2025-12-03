@@ -4,7 +4,7 @@ using System;
 using System.Numerics;
 using static Server.Data.DataUtils;
 
-public class Projectile_Theodore_NormalAttack : Projectile
+public class Projectile_Theodore_Attack : Projectile
 {
     private KeyCode _keyCode = KeyCode.F2;
 
@@ -64,8 +64,11 @@ public class Projectile_Theodore_NormalAttack : Projectile
 
     private void SendFxPacket(Player owner)
     {
-        owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: _keyCode, sendLookatMousePacket: false,
-                targetPos: default, targetRot: default,
-                type: "Caster", name: "FX_NormalAttack");
+        if (ProjectileType == ProjectileType.ProjectileTheodoreNormalAttack)
+        {
+            owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: _keyCode, sendLookatMousePacket: false,
+            targetPos: default, targetRot: default,
+            type: "Caster", name: "FX_NormalAttack");
+        }
     }
 }

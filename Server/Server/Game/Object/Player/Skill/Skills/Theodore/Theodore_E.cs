@@ -8,15 +8,8 @@ public sealed class Theodore_E : SkillHandlerBase
     public override bool CanMoveDuringCast => false;
 
     private readonly float _animDuration;
-    //private readonly float _followRatio = 0.4f;
-    //private readonly float _behindOffset = 1.0f;
 
-    //private GameObject _target;
-
-    //private float _elapsed;
-    //private Vector3 _startPos, _midPos;
-
-    //private bool _canUse = true;
+    float _projectileSpeed = 10.0f;
 
     public Theodore_E()
     {
@@ -34,16 +27,19 @@ public sealed class Theodore_E : SkillHandlerBase
         SendSkillConfirmPacket(p);
         p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode);
 
+        CreateProjectile(p, ctx);
+    }
+    private void CreateProjectile(Player p, SkillContext ctx)
+    {
         Projectile projectile = ObjectManager.Instance.Add<Projectile>();
         if (projectile != null)
         {
-            projectile.ProjectileType = ProjectileType.ProjectileBall;
+            projectile.ProjectileType = ProjectileType.ProjectileTheodoreE;
             projectile.Owner = p;
             projectile.Init();
-            p.Room.EnterGame(projectile, 0);
+            p.Room.Push(p.Room.EnterGame, projectile, 0);
         }
     }
-
     public override void OnHit(Player p, SkillContext ctx)
     {
         return;
