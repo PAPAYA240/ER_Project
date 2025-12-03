@@ -840,14 +840,17 @@ namespace Server.Game
 
         private void SpawnRegister()
         {
-            SpawnRegistry = new SpawnPointRegistry(spawnCooldownSec: 5.0);
+            if(SpawnRegistry == null)
+                SpawnRegistry = new SpawnPointRegistry(spawnCooldownSec: 5.0);
 
             // JSON 로드해서 스폰 포인트 채우기
-            SpawnPointLoader.LoadSpawnPoints("Data/json/SpawnPoints.json", SpawnRegistry);
+            if(!SpawnRegistry.IsSpawnDataLoaded())
+                SpawnPointLoader.LoadSpawnPoints("Data/json/SpawnPoints.json", SpawnRegistry);
 
-            Spawn = new SpawnSystem(SpawnRegistry);
-            Teleport = new TeleportSystem(SpawnRegistry);
-
+            if(Spawn == null)
+                Spawn = new SpawnSystem(SpawnRegistry);
+            if(Teleport == null)
+                Teleport = new TeleportSystem(SpawnRegistry);
         }
 
         public void BroadcastAbigailSound(Player player, AbigailSound sound, float prob)

@@ -36,25 +36,25 @@ namespace Server
 
         public void Send(IMessage packet)
         {
-            //try
-            //{
-            //    // 1) 크기 출력
-            //    int calcSize = packet.CalculateSize();
-            //    Console.WriteLine($"[DEBUG] Sending {packet.GetType().Name}, CalcSize={calcSize}");
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine($"[ERROR] CalculateSize FAILED: {ex}");
-            //    Console.WriteLine($"[PACKET DUMP]\n{packet}");
-            //    throw;
-            //}
+            try
+            {
+                // 1) 크기 출력
+                int calcSize = packet.CalculateSize();
+                Console.WriteLine($"[DEBUG] Sending {packet.GetType().Name}, CalcSize={calcSize}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] CalculateSize FAILED: {ex}");
+                Console.WriteLine($"[PACKET DUMP]\n{packet}");
+                throw;
+            }
 
             try
             {
                 // 2) 패킷 직렬화 시도
                 byte[] body = packet.ToByteArray(); // 여기서 주로 터짐
 
-                //Console.WriteLine($"[DEBUG] ToByteArray OK: {body.Length} bytes");
+                Console.WriteLine($"[DEBUG] ToByteArray OK: {body.Length} bytes");
 
                 // 3) 정상 직렬화되면 이후 로직 수행
                 ushort size = (ushort)body.Length;
@@ -70,10 +70,10 @@ namespace Server
             }
             catch (Exception ex)
             {
-                //Console.WriteLine($"[ERROR] ToByteArray FAILED: {ex}");
-                //Console.WriteLine("=========== PACKET DUMP START =============");
-                //Console.WriteLine(packet.ToString());
-                //Console.WriteLine("=========== PACKET DUMP END ===============");
+                Console.WriteLine($"[ERROR] ToByteArray FAILED: {ex}");
+                Console.WriteLine("=========== PACKET DUMP START =============");
+                Console.WriteLine(packet.ToString());
+                Console.WriteLine("=========== PACKET DUMP END ===============");
                 throw;
             }
         }
@@ -116,7 +116,7 @@ namespace Server
 
 		public override void OnSend(int numOfBytes)
 		{
-			//Console.WriteLine($"Transferred bytes: {numOfBytes}");
+			Console.WriteLine($"Transferred bytes: {numOfBytes}");
 		}
 
 		public bool CheckTimeout(int secs = 10)

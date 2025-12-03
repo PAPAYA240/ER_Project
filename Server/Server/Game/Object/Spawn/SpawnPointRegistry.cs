@@ -17,6 +17,8 @@ public class SpawnPointRegistry
         _cooldownSec = spawnCooldownSec;
     }
 
+    public bool IsSpawnDataLoaded() => _points.Any();
+
     public void Add(SpawnPointInfo info)
     {
         _points.Add(new SpawnPointState

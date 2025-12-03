@@ -96,22 +96,6 @@ public class EffectFXManager : MonoBehaviour
                 fxObject.transform.SetParent(casterTransform);
                 fxObject.transform.SetPositionAndRotation(spawnPos, spawnRot);
             }
-            else if (data.target == EEffectTarget.TargetUI)
-            {
-                Transform followTarget = casterTransform;
-
-                fxObject.transform.SetParent(null);
-                fxObject.transform.position = spawnPos;
-
-                Quaternion fixedRot = /*Quaternion.Euler(30f, 0f, 0f)*/Quaternion.identity;
-                fxObject.transform.rotation = fixedRot;
-
-                var follow = fxObject.GetComponent<FX_TargetUI>();
-                if (follow == null)
-                    follow = fxObject.AddComponent<FX_TargetUI>();
-
-                follow.Setup(followTarget, data.position, fixedRot, faceCamera: false);
-            }
             else
             {
                 fxObject.transform.SetParent(null);
@@ -227,6 +211,7 @@ public class EffectFXManager : MonoBehaviour
         {
             case EEffectTarget.Self:
             case EEffectTarget.Enemy:
+            case EEffectTarget.EnemyHit:
                 parentTransform = casterTransform;
                 return casterTransform.position + data.position;
 
@@ -253,6 +238,7 @@ public class EffectFXManager : MonoBehaviour
         {
             case EEffectTarget.Self:
             case EEffectTarget.Enemy:
+            case EEffectTarget.EnemyHit:
                 return casterTransform.rotation;
 
             case EEffectTarget.Target:
@@ -275,10 +261,8 @@ public class EffectFXManager : MonoBehaviour
         {
             foreach (GameObject effect in effectList)
             {
-                if(effect == null)
-                {
-                    Debug.Log($"@ FindEffect Null! : {effectList.Count}");   
-                }
+                if (effect == null)
+                    continue;
 
                 if (effect.name.Replace("(Clone)", "") == prefabName)
                     return effect;
