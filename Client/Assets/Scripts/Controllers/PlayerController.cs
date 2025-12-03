@@ -401,8 +401,12 @@ public class PlayerController : CreatureController
             Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
 
         if (Enum.TryParse<KeyCode>(atkInfoPacket.AttackType, out KeyCode key))
-            PlaySelectEffect(key, default(Vector3), default(Vector3), default(Quaternion), $"FX_{key}_Hit", tbc.transform);
-
+            PlaySelectEffect(key, default(Vector3), default(Vector3), default(Quaternion), $"FX_{atkInfoPacket.AttackType}_Hit", tbc.transform);
+        else
+        {
+            if (ObjInfo.Player.CharType == CharacterType.Theodore) // Normal Attack
+                PlaySelectEffect(KeyCode.F2, default(Vector3), default(Vector3), default(Quaternion), $"FX_{atkInfoPacket.AttackType}_Hit", tbc.transform);
+        }
     }
 
     public void OnStop(S_Stop packet)

@@ -10,7 +10,7 @@ public class Projectile : BaseController
 
     void Update()
     {
-        if (Type == ProjectileType.ProjectileBullet)
+        if (Type == ProjectileType.ProjectileTheodoreNormalAttack)
         {
             Quaternion currentRot = RotInfo;
             Vector3 euler = currentRot.eulerAngles;

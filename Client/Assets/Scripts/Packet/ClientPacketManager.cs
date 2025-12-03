@@ -186,7 +186,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SAbigailFx, MakePacket<S_AbigailFx>);
 		_handler.Add((ushort)MsgId.SAbigailFx, PacketHandler.S_AbigailFxHandler);		
 		_onRecv.Add((ushort)MsgId.SStopAbglFx, MakePacket<S_StopAbglFx>);
-		_handler.Add((ushort)MsgId.SStopAbglFx, PacketHandler.S_StopAbglFxHandler);
+		_handler.Add((ushort)MsgId.SStopAbglFx, PacketHandler.S_StopAbglFxHandler);		
+		_onRecv.Add((ushort)MsgId.STheodoreAttack, MakePacket<S_TheodoreAttack>);
+		_handler.Add((ushort)MsgId.STheodoreAttack, PacketHandler.S_TheodoreAttackHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

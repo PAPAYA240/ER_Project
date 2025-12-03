@@ -10,6 +10,7 @@ public sealed class Theodore_R : SkillHandlerBase
         _characterType = CharacterType.Theodore;
         _animName = "SKILL_R";
         _keyCode = KeyCode.R;
+
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
@@ -19,6 +20,7 @@ public sealed class Theodore_R : SkillHandlerBase
         SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
         p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode);
+
     }
 
     public override void OnHit(Player p, SkillContext ctx)

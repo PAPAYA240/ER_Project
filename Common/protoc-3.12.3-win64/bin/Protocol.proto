@@ -144,6 +144,9 @@ enum MsgId {
   S_CHANGE_EXP = 113;
   S_ABIGAIL_FX = 114;
   S_STOP_ABGL_FX = 115;
+
+ S_THEODORE_ATTACK = 116;
+  
 }
 
 enum CombatState{
@@ -193,7 +196,7 @@ enum EnvType{
    
 enum ProjectileType {
 	PROJECTILE_NONE = 0;
-	PROJECTILE_BULLET = 1;
+	PROJECTILE_THEODORE_NORMAL_ATTACK = 1;
 	PROJECTILE_BALL = 2;
 	PROJECTILE_ROZZI_R = 3;
 	PROJECTILE_ROZZI_NORMAL_ATTACK = 4;
@@ -465,6 +468,12 @@ enum AbigailFx{
 	WpnSkill = 12;
 }
 
+message S_TheodoreAttack
+{
+	int32 objectId = 1;
+	int32 targetId = 2;
+	float speed = 3;
+}
 message C_Interact {
     int32 objectId = 1;
 }

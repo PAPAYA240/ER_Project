@@ -1318,6 +1318,24 @@ class PacketHandler
 
         pr.Init(attackPacket);
     }
+    public static void S_TheodoreAttackHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_TheodoreAttackHandler(session, packet)))
+            return;
+
+        S_TheodoreAttack attackPacket = packet as S_TheodoreAttack;
+
+        var projectile = Managers.Object.FindById(attackPacket.ObjectId);
+        if (projectile == null)
+            return;
+
+        Projectile_Theodore_NormalAttack pr = projectile.GetComponentInChildren<Projectile_Theodore_NormalAttack>();
+        if (pr == null)
+            return;
+
+        pr.Init(attackPacket);
+    }
+    
 
     public static void S_ChangeExpHandler(PacketSession session, IMessage packet)
     {
@@ -1349,7 +1367,6 @@ class PacketHandler
         if (pc == null) return;
         pc.YukiEffects.StopEffect(stopAbglFx.Fx);
     }
-
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;

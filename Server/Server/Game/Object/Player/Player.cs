@@ -1380,8 +1380,6 @@ namespace Server.Game
         {
             Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
             Vector2 dir = mousePos - myPos;
-            if (dir.LengthSquared() < 0.0001f)
-                return;
 
             float angle = (float)Math.Atan2(dir.Y, dir.X);
             Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle);
