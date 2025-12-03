@@ -11,6 +11,8 @@ public class Fx_YukiEffect : MonoBehaviour, IEffect
         {
             Debug.LogWarning($"ParticleSystem not found on {gameObject.name}");
         }
+        else
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
     }
 
     public void Play()

@@ -217,6 +217,25 @@ namespace Server.Game
             set { PosInfo.State = value; }
         }
 
+        #region CombatState
+        // CombatState
+        protected float _combatTime = 0f;
+        protected readonly float _nonCombatTime = 5f;
+        public float CombatTime
+        {
+            get { return _combatTime; }
+            set { _combatTime = value; }
+        }
+
+        private CombatState _curCombat;
+
+        public CombatState CombatState
+        {
+            get { return _curCombat; }
+            set { _curCombat = value; }
+        }
+        #endregion
+
         float _radius = 0.55f;
 
         public virtual float Radius // 피격 반경
@@ -270,6 +289,15 @@ namespace Server.Game
                 OnDamaged(attacker, finalDamage, isBasicAttack);
             }
 
+            Player player = this as Player;
+            if (player != null)
+            {
+                CombatState = CombatState.Combat;
+                S_CombatMode combatModePkt = new S_CombatMode();
+                combatModePkt.CombatMode = CombatState;
+                Room.Push(player.Session.Send, combatModePkt);
+                CombatTime = 0f;
+            }
             IsHit = true;
         }
 
@@ -280,6 +308,9 @@ namespace Server.Game
 
             if (attacker is Player playerAttack)
             {
+                if (playerAttack.Info.Player.CharType == CharacterType.Abigail)
+                    return;                 
+
                 isAttackerValid = true;
                 Player_SkillState skillstate = playerAttack.CurrentState as Player_SkillState;
 
@@ -531,7 +562,8 @@ namespace Server.Game
                         Room.Broadcast(yukiPyosikPkt);
 
                         Player player = statusEffect.attacker as Player;
-
+                        player.Room.Push(player.Room.BroadcastAbigailSound, player, AbigailSound.YukiRattack, 1f);
+                        player.Room.Push(player.Room.BroadcastAbigailSound, player, AbigailSound.YukiRdebuff, 1f);
                         // 유키 궁 표식 데미지
                         int curLevel = player.GetSkillLevel(Data.DataUtils.KeyCode.R);
                         float curAttack = player.Attack;
@@ -581,6 +613,8 @@ namespace Server.Game
             await Task.Delay(delayMs);
 
             SendYukiSkillEffect(SkillEffectType.RHit);
+            atk.Room.Push(atk.Room.BroadcastAbigailSound, atk, AbigailSound.YukiRdebuffHit, 1f);
+            atk.Room.Push(atk.Room.BroadcastAbigailSound, atk, AbigailSound.YukiRend, 1f);
 
             float damage = MaxHp * (FixedDamage[curLevel - 1] + (curAttack * 0.05f) * 0.01f);
             Room.Push(OnDamaged, atk, damage, true, false);

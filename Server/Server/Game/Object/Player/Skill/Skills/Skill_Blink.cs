@@ -29,6 +29,7 @@ public sealed class Skill_Blink : SkillHandlerBase
         SendSkillCollisionRequestPacket(p, CollisionType.Pass, p.Position, targetPos);
 
         p.SendCommonSkillEffect(ctx.MousePos, commonName: "Blink", type: "Caster");
+        p.SendSoundPacket("Blink");
     }
 
     public override void OnHit(Player p, SkillContext ctx)

@@ -16,6 +16,8 @@ public class SoundManager
     // MP3 음원     -> AudioClip
     // 관객(귀)     -> AudioListener
 
+    AudioClip _blink = null;
+
     public void Init()
     {
         GameObject root = GameObject.Find("@Sound");
@@ -33,6 +35,8 @@ public class SoundManager
             }
 
             _audioSources[(int)Define.Sound.Bgm].loop = true;
+
+            _blink = Managers.Resource.Load<AudioClip>("sound/fx/common/TacticalSkill_Blink");
         }
     }
 
@@ -75,16 +79,18 @@ public class SoundManager
         go.transform.position = position;
 
         AudioSource audioSource = go.AddComponent<AudioSource>();
-        audioSource.volume = volume;
+        audioSource.volume = volume * 0.45f; // 3D 사운드는 2D보다 소리 낮춤
         audioSource.spatialBlend = 1f;
 
-        audioSource.rolloffMode = AudioRolloffMode.Logarithmic; // 감쇠 모드
-        audioSource.minDistance = 2f;            // 이 거리까지는 최대 음량
+        audioSource.rolloffMode = AudioRolloffMode.Linear; // 감쇠 모드
+        audioSource.minDistance = 4f;            // 이 거리까지는 최대 음량
         audioSource.maxDistance = 20f;           // 이 거리까지는 서서히 작아짐
 
         audioSource.dopplerLevel = 0f;           // 도플러 효과 없음
-        audioSource.spread = 180f;               // 최대 넓이로 스테레오 유지
-        audioSource.panStereo = 0f;              // 중앙 고정
+        audioSource.spread = 0;               // 최대 넓이로 스테레오 유지
+
+        audioSource.spatialize = true;           // 3D 공간화 활성화
+        audioSource.spatializePostEffects = true; // 3D 효과 강화
 
         audioSource.playOnAwake = false;
         audioSource.loop = false;
@@ -117,11 +123,20 @@ public class SoundManager
         audioSource.Play();
 
         Object.Destroy(go, audioClip.length + 0.1f);
-        return audioClip.length;
+        return audioClip.length; 
     }
 
     public AudioClip PlayLoop(AudioClip audioClip, Define.Sound type = Define.Sound.Effect, float volume = 0.15f)
     {
+        if (audioClip == null)
+            return null;
+
+        if(_loopSources == null)
+            _loopSources = new Dictionary<string, AudioSource>();
+
+        if (_loopSources != null && _loopSources.ContainsKey(audioClip.name))
+            StopLoopSound(audioClip.name);
+
         GameObject loopObject = new GameObject($"LoopSound_{audioClip.name}");
         AudioSource loopSource = loopObject.AddComponent<AudioSource>();
 
@@ -264,6 +279,16 @@ public class SoundManager
                 source.Stop();
         }
         _voiceSources.Clear();
+    }
+    #endregion
+
+    #region 공용
+    public void Blink(int id, Vector3 pos)
+    {
+        if (id == Managers.Object.MyPlayer.Id)
+            Play(_blink, Define.Sound.Effect, 0.35f);
+        else
+            Play3D(_blink, pos, Define.Sound.Effect, 0.35f);
     }
     #endregion
 }

@@ -42,6 +42,9 @@ public class UI_KillNoti : UI_Base
         GetImage((int)Images.KillCharImg).sprite = Managers.Resource.Load<Sprite>($"Sprite/CharResult_{attPc.ObjInfo.Player.CharType.ToString()}_S000");
         GetImage((int)Images.DeathCharImg).sprite = Managers.Resource.Load<Sprite>($"Sprite/CharResult_{diePc.ObjInfo.Player.CharType.ToString()}_S000");
 
+        GetText((int)Texts.KillPlayerName).text = attPc.NickName;
+        GetText((int)Texts.DeathPlayerName).text = diePc.NickName;
+
         Image weaponImage = GetImage((int)Images.WeaponIcon);
         weaponImage.sprite = Managers.Resource.Load<Sprite>($"Sprite/Ico_KillNoti_{attPc.ObjInfo.Player.Weapon.ToString()}");
 

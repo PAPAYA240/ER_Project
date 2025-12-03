@@ -42,6 +42,14 @@ namespace Server.Game
         // Key: StatusEffect, Value: Count
         public ConcurrentDictionary<StatusEffect, int> effectCnt = new ConcurrentDictionary<StatusEffect, int>();
 
+        int _addedToHitSoundList = 0;
+
+        public bool TryAddToSoundList()
+        {
+            return Interlocked.CompareExchange(ref _addedToHitSoundList, 1, 0) == 0;
+        }
+
+        #region 흡혈
         public bool Omnivamp { get; set; } = false;
 
         private float _totalDamage;
@@ -65,6 +73,7 @@ namespace Server.Game
             }
             while (Interlocked.CompareExchange(ref Unsafe.As<float, int>(ref _totalDamage), newBits, initialBits) != initialBits);
         }
+        #endregion 흡혈
 
         #region 추가 데이터
         public MonsterSkill MonsterSkillType;
@@ -76,6 +85,9 @@ namespace Server.Game
         public bool IsInteracted = true;
         public float OffsetRadius = 0;
         public Vector3 FixedPosition = new Vector3();
+
+        public float HitInterval { get; set; } = 500.0f;
+        public ConcurrentDictionary<int, long> LastHitTicks = new ConcurrentDictionary<int, long>();
         #endregion
     }
 
@@ -102,6 +114,8 @@ namespace Server.Game
         Dictionary<CharacterType, Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>> _statusEffects // Buffs & Debuffs
             = new Dictionary<CharacterType, Dictionary<KeyCode, Dictionary<int, List<StatusEffect>>>>();
 
+        Dictionary<KeyCode, AbigailSound> _abigailSoundDict = new Dictionary<KeyCode, AbigailSound>();
+
         private long _curTick;
         public long CurTick
         {
@@ -114,6 +128,11 @@ namespace Server.Game
             // 2타 hitbox 세팅
             Dictionary<KeyCode, KeyCode> abigailChainDict = new Dictionary<KeyCode, KeyCode> { { KeyCode.Q, KeyCode.F1 } };
             _hitboxChainDict.Add(CharacterType.Abigail, abigailChainDict);
+
+            _abigailSoundDict[KeyCode.Q] = AbigailSound.QfirstHit;
+            _abigailSoundDict[KeyCode.F1] = AbigailSound.QsecondHit; 
+            _abigailSoundDict[KeyCode.W] = AbigailSound.Whit;
+            _abigailSoundDict[KeyCode.R] = AbigailSound.Rhit; 
 
             SetUpAllyHitSkills();
             SetUpStatusEffects();
@@ -188,12 +207,14 @@ namespace Server.Game
             ConcurrentDictionary<int, Projectile> projectiles)
         {
             Dictionary<int, Dictionary<int, float>> damageDict = new Dictionary<int, Dictionary<int, float>>();
+            List<Hitbox> hitSoundList = new List<Hitbox>();
 
             CheckCollisionHit();
-            CheckPlayerHit(teams, damageDict);
-            CheckHit(monsters, damageDict);
+            CheckPlayerHit(teams, damageDict, hitSoundList);
+            CheckHit(monsters, damageDict, hitSoundList);
             
             SendChangeHpPkts(teams, damageDict);
+            BroadcastHitSoundPkts(hitSoundList);
         }
 
         public void RemoveExpired()
@@ -226,24 +247,40 @@ namespace Server.Game
                 }
             }
         }
-
         public void UpdatePos()
         {
             foreach (var set in _hitboxDict.Values)
             {
                 foreach (Hitbox hitbox in set)
                 {
-                    UpdatePosProjectile(hitbox);
-
                     if (hitbox.Creature == null || hitbox.Data == null)
                         continue;
                     if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
-                        continue;                      
+                        continue;
+
+                    if (type == SkillType.SkillProjectile)
+                    {
+                        UpdatePosProjectile(hitbox);
+                        continue;
+                    }
+
+                    if (hitbox.Creature is Monster)
+                        UpdateTransformRay(hitbox);
+                    else
+                    {
+                        Quaternion rot = hitbox.Creature.RotInfo.GetQuatFromRotInfo();
+                        Vector3 offset = new Vector3(hitbox.Data.RightOffset, 0, hitbox.Data.LookOffset);
+                        Vector3 rotatedOffset = Vector3.Transform(offset, rot);
+
+                        hitbox.PosX = hitbox.Creature.PosInfo.PosX + rotatedOffset.X;
+                        hitbox.PosZ = hitbox.Creature.PosInfo.PosZ + rotatedOffset.Z;
+                    }
                 }
             }
         }
 
-        void CheckPlayerHit(ConcurrentDictionary<int, ConcurrentDictionary<int, Player>> teams, Dictionary<int, Dictionary<int, float>> damageDict)
+        void CheckPlayerHit(ConcurrentDictionary<int, ConcurrentDictionary<int, Player>> teams, Dictionary<int, Dictionary<int, float>> damageDict,
+            List<Hitbox> hitSoundList)
         {
             foreach (var nestedKvp in _hitboxDict)
             {
@@ -301,12 +338,15 @@ namespace Server.Game
 
                         HandleDamage<Player>(hitbox, hitPlayers, damageDict);
                         HandleStatusEffects<Player>(hitbox, hitPlayers);
+                        if (hitbox.TryAddToSoundList())
+                            hitSoundList.Add(hitbox);
                     }
                 }
             }
         }
 
-        void CheckHit<T>(IDictionary<int, T> targets, Dictionary<int, Dictionary<int, float>> damageDict) where T : GameObject, new()
+        void CheckHit<T>(IDictionary<int, T> targets, Dictionary<int, Dictionary<int, float>> damageDict,
+            List<Hitbox> hitSoundList) where T : GameObject, new()
         {
             foreach (var nestedKvp in _hitboxDict)
             {
@@ -323,16 +363,19 @@ namespace Server.Game
                     List<T> hitTargets = new List<T>();
 
                     HandleCollision<T>(hitbox, targets, hitTargets, damageDict);
+
                     if (hitTargets.Count > 0)
                     {
                         HandleDamage<T>(hitbox, hitTargets, damageDict);
                         HandleStatusEffects<T>(hitbox, hitTargets);
+                        if (hitbox.TryAddToSoundList())
+                            hitSoundList.Add(hitbox);
                     }
                 }
             }
         }
 
-      
+
         void HandleCollision<T>(Hitbox hitbox, IDictionary<int, T> targets, List<T> hitTargets, Dictionary<int, Dictionary<int, float>> damageDict) where T : GameObject, new()
         {
             foreach (var targetKvp in targets)
@@ -345,11 +388,29 @@ namespace Server.Game
                 if (!CheckCollision(hitbox, target))
                     continue;
 
-                if (!hitbox.HitObjs.TryAdd(targetKvp.Key, 1))
-                    continue;
+                if (hitbox.Data.RepeatingDamage)
+                {
+                    if (hitbox.LastHitTicks.TryGetValue(targetKvp.Key, out long lastHitTick))
+                    {
+                        if (CurTick - lastHitTick < hitbox.HitInterval)
+                            continue;
 
-                hitTargets.Add(target);
-                HandlerInteraction(hitbox, target);
+                        hitbox.LastHitTicks[targetKvp.Key] = CurTick;
+                    }
+                    else
+                    {
+                        hitbox.LastHitTicks[targetKvp.Key] = CurTick;
+                    }
+                    hitTargets.Add(target);
+                }
+                else
+                {
+                    if (!hitbox.HitObjs.TryAdd(targetKvp.Key, 1))
+                        continue;
+
+                    hitTargets.Add(target);
+                    HandlerInteraction(hitbox, target);
+                }
             }
         }
 
@@ -376,7 +437,7 @@ namespace Server.Game
 
                 if (hitbox.Creature is Monster)
                 {
-                    if (target is Player)
+                    if (target is Player && target.Team != hitbox.Creature.MonsterTeam)
                         hitbox.IsUsed = true;
                 }
                 else
@@ -416,6 +477,9 @@ namespace Server.Game
 
             if (go.IsUntargetable())
                 return false;
+
+            if (go is Monster monster && monster.Info.Monster.MonsterType == MonsterType.Turret)
+                return false; // 터렛은 피격 당하지 않음
 
             if (!System.Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
                 return false;
@@ -582,9 +646,9 @@ namespace Server.Game
             {
                 dmg = CalcDamage(hitbox.Creature, target.Stat, hitbox.KeyCode);
             }
-            else if (hitbox.Creature is Monster)
+            else if (hitbox.Creature is Monster mc)
             {
-                dmg = CalcDamage(hitbox.Creature, target as Creature);
+                dmg = mc.CalcDamage(hitbox.Creature, target as Creature);
             }
 
 
@@ -629,20 +693,6 @@ namespace Server.Game
             info.Defense = target.Defense;
             info.MaxHp = target.MaxHp;
             return CalcDamage(attacker, info, keyCode);
-        }
-
-        public float CalcDamage(Creature attacker, Creature target)
-        {
-            Monster monsterAttacker = attacker as Monster;
-            if (monsterAttacker == null) 
-                return 0f;
-            if (!DataManager.MonsterSkillDict.ContainsKey(monsterAttacker.CurrentSkill))
-                return 0f;
-
-            if(target is Player)
-                return DataManager.MonsterSkillDict[monsterAttacker.CurrentSkill].damage;
-            else
-                return 0f;
         }
 
         public float CalcDamage(Creature attacker, StatInfo target, KeyCode keyCode)
@@ -712,6 +762,7 @@ namespace Server.Game
                     pendingHitbox.StartTick = CurTick + (int)((pendingHitbox.Data.StartFrame / (float)pendingHitbox.Data.Fps) * 1000);
                     pendingHitbox.EndTick = CurTick + (int)((pendingHitbox.Data.EndFrame / (float)pendingHitbox.Data.Fps) * 1000);
 
+
                     set.Add(pendingHitbox);
                 }
                 _pendingHitboxes.Clear();
@@ -746,13 +797,15 @@ namespace Server.Game
 
         void HandleAllyHit(Hitbox hitbox, ConcurrentDictionary<int, Player> targets)
         {
+            if (!_allyHitSkillDict.TryGetValue(hitbox.CharType, out HashSet<KeyCode> keySet))
+                return;
+            if (!keySet.Contains(hitbox.KeyCode))
+                return;
+
             foreach (var targetKvp in targets)
             {
                 Player target = targetKvp.Value;
                 if (hitbox.HitObjs.ContainsKey(targetKvp.Key) || true == hitbox.IsUsed)
-                    continue;
-
-                if (hitbox.Creature.CharType == CharacterType.Rozzi)
                     continue;
 
                 if (CheckCollision(hitbox, target))
@@ -768,7 +821,7 @@ namespace Server.Game
                         if (effect.type == "Heal")
                         {
                             target.Room.Push(target.OnHeal, target, effect.value);
-                            target.SendSoundPakcet("SKILL_HEAL");
+                            target.SendSoundPacket("SKILL_HEAL");
                         }
                     }
 
@@ -916,16 +969,18 @@ namespace Server.Game
                     Interactions = ConvertProtoInteractionsToKeyCodeDictionary(skillHitbox.Interactions)
                 };
 
-                if (System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
-                {
-                    if (type == SkillType.SkillTrack)
-                    {
-                        hitbox.PosX = targetPos.X;
-                        hitbox.PosZ = targetPos.Y;
-                    }
-                }
+                //if (System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
+                //{
+                //    if (type == SkillType.SkillTrack)
+                //    {
+                //        hitbox.PosX = targetPos.X;
+                //        hitbox.PosZ = targetPos.Y;
+                //    }
+                //}
 
+                UpdateTransformRay(hitbox);
                 SettingType(hitbox);
+
                 _pendingHitboxes.Add(hitbox);
             }
             return hitbox;
@@ -946,17 +1001,14 @@ namespace Server.Game
         
         private void UpdatePosProjectile(Hitbox hitbox)
         {
-            if (Enum.TryParse<SkillType>(hitbox.Data.Type, out var type) && type == SkillType.SkillProjectile)
-            {
-                Quaternion rot = hitbox.Creature.RotInfo.GetQuatFromRotInfo();
+            Quaternion rot = hitbox.Creature.RotInfo.GetQuatFromRotInfo();
 
-                Vector3 toForward = Vector3.Transform(new Vector3(0, 0, 1), rot);
-                const float TickInterval = 1.0f / 70.0f;
-                float deltaMove = hitbox.Data.Speed * TickInterval;
+            Vector3 toForward = Vector3.Transform(new Vector3(0, 0, 1), rot);
+            const float TickInterval = 1.0f / 70.0f;
+            float deltaMove = hitbox.Data.Speed * TickInterval;
 
-                hitbox.PosX += toForward.X * deltaMove;
-                hitbox.PosZ += toForward.Z * deltaMove;
-            }
+            hitbox.PosX += toForward.X * deltaMove;
+            hitbox.PosZ += toForward.Z * deltaMove;
         }
         bool CheckCollision(Hitbox myHitbox, Hitbox targetHitbox)
         {
@@ -1165,7 +1217,49 @@ namespace Server.Game
             _interactionManager.HandleInteraction(hitbox, target);
         }
 
+        private void UpdateTransformRay(Hitbox hitbox)
+        {
+            if (!System.Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
+                return;
 
+            if (shape != SkillShape.Ray)
+                return;
+
+            if (CurTick < hitbox.StartTick)
+                return;
+
+            //if (hitbox.MonsterSkillType == MonsterSkill.MsGammaSkill2)
+            {
+                Quaternion rot = hitbox.Creature.RotInfo.GetQuatFromRotInfo();
+                Vector3 localForward = new Vector3(0, 0, 1);
+                Vector3 forward3D = Vector3.Transform(localForward, rot);
+
+                Vector2 currentForward = new Vector2(forward3D.X, forward3D.Z);
+                Vector2 origin = new Vector2(hitbox.Creature.PosInfo.PosX, hitbox.Creature.PosInfo.PosZ);
+
+                hitbox.MousePos = origin + currentForward * hitbox.Data.MaxRange;
+                hitbox.PosX = origin.X;
+                hitbox.PosZ = origin.Y;
+            }
+        }
+        #endregion
+
+        #region 사운드 패킷
+        void BroadcastHitSoundPkts(List<Hitbox> hitboxes)
+        {
+            foreach (Hitbox hitbox in hitboxes)
+            {
+                switch (hitbox.CharType)
+                {
+                    case CharacterType.Abigail:
+                        if (!_abigailSoundDict.TryGetValue(hitbox.KeyCode, out AbigailSound sound))
+                            break;
+                        GameRoom room = hitbox.Creature.Room;
+                        room.Push(room.BroadcastAbigailSound, hitbox.Creature as Player, sound, 1f);
+                        break;
+                }
+            }
+        }
         #endregion
     }
 }

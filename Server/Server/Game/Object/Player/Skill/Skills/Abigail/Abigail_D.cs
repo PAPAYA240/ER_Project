@@ -18,7 +18,7 @@ public sealed class Abigail_D : Skill_Abigail
         _animName = "SKILL_D";
         _keyCode = KeyCode.D;
         _animDuration = GetDuration();
-        StopSkillTime = 0.1f; // 3프레임 * 30FPS
+        StopSkillTime = 0.18f; // 3프레임 * 30FPS
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
@@ -28,7 +28,7 @@ public sealed class Abigail_D : Skill_Abigail
         _startPos = p.Position;
 
         // 초기화
-        _dashRange = 2f;
+        _dashRange = 1.2f;
         _elapsed = 0f;
 
         Vector3 mouseWorldPos = new Vector3(ctx.MousePos.X, p.Position.Y, ctx.MousePos.Y);
@@ -44,6 +44,8 @@ public sealed class Abigail_D : Skill_Abigail
 
         SendSkillConfirmPacket(p);
         p.LookAtMouse(new Vector2(ctx.MousePos.X, ctx.MousePos.Y));
+
+        p.Room.BroadcastAbigailSound(p, AbigailSound.WeaponSkill, 1);
     }
 
     public override void OnTick(Player p, SkillContext ctx)

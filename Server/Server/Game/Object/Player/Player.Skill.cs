@@ -206,5 +206,13 @@ namespace Server.Game
             return best;
         }
         #endregion
+
+        #region Util
+        public static float FramesToSeconds(int frames, float fps = 30f)
+        {
+            if (fps <= 0) return 0f;
+            return frames / fps;
+        }
+        #endregion
     }
 }

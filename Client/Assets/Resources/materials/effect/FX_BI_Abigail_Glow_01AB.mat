@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FX_BI_Abigail_Glow_01AB
+  m_Shader: {fileID: 4800000, guid: 66cf127450fde264686997d6b8c2fe3e, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 2000
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties:
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+      _BaseMap:
+        m_Texture: {fileID: 2800000, guid: 2dd1bb4058ac8d84aaae9b156f6612e1, type: 3}
+        m_Scale: {x: 2, y: 2}
+        m_Offset: {x: 0.5, y: 0}
+      _DissolveTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+      _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 24ebd6d14681553449d3d29e125ea17f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+      _TurbulenceTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: {}
+    m_Floats:
+      DstBlend: 10
+      SrcBlend: 5
+      _AnDissolve: -2
+      _BaseMapBrightness: 1
+      _BaseMapPannerX: -0.1
+      _BaseMapPannerY: -0.08
+      _BaseMapPower: 1.2
+      _Cull: 0
+      _Cutoff: 0.5
+      _DeBlackBG: 0
+      _DisSoftness: 0.1
+      _DissolvePannerX: 0
+      _DissolvePannerY: 0
+      _FScale: 1
+      _IsCoustom: 0
+      _IsDoubleFace: 0
+      _IsFresnel: 0
+      _MaskTexPannerX: 0
+      _MaskTexPannerY: 0
+      _TurbulenceStrength: 0
+      _TurbulenceTexPannerX: 0
+      _TurbulenceTexPannerY: 0
+      _ZWrite: 0
+    m_Colors:
+      _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+      _FColor: {r: 1, g: 1, b: 1, a: 1}
+      _FaceInColor: {r: 1, g: 1, b: 1, a: 1}
+      _FaceOurColor: {r: 1, g: 1, b: 1, a: 1}
+      _PointMove: {r: 0, g: 0, b: 0, a: 0}
+  m_BuildTextureStacks: []

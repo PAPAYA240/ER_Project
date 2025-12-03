@@ -1,14 +1,8 @@
 ﻿using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game;
-using ServerCore;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Numerics;
-using System.Text;
 using System.Threading.Tasks;
-using static Lucene.Net.Util.AttributeSource;
 
 public class Player_DeadState : IPlayerState
 {
@@ -19,6 +13,9 @@ public class Player_DeadState : IPlayerState
         //UI
 
         RespawnTime(player);
+
+        if(player.Info.Player.CharType == CharacterType.Abigail)
+            player.Room.BroadcastAbigailSound(player, AbigailSound.Dead, 1);
     }
 
     public void Execute(Player player)

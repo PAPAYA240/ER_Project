@@ -14,14 +14,12 @@ public class Managers : MonoBehaviour
     NetworkManager _network = new NetworkManager();
     CombatTextManager _combatText = new CombatTextManager();
     private FXManager _fx;
-    SkillEffectHandler _effectHandler = new SkillEffectHandler();
     public static FXManager FX { get { return s_instance._fx; } }
 
     public static InfoManager Info { get { return Instance._info; } }
     public static ObjectManager Object { get { return Instance._obj; } }
     public static NetworkManager Network { get { return Instance._network; } }
     public static CombatTextManager CombatText { get { return Instance._combatText; } }
-    public static SkillEffectHandler EffectHandler { get { return Instance._effectHandler; } }
     #endregion
 
     #region Core

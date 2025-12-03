@@ -51,6 +51,8 @@ public sealed class Yuki_E : SkillHandlerBase
         p.SendSkillCostPacket(_keyCode);
 
         p.LookAtMouse(ctx.MousePos);
+
+        p.Room.Push(p.Room.BroadcastAbigailSound, p, AbigailSound.YukiEmove, 1f);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -61,7 +63,7 @@ public sealed class Yuki_E : SkillHandlerBase
     public override void OnCollision<T>(Player p, T nearestTarget, GameObject.StatusEffect effect)
     {
         _isCollision = true;
-
+        p.Room.Push(p.Room.BroadcastAbigailSound, p, AbigailSound.YukiEattack, 1f);
         return;
     }
 
@@ -101,7 +103,6 @@ public sealed class Yuki_E : SkillHandlerBase
 
     public override void OnExit(Player p, SkillContext ctx)
     {
-        Console.WriteLine("여러번 들어올떄가 있나?");
         base.OnExit(p, ctx);
     }
 }

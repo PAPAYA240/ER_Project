@@ -332,6 +332,7 @@ GameObject:
   - component: {fileID: 136224486725882642}
   - component: {fileID: 8274972419545696255}
   - component: {fileID: 5848730821599487755}
+  - component: {fileID: 6617966116340817673}
   m_Layer: 0
   m_Name: Beacon
   m_TagString: Untagged
@@ -441,8 +442,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a34ecad1a5942248a0644963125d3d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beaconRenderer: {fileID: 137465714700777820}
-  captureSpeed: 0.3
+  gaugeRenderer: {fileID: 137465714700777820}
+--- !u!114 &6617966116340817673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1404581338874786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9d00abe8826c8c4abb51238dea4ba93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1475163485259697
 GameObject:
   m_ObjectHideFlags: 0
@@ -674,7 +686,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4805950471341291}
   - component: {fileID: 137166846008349595}
-  - component: {fileID: 114883406022800719}
   m_Layer: 0
   m_Name: Cobalt_OBJ_Turbine_01_Base
   m_TagString: Untagged
@@ -766,20 +777,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.019058883, y: 0.0028364658, z: 0.9319439}
     m_Extent: {x: 1.4382706, y: 1.4182712, z: 0.92454886}
   m_DirtyAABB: 0
---- !u!114 &114883406022800719
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1841171919529742}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6de4986562533f6989b59f1bb436959a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layer: Background
-  sortingOrder: 0
 --- !u!1 &1908037874172023
 GameObject:
   m_ObjectHideFlags: 0

@@ -48,6 +48,13 @@
               }
             },
             {
+              "prefabName": "FX_Q_Hit",
+              "target": "Self",
+              "attachBoneName": "Fx_Center",
+              "duration": 1,
+              "delayTime": 0
+            },
+            {
               "prefabName": "FX_QSkill_Indicator",
               "target": "Target",
               "duration": 2.5,
@@ -75,7 +82,15 @@
         },
         "E": {
           "Caster": [],
-          "HitTarget": []
+          "Select": [
+            {
+              "prefabName": "FX_E_Hit",
+              "target": "Self",
+              "attachBoneName": "Fx_Center",
+              "duration": 0.05,
+              "delayTime": 0
+            }
+          ]
         },
         "R": {
           "Caster": [
@@ -120,6 +135,262 @@
               "position": {
                 "x": 0,
                 "y": 0,
+                "z": 0
+              }
+            }
+          ]
+        }
+      }
+      },
+    "Hyunwoo": {
+      "Skill": {
+        "Q": {
+          "Caster": [
+            {
+              "prefabName": "FX_BI_Hyunwoo_Skill01_Attack_Ys",
+              "target": "Self",
+              "duration": 1.0
+            }
+          ],
+          "HitTarget": []
+        },
+        "W": {
+          "Caster": [
+            {
+              "prefabName": "FX_BI_Hyunwoo_Skill02_Buff01_Ys",
+              "target": "Self",
+              "duration": 2.5
+            }
+          ],
+          "HitTarget": []
+        },
+        "E": {
+          "Caster": [],
+          "HitTarget": []
+        },
+        "R": {
+          "Caster": [
+            {
+              "prefabName": "FX_BI_Hyunwoo_Skill04_Range_Ys",
+              "target": "Self",
+              "duration": 2.5
+            }
+          ],
+          "HitTarget": []
+        },
+        "D": {
+          "Caster": [],
+          "HitTarget": []
+        }
+      }
+    },
+    "Rozzi": {
+      "Skill": {
+        "Q": {
+          "Caster": [
+            {
+              "prefabName": "FX_BI_Rozzi_Skill01_Gun",
+              "target": "Self",
+              "duration": 5.0,
+              "position": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              }
+            }
+          ],
+          "Select": [
+            {
+              "prefabName": "FX_BI_Rozzi_Skill01_Move",
+              "target": "Self",
+              "duration": 1,
+              "position": {
+                "x": 0,
+                "y": 1,
+                "z": -2
+              }
+            },
+            {
+              "prefabName": "FX_BI_Rozzi_Skill02_Hit",
+              "target": "Enemy",
+              "duration": 1,
+              "position": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              }
+            }
+          ]
+        },
+        "W": {
+          "Caster": [
+            {
+              "prefabName": "FX_BI_Rozzi_Skill02_Gun",
+              "target": "Self",
+              "duration": 1
+            },
+            {
+              "prefabName": "FX_BI_Rozzi_Skill02_Fire",
+              "target": "Self",
+              "duration": 1
+            }
+          ],
+          "Select": [
+            {
+              "prefabName": "FX_BI_Rozzi_Skill02_Debuff",
+              "target": "Enemy",
+              "duration": 1,
+              "position": {
+                "x": 0,
+                "y": 0.5,
+                "z": 0
+              }
+            },
+            {
+              "prefabName": "FX_BI_Rozzi_Skill02_Hit",
+              "target": "Enemy",
+              "duration": 1,
+              "position": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              }
+            }
+          ]
+        },
+        "E": {
+          "Caster": [
+            {
+              "prefabName": "FX_BI_Rozzi_Skill03_JumpSmoke",
+              "target": "Self",
+              "duration": 1
+            }
+          ],
+          "Select": [
+            {
+              "prefabName": "FX_BI_Rozzi_Skill03_Ground",
+              "target": "Enemy",
+              "duration": 1
+            },
+            {
+              "prefabName": "FX_BI_Rozzi_Skill03_Fire",
+              "target": "Enemy",
+              "duration": 1,
+              "position": {
+                "x": 0,
+                "y": 2.5,
+                "z": 0
+              }
+            },
+            {
+              "prefabName": "FX_BI_Rozzi_Skill03_Hit",
+              "target": "Enemy",
+              "duration": 1,
+              "position": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              }
+            }
+          ]
+        },
+        "R": {
+          "Caster": [
+            {
+              "prefabName": "FX_BI_Rozzi_Skill04_Fire",
+              "target": "Self",
+              "duration": 3,
+              "position": {
+                "x": 0,
+                "y": 1,
+                "z": 0
+              }
+            }
+          ],
+          "Select": [
+            {
+              "prefabName": "FX_BI_Rozzi_Skill04_Buff",
+              "target": "Self",
+              "duration": 1
+            },
+            {
+              "prefabName": "FX_BI_Rozzi_Skill04_Explore",
+              "target": "Enemy",
+              "duration": 1
+            },
+            {
+              "prefabName": "FX_BI_Rozzi_Skill04_Set_Character",
+              "target": "Enemy",
+              "duration": 3
+            },
+            {
+              "prefabName": "FX_BI_Rozzi_Skill04_Set_Character_Count",
+              "target": "Enemy",
+              "duration": 3,
+              "position": {
+                "x": 0,
+                "y": -0.5,
+                "z": 0
+              }
+            },
+            {
+              "prefabName": "FX_BI_Rozzi_Skill04_Set_Character_Hit",
+              "target": "Enemy",
+              "duration": 1
+            }
+          ]
+        },
+        "D": {
+          "Caster": [
+            {
+              "prefabName": "FX_BI_WSkill_Pistol_Ring",
+              "target": "Self",
+              "duration": 1.3,
+              "attachBoneName": "WP_Rozzi_Pistol_01_L_LOD_Bone"
+            },
+            {
+              "prefabName": "FX_BI_WSkill_Pistol_Ring",
+              "target": "Self",
+              "duration": 1.3,
+              "attachBoneName": "WP_Rozzi_Pistol_01_R_LOD_Bone"
+            },
+            {
+              "prefabName": "FX_BI_WSkill_Pistol_Smoke",
+              "target": "Self",
+              "duration": 1.3
+            }
+          ],
+          "HitTarget": []
+        },
+        "F3": {
+          "Caster": [
+          ],
+          "HitTarget": [],
+          "Select": [
+            {
+              "prefabName": "Projectile_FX_BI_Rozzi_NormalAttack",
+              "target": "Enemy",
+              "duration": 1
+            },
+            {
+              "prefabName": "FX_BI_Rozzi_NormalAttack_Shot_L",
+              "target": "Self",
+              "duration": 1,
+              "attachBoneName": "Muzzl_L"
+            },
+            {
+              "prefabName": "FX_BI_Rozzi_NormalAttack_Shot_R",
+              "target": "Self",
+              "duration": 1,
+              "attachBoneName": "Muzzl_R"
+            },
+            {
+              "prefabName": "FX_BI_Rozzi_NormalAttack_Hit",
+              "target": "Enemy",
+              "duration": 1,
+              "position": {
+                "x": 0,
+                "y": 1,
                 "z": 0
               }
             }

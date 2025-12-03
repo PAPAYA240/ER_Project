@@ -40,7 +40,7 @@ namespace Server
             {
                 // 1) 크기 출력
                 int calcSize = packet.CalculateSize();
-                Console.WriteLine($"[DEBUG] Sending {packet.GetType().Name}, CalcSize={calcSize}");
+                //Console.WriteLine($"[DEBUG] Sending {packet.GetType().Name}, CalcSize={calcSize}");
             }
             catch (Exception ex)
             {
@@ -54,7 +54,7 @@ namespace Server
                 // 2) 패킷 직렬화 시도
                 byte[] body = packet.ToByteArray(); // 여기서 주로 터짐
 
-                Console.WriteLine($"[DEBUG] ToByteArray OK: {body.Length} bytes");
+                //Console.WriteLine($"[DEBUG] ToByteArray OK: {body.Length} bytes");
 
                 // 3) 정상 직렬화되면 이후 로직 수행
                 ushort size = (ushort)body.Length;

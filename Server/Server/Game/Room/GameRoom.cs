@@ -41,11 +41,14 @@ namespace Server.Game
         public TeleportSystem Teleport { get; private set; }
         #endregion
 
-        #region Phase, Time
+        #region Phase, Time, Exp
 
         private long _startTick;         // 게임 시작 기준 Tick
         private long _phaseStartTick;    // 현재 페이즈 시작 Tick
         private long _phaseEndTick;      // 현재 페이즈 종료 Tick
+
+        private System.Timers.Timer _syncTimer;
+        private System.Timers.Timer _expTimer;
 
         public int CurPhase { get; private set; } = 0;
 
@@ -87,6 +90,15 @@ namespace Server.Game
             switch (newPhase)
             {
                 case 1:
+                    {
+                        foreach (var p in _players)
+                        {
+                            p.Value.AcquireItem(new WardInfo()/*DataManager.ItemDict[502212] as WardInfo*/);
+                            Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
+                        }
+                        StartExpTimer(); // 1페이즈부터 경험치 획득
+                        break;
+                    }
                 case 2:
                 case 3:
                     foreach (var p in _players)
@@ -107,6 +119,55 @@ namespace Server.Game
             syncTimerPacket.PhaseEndTime = _phaseEndTick; 
 
             Push(Broadcast, syncTimerPacket);
+        }
+
+        public void GetTickExp(object state = null)
+        {
+            lock (this)
+            {
+                foreach (var p in _players.Values)
+                    p.Exp += 100;
+            }
+        }
+
+        private void StartSyncTimer(float tick = 5000)
+        {
+            _syncTimer = new System.Timers.Timer();
+            _syncTimer.Interval = tick;
+            _syncTimer.Elapsed += ((s, e) => { SyncTimer(); });
+            _syncTimer.AutoReset = true;
+            _syncTimer.Enabled = true;
+        }
+
+        private void StopSyncTimer()
+        {
+            _syncTimer?.Stop();
+            _syncTimer?.Dispose();
+            _syncTimer = null;
+        }
+
+        private void StartExpTimer(float tick = 2500)
+        {
+            _expTimer = new System.Timers.Timer();
+            _expTimer.Interval = tick;
+            _expTimer.Elapsed += ((s, e) => { GetTickExp(); });
+            _expTimer.AutoReset = true;
+            _expTimer.Enabled = true;
+        }
+
+        private void StopExpTimer()
+        {
+            _expTimer?.Stop();
+            _expTimer?.Dispose();
+            _expTimer = null;
+        }
+
+        public void GetTeamExp(int teamIndex, int exp)
+        {
+            foreach (Player p in _teams[teamIndex].Values)
+            {
+                p.Exp += exp;
+            }
         }
         #endregion
 
@@ -160,6 +221,7 @@ namespace Server.Game
             SpawnRegister();
 
             StartPhase();
+            StartSyncTimer();
         }
 
         public override void Update()
@@ -176,6 +238,10 @@ namespace Server.Game
 
             foreach (Player player in _players.Values)
             {
+                int levelUpCnt = player.CheckLevelUp();
+                if (levelUpCnt > 0)
+                    Push(BroadcastLevelUp, player, levelUpCnt, player.Info.Player.CharType);
+
                 player.Update();
             }
             foreach (Monster monster in _monsters.Values)
@@ -188,22 +254,10 @@ namespace Server.Game
             }
 
             foreach (Player player in _players.Values)
-            {
-                List<int> visibleObjs = new List<int>();
-                AddVisibleObjects(visibleObjs, _players, player);
-                AddVisibleObjects(visibleObjs, _monsters, player);
-                AddVisibleObjects(visibleObjs, _projectiles, player);
-                AddVisibleObjects(visibleObjs, _envs, player);
-                player.SendVisibleObjsPkt(visibleObjs);
-            }
-
-            foreach (Player player in _players.Values)
                 player.RemoveExpiredStatusEffects();
 
             foreach (var monster in _monsters.Values)
                 monster.RemoveExpiredStatusEffects();
-
-            //Flush();
 
             _collisionManager.CurTick = TimeUtil.Instance.LastTick;
             _collisionManager.Flush();
@@ -212,7 +266,7 @@ namespace Server.Game
 
             _beaconManager.Update(this);
 
-            BroadcastVisibleObjs();
+            SendVisibleObjsPkts();
             CheckLastPing();
         }
        
@@ -249,7 +303,7 @@ namespace Server.Game
                     player.Info.PosInfo = Spawn.GetSpawnPoint(player.Team).ToPositionInfo();
 
                     S_EnterGame enterPacket = new S_EnterGame();
-                    enterPacket.Player = player.Info;
+                    enterPacket.ObjInfo = player.Info;
                     player.Session.Send(enterPacket);
 
                     S_Spawn spawnPacket = new S_Spawn();
@@ -283,7 +337,7 @@ namespace Server.Game
 
                     int levelUpCnt = player.CheckLevelUp();
                     if (levelUpCnt > 0)
-                        BroadcastLevelUp(player.Id, levelUpCnt, player.Info.Player.CharType);
+                        BroadcastLevelUp(player, levelUpCnt, player.Info.Player.CharType);
 
                     // 페이즈에 해당하는 아이템 장착
                     if (CurPhase > 0)
@@ -656,7 +710,7 @@ namespace Server.Game
             return result;
         }
 
-        void BroadcastVisibleObjs()
+        void SendVisibleObjsPkts()
         {
             foreach (Player player in _players.Values)
             {
@@ -669,18 +723,23 @@ namespace Server.Game
             }
         }
 
-        void BroadcastLevelUp(int objectId, int levelUpCnt, CharacterType charType)
+        void BroadcastLevelUp(Player player, int levelUpCnt, CharacterType charType)
         {
             S_LevelUp levelUpPkt = new S_LevelUp();
-            levelUpPkt.ObjectId = objectId;
+            levelUpPkt.ObjectId = player.Id;
             levelUpPkt.LevelUpCnt = levelUpCnt;
 
             StatInfo statInfo = new StatInfo(DataManager.StatGrowthDict[charType]);
             statInfo.MultiplyForGrowth(levelUpCnt);
             levelUpPkt.StatGrowth = statInfo;
 
+            levelUpPkt.NextMaxExp = DataManager.ExpDict[player.Stat.Level];
+            levelUpPkt.CurExp = player.Exp;
+
             Broadcast(levelUpPkt);
         }
+
+        
 
         public void SkillLevelUp(int id, int key)
         {
@@ -746,7 +805,7 @@ namespace Server.Game
 
             foreach (var kvp in _players)
             {
-                if (kvp.Key == id || kvp.Value.IsUntargetable())
+                if (kvp.Key == id || kvp.Value.IsUntargetable() || kvp.Value.IsDead)
                     continue;
                 var player = kvp.Value;
                 Vector2 playerPos = new Vector2(player.PosInfo.PosX, player.PosInfo.PosZ);
@@ -763,6 +822,8 @@ namespace Server.Game
                 if (kvp.Key == id)
                     continue;
                 var monster = kvp.Value;
+                if (monster.IsUntargetable() || monster.Info.Monster.MonsterType == MonsterType.Turret)
+                    continue;
                 Vector2 monsterPos = new Vector2(monster.PosInfo.PosX, monster.PosInfo.PosZ);
                 float distSq = Vector2.DistanceSquared(pos, monsterPos);
                 if (distSq < nearestDistSq)
@@ -853,19 +914,41 @@ namespace Server.Game
                 Teleport = new TeleportSystem(SpawnRegistry);
         }
 
+        #region AbigailPkts
         public void BroadcastAbigailSound(Player player, AbigailSound sound, float prob)
         {
-            bool play = Math.Abs(prob - 1) < 0.0001f || Random.Shared.NextDouble() < prob;
+            if (!DataManager.AbigailAudioDict.TryGetValue(sound, out List<string> paths))
+                return;
 
-            if (play)
-            {
-                S_AbigailSound abigailSound = new S_AbigailSound();
-                abigailSound.ObjectId = player.Id;
-                abigailSound.Sound = sound;
-                abigailSound.Pos = player.PosInfo;
-                Broadcast(abigailSound);
-            }
+            bool play = Math.Abs(prob - 1) < 0.0001f || Random.Shared.NextDouble() < prob;
+            if (!play)
+                return;
+
+            S_AbigailSound abigailSound = new S_AbigailSound();
+            abigailSound.ObjectId = player.Id;
+            abigailSound.Sound = sound;
+            abigailSound.Pos = player.PosInfo;
+            abigailSound.Idx = Random.Shared.Next(0, paths.Count);
+            Broadcast(abigailSound);
         }
+
+        public void BroadcastAbigailFx(Player player, AbigailFx fx, float duration)
+        {
+            S_AbigailFx abigailFx = new S_AbigailFx();
+            abigailFx.ObjectId = player.Id;
+            abigailFx.Fx = fx;
+            abigailFx.Duration = duration;
+            Broadcast(abigailFx);
+        }
+
+        public void BroadcastStopAbglFx(Player player, AbigailFx fx)
+        {
+            S_StopAbglFx stopFx = new S_StopAbglFx();
+            stopFx.ObjectId = player.Id;
+            stopFx.Fx = fx;
+            Broadcast(stopFx);
+        }
+        #endregion
 
         public Player FindViableTarget(Monster monster, float range)
         {

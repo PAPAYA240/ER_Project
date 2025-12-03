@@ -46,6 +46,11 @@ namespace Server.Game
         // Events
         public Action<GameObject> OnAttacked;
 
+        // ExpInfo
+        const int DroneExp = 500;
+        const int OmegaExp = 4000;
+        const int GammaExp = 8000;
+
         #endregion
 
         public Monster()
@@ -70,6 +75,12 @@ namespace Server.Game
                 _appeared = true;
             }
             _currentState?.Execute(this);
+
+            if (Target != null)
+            {
+                if (Target.State == CreatureState.Dead)
+                    Target = null;
+            }
         }
 
         #region State
@@ -104,6 +115,40 @@ namespace Server.Game
 
             State = CreatureState.Dead;
             ChangeState(new DeadState());
+
+            // exp and score
+            switch (Info.Monster.MonsterType)
+            {
+                case MonsterType.Drone:
+                    attacker.Room.GetTeamExp(attacker.Team, DroneExp);
+                    break;
+                case MonsterType.Omega:
+                    {
+                        attacker.Room.GetTeamExp(attacker.Team, OmegaExp);
+
+                        int OmegaScore = 5;
+                        int Team = attacker.Team == 1 ? 2 : 1; // 상대팀 점수 차감
+                        int score = attacker.Room.ReduceScore(Team, OmegaScore);
+                        S_ChangeScore changeScorePacket = new S_ChangeScore();
+                        changeScorePacket.Team = Team;
+                        changeScorePacket.Score = score;
+                        Room.Push(Room.Broadcast, changeScorePacket);
+                    }
+                    break;
+                case MonsterType.Gamma:
+                    {
+                        attacker.Room.GetTeamExp(attacker.Team, GammaExp);
+
+                        int GammaScore = 10;
+                        int Team = attacker.Team == 1 ? 2 : 1; // 상대팀 점수 차감
+                        int score = attacker.Room.ReduceScore(Team, GammaScore);
+                        S_ChangeScore changeScorePacket = new S_ChangeScore();
+                        changeScorePacket.Team = Team;
+                        changeScorePacket.Score = score;
+                        Room.Push(Room.Broadcast, changeScorePacket);
+                    }
+                    break;
+            }
         }
         #endregion
 
@@ -175,6 +220,20 @@ namespace Server.Game
             object instance = Activator.CreateInstance(type);
             return instance as ISkillBehavior;
         }
+
+        public float CalcDamage(Creature attacker, Creature target)
+        {
+            Monster monsterAttacker = attacker as Monster;
+            if (monsterAttacker == null)
+                return 0f;
+            if (!DataManager.MonsterSkillDict.ContainsKey(monsterAttacker.CurrentSkill))
+                return 0f;
+
+            if (target is Player)
+                return DataManager.MonsterSkillDict[monsterAttacker.CurrentSkill].damage;
+            else
+                return 0f;
+        }
         #endregion
 
         #region 범위 검색
@@ -206,12 +265,12 @@ namespace Server.Game
         #endregion
 
         #region 패킷 전달
-        public void PushState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null)
+        public void PushState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null, bool stateChange = true)
         {
-             Room?.Push(() => BroadcastState(newState, posInfo, rotInfo, skillData));
+             Room?.Push(() => BroadcastState(newState, posInfo, rotInfo, skillData, stateChange));
         }
 
-        private void BroadcastState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null)
+        private void BroadcastState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null, bool stateChange = true)
         {
             _sequenceId++;
             S_State statePacket = new S_State
@@ -220,7 +279,8 @@ namespace Server.Game
                 SequenceId = _sequenceId,
                 MyState = newState,
                 PosInfo = posInfo,
-                RotInfo = rotInfo
+                RotInfo = rotInfo,
+                ChangeState = stateChange
             };
 
             if (Target != null)

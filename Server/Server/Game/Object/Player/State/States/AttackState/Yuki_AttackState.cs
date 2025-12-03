@@ -38,11 +38,15 @@ public class Yuki_AttackState : Player_AttackState
             animName = AnimAttackQ;
             p.Skill.StartCooldown(_keyCode);
             p.SendSkillCostPacket(_keyCode, p.Skill.GetCooldown(_keyCode));
+
+            p.Room.Push(p.Room.BroadcastAbigailSound, p, AbigailSound.YukiQattack, 1f);
         }
         else
         {
             animName = (_attackIndex == 0) ? AnimAttackA : AnimAttackB;
             _attackIndex = 1 - _attackIndex;
+
+            p.Room.Push(p.Room.BroadcastAbigailSound, p, AbigailSound.YukiAttack1 + _attackIndex, 1f);
         }
 
         // 유키 단추
@@ -55,6 +59,16 @@ public class Yuki_AttackState : Player_AttackState
             yukiStudPkt.StudCnt = p.YukiStud;
 
             p.Room.Push(p.Room.Broadcast, yukiStudPkt);
+        }
+
+        // 전투 상태 평타 칠 때마다 갱신
+        // 전투 모드
+        {
+            p.CombatState = CombatState.Combat;
+            S_CombatMode combatModePkt = new S_CombatMode();
+            combatModePkt.CombatMode = p.CombatState;
+            p.Room.Push(p.Session.Send, combatModePkt);
+            p.CombatTime = 0f;
         }
 
         p.SendAnimPacket(animName, 0.05f, p.AttackSpeed, true);
@@ -79,9 +93,12 @@ public class Yuki_AttackState : Player_AttackState
                 desc.Speed = 0f;
 
                 targetPlayer.ChangeState(new Player_StunState(desc));
-            }    
-            //room.Push(target.OnDamaged, p, p.Attack, false, true);
+            }
+
+            room.Push(room.BroadcastAbigailSound, p, AbigailSound.YukiQattackHit, 1f);
         }
+        else
+            room.Push(room.BroadcastAbigailSound, p, AbigailSound.YukiAttackHit, 1f);
 
         // 평타 데미지
         room.Push(target.OnDamaged, p, p.Attack, false, true);

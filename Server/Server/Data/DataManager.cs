@@ -34,17 +34,17 @@ namespace Server.Data
             = new Dictionary<CharacterType, Dictionary<Weapon, WeaponMasteryInfo>>();
 
         public static Dictionary<CharacterType, Dictionary<string, AnimLengthInfo>> AnimLengthInfoDict { get; private set; } = new Dictionary<CharacterType, Dictionary<string, AnimLengthInfo>>();
-
         public static Dictionary<MonsterType, MonsterData> MonsterDict { get; private set; } = new Dictionary<MonsterType, MonsterData>();
         public static Dictionary<MonsterSkill, MonsterSkillData> MonsterSkillDict { get; private set; } = new Dictionary<MonsterSkill, MonsterSkillData>();
         public static Dictionary<EnvType, EnvInfo> EnvDict { get; private set; } = new Dictionary<EnvType, EnvInfo>();
-
         public static Dictionary<int, int> PhaseDict { get; private set; } = new Dictionary<int, int>();
         public static Dictionary<int, int> RespawnDict { get; private set; } = new Dictionary<int, int>();
 
         public static Dictionary<int, ItemInfoBase> ItemDict { get; private set; } = new Dictionary<int, ItemInfoBase>();
        
         public static Dictionary<CharacterType, List<List<int>>> ItemSetDict { get; private set; } = new Dictionary<CharacterType, List<List<int>>>();
+
+        public static Dictionary<AbigailSound, List<string>> AbigailAudioDict = new Dictionary<AbigailSound, List<string>>();
 
         public static void LoadData()
         {
@@ -75,6 +75,9 @@ namespace Server.Data
             // For System
             PhaseDict = LoadJson<Data.PhaseData, int, int>("PhaseData", "player").MakeDict();
             RespawnDict = LoadJson<Data.RespawnData, int, int>("RespawnData", "player").MakeDict();
+
+            // For Sound
+            AbigailAudioDict = LoadJson<Data.AbigailSoundData, AbigailSound, List<string>>("AbigailSound", "player").MakeDict();
         }
         
 

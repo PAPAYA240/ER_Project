@@ -11,7 +11,7 @@ using static Server.Data.DataUtils;
 public sealed class Abigail_Q : Skill_Abigail
 {
     public override bool CanMoveDuringCast => true;
-    public override float MoveSpeedMultiplier => 1.2f;
+    bool _secondFxSent = false;
     
     public Abigail_Q()
     {
@@ -30,5 +30,29 @@ public sealed class Abigail_Q : Skill_Abigail
 
         p.Room.BroadcastAbigailSound(p, AbigailSound.Q, 1);
         p.Room.BroadcastAbigailSound(p, AbigailSound.Qvoice, 0.6f);
+
+        p.Room.BroadcastAbigailFx(p, AbigailFx.QAttack, TimeUtil.FrameToSec(7));
+        p.Room.BroadcastAbigailFx(p, AbigailFx.QRange, _animDuration);
+    }
+
+    public override void OnTick(Player p, SkillContext ctx)
+    {
+        if (_secondFxSent)
+            return;
+
+        _elapsed += TimeUtil.Instance.DeltaTime;
+
+        if (_elapsed >= TimeUtil.FrameToSec(10))
+        {
+            _secondFxSent = true;
+            p.Room.Push(p.Room.BroadcastAbigailFx, p, AbigailFx.QAttack2, TimeUtil.FrameToSec(6));
+        }
+    }
+
+    public override void OnExit(Player p, SkillContext ctx)
+    {
+        p.Room.BroadcastStopAbglFx(p, AbigailFx.QAttack);
+        p.Room.BroadcastStopAbglFx(p, AbigailFx.QRange);
+        p.Room.BroadcastStopAbglFx(p, AbigailFx.QAttack2);
     }
 }

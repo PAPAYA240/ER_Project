@@ -71,7 +71,7 @@ namespace Google.Protobuf.Protocol
             Hp += other.MaxHp;
             MaxHp += other.MaxHp;
             HpRegen += other.HpRegen;
-            Stamina *= other.MaxStamina;
+            Stamina += other.MaxStamina;
             MaxStamina += other.MaxStamina;
             StaminaRegen += other.StaminaRegen;
             AttackSpeed += other.AttackSpeed;

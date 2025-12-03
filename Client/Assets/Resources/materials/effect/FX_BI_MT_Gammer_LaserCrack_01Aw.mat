@@ -11,191 +11,200 @@ Material:
   m_Shader: {fileID: 4800000, guid: d8da561592cbafa479e8df8061812396, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _USERADIALGRADIENT_ON
   m_InvalidKeywords:
   - _MAINTEXCLAMP_ON
+  - _NOISE_POLAR_ON
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 2000
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties:
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-      _MainTex:
+    - _MainTex:
         m_Texture: {fileID: 2800000, guid: 763585c29db32b24aa717e03d13f32b0, type: 3}
         m_Scale: {x: 0.2, y: 1}
         m_Offset: {x: 0.37, y: 0}
-      _NoiseTex:
+    - _NoiseTex:
         m_Texture: {fileID: 2800000, guid: e7403a666d03fbf4a9cc42e13a962977, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Ints: {}
+    m_Ints: []
     m_Floats:
-      _1: 0
-      _2: 0
-      _3: 0
-      _4: 0
-      _A_Speed: 0.2
-      _B_Speed: 0.3
-      _BlendOp: 0
-      _BumpScale: 1
-      _C_Speed: -0.2
-      _CameraFadingEnabled: 0
-      _CameraFarFadeDistance: 2
-      _CameraNearFadeDistance: 1
-      _ColorMode: 0
-      _Cull: 0
-      _CustomBrightX: 1.2
-      _CustomX: 1.2
-      _Custom_mul: 2.27
-      _Cutoff: 0.895
-      _D_Speed: 0.5
-      _DetailNormalMapScale: 1
-      _Dissolve_Circle: 0
-      _Dissolve_Circle_Re: 0
-      _Dissolve_EdgeOrCenter: 0
-      _Dissolve_EdgeOrCenter_Re: 0
-      _Dissolve_PowVal: 0.9
-      _Dissolve_PowVal1: 0.28
-      _Dissolve_Rotation: 0.5
-      _Dissolve_Soft: 0.41
-      _DistortionBlend: 0.5
-      _DistortionEnabled: 0
-      _DistortionStrength: 1
-      _DistortionStrengthScaled: 0.1
-      _DstBlend: 0
-      _EmissionEnabled: 0
-      _FlipbookMode: 0
-      _Float4: -0.27
-      _Float5: -0.93
-      _Float7: -0.29
-      _GlossMapScale: 1
-      _Glossiness: 0.5
-      _GlossyReflections: 1
-      _Glow: 1.18
-      _InvFade: 1
-      _Keyword0: 0
-      _LightingEnabled: 1
-      _MKGlowPower: 1
-      _MKGlowTexStrength: 1
-      _MainSine: 10.61
-      _MainTexClamp: 1
-      _MainTexClamp_OnOff: 0
-      _MaksSwitch_oneminus: 1
-      _Maks_Bright: 1
-      _MaskSwtich: 1
-      _Mask_Bright: 0
-      _Metallic: 0
-      _Mode: 1
-      _MulVal_AddBright: 0.31
-      _MulVal_BrightBlack: 1
-      _MulVal_BrightColor: 1
-      _MulVal_BrightColor1: 1.2
-      _MulVal_In_Thick: 20
-      _MulVal_Noise: 3.75
-      _MulVal_Out_Thick: 1
-      _MulVal_inThick: 1.34
-      _MulVal_outThick: 1
-      _Noise: 0.48
-      _NoisePolar: 1
-      _Noise_Dist: 0.5
-      _Noise_Polar: 0
-      _Noise_Polar1: 1
-      _OcclusionStrength: 1
-      _Parallax: 0.02
-      _Polar: 0
-      _PowVal_In_Thick: 2.02
-      _PowVal_Noise: 1.74
-      _PowVal_NoiseRange: 0.5
-      _PowVal_Out_Thick: 0.4
-      _PowVal__outThick: 0.36
-      _PowVal_diss: 6.8
-      _PowVal_inThick: 5.11
-      _PowVal_outThick: 0.4
-      _RotateSpeed: 0.1667272
-      _SmoothnessTextureChannel: 0
-      _SoftParticlesEnabled: 0
-      _SoftParticlesFarFadeDistance: 22.48
-      _SoftParticlesNearFadeDistance: 4.77
-      _SpecularHighlights: 1
-      _SrcBlend: 1
-      _Switch_circle: 0
-      _Switch_circle_re: 0
-      _Switch_disCenter_1: 0
-      _Switch_disCenter_Y: 0
-      _Switch_disCircle: 0
-      _Switch_disCircle_re: 1
-      _Switch_disLine_UV: 0
-      _Switch_disLine_X: 1
-      _Switch_disLine_Y: 0
-      _Switch_disLine_re: 0
-      _Switch_disSide: 0
-      _U: -0.09
-      _UVSec: 0
-      _U_copy: -0.42
-      _V: -0.22
-      _V_copy: 0.23
-      _ZTestMode: 6
-      _ZWrite: 0
-      __dirty: 0
-      _asdf: 0
-      _bright: 17.7
-      _center: 0
-      _circle: 0
-      _circle_reverce: 0
-      _custeomDis: 0.15
-      _custeomDisRot: 1
-      _customDissolve: -0.14
-      _customDissolve_Color: 0.36
-      _disCenter: 1
-      _disCircle: 0
-      _disCircle_re: 1
-      _disEdgeOrCenter: 0
-      _disLine: 1
-      _disLine_UV: 0
-      _disLine_XY: 0
-      _disLine_reverse: 0
-      _disOneMinus: 0
-      _disRot: 0
-      _dissolve_Circle: 0
-      _dissolve_Circle_re: 0
-      _dissolve_EdgeOrCenter: 0
-      _dissolve_Rotation: 1
-      _dist: 0.2
-      _distMainTex: 1
-      _hard: 2
-      _inThick: 1.34
-      _mul: 4.97
-      _node_2252: 0.078
-      _outThick: 0.36
-      _outThick_mul: 1.24
-      _pow: 2.9
-      _power: 3.9
-      _speed: 0
-      _stvalue: 2.56
-      _u: -0.3931613
-      _v: 0.4273504
-      _value: 2
+    - _1: 0
+    - _2: 0
+    - _3: 0
+    - _4: 0
+    - _A_Speed: 0.2
+    - _B_Speed: 0.3
+    - _BlendOp: 0
+    - _BumpScale: 1
+    - _C_Speed: -0.2
+    - _CameraFadingEnabled: 0
+    - _CameraFarFadeDistance: 2
+    - _CameraNearFadeDistance: 1
+    - _ColorMode: 0
+    - _Cull: 0
+    - _CustomBrightX: 1.2
+    - _CustomX: 1.2
+    - _Custom_mul: 2.27
+    - _Cutoff: 0.895
+    - _D_Speed: 0.5
+    - _DetailNormalMapScale: 1
+    - _Dissolve_Circle: 0
+    - _Dissolve_Circle_Re: 0
+    - _Dissolve_EdgeOrCenter: 0
+    - _Dissolve_EdgeOrCenter_Re: 0
+    - _Dissolve_PowVal: 0.9
+    - _Dissolve_PowVal1: 0.28
+    - _Dissolve_Rotation: 0.5
+    - _Dissolve_Soft: 2.46
+    - _DistortionBlend: 0.5
+    - _DistortionEnabled: 0
+    - _DistortionStrength: 1
+    - _DistortionStrengthScaled: 0.1
+    - _DstBlend: 0
+    - _EmissionEnabled: 0
+    - _FlipbookMode: 0
+    - _Float4: -0.27
+    - _Float5: -0.93
+    - _Float7: -0.29
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _Glow: 1.18
+    - _InvFade: 1
+    - _Keyword0: 0
+    - _LightingEnabled: 1
+    - _MKGlowPower: 1
+    - _MKGlowTexStrength: 1
+    - _MainSine: 10.61
+    - _MainTexClamp: 1
+    - _MainTexClamp_OnOff: 0
+    - _MaksSwitch_oneminus: 1
+    - _Maks_Bright: 1
+    - _MaskSwtich: 1
+    - _Mask_Bright: 0
+    - _Metallic: 0
+    - _Mode: 1
+    - _MulVal_AddBright: 0.31
+    - _MulVal_BrightBlack: 1
+    - _MulVal_BrightColor: 1
+    - _MulVal_BrightColor1: 1.2
+    - _MulVal_In_Thick: 20
+    - _MulVal_Noise: 3.75
+    - _MulVal_Out_Thick: 1
+    - _MulVal_inThick: 1.34
+    - _MulVal_outThick: 1
+    - _Noise: 0.48
+    - _NoisePolar: 1
+    - _Noise_Dist: 0.92
+    - _Noise_Polar: 1
+    - _Noise_Polar1: 1
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _Polar: 0
+    - _PowVal_In_Thick: 2.02
+    - _PowVal_Noise: 1.74
+    - _PowVal_NoiseRange: 0.5
+    - _PowVal_Out_Thick: 0.4
+    - _PowVal__outThick: 0.36
+    - _PowVal_diss: 6.8
+    - _PowVal_inThick: 5.11
+    - _PowVal_outThick: 0.4
+    - _RadialCenterAlpha: 1
+    - _RadialEdgeAlpha: 0
+    - _RadialGradientPower: 1.4
+    - _RadialGradientRadius: 0.572
+    - _RotateSpeed: 0.1667272
+    - _SmoothnessTextureChannel: 0
+    - _SoftParticlesEnabled: 0
+    - _SoftParticlesFarFadeDistance: 22.48
+    - _SoftParticlesNearFadeDistance: 4.77
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _Switch_circle: 0
+    - _Switch_circle_re: 0
+    - _Switch_disCenter_1: 0
+    - _Switch_disCenter_Y: 0
+    - _Switch_disCircle: 0
+    - _Switch_disCircle_re: 1
+    - _Switch_disLine_UV: 0
+    - _Switch_disLine_X: 1
+    - _Switch_disLine_Y: 0
+    - _Switch_disLine_re: 0
+    - _Switch_disSide: 0
+    - _U: -0.09
+    - _UVSec: 0
+    - _U_copy: -0.42
+    - _UseRadialGradient: 1
+    - _V: -0.22
+    - _V_copy: 0.23
+    - _ZTestMode: 6
+    - _ZWrite: 0
+    - __dirty: 0
+    - _asdf: 0
+    - _bright: 17.7
+    - _center: 0
+    - _circle: 0
+    - _circle_reverce: 0
+    - _custeomDis: 0.15
+    - _custeomDisRot: 1
+    - _customDissolve: -0.14
+    - _customDissolve_Color: 0.36
+    - _disCenter: 1
+    - _disCircle: 0
+    - _disCircle_re: 1
+    - _disEdgeOrCenter: 0
+    - _disLine: 1
+    - _disLine_UV: 0
+    - _disLine_XY: 0
+    - _disLine_reverse: 0
+    - _disOneMinus: 0
+    - _disRot: 0
+    - _dissolve_Circle: 0
+    - _dissolve_Circle_re: 0
+    - _dissolve_EdgeOrCenter: 0
+    - _dissolve_Rotation: 1
+    - _dist: 0.2
+    - _distMainTex: 1
+    - _hard: 2
+    - _inThick: 1.34
+    - _mul: 4.97
+    - _node_2252: 0.078
+    - _outThick: 0.36
+    - _outThick_mul: 1.24
+    - _pow: 2.9
+    - _power: 3.9
+    - _speed: 0
+    - _stvalue: 2.56
+    - _u: -0.3931613
+    - _v: 0.4273504
+    - _value: 2
     m_Colors:
-      _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-      _Color: {r: 1, g: 1, b: 1, a: 1}
-      _Color0: {r: 1, g: 0.3478597, b: 0.16509429, a: 1}
-      _Color1: {r: 1, g: 0.36155304, b: 0.05188673, a: 1}
-      _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
-      _DissolveTexST: {r: 1, g: 1, b: 0, a: 0}
-      _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-      _MKGlowColor: {r: 1, g: 1, b: 1, a: 1}
-      _MKGlowTexColor: {r: 1, g: 1, b: 1, a: 1}
-      _MainTexUV_TilingSpeed: {r: 1, g: 1, b: 0, a: 0}
-      _Noise01UV_TilingSpeed: {r: 1, g: 1, b: 0, a: 0}
-      _Noise02UV_TilingSpeed: {r: 1, g: 1, b: 0, a: 0}
-      _NoiseST: {r: 1, g: 1, b: 0, a: 0}
-      _NoiseSpeed: {r: -0.1, g: 0, b: 0, a: -0.1}
-      _Noise_Speed: {r: 0, g: 0.1, b: 0, a: 0}
-      _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
-      _TintColor: {r: 1, g: 0.48042613, b: 0, a: 0.5}
-      _distSpeed: {r: 0, g: 0, b: 0, a: 0}
+    - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
+    - _Color: {r: 1.94, g: 1.05, b: 1, a: 1}
+    - _Color0: {r: 1, g: 0.3478597, b: 0.16509429, a: 1}
+    - _Color1: {r: 1, g: 0.36155304, b: 0.05188673, a: 1}
+    - _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
+    - _DissolveTexST: {r: 1, g: 1, b: 0, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _MKGlowColor: {r: 1, g: 1, b: 1, a: 1}
+    - _MKGlowTexColor: {r: 1, g: 1, b: 1, a: 1}
+    - _MainTexUV_TilingSpeed: {r: 1, g: 1, b: 0, a: 0}
+    - _Noise01UV_TilingSpeed: {r: 1, g: 1, b: 0, a: 0}
+    - _Noise02UV_TilingSpeed: {r: 1, g: 1, b: 0, a: 0}
+    - _NoiseST: {r: 1, g: 1, b: 0, a: 0}
+    - _NoiseSpeed: {r: -0.1, g: 0, b: 0, a: -0.1}
+    - _Noise_Speed: {r: 0, g: 0.1, b: 0, a: 0}
+    - _RadialCenter: {r: 0.5, g: 0.5, b: 0, a: 0}
+    - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
+    - _TintColor: {r: 1, g: 0.48042613, b: 0, a: 0.5}
+    - _distSpeed: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

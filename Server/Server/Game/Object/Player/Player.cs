@@ -30,6 +30,10 @@ namespace Server.Game
             set { _isDeath = value; }
         }
 
+        // Exp
+        const int KillExp = 1000;
+        const int AsistExp = 500;
+
         // Inventory
         Dictionary<EquipItemType, EquipItemInfo> _equipItemSlot = new Dictionary<EquipItemType, EquipItemInfo>();
         ItemStat _totalItemStat = new ItemStat();
@@ -59,7 +63,8 @@ namespace Server.Game
 
         public override float AttackSpeed
         {
-            get { return ComposeFinal(STAT_ATTACK_SPEED, (Stat.AttackSpeed + DataManager.WeaponDict[Info.Player.Weapon].AttackSpeed) * (1 + _totalItemStat.AttackSpeed), false, _mulBuffOffset); }
+            get { return ComposeFinal(STAT_ATTACK_SPEED, (Stat.AttackSpeed + DataManager.WeaponDict[Info.Player.Weapon].AttackSpeed) * 
+                (1 + _totalItemStat.AttackSpeed + (DataManager.WeaponMasteryDict[Info.Player.CharType][Info.Player.Weapon].AttackSpeed * 0.01f * Stat.Level ) ), false, _mulBuffOffset); }
             set { base.AttackSpeed = value; }
         }
 
@@ -145,6 +150,7 @@ namespace Server.Game
             } 
         }
 
+        public int Exp { get { return Stat.Exp; } set { Stat.Exp = value; SendExpPacket(); } }
         #endregion
 
         // StateMachine
@@ -173,25 +179,6 @@ namespace Server.Game
                 PosInfo.State = value;
             }
         }
-
-        #region CombatState
-        // CombatState
-        // 전투 시간 (용수야 여기야)
-        private float _combatTime = 0f;
-        private readonly float _nonCombatTime = 5f;
-        public float CombatTime
-        {
-            get { return _combatTime; }
-            set { _combatTime = value; }
-        }
-
-        private CombatState _curCombat;
-        public CombatState CombatState
-        {
-            get { return _curCombat; }
-            set { _curCombat = value; }
-        }
-        #endregion
 
         #region Yuki Privacy
         // 유키 단추용
@@ -352,6 +339,8 @@ namespace Server.Game
 
             var cd = new CooldownController_Tick(this);
             Skill = new SkillController(this, cd);
+
+            UpdateStatusFlag();
         }
 
         public override void Update()
@@ -372,9 +361,8 @@ namespace Server.Game
 
                     CombatState = CombatState.NonCombat;
                     S_CombatMode combatModePkt = new S_CombatMode();
-                    combatModePkt.ObjectId = Id;
                     combatModePkt.CombatMode = CombatState;
-                    Room.Broadcast(combatModePkt);
+                    Room.Push(Session.Send, combatModePkt);
 
                     // 유키 단추용
                     if (Info.Player.CharType == CharacterType.Yuki)
@@ -393,6 +381,7 @@ namespace Server.Game
 
                 if (_attactActiveTime > _nonCombatTime)
                 {
+                    _attactActiveTime = 0f;
                     // 이펙트 멈추기
                     SendYukiSkillEffect(SkillEffectType.QBuff, false);
                     AttackActive = false;
@@ -442,6 +431,18 @@ namespace Server.Game
             {
                 ++attackPlayer.KillAmount;
                 KdaPacket.KDAs.Add(new KDAInfo { ObjectId = attackPlayer.Id, Kill = attackPlayer.KillAmount, Death = attackPlayer.DeathAmount, Asist = attackPlayer.AsistAmount });
+
+                attackPlayer.Exp += KillExp;
+
+                // 스코어 
+                int score = Room.ReduceScore(Team, 1);
+                S_ChangeScore changeScorePacket = new S_ChangeScore();
+                changeScorePacket.Team = Team;
+                changeScorePacket.Score = score;
+                Room.Push(Room.Broadcast, changeScorePacket);
+
+                if (attackPlayer.Info.Player.CharType == CharacterType.Abigail)
+                    attackPlayer.Room.Push(attackPlayer.Room.BroadcastAbigailSound, attackPlayer, AbigailSound.Kill, 1f);
             }
 
             // 어시 처리
@@ -456,6 +457,8 @@ namespace Server.Game
                     {
                         ++asistPlayer.AsistAmount;
                         KdaPacket.KDAs.Add(new KDAInfo { ObjectId = asistPlayer.Id, Kill = asistPlayer.KillAmount, Death = asistPlayer.DeathAmount, Asist = asistPlayer.AsistAmount });
+
+                        asistPlayer.Exp += AsistExp;
                     }
                 }
             }
@@ -532,15 +535,12 @@ namespace Server.Game
                         BonusAttackRange = 0f;
                     break;
                 case CharacterType.Abigail:
+                    if (null == Skill)
+                        break;
                     isPassiveAttackReady = Skill.IsPassiveAttackReady();
 
-                    if(!_wasPassiveReady && isPassiveAttackReady)
-                    {
-                        S_AbigailSound abigailSound = new S_AbigailSound();
-                        abigailSound.ObjectId = Id;
-                        abigailSound.Sound = AbigailSound.PassiveReady;
-                        Room.Push(Session.Send, abigailSound);
-                    }
+                    if(!_wasPassiveReady && isPassiveAttackReady && !IsDead)
+                        Room.Push(Room.BroadcastAbigailSound, this, AbigailSound.PassiveReady, 1f);
 
                     _wasPassiveReady = isPassiveAttackReady;
 
@@ -974,20 +974,36 @@ namespace Server.Game
         #endregion
 
         #region Level
+        private readonly object _lock = new object();
+
+        bool CanLevelUp()
+        {
+            return DataManager.ExpDict.ContainsKey(Stat.Level) &&
+                   Stat.Exp >= DataManager.ExpDict[Stat.Level];
+        }
+
         public int CheckLevelUp()
         {
-            int levelUp = 0;
-            while (DataManager.ExpDict.ContainsKey(Stat.Level) &&
-                Stat.Exp >= DataManager.ExpDict[Stat.Level])
-            {
-                Stat.Exp -= DataManager.ExpDict[Stat.Level];
-                Stat.Level++;
-                StatInfo statInfo = DataManager.StatGrowthDict[Info.Player.CharType];
-                Stat.AddStat(statInfo);
-                levelUp++;
-            }
+            if (!CanLevelUp())
+                return 0;
 
-            return levelUp;
+            lock (_lock)
+            {
+                if (!CanLevelUp())
+                    return 0;
+
+                int levelUp = 0;
+                while (DataManager.ExpDict.ContainsKey(Stat.Level) &&
+                    Stat.Exp >= DataManager.ExpDict[Stat.Level])
+                {
+                    Stat.Exp -= DataManager.ExpDict[Stat.Level];
+                    Stat.Level++;
+                    StatInfo statInfo = DataManager.StatGrowthDict[Info.Player.CharType];
+                    Stat.AddStat(statInfo);
+                    levelUp++;
+                }
+                return levelUp;
+            }
         }
         #endregion
 
@@ -1059,7 +1075,7 @@ namespace Server.Game
             Room.Push(Room.Broadcast, packet);
         }
 
-        public void SendSoundPakcet(string name, string type = "Effect")
+        public void SendSoundPacket(string name, string type = "Effect")
         {
             S_Sound packet = new S_Sound()
             {
@@ -1268,6 +1284,14 @@ namespace Server.Game
             Room.Push(Room.Broadcast, unstoppablePkt);
         }
 
+        public void SendExpPacket()
+        {
+            S_ChangeExp packet = new S_ChangeExp();
+            packet.Exp = Exp;
+
+            Room.Push(Session.Send, packet);
+        }
+
         #endregion
 
         #region StatusEffect(버프, 디버프), Barrier(방어막) 관련
@@ -1308,7 +1332,6 @@ namespace Server.Game
 
                 Room.Push(Session.Send, packet);
                 _isUpdatedStatus = false;
-                Console.WriteLine($"AttackSpeed : {AttackSpeed}");
             }
         }
 
@@ -1397,15 +1420,17 @@ namespace Server.Game
             SendRemoveEffect(KeyCode.None, isCaster, fxName, isCommon: true, commonName);
         }
 
-        public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = "", bool isCommon = false, string commonName = "")
+        public void SendRemoveEffect(KeyCode keyCode, bool isCaster = true, string fxName = "", string type = "Caster", bool isCommon = false, string commonName = "")
         {
             S_RemoveEffect packet = new S_RemoveEffect();
             packet.ObjectId = Id;
             packet.KeyCode = (int)keyCode;
             packet.IsCaster = isCaster;
             packet.FxName = fxName ?? "";
+            packet.Type = type;
             packet.IsCommon = isCommon;
             packet.CommonName = commonName;
+
             Room.Push(Room.Broadcast, packet);
         }
         #endregion

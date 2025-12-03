@@ -28,35 +28,24 @@ public class Player_RestState : IPlayerState
         if (_isRest == true)
         {
             _animName = "REST_START";
+            player.IsHit = false;
+
+            if (player.Info.Player.CharType == CharacterType.Abigail)
+                player.Room.BroadcastAbigailSound(player, AbigailSound.Rest, 1f);
+            else if (player.Info.Player.CharType == CharacterType.Yuki)
+                player.Room.BroadcastAbigailSound(player, AbigailSound.YukiRest, 1f);
         }
         else
         {
             _animName = "REST_END";
         }
 
-        Console.WriteLine(_animName);
         player.SendAnimPacket(_animName, 0.1f);
         _duration = DataManager.AnimLengthInfoDict[player.Info.Player.CharType][_animName].Length;
     }
 
     public void Execute(Player player)
     {
-        if (player.IsHit == true)
-        {
-            if (_animName == "REST_END")
-                return;
-
-            player.IsHit = false;
-
-            S_Rest restPkt = new S_Rest();
-            restPkt.ObjectId = player.Id;
-            restPkt.IsRest = false;
-            player.SendRestPacket(restPkt);
-
-            player.ChangeState(new Player_RestState(false));
-            return;
-        }
-
         if (_isRest == false)
         {
             // 현재 시각에서 경과 시간 계산
@@ -66,6 +55,19 @@ public class Player_RestState : IPlayerState
             {
                 player.ChangeState(new Player_IdleState());
             }
+        }
+
+        else if (player.IsHit == true)
+        {
+            player.IsHit = false;
+
+            S_Rest restPkt = new S_Rest();
+            restPkt.ObjectId = player.Id;
+            restPkt.IsRest = false;
+            player.SendRestPacket(restPkt);
+
+            player.ChangeState(new Player_RestState(false));
+            return;
         }
     }
 
