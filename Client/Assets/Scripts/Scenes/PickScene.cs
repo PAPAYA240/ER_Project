@@ -45,6 +45,9 @@ public class PickScene : BaseScene
 
         foreach (PickScenePlayerInfo pspi in Managers.Info._pspiList)
             Spawn(pspi);
+
+
+        Managers.Sound.Play("sound/bgm/BGM_Lobby", Define.Sound.Bgm);
     }
 
     private void Start()
