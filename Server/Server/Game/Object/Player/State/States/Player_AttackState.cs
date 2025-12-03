@@ -144,7 +144,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
                         new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ),
                         new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ));
                     if (distNow <= player.AttackRange /* + player.HitTolerance 가능 */)
-                        ApplyHit(player, target);
+                        //ApplyHit(player, target);
 
                     _damageApplied = true;
                 }
