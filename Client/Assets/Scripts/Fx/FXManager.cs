@@ -2,6 +2,7 @@
 using Data;
 using Google.Protobuf.Protocol;
 using System.Collections.Generic;
+using System.Collections;
 
 
 public class FXManager : MonoBehaviour
@@ -77,6 +78,7 @@ public class FXManager : MonoBehaviour
         UI.Clear();
     }
 
+ 
     #region FX 전용 Pool 
     // Pool
     private class Pool

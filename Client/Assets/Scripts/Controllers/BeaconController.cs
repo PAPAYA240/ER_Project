@@ -24,6 +24,8 @@ public class BeaconController : BaseController
     public System.Action<int> OnCaptureCompleted;
     public System.Action OnCaptureFailed;
 
+    private const string _effectPath = "effects/prefab/Common/Beacon_Complete";
+    private bool _idleSound = false;
     void Start()
     {
         if (gaugeRenderer != null)
@@ -35,8 +37,14 @@ public class BeaconController : BaseController
         {
             Debug.LogError("GaugeRenderer is not assigned!", this);
         }
+
     }
 
+    protected void Update()
+    {
+        if(!_idleSound)
+            _idleSound = Managers.Object.MyPlayer?.Sound.PlayLoopSound("Beacon_Idle", true, transform.position);
+    }
     public void StartCapture(int team)
     {
         if (team != 1 && team != 2) return;
@@ -63,6 +71,8 @@ public class BeaconController : BaseController
 
     public void CompleteCapture(int Team)
     {
+        Managers.FX.Effect.PlayEffect(_effectPath, transform, 3.0f, new Vector3(0, 1.5f, 0));
+
         currentCaptureAmount = 1f;
         currentOwningTeam = Team;
         isCapturing = false;
@@ -101,6 +111,9 @@ public class BeaconController : BaseController
 
     private IEnumerator CaptureRoutine()
     {
+        Managers.Object.MyPlayer.Sound.GetEffect3D("Beacon_Active", transform.position);
+        Managers.Sound.StopLoopSound("Beacon_Idle");
+
         while (isCapturing && currentCaptureAmount < 1f)
         {
             currentCaptureAmount += captureSpeed * Time.deltaTime;

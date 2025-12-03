@@ -167,6 +167,9 @@ public class Env_HealPack : EnvController
 
     private void Respawn()
     {
+        if (Managers.Object.MyPlayer.Sound)
+            Managers.Object.MyPlayer.Sound.GetEffect3D("HealPackSpawn", Managers.Object.MyPlayer.transform.position);
+
         _isActive = true;
         UpdateVisuals(true);
     }
@@ -179,6 +182,9 @@ public class Env_HealPack : EnvController
         PlayerController player = target.GetComponent<PlayerController>();
         if (player == null)
             return;
+
+        if (Managers.Object.MyPlayer.Sound)
+            Managers.Object.MyPlayer.Sound.GetEffect3D("HealPackUse", Managers.Object.MyPlayer.transform.position);
 
         base.TryHandleInteraction(target);
 

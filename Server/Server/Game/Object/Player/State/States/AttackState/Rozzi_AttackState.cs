@@ -123,6 +123,7 @@ public class Rozzi_AttackState : Player_AttackState
                         pkt.TargetId = _targetId;
                         player.SendTargetChangePacket(pkt);
                         _isRotate = true;
+                        _rotateStartUtc = DateTime.UtcNow;
                     }
                 }
                 return; // 스윙 중에는 추가 개시 없음

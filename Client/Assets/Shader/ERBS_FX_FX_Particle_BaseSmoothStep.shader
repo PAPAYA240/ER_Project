@@ -1,89 +1,119 @@
-Shader "ERBS_FX/FX_Particle_BaseSmoothStep" {
-	Properties {
-		_Color ("Color", Vector) = (1,1,1,1)
-		_MainTex ("Main Texture", 2D) = "white" {}
-		_Rotate ("Rotate", Float) = 0
-		_MaskTex ("MaskTex", 2D) = "white" {}
-		_MainColor_To_Alpha_Amount ("MainColor_To_Alpha_Amount", Range(0, 1)) = 0
-		_MainAlpha_To_R ("MainAlpha_To_R", Range(0, 1)) = 1
-		_MulVal_Color ("MulVal_Color", Float) = 1
-		[Toggle(_WITHPARTICLECUSTOM_ON)] _WithParticleCustom ("WithParticleCustom", Float) = 0
-		_ScrollSpeed ("ScrollSpeed", Vector) = (0,0,0,0)
-		_MaskScrollSpeed ("MaskScrollSpeed", Vector) = (0,0,0,0)
-		[Toggle(_ISNOISE_ON)] _IsNoise ("IsNoise", Float) = 0
-		[KeywordEnum(Simple,Complex,NormalComplex)] _IsNoiseComplex ("IsNoiseComplex", Float) = 1
-		_NoiseTex ("NoiseTex", 2D) = "black" {}
-		[KeywordEnum(NoiseUV_Used,BaseUV_Follow)] _AssignNoiseUV ("AssignNoiseUV", Float) = 0
-		_MulVal_Noise ("MulVal_Noise", Float) = 0.05
-		_NoiseScale_1 ("NoiseScale_1", Float) = 1
-		_NoiseScrollSpeed_1 ("NoiseScrollSpeed_1", Vector) = (-1,-1,0,0)
-		_NoiseScale_2 ("NoiseScale_2", Float) = 2
-		_NoiseScrollSpeed_2 ("NoiseScrollSpeed_2", Vector) = (1,1,0,0)
-		[Toggle(_ISDISSOLVE_ON)] _IsDissolve ("IsDissolve", Float) = 0
-		[Toggle(_ISSMOOTHDISSOLVE_ON)] _IsSmoothDissolve ("IsSmoothDissolve", Float) = 0
-		_DissolveMask ("DissolveMask", 2D) = "white" {}
-		_MulAlpha ("MulAlpha", Float) = 1
-		[KeywordEnum(DissolveUV_Used,BaseWarpUV_Follow)] _AssignDissolveUV ("AssignDissolveUV", Float) = 0
-		[KeywordEnum(OnlyDissolve,BaseRedXDissolve)] _DissolveAlpha ("DissolveAlpha", Float) = 1
-		_DissolveStep ("DissolveStep", Range(-1, 1)) = 1
-		_DissolveSmoothRange ("DissolveSmoothRange", Range(0, 1)) = 0.2
-		[Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 2
-		[Enum(Off,0,On,1)] _ZWrite ("ZWrite", Float) = 0
-		[Enum(UnityEngine.Rendering.CompareFunction)] _ZTest ("ZTest", Float) = 4
-		[Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend ("SrcBlend", Float) = 5
-		[Enum(UnityEngine.Rendering.BlendMode)] _DestBlend ("DestBlend", Float) = 10
-	}
-	//DummyShaderTextExporter
-	SubShader{
-		Tags { "RenderType"="Opaque" }
-		LOD 200
+﻿Shader "ERBS_FX/Smoothstep_Dissolve_JS"
+{
+    Properties
+    {
+        _Color ("Tint Color", Color) = (1,1,1,1)
 
-		Pass
-		{
-			HLSLPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
+        _MainTex ("Main Texture", 2D) = "white" {}
+        _MaskTex ("Mask Texture", 2D) = "white" {}
 
-			float4x4 unity_ObjectToWorld;
-			float4x4 unity_MatrixVP;
-			float4 _MainTex_ST;
+        _Speed ("Rotation Speed", Float) = 1
 
-			struct Vertex_Stage_Input
-			{
-				float4 pos : POSITION;
-				float2 uv : TEXCOORD0;
-			};
+        _Dissolve ("Dissolve (0=Full,1=Gone)", Range(0,1)) = 0
+        _Smooth ("Smoothstep Width", Range(0,0.2)) = 0.05
 
-			struct Vertex_Stage_Output
-			{
-				float2 uv : TEXCOORD0;
-				float4 pos : SV_POSITION;
-			};
+        _OuterStrength ("Outer Flow Strength", Range(0,3)) = 1.0
+        _OuterRadius ("Outer Radius", Float) = 0.5
+    }
 
-			Vertex_Stage_Output vert(Vertex_Stage_Input input)
-			{
-				Vertex_Stage_Output output;
-				output.uv = (input.uv.xy * _MainTex_ST.xy) + _MainTex_ST.zw;
-				output.pos = mul(unity_MatrixVP, mul(unity_ObjectToWorld, input.pos));
-				return output;
-			}
+    SubShader
+    {
+        Tags{
+            "RenderType"="Transparent"
+            "Queue"="Transparent"
+        }
 
-			Texture2D<float4> _MainTex;
-			SamplerState sampler_MainTex;
-			float4 _Color;
+        Blend SrcAlpha OneMinusSrcAlpha
+        Cull Off
+        ZWrite Off
 
-			struct Fragment_Stage_Input
-			{
-				float2 uv : TEXCOORD0;
-			};
+        Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "UnityCG.cginc"
 
-			float4 frag(Fragment_Stage_Input input) : SV_TARGET
-			{
-				return _MainTex.Sample(sampler_MainTex, input.uv.xy) * _Color;
-			}
+            sampler2D _MainTex;
+            sampler2D _MaskTex;
 
-			ENDHLSL
-		}
-	}
-	//CustomEditor "ASEMaterialInspector"
+            float4 _Color;
+            float _Speed;
+            float _Dissolve;
+            float _Smooth;
+
+            float _OuterStrength;
+            float _OuterRadius;
+
+            float4 _MainTex_ST;
+
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float2 uv : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float4 pos : SV_POSITION;
+                float2 uv : TEXCOORD0;
+                float3 worldPos : TEXCOORD1;
+            };
+
+            v2f vert (appdata v)
+            {
+                v2f o;
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                // ---------------------------
+                // 1. 회전
+                // ---------------------------
+                float t = _Time.y * _Speed;
+                float s = sin(t);
+                float c = cos(t);
+
+                float2 uv = i.uv - 0.5;
+                float2 ruv = float2(
+                    uv.x * c - uv.y * s,
+                    uv.x * s + uv.y * c
+                ) + 0.5;
+
+                // ---------------------------
+                // 2. 기본 텍스처
+                // ---------------------------
+                float4 mainCol = tex2D(_MainTex, ruv);
+                float mask = tex2D(_MaskTex, ruv).r;
+
+                // ---------------------------
+                // 3. Smoothstep Dissolve
+                // ---------------------------
+                float dissolveEdge = smoothstep(_Dissolve - _Smooth, _Dissolve + _Smooth, mask);
+
+                // ---------------------------
+                // 4. 도넛 바깥 방향 흐름 추가
+                // (worldPos 거리 기반)
+                // ---------------------------
+
+                float3 center = float3(0,0,0);           // local origin (donut center)
+                float dist = length(i.worldPos - center);
+
+                float outerGlow = saturate( (dist - _OuterRadius) * _OuterStrength );
+
+                // 바깥쪽에서 알파 증가
+                dissolveEdge = saturate(dissolveEdge + outerGlow);
+
+                mainCol.a *= dissolveEdge;
+
+                return mainCol * _Color;
+            }
+            ENDCG
+        }
+    }
 }
