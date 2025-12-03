@@ -18,6 +18,7 @@ public sealed class Abigail_Q : Skill_Abigail
         _animName = "SKILL_Q";
         _keyCode = KeyCode.Q;
         _animDuration = GetDuration();
+        StopSkillTime = TimeUtil.FrameToSec(17);
     }
 
     public override void OnEnter(Player p, SkillContext ctx)
@@ -31,21 +32,24 @@ public sealed class Abigail_Q : Skill_Abigail
         p.Room.BroadcastAbigailSound(p, AbigailSound.Q, 1);
         p.Room.BroadcastAbigailSound(p, AbigailSound.Qvoice, 0.6f);
 
-        p.Room.BroadcastAbigailFx(p, AbigailFx.QAttack, TimeUtil.FrameToSec(7));
+        //p.Room.BroadcastAbigailFx(p, AbigailFx.QAttack, TimeUtil.FrameToSec(7));
         p.Room.BroadcastAbigailFx(p, AbigailFx.QRange, _animDuration);
     }
 
     public override void OnTick(Player p, SkillContext ctx)
     {
-        if (_secondFxSent)
-            return;
-
         _elapsed += TimeUtil.Instance.DeltaTime;
 
-        if (_elapsed >= TimeUtil.FrameToSec(10))
+        if (!_secondFxSent && _elapsed >= TimeUtil.FrameToSec(10))
         {
             _secondFxSent = true;
-            p.Room.Push(p.Room.BroadcastAbigailFx, p, AbigailFx.QAttack2, TimeUtil.FrameToSec(6));
+            //p.Room.Push(p.Room.BroadcastAbigailFx, p, AbigailFx.QAttack2, TimeUtil.FrameToSec(6));
+        }
+
+        if (!CanStopSkill && _elapsed >= StopSkillTime)
+        {
+            CanStopSkill = true;
+            p.SendCanStopSkillPacket(CanStopSkill);
         }
     }
 

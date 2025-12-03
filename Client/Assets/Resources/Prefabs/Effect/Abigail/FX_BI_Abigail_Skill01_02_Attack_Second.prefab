@@ -11983,7 +11983,6 @@ GameObject:
   - component: {fileID: 4663782711065772}
   - component: {fileID: 198537286388196041}
   - component: {fileID: 199074593345205867}
-  - component: {fileID: 114305791025413899}
   - component: {fileID: 135854123067290671}
   m_Layer: 15
   m_Name: FX_BI_Abigail_Skill01_02_Attack_Second
@@ -14270,19 +14269,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &114305791025413899
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1681784839583065}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36cbf226ee13bccfdee14097ee974fb0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  time: 3
 --- !u!135 &135854123067290671
 SphereCollider:
   m_ObjectHideFlags: 0

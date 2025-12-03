@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4017682991453256}
   - component: {fileID: 198584260000332799}
   - component: {fileID: 199296916172993927}
-  - component: {fileID: 114083283636259512}
   - component: {fileID: 135678052064649554}
   m_Layer: 15
   m_Name: FX_BI_Abigail_Skill01_02_Attack
@@ -2298,19 +2297,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &114083283636259512
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1220767592679260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36cbf226ee13bccfdee14097ee974fb0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  time: 3
 --- !u!135 &135678052064649554
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -3032,7 +3018,7 @@ ParticleSystem:
         key6: {r: 0, g: 0, b: 0, a: 0.65882355}
         key7: {r: 0, g: 0, b: 0, a: 0}
         ctime0: 0
-        ctime1: 11758
+        ctime1: 36815
         ctime2: 52814
         ctime3: 65535
         ctime4: 65150
@@ -3048,7 +3034,7 @@ ParticleSystem:
         atime6: 58982
         atime7: 65535
         m_Mode: 0
-        m_ColorSpace: -1
+        m_ColorSpace: 0
         m_NumColorKeys: 3
         m_NumAlphaKeys: 2
       minGradient:

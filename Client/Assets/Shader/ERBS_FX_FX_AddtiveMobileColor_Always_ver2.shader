@@ -57,7 +57,7 @@ Shader "ERBS_FX/FX_AddtiveMobileColor_Always_ver2" {
 			float4 frag(Fragment_Stage_Input input) : SV_TARGET
 			{
 				float4 result = _MainTex.Sample(sampler_MainTex, input.uv.xy) * _Color;
-				if(result.x < 0.3)
+				if(result.x < 0.1)
 					discard;
 
 				return result;

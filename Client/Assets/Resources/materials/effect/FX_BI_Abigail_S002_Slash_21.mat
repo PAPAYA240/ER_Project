@@ -8,10 +8,11 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FX_BI_Abigail_S002_Slash_21
-  m_Shader: {fileID: 4800000, guid: f0a71b4d1ae06fd48897ef12b35fc19d, type: 3}
+  m_Shader: {fileID: 4800000, guid: d7777d1ee6fe08b4c819bce443bc6915, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
+  m_ValidKeywords: []
+  m_InvalidKeywords:
   - _ASSIGNDISSOLVEUV_DISSOLVEUV_USED
   - _ASSIGNNOISEUV_NOISEUV_USED
   - _DISSOLVEALPHA_ONLYDISSOLVE
@@ -19,62 +20,70 @@ Material:
   - _ISNOISECOMPLEX_COMPLEX
   - _ISSMOOTHDISSOLVE_ON
   - _WITHPARTICLECUSTOM_ON
-  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties:
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-      _DissolveMask:
+    - _DissolveMask:
         m_Texture: {fileID: 2800000, guid: 4d6d872aeb9a1614fa7ad78c5bc9dbb5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-      _MainTex:
+    - _FlowMap:
+        m_Texture: {fileID: 2800000, guid: 1638349fa621ea141bc5f8b41d4f7a6f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
         m_Texture: {fileID: 2800000, guid: 559ad990e64071141b6341ed0406dae4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-      _MaskTex:
+    - _MaskTex:
         m_Texture: {fileID: 2800000, guid: 1638349fa621ea141bc5f8b41d4f7a6f, type: 3}
         m_Scale: {x: 1, y: 3}
         m_Offset: {x: 0, y: 0}
-      _NoiseTex:
+    - _NoiseTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Ints: {}
+    m_Ints: []
     m_Floats:
-      _AssignDissolveUV: 0
-      _AssignNoiseUV: 0
-      _Cull: 0
-      _DestBlend: 10
-      _DissolveAlpha: 0
-      _DissolveSmoothRange: 0.3
-      _DissolveStep: 1
-      _IsDissolve: 1
-      _IsNoise: 0
-      _IsNoiseComplex: 1
-      _IsSmoothDissolve: 1
-      _MainAlpha_To_R: 1
-      _MainColor_To_Alpha_Amount: 1
-      _MulAlpha: 1
-      _MulVal_Color: 2
-      _MulVal_Noise: 0.05
-      _NoiseScale_1: 1
-      _NoiseScale_2: 2
-      _Rotate: 0
-      _SrcBlend: 5
-      _WithParticleCustom: 1
-      _ZTest: 4
-      _ZWrite: 0
+    - _AlphaCutoff: 0.05
+    - _AssignDissolveUV: 0
+    - _AssignNoiseUV: 0
+    - _Cull: 0
+    - _DestBlend: 10
+    - _DissolveAlpha: 0
+    - _DissolveSmoothRange: 0.3
+    - _DissolveStep: 1
+    - _EmissStrength: 2
+    - _FlowSpeed: 1
+    - _FlowStrength: 0.3
+    - _IsDissolve: 1
+    - _IsNoise: 0
+    - _IsNoiseComplex: 1
+    - _IsSmoothDissolve: 1
+    - _MainAlpha_To_R: 1
+    - _MainColor_To_Alpha_Amount: 1
+    - _MulAlpha: 1
+    - _MulVal_Color: 2
+    - _MulVal_Noise: 0.05
+    - _NoiseScale_1: 1
+    - _NoiseScale_2: 2
+    - _Rotate: 0
+    - _SrcBlend: 5
+    - _WithParticleCustom: 1
+    - _ZTest: 4
+    - _ZWrite: 0
     m_Colors:
-      _Color: {r: 1, g: 1, b: 1, a: 1}
-      _MaskScrollSpeed: {r: 0, g: 0, b: 0, a: 0}
-      _NoiseScrollSpeed_1: {r: -1, g: -1, b: 0, a: 0}
-      _NoiseScrollSpeed_2: {r: 1, g: 1, b: 0, a: 0}
-      _ScrollSpeed: {r: 0, g: 0, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 0.03529412}
+    - _MaskScrollSpeed: {r: 0, g: 0, b: 0, a: 0}
+    - _NoiseScrollSpeed_1: {r: -1, g: -1, b: 0, a: 0}
+    - _NoiseScrollSpeed_2: {r: 1, g: 1, b: 0, a: 0}
+    - _ScrollSpeed: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

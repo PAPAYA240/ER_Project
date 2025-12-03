@@ -89,6 +89,9 @@ namespace Server.Game
             // 특별한 페이즈 로직
             switch (newPhase)
             {
+                case 0:
+                    PlayBGMByPhase(newPhase);
+                    break;
                 case 1:
                     {
                         foreach (var p in _players)
@@ -97,6 +100,7 @@ namespace Server.Game
                             Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
                         }
                         StartExpTimer(); // 1페이즈부터 경험치 획득
+                        PlayBGMByPhase(newPhase);
                         break;
                     }
                 case 2:
@@ -106,6 +110,7 @@ namespace Server.Game
                         p.Value.AcquireItem(new WardInfo()/*DataManager.ItemDict[502212] as WardInfo*/);
                         Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
                     }
+                    PlayBGMByPhase(newPhase);
                     break;
             }
         }
@@ -167,6 +172,19 @@ namespace Server.Game
             foreach (Player p in _teams[teamIndex].Values)
             {
                 p.Exp += exp;
+            }
+        }
+
+        public void PlayBGMByPhase(int phase)
+        {
+            foreach(Player p in _players.Values)
+            {
+                S_Sound soundPacket = new S_Sound();
+                soundPacket.ObjectId = p.Id;
+                soundPacket.Name = "BGM";
+                soundPacket.Type = "BGM";
+
+                Push(p.Session.Send, soundPacket);
             }
         }
         #endregion
@@ -298,46 +316,42 @@ namespace Server.Game
                 {
                     // Temp Cobalt Exp
                     player.Info.StatInfo.Exp = 15800;
+                    player.CheckLevelUp();
                     if (Spawn == null)
                         SpawnRegister();
                     player.Info.PosInfo = Spawn.GetSpawnPoint(player.Team).ToPositionInfo();
 
                     S_EnterGame enterPacket = new S_EnterGame();
-                    enterPacket.ObjInfo = player.Info;
+                    enterPacket.ObjInfo = new ObjectInfo();
+                    enterPacket.ObjInfo.MergeFrom(player.Info.ToByteArray());
                     player.Session.Send(enterPacket);
 
                     S_Spawn spawnPacket = new S_Spawn();
                     foreach (Player p in _players.Values.ToArray())
                     {
-                        if (player != p && p != null)
-                        {
-                            spawnPacket.Objects.Add(p.Info);
-                        }                            
+                        if (p != null && player.Id != p.Id)
+                            AddObjectToPacket(spawnPacket, p, player.Id);                       
                     }
 
                     foreach (Monster m in _monsters.Values.ToArray())
                     {
                         if (m != null)
-                            spawnPacket.Objects.Add(m.Info);
+                            AddObjectToPacket(spawnPacket, m);
                     }
 
-                    foreach (Projectile p in _projectiles.Values.ToArray())
+                    foreach (Projectile proj in _projectiles.Values.ToArray())
                     {
-                        if (p != null)
-                            spawnPacket.Objects.Add(p.Info);
+                        if (proj != null)
+                            AddObjectToPacket(spawnPacket, proj);
                     }
 
                     foreach (EnvironmentObject env in _envs.Values.ToArray())
                     {
                         if (env != null)
-                            spawnPacket.Objects.Add(env.Info);
+                            AddObjectToPacket(spawnPacket, env);
                     }
 
                     player.Session.Send(spawnPacket);
-
-                    int levelUpCnt = player.CheckLevelUp();
-                    if (levelUpCnt > 0)
-                        BroadcastLevelUp(player, levelUpCnt, player.Info.Player.CharType);
 
                     // 페이즈에 해당하는 아이템 장착
                     if (CurPhase > 0)
@@ -377,13 +391,14 @@ namespace Server.Game
 
             // 타인한테 정보 전송
             {
-                S_Spawn spawnPacket = new S_Spawn();
-                spawnPacket.Objects.Add(gameObject.Info);
-                
                 foreach (Player p in _players.Values.ToArray())
                 {
                     if (p != null && p.Id != gameObject.Id && p.Session != null)
                     {
+                        S_Spawn spawnPacket = new S_Spawn();
+                        var playerInfoCopy = new ObjectInfo();
+                        playerInfoCopy.MergeFrom(gameObject.Info.ToByteArray());
+                        spawnPacket.Objects.Add(playerInfoCopy);
                         p.Session.Send(spawnPacket);
                     }
 
@@ -452,12 +467,15 @@ namespace Server.Game
 
             // 타인한테 정보 전송
             {
-                S_Despawn despawnPacket = new S_Despawn();
-                despawnPacket.ObjectIds.Add(objectId);
+
                 foreach (Player p in _players.Values.ToList())
                 {
                     if (p.Id != objectId && p.Session != null)
+                    {
+                        S_Despawn despawnPacket = new S_Despawn();
+                        despawnPacket.ObjectIds.Add(objectId);
                         p.Session.Send(despawnPacket);
+                    }                        
                 }
             }
         }
@@ -968,6 +986,23 @@ namespace Server.Game
                     return player;
             }
             return null;
+        }
+
+        private void AddObjectToPacket(S_Spawn packet, GameObject gameObject, int excludeId = -1)
+        {
+            if (gameObject == null || gameObject.Id == excludeId)
+                return;
+
+            try
+            {
+                var objectInfoCopy = new ObjectInfo();
+                objectInfoCopy.MergeFrom(gameObject.Info.ToByteArray());
+                packet.Objects.Add(objectInfoCopy);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Failed to copy ObjectInfo for {gameObject.Id}: {ex.Message}");
+            }
         }
     }
 }
