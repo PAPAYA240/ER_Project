@@ -8,13 +8,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FX_BI_MT_Dissolve_Lightning_04
-  m_Shader: {fileID: -6465566751694194690, guid: 3a911dcbafd4d004a961901494a088c8,
+  m_Shader: {fileID: -6465566751694194690, guid: 707ce76abb1ec134aa462f9baf976f1e,
     type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _EMISSION
+  m_InvalidKeywords: []
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -35,11 +34,11 @@ Material:
         m_Scale: {x: 0.57, y: 1}
         m_Offset: {x: 0.02, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 923550dda1d019942b0c06df267d2010, type: 3}
+        m_Texture: {fileID: 2800000, guid: c869bbbc9ee363642b859d433ad0326b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: fbeb0f4580e6d07449c3a27d0706c358, type: 3}
+        m_Texture: {fileID: 2800000, guid: ecd1162c951d98f43bd507ebd0c8b7a7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTexture01:
@@ -64,6 +63,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Cull: 0
     - _Float0: 0.08
     - _Float3: 1
     - _Float4: 0.5
@@ -93,7 +93,8 @@ Material:
     - _u: 2.96
     - _v: 1
     - _v1: 1
-    m_Colors: []
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &5163857719945501966

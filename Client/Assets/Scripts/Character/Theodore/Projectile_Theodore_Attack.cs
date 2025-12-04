@@ -20,7 +20,6 @@ public class Projectile_Theodore_Attack : Projectile
         _speed = packet.Speed;
 
         SetStartPosition();
-
     }
     private void SetStartPosition()
     {
@@ -31,51 +30,12 @@ public class Projectile_Theodore_Attack : Projectile
                 return;
             CellPos = boneTransform.position;
             SyncPos();
-
         }
-        //else
-        //{
-        //    Transform boneTransform = Util.FindChildByName(Owner.transform, "Fx_Hand_L").transform;
-        //    if (boneTransform == null)
-        //        return;
-        //    CellPos = boneTransform.position;
-        //    SyncPos();
-        //    _dashStartPos = transform.position;
-        //}
     }
     private void Update()
     {
         if (Type == ProjectileType.ProjectileTheodoreNormalAttack)
             AttackTarget();
-    }
-
-
-    private void AttackForward()
-    {
-        //Vector3 finPos;
-        //Quaternion finRot = transform.rotation; 
-
-        //float totalDistance = _speed * 1.5f * _deltaScale;
-
-        //Vector3 targetPos = _dashStartPos + transform.forward * totalDistance;
-        //targetPos.y = _dashStartPos.y; // Y축 고정
-
-        //_elapsed += _speed * Time.deltaTime * _deltaScale;
-
-        //if (_elapsed >= 1.5f)
-        //{
-        //    finPos = targetPos; 
-        //}
-        //else
-        //{
-        //    finPos = Vector3.Lerp(_dashStartPos, targetPos, _elapsed / 1.5f);
-        //}
-
-        //finRot = transform.rotation;
-
-        //CellPos = finPos;
-        //RotInfo = finRot;
-        //SyncPos();
     }
 
     private void AttackTarget()

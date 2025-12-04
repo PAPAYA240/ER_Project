@@ -413,6 +413,8 @@ public class ObjectManager
             if(go== null)
                 return null;
             proj = go.GetComponent<Projectile>();
+            if (proj == null)
+                return null;
 
             Transform parent = GetOrCreateParent("@ Projectile Pool");
             proj.transform.SetParent(parent);

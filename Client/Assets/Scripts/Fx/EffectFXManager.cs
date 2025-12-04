@@ -93,7 +93,7 @@ public class EffectFXManager : MonoBehaviour
                 fxObject.transform.localPosition = data.position;
                 fxObject.transform.localRotation = Quaternion.identity;
             }
-            else if(data.target == EEffectTarget.Enemy)
+            else if (data.target == EEffectTarget.Enemy)
             {
                 fxObject.transform.SetParent(casterTransform);
                 fxObject.transform.SetPositionAndRotation(spawnPos, spawnRot);
@@ -244,6 +244,13 @@ public class EffectFXManager : MonoBehaviour
             case EEffectTarget.Shot:
                 parentTransform = null;
                 return casterTransform.position + data.position;
+
+            case EEffectTarget.Default:
+                parentTransform = null;
+                Vector3 flatOffset = new Vector3(data.position.x, 0, data.position.z);
+                Vector3 worldOffsetDefault = spawnRot * flatOffset;
+                return casterTransform.position + worldOffsetDefault + new Vector3(0, data.position.y, 0);
+
             default:
                 parentTransform = null;
                 return Vector3.zero;
@@ -264,6 +271,11 @@ public class EffectFXManager : MonoBehaviour
             case EEffectTarget.Mouse:
             case EEffectTarget.Shot:
                 return rot;
+
+            case EEffectTarget.Default:
+                Quaternion baseRot = rot != Quaternion.identity ? rot : casterTransform.rotation;
+                Quaternion xRotation = Quaternion.Euler(-90f, 0f, 0f);
+                return baseRot * xRotation;
 
             default:
                 return Quaternion.identity;

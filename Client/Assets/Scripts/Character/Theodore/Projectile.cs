@@ -10,6 +10,7 @@ public class Projectile : BaseController
 
     void Update()
     {
+
     }
     void OnTriggerEnter(Collider other)
     {

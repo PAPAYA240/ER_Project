@@ -21,13 +21,11 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FX_BI_fire_10
-  m_Shader: {fileID: -6465566751694194690, guid: f16f65353090a4f49922e279f05df6d3,
-    type: 3}
+  m_Shader: {fileID: 4800000, guid: 6bf95a06ba44aa944882be4e15851b7a, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _EMISSION
+  m_InvalidKeywords: []
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -48,7 +46,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: bb377ac92b802794cbe3398262ccc776, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6961edbad8a492f48b3ff9e0c6a1c735, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
@@ -113,7 +111,7 @@ Material:
     - _ZWrite: 0
     m_Colors:
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-    - _Color: {r: 1.9999998, g: 1.9999998, b: 1.9999998, a: 1}
+    - _Color: {r: 0.11, g: 0.52, b: 0.99, a: 1}
     - _ColorAddSubDiff: {r: -1, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _MKGlowColor: {r: 1, g: 0.47529286, b: 0, a: 1}

@@ -54,7 +54,7 @@
               "position": {
                 "x": 0,
                 "y": 0,
-                "z": 4.4
+                "z": 0
               }
             },
             {
@@ -117,14 +117,14 @@
         "R": {
           "Caster": [
             {
-              "prefabName": "FX_RSkill_linoleum",
-              "target": "Self",
+              "prefabName": "FX_Skill04_linoleum",
+              "target": "Default",
               "delayTime": 0.5,
-              "duration": 0.8,
+              "duration": 5,
               "position": {
                 "x": 0,
                 "y": 0,
-                "z": 6
+                "z": 0
               }
             }
           ],
@@ -135,6 +135,25 @@
               "target": "Self",
               "duration": 5.0,
               "attachBoneName": "ShotPoint"
+            },
+            {
+              "prefabName": "FX_Skill04_ShotWind",
+              "target": "Self",
+              "duration": 5.0,
+              "attachBoneName": "ShotPoint"
+            },
+            {
+              "prefabName": "FX_Skill04_Shot",
+              "target": "Self",
+              "duration": 5.0,
+              "attachBoneName": "ShotPoint"
+            },
+            {
+              "prefabName": "FX_R_Hit",
+              "target": "Self",
+              "attachBoneName": "Fx_Center",
+              "duration": 0.05,
+              "delayTime": 0
             }
           ]
         },
@@ -153,7 +172,15 @@
               }
             }
           ],
-          "HitTarget": []
+          "Select": [
+            {
+              "prefabName": "FX_D_Hit",
+              "target": "Self",
+              "attachBoneName": "Fx_Center",
+              "duration": 0.05,
+              "delayTime": 0
+            }
+          ]
         },
         "F1": {
           "Caster": [
