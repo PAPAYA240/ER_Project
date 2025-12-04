@@ -147,7 +147,6 @@ public class PlayerInputController : MonoBehaviour
         _nextAutoAttackSendTime = Time.time + _attackInputInterval;
 
         // 공격 패킷 생성
-        Debug.Log(cc.Id);
         return new C_Attack { TargetId = cc.Id };
     }
 

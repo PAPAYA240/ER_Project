@@ -123,7 +123,6 @@ public class MyPlayerController : PlayerController
                 {
                     _lastOperateTime = Time.time;
                     Managers.Network.Send(deploying);
-                    Debug.Log($"@ Send Packet! : Id - {deploying.ObjectId}");
                 }
                 else
                 {

@@ -263,6 +263,5 @@ public class Rozzi_AttackState : Player_AttackState
         }
 
         p.Room.Push(p.Room.LeaveGame, pkt.ObjectId);
-        Console.WriteLine($"@ ApplyProjectileHit");
     }
 }

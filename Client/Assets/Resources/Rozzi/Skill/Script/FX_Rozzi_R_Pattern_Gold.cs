@@ -30,7 +30,6 @@ public class FX_Rozzi_R_Pattern_Gold : MonoBehaviour
         _time = 0f;
         SetProgress(0f);
         transform.localRotation = Quaternion.identity;
-        Debug.Log($"@ OnEnable : Id - {gameObject.GetInstanceID()}, time - {_time}");
     }
 
     void OnDisable()
@@ -41,13 +40,8 @@ public class FX_Rozzi_R_Pattern_Gold : MonoBehaviour
 
     private void Update()
     {
-        // 인게임(Play 모드)에서만 동작
-        //if (!Application.isPlaying)
-        //    return;
-
         _time += Time.deltaTime * DELTA;
         float t = Mathf.Clamp01(_time / duration);
-        Debug.Log($"@ Update : Id - {gameObject.GetInstanceID()}, time - {_time:F3}, t - {t:F3}");
         SetProgress(t);
     }
 
@@ -56,7 +50,5 @@ public class FX_Rozzi_R_Pattern_Gold : MonoBehaviour
         _renderer.GetPropertyBlock(_mpb);
         _mpb.SetFloat(propertyName, value);
         _renderer.SetPropertyBlock(_mpb);
-        //_renderer.material.SetFloat(propertyName, value);
-        Debug.Log($"@ SetProgress : Id - {gameObject.GetInstanceID()}, _mpb : {_mpb.GetFloat("_Progress")}, value : {value}");
     }
 }
