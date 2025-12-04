@@ -243,7 +243,6 @@ public class PlayerController : CreatureController
         set
         {
             _isKeyInput = value;
-            Debug.Log($"IsKeyInput changed: {value}");
         }
     }
 
@@ -385,7 +384,6 @@ public class PlayerController : CreatureController
 
     public override void OnDamaged()
     {
-        Debug.Log("Player HIT !");
     }
 
     public void OnHit(S_AttackInfo atkInfoPacket)
@@ -401,8 +399,12 @@ public class PlayerController : CreatureController
             Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
 
         if (Enum.TryParse<KeyCode>(atkInfoPacket.AttackType, out KeyCode key))
-            PlaySelectEffect(key, default(Vector3), default(Vector3), default(Quaternion), $"FX_{key}_Hit", tbc.transform);
-
+            PlaySelectEffect(key, default(Vector3), default(Vector3), default(Quaternion), $"FX_{atkInfoPacket.AttackType}_Hit", tbc.transform);
+        else
+        {
+            if (ObjInfo.Player.CharType == CharacterType.Theodore) // Normal Attack
+                PlaySelectEffect(KeyCode.F2, default(Vector3), default(Vector3), default(Quaternion), $"FX_{atkInfoPacket.AttackType}_Hit", tbc.transform);
+        }
     }
 
     public void OnStop(S_Stop packet)
@@ -423,7 +425,6 @@ public class PlayerController : CreatureController
 
     public void ChangeState(S_PlayerState packet)
     {
-        //Debug.Log($"Id : {Id}, Cur : {State}, Next : {packet.State}");
         State = packet.State;
     }
 
@@ -537,8 +538,8 @@ public class PlayerController : CreatureController
     public void ChangeSpeed(string paramName, float speed)
     {
         _animator.SetFloat(paramName, speed);
-        Debug.Log(speed);
     }
+
     public void PlayEffectFromServer(S_Fx packet, Vector3 mousePos, Vector3 targetPos = new Vector3(), Quaternion targetRot = default(Quaternion))
     {
         Transform targetTransform = null;

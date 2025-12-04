@@ -178,11 +178,18 @@ public class PlayerSkillController : MonoBehaviour
         packet.RequestId = requestId;
         packet.Seq = 1;
 
-        Vector3 collisionPos = Vector3.zero;
-
         Vector3 startPos = new Vector3(startX, transform.position.y, startZ);
         Vector3 targetPos = new Vector3(endX, transform.position.y, endZ);
 
+        if((startPos.x == 0 && startPos.z == 0) || (targetPos.x == 0 && targetPos.z == 0))
+        {
+            Debug.Log($"SkillCollision Input Error! : startPos - {startPos}, targetPos - {targetPos}");
+            packet.CollisionX = startX;
+            packet.CollisionZ = startZ;
+            return packet;
+        }    
+
+        Vector3 collisionPos = startPos;
         if (type == CollisionType.Block)
             collisionPos = ComputeEndBlocked(startPos, targetPos);
         else if (type == CollisionType.Pass)
@@ -398,8 +405,7 @@ public class PlayerSkillController : MonoBehaviour
             return GetValidPosition(startPos, navHit.position);
         else
         {
-            var start = transform.position;
-            return GetReachablePosition(start, targetPos, out NavMeshHit hit);
+            return GetReachablePosition(startPos, targetPos, out NavMeshHit hit);
         }
     }
 
@@ -450,7 +456,7 @@ public class PlayerSkillController : MonoBehaviour
         }
 
         Debug.Log("GetReachablePosition Error!");
-        return Vector3.zero;
+        return startPos;
     }
 
     void LocalFollowTick(int targetId, float speed, bool passWalls) 
@@ -468,17 +474,17 @@ public class PlayerSkillController : MonoBehaviour
 
     public void CreateSkillMesh(KeyCode keyCode)
     {
-        //if (DataManager.SkillHitboxDict[_player.ObjInfo.Player.CharType].TryGetValue(keyCode, out SkillHitbox skillHitbox))
-        //{
-        //    GameObject go = Managers.Resource.Instantiate("Debug/SkillMesh", gameObject.transform);
-        //    SkillMesh sm = go.GetComponent<SkillMesh>();
-        //    if (sm == null)
-        //        return;
-        //    sm.Init(skillHitbox, gameObject.transform, _player.ObjInfo.Player.Team);
+       //if (DataManager.SkillHitboxDict[_player.ObjInfo.Player.CharType].TryGetValue(keyCode, out SkillHitbox skillHitbox))
+       //{
+       //    GameObject go = Managers.Resource.Instantiate("Debug/SkillMesh", gameObject.transform);
+       //    SkillMesh sm = go.GetComponent<SkillMesh>();
+       //    if (sm == null)
+       //        return;
+       //    sm.Init(skillHitbox, gameObject.transform, _player.ObjInfo.Player.Team);
 
-        //    if (_player.ObjInfo.Player.CharType == CharacterType.Abigail && keyCode == KeyCode.Q)
-        //        CreateSkillMesh(KeyCode.F1);
-        //}
+       //    if (_player.ObjInfo.Player.CharType == CharacterType.Abigail && keyCode == KeyCode.Q)
+       //        CreateSkillMesh(KeyCode.F1);
+       //}
     }
     #endregion
 

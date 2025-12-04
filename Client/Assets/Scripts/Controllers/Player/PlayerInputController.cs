@@ -147,7 +147,6 @@ public class PlayerInputController : MonoBehaviour
         _nextAutoAttackSendTime = Time.time + _attackInputInterval;
 
         // 공격 패킷 생성
-        Debug.Log(cc.Id);
         return new C_Attack { TargetId = cc.Id };
     }
 
@@ -438,19 +437,9 @@ public class PlayerInputController : MonoBehaviour
         return Vector3.zero;
     }
 
-    private GameObject GetAttackableUnderCursor(float radius = 0.1f)
+    private GameObject GetAttackableUnderCursor(int mask = default,  float radius = 0.1f)
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.SphereCast(ray, radius, out RaycastHit hit, 1000f, _monsterMask | _playerMask))
-        {
-            var cc = hit.collider.GetComponentInChildren<CreatureController>();
-            if (cc != null && IsAttackable(hit.collider.gameObject))
-            {
-                return cc.gameObject;
-            }
-        }
-
-        return null;
+        return _player.GetAttackableUnderCursor(mask, radius);
     }
 
     protected int GetAttackableUnderCursorID(float radius = 0.1f)
@@ -555,33 +544,6 @@ public class PlayerInputController : MonoBehaviour
         return path.corners[path.corners.Length - 1];
     }
 
-    private bool IsAttackable(GameObject targetObject)
-    {
-        if (targetObject == null)
-            return false;
-
-        CreatureController cc = targetObject.GetComponentInChildren<CreatureController>();
-        if (cc == null)
-            return false;
-
-        if (cc.Untargetable)
-            return false;
-
-        // 나 자신일 때
-        if (cc.Id == _player.Id)
-            return false;
-
-        // 같은 팀일 때
-        if (cc.ObjInfo.Player != null && cc.ObjInfo.Player.Team == _player.ObjInfo.Player.Team)
-            return false;
-
-        // 대상이 죽었을 때 || 무적 상태일 때 || 시야 밖일 때(부시) 등등
-        if (cc.State == CreatureState.Dead)
-            return false;
-
-        return true;
-    }
-
     private bool IsInAttackRange(Vector3 myPos, Vector3 targetPos)
     {
         Vector2 myXZ = new Vector2(myPos.x, myPos.z);
@@ -590,7 +552,7 @@ public class PlayerInputController : MonoBehaviour
 
         float effectiveRange = Mathf.Max(0.05f, _player.AttackRange - _stopBuffer);
         return dist <= effectiveRange;
-    }
+    }   
     #endregion
 
 }

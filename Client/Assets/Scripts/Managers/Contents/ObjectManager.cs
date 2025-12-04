@@ -112,7 +112,8 @@ public class ObjectManager
 
             if (Managers.Info.Team != pc.ObjInfo.Player.Team)
             {
-                go.gameObject.AddComponent<HighlightEffect>();
+                HighlightEffect he = go.gameObject.AddComponent<HighlightEffect>();
+                he.Owner = pc;
                 if (ui_minimap != null)
                 {
                     ui_minimap.ActivatePlayerIcon(UI_MinimapCharIcon.IconType.EnemyPlayer, pc);
@@ -153,43 +154,23 @@ public class ObjectManager
         if (go == null)
         {
             ProjectileType type = info.Projectile.ProjectileType;
-            if (type == ProjectileType.ProjectileRozziNormalAttack)
-            {
-                // 1) 풀에서 꺼내기
-                Projectile pc = GetOrCreateProjectile(info.Projectile.ProjectileType);
-                go = pc.gameObject;
-                go.name = "Projectile_" + info.ObjectId;
+           // 1) 풀에서 꺼내기
+           Projectile pc = GetOrCreateProjectile(info.Projectile.ProjectileType);
+           go = pc.gameObject;
+           go.name = "Projectile_" + info.ObjectId;
 
-                // 2) 기본 정보 세팅
-                pc.PosInfo = info.PosInfo;
-                pc.Stat = info.StatInfo;
-                pc.Type = info.Projectile.ProjectileType;
-                pc.Owner = Managers.Object.FindById(info.Projectile.OwnerId);
-                pc.Id = info.ObjectId;
+           // 2) 기본 정보 세팅
+           pc.PosInfo = info.PosInfo;
+           pc.Stat = info.StatInfo;
+           pc.Type = info.Projectile.ProjectileType;
+           pc.Owner = Managers.Object.FindById(info.Projectile.OwnerId);
+           pc.Id = info.ObjectId;
 
-                // 3) 딕셔너리에 등록
-                _objects.Add(info.ObjectId, go);
+           // 3) 딕셔너리에 등록
+           _objects.Add(info.ObjectId, go);
 
-                // 4) 위치 동기화
-                pc.SyncPos();
-            }
-            else
-            {
-                go = Managers.Resource.Instantiate($"Creature/Weapon/{type}");
-                go.name = "Projectile_" + info.ObjectId;
-
-                Projectile pc = go.GetComponent<Projectile>();
-                pc.PosInfo = info.PosInfo;
-                pc.Stat = info.StatInfo;
-                pc.Type = info.Projectile.ProjectileType;
-                pc.Owner = Managers.Object.FindById(info.Projectile.OwnerId);
-
-                Transform parent = GetOrCreateParent("@ Projectiles");
-                pc.transform.SetParent(parent);
-
-                _objects.Add(info.ObjectId, go);
-                pc.SyncPos();
-            }               
+           // 4) 위치 동기화
+           pc.SyncPos();
         }
     }
     private void AddEnvironment(ObjectInfo info)
@@ -430,7 +411,11 @@ public class ObjectManager
         {
             // 새로 생성
             GameObject go = Managers.Resource.Instantiate($"Creature/Weapon/{type}");
+            if(go== null)
+                return null;
             proj = go.GetComponent<Projectile>();
+            if (proj == null)
+                return null;
 
             Transform parent = GetOrCreateParent("@ Projectile Pool");
             proj.transform.SetParent(parent);

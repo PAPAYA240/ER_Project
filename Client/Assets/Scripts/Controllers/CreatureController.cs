@@ -1,8 +1,12 @@
 ﻿using Google.Protobuf.Protocol;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class CreatureController : BaseController
 {
+    [SerializeField] private LayerMask _monsterMask;
+    [SerializeField] private LayerMask _playerMask;
+
     public override StatInfo Stat
     {
         get { return base.Stat; }
@@ -111,6 +115,7 @@ public class CreatureController : BaseController
     {
         SyncPos();
         base.Init();
+        SetAttackableLayerMask();
     }
     public virtual void OnDamaged()
     {
@@ -152,31 +157,81 @@ public class CreatureController : BaseController
         Stat.StaminaRegen += growth.StaminaRegen;
     }
 
+    public GameObject GetAttackableUnderCursor(int mask = default, float radius = 0.1f)
+    {
+        if (mask == default)
+            mask = GetAttackableLayerMask();
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.SphereCast(ray, radius, out RaycastHit hit, 1000f, mask))
+        {
+            var cc = hit.collider.GetComponentInChildren<CreatureController>();
+            if (cc != null && IsAttackable(cc))
+            {
+                return cc.gameObject;
+            }
+        }
+
+        return null;
+    }
+
     public bool IsAttackable(GameObject targetObject)
     {
         if (targetObject == null)
             return false;
 
         CreatureController cc = targetObject.GetComponentInChildren<CreatureController>();
-        if (cc == null) 
-            return false;
+        return IsAttackable(cc);
+    }
 
-        if (cc.Untargetable)
+    public bool IsAttackable(CreatureController cc)
+    {
+        if (cc == null)
             return false;
 
         // 나 자신일 때
-        if(cc.Id == Id) 
+        if (cc.Id == Id)
             return false;
 
         // 같은 팀일 때
-        if (cc.ObjInfo.Player?.Team == ObjInfo.Player?.Team)
+        if (cc.ObjInfo.Player != null && cc.ObjInfo.Player.Team == ObjInfo.Player.Team)
             return false;
 
-        // 대상이 죽었을 때 || 무적 상태일 때 || 시야 밖일 때(부시) 등등
+        // 지정 불가 상태일 때
+        if (cc.Untargetable)
+            return false;
+
+        // 대상이 죽었을 때 
         if (cc.State == CreatureState.Dead)
             return false;
 
+        // 대상이 시야 밖일 때
+        if (!IsVisibleObject(cc.Id))
+            return false;
+
         return true;
+    }
+
+    private bool IsVisibleObject(int id)
+    {
+        if (Managers.Scene.CurrentScene is GameScene scene)
+            return scene.IsVisibleObject(id);
+
+        return false;
+    }
+
+    private int GetAttackableLayerMask()
+    {
+        if (_monsterMask == default || _playerMask == default)
+            SetAttackableLayerMask();
+
+        return _monsterMask | _playerMask;
+    }
+
+    private void SetAttackableLayerMask()
+    {
+        _monsterMask = 1 << LayerMask.NameToLayer("Monster");
+        _playerMask = 1 << LayerMask.NameToLayer("Player");
     }
 
     #region Shader

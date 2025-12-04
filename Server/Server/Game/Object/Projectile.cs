@@ -10,7 +10,7 @@ namespace Server.Game
         public Creature Owner = null;
         public ProjectileType ProjectileType { get; set; }
         protected long _endTime = 0;
-        private long _lastTickTime = 0;
+        protected long _lastTickTime = 0;
         private float _speed = 15.0f;
 
         public Projectile()
@@ -23,7 +23,7 @@ namespace Server.Game
             if (Owner == null)
                 return;
 
-            _endTime = Environment.TickCount64 + 500;
+            _endTime = Environment.TickCount64 + 1000;
             _lastTickTime = Environment.TickCount64;
 
             // Owner의 현재 위치를 복사
@@ -55,7 +55,7 @@ namespace Server.Game
             Moving();
         }
 
-        private void Moving()
+        protected void Moving()
         {
             // 플레이어 위치 계산
             long currentTickTime = Environment.TickCount64;

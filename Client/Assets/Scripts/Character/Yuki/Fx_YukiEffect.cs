@@ -4,7 +4,7 @@ public class Fx_YukiEffect : MonoBehaviour, IEffect
 {
     private ParticleSystem ps;
 
-    private Material particleMaterial; // ÆÄÆ¼Å¬ ½Ã½ºÅÛ¿¡ »ç¿ëµÇ´Â ¸ÓÆ¼¸®¾ó
+    private Material particleMaterial; // ï¿½ï¿½Æ¼Å¬ ï¿½Ã½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½
 
     void Awake()
     {
@@ -38,10 +38,10 @@ public class Fx_YukiEffect : MonoBehaviour, IEffect
     {
         if (ps != null && particleMaterial != null && ps.isPlaying)
         {
-            // ÆÄÆ¼Å¬ ½Ã½ºÅÛÀÌ Àç»ý ÁßÀÏ ¶§¸¸ _EffectTimeÀ» ¾÷µ¥ÀÌÆ®
+            // ï¿½ï¿½Æ¼Å¬ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ _EffectTimeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
             particleMaterial.SetFloat("_EffectTime", ps.time);
         }
-        // ÆÄÆ¼Å¬ ½Ã½ºÅÛÀÌ ¸ØÃß¸é _EffectTimeÀ» ¾÷µ¥ÀÌÆ®ÇÏÁö ¾ÊÀ¸¹Ç·Î, ÆÞ½º ¾Ö´Ï¸ÞÀÌ¼Çµµ ¸ØÃä´Ï´Ù.
-        // Àç»ý ½ÃÀÛ ½Ã targetParticleSystem.timeÀº 0ºÎÅÍ ½ÃÀÛÇÏ¹Ç·Î ÆÞ½ºµµ ÃÊ±âÈ­µË´Ï´Ù.
+        // ï¿½ï¿½Æ¼Å¬ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß¸ï¿½ _EffectTimeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½, ï¿½Þ½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼Çµï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
+        // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ targetParticleSystem.timeï¿½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¹Ç·ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ï¿½Ë´Ï´ï¿½.
     }
 }

@@ -5,20 +5,30 @@
         "Q": {
           "Caster": [
             {
-              "prefabName": "FX_SkillFire",
+              "prefabName": "FX_Skill01_Shot",
               "target": "Self",
               "duration": 2.5,
               "attachBoneName": "ShotPoint"
             },
             {
-              "prefabName": "FX_linoleum",
+              "prefabName": "FX_BI_Theodore_Skill01_Laser",
               "target": "Self",
-              "delayTime": 0.3,
-              "duration": 0.6,
+              "duration": 2,
               "position": {
                 "x": 0,
                 "y": 0,
-                "z": 4.0
+                "z": 2.4
+              }
+            },
+            {
+              "prefabName": "FX_Skill01_Iinoleum",
+              "target": "Self",
+              "delayTime": 0.3,
+              "duration": 1,
+              "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
               }
             }
           ],
@@ -44,7 +54,7 @@
               "position": {
                 "x": 0,
                 "y": 0,
-                "z": 4.4
+                "z": 0
               }
             },
             {
@@ -81,7 +91,19 @@
           ]
         },
         "E": {
-          "Caster": [],
+          "Caster": [
+            {
+              "prefabName": "FX_Skill03_Fetter",
+              "target": "Self",
+              "delayTime": 0,
+              "duration": 1,
+              "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ],
           "Select": [
             {
               "prefabName": "FX_E_Hit",
@@ -95,18 +117,45 @@
         "R": {
           "Caster": [
             {
-              "prefabName": "FX_RSkill_linoleum",
-              "target": "Self",
+              "prefabName": "FX_Skill04_linoleum",
+              "target": "Default",
               "delayTime": 0.5,
-              "duration": 0.8,
+              "duration": 5,
               "position": {
                 "x": 0,
                 "y": 0,
-                "z": 6
+                "z": 0
               }
             }
           ],
-          "HitTarget": []
+          "HitTarget": [],
+          "Select": [
+            {
+              "prefabName": "FX_Skill04_Charging",
+              "target": "Self",
+              "duration": 5.0,
+              "attachBoneName": "ShotPoint"
+            },
+            {
+              "prefabName": "FX_Skill04_ShotWind",
+              "target": "Self",
+              "duration": 5.0,
+              "attachBoneName": "ShotPoint"
+            },
+            {
+              "prefabName": "FX_Skill04_Shot",
+              "target": "Self",
+              "duration": 5.0,
+              "attachBoneName": "ShotPoint"
+            },
+            {
+              "prefabName": "FX_R_Hit",
+              "target": "Self",
+              "attachBoneName": "Fx_Center",
+              "duration": 0.05,
+              "delayTime": 0
+            }
+          ]
         },
         "D": {
           "Caster": [
@@ -123,7 +172,15 @@
               }
             }
           ],
-          "HitTarget": []
+          "Select": [
+            {
+              "prefabName": "FX_D_Hit",
+              "target": "Self",
+              "attachBoneName": "Fx_Center",
+              "duration": 0.05,
+              "delayTime": 0
+            }
+          ]
         },
         "F1": {
           "Caster": [
@@ -137,6 +194,31 @@
                 "y": 0,
                 "z": 0
               }
+            }
+          ]
+        },
+        "F2": {
+          "Caster": [
+            {
+              "prefabName": "FX_NormalAttack",
+              "attachBoneName": "ShotPoint",
+              "target": "Self",
+              "duration": 2.5,
+              "delayTime": 0,
+              "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          ],
+          "Select": [
+            {
+              "prefabName": "FX_Attack_Hit",
+              "target": "Self",
+              "attachBoneName": "Fx_Center",
+              "duration": 0.05,
+              "delayTime": 0
             }
           ]
         }
@@ -260,13 +342,13 @@
         },
         "E": {
           "Caster": [
-            {
-              "prefabName": "FX_BI_Rozzi_Skill03_JumpSmoke",
-              "target": "Self",
-              "duration": 1
-            }
           ],
           "Select": [
+            {
+              "prefabName": "FX_BI_Rozzi_Skill03_JumpSmoke",
+              "target": "Target",
+              "duration": 1
+            },
             {
               "prefabName": "FX_BI_Rozzi_Skill03_Ground",
               "target": "Enemy",
@@ -295,19 +377,19 @@
           ]
         },
         "R": {
-          "Caster": [
+          "Caster": [           
+          ],
+          "Select": [
             {
               "prefabName": "FX_BI_Rozzi_Skill04_Fire",
-              "target": "Self",
-              "duration": 3,
+              "target": "Target",
+              "duration": 1,
               "position": {
                 "x": 0,
                 "y": 1,
                 "z": 0
               }
-            }
-          ],
-          "Select": [
+            },
             {
               "prefabName": "FX_BI_Rozzi_Skill04_Buff",
               "target": "Self",
@@ -315,8 +397,13 @@
             },
             {
               "prefabName": "FX_BI_Rozzi_Skill04_Explore",
-              "target": "Enemy",
-              "duration": 1
+              "target": "EnemyHit",
+              "duration": 1,
+              "position": {
+                "x": 0,
+                "y": -0.5,
+                "z": 0
+              }
             },
             {
               "prefabName": "FX_BI_Rozzi_Skill04_Set_Character",
@@ -325,13 +412,8 @@
             },
             {
               "prefabName": "FX_BI_Rozzi_Skill04_Set_Character_Count",
-              "target": "Enemy",
-              "duration": 3,
-              "position": {
-                "x": 0,
-                "y": -0.5,
-                "z": 0
-              }
+              "target": "TargetNoRotation",
+              "duration": 3
             },
             {
               "prefabName": "FX_BI_Rozzi_Skill04_Set_Character_Hit",
@@ -374,15 +456,15 @@
             },
             {
               "prefabName": "FX_BI_Rozzi_NormalAttack_Shot_L",
-              "target": "Self",
+              "target": "EnemyHit",
               "duration": 1,
-              "attachBoneName": "Muzzl_L"
+              "attachBoneName": "Muzzle_L"
             },
             {
               "prefabName": "FX_BI_Rozzi_NormalAttack_Shot_R",
-              "target": "Self",
+              "target": "EnemyHit",
               "duration": 1,
-              "attachBoneName": "Muzzl_R"
+              "attachBoneName": "Muzzle_R"
             },
             {
               "prefabName": "FX_BI_Rozzi_NormalAttack_Hit",

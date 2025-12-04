@@ -93,10 +93,24 @@ public class EffectFXManager : MonoBehaviour
                 fxObject.transform.localPosition = data.position;
                 fxObject.transform.localRotation = Quaternion.identity;
             }
-            else if(data.target == EEffectTarget.Enemy)
+            else if (data.target == EEffectTarget.Enemy)
             {
                 fxObject.transform.SetParent(casterTransform);
                 fxObject.transform.SetPositionAndRotation(spawnPos, spawnRot);
+            }
+            else if (data.target == EEffectTarget.TargetNoRotation)
+            {
+                Transform followTarget = casterTransform;
+                fxObject.transform.position = spawnPos;
+                Quaternion fixedRot = Quaternion.identity;
+                fxObject.transform.rotation = fixedRot;
+
+                var follow = fxObject.GetComponent<FX_TargetNoRotation>();
+                if (follow == null)
+                    follow = fxObject.AddComponent<FX_TargetNoRotation>();
+
+                // data.position 을 world offset으로 쓰고 싶으면
+                follow.Setup(followTarget, data.position, fixedRot, faceCamera: false);
             }
             else
             {
@@ -201,7 +215,7 @@ public class EffectFXManager : MonoBehaviour
 
         Managers.FX.Push(effect);
 
-        effect.transform.SetParent(null);
+        effect?.transform.SetParent(null);
     }
 
     private IEnumerator ReturnToPoolAfterDelay(int ownerId, GameObject fxObject, string prefabName, float delayTime, float duration, Transform casterTransform)
@@ -244,6 +258,13 @@ public class EffectFXManager : MonoBehaviour
             case EEffectTarget.Shot:
                 parentTransform = null;
                 return casterTransform.position + data.position;
+
+            case EEffectTarget.Default:
+                parentTransform = null;
+                Vector3 flatOffset = new Vector3(data.position.x, 0, data.position.z);
+                Vector3 worldOffsetDefault = spawnRot * flatOffset;
+                return casterTransform.position + worldOffsetDefault + new Vector3(0, data.position.y, 0);
+
             default:
                 parentTransform = null;
                 return Vector3.zero;
@@ -264,6 +285,11 @@ public class EffectFXManager : MonoBehaviour
             case EEffectTarget.Mouse:
             case EEffectTarget.Shot:
                 return rot;
+
+            case EEffectTarget.Default:
+                Quaternion baseRot = rot != Quaternion.identity ? rot : casterTransform.rotation;
+                Quaternion xRotation = Quaternion.Euler(-90f, 0f, 0f);
+                return baseRot * xRotation;
 
             default:
                 return Quaternion.identity;
