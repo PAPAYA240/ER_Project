@@ -89,6 +89,8 @@ public class CameraController : MonoBehaviour
     {
         if (!_bSkillCam)
             LateDefaultMode();
+
+        LateUpdateAction?.Invoke();
     }
 
     #region Default Mode
@@ -131,8 +133,6 @@ public class CameraController : MonoBehaviour
             Vector3 zoomedOffset = _delta.normalized * _currentZoom;
             transform.position = _player.transform.position + zoomedOffset;
             transform.LookAt(_player.transform.position + Vector3.up);
-
-            LateUpdateAction?.Invoke();
         }
     }
     #endregion

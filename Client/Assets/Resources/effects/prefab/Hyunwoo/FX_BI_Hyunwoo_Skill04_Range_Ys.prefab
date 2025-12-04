@@ -2388,7 +2388,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1256623018023681}
   serializedVersion: 8
-  lengthInSec: 0.05
+  lengthInSec: 3.2
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -4687,7 +4687,6 @@ GameObject:
   - component: {fileID: 4192926135617481}
   - component: {fileID: 198524845050355019}
   - component: {fileID: 199660259195846007}
-  - component: {fileID: 114236568177216588}
   - component: {fileID: 135293253616924216}
   m_Layer: 15
   m_Name: FX_BI_Hyunwoo_Skill04_Range_Ys
@@ -4720,7 +4719,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1490446374065640}
   serializedVersion: 8
-  lengthInSec: 0.05
+  lengthInSec: 3.2
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -7008,19 +7007,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &114236568177216588
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1490446374065640}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36cbf226ee13bccfdee14097ee974fb0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  time: 4.5
 --- !u!135 &135293253616924216
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -7084,7 +7070,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1509152437195946}
   serializedVersion: 8
-  lengthInSec: 0.05
+  lengthInSec: 3.2
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -9465,7 +9451,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1821895350573846}
   serializedVersion: 8
-  lengthInSec: 0.05
+  lengthInSec: 3.2
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0

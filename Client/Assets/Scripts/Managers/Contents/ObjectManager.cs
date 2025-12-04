@@ -294,9 +294,6 @@ public class ObjectManager
             if (go == null)
                 continue;
 
-            if (go == null)
-                continue;
-
             if (go.GetComponent<EnvController>() != null)
                 continue;
 

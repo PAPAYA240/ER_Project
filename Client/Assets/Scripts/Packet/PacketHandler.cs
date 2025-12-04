@@ -354,25 +354,24 @@ class PacketHandler
         if (cc == null)
             return;
 
-        cc.Stat.Level += levelUpPkt.LevelUpCnt;
-
+        cc.Stat.Level = levelUpPkt.Level;
         cc.ChangeStat(levelUpPkt.StatGrowth);
 
-        Debug.Log($" Id {cc.Id} ");
-        Debug.Log($" LevelUpCnt : {levelUpPkt.LevelUpCnt}, After Level : {cc.Stat.Level} ");
-        Debug.Log($" MaxHp : {levelUpPkt.StatGrowth.MaxHp}, MaxStamina : {levelUpPkt.StatGrowth.MaxStamina} ");
+        //Debug.Log($" Id {cc.Id} ");
+        //Debug.Log($" LevelUpCnt : {levelUpPkt.LevelUpCnt}, After Level : {cc.Stat.Level} ");
+        //Debug.Log($" MaxHp : {levelUpPkt.StatGrowth.MaxHp}, MaxStamina : {levelUpPkt.StatGrowth.MaxStamina} ");
 
         //아래는 레벨이 제대로 표시되게 하는 코드
         //마이 플레이어면 업데이트 하고 리턴
-        MyPlayerController mpc = go.GetComponent<MyPlayerController>();
-        if (null != mpc)
+        
+        if (Managers.Object.MyPlayer != null && Managers.Object.MyPlayer.Id == levelUpPkt.ObjectId)
         {
-            mpc.UI.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
-            mpc.UpdateLevel();
-            mpc.UI.PlayerInterface.UpdateStat();
-            mpc.Exp = levelUpPkt.CurExp;
-            mpc.MaxExp = levelUpPkt.NextMaxExp;
-            Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(mpc.Id);
+            Managers.Object.MyPlayer.UI.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
+            Managers.Object.MyPlayer.UpdateLevel();
+            Managers.Object.MyPlayer.UI.PlayerInterface.UpdateStat();
+            Managers.Object.MyPlayer.Exp = levelUpPkt.CurExp;
+            Managers.Object.MyPlayer.MaxExp = levelUpPkt.NextMaxExp;
+            Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(Managers.Object.MyPlayer.Id);
             Managers.Sound.Play("sound/ui/effect_levelup");
             return;
         }
@@ -819,7 +818,7 @@ class PacketHandler
 
         if(soundPkt.Name.Contains("BGM"))
         {
-            Managers.Sound.Play($"sound/bgm/P{Managers.Object.MyPlayer.CurPhase}", Define.Sound.Bgm);
+            Managers.Sound.Play($"sound/bgm/P{Managers.Object.MyPlayer.CurPhase}", Define.Sound.Bgm, 0.1f);
             return;
         }
 
