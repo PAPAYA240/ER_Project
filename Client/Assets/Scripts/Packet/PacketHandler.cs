@@ -212,6 +212,7 @@ class PacketHandler
             PlayerController pc = cc as PlayerController;
             if (pc == null)
                 return;
+            pc.ActiveRenderer(true);
 
             // 공격 플레이어
             GameObject attackerGo = Managers.Object.FindById(diePacket.AttackerId);
@@ -402,8 +403,10 @@ class PacketHandler
         Vector3 targetPos = fxPacket.TargetPosition.ToVector();
         Quaternion targetRot = fxPacket.TargetRotation;
 
-        if(fxPacket.CanLookatMouse == true)
-            pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));
+        if (fxPacket.CanLookatMouse == true)
+        {
+            pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));  
+        }
         pc.PlayEffectFromServer(fxPacket, mousePos, targetPos, targetRot);
     }
 
@@ -715,7 +718,7 @@ class PacketHandler
         GameObject go = Managers.Object.FindById(stunPacket.ObjectId);
         if (go == null)     return;
         GameObject goAtk = Managers.Object.FindById(stunPacket.AttackerId);
-        if (go == null)     return;
+        if (goAtk == null)     return;
         CreatureController cc = go.GetComponentInChildren<CreatureController>();
         if (cc == null)     return;
         CreatureController atkc = goAtk.GetComponentInChildren<CreatureController>();

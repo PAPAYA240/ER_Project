@@ -305,7 +305,7 @@ public class PlayerInputController : MonoBehaviour
         return null;
     }
 
-    private bool IsCharge(KeyCode key)
+    protected bool IsCharge(KeyCode key)
     {
         SkillData skillData = DataManager.SkillDict[_player.ObjInfo.Player.CharType][key];
         if (skillData == null)
