@@ -196,8 +196,6 @@ public class PlayerViewController : MonoBehaviour
         if (_followTargetId == 0)
             return;
 
-        // TEMP : 나중에 Target 상태 체크해서 쫓아갈지 검사
-        //var targetView = FindVisibleObjectById(_followTargetId);
         var targetView = Managers.Object.FindById(_followTargetId);
         if (!_player.IsAttackable(targetView, out var reason))
         {

@@ -92,7 +92,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CRozziNormalAttack, MakePacket<C_RozziNormalAttack>);
 		_handler.Add((ushort)MsgId.CRozziNormalAttack, PacketHandler.C_RozziNormalAttackHandler);		
 		_onRecv.Add((ushort)MsgId.CAttackTargetInvalid, MakePacket<C_AttackTargetInvalid>);
-		_handler.Add((ushort)MsgId.CAttackTargetInvalid, PacketHandler.C_AttackTargetInvalidHandler);
+		_handler.Add((ushort)MsgId.CAttackTargetInvalid, PacketHandler.C_AttackTargetInvalidHandler);		
+		_onRecv.Add((ushort)MsgId.CBaseTrigger, MakePacket<C_BaseTrigger>);
+		_handler.Add((ushort)MsgId.CBaseTrigger, PacketHandler.C_BaseTriggerHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

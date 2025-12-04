@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using static IRegenEffect;
 
 public class BaseRegenEffect : IRegenEffect
 {
     public bool IsActive => true;
+    public StatRegenType Effect => StatRegenType.BaseRegen;
 
     public void OnTick(Player owner)
     {
