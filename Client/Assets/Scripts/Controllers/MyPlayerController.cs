@@ -13,8 +13,6 @@ public class MyPlayerController : PlayerController
     private PlayerUIController _UI;
     public PlayerUIController UI {  get { return _UI; } }
 
-
-
     public SkillIndicator Indicator { get { return _skillIndicator; } }
 
     private SkillIndicator _skillIndicator;
@@ -63,7 +61,9 @@ public class MyPlayerController : PlayerController
     {
         base.Init();
 
-        if(ObjInfo.Player.CharType == CharacterType.Hyunwoo)
+        this.gameObject.layer = LayerMask.NameToLayer("MyPlayer");
+
+        if (ObjInfo.Player.CharType == CharacterType.Hyunwoo)
         {
             Destroy(_input);
             _input = gameObject.GetOrAddComponent<HyunwooInputController>();
@@ -95,6 +95,9 @@ public class MyPlayerController : PlayerController
 
     private void Update()
     {
+        if (ChatHandler.IsChatting)
+            return;
+
         // 1) 정지(S/H)
         var stopCmd = _input.GetStopCommand();
         if (stopCmd != null)

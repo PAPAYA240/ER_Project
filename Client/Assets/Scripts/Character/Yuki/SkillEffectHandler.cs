@@ -31,6 +31,8 @@ public class SkillEffectHandler
             RegisterEffect(SkillEffectType.RAttack, player, "Effect/Yuki/Yuki_SkillR_Attack");
             RegisterEffect(SkillEffectType.QAttack, player, "Effect/Yuki/Yuki_SkillQ_Attack");
             RegisterEffect(SkillEffectType.WEffect, player, "Effect/Yuki/Yuki_SkillW");
+            RegisterEffect(SkillEffectType.EWind, player, "Effect/Yuki/Yuki_Skill_Wind");
+            RegisterEffect(SkillEffectType.WpSkill, player, "Effect/Yuki/Yuki_WeaponSkill");
             RegisterEffectBone(SkillEffectType.QBuff, player, "Effect/Yuki/Yuki_SkillQ_Buff", "Fx_Hand_R");
 
             // ���� ���� Ŀ���� Fx Ŭ����
@@ -45,19 +47,19 @@ public class SkillEffectHandler
         else if(player.ObjInfo.Player.CharType == CharacterType.Abigail)
         {
             // "Fx_Hand_L", "Fx_Top","Fx_Hand_R" ,"Fx_Axe_bottom", "Fx_Axe_Blade","Fx_Axe_Head", "Fx_Center", "Fx_Bottom"
-            RegisterEffectBone(AbigailFx.Attack01, player, "Effect/Abigail/FX_BI_Abigail_NormalAttack_01_Axe", "Fx_Center");
-            RegisterEffectBone(AbigailFx.Attack02, player, "Effect/Abigail/FX_BI_Abigail_NormalAttack_02_Axe", "Fx_Center");
-            RegisterEffectBone(AbigailFx.RestEnd, player, "Effect/Abigail/FX_BI_Abigail_Rest_End", "Fx_Center");
-            RegisterEffectBone(AbigailFx.RestStart, player, "Effect/Abigail/FX_BI_Abigail_Rest_Start", "Fx_Center");
-            RegisterEffectBone(AbigailFx.QAttack, player, "Effect/Abigail/FX_BI_Abigail_Skill01_02_Attack", "Fx_Bottom");
-            RegisterEffectBone(AbigailFx.QAttack2, player, "Effect/Abigail/FX_BI_Abigail_Skill01_02_Attack_Second", "Fx_Bottom");
-            //RegisterEffectBone(AbigailFx.QRange, player, "Effect/Abigail/FX_BI_Abigail_Skill01_02_Range", "Fx_Bottom");
-            RegisterEffectBone(AbigailFx.WAttack, player, "Effect/Abigail/FX_BI_Abigail_Skill02_02_Attack", "Fx_Center");
-            RegisterEffectBone(AbigailFx.WRange, player, "Effect/Abigail/FX_BI_Abigail_Skill02_02_Range", "Fx_Bottom");
-            RegisterEffectBone(AbigailFx.EPortal, player, "Effect/Abigail/FX_BI_Abigail_Skill03_Portal", "Fx_Center");
-            RegisterEffectBone(AbigailFx.RRange, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Range", "Fx_Bottom");
-            RegisterEffectBone(AbigailFx.RStart, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Start", "Fx_Center");
-            RegisterEffectBone(AbigailFx.WpnSkill, player, "Effect/Abigail/FX_BI_Abigail_WSkill_Axe_02", "Fx_Center");
+            RegisterEffect(AbigailFx.Attack01, player, "Effect/Abigail/FX_BI_Abigail_NormalAttack_01_Axe");
+            RegisterEffect(AbigailFx.Attack02, player, "Effect/Abigail/FX_BI_Abigail_NormalAttack_02_Axe");
+            RegisterEffect(AbigailFx.RestEnd, player, "Effect/Abigail/FX_BI_Abigail_Rest_End");
+            RegisterEffect(AbigailFx.RestStart, player, "Effect/Abigail/FX_BI_Abigail_Rest_Start");
+            RegisterEffect(AbigailFx.QAttack, player, "Effect/Abigail/FX_BI_Abigail_Skill01_02_Attack");
+            RegisterEffect(AbigailFx.QAttack2, player, "Effect/Abigail/FX_BI_Abigail_Skill01_02_Attack_Second");
+            RegisterEffect(AbigailFx.QRange, player, "Effect/Abigail/FX_BI_Abigail_Skill01_02_Range");
+            RegisterEffect(AbigailFx.WAttack, player, "Effect/Abigail/FX_BI_Abigail_Skill02_02_Attack");
+            RegisterEffect(AbigailFx.WRange, player, "Effect/Abigail/FX_BI_Abigail_Skill02_02_Range");
+            RegisterEffect(AbigailFx.EPortal, player, "Effect/Abigail/FX_BI_Abigail_Skill03_Portal");
+            RegisterEffect(AbigailFx.RRange, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Range");
+            RegisterEffect(AbigailFx.RStart, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Start");
+            RegisterEffect(AbigailFx.WpnSkill, player, "Effect/Abigail/FX_BI_Abigail_WSkill_Axe_02");
 
             foreach (var effect in _effectMap.Values)
                 (effect as MonoBehaviour).transform.localPosition = Vector3.zero;

@@ -74,7 +74,8 @@ public class Projectile_Rozzi_NormalAttack : Projectile
     {
         owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: _keyCode, sendLookatMousePacket: false,
                 targetPos: default, targetRot: default,
-                type: "Select", name: (isLWeapon ? "FX_BI_Rozzi_NormalAttack_Shot_L" : "FX_BI_Rozzi_NormalAttack_Shot_R"));
+                type: "Select", name: (isLWeapon ? "FX_BI_Rozzi_NormalAttack_Shot_L" : "FX_BI_Rozzi_NormalAttack_Shot_R"),
+                useTargetTransform: true, targetId: owner.Id);
     }
 }
 

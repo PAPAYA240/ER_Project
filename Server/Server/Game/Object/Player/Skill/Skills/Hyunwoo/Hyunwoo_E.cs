@@ -93,7 +93,7 @@ public sealed class Hyunwoo_E : SkillHandlerBase
         {
             if (TryConsumeLatest(ref _commitId, out SkillCollisionProposal prop))
             {
-                if(_players.TryGetValue(_commitId, out KeyValuePair<Player, Vector3> tartgetKVP))
+                if (_players.TryGetValue(_commitId, out KeyValuePair<Player, Vector3> tartgetKVP))
                 {
                     // Knockback
                     Vector3 start = tartgetKVP.Value;
@@ -145,6 +145,7 @@ public sealed class Hyunwoo_E : SkillHandlerBase
                 {
                     p.ChangeState(new Player_IdleState());
                 }
+                return;
             }
 
             p.SendSkillMotion(
