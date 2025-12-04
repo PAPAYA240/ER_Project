@@ -468,17 +468,17 @@ public class PlayerSkillController : MonoBehaviour
 
     public void CreateSkillMesh(KeyCode keyCode)
     {
-       if (DataManager.SkillHitboxDict[_player.ObjInfo.Player.CharType].TryGetValue(keyCode, out SkillHitbox skillHitbox))
-       {
-           GameObject go = Managers.Resource.Instantiate("Debug/SkillMesh", gameObject.transform);
-           SkillMesh sm = go.GetComponent<SkillMesh>();
-           if (sm == null)
-               return;
-           sm.Init(skillHitbox, gameObject.transform, _player.ObjInfo.Player.Team);
+       //if (DataManager.SkillHitboxDict[_player.ObjInfo.Player.CharType].TryGetValue(keyCode, out SkillHitbox skillHitbox))
+       //{
+       //    GameObject go = Managers.Resource.Instantiate("Debug/SkillMesh", gameObject.transform);
+       //    SkillMesh sm = go.GetComponent<SkillMesh>();
+       //    if (sm == null)
+       //        return;
+       //    sm.Init(skillHitbox, gameObject.transform, _player.ObjInfo.Player.Team);
 
-           if (_player.ObjInfo.Player.CharType == CharacterType.Abigail && keyCode == KeyCode.Q)
-               CreateSkillMesh(KeyCode.F1);
-       }
+       //    if (_player.ObjInfo.Player.CharType == CharacterType.Abigail && keyCode == KeyCode.Q)
+       //        CreateSkillMesh(KeyCode.F1);
+       //}
     }
     #endregion
 
