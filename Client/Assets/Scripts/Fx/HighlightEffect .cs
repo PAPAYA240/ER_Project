@@ -38,27 +38,16 @@ public class HighlightEffect : MonoBehaviour
 
     void Update()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         bool hitThisObject = false;
-
-        RaycastHit[] hits = Physics.RaycastAll(ray, 100.0f);
-        Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
-
-        foreach (RaycastHit hit in hits)
+        MyPlayerController mpc = Managers.Object.MyPlayer;
+        if (mpc == null)
         {
-            GameObject go = hit.collider.gameObject;
-            if (go == null)
-                continue;
-            if (go != this.gameObject)
-                continue;
-            CreatureController cc = go.GetComponentInChildren<CreatureController>();
-            if (cc == null)
-                continue;
-            if (cc.Untargetable)
-                continue;
-
-            hitThisObject = true;
+            Debug.Log($"MyPlayerController is Null!");
+            return;
         }
+
+        if(mpc.GetAttackableUnderCursor() == Owner.gameObject)
+            hitThisObject = true;
 
         if (Owner?.State == CreatureState.Dead)
         {
