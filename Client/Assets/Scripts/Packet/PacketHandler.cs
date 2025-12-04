@@ -404,8 +404,10 @@ class PacketHandler
         Vector3 targetPos = fxPacket.TargetPosition.ToVector();
         Quaternion targetRot = fxPacket.TargetRotation;
 
-        if(fxPacket.CanLookatMouse == true)
-            pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));
+        if (fxPacket.CanLookatMouse == true)
+        {
+            pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));  
+        }
         pc.PlayEffectFromServer(fxPacket, mousePos, targetPos, targetRot);
     }
 

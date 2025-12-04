@@ -11,15 +11,16 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class TheodoreInputController : PlayerInputController
 {
+    #region const /enum 변수
     private const float EFFECT_DURATION = 4f;
     private const float CANCEL_DURATION = 0.5f;
     private const float SNIPER_AIM_DURATION = 10f;
-
     const bool SKIP_STATE_CHECK = false;
+    #endregion
 
-    private float _elapsedTime = 0f;
     private KeyCode? _currentSkillKey = null;
     private Coroutine _cancelCoroutine = null;
+    private Coroutine _skillCoroutine = null;
 
     // Skill D - Sniper shot
     private const int SNIPER_SHOT_COUNT = 3;
@@ -29,11 +30,35 @@ public class TheodoreInputController : PlayerInputController
     float _originSpeed = 0f;
     const float SKILL_CHARGE_SPEED = 2.5f;
 
+    private float _elapsedTime = 0f;
+
     private void Start()
     {
         _player.AttackRange = 6.0f;
         _originSpeed = _player.Speed;
     }
+    public override C_SkillInput GetSkillCommand()
+    {
+        if (_skillCoroutine != null)
+            return null;
+
+        for (int i = 0; i < _skillKeys.Length; i++)
+        {
+            var key = _skillKeys[i];
+            if (!Input.GetKeyDown(key))
+                continue;
+
+            if (IsCharge(key))
+            {
+                ChargeSkill(key);
+                return null;
+            }
+
+            return _skill.TryCast((int)key, GetAttackableUnderCursorID(), GetMouseWorldPosition());
+        }
+        return null;
+    }
+
     protected override Vector3 GetAttackStopPosition(Vector3 from, Vector3 target)
     {
         Vector3 dir = target - from;
@@ -51,6 +76,7 @@ public class TheodoreInputController : PlayerInputController
 
     protected override void ChargeSkill(KeyCode key)
     {
+        Debug.Log($"[ExecuteSkill] 스킬 실행: {key}");
         if (!UseSkill(key))
             return;
 
@@ -58,11 +84,11 @@ public class TheodoreInputController : PlayerInputController
         switch (key)
         {
         case KeyCode.Q:
-                StartCoroutine(ChargingSkill(key, onCancel: () => CancelSkill(key)));
+                _skillCoroutine = StartCoroutine(ChargingSkill(key, onCancel: () => CancelSkill(key)));
                 break;
 
             case KeyCode.D:
-                StartCoroutine(InputSkill(key,
+                _skillCoroutine = StartCoroutine(InputSkill(key,
                     onConfirm: () => ExecuteSniperSkill(key),
                     onCancel: () => CancelSkill(key)));
                 break;
@@ -70,7 +96,7 @@ public class TheodoreInputController : PlayerInputController
             case KeyCode.R:
             case KeyCode.W:
             case KeyCode.E:
-                StartCoroutine(InputSkill(key,
+                _skillCoroutine = StartCoroutine(InputSkill(key,
                     onConfirm: () => ExecuteSkill(key),
                     onCancel: () => CancelSkill(key)));
                 break;
@@ -84,8 +110,9 @@ public class TheodoreInputController : PlayerInputController
 
         SendSkillInputPacket(key);
         _currentSkillKey = null;
-
+        _skillCoroutine = null;
     }
+
     private void ExecuteSniperSkill(KeyCode key)
     {
         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
@@ -113,6 +140,8 @@ public class TheodoreInputController : PlayerInputController
             // 1. 스킬 취소
             if (Input.GetMouseButtonDown(1))
             {
+                Debug.Log($"[ExecuteSkill] 스킬 끝: {key}");
+                _skillCoroutine = null;
                 cc.EndAimMode();
                 _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
                 SendSkillCancelPacket(key);
@@ -129,6 +158,8 @@ public class TheodoreInputController : PlayerInputController
             yield return null;
         }
 
+        Debug.Log($"[ExecuteSkill] 스킬 끝: {key}");
+        _skillCoroutine =null;
         cc.EndAimMode();
         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
     }
@@ -209,6 +240,7 @@ public class TheodoreInputController : PlayerInputController
         }
         _player.Speed = _originSpeed;
     }
+
     private void CancelSkill(KeyCode key)
     {
         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
@@ -216,6 +248,7 @@ public class TheodoreInputController : PlayerInputController
 
         _elapsedTime = 0;
         _currentSkillKey = null;
+        _skillCoroutine = null;
     }
 #endregion
 
@@ -225,8 +258,6 @@ public class TheodoreInputController : PlayerInputController
         if (_cancelCoroutine != null)
             return null;
 
-
-        // 스킬 키 + 우클릭 동시 입력 시 쿨다운 시작
         if (_currentSkillKey != null &&
             _currentSkillKey != KeyCode.Q &&
             Input.GetKey((KeyCode)_currentSkillKey) && 
@@ -254,6 +285,7 @@ public class TheodoreInputController : PlayerInputController
             yield return null;
         }
         _cancelCoroutine = null;
+
     }
     #endregion
 

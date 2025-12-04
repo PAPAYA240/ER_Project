@@ -361,7 +361,7 @@ namespace Data
         #region 추가
         public enum EEffectTarget
         {
-            Default,    // 기본 위치 (캐스터 or 타겟)
+            Default,    // static, 기본 위치 (캐스터 or 타겟)
             Self,       // 캐스터의 위치에 부착 (자식으로)
             Target,     // 아직까지 Target만 따라감
             TargetNoRotation,   // 타겟 위치만 따라감, 회전 반영X

@@ -1383,7 +1383,6 @@ namespace Server.Game
 
             float angle = (float)Math.Atan2(dir.Y, dir.X);
             Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle);
-
             RotationInfo newRot = new RotationInfo
             {
                 Qx = rot.X,

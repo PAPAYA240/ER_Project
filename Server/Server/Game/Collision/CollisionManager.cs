@@ -824,7 +824,6 @@ namespace Server.Game
                     {
                         if (isBusy && target.FindStatStatusEffect(effect.stat))
                             continue;
-                        Console.WriteLine("버프");
                         StatusEffect newEffect = new StatusEffect
                         {
                             type = effect.type,

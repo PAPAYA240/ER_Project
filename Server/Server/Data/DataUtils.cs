@@ -3,10 +3,45 @@ using Google.Protobuf.Protocol;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 
 namespace Server.Data
 {
+    public class QuaternionHelper
+    {
+        // Unity의 Quaternion.Euler(0, y, 0)와 동일
+        public static Quaternion FromYRotation(float degrees)
+        {
+            float radians = degrees * MathF.PI / 180f;
+            float halfAngle = radians * 0.5f;
+
+            return new Quaternion(
+                x: 0f,
+                y: MathF.Sin(halfAngle),
+                z: 0f,
+                w: MathF.Cos(halfAngle)
+            );
+        }
+
+        // 2D 방향 벡터를 Y축 회전 Quaternion으로 변환 (Unity 호환)
+        public static Quaternion LookRotationY(float dirX, float dirZ)
+        {
+            // Unity는 Z축이 앞방향이므로 Atan2(x, z) 사용
+            float angle = MathF.Atan2(dirX, dirZ);
+            float degrees = angle * 180f / MathF.PI;
+
+            return FromYRotation(degrees);
+        }
+
+        // Vector2로 LookRotation 계산
+        public static Quaternion LookRotationY(Vector2 from, Vector2 to)
+        {
+            Vector2 dir = to - from;
+            return LookRotationY(dir.X, dir.Y);
+        }
+    }
+
     public class DataUtils
     {
         public static Dictionary<DataUtils.KeyCode, List<string>> ConvertProtoInteractionsToKeyCodeDictionary(MapField<string, InteractionList> protoInteractions)

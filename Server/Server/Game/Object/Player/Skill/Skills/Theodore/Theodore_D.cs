@@ -16,6 +16,9 @@ public sealed class Theodore_D : SkillHandlerBase
     private float _timeElapsed = 0.0f;
     private bool _isEnding = false;
 
+    // 코스트는 한 번만 줄도록
+    bool sendCostPacket = true;
+
     public Theodore_D()
     {
         _characterType = CharacterType.Theodore;
@@ -26,6 +29,8 @@ public sealed class Theodore_D : SkillHandlerBase
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
+        p.SendSkillCostPacket(_keyCode);
+
         HitboxRequired = false;
         base.OnEnter(p, ctx);
         p.LookAtMouse(ctx.MousePos);
@@ -60,7 +65,7 @@ public sealed class Theodore_D : SkillHandlerBase
         CreateHitbox(p, skillstate.Ctx);
         p.SendSkillConfirmPacket(
             canUse : true,
-            keyCode : _keyCode);
+            keyCode : _keyCode, sendCostPacket : false);
 
         // > Effect
         p.SendSkillEffect(

@@ -243,7 +243,6 @@ public class PlayerController : CreatureController
         set
         {
             _isKeyInput = value;
-            Debug.Log($"IsKeyInput changed: {value}");
         }
     }
 
@@ -385,7 +384,6 @@ public class PlayerController : CreatureController
 
     public override void OnDamaged()
     {
-        Debug.Log("Player HIT !");
     }
 
     public void OnHit(S_AttackInfo atkInfoPacket)
@@ -427,7 +425,6 @@ public class PlayerController : CreatureController
 
     public void ChangeState(S_PlayerState packet)
     {
-        //Debug.Log($"Id : {Id}, Cur : {State}, Next : {packet.State}");
         State = packet.State;
     }
 
@@ -541,8 +538,8 @@ public class PlayerController : CreatureController
     public void ChangeSpeed(string paramName, float speed)
     {
         _animator.SetFloat(paramName, speed);
-        Debug.Log(speed);
     }
+
     public void PlayEffectFromServer(S_Fx packet, Vector3 mousePos, Vector3 targetPos = new Vector3(), Quaternion targetRot = default(Quaternion))
     {
         Transform targetTransform = null;
@@ -769,7 +766,7 @@ public class PlayerController : CreatureController
     #endregion
 
     #region Effect
-    // 기본 스킬 이펙트 호출 : Caster Type
+    // 기본 스킬 이펙트 호출 : Caster Type - 무조건 플레이어 따라
     public void PlaySkillEffect(KeyCode skillKey, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot = default(Quaternion), Transform targetTransform = null)
     {
         CharacterType type = ObjInfo.Player.CharType;

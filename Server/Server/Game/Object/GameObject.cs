@@ -530,7 +530,7 @@ namespace Server.Game
                         stunPacket.ObjectId = Id;
                         stunPacket.AttackerId = statusEffect.attacker.Id;
                         stunPacket.AttackerTeam = statusEffect.attacker.Info.Player.Team;
-                        stunPacket.Duration = statusEffect.duration;
+                        stunPacket.Duration = 4/*statusEffect.duration*/;
                         Room.Broadcast(stunPacket);
 
                         if (this is Player player)
