@@ -63,7 +63,9 @@ public class MyPlayerController : PlayerController
     {
         base.Init();
 
-        if(ObjInfo.Player.CharType == CharacterType.Hyunwoo)
+        this.gameObject.layer = LayerMask.NameToLayer("MyPlayer");
+
+        if (ObjInfo.Player.CharType == CharacterType.Hyunwoo)
         {
             Destroy(_input);
             _input = gameObject.GetOrAddComponent<HyunwooInputController>();

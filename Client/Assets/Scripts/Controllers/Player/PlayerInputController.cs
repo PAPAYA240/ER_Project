@@ -443,7 +443,7 @@ public class PlayerInputController : MonoBehaviour
         if (Physics.SphereCast(ray, radius, out RaycastHit hit, 1000f, _monsterMask | _playerMask))
         {
             var cc = hit.collider.GetComponentInChildren<CreatureController>();
-            if (cc != null && IsAttackable(hit.collider.gameObject))
+            if (cc != null && IsAttackable(cc))
             {
                 return cc.gameObject;
             }
@@ -554,12 +554,8 @@ public class PlayerInputController : MonoBehaviour
         return path.corners[path.corners.Length - 1];
     }
 
-    private bool IsAttackable(GameObject targetObject)
+    private bool IsAttackable(CreatureController cc)
     {
-        if (targetObject == null)
-            return false;
-
-        CreatureController cc = targetObject.GetComponentInChildren<CreatureController>();
         if (cc == null)
             return false;
 
