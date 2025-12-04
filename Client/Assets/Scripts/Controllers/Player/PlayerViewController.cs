@@ -199,9 +199,10 @@ public class PlayerViewController : MonoBehaviour
         // TEMP : 나중에 Target 상태 체크해서 쫓아갈지 검사
         //var targetView = FindVisibleObjectById(_followTargetId);
         var targetView = Managers.Object.FindById(_followTargetId);
-        if (targetView == null)
+        if (!_player.IsAttackable(targetView, out var reason))
         {
             // 타겟이 사라졌으면 추적 종료
+            SendAttackTargetInvalid(_followTargetId, reason);
             StopFollowTarget();
             return;
         }
@@ -296,14 +297,16 @@ public class PlayerViewController : MonoBehaviour
         }
     }
 
-    private GameObject FindVisibleObjectById(int objectId)
+    private void SendAttackTargetInvalid(int targetId, InvalidTargetReason reason)
     {
-        if (VisibleObjectIds.Contains(objectId))
+        C_AttackTargetInvalid packet = new C_AttackTargetInvalid()
         {
-            return Managers.Object.FindById(objectId);
-        }
+            ObjectId = _player.Id,
+            TargetId = targetId,
+            Reason = reason
+        };
 
-        return null;
+        _player.SendPacket(packet);
     }
     #endregion
 }

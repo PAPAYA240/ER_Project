@@ -505,4 +505,20 @@ class PacketHandler
 
         room.Push(room.HandleRozziNormalAttack, player, attackPacket);
     }
+
+    public static void C_AttackTargetInvalidHandler(PacketSession session, IMessage packet)
+    {
+        C_AttackTargetInvalid attackPacket = packet as C_AttackTargetInvalid;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleAttackTargetInvalid, player, attackPacket);
+    }
 }

@@ -280,6 +280,14 @@ namespace Server.Game
             }
         }
 
+        public void HandleAttackTargetInvalid(Player player, C_AttackTargetInvalid pkt)
+        {
+            if (player == null || player.IsDead)
+                return;
+
+            //InvalidTargetReason reason = pkt.Reason;
+            player.ChangeState(new Player_IdleState());
+        }
 
         #region Utils
         public GameObject FindNearestEnemy(Player me, int range)

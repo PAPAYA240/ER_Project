@@ -146,7 +146,7 @@ enum MsgId {
   S_STOP_ABGL_FX = 115;
 
  S_THEODORE_ATTACK = 116;
-  
+  C_ATTACK_TARGET_INVALID = 117;
 }
 
 enum CombatState{
@@ -467,6 +467,17 @@ enum AbigailFx{
 	R_Range = 10;
 	R_Start = 11;
 	WpnSkill = 12;
+}
+
+enum InvalidTargetReason{
+	Invalid_Null = 0;
+	Invalid_Self = 1;
+	Invalid_Ally = 2;
+	Invalid_Untargetable = 3;
+	Invalid_Dead = 4;
+	Invalid_Invisible = 5;
+	Invalid_Hiding = 6;
+	Invalid_Valid = 7;
 }
 
 message S_TheodoreAttack
@@ -1324,4 +1335,10 @@ message S_AbigailFx{
 message S_StopAbglFx{
 	int32 objectId = 1;
 	AbigailFx fx = 2;
+}
+
+message C_AttackTargetInvalid{
+	int32 objectId = 1;
+	int32 targetId = 2;
+	InvalidTargetReason reason = 3;
 }
