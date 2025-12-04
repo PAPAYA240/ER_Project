@@ -8,72 +8,162 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FX_BI_Theodore_S002_Skill01_ground_line01_02
-  m_Shader: {fileID: 4800000, guid: e5e31a0160de4f247aaa66e57073de26, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 4c020b6f558c5874bb7915245f6eaa49,
+    type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _ALPHATEST_ON
+  - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords: []
-  m_LightmapFlags: 0
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties:
+  m_DoubleSidedGI: 1
+  m_CustomRenderQueue: -1
+  stringTagMap:
+    RenderType: Transparent
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  - DepthOnly
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-      _MainTex:
+    - _MainTex:
         m_Texture: {fileID: 2800000, guid: e7403a666d03fbf4a9cc42e13a962977, type: 3}
         m_Scale: {x: 0.5, y: 1}
         m_Offset: {x: 0, y: 0}
-      _MaskTex:
-        m_Texture: {fileID: 2800000, guid: f1bc2a286e497314d9a4c538c8747d33, type: 3}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 1003b9a547ed6d647964371eaa318998, type: 3}
         m_Scale: {x: 0.5, y: 1}
         m_Offset: {x: 0, y: 0}
-      _Noise01:
+    - _Noise01:
         m_Texture: {fileID: 2800000, guid: e7403a666d03fbf4a9cc42e13a962977, type: 3}
         m_Scale: {x: 1, y: 2}
         m_Offset: {x: 0, y: 0}
-      _Noise02:
+    - _Noise02:
         m_Texture: {fileID: 0}
         m_Scale: {x: 5, y: 5}
         m_Offset: {x: 0, y: 0}
-    m_Ints: {}
+    - _Tex01:
+        m_Texture: {fileID: 2800000, guid: f117e1ced3434c14b8ea35488caa62f1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Tex02:
+        m_Texture: {fileID: 2800000, guid: fee3b5021f60f5e4dbd7c31a08193a46, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Tex03:
+        m_Texture: {fileID: 2800000, guid: 276ea79a3f6ec814e8938222ca7a4769, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
-      _A_Speed: 0.13
-      _B_Speed: 0.91
-      _BumpScale: 1
-      _C_Speed: 0
-      _Cull: 0
-      _Cutoff: 0.5
-      _D_Speed: 0.13
-      _DetailNormalMapScale: 1
-      _DstBlend: 0
-      _GlossMapScale: 1
-      _Glossiness: 0.5
-      _GlossyReflections: 1
-      _Glow: 7
-      _Metallic: 0
-      _Mode: 0
-      _Noise: 0.1
-      _OcclusionStrength: 1
-      _Parallax: 0.02
-      _RotateSpeed: 0.1667272
-      _SmoothnessTextureChannel: 0
-      _SpecularHighlights: 1
-      _SrcBlend: 1
-      _UVSec: 0
-      _ZTestMode: 6
-      _ZWrite: 1
-      __dirty: 0
-      _stvalue: 0.4358974
-      _value: 11.28
+    - _A_Speed: 0.13
+    - _AlphaClip: 1
+    - _AlphaToMask: 0
+    - _BUILTIN_AlphaClip: 1
+    - _BUILTIN_Blend: 2
+    - _BUILTIN_CullMode: 0
+    - _BUILTIN_DstBlend: 0
+    - _BUILTIN_QueueControl: -1
+    - _BUILTIN_QueueOffset: 0
+    - _BUILTIN_SrcBlend: 1
+    - _BUILTIN_Surface: 1
+    - _BUILTIN_ZTest: 8
+    - _BUILTIN_ZWrite: 0
+    - _BUILTIN_ZWriteControl: 0
+    - _B_Speed: 0.91
+    - _Blend: 0
+    - _BlendModePreserveSpecular: 0
+    - _BumpScale: 1
+    - _C_Speed: 0
+    - _CastShadows: 1
+    - _Clip: 0.01
+    - _Cull: 1
+    - _Cutoff: 0.5
+    - _D_Speed: 0.13
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 10
+    - _DstBlendAlpha: 10
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _Glow: 7
+    - _Metallic: 0
+    - _Mode: 0
+    - _Noise: 0.1
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _ReceiveShadows: 1
+    - _RotateSpeed: 0.1667272
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 5
+    - _SrcBlendAlpha: 1
+    - _Surface: 1
+    - _Tex01Intensity: 1.13
+    - _Tex02Intensity: 2.47
+    - _Tex3Intensity: 5
+    - _UVSec: 0
+    - _WorkflowMode: 1
+    - _ZTest: 4
+    - _ZTestMode: 6
+    - _ZWrite: 0
+    - _ZWriteControl: 0
+    - __dirty: 0
+    - _stvalue: 0.4358974
+    - _value: 11.28
     m_Colors:
-      _Color: {r: 0, g: 0.87781477, b: 1, a: 1}
-      _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-      _MainTexUV_TilingSpeed: {r: 1, g: 1, b: 0, a: -0.02}
-      _MaskTexUV_TilingSpeed: {r: 1, g: 1, b: 0, a: 0}
-      _Noise01UV_TilingSpeed: {r: 0.5, g: 0, b: 0, a: 0.01}
-      _Noise02UV_TilingSpeed: {r: 0, g: 0, b: 0, a: 0}
+    - _Color: {r: 0, g: 0.87781477, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _MainTexUV_TilingSpeed: {r: 1, g: 1, b: 0, a: -0.02}
+    - _MaskTexUV_TilingSpeed: {r: 1, g: 1, b: 0, a: 0}
+    - _Noise01UV_TilingSpeed: {r: 0.5, g: 0, b: 0, a: 0.01}
+    - _Noise02UV_TilingSpeed: {r: 0, g: 0, b: 0, a: 0}
+    - _Tex01Speed: {r: 0, g: 0.5, b: 0, a: 0}
+    - _Tex01Tiling: {r: 2, g: -1, b: 0, a: 0}
+    - _Tex02Speed: {r: 0, g: -0.1, b: 0, a: 0}
+    - _Tex02Tiling: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!114 &5863504328972484481
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 10
+--- !u!114 &8362879854801394554
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 639247ca83abc874e893eb93af2b5e44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 0

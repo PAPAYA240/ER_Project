@@ -10,13 +10,7 @@ public class Projectile : BaseController
 
     void Update()
     {
-        if (Type == ProjectileType.ProjectileBullet)
-        {
-            Quaternion currentRot = RotInfo;
-            Vector3 euler = currentRot.eulerAngles;
-            euler.x = 90f;
-            transform.rotation = Quaternion.Euler(euler);
-        }
+
     }
     void OnTriggerEnter(Collider other)
     {

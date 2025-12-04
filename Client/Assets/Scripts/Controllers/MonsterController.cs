@@ -125,7 +125,7 @@ public class MonsterController : CreatureController
     public void OnHit(S_AttackInfo atkInfoPacket)
     {
         BaseController tbc = Managers.Object.FindById(atkInfoPacket.ObjectId)?.GetComponentInChildren<BaseController>();
-        if (tbc == null)
+        if (tbc == null || tbc == this)
             return;
 
         Vector3 targetPosition = tbc.transform.position;
