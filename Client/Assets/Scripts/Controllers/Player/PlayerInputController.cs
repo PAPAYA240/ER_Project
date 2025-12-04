@@ -559,9 +559,6 @@ public class PlayerInputController : MonoBehaviour
         if (cc == null)
             return false;
 
-        if (cc.Untargetable)
-            return false;
-
         // 나 자신일 때
         if (cc.Id == _player.Id)
             return false;
@@ -570,8 +567,16 @@ public class PlayerInputController : MonoBehaviour
         if (cc.ObjInfo.Player != null && cc.ObjInfo.Player.Team == _player.ObjInfo.Player.Team)
             return false;
 
-        // 대상이 죽었을 때 || 무적 상태일 때 || 시야 밖일 때(부시) 등등
+        // 지정 불가 상태일 때
+        if (cc.Untargetable)
+            return false;
+
+        // 대상이 죽었을 때 
         if (cc.State == CreatureState.Dead)
+            return false;
+
+        // 대상이 시야 밖일 때
+        if (!IsVisibleObject(cc.Id))
             return false;
 
         return true;
@@ -585,6 +590,14 @@ public class PlayerInputController : MonoBehaviour
 
         float effectiveRange = Mathf.Max(0.05f, _player.AttackRange - _stopBuffer);
         return dist <= effectiveRange;
+    }
+
+    private bool IsVisibleObject(int id)
+    {
+        if (Managers.Scene.CurrentScene is GameScene scene)
+            return scene.IsVisibleObject(id);
+
+        return false;
     }
     #endregion
 

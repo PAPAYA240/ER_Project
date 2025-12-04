@@ -13,8 +13,6 @@ public class MyPlayerController : PlayerController
     private PlayerUIController _UI;
     public PlayerUIController UI {  get { return _UI; } }
 
-
-
     public SkillIndicator Indicator { get { return _skillIndicator; } }
 
     private SkillIndicator _skillIndicator;
