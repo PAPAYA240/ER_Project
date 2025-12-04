@@ -32,7 +32,7 @@ public sealed class Abigail_Q : Skill_Abigail
         p.Room.BroadcastAbigailSound(p, AbigailSound.Q, 1);
         p.Room.BroadcastAbigailSound(p, AbigailSound.Qvoice, 0.6f);
 
-        //p.Room.BroadcastAbigailFx(p, AbigailFx.QAttack, TimeUtil.FrameToSec(7));
+        p.Room.BroadcastAbigailFx(p, AbigailFx.QAttack, TimeUtil.FrameToSec(7));
         p.Room.BroadcastAbigailFx(p, AbigailFx.QRange, _animDuration);
     }
 
@@ -43,7 +43,7 @@ public sealed class Abigail_Q : Skill_Abigail
         if (!_secondFxSent && _elapsed >= TimeUtil.FrameToSec(10))
         {
             _secondFxSent = true;
-            //p.Room.Push(p.Room.BroadcastAbigailFx, p, AbigailFx.QAttack2, TimeUtil.FrameToSec(6));
+            p.Room.Push(p.Room.BroadcastAbigailFx, p, AbigailFx.QAttack2, TimeUtil.FrameToSec(6));
         }
 
         if (!CanStopSkill && _elapsed >= StopSkillTime)

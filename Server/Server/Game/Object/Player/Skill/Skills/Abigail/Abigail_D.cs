@@ -28,7 +28,7 @@ public sealed class Abigail_D : Skill_Abigail
         _startPos = p.Position;
 
         // 초기화
-        _dashRange = 1.2f;
+        _dashRange = 1.8f;
         _elapsed = 0f;
 
         Vector3 mouseWorldPos = new Vector3(ctx.MousePos.X, p.Position.Y, ctx.MousePos.Y);

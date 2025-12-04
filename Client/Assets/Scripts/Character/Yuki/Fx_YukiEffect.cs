@@ -21,7 +21,7 @@ public class Fx_YukiEffect : MonoBehaviour, IEffect
 
     public void Play()
     {
-        //gameObject.SetActive(true);
+        gameObject.SetActive(true);
         ps?.Play();
     }
 
@@ -29,7 +29,7 @@ public class Fx_YukiEffect : MonoBehaviour, IEffect
     {
         if (ps != null)
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        //gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
 
 

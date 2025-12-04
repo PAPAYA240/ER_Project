@@ -18,7 +18,7 @@ public sealed class Yuki_E_Hit : SkillHandlerBase
     {
         _characterType = CharacterType.Yuki;
         _animName = "SKILL_E_HIT";
-
+        HitboxRequired = false;
         _dir = dir;
     }
 

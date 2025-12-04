@@ -79,6 +79,12 @@ Material:
     - _DissolveTiling: 1
     - _DissolveWidth: 0.1
     - _EdgeFade: 0.3
+    - _EffectTime: 0.66
+    - _FillEdge: 0.1
+    - _FillHeight: 1
+    - _FillOffset: 0
+    - _FillSpeed: 1
+    - _FlipY: 0
     - _GradientOffset: 0
     - _GradientPower: 1
     - _HighlightIntensity: 3
@@ -87,6 +93,8 @@ Material:
     - _IsDissolve: 1
     - _IsNoise: 1
     - _IsNoiseComplex: 1
+    - _Lifetime: 0.6
+    - _Loop: 1
     - _MainAlpha_To_R: 0.255
     - _MainColor_To_Alpha_Amount: 0
     - _MaskAlphaBoost: 2
@@ -98,8 +106,10 @@ Material:
     - _MaskSoftness: 0.1
     - _MaskThreshold: 0.1
     - _MaskTiling: 1
+    - _MaxY: 1
     - _MinAlpha: 0.4
     - _MinBrightness: 0.1
+    - _MinY: 0
     - _MulAlpha: 1
     - _MulVal_Color: 2.39
     - _MulVal_Noise: -0.35
@@ -121,7 +131,13 @@ Material:
     - _ShowDissolveOnly: 0
     - _ShowMaskOnly: 0
     - _ShowNoiseOnly: 0
+    - _SparkAmp: 1.2
+    - _SparkEdge: 0.08
+    - _SparkFreq: 4
+    - _SparkSharp: 6
+    - _SparkThreshold: 0.75
     - _SrcBlend: 5
+    - _UseMaskAlpha: 0
     - _ZTest: 8
     - _ZWrite: 0
     m_Colors:
