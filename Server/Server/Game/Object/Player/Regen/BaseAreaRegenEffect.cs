@@ -17,8 +17,6 @@ public class BaseAreaRegenEffect : IRegenEffect
     {
         owner.Hp = MathF.Min(owner.MaxHp, owner.Hp + BaseAreaHpRegen);
         owner.Stamina = MathF.Min(owner.MaxStamina, owner.Stamina + BaseAreaStaminaRegen);
-
-        Console.WriteLine($"@ BaseAreaRegen!! : Id - {owner.Id}");
     }
 }
 
