@@ -9,7 +9,7 @@ using UnityEngine;
 public class Projectile_Theodore_Attack : Projectile
 {
     private int _targetId = 0;
-    private float _speed = 1f;
+    private float _speed = 10f;
 
     private float _deltaScale = 0.07f;
     private float _elapsed = 0f;
@@ -17,7 +17,7 @@ public class Projectile_Theodore_Attack : Projectile
     public void Init(S_TheodoreAttack packet)
     {
         _targetId = packet.TargetId;
-        _speed = packet.Speed;
+        _speed = 15.0f/*packet.Speed*/;
 
         SetStartPosition();
     }
