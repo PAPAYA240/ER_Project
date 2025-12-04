@@ -55,7 +55,9 @@ public sealed class Rozzi_E : RozziSkillHandler
 
         SendSkillConfirmPacket(p);
         p.Room.AddStatusEffect(p, p, _keyCode, null); // 지정불가
-        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode, sendLookatMousePacket: false);
+       
+        p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode, sendLookatMousePacket: false, p.Position,
+            Quaternion.CreateFromAxisAngle(new Vector3(1, 0, 0), MathF.PI / 2f), type: "Select", name: "FX_BI_Rozzi_Skill03_JumpSmoke");
     }
 
     public override void OnCollision<T>(Player p, List<T> targets, GameObject.StatusEffect effect)

@@ -174,7 +174,9 @@ public class TheodoreInputController : PlayerInputController
     private IEnumerator InputSkill(KeyCode key, Action onConfirm, Action onCancel)
     {
         if(key == KeyCode.R)
-            _player.UI.PlayerInterface.SetChargingBar(DataManager.SkillDict[CharacterType.Theodore][key].name, 1.5f, 3);
+        {
+            _player.UI.PlayerInterface.SetChargingBar(DataManager.SkillDict[CharacterType.Theodore][key].name, 1.5f, 3); 
+        }
 
         while (!Input.GetKeyUp(key) && !Input.GetMouseButtonDown(0))
         {

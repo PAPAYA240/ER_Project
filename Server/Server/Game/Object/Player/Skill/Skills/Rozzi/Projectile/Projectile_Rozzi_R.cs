@@ -72,7 +72,13 @@ public class Projectile_Rozzi_R : Projectile
             PosY = Owner.PosInfo.PosY,
             PosZ = Owner.PosInfo.PosZ
         };
-        Info.RotInfo = Owner.RotInfo;
+        Info.RotInfo = new RotationInfo
+        {
+            Qx = Owner.RotInfo.Qx,
+            Qy = Owner.RotInfo.Qy,
+            Qz = Owner.RotInfo.Qz,
+            Qw = Owner.RotInfo.Qw,
+        };
 
         _startPosition = Info.PosInfo.ToVector();
     }
@@ -140,7 +146,6 @@ public class Projectile_Rozzi_R : Projectile
                 {
                     Room.LeaveGame(Id);
                     _isLeaveGamePending = false;
-                    Console.WriteLine($"@ Rozzi R Projectile : LeaveGame - {Id}");
                 }
                 break;
         }
@@ -218,8 +223,6 @@ public class Projectile_Rozzi_R : Projectile
         int add = isSkillHit ? 2 : 1;
         _hitStack += add;
 
-        //Console.WriteLine($"Rozzi R RegisterOwerHit : Stack - {((isSkillHit == true) ? 2 : 1)}");
-
         // 5스택 이상이면 조기 폭발
         if (_hitStack >= MaxStack)
             Explode(true);
@@ -240,7 +243,7 @@ public class Projectile_Rozzi_R : Projectile
 
         Vector3 forwardVector = Info.RotInfo.Forward();
         Vector3 moveDistance = forwardVector * _speed * TimeUtil.Instance.DeltaTime;
-
+        
         Vector3 myCurPosition = Info.PosInfo.ToVector();
         Vector3 targetPos = myCurPosition + moveDistance;
 
@@ -257,7 +260,6 @@ public class Projectile_Rozzi_R : Projectile
         if (BOMBSTATE == BOMB_ROZZI.Exploded)
             return;
 
-        //Console.WriteLine($"Rozzi R Explode!! : early - {early}");
         BOMBSTATE = BOMB_ROZZI.Exploded;
 
         Vector3 explosionPos = Position;
@@ -278,8 +280,8 @@ public class Projectile_Rozzi_R : Projectile
                 targetPos: default, targetRot: default,
                 type: "Select", "FX_BI_Rozzi_Skill04_Buff");
 
-            _owner.SendRemoveEffect(KeyCode.R, false, "FX_BI_Rozzi_Skill04_Set_Character");
-            _owner.SendRemoveEffect(KeyCode.R, false, "FX_BI_Rozzi_Skill04_Set_Character_Count");
+            _owner.SendRemoveEffect(KeyCode.R, false, "FX_BI_Rozzi_Skill04_Set_Character", type: "Select");
+            _owner.SendRemoveEffect(KeyCode.R, false, "FX_BI_Rozzi_Skill04_Set_Character_Count", type: "Select");
         }
         if (early && mainTarget != null && !mainTarget.IsDead)
             ApplyEarlyExplosionEffects(mainTarget);
@@ -294,7 +296,6 @@ public class Projectile_Rozzi_R : Projectile
         Owner.RemoveStatusEffects("VisionShare");
 
         // 마지막으로 투사체 제거
-        //Room.LeaveGame(Id);
         _isLeaveGamePending = true;
     }
 
