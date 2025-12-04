@@ -3,6 +3,7 @@ using Data;
 using Google.Protobuf.Protocol;
 using System.Collections.Generic;
 using System.Collections;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 
 public class FXManager : MonoBehaviour
@@ -27,12 +28,22 @@ public class FXManager : MonoBehaviour
         UI = uiGO.AddComponent<UIFXManager>();
         UI.Init();
     }
-    private Quaternion GetPlayerRotation(Transform casterTransform)
+    private Quaternion GetPlayerRotation(Transform casterTransform, string name = "")
     {
-        float playerYaw = casterTransform.rotation.eulerAngles.y;
-        Quaternion yawRotationOnly = Quaternion.Euler(0, playerYaw, 0);
-        Quaternion desiredXRotation = Quaternion.Euler(-90f, 180f, 0);
-        return yawRotationOnly * desiredXRotation;
+       
+        if (name == "FX_Shield")
+        {
+            float playerYaw = casterTransform.rotation.eulerAngles.y;
+            Quaternion yawRotationOnly = Quaternion.Euler(0, playerYaw, 0);
+            Quaternion desiredXRotation = Quaternion.Euler(-90f, 180f, 0);
+            return yawRotationOnly * desiredXRotation;
+        }
+        else
+        {
+            Quaternion baseRot = casterTransform.rotation;
+            baseRot.x = 0f;
+            return baseRot;
+        }
     }
 
     public List<GameObject> PlayEffect
@@ -43,7 +54,10 @@ public class FXManager : MonoBehaviour
         bool isCommon = false                    // 공통 이펙트
         )
     {
-        return Effect.PlayEffect(ownerId, effectData, casterTransform, mousePos, new Vector3(), GetPlayerRotation(casterTransform), isCommon);
+        bool hasShield = effectData.Exists(data => data.prefabName.Contains("FX_Shield"));
+        Quaternion rotation = GetPlayerRotation(casterTransform, hasShield ? "FX_Shield" : "");
+
+        return Effect.PlayEffect(ownerId, effectData, casterTransform, mousePos, new Vector3(), rotation, isCommon);
     }
 
     public List<GameObject> PlayEffect

@@ -21,7 +21,6 @@ public sealed class Theodore_Charge : SkillHandlerBase
     {
         HitboxRequired = false;
         base.OnEnter(p, ctx);
-
         p.SendSkillEffect(ctx.MousePos, KeyCode.Q, sendLookatMousePacket: true,
             type : "Select",
             name : "FX_Charging");

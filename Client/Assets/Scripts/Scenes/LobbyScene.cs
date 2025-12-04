@@ -38,7 +38,7 @@ public class LobbyScene : BaseScene
         _nicknamePopUpUI.OnConfirm -= OnConfirmBtnClick;
         _nicknamePopUpUI.OnConfirm += OnConfirmBtnClick;
 
-        Managers.Sound.Play("sound/bgm/BGM_Eternal world", Define.Sound.Bgm);
+        Managers.Sound.Play("sound/bgm/BGM_Lobby", Define.Sound.Bgm);
     }
 
     void Start()

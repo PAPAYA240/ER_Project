@@ -134,8 +134,7 @@ public class CreatureController : BaseController
     public void Snare(S_Snare packet, CharacterType charType)
     {
         // Destory Proejctile
-         
-        Managers.FX.PlayStatusEffect(this.gameObject, charType, packet.Duration);
+         Managers.FX.PlayStatusEffect(this.gameObject, charType, 4.0f);
     }
 
     public virtual void UseSkill(int skillId) {}
@@ -145,18 +144,31 @@ public class CreatureController : BaseController
     public virtual void OnHitboxCollision(KeyCode kc, KeyCode tkc) 
     {
     }
-    public void ChangeStat(StatInfo growth)
+    public void ChangeStat(StatInfo stat)
     {
-        Stat.Attack += growth.Attack;
-        Stat.Defense += growth.Defense;
-        Stat.MaxHp += growth.MaxHp;
-        Hp += growth.MaxHp;
-        Stat.HpRegen += growth.HpRegen;
-        Stat.MaxStamina += growth.MaxStamina;
-        Stamina += growth.MaxStamina;
-        Stat.StaminaRegen += growth.StaminaRegen;
+        Stat.Attack = stat.Attack;
+        Stat.Defense = stat.Defense;
+        MaxHp = stat.MaxHp;
+        Hp += stat.Hp;
+        Stat.HpRegen = stat.HpRegen;
+        MaxStamina = stat.MaxStamina;
+        Stamina += stat.Stamina;
+        Stat.StaminaRegen = stat.StaminaRegen;
     }
 
+    // lagacy code
+
+    //public void ChangeStat(StatInfo growth)
+    //{
+    //    Stat.Attack += growth.Attack;
+    //    Stat.Defense += growth.Defense;
+    //    MaxHp = Stat.MaxHp + growth.MaxHp;
+    //    Hp += growth.MaxHp;
+    //    Stat.HpRegen += growth.HpRegen;
+    //    MaxStamina = Stat.MaxStamina + growth.MaxStamina;
+    //    Stamina += growth.MaxStamina;
+    //    Stat.StaminaRegen += growth.StaminaRegen;
+    //}
     public GameObject GetAttackableUnderCursor(int mask = default, float radius = 0.1f)
     {
         if (mask == default)

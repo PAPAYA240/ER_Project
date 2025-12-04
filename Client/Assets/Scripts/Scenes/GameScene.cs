@@ -87,7 +87,7 @@ public class GameScene : BaseScene
 
     public void AddPlayer(GameObject go, PlayerController pc)
     {
-        if (Managers.Info.Team == 1)
+        if (pc.ObjInfo.Player.Team == 1)
         {
             Team1.Add(pc.Id, go);
         }

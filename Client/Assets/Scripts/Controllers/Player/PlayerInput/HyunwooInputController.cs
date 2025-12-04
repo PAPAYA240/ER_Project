@@ -19,8 +19,10 @@ public class HyunwooInputController : PlayerInputController
             var key = _skillKeys[i];
             if (!Input.GetKeyDown(key))
                 continue;
-
-            if (key == KeyCode.R && _skill.SkillDict[KeyCode.R].CurLevel > 0)
+            
+            if (key == KeyCode.R && _skill.SkillDict[KeyCode.R].CurLevel > 0 
+                && _player.State != CreatureState.Skill 
+                && _player.State != CreatureState.Stun)
             {
                 if(null != _coCharge)
                 {

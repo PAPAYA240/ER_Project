@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FX_BI_BG_Meteor_Fire_01AB_1024
-  m_Shader: {fileID: 4800000, guid: 5a5a4290e8a00494095f23003abc3631, type: 3}
+  m_Shader: {fileID: 4800000, guid: b2699ba452b0f1943964dd538ab7a72c, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -49,6 +49,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _ColorMask: 15
     - _Cull: 0
     - _DistortStrength: 0.05
     - _Glow: 0
@@ -58,6 +59,11 @@ Material:
     - _MulVal_rgb: 8
     - _Noise: 0
     - _Speed: 2
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
     - _ZTestMode: 2
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

@@ -130,27 +130,33 @@
           ],
           "HitTarget": [],
           "Select": [
+        
             {
               "prefabName": "FX_Skill04_Charging",
-              "target": "Self",
+              "target": "Default",
               "duration": 5.0,
               "attachBoneName": "ShotPoint"
             },
             {
               "prefabName": "FX_Skill04_ShotWind",
-              "target": "Self",
+              "target": "Default",
               "duration": 5.0,
-              "attachBoneName": "ShotPoint"
+              "attachBoneName": "ShotPoint",
+              "position": {
+                "x": 0,
+                "y": -1.6,
+                "z": -1.9
+              }
             },
             {
               "prefabName": "FX_Skill04_Shot",
-              "target": "Self",
+              "target": "Default",
               "duration": 5.0,
               "attachBoneName": "ShotPoint"
             },
             {
               "prefabName": "FX_R_Hit",
-              "target": "Self",
+              "target": "Default",
               "attachBoneName": "Fx_Center",
               "duration": 0.05,
               "delayTime": 0
@@ -255,7 +261,7 @@
             {
               "prefabName": "FX_BI_Hyunwoo_Skill04_Range_Ys",
               "target": "Self",
-              "duration": 2.5
+              "duration": 3.2
             }
           ],
           "HitTarget": []

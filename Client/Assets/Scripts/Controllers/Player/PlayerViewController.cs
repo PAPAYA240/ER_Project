@@ -95,6 +95,7 @@ public class PlayerViewController : MonoBehaviour
     {
         _agent.Warp(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
         _player.Hp = packet.Hp;
+        _player.Stamina = packet.Stamina;
         _player.IsRest = packet.IsRest;
         Debug.Log(_player.IsRest);
         _player.UpdateTransform(true);
