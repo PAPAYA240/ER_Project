@@ -1,4 +1,4 @@
-﻿Shader "ERBS_FX/FX_Slash" {
+Shader "ERBS_FX/FX_Slash" {
 	Properties {
 		_Color ("Color", Vector) = (0.07843138,0.3921569,0.7843137,1)
 		_EmissStrength ("EmissStrength", Float) = 1

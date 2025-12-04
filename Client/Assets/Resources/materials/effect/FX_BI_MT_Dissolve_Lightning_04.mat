@@ -8,64 +8,105 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FX_BI_MT_Dissolve_Lightning_04
-  m_Shader: {fileID: 4800000, guid: 07114311cde2fa44295d6526541a4a6f, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 707ce76abb1ec134aa462f9baf976f1e,
+    type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _HARD_ON
-  m_LightmapFlags: 0
+  m_InvalidKeywords: []
+  m_LightmapFlags: 2
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties:
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-      _DissolveTexture:
+    - _DissolveTexture:
         m_Texture: {fileID: 2800000, guid: 17b45d5d9cd25054aad8684eb82ac1f1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-      _DissolveTexture_gradiant:
+    - _DissolveTexture_gradiant:
         m_Texture: {fileID: 2800000, guid: 14595e4cbfb87d14f975dee786673587, type: 3}
         m_Scale: {x: 0.57, y: 1}
         m_Offset: {x: 0.02, y: 0}
-      _MaskTexture01:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: c869bbbc9ee363642b859d433ad0326b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: ecd1162c951d98f43bd507ebd0c8b7a7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTexture01:
         m_Texture: {fileID: 2800000, guid: ced26a470d189fd43a9c6ac773855598, type: 3}
         m_Scale: {x: 0.42, y: 1}
         m_Offset: {x: 0.32, y: 0}
-      _MaskTexture02:
+    - _MaskTexture02:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Ints: {}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
-      _Float0: 0.08
-      _Float3: 1
-      _Float4: 0.5
-      _Float5: 1
-      _Keyword0: 1
-      _LimitCustomY: 0
-      _MulVal_Alpha: 0.25
-      _ZTestMode: 2
-      __dirty: 0
-      _dissolve2Path: 0
-      _gra: 1
-      _gradiant: 0
-      _hard: 1
-      _mask: 1
-      _mask01: 1
-      _mask02: 0
-      _mu: 0
-      _mv: 0
-      _no_gra: 0
-      _soft: 1
-      _su: 0.75
-      _sv: 1
-      _u: 2.96
-      _v: 1
-      _v1: 1
-    m_Colors: {}
+    - _Cull: 0
+    - _Float0: 0.08
+    - _Float3: 1
+    - _Float4: 0.5
+    - _Float5: 1
+    - _Keyword0: 1
+    - _LimitCustomY: 0
+    - _MulVal_Alpha: 0.25
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _ThresholdHigh: 0.2
+    - _ThresholdLow: 0.05
+    - _ZTestMode: 2
+    - __dirty: 0
+    - _dissolve2Path: 0
+    - _gra: 1
+    - _gradiant: 0
+    - _hard: 1
+    - _mask: 1
+    - _mask01: 1
+    - _mask02: 0
+    - _mu: 0
+    - _mv: 0
+    - _no_gra: 0
+    - _soft: 1
+    - _su: 0.75
+    - _sv: 1
+    - _u: 2.96
+    - _v: 1
+    - _v1: 1
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!114 &5163857719945501966
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 10
