@@ -444,7 +444,9 @@ public class PlayerInputController : MonoBehaviour
         {
             var cc = hit.collider.GetComponentInChildren<CreatureController>();
             if (cc != null && IsAttackable(hit.collider.gameObject))
+            {
                 return cc.gameObject;
+            }
         }
 
         return null;

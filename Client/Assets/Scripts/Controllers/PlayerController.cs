@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Data;
 using Google.Protobuf.Protocol;
+using NUnit.Framework;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
@@ -241,7 +243,6 @@ public class PlayerController : CreatureController
         set
         {
             _isKeyInput = value;
-            Debug.Log($"IsKeyInput changed: {value}");
         }
     }
 
@@ -303,7 +304,7 @@ public class PlayerController : CreatureController
         _agent.stoppingDistance = 0.1f;
 
         // Sound
-        Sound = gameObject.GetComponent<SoundController>();
+        Sound = gameObject.GetOrAddComponent<SoundController>();
         if (Sound != null)
             Sound.PreloadCharAllSounds(ObjInfo.Player.CharType);
 
@@ -370,17 +371,19 @@ public class PlayerController : CreatureController
                 if (_agent == null || !_agent.isOnNavMesh)
                     return;
                 _agent.Warp(_serverPos);
-            }                
+            }
             else
+            {
                 transform.position = Vector3.Lerp(transform.position, _serverPos, Time.deltaTime * _syncSpeed);
+            }
         }
     }
 
+    
     protected virtual void CheckUpdatedFlag() { }
 
     public override void OnDamaged()
     {
-        Debug.Log("Player HIT !");
     }
 
     public void OnHit(S_AttackInfo atkInfoPacket)
@@ -396,8 +399,12 @@ public class PlayerController : CreatureController
             Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
 
         if (Enum.TryParse<KeyCode>(atkInfoPacket.AttackType, out KeyCode key))
-            PlaySelectEffect(key, default(Vector3), default(Vector3), default(Quaternion), $"FX_{key}_Hit", tbc.transform);
-
+            PlaySelectEffect(key, default(Vector3), default(Vector3), default(Quaternion), $"FX_{atkInfoPacket.AttackType}_Hit", tbc.transform);
+        else
+        {
+            if (ObjInfo.Player.CharType == CharacterType.Theodore) // Normal Attack
+                PlaySelectEffect(KeyCode.F2, default(Vector3), default(Vector3), default(Quaternion), $"FX_{atkInfoPacket.AttackType}_Hit", tbc.transform);
+        }
     }
 
     public void OnStop(S_Stop packet)
@@ -418,7 +425,6 @@ public class PlayerController : CreatureController
 
     public void ChangeState(S_PlayerState packet)
     {
-        //Debug.Log($"Id : {Id}, Cur : {State}, Next : {packet.State}");
         State = packet.State;
     }
 
@@ -465,14 +471,10 @@ public class PlayerController : CreatureController
         _animator.CrossFadeInFixedTime(animName, ratio);
     }
 
+    
     public void PlayAnimFromServer(AnimInfo animInfo)
     {
-        // Animation에 맞는 Sound
-        if (Sound != null)
-        {
-            Sound.GetEffect3D(animInfo.Name, transform.position);
-            Sound.GetRandomVoice(animInfo.Name);
-        }
+        PlayAnimationSound(animInfo.Name);
 
         bool isUpperBodySkill = animInfo.Name == "ROZZI_D" || animInfo.Name == "YUKI_W";
         if (isUpperBodySkill)
@@ -506,6 +508,11 @@ public class PlayerController : CreatureController
                 _eqipWeapon.gameObject.SetActive(true);
                 ActiveRenderer(true);
             }
+
+            if (name == "REST_START" || name == "REST_LOOP")
+                RenderRestItem(true);
+            else
+                RenderRestItem(false);
         }
         else if(ObjInfo.Player.CharType == CharacterType.Abigail)
         {
@@ -515,12 +522,24 @@ public class PlayerController : CreatureController
                 RenderRestItem(false);
         }
     }
+    private int GetAnimationLayer(string animName)
+    {
+        int layerCount = _animator.layerCount;
+        for (int i = 0; i < layerCount; i++)
+        {
+            AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(i);
 
+            if (stateInfo.IsName(animName))
+                return i;
+        }
+
+        return -1;
+    }
     public void ChangeSpeed(string paramName, float speed)
     {
         _animator.SetFloat(paramName, speed);
-        Debug.Log(speed);
     }
+
     public void PlayEffectFromServer(S_Fx packet, Vector3 mousePos, Vector3 targetPos = new Vector3(), Quaternion targetRot = default(Quaternion))
     {
         Transform targetTransform = null;
@@ -551,6 +570,51 @@ public class PlayerController : CreatureController
                 PlayCommonSelectEffect(packet.CommonName, packet.FxName, mousePos, targetPos, targetRot);
         }
     }
+    #endregion
+
+    #region Sound
+    private void PlayAnimationSound(string name)
+    {
+        // Animation에 맞는 Sound
+        if (Sound == null)
+            return;
+
+        if (name == "RUN")
+        {
+            if (_runSoundCoroutine == null)
+                _runSoundCoroutine = StartCoroutine(FootStepSound());
+        }
+        else
+        {
+            if (_runSoundCoroutine != null)
+            {
+                StopCoroutine(_runSoundCoroutine);
+                _runSoundCoroutine = null;
+            }
+
+            Sound.GetEffect3D(name, transform.position); 
+            Sound.GetRandom3DVoice(name, transform.position);
+        }
+    }
+
+    Coroutine _runSoundCoroutine = null;
+    private float _footstepTimer = 0.4f;
+    private float _footstepInterval = 0.4f;
+    protected IEnumerator FootStepSound()
+    {
+        _footstepTimer = 0.4f;
+        while (true)
+        {
+            _footstepTimer -= Time.deltaTime;
+            if (_footstepTimer <= 0)
+            {
+                Sound.GetRandom3DEffect("FootStep", transform.position);
+                _footstepTimer = _footstepInterval;
+            }
+            yield return null;
+        }
+    }
+
     #endregion
     public void LookAtMouse()
     {
@@ -1081,6 +1145,18 @@ public class PlayerController : CreatureController
             foreach (Transform child in transform.GetComponentsInChildren<Transform>(true))
             {
                 if (child.name == "AbigailTable")
+                {
+                    _restItem = child.gameObject;
+                    RenderRestItem(false);
+                    return;
+                }
+            }
+        }
+        else if (ObjInfo.Player.CharType == CharacterType.Theodore)
+        {
+            foreach (Transform child in transform.GetComponentsInChildren<Transform>(true))
+            {
+                if (child.name == "RestBox")
                 {
                     _restItem = child.gameObject;
                     RenderRestItem(false);

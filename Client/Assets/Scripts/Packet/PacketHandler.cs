@@ -178,10 +178,6 @@ class PacketHandler
             cc.Hp = changePacket.Hp;
             cc.Barrier = changePacket.Barrier;
 
-            // * Damage Screen
-            if (changePacket.ObjectId == Managers.Object.MyPlayer.Id)
-                Managers.Object.MyPlayer.UI.SetDamageOverlay();
-
             //foreach(var v in changePacket.Damages)
             //    Managers.CombatText.SetCombatText(CombatTextManager.TextType.AdDamage, v.Damage, cc.transform.position);
         }
@@ -201,6 +197,9 @@ class PacketHandler
             cc.Hp = 0;
             cc.OnDead();
         }
+        
+        if (Managers.Object.MyPlayer.Sound)
+            Managers.Object.MyPlayer.Sound.GetRandomVoice("Player_Kill");
 
         if (Managers.Object.MyPlayer != null)
         {
@@ -223,14 +222,10 @@ class PacketHandler
             if (attPc == null)
                 return;
 
-            // Kill 수에 따라 다른 Sound 호출
-            if (Managers.Object.MyPlayer.Id == diePacket.AttackerId && Managers.Object.MyPlayer.Id == diePacket.ObjectId)
+            if (attPc.Sound != null)
             {
-                if (attPc.Sound != null)
-                {
-                    attPc.CurrentMultiKillCnt++;
-                    attPc.Sound.GetRandomVoice($"Kill{attPc.CurrentMultiKillCnt}");
-                }
+                attPc.CurrentMultiKillCnt++;
+                attPc.Sound.GetRandom3DVoice($"Kill{attPc.CurrentMultiKillCnt}", attPc.transform.position);
             }
             Managers.Object.MyPlayer.UI.NotifyKill(attPc, pc); 
         }
@@ -662,6 +657,10 @@ class PacketHandler
             PlayerController atkPlayer = (PlayerController)bc;
             if (atkPlayer == null) 
                     return;
+
+            // * Damage Screen
+            if (atkInfoPacket.ObjectId == Managers.Object.MyPlayer.Id)
+                Managers.Object.MyPlayer.UI.SetDamageOverlay();
 
             atkPlayer.OnHit(atkInfoPacket);
         }
@@ -1319,6 +1318,24 @@ class PacketHandler
 
         pr.Init(attackPacket);
     }
+    public static void S_TheodoreAttackHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_TheodoreAttackHandler(session, packet)))
+            return;
+
+        S_TheodoreAttack attackPacket = packet as S_TheodoreAttack;
+
+        var projectile = Managers.Object.FindById(attackPacket.ObjectId);
+        if (projectile == null)
+            return;
+
+        Projectile_Theodore_Attack pr = projectile.GetComponentInChildren<Projectile_Theodore_Attack>();
+        if (pr == null)
+            return;
+
+        pr.Init(attackPacket);
+    }
+    
 
     public static void S_ChangeExpHandler(PacketSession session, IMessage packet)
     {
@@ -1350,7 +1367,6 @@ class PacketHandler
         if (pc == null) return;
         pc.YukiEffects.StopEffect(stopAbglFx.Fx);
     }
-
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;

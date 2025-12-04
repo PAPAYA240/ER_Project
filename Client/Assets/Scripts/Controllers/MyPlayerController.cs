@@ -28,16 +28,28 @@ public class MyPlayerController : PlayerController
     public float ItemAttackSpeed { get; set; } = 0;
 
     public bool CanStopSkill { get; set; } = false;
-
+    
     float _lastAttackTime;
     readonly float _attackLockTime = 0.1f;
 
     float _lastOperateTime;
     readonly float _operateLockTime = 0.1f;
 
-    public int CurPhase { get; set; } = 999;
+    private int _currentPhase = 999;
+    public int CurPhase 
+    {
+        get
+        {
+            return _currentPhase;
+        }
+        set
+        {
+            _currentPhase = value;
 
- 
+            if (Sound)
+                Sound.GetRandomVoice($"Phase{_currentPhase}");
+        }
+    } 
 
     private void Awake()
     {
@@ -111,7 +123,6 @@ public class MyPlayerController : PlayerController
                 {
                     _lastOperateTime = Time.time;
                     Managers.Network.Send(deploying);
-                    Debug.Log($"@ Send Packet! : Id - {deploying.ObjectId}");
                 }
                 else
                 {
@@ -132,13 +143,16 @@ public class MyPlayerController : PlayerController
         // 스킬
         // 스킬 레벨 업
         var skillLevelUpCmd = _input.GetSkillLevelUpCommand();
-        if (skillLevelUpCmd != KeyCode.None)
-            _UI.TrySkillLevelUp(skillLevelUpCmd);
-        else
+        if(State != CreatureState.Rest)
         {
-            var skillCmd = _input.GetSkillCommand();
-            if (skillCmd != null)
-                Managers.Network.Send(skillCmd);
+            if (skillLevelUpCmd != KeyCode.None)
+                _UI.TrySkillLevelUp(skillLevelUpCmd);
+            else
+            {
+                var skillCmd = _input.GetSkillCommand();
+                if (skillCmd != null)
+                    Managers.Network.Send(skillCmd);
+            }
         }
 
         // 휴식(X)

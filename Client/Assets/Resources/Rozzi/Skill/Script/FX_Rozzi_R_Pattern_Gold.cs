@@ -13,6 +13,9 @@ public class FX_Rozzi_R_Pattern_Gold : MonoBehaviour
     private MaterialPropertyBlock _mpb;
     private float _time;
 
+    [SerializeField]
+    float DELTA = 0.3f;
+
     private void Awake()
     {
         _renderer = GetComponent<ParticleSystemRenderer>();
@@ -26,20 +29,18 @@ public class FX_Rozzi_R_Pattern_Gold : MonoBehaviour
         // 오브젝트가 활성화될 때마다 항상 0부터 다시 시작
         _time = 0f;
         SetProgress(0f);
+        transform.localRotation = Quaternion.identity;
     }
 
     void OnDisable()
     {
+        _time = 0f;
         SetProgress(0f); // 풀로 돌아갈 때 항상 0으로
     }
 
     private void Update()
     {
-        // 인게임(Play 모드)에서만 동작
-        //if (!Application.isPlaying)
-        //    return;
-
-        _time += Time.deltaTime;
+        _time += Time.deltaTime * DELTA;
         float t = Mathf.Clamp01(_time / duration);
         SetProgress(t);
     }
@@ -49,7 +50,5 @@ public class FX_Rozzi_R_Pattern_Gold : MonoBehaviour
         _renderer.GetPropertyBlock(_mpb);
         _mpb.SetFloat(propertyName, value);
         _renderer.SetPropertyBlock(_mpb);
-
-        //Debug.Log($"_mpb : {_mpb.GetFloat("_Progress")}, value : {value}");
     }
 }

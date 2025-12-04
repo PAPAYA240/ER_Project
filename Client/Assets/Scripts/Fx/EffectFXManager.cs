@@ -1,5 +1,6 @@
 ﻿using Data;
 using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -92,10 +93,24 @@ public class EffectFXManager : MonoBehaviour
                 fxObject.transform.localPosition = data.position;
                 fxObject.transform.localRotation = Quaternion.identity;
             }
-            else if(data.target == EEffectTarget.Enemy)
+            else if (data.target == EEffectTarget.Enemy)
             {
                 fxObject.transform.SetParent(casterTransform);
                 fxObject.transform.SetPositionAndRotation(spawnPos, spawnRot);
+            }
+            else if (data.target == EEffectTarget.TargetNoRotation)
+            {
+                Transform followTarget = casterTransform;
+                fxObject.transform.position = spawnPos;
+                Quaternion fixedRot = Quaternion.identity;
+                fxObject.transform.rotation = fixedRot;
+
+                var follow = fxObject.GetComponent<FX_TargetNoRotation>();
+                if (follow == null)
+                    follow = fxObject.AddComponent<FX_TargetNoRotation>();
+
+                // data.position 을 world offset으로 쓰고 싶으면
+                follow.Setup(followTarget, data.position, fixedRot, faceCamera: false);
             }
             else
             {
@@ -117,6 +132,21 @@ public class EffectFXManager : MonoBehaviour
             currentlyPlayingEffects[ownerId].AddRange(effectList);
         }
         return effectList;
+    }
+    public void PlayEffect(string path, Transform casterTransform, float duration, Vector3 offset)
+    {
+        GameObject prefab = Managers.Resource.Load<GameObject>(path);
+        if (prefab == null)
+            return;
+
+        GameObject fx = GameObject.Instantiate(prefab);
+        fx.transform.SetParent(casterTransform);
+        fx.transform.localPosition = Vector3.zero;
+        fx.transform.localRotation = Quaternion.identity;
+        fx.transform.localPosition += offset;
+        fx.SetActive(true);
+
+        Destroy(fx, duration);
     }
 
     private void StartEffectLogic(int ownerId, GameObject fxObject, EffectData data, Transform casterTransform)
@@ -228,6 +258,13 @@ public class EffectFXManager : MonoBehaviour
             case EEffectTarget.Shot:
                 parentTransform = null;
                 return casterTransform.position + data.position;
+
+            case EEffectTarget.Default:
+                parentTransform = null;
+                Vector3 flatOffset = new Vector3(data.position.x, 0, data.position.z);
+                Vector3 worldOffsetDefault = spawnRot * flatOffset;
+                return casterTransform.position + worldOffsetDefault + new Vector3(0, data.position.y, 0);
+
             default:
                 parentTransform = null;
                 return Vector3.zero;
@@ -248,6 +285,11 @@ public class EffectFXManager : MonoBehaviour
             case EEffectTarget.Mouse:
             case EEffectTarget.Shot:
                 return rot;
+
+            case EEffectTarget.Default:
+                Quaternion baseRot = rot != Quaternion.identity ? rot : casterTransform.rotation;
+                Quaternion xRotation = Quaternion.Euler(-90f, 0f, 0f);
+                return baseRot * xRotation;
 
             default:
                 return Quaternion.identity;
@@ -308,37 +350,29 @@ public class EffectFXManager : MonoBehaviour
         if (!stateDict.TryGetValue(CreatureState.Skill, out var skillDict)) return;
         if (!skillDict.TryGetValue((KeyCode)packet.KeyCode, out SkillEffectList myEffectList)) return;
 
-        List<EffectData> dataList = null;
-        if (packet.Type == "Caster")
+        if(packet.Type == "Caster")
         {
-            dataList = myEffectList.Caster;
-        }
-        else if (packet.Type == "Select")
-        {
-            if(packet.IsCaster)
+            foreach (EffectData data in myEffectList.Caster)
             {
-                foreach (EffectData data in myEffectList.Caster)
+                GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+
+                if (fxObjectToRemove != null)
+                    RemoveEffect(packet.ObjectId, fxObjectToRemove);
+            }
+        }
+        else if(packet.Type == "Select")
+        {
+            foreach (EffectData data in myEffectList.Select)
+            {
+                if(data.prefabName == packet.FxName)
                 {
                     GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
 
                     if (fxObjectToRemove != null)
                         RemoveEffect(packet.ObjectId, fxObjectToRemove);
-                }
-            }
-            else
-            {
-                foreach (EffectData data in myEffectList.Select)
-                {
-                    if(data.prefabName == packet.FxName)
-                    {
-                        GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
 
-                        if (fxObjectToRemove != null)
-                            RemoveEffect(packet.ObjectId, fxObjectToRemove);
-
-                        break;
-                    }                    
-                }
+                    break;
+                }                    
             }
         }
     }

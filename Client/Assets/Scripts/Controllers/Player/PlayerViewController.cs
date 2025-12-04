@@ -2,13 +2,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEditor.PlayerSettings;
-using static UnityEngine.GraphicsBuffer;
 
 public class PlayerViewController : MonoBehaviour
 {
@@ -20,7 +15,6 @@ public class PlayerViewController : MonoBehaviour
     private bool _syncing;
 
     private int _targetId;
-    private bool _isRotating = false;
 
     // Moving (For. Target)
     private int _followTargetId = 0;
@@ -47,18 +41,19 @@ public class PlayerViewController : MonoBehaviour
         if (!_syncing || _agent == null || _player == null)
             return;
 
-        if (_player.State == CreatureState.Attack)
-        {
-            if (_isRotating == false)
-            {
-                var targetView = Managers.Object.FindById(TargetId);
-                if (targetView != null)
-                {
-                    Vector3 pos = targetView.transform.position;
-                    UpdateTarget(pos);
-                }
-            }
-        }
+        //if (_player.State == CreatureState.Attack)
+        //{
+        //    if (_isRotating == false)
+        //    {
+        //        var targetView = Managers.Object.FindById(TargetId);
+        //        if (targetView != null)
+        //        {
+        //            Vector3 pos = targetView.transform.position;
+        //            UpdateTarget(pos);
+        //        }
+        //    }
+        //}
+        //else
 
         _player.UpdateTransform();
     }
@@ -268,30 +263,37 @@ public class PlayerViewController : MonoBehaviour
 
     private IEnumerator CoRotateToTarget()
     {
-        float rotateSpeed = 15f;
-        _isRotating = true;
+        const float rotateSpeed = 15f;
 
-        while (_target != null)
+        while (true)
         {
+            if (_target == null)
+                break;
+
             if (_player.State == CreatureState.Moving)
                 break;
 
-            Vector3 dir = (_target.transform.position - transform.position);
+            // 타겟 방향 계산
+            Vector3 dir = _target.transform.position - transform.position;
             dir.y = 0;
 
-            if (dir.magnitude < 0.1f)
+            // 너무 가까우면 회전 중단
+            if (dir.sqrMagnitude < 0.01f)
                 break;
 
             Quaternion targetRot = Quaternion.LookRotation(dir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * rotateSpeed);
 
-            if (Quaternion.Angle(transform.rotation, targetRot) < 1f)
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                targetRot,
+                rotateSpeed * Time.deltaTime * 50f
+            );
+
+            if (Quaternion.Angle(transform.rotation, targetRot) < 0.5f)
                 break;
 
             yield return null;
         }
-
-        _isRotating = false;
     }
 
     private GameObject FindVisibleObjectById(int objectId)

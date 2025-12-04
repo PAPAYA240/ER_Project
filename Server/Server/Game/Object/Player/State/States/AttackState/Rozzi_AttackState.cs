@@ -123,6 +123,7 @@ public class Rozzi_AttackState : Player_AttackState
                         pkt.TargetId = _targetId;
                         player.SendTargetChangePacket(pkt);
                         _isRotate = true;
+                        _rotateStartUtc = DateTime.UtcNow;
                     }
                 }
                 return; // 스윙 중에는 추가 개시 없음
@@ -237,8 +238,8 @@ public class Rozzi_AttackState : Player_AttackState
         float damage = p.Attack;
         if (_isPassiveAttack)
             damage = p.Attack * (0.6f + _attackBonus[p.GetSkillLevel(KeyCode.T)]);
-     
-        target.OnDamaged(p, damage, false, true);
+
+        p.Room.Push(target.OnDamaged, p, damage, false, true);
 
         Projectile_Rozzi_R pj = p.Room.FindProjectile(p, ProjectileType.ProjectileRozziR) as Projectile_Rozzi_R;
         if (pj != null && pj.Target != null && pj.Target == target)
@@ -262,6 +263,5 @@ public class Rozzi_AttackState : Player_AttackState
         }
 
         p.Room.Push(p.Room.LeaveGame, pkt.ObjectId);
-        Console.WriteLine($"@ ApplyProjectileHit");
     }
 }

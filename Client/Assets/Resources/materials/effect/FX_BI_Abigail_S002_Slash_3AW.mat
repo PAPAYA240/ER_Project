@@ -8,72 +8,108 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FX_BI_Abigail_S002_Slash_3AW
-  m_Shader: {fileID: 4800000, guid: 2b0eb051f156e7442af85d0528c4fe9e, type: 3}
+  m_Shader: {fileID: 4800000, guid: 6b9ab0d17faae194ab64fda94ee49e32, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _ASSIGNDISSOLVEUV_DISSOLVEUV_USED
-  - _ASSIGNNOISEUV_NOISEUV_USED
-  - _DISSOLVEALPHA_BASEREDXDISSOLVE
-  - _ISDISSOLVE_ON
-  - _ISNOISECOMPLEX_COMPLEX
-  - _ISNOISE_ON
-  m_InvalidKeywords:
-  - _ALPHADISSOLVE_SWICH_ON
-  - _CUSTOMVERTEXST_ON
-  - _DISSOLVEALPHA_ON
-  - _DISSOLVE_SWICH_ON
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties:
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-      _DissolveMask:
-        m_Texture: {fileID: 2800000, guid: 48e3838eb736c674ba2f333ba097c9c0, type: 3}
+    - _DissolveMask:
+        m_Texture: {fileID: 2800000, guid: a8dece585bb051d459d7234b223b7479, type: 3}
         m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0.02, y: -0.12}
-      _MainTex:
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
         m_Texture: {fileID: 2800000, guid: fb415f49992b67b48b02d78829ad4e98, type: 3}
         m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
-      _MaskTex:
+    - _MaskTex:
         m_Texture: {fileID: 2800000, guid: 4b6a84acf60d429418def1addb499dc1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-      _NoiseTex:
+    - _NoiseTex:
         m_Texture: {fileID: 2800000, guid: fb415f49992b67b48b02d78829ad4e98, type: 3}
-        m_Scale: {x: 2, y: 2}
+        m_Scale: {x: 3, y: 3}
         m_Offset: {x: 0, y: 0}
-    m_Ints: {}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
-      _AssignDissolveUV: 0
-      _AssignNoiseUV: 0
-      _Cull: 0
-      _DestBlend: 10
-      _DissolveAlpha: 1
-      _DissolveSmoothRange: 0.4
-      _IsDissolve: 1
-      _IsNoise: 1
-      _IsNoiseComplex: 1
-      _MainAlpha_To_R: 0.255
-      _MainColor_To_Alpha_Amount: 0
-      _MulAlpha: 1
-      _MulVal_Color: 2.39
-      _MulVal_Noise: -0.35
-      _NoiseScale_1: 1
-      _NoiseScale_2: 1
-      _Rotate: 0
-      _SrcBlend: 5
-      _ZTest: 8
-      _ZWrite: 0
+    - _AlphaCutoff: 0.05
+    - _AssignDissolveUV: 0
+    - _AssignNoiseUV: 0
+    - _Brightness: 1
+    - _Contrast: 1.5
+    - _Cull: 0
+    - _DestBlend: 10
+    - _DissolveAlpha: 1
+    - _DissolveAmount: 0.5
+    - _DissolveDirection: 1
+    - _DissolveEdge: 0.1
+    - _DissolveEdgeWidth: 0.05
+    - _DissolveGlowIntensity: 1
+    - _DissolveProgress: 0
+    - _DissolveSmoothRange: 0.4
+    - _DissolveSpeed: 0.5
+    - _DissolveTiling: 1
+    - _GradientOffset: 0
+    - _GradientPower: 1
+    - _HighlightIntensity: 3
+    - _InvertMask: 0
+    - _IsDissolve: 1
+    - _IsNoise: 1
+    - _IsNoiseComplex: 1
+    - _MainAlpha_To_R: 0.255
+    - _MainColor_To_Alpha_Amount: 0
+    - _MaskCutoff: 0.5
+    - _MaskSoftness: 0.1
+    - _MaskThreshold: 0.1
+    - _MaskTiling: 1
+    - _MulAlpha: 1
+    - _MulVal_Color: 2.39
+    - _MulVal_Noise: -0.35
+    - _NoiseIntensity: 1
+    - _NoiseScale_1: 1
+    - _NoiseScale_2: 1
+    - _NoiseScrollSpeed: 0.2
+    - _NoiseTiling: 1
+    - _OverallBrightness: 1
+    - _Progress: 0
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _Rotate: 0
+    - _ShowDissolveOnly: 0
+    - _ShowMaskOnly: 0
+    - _ShowNoiseOnly: 0
+    - _SrcBlend: 5
+    - _ZTest: 8
+    - _ZWrite: 0
     m_Colors:
-      _Color: {r: 1, g: 1, b: 1, a: 1}
-      _MaskScrollSpeed: {r: 0, g: 0, b: 0, a: 0}
-      _NoiseScrollSpeed_1: {r: 0, g: 0, b: 0, a: 0}
-      _NoiseScrollSpeed_2: {r: 0, g: 0, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _DissolveEdgeColor: {r: 1, g: 0.5, b: 0, a: 1}
+    - _DissolveGlowColor: {r: 1, g: 0.8, b: 0.3, a: 1}
+    - _MaskScrollSpeed: {r: 0, g: 0, b: 0, a: 0}
+    - _NoiseScrollSpeed_1: {r: 0, g: 0, b: 0, a: 0}
+    - _NoiseScrollSpeed_2: {r: 0, g: 0, b: 0, a: 0}
+    - _TintColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
