@@ -907,6 +907,7 @@ namespace Server.Game
             S_Chat sendPkt = new S_Chat()
             {
                 ObjectId = player.Id,
+                PlayerName = player.Info.Player.Nickname,
                 Message = chatPkt.Message
             };
             Push(Broadcast, sendPkt);

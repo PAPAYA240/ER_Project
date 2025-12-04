@@ -95,6 +95,9 @@ public class MyPlayerController : PlayerController
 
     private void Update()
     {
+        if (ChatHandler.IsChatting)
+            return;
+
         // 1) 정지(S/H)
         var stopCmd = _input.GetStopCommand();
         if (stopCmd != null)

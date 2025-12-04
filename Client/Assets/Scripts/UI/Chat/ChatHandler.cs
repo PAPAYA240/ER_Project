@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class ChatHandler : MonoBehaviour
 {
+    public static bool IsChatting { get; private set; }
+
     [SerializeField] private TMP_InputField inputField;
     [SerializeField] private RectTransform contentRect;
     [SerializeField] private ScrollRect scrollRect;
@@ -13,7 +15,7 @@ public class ChatHandler : MonoBehaviour
     private CanvasGroup cg;
 
     // ¸Þ½ÃÁö Å¥
-    private static Queue<(int playerId, string message)> messageQueue = new Queue<(int, string)>();
+    private static Queue<(string playerName, string message)> messageQueue = new Queue<(string, string)>();
 
     private void Awake()
     {
@@ -24,9 +26,9 @@ public class ChatHandler : MonoBehaviour
         HideInputField(); // ½ÃÀÛ ½Ã ¼û±è
     }
 
-    public void EnqueueMessage(int playerId, string message)
+    public void EnqueueMessage(string playerName, string message)
     {
-        messageQueue.Enqueue((playerId, message));
+        messageQueue.Enqueue((playerName, message));
     }
 
     void Update()
@@ -34,7 +36,7 @@ public class ChatHandler : MonoBehaviour
         while (messageQueue.Count > 0)
         {
             var msg = messageQueue.Dequeue();
-            AddMessage(msg.playerId, msg.message);
+            AddMessage(msg.playerName, msg.message);
         }
 
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
@@ -54,6 +56,8 @@ public class ChatHandler : MonoBehaviour
 
     private void ShowInputField()
     {
+        IsChatting = true;
+
         cg.alpha = 0.8f;
         cg.blocksRaycasts = true;
         cg.interactable = true;
@@ -64,6 +68,8 @@ public class ChatHandler : MonoBehaviour
 
     private void HideInputField()
     {
+        IsChatting = false;
+
         cg.alpha = 0f;
         cg.blocksRaycasts = false;
         cg.interactable = false;
@@ -81,11 +87,11 @@ public class ChatHandler : MonoBehaviour
         inputField.text = "";
     }
 
-    private void AddMessage(int playerId, string message)
+    private void AddMessage(string playerName, string message)
     {
         GameObject textPrefab = Resources.Load<GameObject>("Prefabs/UI/Chat/ChatText");
         GameObject inst = Instantiate(textPrefab, contentRect, false);
 
-        inst.GetComponent<TMP_Text>().text = $"{playerId} : {message}";
+        inst.GetComponent<TMP_Text>().text = $"{playerName} : {message}";
     }
 }

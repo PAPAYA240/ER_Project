@@ -388,9 +388,8 @@ enum SkillEffectType {
 	Q_Buff = 5;
 	W_Flower = 6;
 	W_EFFECT = 7;
-
-    DASH = 8;
-    Hit = 9;
+	E_Wind = 8;
+	WpSkill = 9;
 }
 
 enum SpawnPointType
@@ -1152,12 +1151,14 @@ message S_CombatMode {
 
 message C_Chat {
 	int32 objectId = 1;
-	string message = 2;
+	string playerName = 2;
+	string message = 3;
 }
 
 message S_Chat {
 	int32 objectId = 1;
-	string message = 2;
+	string playerName = 2;
+	string message = 3;
 }
 
 message S_Unstoppable{
