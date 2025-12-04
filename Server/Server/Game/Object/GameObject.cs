@@ -706,6 +706,15 @@ namespace Server.Game
             }
         }
 
+        public bool FindStatStatusEffect(string name)
+        {
+            foreach (StatusEffect effect in _statusEffects)
+            {
+                if (effect.stat == name)
+                    return true;
+            }
+            return false;
+        }
         void OnStatusEffectRemove(StatusEffect statusEffect)
         {
             if (statusEffect.type == "Buff" || statusEffect.type == "Debuff")

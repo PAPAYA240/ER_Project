@@ -212,6 +212,7 @@ class PacketHandler
             PlayerController pc = cc as PlayerController;
             if (pc == null)
                 return;
+            pc.ActiveRenderer(true);
 
             // 공격 플레이어
             GameObject attackerGo = Managers.Object.FindById(diePacket.AttackerId);
@@ -716,7 +717,7 @@ class PacketHandler
         GameObject go = Managers.Object.FindById(stunPacket.ObjectId);
         if (go == null)     return;
         GameObject goAtk = Managers.Object.FindById(stunPacket.AttackerId);
-        if (go == null)     return;
+        if (goAtk == null)     return;
         CreatureController cc = go.GetComponentInChildren<CreatureController>();
         if (cc == null)     return;
         CreatureController atkc = goAtk.GetComponentInChildren<CreatureController>();

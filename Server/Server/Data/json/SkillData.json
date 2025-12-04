@@ -1847,9 +1847,15 @@
             "staminaCost": 60,
             "effects": [
               {
+                "type": "VisionShare",
+                "duration": 4,
+                "subject": "Enemy",
+                "condition": "Attach"
+              },
+              {
                 "type": "Snare",
                 "subject": "Enemy",
-                "duration": 0.3,
+                "duration": 0.9,
                 "condition": "Hit"
               },
               {
@@ -1863,9 +1869,15 @@
             "staminaCost": 70,
             "effects": [
               {
+                "type": "VisionShare",
+                "duration": 4,
+                "subject": "Enemy",
+                "condition": "Attach"
+              },
+              {
                 "type": "Snare",
                 "subject": "Enemy",
-                "duration": 0.3,
+                "duration": 1,
                 "condition": "Hit"
               },
               {
@@ -1879,9 +1891,15 @@
             "staminaCost": 80,
             "effects": [
               {
+                "type": "VisionShare",
+                "duration": 4,
+                "subject": "Enemy",
+                "condition": "Attach"
+              },
+              {
                 "type": "Snare",
                 "subject": "Enemy",
-                "duration": 0.3,
+                "duration": 1.1,
                 "condition": "Hit"
               },
               {
@@ -1895,9 +1913,15 @@
             "staminaCost": 90,
             "effects": [
               {
+                "type": "VisionShare",
+                "duration": 4,
+                "subject": "Enemy",
+                "condition": "Attach"
+              },
+              {
                 "type": "Snare",
                 "subject": "Enemy",
-                "duration": 0.3,
+                "duration": 1.3,
                 "condition": "Hit"
               },
               {
@@ -1911,9 +1935,15 @@
             "staminaCost": 100,
             "effects": [
               {
+                "type": "VisionShare",
+                "duration": 4,
+                "subject": "Enemy",
+                "condition": "Attach"
+              },
+              {
                 "type": "Snare",
                 "subject": "Enemy",
-                "duration": 0.3,
+                "duration": 1.4,
                 "condition": "Hit"
               },
               {
@@ -1980,7 +2010,9 @@
               },
               {
                 "type": "VisionShare",
-                "duration": 3
+                "duration": 3,
+                "subject": "Enemy",
+                "condition": "Attach"
               },
               {
                 "type": "Debuff",
@@ -2002,10 +2034,11 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
-                "value": 30,
-                "duration": 1,
-                "condition": "Boom"
+                "stat": "MoveSpeed",
+                "value": 80,
+                "duration": 0.5,
+                "condition": "AllyHit",
+                "valuetype": "Ratio"
               }
             ]
           },
@@ -2022,7 +2055,9 @@
               },
               {
                 "type": "VisionShare",
-                "duration": 3
+                "duration": 3,
+                "subject": "Enemy",
+                "condition": "Attach"
               },
               {
                 "type": "Damage",
@@ -2044,10 +2079,11 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
-                "value": 30,
-                "duration": 1,
-                "condition": "Boom"
+                "stat": "MoveSpeed",
+                "value": 90,
+                "duration": 0.5,
+                "condition": "AllyHit",
+                "valuetype": "Ratio"
               }
             ]
           },
@@ -2064,7 +2100,9 @@
               },
               {
                 "type": "VisionShare",
-                "duration": 3
+                "duration": 3,
+                "subject": "Enemy",
+                "condition": "Attach"
               },
               {
                 "type": "Damage",
@@ -2086,10 +2124,11 @@
               },
               {
                 "type": "Buff",
-                "stat": "speed",
-                "value": 30,
-                "duration": 1,
-                "condition": "Boom"
+                "stat": "MoveSpeed",
+                "value": 100,
+                "duration": 0.5,
+                "condition": "AllyHit",
+                "valuetype": "Ratio"
               }
             ]
           }

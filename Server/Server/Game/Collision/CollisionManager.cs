@@ -233,7 +233,7 @@ namespace Server.Game
                         {
                             float healAmount = hitbox.TotalDamage * 0.8f;
                             hitbox.Creature.Room.Push(hitbox.Creature.OnHeal, hitbox.Creature, healAmount);
-                        }                            
+                        }
                     }                        
                 }
             }
@@ -257,6 +257,8 @@ namespace Server.Game
                         continue;
                     if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
                         continue;
+                    if (type == SkillType.SkillPoint)
+                        return;
 
                     if (type == SkillType.SkillProjectile)
                     {
@@ -303,7 +305,9 @@ namespace Server.Game
                         int teamId = teamKvp.Key;
                         if (teamId == myTeam)
                         {
-                            HandleAllyHit(hitbox, teamKvp.Value);
+                            bool isBusy = (hitbox.Creature.Info.Player.CharType == CharacterType.Theodore && hitbox.KeyCode == KeyCode.R);
+
+                            HandleAllyHit(hitbox, teamKvp.Value, isBusy);
                             continue;
                         }                            
                         HandleCollision<Player>(hitbox, teamKvp.Value, hitPlayers, damageDict);
@@ -795,7 +799,7 @@ namespace Server.Game
             }
         }
 
-        void HandleAllyHit(Hitbox hitbox, ConcurrentDictionary<int, Player> targets)
+        void HandleAllyHit(Hitbox hitbox, ConcurrentDictionary<int, Player> targets, bool isBusy = false)
         {
             if (!_allyHitSkillDict.TryGetValue(hitbox.CharType, out HashSet<KeyCode> keySet))
                 return;
@@ -805,7 +809,7 @@ namespace Server.Game
             foreach (var targetKvp in targets)
             {
                 Player target = targetKvp.Value;
-                if (hitbox.HitObjs.ContainsKey(targetKvp.Key) || true == hitbox.IsUsed)
+                 if (!isBusy && (hitbox.HitObjs.ContainsKey(targetKvp.Key) || true == hitbox.IsUsed))
                     continue;
 
                 if (CheckCollision(hitbox, target))
@@ -818,10 +822,30 @@ namespace Server.Game
 
                     foreach (EffectData effect in skillLevel.effects)
                     {
+                        if (isBusy && target.FindStatStatusEffect(effect.stat))
+                            continue;
+                        Console.WriteLine("버프");
+                        StatusEffect newEffect = new StatusEffect
+                        {
+                            type = effect.type,
+                            stat = effect.stat,
+                            duration = effect.duration,
+                            value = effect.value,
+                            subject = Enum.TryParse(effect.subject, true, out Subject temp) ? temp : Subject.Subject_None,
+                            valueType = Enum.TryParse(effect.valueType, true, out ValueType type) ? type : ValueType.ValueType_None,
+                            coeff = effect.coeff,
+                            ratioPerTarget = effect.ratioPerTarget,
+                            maxRatio = effect.maxRatio
+                        };
+
                         if (effect.type == "Heal")
                         {
                             target.Room.Push(target.OnHeal, target, effect.value);
                             target.SendSoundPacket("SKILL_HEAL");
+                        }
+                        else if (effect.type == "Buff")
+                        {
+                            target.Room.Push(target.AddStatusEffect, newEffect);
                         }
                     }
 
@@ -915,7 +939,7 @@ namespace Server.Game
                     case Subject.Ally: // 이건 아군대상 스킬에만 있을거같긴해서 생략
                         break;
                     case Subject.Enemy:
-                        foreach(var enemy in hitTargets.OfType<Creature>()) // Creature 일때만
+                        foreach(var enemy in hitTargets.OfType<Creature>()) 
                             enemy.Room.Push(enemy.AddStatusEffect, effect); 
                         break;
                     case Subject.T:

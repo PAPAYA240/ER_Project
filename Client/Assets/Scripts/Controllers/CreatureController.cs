@@ -129,8 +129,7 @@ public class CreatureController : BaseController
     public void Snare(S_Snare packet, CharacterType charType)
     {
         // Destory Proejctile
-         
-        Managers.FX.PlayStatusEffect(this.gameObject, charType, packet.Duration);
+         Managers.FX.PlayStatusEffect(this.gameObject, charType, 4.0f);
     }
 
     public virtual void UseSkill(int skillId) {}
