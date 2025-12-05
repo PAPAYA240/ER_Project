@@ -41,21 +41,19 @@ public class PlayerViewController : MonoBehaviour
         if (!_syncing || _agent == null || _player == null)
             return;
 
-        //if (_player.State == CreatureState.Attack)
-        //{
-        //    if (_isRotating == false)
-        //    {
-        //        var targetView = Managers.Object.FindById(TargetId);
-        //        if (targetView != null)
-        //        {
-        //            Vector3 pos = targetView.transform.position;
-        //            UpdateTarget(pos);
-        //        }
-        //    }
-        //}
-        //else
-
-        _player.UpdateTransform();
+        if (_player.State == CreatureState.Attack)
+        {
+            Debug.Log("공격 중에 회전중");
+            var targetView = Managers.Object.FindById(TargetId);
+            if (targetView != null)
+            {
+                Debug.Log(targetView.transform.position);
+                Vector3 pos = targetView.transform.position;
+                UpdateTarget(pos);
+            }
+        }
+        else
+             _player.UpdateTransform();
     }
 
     public void OnMove(S_Move packet)

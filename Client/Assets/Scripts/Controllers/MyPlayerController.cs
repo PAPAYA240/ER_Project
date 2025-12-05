@@ -135,6 +135,7 @@ public class MyPlayerController : PlayerController
                         var setMove = _input.GetSetMoveTarget();
                         if (setMove != null)
                         {
+                            _view.TargetId = setMove.TargetId;
                             _view.ApplyLocalSetMoveTarget(setMove);
                             Managers.Network.Send(setMove);
                         }
