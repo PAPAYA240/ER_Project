@@ -12,6 +12,14 @@ public class IO_DeployingLoop : MonoBehaviour
     public int id;
     public bool side;
 
+    [SerializeField] private Transform _lookTarget;
+    public Vector3 GetLookTargetPosition() => _lookTarget != null ? _lookTarget.position : transform.position;
+
+    [Header("State Flags")]
+    private readonly int ActivationPhase = 2;
+
+    private bool _isUsable = false;
+    public bool IsUsable => _isUsable;
 
     private bool _isPlayerInside = false;
     public bool IsPlayerInside => _isPlayerInside;
@@ -35,12 +43,14 @@ public class IO_DeployingLoop : MonoBehaviour
     [SerializeField] private Color usableColor = new Vector4(0, 0.20f, 0.26f, 0.80f);
     [SerializeField] private Color unusableColor = new Vector4(0.67f, 0f, 0f, 0.80f);
 
-    private readonly int ActivationPhase = 1;
-    private bool _isUsable = false;
-    public bool IsUsable => _isUsable;
+    [Header("UI")]
+    [SerializeField] private UI_InteractionCharge chargeUI;
+    [SerializeField] private float interactDuration = 3f;
+    [SerializeField] private string interactDescribe = "디플로잉 루프 가동 중";
 
-    [SerializeField] private Transform _lookTarget;
-    public Vector3 GetLookTargetPosition() => _lookTarget != null ? _lookTarget.position : transform.position;
+    public void Begin() => chargeUI.Begin(interactDuration, interactDescribe);
+    public void Complete() => chargeUI.Complete();
+    public void Cancel() => chargeUI.Cancel();
 
     void Awake()
     {
@@ -150,17 +160,8 @@ public class IO_DeployingLoop : MonoBehaviour
 
     private bool CheckUsable()
     {
-        if(Managers.Object == null)
-        {
-            Debug.Log("Object Null!");
-            return false;
-        }
-
         if(Managers.Object.MyPlayer == null)
-        {
-            Debug.Log("MyPlayer Null!");
             return false;
-        }
 
         if(Managers.Object.MyPlayer.CurPhase < ActivationPhase)
             return false;

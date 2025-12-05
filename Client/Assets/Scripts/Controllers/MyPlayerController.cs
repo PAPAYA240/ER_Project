@@ -221,6 +221,7 @@ public class MyPlayerController : PlayerController
     public void OnServerUpdate(S_SkillConfirm packet) => _skill.OnSkillConfirm(packet);
     public void OnServerUpdate(S_SkillCollisionRequest packet) => _skill.OnSkillCollisionRequest(packet);
     public void OnServerUpdate(S_SkillCost packet) => _skill.OnSkillCost(packet);
+    public void OnServerUpdate(S_DeployingLoop packet) => _input.CancelDeployingLoopInteraction();
 
     #region UI
     public override void SetKDA(int kill, int death, int asist)

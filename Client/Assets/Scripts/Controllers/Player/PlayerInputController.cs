@@ -27,6 +27,7 @@ public class PlayerInputController : MonoBehaviour
 
     // 사거리 밖에서 타겟팅된 DeployingLoop
     private IO_DeployingLoop _pendingDeployingLoop;
+    private IO_DeployingLoop _activeDeployingLoop; // 실제 상호작용 중인 대상
 
     // 공격 입력을 얼마나 자주 서버로 보낼지 제한 (스팸 방지)
     private float _nextAutoAttackSendTime;
@@ -239,6 +240,8 @@ public class PlayerInputController : MonoBehaviour
             // 사거리 안이면 즉시 상호작용 패킷 전송
             if (clickedIo.IsPlayerInside && clickedIo.IsUsable)
             {
+                _activeDeployingLoop = clickedIo;
+                _activeDeployingLoop.Begin();
                 return new C_DeployingLoop
                 {
                     ObjectId = _player.Id,
@@ -257,6 +260,8 @@ public class PlayerInputController : MonoBehaviour
             // 트리거 안에 들어온 순간 → 한 번만 패킷 전송
             if (_pendingDeployingLoop.IsPlayerInside && _pendingDeployingLoop.IsUsable)
             {
+                _activeDeployingLoop = _pendingDeployingLoop;
+                _activeDeployingLoop.Begin();
                 var pkt = new C_DeployingLoop
                 {
                     ObjectId = _player.Id,
@@ -277,12 +282,12 @@ public class PlayerInputController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.S))
         {
-            _pendingDeployingLoop = null;
+            CancelDeployingLoopInteraction();
             return new C_Stop { Reason = StopReason.StopAll };
         }
         if (Input.GetKeyDown(KeyCode.H))
         {
-            _pendingDeployingLoop = null;
+            CancelDeployingLoopInteraction();
             return new C_Stop { Reason = StopReason.StopMoveOnly };
         }
         return null;
@@ -584,7 +589,18 @@ public class PlayerInputController : MonoBehaviour
 
         float effectiveRange = Mathf.Max(0.05f, _player.AttackRange - _stopBuffer);
         return dist <= effectiveRange;
-    }   
+    }
+
+    public void CancelDeployingLoopInteraction()
+    {
+        _pendingDeployingLoop = null;
+
+        if (_activeDeployingLoop != null)
+        {
+            _activeDeployingLoop.Cancel();    // 내부에서 UI_InteractionCharge.Cancel() 호출
+            _activeDeployingLoop = null;
+        }
+    }
     #endregion
 
 }

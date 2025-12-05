@@ -148,6 +148,7 @@ enum MsgId {
  S_THEODORE_ATTACK = 116;
   C_ATTACK_TARGET_INVALID = 117;
   C_BASE_TRIGGER = 118;
+  S_DEPLOYING_LOOP = 119;
 }
 
 enum CombatState{
@@ -1350,4 +1351,8 @@ message C_BaseTrigger{
 	int32 objectId = 1;
 	int32 team = 2;
 	bool isInside = 3;
+}
+
+message S_DeployingLoop{
+	int32 objectId = 1;
 }

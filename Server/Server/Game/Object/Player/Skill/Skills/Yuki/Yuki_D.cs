@@ -65,6 +65,7 @@ public sealed class Yuki_D : SkillHandlerBase
         p.LookAtMouse(ctx.MousePos);
 
         p.SendYukiSkillEffect(SkillEffectType.WpSkill);
+        SendSkillConfirmPacket(p);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
