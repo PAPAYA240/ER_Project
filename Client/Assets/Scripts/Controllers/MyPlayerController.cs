@@ -96,45 +96,48 @@ public class MyPlayerController : PlayerController
     private void Update()
     {
         // 1) 우클릭 : 타겟 공격 의도
-        var atkCmd = _input.GetAttackCommand();
-        if (atkCmd != null)
+        if (IsRest != true)
         {
-            _lastAttackTime = Time.time;
-            _view.TargetId = atkCmd.TargetId;
-            Managers.Network.Send(atkCmd);
-        }
-        else
-        {
-            if (Time.time - _lastAttackTime >= _attackLockTime)
+            var atkCmd = _input.GetAttackCommand();
+            if (atkCmd != null)
             {
-                var operate = _input.GetOperateCommand();
-                var deploying = _input.GetDeployingLoopCommand();
-                if (operate != null)
+                _lastAttackTime = Time.time;
+                _view.TargetId = atkCmd.TargetId;
+                Managers.Network.Send(atkCmd);
+            }
+            else
+            {
+                if (Time.time - _lastAttackTime >= _attackLockTime)
                 {
-                    _lastOperateTime = Time.time;
-                    Managers.Network.Send(operate);
-                }
-                else if (deploying != null)
-                {
-                    _lastOperateTime = Time.time;
-                    Managers.Network.Send(deploying);
-                }
-                else
-                {
-                    if (Time.time - _lastOperateTime >= _operateLockTime) // operate 명령 후 0.1초 경과했을 경우
+                    var operate = _input.GetOperateCommand();
+                    var deploying = _input.GetDeployingLoopCommand();
+                    if (operate != null)
                     {
-                        // 3) 우클릭 유지: 타겟 이동 or 땅 이동
-                        var setMove = _input.GetSetMoveTarget();
-                        if (setMove != null)
+                        _lastOperateTime = Time.time;
+                        Managers.Network.Send(operate);
+                    }
+                    else if (deploying != null)
+                    {
+                        _lastOperateTime = Time.time;
+                        Managers.Network.Send(deploying);
+                    }
+                    else
+                    {
+                        if (Time.time - _lastOperateTime >= _operateLockTime) // operate 명령 후 0.1초 경과했을 경우
                         {
-                            _view.TargetId = setMove.TargetId;
-                            _view.ApplyLocalSetMoveTarget(setMove);
-                            Managers.Network.Send(setMove);
+                            // 3) 우클릭 유지: 타겟 이동 or 땅 이동
+                            var setMove = _input.GetSetMoveTarget();
+                            if (setMove != null)
+                            {
+                                _view.TargetId = setMove.TargetId;
+                                _view.ApplyLocalSetMoveTarget(setMove);
+                                Managers.Network.Send(setMove);
+                            }
                         }
                     }
                 }
             }
-        }
+        }  
 
         if (ChatHandler.IsChatting)
             return;
@@ -168,11 +171,6 @@ public class MyPlayerController : PlayerController
         var useItemCmd = _input.GetUseItemCommand();
         if (useItemCmd != null)
             Managers.Network.Send(useItemCmd);
-
-        // temp 임시 코드 나중에 삭제
-        //var deathCmd = _input.GetDieCommand();
-        //if (deathCmd != null)
-        //    Managers.Network.Send(deathCmd);
 
         // temp 임시 코드 나중에 삭제
         var tempCmd = _input.Get_KeyInputForTestCommand();

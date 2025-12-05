@@ -25,6 +25,8 @@ public class Player_RestState : IPlayerState
     {
         _startTime = DateTime.UtcNow;
 
+        player.SendStopPacket(StopReason.StopMoveOnly);
+
         if (_isRest == true)
         {
             _animName = "REST_START";
