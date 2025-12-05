@@ -26,6 +26,12 @@ public class BeaconController : BaseController
 
     private const string _effectPath = "effects/prefab/Common/Beacon_Complete";
     private bool _idleSound = false;
+
+    [Header("UI")]
+    [SerializeField] private UI_InteractionCharge chargeUI;
+    [SerializeField] private float interactDuration = 5f;
+    [SerializeField] private string interactDescribe = "증폭 장치를 점령 중입니다.";
+
     void Start()
     {
         if (gaugeRenderer != null)
@@ -67,6 +73,8 @@ public class BeaconController : BaseController
         }
 
         captureCoroutine = StartCoroutine(CaptureRoutine());
+
+        chargeUI.Begin(interactDuration, interactDescribe);
     }
 
     public void CompleteCapture(int Team)
@@ -79,6 +87,8 @@ public class BeaconController : BaseController
 
         UpdateShaderProperties();
         OnCaptureCompleted?.Invoke(Team);
+
+        chargeUI.Complete();
     }
 
     public void FailCapture()
@@ -96,6 +106,8 @@ public class BeaconController : BaseController
         UpdateShaderProperties();
 
         OnCaptureFailed?.Invoke();
+
+        chargeUI.Cancel();
     }
 
     public void ResetBeacon()

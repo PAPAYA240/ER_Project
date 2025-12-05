@@ -1290,6 +1290,14 @@ namespace Server.Game
             Room.Push(Session.Send, packet);
         }
 
+        public void SendDeployingPacket()
+        {
+            S_DeployingLoop packet = new S_DeployingLoop()
+            {
+                ObjectId = Id,
+            };
+            Room.Push(Session.Send, packet);
+        }
         #endregion
 
         #region StatusEffect(버프, 디버프), Barrier(방어막) 관련

@@ -421,12 +421,19 @@ class PacketHandler
             return;
 
         if (Managers.Object.MyPlayer.Id == respawnPacket.ObjectId)
+        {
             Managers.Object.MyPlayer.OnServerUpdate(respawnPacket);
+            Managers.Sound.Play("sound/ui/TeamRevival");
+        }
         else
         {
             PlayerController pc = go.GetComponentInChildren<PlayerController>();
             if (pc != null)
+            {
                 pc.OnRespawn(respawnPacket);
+                if(pc.ObjInfo.Player.Team == Managers.Info.Team)
+                    Managers.Sound.Play("sound/ui/TeamRevival");
+            }
         }
     }
 
@@ -1370,6 +1377,23 @@ class PacketHandler
         if (pc == null) return;
         pc.YukiEffects.StopEffect(stopAbglFx.Fx);
     }
+
+    public static void S_DeployingLoopHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_DeployingLoopHandler(session, packet)))
+            return;
+
+        S_DeployingLoop deploying = packet as S_DeployingLoop;
+        GameObject go = Managers.Object.FindById(deploying.ObjectId);
+        if (go == null)
+            return;
+
+        MyPlayerController mpc = go.GetComponentInChildren<MyPlayerController>();
+        if (mpc == null)
+            return;
+        mpc.OnServerUpdate(deploying);
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;
