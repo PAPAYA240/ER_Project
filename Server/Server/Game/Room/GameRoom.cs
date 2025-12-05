@@ -200,6 +200,7 @@ namespace Server.Game
 
         #region Score
         private int[] _teamScores = new int[3] { 40, 40, 40 }; // 1번, 2번 팀 사용
+        private bool _isGameOver = false;
 
         public int ReduceScore(int team, int amount)
         {
@@ -210,7 +211,7 @@ namespace Server.Game
                 newValue = Math.Max(0, oldValue - amount);
             } while (Interlocked.CompareExchange(ref _teamScores[team], newValue, oldValue) != oldValue);
 
-            if(newValue == 0)
+            if(newValue == 0 && _isGameOver == false)
             {
                 S_GameOver packet = new S_GameOver();
                 if(team == 1)
@@ -218,6 +219,7 @@ namespace Server.Game
                 else
                     packet.WinTeam = 1;
 
+                _isGameOver = true;
                 Push(Broadcast, packet);
             }
 
