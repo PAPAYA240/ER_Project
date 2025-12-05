@@ -1,41 +1,42 @@
 ﻿using Google.Protobuf.Protocol;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 // 이거 쓰려면 스키닝 메시 + 아웃라인 머터리얼 + 충돌 캡슐 필요
 public class HighlightEffect : MonoBehaviour
 {
+    enum HighlightMode
+    {
+        None,
+        Outline,
+        Bush,
+        Bush_Invisible,
+    }
+
     private Renderer[] myRenderers;
     private Material outlineMaterial;
     private Material[][] originalMaterials;
 
+    private Material _bushMaterial;
+    private Transform _lodTransform;
+    private Dictionary<Renderer, Material[]> _originalMaterialsDict = new Dictionary<Renderer, Material[]>();
+
     // 커서
     private Texture2D _cursorDefault;
     private Texture2D _cursorEnemy;
-    private bool isHighlighted = false;
+    private HighlightMode _mode  = HighlightMode.None;
 
     public CreatureController Owner { get; set; }
     void Start()
     {
-        _cursorDefault = Managers.Resource.Load<Texture2D>("Cursor/Cursor_01");
-        _cursorEnemy = Managers.Resource.Load<Texture2D>("Cursor/Cursor_05");
-
-        myRenderers = GetComponentsInChildren<Renderer>();
-        outlineMaterial = Resources.Load<Material>("materials/Outline/Outline");
-
-        if (outlineMaterial == null || myRenderers == null || myRenderers.Length == 0)
-        {
-            Debug.LogError("아웃라인 머티리얼 또는 렌더러가 없습니다.");
-            return;
-        }
-
-        originalMaterials = new Material[myRenderers.Length][];
-        for (int i = 0; i < myRenderers.Length; i++)
-            originalMaterials[i] = myRenderers[i].sharedMaterials;
-        outlineMaterial = new Material(Shader.Find("Custom/Outline_Shader"));
+        InitCursor();
+        InitOutline();
+        InitBushRenderSetting();
     }
-
+ 
     void Update()
     {
         bool hitThisObject = false;
@@ -55,12 +56,80 @@ public class HighlightEffect : MonoBehaviour
             return;
         }
 
-        if (hitThisObject && !isHighlighted)
+        if (hitThisObject && _mode == HighlightMode.None)
             OnMouseEnter();
-        else if (!hitThisObject && isHighlighted)
+        else if (!hitThisObject && _mode == HighlightMode.Outline)
             OnMouseExit();
     }
 
+    #region Bush
+    // 렌더러 비활성화
+    public void MakeInvisible()
+    {
+        if (_lodTransform == null)
+            return;
+        if (_mode == HighlightMode.Bush_Invisible)
+            return;
+
+        _mode = HighlightMode.Bush_Invisible;
+        Renderer[] r = _lodTransform.GetComponentsInChildren<Renderer>();
+        foreach (Renderer rr in r)
+        {
+            Debug.Log($"{rr} enable");
+            rr.enabled = false;
+        }
+    }
+
+    // 렌더러 활성화
+    public IEnumerator MakeVisible(float duration = 0f)
+    {
+        if (_lodTransform == null)
+            yield break;
+        if (_mode == HighlightMode.None)
+            yield break;
+
+        yield return new WaitForSeconds(duration);
+
+        _mode = HighlightMode.None;
+        Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.enabled = true;
+
+            // 각 Renderer의 원본 Material 복원
+            if (_originalMaterialsDict.TryGetValue(renderer, out Material[] originalMaterials))
+            {
+                Debug.Log($"{renderer} MakeVisible");
+                renderer.materials = originalMaterials;
+            }
+        }
+    }
+
+    public void ChangeBushRenderer()
+    {
+        if (_lodTransform == null)
+            return;
+        if(_mode == HighlightMode.Bush)
+            return;
+
+        _mode = HighlightMode.Bush;
+        Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
+
+        foreach (Renderer renderer in renderers)
+        {
+            renderer.enabled = true;
+
+            int materialCount = renderer.sharedMaterials.Length;
+            Material[] ghostMaterials = new Material[materialCount];
+            for (int i = 0; i < materialCount; i++)
+            {
+                Debug.Log($"{renderer} Change");
+                ghostMaterials[i] = _bushMaterial;
+            }
+            renderer.sharedMaterials = ghostMaterials;
+        }
+    }
+    #endregion
     private bool CheckCondition()
     {
         if (myRenderers == null)
@@ -78,11 +147,12 @@ public class HighlightEffect : MonoBehaviour
     {
         if (!CheckCondition())
             return;
-       
-        isHighlighted = true;
+
+        _mode = HighlightMode.Outline;
         foreach (var renderer in myRenderers)
         {
-            if (renderer == null) continue;
+            if (renderer == null) 
+                continue;
             Material[] newMaterials = renderer.materials;
             renderer.materials = newMaterials.Append(outlineMaterial).ToArray();
         }
@@ -94,7 +164,7 @@ public class HighlightEffect : MonoBehaviour
         if (myRenderers == null) 
             return;
 
-        isHighlighted = false;
+        _mode = HighlightMode.None;
         foreach (var renderer in myRenderers)
         {
             if (renderer == null) continue;
@@ -107,9 +177,47 @@ public class HighlightEffect : MonoBehaviour
         }
         Cursor.SetCursor(_cursorDefault, Vector2.zero, CursorMode.Auto);
     }
-    void OnDestroy()
+
+    #region init
+    private void InitOutline()
     {
-        if (outlineMaterial != null)
-            Destroy(outlineMaterial);
+        myRenderers = GetComponentsInChildren<Renderer>();
+        outlineMaterial = Resources.Load<Material>("materials/Outline/Outline");
+        outlineMaterial = new Material(Shader.Find("Custom/Outline_Shader"));
+        if (outlineMaterial == null || myRenderers == null || myRenderers.Length == 0)
+            return;
+
+        originalMaterials = new Material[myRenderers.Length][];
+        for (int i = 0; i < myRenderers.Length; i++)
+            originalMaterials[i] = myRenderers[i].sharedMaterials;
+
     }
+    private void InitCursor()
+    {
+        _cursorDefault = Managers.Resource.Load<Texture2D>("Cursor/Cursor_01");
+        _cursorEnemy = Managers.Resource.Load<Texture2D>("Cursor/Cursor_05");
+    }
+    private void InitBushRenderSetting()
+    {
+        _bushMaterial = Resources.Load<Material>("Material/ghostMaterial");
+
+        foreach (Transform child in Owner.transform)
+        {
+            if (child.name.Contains("LOD"))
+            {
+                _lodTransform = child;
+                break;
+            }
+        }
+
+        if (_lodTransform != null)
+        {
+            Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
+            foreach (Renderer renderer in renderers)
+            {
+                _originalMaterialsDict[renderer] = renderer.materials;
+            }
+        }
+    }
+    #endregion
 }

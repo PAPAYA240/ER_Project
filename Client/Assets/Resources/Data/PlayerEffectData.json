@@ -125,42 +125,63 @@
                 "x": 0,
                 "y": 0,
                 "z": 0
+              },
+              "rotation": {
+                "x": 0,
+                "y": 0,
+                "z": 0
               }
             }
           ],
           "HitTarget": [],
           "Select": [
-        
             {
-              "prefabName": "FX_Skill04_Charging",
-              "target": "Default",
-              "duration": 5.0,
-              "attachBoneName": "ShotPoint"
-            },
-            {
-              "prefabName": "FX_Skill04_ShotWind",
+              "prefabName": "FX_Skill04_Attack",
               "target": "Default",
               "duration": 5.0,
               "attachBoneName": "ShotPoint",
               "position": {
                 "x": 0,
-                "y": -1.6,
-                "z": -1.9
+                "y": -1.3,
+                "z": 0
+              },
+              "rotation": {
+                "x": 0,
+                "y": 180,
+                "z": 0
               }
-            },
-            {
-              "prefabName": "FX_Skill04_Shot",
-              "target": "Default",
-              "duration": 5.0,
-              "attachBoneName": "ShotPoint"
-            },
-            {
-              "prefabName": "FX_R_Hit",
-              "target": "Default",
-              "attachBoneName": "Fx_Center",
-              "duration": 0.05,
-              "delayTime": 0
-            }
+              },
+              {
+                "prefabName": "FX_Skill04_Buff",
+                "target": "Self",
+                "duration": 0.5,
+                "attachBoneName": "Fx_Center"
+              },
+            
+              {
+                "prefabName": "FX_Skill04_ShotWind",
+                "target": "Default",
+                "duration": 5.0,
+                "attachBoneName": "ShotPoint",
+                "position": {
+                  "x": 0,
+                  "y": -1.6,
+                  "z": -1.9
+                }
+              },
+              {
+                "prefabName": "FX_Skill04_Shot",
+                "target": "Default",
+                "duration": 5.0,
+                "attachBoneName": "ShotPoint"
+              },
+              {
+                "prefabName": "FX_R_Hit",
+                "target": "Default",
+                "attachBoneName": "Fx_Center",
+                "duration": 0.05,
+                "delayTime": 0
+              }
           ]
         },
         "D": {

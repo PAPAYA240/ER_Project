@@ -9,20 +9,25 @@ using static UnityEngine.Analytics.IAnalytic;
 
 public class Env_Bush : EnvController
 {
-    List<int> _insidePlayersId = new List<int>();
-    protected override void Init()
+    enum BushState
     {
-        base.Init();
+        Visible,
+        Hidden,
+        Translucent
     }
+    List<int> _insidePlayersId = new List<int>();
+
+
+    protected override void Init() => base.Init();
 
     protected override void OnTriggerEnter(Collider other)
     {
         PlayerController pc = other.gameObject.GetComponent<PlayerController>();
         if (pc == null)
             return ;
-
         RequestCollect(other.gameObject.GetComponent<PlayerController>());
     }
+
     protected override void OnTriggerExit(Collider other)
     {
         PlayerController pc = other.gameObject.GetComponent<PlayerController>();
@@ -30,12 +35,10 @@ public class Env_Bush : EnvController
             return;
 
         RemoveInsidePlayer(pc.Id);
-
-        // 테오도르 패시브
-        if (pc.ObjInfo.Player.CharType == CharacterType.Theodore)
+        if (pc.ObjInfo.Player.CharType == CharacterType.Theodore)   // 테오도르 패시브
         {
             if (pc.ObjInfo.Player.Team != Managers.Object.MyPlayer.ObjInfo.Player.Team)
-                pc.ActiveRenderer(false);
+                pc.BushRenderType((int)BushState.Hidden);
             else
             {
                 GameObject effect = Managers.FX.Effect.FindCurrentPlayEffect(pc.Id, "FX_PassiveShideld");
@@ -43,15 +46,14 @@ public class Env_Bush : EnvController
                     Managers.FX.Effect.RemoveEffect(pc.Id, effect);
                 pc.PlaySkillEffect(KeyCode.F1, default(Vector3), default(Vector3));
             }
-            pc.ActiveRenderer(true, 2.5f);
+            pc.BushRenderType((int)BushState.Visible, 2.5f);
         }
         else
-            pc.ActiveRenderer(true); 
+            pc.BushRenderType((int)BushState.Visible);
     }
 
     private void RemoveInsidePlayer(int id)
     {
-        // 나간 플레이어는 부쉬 내 플레이어를 보지 못함(단, 자신의 팀은 투명화)
         if (_insidePlayersId.Contains(id))
             _insidePlayersId.Remove(id);
 
@@ -63,9 +65,9 @@ public class Env_Bush : EnvController
             PlayerController inPc = inGo.GetComponent<PlayerController>();
 
             if (inPc.ObjInfo.Player.Team == Managers.Object.MyPlayer.ObjInfo.Player.Team)
-                inPc.ChangeBushRenderer();
+                inPc.BushRenderType((int)BushState.Translucent);
             else
-                inPc.ActiveRenderer(false);
+                inPc.BushRenderType((int)BushState.Hidden);
         }
     }
 
@@ -73,18 +75,21 @@ public class Env_Bush : EnvController
     protected override void TryHandleInteraction(PlayerController target)
     {
         if (!_insidePlayersId.Contains(target.Id))
-        {
             _insidePlayersId.Add(target.Id);
+
+        // 부쉬 밖
+        if (Managers.Object.MyPlayer.ObjInfo.Player.Team == target.ObjInfo.Player.Team)
+        {
+            Debug.Log("같은팀 ");
+            target.BushRenderType((int)BushState.Translucent);
+        }
+        else
+        {
+            Debug.Log("적팀 ");
+            target.BushRenderType((int)BushState.Hidden); 
         }
 
-        //같은 팀은 투명화
-        if (Managers.Object.MyPlayer.ObjInfo.Player.Team == target.ObjInfo.Player.Team)
-            target.ChangeBushRenderer();
-        // 같은 팀 아니면 시야에서 사라지게
-        else
-            target.ActiveRenderer(false);
-
-        // 나는 부쉬 내 플레이어를 볼 수 있음 && 부쉬 내 플레이어들도 나를 볼 수 있음
+        // 부쉬 내
         foreach (int id in _insidePlayersId)
         {
             GameObject inGo = Managers.Object.FindById(id);
@@ -94,11 +99,11 @@ public class Env_Bush : EnvController
             if (inPc == null)
                 continue;
 
-            if (Managers.Object.MyPlayer.Id == target.Id)
-                inPc.ChangeBushRenderer();
+            if (inGo != inPc)
+                Debug.Log("부쉬 내 다른 사람");
 
-            else if(Managers.Object.MyPlayer.Id == inPc.Id)
-                target.ChangeBushRenderer();
+            inPc.BushRenderType((int)BushState.Translucent);
+            target.BushRenderType((int)BushState.Translucent);
         }
     }
     #endregion

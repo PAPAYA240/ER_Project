@@ -824,6 +824,7 @@ namespace Server.Game
                     {
                         if (isBusy && target.FindStatStatusEffect(effect.stat))
                             continue;
+
                         StatusEffect newEffect = new StatusEffect
                         {
                             type = effect.type,
@@ -845,6 +846,9 @@ namespace Server.Game
                         else if (effect.type == "Buff")
                         {
                             target.Room.Push(target.AddStatusEffect, newEffect);
+                            
+                            if(hitbox.CharType == CharacterType.Theodore)
+                                target.SendSkillEffect(default(Vector2), KeyCode.R, type : "Select", name : "FX_Skill04_Buff");
                         }
                     }
 
