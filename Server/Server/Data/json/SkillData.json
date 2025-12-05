@@ -856,8 +856,7 @@
           ]
         },
         "popupInfo": {
-          "피해량": [ "60", "120", "180" ],
-          "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
+          "쿨다운": [ "35", "30", "25" ]
         }
       },
       "F": {
@@ -1406,8 +1405,7 @@
           ]
         },
         "popupInfo": {
-          "피해량": [ "100", "150", "200" ],
-          "최대 체력 추가 피해량": [ "4%", "7%", "10%" ]
+          "쿨다운": [ "30", "30", "30" ]
         }
       },
       "F": {
@@ -2160,7 +2158,7 @@
       },
       "D": {
         "name": "저격",
-        "description": "",
+        "description": "지정한 방향으로 10초 동안 저격 모드를 활성화합니다. 시야 내의 지정한 방향으로 스킬을 사용하여 탄환을 발사할 수 있습니다. 3발 발사합니다.",
         "skillType": "Charge",
         "type": "Ultimate",
         "maxLevel": 3,
@@ -2169,159 +2167,38 @@
           "damageType": "Magic"
         },
         "scaling": {
-          "adRatio": 30
+          "adRatio": 160,
+          "apRatio": 32.5
         },
         "levels": {
           "1": {
-            "damage": 100,
-            "cooldown": 25,
-            "staminaCost": 90,
+            "damage": 125,
+            "cooldown": 35,
+            "staminaCost": 0,
             "effects": [
-              {
-                "type": "Debuff",
-                "stat": "speed",
-                "value": -30,
-                "duration": 3
-              },
-              {
-                "type": "VisionShare",
-                "duration": 3
-              },
-              {
-                "type": "Debuff",
-                "stat": "speed",
-                "value": -30,
-                "duration": 1,
-                "condition": "Boom"
-              },
-              {
-                "type": "Damage",
-                "stat": "hp",
-                "value": 0.04,
-                "condition": "Boom"
-              },
-              {
-                "type": "CDR",
-                "value": 50,
-                "condition": "Boom"
-              },
-              {
-                "type": "Buff",
-                "stat": "speed",
-                "value": 30,
-                "duration": 1,
-                "condition": "Boom"
-              }
             ]
           },
           "2": {
-            "damage": 200,
-            "cooldown": 25,
-            "staminaCost": 90,
+            "damage": 250,
+            "cooldown": 30,
+            "staminaCost": 0,
             "effects": [
-              {
-                "type": "Debuff",
-                "stat": "speed",
-                "value": -30,
-                "duration": 3
-              },
-              {
-                "type": "VisionShare",
-                "duration": 3
-              },
-              {
-                "type": "Damage",
-                "stat": "hp",
-                "value": 0.07,
-                "condition": "Boom"
-              },
-              {
-                "type": "Debuff",
-                "stat": "speed",
-                "value": -30,
-                "duration": 1,
-                "condition": "Boom"
-              },
-              {
-                "type": "CDR",
-                "value": 50,
-                "condition": "Boom"
-              },
-              {
-                "type": "Buff",
-                "stat": "speed",
-                "value": 30,
-                "duration": 1,
-                "condition": "Boom"
-              }
+
             ]
           },
           "3": {
-            "damage": 450,
+            "damage": 375,
             "cooldown": 25,
-            "staminaCost": 90,
+            "staminaCost": 0,
             "effects": [
-              {
-                "type": "Debuff",
-                "stat": "speed",
-                "value": -30,
-                "duration": 3
-              },
-              {
-                "type": "VisionShare",
-                "duration": 3
-              },
-              {
-                "type": "Damage",
-                "stat": "hp",
-                "value": 0.1,
-                "condition": "Boom"
-              },
-              {
-                "type": "Debuff",
-                "stat": "speed",
-                "value": -30,
-                "duration": 1,
-                "condition": "Boom"
-              },
-              {
-                "type": "CDR",
-                "value": 50,
-                "condition": "Boom"
-              },
-              {
-                "type": "Buff",
-                "stat": "speed",
-                "value": 30,
-                "duration": 1,
-                "condition": "Boom"
-              }
             ]
           }
         },
         "descriptionInfo": {
-          "{speed}": [
-            "60",
-            "70",
-            "80"
-          ],
-          "{damage}": [
-            "100",
-            "230",
-            "360"
-          ],
-          "{attackSpeed}": [
-            "40",
-            "60",
-            "80"
-          ]
         },
         "popupInfo": {
-          "이동 속도 감소량(%)": [ "60%", "70%", "80%" ],
-          "피해량": [ "100", "230", "360" ],
-          "공격 속도 증가량(%)": [ "40%", "60%", "80%" ],
-          "쿨다운": [ "80", "70", "60" ],
-          "소모량": [ "100", "125", "150" ]
+          "피해량": [ "125", "250", "375" ],
+          "쿨다운": [ "35", "30", "25" ]
         }
       },
       "F": {

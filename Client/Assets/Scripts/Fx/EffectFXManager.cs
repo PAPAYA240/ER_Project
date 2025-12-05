@@ -8,6 +8,7 @@ using Unity.Burst.Intrinsics;
 using UnityEditor;
 using UnityEngine;
 using static Data.EffectData;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 public class EffectFXManager : MonoBehaviour
 {
@@ -82,10 +83,8 @@ public class EffectFXManager : MonoBehaviour
             }
 
             // Transform 설정
-            Quaternion spawnRot
-                = GetSpawnRotation(data, copyTransform, rot);
-            Vector3 spawnPos 
-                = GetSpawnPosition(ownerId, data, copyTransform, mousePos, targetPos, spawnRot, out Transform parentTransform);
+            Quaternion spawnRot = GetSpawnRotation(data, copyTransform, rot);
+            Vector3 spawnPos = GetSpawnPosition(ownerId, data, copyTransform, mousePos, targetPos, rot, out Transform parentTransform);
 
             if (data.target == EEffectTarget.Self)
             {
@@ -236,7 +235,7 @@ public class EffectFXManager : MonoBehaviour
     #endregion
 
     #region Transform Helpers
-    private Vector3 GetSpawnPosition(int id, EffectData data, Transform casterTransform, Vector3 mousePos, Vector3 targetPos, Quaternion spawnRot, out Transform parentTransform)
+    private Vector3 GetSpawnPosition(int id, EffectData data, Transform casterTransform, Vector3 mousePos, Vector3 targetPos, Quaternion rot, out Transform parentTransform)
     {
         switch (data.target)
         {
@@ -248,7 +247,7 @@ public class EffectFXManager : MonoBehaviour
 
             case EEffectTarget.Target:
                 parentTransform = null;
-                Vector3 worldOffset = spawnRot * data.position;
+                Vector3 worldOffset = rot * data.position;
                 return targetPos + worldOffset;
 
             case EEffectTarget.Mouse:
@@ -261,8 +260,9 @@ public class EffectFXManager : MonoBehaviour
 
             case EEffectTarget.Default:
                 parentTransform = null;
+                Quaternion baseRot = rot != Quaternion.identity ? rot : casterTransform.rotation;
                 Vector3 flatOffset = new Vector3(data.position.x, 0, data.position.z);
-                Vector3 worldOffsetDefault = spawnRot * flatOffset;
+                Vector3 worldOffsetDefault = baseRot * flatOffset;
                 return casterTransform.position + worldOffsetDefault + new Vector3(0, data.position.y, 0);
 
             default:
@@ -288,6 +288,12 @@ public class EffectFXManager : MonoBehaviour
 
             case EEffectTarget.Default:
                 Quaternion baseRot = rot != Quaternion.identity ? rot : casterTransform.rotation;
+                
+                Vector3 euler = data.rotation.eulerAngles;
+                if (euler.magnitude > 0.01f)
+                {
+                    baseRot = baseRot * data.rotation;
+                }
                 return baseRot ;
 
             default:

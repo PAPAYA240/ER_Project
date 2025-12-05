@@ -156,10 +156,12 @@ namespace Server.Game
             {
                 Player_SkillState skillstate = player.CurrentState as Player_SkillState;
                 skillstate.Ctx.MousePos = new Vector2(skillPacket.MousePosX, skillPacket.MousePosZ);
-                if (player.CurrentState is Player_SkillState skillState)
-                    skillState.Handler.OnAttack(player);
-            }
 
+                if (player.CurrentState is Player_SkillState skillState)
+                {
+                    skillState.Handler.OnAttack(player);
+                }
+            }
         }
 
         public void HandlerPrepareSkill(Player player, C_SkillPrepare skillPacket)

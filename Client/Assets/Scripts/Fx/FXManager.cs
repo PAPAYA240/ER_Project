@@ -30,7 +30,6 @@ public class FXManager : MonoBehaviour
     }
     private Quaternion GetPlayerRotation(Transform casterTransform, string name = "")
     {
-       
         if (name == "FX_Shield")
         {
             float playerYaw = casterTransform.rotation.eulerAngles.y;
@@ -38,12 +37,8 @@ public class FXManager : MonoBehaviour
             Quaternion desiredXRotation = Quaternion.Euler(-90f, 180f, 0);
             return yawRotationOnly * desiredXRotation;
         }
-        else
-        {
-            Quaternion baseRot = casterTransform.rotation;
-            baseRot.x = 0f;
-            return baseRot;
-        }
+  
+        return casterTransform.rotation;
     }
 
     public List<GameObject> PlayEffect

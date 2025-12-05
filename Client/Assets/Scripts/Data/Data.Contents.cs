@@ -374,7 +374,7 @@ namespace Data
         public float delayTime;
         public string skillType;
         public Vector3 position; // 부모or 기본 포지션에 추가적으로 옮겨줄 위치
-        public Quaternion rotation;
+        public Quaternion rotation = Quaternion.identity;
         public string sound;
         public EEffectTarget target; // 이펙트가 표시될 위치
         #endregion

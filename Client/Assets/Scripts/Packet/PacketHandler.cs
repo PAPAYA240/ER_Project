@@ -212,7 +212,7 @@ class PacketHandler
             PlayerController pc = cc as PlayerController;
             if (pc == null)
                 return;
-            pc.ActiveRenderer(true);
+            pc.BushRenderType(0);
 
             // 공격 플레이어
             GameObject attackerGo = Managers.Object.FindById(diePacket.AttackerId);
@@ -407,6 +407,7 @@ class PacketHandler
         {
             pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));  
         }
+
         pc.PlayEffectFromServer(fxPacket, mousePos, targetPos, targetRot);
     }
 

@@ -256,7 +256,7 @@ public class MonsterController : CreatureController
             SetLayerRecursively(child.gameObject, newLayer);
     }
 
-    private HighlightEffect _highlightEffect;
+    private VisualEffectController _highlightEffect;
     private bool Add_Component()
     {
         _agent = GetComponentInParent<NavMeshAgent>();
@@ -269,7 +269,7 @@ public class MonsterController : CreatureController
         }
 
         _targetRotation = transform.rotation;
-        _highlightEffect = gameObject.AddComponent<HighlightEffect>();
+        _highlightEffect = gameObject.AddComponent<VisualEffectController>();
         _highlightEffect.Owner = this;
 
         if (_animator == null)
