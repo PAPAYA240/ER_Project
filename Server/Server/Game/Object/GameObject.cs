@@ -673,6 +673,19 @@ namespace Server.Game
             }
         }
 
+        public void RemoveAllStatusEffects() // 전체 상태효과 제거
+        {
+            lock (_lock)
+            {
+                var toRemove = _statusEffects.ToList();
+
+                foreach (var se in toRemove)
+                    OnStatusEffectRemove(se);
+
+                _statusEffects.Clear();
+            }
+        }
+
         public void RemoveExpiredStatusEffects()
         {
             List<StatusEffect> expired = new List<StatusEffect>();

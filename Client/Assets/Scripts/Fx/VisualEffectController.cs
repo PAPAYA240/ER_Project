@@ -115,6 +115,7 @@ public class VisualEffectController : MonoBehaviour
         }
     }
     #endregion
+
     private bool CheckCondition()
     {
         if (myRenderers == null)
