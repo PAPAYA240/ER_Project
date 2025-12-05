@@ -136,7 +136,7 @@ public sealed class Hyunwoo_E : SkillHandlerBase
             else
             {
                 // hit the wall
-                if(_dashRange - (_startPos - _endPos).Length() > float.Epsilon)
+                if(_dashRange - (_startPos - _endPos).Length() > 0.1f)
                 {
                     p.ChangeState(new Player_SkillState(SkillRegistry.Create("Hyunwoo_E_End"), ctx));
                 }
