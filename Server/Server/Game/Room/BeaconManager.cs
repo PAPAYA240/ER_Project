@@ -161,6 +161,7 @@ namespace Server.Game
             S_StartOperate startOperatePkt = new S_StartOperate();
             startOperatePkt.BeaconName = beaconName;
             startOperatePkt.Team = player.Info.Player.Team;
+            startOperatePkt.ObjectId = player.Id;
             player.Room.Push(player.Room.Broadcast, startOperatePkt);
         }
 
@@ -176,6 +177,7 @@ namespace Server.Game
 
             S_StopOperate stopOperatePkt = new S_StopOperate();
             stopOperatePkt.BeaconName = beaconName;
+            stopOperatePkt.ObjectId = player.Id;
             player.Room.Push(player.Room.Broadcast, stopOperatePkt);
         }
     }

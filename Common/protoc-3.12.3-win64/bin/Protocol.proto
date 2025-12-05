@@ -1287,10 +1287,12 @@ message S_LoadGameScene{
 message S_StartOperate{
 	string beaconName = 1;
 	int32 team = 2;
+	int32 objectId = 3;
 }
 
 message S_StopOperate{
 	string beaconName = 1;
+	int32 objectId = 2;
 }
 
 message S_AbigailSound{

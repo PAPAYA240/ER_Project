@@ -44,13 +44,12 @@ public class IO_DeployingLoop : MonoBehaviour
     [SerializeField] private Color unusableColor = new Vector4(0.67f, 0f, 0f, 0.80f);
 
     [Header("UI")]
-    [SerializeField] private UI_InteractionCharge chargeUI;
     [SerializeField] private float interactDuration = 3f;
     [SerializeField] private string interactDescribe = "디플로잉 루프 가동 중";
 
-    public void Begin() => chargeUI.Begin(interactDuration, interactDescribe);
-    public void Complete() => chargeUI.Complete();
-    public void Cancel() => chargeUI.Cancel();
+    public void Begin() => Managers.Object.MyPlayer.UI.InteractionCharge.Begin(interactDuration, interactDescribe);
+    public void Complete() => Managers.Object.MyPlayer.UI.InteractionCharge.Complete();
+    public void Cancel() => Managers.Object.MyPlayer.UI.InteractionCharge.Cancel();
 
     void Awake()
     {
@@ -163,8 +162,8 @@ public class IO_DeployingLoop : MonoBehaviour
         if(Managers.Object.MyPlayer == null)
             return false;
 
-        if(Managers.Object.MyPlayer.CurPhase < ActivationPhase)
-            return false;
+        //if(Managers.Object.MyPlayer.CurPhase < ActivationPhase)
+        //    return false;
 
         return true;
     }
