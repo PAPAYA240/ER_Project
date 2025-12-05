@@ -280,6 +280,28 @@ namespace Server.Game
             }
         }
 
+        public void HandleAttackTargetInvalid(Player player, C_AttackTargetInvalid pkt)
+        {
+            if (player == null || player.IsDead)
+                return;
+
+            //InvalidTargetReason reason = pkt.Reason;
+            player.ChangeState(new Player_IdleState());
+        }
+
+        public void HandleBaseTrigger(Player player, C_BaseTrigger pkt)
+        {
+            if (player == null || player.IsDead)
+                return;
+
+            if (pkt.Team != player.Team)
+                return;
+
+            if (pkt.IsInside)
+                player.AddStatEffect(IRegenEffect.StatRegenType.BaseAreaRegen);
+            else
+                player.RemoveStatEffect(IRegenEffect.StatRegenType.BaseAreaRegen);
+        }
 
         #region Utils
         public GameObject FindNearestEnemy(Player me, int range)

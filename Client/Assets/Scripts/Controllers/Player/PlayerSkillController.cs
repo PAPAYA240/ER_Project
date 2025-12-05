@@ -171,7 +171,7 @@ public class PlayerSkillController : MonoBehaviour
         CreateSkillMesh(key);
     }
 
-    private C_SkillCollisionPropose ComputeSkillCollision(int skillKey, int requestId, CollisionType type, float startX, float startZ, float endX, float endZ)
+    public C_SkillCollisionPropose ComputeSkillCollision(int skillKey, int requestId, CollisionType type, float startX, float startZ, float endX, float endZ)
     {
         C_SkillCollisionPropose packet = new C_SkillCollisionPropose();
         packet.SkillKey = skillKey;

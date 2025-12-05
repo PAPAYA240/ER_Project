@@ -1,11 +1,12 @@
+using Google.Protobuf.Protocol;
+using Server.Data;
+using ServerCore;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
-using Google.Protobuf.Protocol;
-using Server.Data;
-using ServerCore;
+using static IRegenEffect;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -486,6 +487,8 @@ namespace Server.Game
         #region Stat
         public void StartRegen() => _statRegenerator.Start();
         public void StopRegen() => _statRegenerator.Stop();
+        public void AddStatEffect(StatRegenType effect) => _statRegenerator.AddEffect(effect);
+        public void RemoveStatEffect(StatRegenType effect) => _statRegenerator.RemoveEffect(effect);
 
         public bool CanRegenerate()
         {
@@ -496,11 +499,6 @@ namespace Server.Game
                 return false;
 
             return true;
-        }
-
-        public void UseHealPack(float amount, float durationSeconds)
-        {
-            _statRegenerator.AddEffect(new HealPackEffect(amount, durationSeconds));
         }
 
         private void CheckUpdateStat()
@@ -1383,7 +1381,6 @@ namespace Server.Game
 
             float angle = (float)Math.Atan2(dir.Y, dir.X);
             Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle);
-
             RotationInfo newRot = new RotationInfo
             {
                 Qx = rot.X,

@@ -212,6 +212,7 @@ class PacketHandler
             PlayerController pc = cc as PlayerController;
             if (pc == null)
                 return;
+            pc.ActiveRenderer(true);
 
             // 공격 플레이어
             GameObject attackerGo = Managers.Object.FindById(diePacket.AttackerId);
@@ -354,25 +355,24 @@ class PacketHandler
         if (cc == null)
             return;
 
-        cc.Stat.Level += levelUpPkt.LevelUpCnt;
-
+        cc.Stat.Level = levelUpPkt.Level;
         cc.ChangeStat(levelUpPkt.StatGrowth);
 
-        Debug.Log($" Id {cc.Id} ");
-        Debug.Log($" LevelUpCnt : {levelUpPkt.LevelUpCnt}, After Level : {cc.Stat.Level} ");
-        Debug.Log($" MaxHp : {levelUpPkt.StatGrowth.MaxHp}, MaxStamina : {levelUpPkt.StatGrowth.MaxStamina} ");
+        //Debug.Log($" Id {cc.Id} ");
+        //Debug.Log($" LevelUpCnt : {levelUpPkt.LevelUpCnt}, After Level : {cc.Stat.Level} ");
+        //Debug.Log($" MaxHp : {levelUpPkt.StatGrowth.MaxHp}, MaxStamina : {levelUpPkt.StatGrowth.MaxStamina} ");
 
         //아래는 레벨이 제대로 표시되게 하는 코드
         //마이 플레이어면 업데이트 하고 리턴
-        MyPlayerController mpc = go.GetComponent<MyPlayerController>();
-        if (null != mpc)
+        
+        if (Managers.Object.MyPlayer != null && Managers.Object.MyPlayer.Id == levelUpPkt.ObjectId)
         {
-            mpc.UI.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
-            mpc.UpdateLevel();
-            mpc.UI.PlayerInterface.UpdateStat();
-            mpc.Exp = levelUpPkt.CurExp;
-            mpc.MaxExp = levelUpPkt.NextMaxExp;
-            Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(mpc.Id);
+            Managers.Object.MyPlayer.UI.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
+            Managers.Object.MyPlayer.UpdateLevel();
+            Managers.Object.MyPlayer.UI.PlayerInterface.UpdateStat();
+            Managers.Object.MyPlayer.Exp = levelUpPkt.CurExp;
+            Managers.Object.MyPlayer.MaxExp = levelUpPkt.NextMaxExp;
+            Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(Managers.Object.MyPlayer.Id);
             Managers.Sound.Play("sound/ui/effect_levelup");
             return;
         }
@@ -403,8 +403,10 @@ class PacketHandler
         Vector3 targetPos = fxPacket.TargetPosition.ToVector();
         Quaternion targetRot = fxPacket.TargetRotation;
 
-        if(fxPacket.CanLookatMouse == true)
-            pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));
+        if (fxPacket.CanLookatMouse == true)
+        {
+            pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));  
+        }
         pc.PlayEffectFromServer(fxPacket, mousePos, targetPos, targetRot);
     }
 
@@ -436,7 +438,7 @@ class PacketHandler
 
         Managers.Object.MyPlayer.UI.PlayerInterface.SpecificSkillLevelUp(key);
         Managers.Object.MyPlayer.UI.UpdateSkillMaxCool();
-        Managers.Sound.Play("sound/ui/SkillUp");
+        Managers.Sound.Play("sound/ui/SkillUp", Define.Sound.Effect, 0.3f);
     }
 
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
@@ -716,7 +718,7 @@ class PacketHandler
         GameObject go = Managers.Object.FindById(stunPacket.ObjectId);
         if (go == null)     return;
         GameObject goAtk = Managers.Object.FindById(stunPacket.AttackerId);
-        if (go == null)     return;
+        if (goAtk == null)     return;
         CreatureController cc = go.GetComponentInChildren<CreatureController>();
         if (cc == null)     return;
         CreatureController atkc = goAtk.GetComponentInChildren<CreatureController>();
@@ -819,7 +821,7 @@ class PacketHandler
 
         if(soundPkt.Name.Contains("BGM"))
         {
-            Managers.Sound.Play($"sound/bgm/P{Managers.Object.MyPlayer.CurPhase}", Define.Sound.Bgm);
+            Managers.Sound.Play($"sound/bgm/P{Managers.Object.MyPlayer.CurPhase}", Define.Sound.Bgm, 0.1f);
             return;
         }
 

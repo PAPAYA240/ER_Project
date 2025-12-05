@@ -288,8 +288,7 @@ public class EffectFXManager : MonoBehaviour
 
             case EEffectTarget.Default:
                 Quaternion baseRot = rot != Quaternion.identity ? rot : casterTransform.rotation;
-                Quaternion xRotation = Quaternion.Euler(-90f, 0f, 0f);
-                return baseRot * xRotation;
+                return baseRot ;
 
             default:
                 return Quaternion.identity;
@@ -298,7 +297,7 @@ public class EffectFXManager : MonoBehaviour
     #endregion
 
     #region Utils
-    public GameObject FindEffect(int ownerId, string prefabName)
+    public GameObject FindCurrentPlayEffect(int ownerId, string prefabName)
     {
         if (currentlyPlayingEffects.TryGetValue(ownerId, out List<GameObject> effectList))
         {
@@ -354,7 +353,7 @@ public class EffectFXManager : MonoBehaviour
         {
             foreach (EffectData data in myEffectList.Caster)
             {
-                GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+                GameObject fxObjectToRemove = FindCurrentPlayEffect(packet.ObjectId, data.prefabName);
 
                 if (fxObjectToRemove != null)
                     RemoveEffect(packet.ObjectId, fxObjectToRemove);
@@ -366,7 +365,7 @@ public class EffectFXManager : MonoBehaviour
             {
                 if(data.prefabName == packet.FxName)
                 {
-                    GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+                    GameObject fxObjectToRemove = FindCurrentPlayEffect(packet.ObjectId, data.prefabName);
 
                     if (fxObjectToRemove != null)
                         RemoveEffect(packet.ObjectId, fxObjectToRemove);
@@ -406,7 +405,7 @@ public class EffectFXManager : MonoBehaviour
             // Caster 그룹 전체 제거
             foreach (EffectData data in myEffectList.Caster)
             {
-                GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+                GameObject fxObjectToRemove = FindCurrentPlayEffect(packet.ObjectId, data.prefabName);
                 if (fxObjectToRemove != null)
                     RemoveEffect(packet.ObjectId, fxObjectToRemove);
             }
@@ -418,7 +417,7 @@ public class EffectFXManager : MonoBehaviour
             {
                 if (data.prefabName == packet.FxName)
                 {
-                    GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+                    GameObject fxObjectToRemove = FindCurrentPlayEffect(packet.ObjectId, data.prefabName);
                     if (fxObjectToRemove != null)
                         RemoveEffect(packet.ObjectId, fxObjectToRemove);
                     break;

@@ -766,7 +766,7 @@ public class PlayerController : CreatureController
     #endregion
 
     #region Effect
-    // 기본 스킬 이펙트 호출 : Caster Type
+    // 기본 스킬 이펙트 호출 : Caster Type - 무조건 플레이어 따라
     public void PlaySkillEffect(KeyCode skillKey, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot = default(Quaternion), Transform targetTransform = null)
     {
         CharacterType type = ObjInfo.Player.CharType;

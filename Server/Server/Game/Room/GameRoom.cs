@@ -314,9 +314,9 @@ namespace Server.Game
 
                 // 본인한테 정보 전송
                 {
-                    // Temp Cobalt Exp
-                    player.Info.StatInfo.Exp = 15800;
-                    player.CheckLevelUp();
+
+                    
+
                     if (Spawn == null)
                         SpawnRegister();
                     player.Info.PosInfo = Spawn.GetSpawnPoint(player.Team).ToPositionInfo();
@@ -352,6 +352,12 @@ namespace Server.Game
                     }
 
                     player.Session.Send(spawnPacket);
+
+                    // Temp Cobalt Exp
+                    player.Info.StatInfo.Exp = 15800;
+                    int levelUpCnt = player.CheckLevelUp();
+                    if (levelUpCnt > 0)
+                        Push(BroadcastLevelUp, player, levelUpCnt, player.Info.Player.CharType);
 
                     // 페이즈에 해당하는 아이템 장착
                     if (CurPhase > 0)
@@ -745,11 +751,26 @@ namespace Server.Game
         {
             S_LevelUp levelUpPkt = new S_LevelUp();
             levelUpPkt.ObjectId = player.Id;
+            levelUpPkt.Level = player.Stat.Level;
             levelUpPkt.LevelUpCnt = levelUpCnt;
 
-            StatInfo statInfo = new StatInfo(DataManager.StatGrowthDict[charType]);
-            statInfo.MultiplyForGrowth(levelUpCnt);
+            StatInfo grouwthStatInfo = new StatInfo(DataManager.StatGrowthDict[charType]);
+            grouwthStatInfo.MultiplyForGrowth(levelUpCnt);
+
+            StatInfo statInfo = new StatInfo(player.Stat);
+            statInfo.Attack = player.Stat.Attack;
+            statInfo.Defense = player.Stat.Defense;
+            statInfo.MaxHp = player.Stat.MaxHp;
+            statInfo.Hp = grouwthStatInfo.MaxHp;
+            statInfo.HpRegen = player.Stat.HpRegen;
+            statInfo.MaxStamina = player.Stat.MaxStamina;
+            statInfo.Stamina = grouwthStatInfo.MaxStamina;
+            statInfo.StaminaRegen = player.Stat.StaminaRegen;
+
             levelUpPkt.StatGrowth = statInfo;
+            //StatInfo statInfo = new StatInfo(DataManager.StatGrowthDict[charType]);
+            //statInfo.MultiplyForGrowth(levelUpCnt);
+            //levelUpPkt.StatGrowth = statInfo;
 
             levelUpPkt.NextMaxExp = DataManager.ExpDict[player.Stat.Level];
             levelUpPkt.CurExp = player.Exp;

@@ -375,7 +375,7 @@ public class MyPlayerController : PlayerController
     protected override void UpdateHp() { base.UpdateHp(); _UI.UpdateHp(); }
     protected override void UpdateMaxHp() { base.UpdateMaxHp(); _UI.UpdateMaxHp(); } 
     protected override void UpdateStamina() { base.UpdateStamina(); _UI.UpdateStamina(); }
-    protected override void UpdateMaxStamina() { base.UpdateMaxStamina(); _UI.UpdateMaxStamina(); Debug.Log($"Stamina : {Stamina}, MaxStamina {MaxStamina}, Stat.MaxStamina : {Stat.MaxStamina}, ItemStat.MaxStamina : {ItemStat.MaxStamina}"); }
+    protected override void UpdateMaxStamina() { base.UpdateMaxStamina(); _UI.UpdateMaxStamina(); /*Debug.Log($"Stamina : {Stamina}, MaxStamina {MaxStamina}, Stat.MaxStamina : {Stat.MaxStamina}, ItemStat.MaxStamina : {ItemStat.MaxStamina}");*/ }
     public void UpdateLevel() { _UI.UpdateLevel(); }
     public void UpdateCool() { _UI.UpdateCool(); }
 }

@@ -530,7 +530,7 @@ namespace Server.Game
                         stunPacket.ObjectId = Id;
                         stunPacket.AttackerId = statusEffect.attacker.Id;
                         stunPacket.AttackerTeam = statusEffect.attacker.Info.Player.Team;
-                        stunPacket.Duration = statusEffect.duration;
+                        stunPacket.Duration = 4/*statusEffect.duration*/;
                         Room.Broadcast(stunPacket);
 
                         if (this is Player player)
@@ -706,6 +706,15 @@ namespace Server.Game
             }
         }
 
+        public bool FindStatStatusEffect(string name)
+        {
+            foreach (StatusEffect effect in _statusEffects)
+            {
+                if (effect.stat == name)
+                    return true;
+            }
+            return false;
+        }
         void OnStatusEffectRemove(StatusEffect statusEffect)
         {
             if (statusEffect.type == "Buff" || statusEffect.type == "Debuff")

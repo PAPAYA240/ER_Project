@@ -80,7 +80,7 @@ public class UI_PlayerInterface : UI_Base
         GetObject((int)GameObjects.ESkill).GetComponent<UI_SkillBase>().InitPopupUI();
         GetObject((int)GameObjects.RSkill).GetComponent<UI_SkillBase>().InitPopupUI();
         GetObject((int)GameObjects.TSkill).GetComponent<UI_SkillBase>().InitPopupUI();
-        //GetObject((int)GameObjects.DSkill).GetComponent<UI_SkillBase>().InitPopupUI();
+        GetObject((int)GameObjects.DSkill).GetComponent<UI_SkillBase>().InitPopupUI();
         GetObject((int)GameObjects.FSkill).GetComponent<UI_SkillBase>().InitPopupUI();
 
         GetObject((int)GameObjects.Death).SetActive(false);

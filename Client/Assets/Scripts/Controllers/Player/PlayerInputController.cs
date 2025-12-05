@@ -305,7 +305,7 @@ public class PlayerInputController : MonoBehaviour
         return null;
     }
 
-    private bool IsCharge(KeyCode key)
+    protected bool IsCharge(KeyCode key)
     {
         SkillData skillData = DataManager.SkillDict[_player.ObjInfo.Player.CharType][key];
         if (skillData == null)
@@ -364,17 +364,41 @@ public class PlayerInputController : MonoBehaviour
                             index = 9;
                         else
                             index = i - 1;
-
-                        _player.UseInventoryItem(i);
+                        
                         Vector3 playerToMouse = GetMouseWorldPosition() - _player.transform.position;
                         playerToMouse.y = 0;
                         float dist = playerToMouse.magnitude;
 
                         Vector3 result = GetMouseWorldPosition();
-                        if(dist > 8.5f)
+                        if (dist > 8.5f)
                         {
                             result = _player.transform.position + playerToMouse.normalized * 8.5f;
                         }
+
+                        C_SkillCollisionPropose propose = _skill.ComputeSkillCollision(0, 0, CollisionType.Pass, _player.transform.position.x, _player.transform.position.z, result.x, result.z);
+
+                        result.x = propose.CollisionX;
+                        result.z = propose.CollisionZ;
+                        //Vector3 validPos = GetMouseWorldPosition();
+
+                        //var path = new NavMeshPath();
+                        //if (!NavMesh.CalculatePath(_player.transform.position, result, _agent.areaMask, path) || path.status != NavMeshPathStatus.PathComplete)
+                        //{
+                        //    // 경로 자체가 없으면 레이캐스트로 첫 히트 포인트 클램프
+                        //    if (NavMesh.Raycast(_player.transform.position, result, out var hit, NavMesh.AllAreas))
+                        //    {
+                        //        result = hit.position;
+                        //    }
+                        //}
+                        //return validPos;
+
+
+                        //if (NavMesh.SamplePosition(result, out var navHit, 2f, NavMesh.AllAreas) && _skill.getvail)
+                        //    result = navHit.position;
+                        //else
+                        //    return null;
+
+                        _player.UseInventoryItem(i);
 
                         return new C_UseItem()
                         {

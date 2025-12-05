@@ -134,8 +134,7 @@ public class CreatureController : BaseController
     public void Snare(S_Snare packet, CharacterType charType)
     {
         // Destory Proejctile
-         
-        Managers.FX.PlayStatusEffect(this.gameObject, charType, packet.Duration);
+         Managers.FX.PlayStatusEffect(this.gameObject, charType, 4.0f);
     }
 
     public virtual void UseSkill(int skillId) {}
@@ -145,18 +144,31 @@ public class CreatureController : BaseController
     public virtual void OnHitboxCollision(KeyCode kc, KeyCode tkc) 
     {
     }
-    public void ChangeStat(StatInfo growth)
+    public void ChangeStat(StatInfo stat)
     {
-        Stat.Attack += growth.Attack;
-        Stat.Defense += growth.Defense;
-        Stat.MaxHp += growth.MaxHp;
-        Hp += growth.MaxHp;
-        Stat.HpRegen += growth.HpRegen;
-        Stat.MaxStamina += growth.MaxStamina;
-        Stamina += growth.MaxStamina;
-        Stat.StaminaRegen += growth.StaminaRegen;
+        Stat.Attack = stat.Attack;
+        Stat.Defense = stat.Defense;
+        MaxHp = stat.MaxHp;
+        Hp += stat.Hp;
+        Stat.HpRegen = stat.HpRegen;
+        MaxStamina = stat.MaxStamina;
+        Stamina += stat.Stamina;
+        Stat.StaminaRegen = stat.StaminaRegen;
     }
 
+    // lagacy code
+
+    //public void ChangeStat(StatInfo growth)
+    //{
+    //    Stat.Attack += growth.Attack;
+    //    Stat.Defense += growth.Defense;
+    //    MaxHp = Stat.MaxHp + growth.MaxHp;
+    //    Hp += growth.MaxHp;
+    //    Stat.HpRegen += growth.HpRegen;
+    //    MaxStamina = Stat.MaxStamina + growth.MaxStamina;
+    //    Stamina += growth.MaxStamina;
+    //    Stat.StaminaRegen += growth.StaminaRegen;
+    //}
     public GameObject GetAttackableUnderCursor(int mask = default, float radius = 0.1f)
     {
         if (mask == default)
@@ -166,7 +178,7 @@ public class CreatureController : BaseController
         if (Physics.SphereCast(ray, radius, out RaycastHit hit, 1000f, mask))
         {
             var cc = hit.collider.GetComponentInChildren<CreatureController>();
-            if (cc != null && IsAttackable(cc))
+            if (cc != null && IsAttackable(cc, out _))
             {
                 return cc.gameObject;
             }
@@ -175,40 +187,71 @@ public class CreatureController : BaseController
         return null;
     }
 
-    public bool IsAttackable(GameObject targetObject)
+    public bool IsAttackable(GameObject targetObject, out InvalidTargetReason reason)
     {
         if (targetObject == null)
+        {
+            reason = InvalidTargetReason.InvalidNull;
             return false;
+        }
 
         CreatureController cc = targetObject.GetComponentInChildren<CreatureController>();
-        return IsAttackable(cc);
+        bool isAttackable = IsAttackable(cc, out var invalidReason);
+        reason = invalidReason;
+        return isAttackable;
     }
 
-    public bool IsAttackable(CreatureController cc)
+    public bool IsAttackable(CreatureController cc, out InvalidTargetReason reason)
     {
         if (cc == null)
+        {
+            reason = InvalidTargetReason.InvalidNull;
             return false;
+        }
 
         // 나 자신일 때
         if (cc.Id == Id)
+        {
+            reason = InvalidTargetReason.InvalidSelf;
             return false;
+        }
 
         // 같은 팀일 때
         if (cc.ObjInfo.Player != null && cc.ObjInfo.Player.Team == ObjInfo.Player.Team)
+        {
+            reason = InvalidTargetReason.InvalidAlly;
             return false;
+        }
 
         // 지정 불가 상태일 때
         if (cc.Untargetable)
+        {
+            reason = InvalidTargetReason.InvalidUntargetable;
             return false;
+        }
 
         // 대상이 죽었을 때 
         if (cc.State == CreatureState.Dead)
+        {
+            reason = InvalidTargetReason.InvalidDead;
             return false;
+        }
 
         // 대상이 시야 밖일 때
         if (!IsVisibleObject(cc.Id))
+        {
+            reason = InvalidTargetReason.InvalidInvisible;
             return false;
+        }
 
+        // 대상이 은신 상태일 때
+        if (IsHiding(cc))
+        {
+            reason = InvalidTargetReason.InvalidHiding;
+            return false;
+        }
+
+        reason = InvalidTargetReason.InvalidValid;
         return true;
     }
 
@@ -216,6 +259,18 @@ public class CreatureController : BaseController
     {
         if (Managers.Scene.CurrentScene is GameScene scene)
             return scene.IsVisibleObject(id);
+
+        return false;
+    }
+
+    private bool IsHiding(CreatureController cc)
+    {
+        if(cc is PlayerController pc)
+        {
+            if (pc.NameTag.isActiveAndEnabled)
+                return false;
+            return true;
+        }
 
         return false;
     }
