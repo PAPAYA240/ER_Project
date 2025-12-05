@@ -212,7 +212,7 @@ class PacketHandler
             PlayerController pc = cc as PlayerController;
             if (pc == null)
                 return;
-            pc.ActiveRenderer(true);
+            pc.BushRenderType(0);
 
             // 공격 플레이어
             GameObject attackerGo = Managers.Object.FindById(diePacket.AttackerId);
@@ -407,6 +407,7 @@ class PacketHandler
         {
             pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));  
         }
+
         pc.PlayEffectFromServer(fxPacket, mousePos, targetPos, targetRot);
     }
 
@@ -1376,6 +1377,23 @@ class PacketHandler
         if (pc == null) return;
         pc.YukiEffects.StopEffect(stopAbglFx.Fx);
     }
+
+    public static void S_DeployingLoopHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_DeployingLoopHandler(session, packet)))
+            return;
+
+        S_DeployingLoop deploying = packet as S_DeployingLoop;
+        GameObject go = Managers.Object.FindById(deploying.ObjectId);
+        if (go == null)
+            return;
+
+        MyPlayerController mpc = go.GetComponentInChildren<MyPlayerController>();
+        if (mpc == null)
+            return;
+        mpc.OnServerUpdate(deploying);
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;

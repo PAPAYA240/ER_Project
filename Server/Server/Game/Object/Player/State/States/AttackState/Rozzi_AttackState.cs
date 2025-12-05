@@ -59,6 +59,35 @@ public class Rozzi_AttackState : Player_AttackState
 
         if (_isRotate == true)
         {
+            // 회전 중에도 사거리 벗어나면 즉시 회전 종료
+            bool inRange = Vector3.Distance(pos, targetPos) <= player.AttackRange;
+            if (!inRange)
+            {
+                _isRotate = false;
+
+                // 추격 금지 모드라면 Idle
+                if (!_chaseAllowed)
+                {
+                    player.ChangeState(new Player_IdleState());
+                    return;
+                }
+
+                // 추격 모드면 다시 MovingState로 돌입
+                var move = new C_Move
+                {
+                    IsTargetOn = true,
+                    TargetId = _targetId,
+                    TargetPosition = new PositionInfo
+                    {
+                        PosX = targetPos.X,
+                        PosY = targetPos.Y,
+                        PosZ = targetPos.Z
+                    }
+                };
+                player.ChangeState(new Player_MovingState(move));
+                return;
+            }
+
             if (IsLookingAtTargetYawOnly(player.Position, new Quaternion(player.RotInfo.Qx, player.RotInfo.Qy, player.RotInfo.Qz, player.RotInfo.Qw), targetPos))
             {
                 _isRotate = false;
@@ -123,7 +152,6 @@ public class Rozzi_AttackState : Player_AttackState
                         pkt.TargetId = _targetId;
                         player.SendTargetChangePacket(pkt);
                         _isRotate = true;
-                        _rotateStartUtc = DateTime.UtcNow;
                     }
                 }
                 return; // 스윙 중에는 추가 개시 없음

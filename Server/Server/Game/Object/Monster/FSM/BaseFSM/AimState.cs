@@ -59,7 +59,6 @@ namespace Server.Game
             {
                 monster.Room.CollManager.AddHitbox(monster, _skillData.skillType, new Vector2(monster.Target.PosInfo.PosX, monster.Target.PosInfo.PosZ));
             }
-
             monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), _skillData);
         }
 

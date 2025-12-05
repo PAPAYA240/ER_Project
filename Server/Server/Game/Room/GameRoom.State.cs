@@ -156,10 +156,12 @@ namespace Server.Game
             {
                 Player_SkillState skillstate = player.CurrentState as Player_SkillState;
                 skillstate.Ctx.MousePos = new Vector2(skillPacket.MousePosX, skillPacket.MousePosZ);
-                if (player.CurrentState is Player_SkillState skillState)
-                    skillState.Handler.OnAttack(player);
-            }
 
+                if (player.CurrentState is Player_SkillState skillState)
+                {
+                    skillState.Handler.OnAttack(player);
+                }
+            }
         }
 
         public void HandlerPrepareSkill(Player player, C_SkillPrepare skillPacket)
@@ -262,6 +264,9 @@ namespace Server.Game
 
             if (!(player.State == CreatureState.Idle || player.State == CreatureState.Moving))
                 return;
+
+            //if (CurPhase < 1 /*2*/)
+            //    return;
 
             player.ChangeState(new Player_TeleportState(pkt.IoPos));
         }
