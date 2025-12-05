@@ -902,7 +902,14 @@ class PacketHandler
         if (!IsSceneReady("Game", () => S_GameOverHandler(session, packet))) return;
         S_GameOver gameOverPkt = packet as S_GameOver;
 
+        bool isWin = false;
 
+        if(Managers.Info.Team == gameOverPkt.WinTeam)
+            isWin = true;
+        else
+            isWin = false;
+
+        Managers.Object.MyPlayer.UI.PlayerHUD.SetGameResult(isWin);
     }
 
     public static void S_ChangeTransformHandler(PacketSession session, IMessage packet)

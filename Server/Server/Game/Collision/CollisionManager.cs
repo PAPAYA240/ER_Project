@@ -257,7 +257,7 @@ namespace Server.Game
                         continue;
                     if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
                         continue;
-                    if (type == SkillType.SkillPoint && type == SkillType.SkillTargeting)
+                    if (type == SkillType.SkillPoint || type == SkillType.SkillTargeting)
                         return;
 
                     if (type == SkillType.SkillProjectile)
@@ -1015,8 +1015,7 @@ namespace Server.Game
                     hitbox.PosZ = hitbox.MousePos.Y;
                 }
             }
-
-            if (System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
+            else if (System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
             {
                 if (type == SkillType.SkillTargeting)
                 {

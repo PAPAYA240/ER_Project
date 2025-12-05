@@ -210,6 +210,17 @@ namespace Server.Game
                 newValue = Math.Max(0, oldValue - amount);
             } while (Interlocked.CompareExchange(ref _teamScores[team], newValue, oldValue) != oldValue);
 
+            if(newValue == 0)
+            {
+                S_GameOver packet = new S_GameOver();
+                if(team == 1)
+                    packet.WinTeam = 2;
+                else
+                    packet.WinTeam = 1;
+
+                Push(Broadcast, packet);
+            }
+
             return newValue; // 감소 후 점수 반환
         }
         public int GetScore(int team) { return _teamScores[team]; }
@@ -314,9 +325,6 @@ namespace Server.Game
 
                 // 본인한테 정보 전송
                 {
-
-                    
-
                     if (Spawn == null)
                         SpawnRegister();
                     player.Info.PosInfo = Spawn.GetSpawnPoint(player.Team).ToPositionInfo();
@@ -758,8 +766,8 @@ namespace Server.Game
             grouwthStatInfo.MultiplyForGrowth(levelUpCnt);
 
             StatInfo statInfo = new StatInfo(player.Stat);
-            statInfo.Attack = player.Stat.Attack;
-            statInfo.Defense = player.Stat.Defense;
+            statInfo.Attack = player.Attack;
+            statInfo.Defense = player.Defense;
             statInfo.MaxHp = player.Stat.MaxHp;
             statInfo.Hp = grouwthStatInfo.MaxHp;
             statInfo.HpRegen = player.Stat.HpRegen;
