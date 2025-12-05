@@ -90,7 +90,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 
         // 최초 타겟 변경 시 회전 패킷
         S_TargetChange pkt = new S_TargetChange();
-        Console.WriteLine(_targetId);
+
         pkt.TargetId = _targetId;
         player.SendTargetChangePacket(pkt);
         _isRotate = true;
