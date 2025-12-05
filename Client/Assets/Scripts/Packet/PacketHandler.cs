@@ -420,12 +420,19 @@ class PacketHandler
             return;
 
         if (Managers.Object.MyPlayer.Id == respawnPacket.ObjectId)
+        {
             Managers.Object.MyPlayer.OnServerUpdate(respawnPacket);
+            Managers.Sound.Play("sound/ui/TeamRevival");
+        }
         else
         {
             PlayerController pc = go.GetComponentInChildren<PlayerController>();
             if (pc != null)
+            {
                 pc.OnRespawn(respawnPacket);
+                if(pc.ObjInfo.Player.Team == Managers.Info.Team)
+                    Managers.Sound.Play("sound/ui/TeamRevival");
+            }
         }
     }
 
