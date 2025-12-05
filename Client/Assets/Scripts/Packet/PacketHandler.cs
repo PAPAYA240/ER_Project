@@ -433,6 +433,8 @@ class PacketHandler
                 pc.OnRespawn(respawnPacket);
                 if(pc.ObjInfo.Player.Team == Managers.Info.Team)
                     Managers.Sound.Play("sound/ui/TeamRevival");
+
+                Managers.Object.MyPlayer.View.TargetId = 0;
             }
         }
     }
