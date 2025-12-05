@@ -33,7 +33,7 @@ public class PlayerInputController : MonoBehaviour
     [SerializeField] private float _attackInputInterval = 0.08f; // 0.08초마다 1번(초당 약 12번)
 
     // 최소 이동 가능 거리
-    //private float _minClickMoveDistance = 0.5f; 
+    private float _minClickMoveDistance = 0.3f; 
 
     private void Awake()
     {
@@ -70,9 +70,9 @@ public class PlayerInputController : MonoBehaviour
                     return null;
 
                 // 너무 가까운 위치면 이동 패킷 보내지 않기
-                //Vector3 diff = final - _player.transform.position;
-                //if (diff.sqrMagnitude < _minClickMoveDistance * _minClickMoveDistance)
-                //    return null;
+                Vector3 diff = final - _player.transform.position;
+                if (diff.sqrMagnitude < _minClickMoveDistance * _minClickMoveDistance)
+                    return null;
 
                 return new C_SetMoveTarget
                 {
