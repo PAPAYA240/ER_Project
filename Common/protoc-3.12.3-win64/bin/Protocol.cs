@@ -426,17 +426,17 @@ namespace Google.Protobuf.Protocol {
             "a2lFbW92ZRAjEg8KC1l1a2lFYXR0YWNrECQSDAoIWXVraUVoaXQQJRIPCgtZ",
             "dWtpUmFjdGl2ZRAmEg8KC1l1a2lSYXR0YWNrECcSDwoLWXVraVJkZWJ1ZmYQ",
             "KBISCg5ZdWtpUmRlYnVmZkhpdBApEgwKCFl1a2lSZW5kECoSDwoLWXVraVZp",
-            "Y3RvcnkQKxIMCghZdWtpUmVzdBAsEgwKCFl1a2lLaWxsEC0qwAEKCUFiaWdh",
+            "Y3RvcnkQKxIMCghZdWtpUmVzdBAsEgwKCFl1a2lLaWxsEC0q3AEKCUFiaWdh",
             "aWxGeBIMCghBdHRhY2swMRAAEgwKCEF0dGFjazAyEAESDAoIUmVzdF9FbmQQ",
             "AhIOCgpSZXN0X1N0YXJ0EAMSDAoIUV9BdHRhY2sQBBINCglRX0F0dGFjazIQ",
             "BRILCgdRX1JhbmdlEAYSDAoIV19BdHRhY2sQBxILCgdXX1JhbmdlEAgSDAoI",
-            "RV9Qb3J0YWwQCRILCgdSX1JhbmdlEAoSCwoHUl9TdGFydBALEgwKCFdwblNr",
-            "aWxsEAwqtQEKE0ludmFsaWRUYXJnZXRSZWFzb24SEAoMSW52YWxpZF9OdWxs",
-            "EAASEAoMSW52YWxpZF9TZWxmEAESEAoMSW52YWxpZF9BbGx5EAISGAoUSW52",
-            "YWxpZF9VbnRhcmdldGFibGUQAxIQCgxJbnZhbGlkX0RlYWQQBBIVChFJbnZh",
-            "bGlkX0ludmlzaWJsZRAFEhIKDkludmFsaWRfSGlkaW5nEAYSEQoNSW52YWxp",
-            "ZF9WYWxpZBAHQhuqAhhHb29nbGUuUHJvdG9idWYuUHJvdG9jb2xiBnByb3Rv",
-            "Mw=="));
+            "RV9Qb3J0YWwQCRINCglSX0V4cGxvZGUQChILCgdSX1JhbmdlEAsSCwoHUl9T",
+            "dGFydBAMEgsKB1JfVHJhaWwQDRIMCghXcG5Ta2lsbBAOKrUBChNJbnZhbGlk",
+            "VGFyZ2V0UmVhc29uEhAKDEludmFsaWRfTnVsbBAAEhAKDEludmFsaWRfU2Vs",
+            "ZhABEhAKDEludmFsaWRfQWxseRACEhgKFEludmFsaWRfVW50YXJnZXRhYmxl",
+            "EAMSEAoMSW52YWxpZF9EZWFkEAQSFQoRSW52YWxpZF9JbnZpc2libGUQBRIS",
+            "Cg5JbnZhbGlkX0hpZGluZxAGEhEKDUludmFsaWRfVmFsaWQQB0IbqgIYR29v",
+            "Z2xlLlByb3RvYnVmLlByb3RvY29sYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CombatState), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.SkillInputType), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.EnvType), typeof(global::Google.Protobuf.Protocol.ProjectileType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.MonsterSkill), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.Weapon), typeof(global::Google.Protobuf.Protocol.SkillShape), typeof(global::Google.Protobuf.Protocol.TraitType), typeof(global::Google.Protobuf.Protocol.EquipItemType), typeof(global::Google.Protobuf.Protocol.ItemGrade), typeof(global::Google.Protobuf.Protocol.StopReason), typeof(global::Google.Protobuf.Protocol.SkillMotionType), typeof(global::Google.Protobuf.Protocol.CollisionType), typeof(global::Google.Protobuf.Protocol.VariantKey), typeof(global::Google.Protobuf.Protocol.CombatTextType), typeof(global::Google.Protobuf.Protocol.Beacon), typeof(global::Google.Protobuf.Protocol.BOMB_ROZZI), typeof(global::Google.Protobuf.Protocol.SkillEffectType), typeof(global::Google.Protobuf.Protocol.SpawnPointType), typeof(global::Google.Protobuf.Protocol.AbigailSound), typeof(global::Google.Protobuf.Protocol.AbigailFx), typeof(global::Google.Protobuf.Protocol.InvalidTargetReason), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -1028,9 +1028,11 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("W_Attack")] WAttack = 7,
     [pbr::OriginalName("W_Range")] WRange = 8,
     [pbr::OriginalName("E_Portal")] EPortal = 9,
-    [pbr::OriginalName("R_Range")] RRange = 10,
-    [pbr::OriginalName("R_Start")] RStart = 11,
-    [pbr::OriginalName("WpnSkill")] WpnSkill = 12,
+    [pbr::OriginalName("R_Explode")] RExplode = 10,
+    [pbr::OriginalName("R_Range")] RRange = 11,
+    [pbr::OriginalName("R_Start")] RStart = 12,
+    [pbr::OriginalName("R_Trail")] RTrail = 13,
+    [pbr::OriginalName("WpnSkill")] WpnSkill = 14,
   }
 
   public enum InvalidTargetReason {

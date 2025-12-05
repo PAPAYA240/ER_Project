@@ -162,8 +162,8 @@ public class IO_DeployingLoop : MonoBehaviour
         if(Managers.Object.MyPlayer == null)
             return false;
 
-        //if(Managers.Object.MyPlayer.CurPhase < ActivationPhase)
-        //    return false;
+        if (Managers.Object.MyPlayer.CurPhase < ActivationPhase)
+            return false;
 
         return true;
     }
