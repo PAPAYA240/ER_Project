@@ -20,7 +20,8 @@ public class RestRegenEffect : IRegenEffect
         float hpRegen = owner.HpRegen * bonusRegen;
         float staminaRegen = owner.StaminaRegen * bonusRegen;
 
-        owner.Hp = MathF.Min(owner.MaxHp, owner.Hp + hpRegen);
+        //owner.Hp = MathF.Min(owner.MaxHp, owner.Hp + hpRegen);
+        owner.ApplyHeal(hpRegen);
         owner.Stamina = MathF.Min(owner.MaxStamina, owner.Stamina + staminaRegen);
     }
 }

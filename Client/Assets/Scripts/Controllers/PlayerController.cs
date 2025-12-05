@@ -22,7 +22,9 @@ public class PlayerController : CreatureController
     float _minDist = 3f;
     float _syncSpeed = 20f;
     Vector3 _serverPos;
-    float AGENT_SPEED_RATIO = 1.7f;
+
+    [SerializeField]
+    private float AGENT_SPEED_RATIO = 1.3f;
 
     // Fog
     private FogOfWarVision _fogOfWarVision;

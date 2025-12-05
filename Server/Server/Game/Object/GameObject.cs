@@ -416,12 +416,22 @@ namespace Server.Game
         #endregion
 
         #region State
+        public void ApplyHeal(float baseAmount)
+        {
+            if (baseAmount <= 0f)
+                return;
+
+            float final = baseAmount * Healing;   // 여기서만 Healing 반영
+            Hp = Stat.Hp + final;
+        }
+
         public virtual void OnHeal(GameObject go, float heal)
         {
             if (Room == null || State == CreatureState.Dead || heal <= 0)
                 return;
 
-            Hp = Math.Min(MaxHp, Hp + heal);
+            //Hp = Math.Min(MaxHp, Hp + heal);
+            ApplyHeal(heal);
 
             S_ChangeHp changePacket = new S_ChangeHp();
             changePacket.ObjectId = Id;
@@ -866,10 +876,21 @@ namespace Server.Game
 
             _mulByInst[inst] = (key, delta);
 
+
+            //if (inst.type == "Buff")
+            //    _mulBuffAccum[key] = _mulBuffAccum.GetValueOrDefault(key) + delta;
+            //else if (inst.type == "Debuff")
+            //    _mulDebuffAccum[key] = _mulDebuffAccum.GetValueOrDefault(key) + delta;
+
             if (inst.type == "Buff")
+            {
                 _mulBuffAccum[key] = _mulBuffAccum.GetValueOrDefault(key) + delta;
+            }
             else if (inst.type == "Debuff")
+            {
                 _mulDebuffAccum[key] = _mulDebuffAccum.GetValueOrDefault(key) + delta;
+                Console.WriteLine($"@ RegisterMultiplier : Id - {Id}, key - {key}, value - {_mulDebuffAccum[key]}, delta : {delta}");
+            }
 
             UpdateStatusFlag();
         }
@@ -908,6 +929,7 @@ namespace Server.Game
             else if (inst.type == "Debuff")
             {
                 _mulDebuffAccum[key] = _mulDebuffAccum.GetValueOrDefault(key) - delta;
+                Console.WriteLine($"@ UnregisterMultiplier : Id - {Id}, key - {key}, value - {_mulDebuffAccum[key]}, delta : {delta}");
                 if (MathF.Abs(_mulDebuffAccum[key]) < 1e-6f)
                     _mulDebuffAccum.Remove(key);
             }

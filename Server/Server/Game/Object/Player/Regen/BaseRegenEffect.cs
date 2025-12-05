@@ -14,7 +14,7 @@ public class BaseRegenEffect : IRegenEffect
         float hpRegen = owner.HpRegen;
         float staminaRegen = owner.StaminaRegen;
 
-        owner.Hp = MathF.Min(owner.MaxHp, owner.Hp + hpRegen);
+        owner.ApplyHeal(hpRegen);
         owner.Stamina = MathF.Min(owner.MaxStamina, owner.Stamina + staminaRegen);
     }
 }

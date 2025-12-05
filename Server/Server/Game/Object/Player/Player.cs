@@ -1,8 +1,10 @@
 using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
 using Server.Data;
 using ServerCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
@@ -84,20 +86,7 @@ namespace Server.Game
         public override float Hp
         {
             get { return base.Hp; }
-            set 
-            {
-                float cur = Stat.Hp;
-
-                if (value > cur) // 회복일 때만  Healing에 치유 증가/감소 반영
-                {
-                    float healAmount = (value - cur) * Healing; 
-                    Stat.Hp = Math.Clamp(cur + healAmount, 0, MaxHp);
-                }
-                else // 데미지일 때는 그대로
-                {
-                    Stat.Hp = Math.Clamp(value, 0, MaxHp);
-                }
-            }
+            set { Stat.Hp = Math.Clamp(value, 0, MaxHp); }
         }
 
         public override float HpRegen
@@ -1338,23 +1327,9 @@ namespace Server.Game
 
                 Room.Push(Session.Send, packet);
                 _isUpdatedStatus = false;
+
+                Console.WriteLine($"@ Healing(Player) : Id - {Id}, value - {Healing}");
             }
-        }
-
-        public void SendUpdateStatusPacket(bool IsUnStoppable)
-        {
-            S_ChangeStatus packet = new S_ChangeStatus()
-            {
-                ObjectId = Id,
-
-                MoveSpeed = Speed,
-                Attack = Attack,
-                //AttackSpeed = 
-                Defense = Defense,
-                Healing = Healing,
-            };
-
-            Room.Push(Session.Send, packet);
         }
         #endregion
 
