@@ -1327,8 +1327,6 @@ namespace Server.Game
 
                 Room.Push(Session.Send, packet);
                 _isUpdatedStatus = false;
-
-                Console.WriteLine($"@ Healing(Player) : Id - {Id}, value - {Healing}");
             }
         }
         #endregion

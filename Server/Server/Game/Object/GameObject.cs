@@ -875,22 +875,7 @@ namespace Server.Game
                 return;
 
             _mulByInst[inst] = (key, delta);
-
-
-            //if (inst.type == "Buff")
-            //    _mulBuffAccum[key] = _mulBuffAccum.GetValueOrDefault(key) + delta;
-            //else if (inst.type == "Debuff")
-            //    _mulDebuffAccum[key] = _mulDebuffAccum.GetValueOrDefault(key) + delta;
-
-            if (inst.type == "Buff")
-            {
-                _mulBuffAccum[key] = _mulBuffAccum.GetValueOrDefault(key) + delta;
-            }
-            else if (inst.type == "Debuff")
-            {
-                _mulDebuffAccum[key] = _mulDebuffAccum.GetValueOrDefault(key) + delta;
-                Console.WriteLine($"@ RegisterMultiplier : Id - {Id}, key - {key}, value - {_mulDebuffAccum[key]}, delta : {delta}");
-            }
+            CalculateMaxMultiplier(type: inst.type, key);
 
             UpdateStatusFlag();
         }
@@ -920,19 +905,7 @@ namespace Server.Game
             var (key, delta) = pair;
             _mulByInst.Remove(inst);
 
-            if (inst.type == "Buff")
-            {
-                _mulBuffAccum[key] = _mulBuffAccum.GetValueOrDefault(key) - delta;
-                if (MathF.Abs(_mulBuffAccum[key]) < 1e-6f)
-                    _mulBuffAccum.Remove(key);
-            }
-            else if (inst.type == "Debuff")
-            {
-                _mulDebuffAccum[key] = _mulDebuffAccum.GetValueOrDefault(key) - delta;
-                Console.WriteLine($"@ UnregisterMultiplier : Id - {Id}, key - {key}, value - {_mulDebuffAccum[key]}, delta : {delta}");
-                if (MathF.Abs(_mulDebuffAccum[key]) < 1e-6f)
-                    _mulDebuffAccum.Remove(key);
-            }
+            CalculateMaxMultiplier(type: inst.type, key);
 
             UpdateStatusFlag();
         }
@@ -960,6 +933,34 @@ namespace Server.Game
             }
 
             UpdateStatusFlag();
+        }
+
+        private void CalculateMaxMultiplier(string type, string key)
+        {
+            float best = 0f;
+            bool has = false;
+
+            foreach (var kv in _mulByInst)
+            {
+                StatusEffect inst = kv.Key;
+                var (k, delta) = kv.Value;
+
+                if (inst.type == type && k == key)
+                {
+                    if (!has || MathF.Abs(delta) > MathF.Abs(best))
+                    {
+                        best = delta;
+                        has = true;
+                    }
+                }
+            }
+
+            var dict = (type == "Buff") ? _mulBuffAccum : _mulDebuffAccum;
+
+            if (has)
+                dict[key] = best;
+            else
+                dict.Remove(key);
         }
 
         // 이펙트 등록
