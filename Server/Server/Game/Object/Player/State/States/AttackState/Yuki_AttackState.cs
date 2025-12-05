@@ -9,7 +9,6 @@ public class Yuki_AttackState : Player_AttackState
 {
     private const string AnimAttackQ = "SKILL_Q";
     KeyCode _keyCode = KeyCode.Q;
-    bool IsPassiveAttack = false;
 
     public Yuki_AttackState(int targetId, bool chaseAllowed = true) : base(targetId, chaseAllowed)
     {
