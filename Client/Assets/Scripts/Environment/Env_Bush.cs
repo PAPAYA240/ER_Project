@@ -77,33 +77,33 @@ public class Env_Bush : EnvController
         if (!_insidePlayersId.Contains(target.Id))
             _insidePlayersId.Add(target.Id);
 
-        // 부쉬 밖
-        if (Managers.Object.MyPlayer.ObjInfo.Player.Team == target.ObjInfo.Player.Team)
-        {
-            Debug.Log("같은팀 ");
-            target.BushRenderType((int)BushState.Translucent);
-        }
-        else
-        {
-            Debug.Log("적팀 ");
-            target.BushRenderType((int)BushState.Hidden); 
-        }
+        bool isSameTeam = Managers.Object.MyPlayer.ObjInfo.Player.Team == target.ObjInfo.Player.Team;
+        bool amIInsideBush = _insidePlayersId.Contains(Managers.Object.MyPlayer.Id);
 
-        // 부쉬 내
+        BushState targetState;
+
+        if (isSameTeam)
+            targetState = BushState.Translucent;
+
+        else if (amIInsideBush)
+            targetState = BushState.Translucent;
+        else
+            targetState = BushState.Hidden;
+
+        target.BushRenderType((int)targetState);
+
         foreach (int id in _insidePlayersId)
         {
+            if (id == target.Id) continue; 
+
             GameObject inGo = Managers.Object.FindById(id);
-            if (inGo == null)
-                continue;
+            if (inGo == null) continue;
+
             PlayerController inPc = inGo.GetComponent<PlayerController>();
-            if (inPc == null)
-                continue;
+            if (inPc == null) continue;
 
-            if (inGo != inPc)
-                Debug.Log("부쉬 내 다른 사람");
-
-            inPc.BushRenderType((int)BushState.Translucent);
-            target.BushRenderType((int)BushState.Translucent);
+            if (Managers.Object.MyPlayer.Id == target.Id)
+                inPc.BushRenderType((int)BushState.Translucent);
         }
     }
     #endregion

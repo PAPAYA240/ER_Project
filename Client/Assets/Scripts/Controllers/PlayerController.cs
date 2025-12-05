@@ -290,9 +290,7 @@ public class PlayerController : CreatureController
         InitEquipItem();
         InitializeXRay();
 
-        HighlightEffect he = gameObject.GetOrAddComponent<HighlightEffect>();
-        if (he == null)
-            return;
+        VisualEffectController he = gameObject.GetOrAddComponent<VisualEffectController>();
         he.Owner = this;
 
         // NavMesh Agent
@@ -1037,9 +1035,10 @@ public class PlayerController : CreatureController
 
     #region Bush Renderer
     Coroutine _coRenderer = null;
+
     public void BushRenderType(int state, float duration = 0f)
     {
-        HighlightEffect he = GetComponentInChildren<HighlightEffect>();
+        VisualEffectController he = GetComponentInChildren<VisualEffectController>();
         if (he == null)
             return;
 
@@ -1050,18 +1049,21 @@ public class PlayerController : CreatureController
                  if (_coRenderer != null)
                      StopCoroutine(_coRenderer);
 
+                    HidingInBush = false;
                  _nameTag.gameObject.SetActive(true);
                  _coRenderer = StartCoroutine(he.MakeVisible(duration));
              }
              break;
          case 1: // invisible
              {
+                    HidingInBush = true;
                  _nameTag.gameObject.SetActive(false);
                  he.MakeInvisible();
              }
              break;
          case 2: // change
              {
+                    HidingInBush = true;
                  he.ChangeBushRenderer();
              }
              break;

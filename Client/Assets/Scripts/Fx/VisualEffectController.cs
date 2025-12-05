@@ -1,12 +1,10 @@
 ﻿using Google.Protobuf.Protocol;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-// 이거 쓰려면 스키닝 메시 + 아웃라인 머터리얼 + 충돌 캡슐 필요
-public class HighlightEffect : MonoBehaviour
+public class VisualEffectController : MonoBehaviour
 {
     enum HighlightMode
     {
@@ -42,10 +40,7 @@ public class HighlightEffect : MonoBehaviour
         bool hitThisObject = false;
         MyPlayerController mpc = Managers.Object.MyPlayer;
         if (mpc == null)
-        {
-            Debug.Log($"MyPlayerController is Null!");
             return;
-        }
 
         if(mpc.GetAttackableUnderCursor() == Owner.gameObject)
             hitThisObject = true;
@@ -66,8 +61,6 @@ public class HighlightEffect : MonoBehaviour
     // 렌더러 비활성화
     public void MakeInvisible()
     {
-        if (_lodTransform == null)
-            return;
         if (_mode == HighlightMode.Bush_Invisible)
             return;
 
@@ -75,7 +68,6 @@ public class HighlightEffect : MonoBehaviour
         Renderer[] r = _lodTransform.GetComponentsInChildren<Renderer>();
         foreach (Renderer rr in r)
         {
-            Debug.Log($"{rr} enable");
             rr.enabled = false;
         }
     }
@@ -83,8 +75,6 @@ public class HighlightEffect : MonoBehaviour
     // 렌더러 활성화
     public IEnumerator MakeVisible(float duration = 0f)
     {
-        if (_lodTransform == null)
-            yield break;
         if (_mode == HighlightMode.None)
             yield break;
 
@@ -99,7 +89,6 @@ public class HighlightEffect : MonoBehaviour
             // 각 Renderer의 원본 Material 복원
             if (_originalMaterialsDict.TryGetValue(renderer, out Material[] originalMaterials))
             {
-                Debug.Log($"{renderer} MakeVisible");
                 renderer.materials = originalMaterials;
             }
         }
@@ -107,14 +96,11 @@ public class HighlightEffect : MonoBehaviour
 
     public void ChangeBushRenderer()
     {
-        if (_lodTransform == null)
-            return;
         if(_mode == HighlightMode.Bush)
             return;
 
         _mode = HighlightMode.Bush;
         Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
-
         foreach (Renderer renderer in renderers)
         {
             renderer.enabled = true;
@@ -123,7 +109,6 @@ public class HighlightEffect : MonoBehaviour
             Material[] ghostMaterials = new Material[materialCount];
             for (int i = 0; i < materialCount; i++)
             {
-                Debug.Log($"{renderer} Change");
                 ghostMaterials[i] = _bushMaterial;
             }
             renderer.sharedMaterials = ghostMaterials;
@@ -148,6 +133,9 @@ public class HighlightEffect : MonoBehaviour
         if (!CheckCondition())
             return;
 
+        if (_mode != HighlightMode.None)
+            return;
+
         _mode = HighlightMode.Outline;
         foreach (var renderer in myRenderers)
         {
@@ -162,6 +150,8 @@ public class HighlightEffect : MonoBehaviour
     public void OnMouseExit()
     {
         if (myRenderers == null) 
+            return;
+        if (_mode != HighlightMode.Outline)
             return;
 
         _mode = HighlightMode.None;
