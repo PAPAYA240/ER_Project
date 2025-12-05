@@ -12,7 +12,7 @@
       },
       "MsAttack2": {
         "shape": "Ray",
-        "type": "SkillTrack",
+        "type": "SkillStatic",
         "width": 2,
         "height": 4,
         "startFrame": 7,
@@ -32,11 +32,11 @@
       },
       "MsSkill2": {
         "shape": "Circle",
-        "type": "SkillTrack",
+        "type": "SkillTargeting",
         "radius": 2,
         "lookOffset": 3,
-        "startFrame": 30,
-        "endFrame": 60,
+        "startFrame": 50,
+        "endFrame": 65,
         "isOneTimeUse": true
       }
     },
@@ -74,7 +74,7 @@
       },
       "MsGammaSkill3": {
         "shape": "Circle",
-        "type": "SkillPoint",
+        "type": "SkillTargeting",
         "radius": 3,
         "lookOffset": 3,
         "startFrame": 40,
