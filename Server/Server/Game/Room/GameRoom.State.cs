@@ -263,6 +263,9 @@ namespace Server.Game
             if (!(player.State == CreatureState.Idle || player.State == CreatureState.Moving))
                 return;
 
+            //if (CurPhase < 1 /*2*/)
+            //    return;
+
             player.ChangeState(new Player_TeleportState(pkt.IoPos));
         }
 

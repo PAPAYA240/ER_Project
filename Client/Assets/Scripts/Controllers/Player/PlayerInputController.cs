@@ -32,6 +32,9 @@ public class PlayerInputController : MonoBehaviour
     private float _nextAutoAttackSendTime;
     [SerializeField] private float _attackInputInterval = 0.08f; // 0.08초마다 1번(초당 약 12번)
 
+    // 최소 이동 가능 거리
+    //private float _minClickMoveDistance = 0.5f; 
+
     private void Awake()
     {
         _player = GetComponentInChildren<MyPlayerController>();
@@ -65,6 +68,11 @@ public class PlayerInputController : MonoBehaviour
                 // 땅 이동
                 if (!TryGetGroundDestination(out Vector3 final))
                     return null;
+
+                // 너무 가까운 위치면 이동 패킷 보내지 않기
+                //Vector3 diff = final - _player.transform.position;
+                //if (diff.sqrMagnitude < _minClickMoveDistance * _minClickMoveDistance)
+                //    return null;
 
                 return new C_SetMoveTarget
                 {
@@ -229,7 +237,7 @@ public class PlayerInputController : MonoBehaviour
                 return null;
 
             // 사거리 안이면 즉시 상호작용 패킷 전송
-            if (clickedIo.IsPlayerInside)
+            if (clickedIo.IsPlayerInside && clickedIo.IsUsable)
             {
                 return new C_DeployingLoop
                 {
@@ -247,7 +255,7 @@ public class PlayerInputController : MonoBehaviour
         if (_pendingDeployingLoop != null)
         {
             // 트리거 안에 들어온 순간 → 한 번만 패킷 전송
-            if (_pendingDeployingLoop.IsPlayerInside)
+            if (_pendingDeployingLoop.IsPlayerInside && _pendingDeployingLoop.IsUsable)
             {
                 var pkt = new C_DeployingLoop
                 {
