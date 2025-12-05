@@ -1278,6 +1278,9 @@ class PacketHandler
         if (bc == null) return;
 
         bc.StartCapture(startOperatePkt.Team);
+
+        if (startOperatePkt.ObjectId == Managers.Object.MyPlayer.Id)
+            bc.Begin();
     }
 
     public static void S_StopOperateHandler(PacketSession session, IMessage packet)
@@ -1292,6 +1295,9 @@ class PacketHandler
         if (bc == null) return;
 
         bc.FailCapture();
+
+        if (stopOperatePkt.ObjectId == Managers.Object.MyPlayer.Id)
+            bc.Cancel();
     }
 
     public static void S_AbigailSoundHandler(PacketSession session, IMessage packet)

@@ -73,7 +73,7 @@ public class Yuki_AttackState : Player_AttackState
 
             Player targetPlayer = target as Player;
 
-            if (targetPlayer != null && targetPlayer.IsUnstoppable())
+            if (targetPlayer != null && !targetPlayer.IsUnstoppable())
             {
                 StunStateDesc desc = new StunStateDesc();
                 desc.EndPos = target.Position;

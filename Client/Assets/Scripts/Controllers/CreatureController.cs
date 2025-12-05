@@ -147,7 +147,7 @@ public class CreatureController : BaseController
     public void ChangeStat(StatInfo stat)
     {
         Attack = stat.Attack;
-        Stat.Defense = stat.Defense;
+        Defense = stat.Defense;
         MaxHp = stat.MaxHp;
         if(State != CreatureState.Dead)
             Hp += stat.Hp;

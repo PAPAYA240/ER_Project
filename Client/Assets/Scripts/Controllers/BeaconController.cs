@@ -28,9 +28,12 @@ public class BeaconController : BaseController
     private bool _idleSound = false;
 
     [Header("UI")]
-    [SerializeField] private UI_InteractionCharge chargeUI;
     [SerializeField] private float interactDuration = 5f;
     [SerializeField] private string interactDescribe = "증폭 장치를 점령 중입니다.";
+
+    public void Begin() => Managers.Object.MyPlayer.UI.InteractionCharge.Begin(interactDuration, interactDescribe);
+    public void Complete() => Managers.Object.MyPlayer.UI.InteractionCharge.Complete();
+    public void Cancel() => Managers.Object.MyPlayer.UI.InteractionCharge.Cancel();
 
     void Start()
     {
@@ -43,7 +46,6 @@ public class BeaconController : BaseController
         {
             Debug.LogError("GaugeRenderer is not assigned!", this);
         }
-
     }
 
     protected void Update()
@@ -73,8 +75,6 @@ public class BeaconController : BaseController
         }
 
         captureCoroutine = StartCoroutine(CaptureRoutine());
-
-        chargeUI.Begin(interactDuration, interactDescribe);
     }
 
     public void CompleteCapture(int Team)
@@ -87,8 +87,6 @@ public class BeaconController : BaseController
 
         UpdateShaderProperties();
         OnCaptureCompleted?.Invoke(Team);
-
-        chargeUI.Complete();
     }
 
     public void FailCapture()
@@ -106,8 +104,6 @@ public class BeaconController : BaseController
         UpdateShaderProperties();
 
         OnCaptureFailed?.Invoke();
-
-        chargeUI.Cancel();
     }
 
     public void ResetBeacon()

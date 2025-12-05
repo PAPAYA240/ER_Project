@@ -15,7 +15,7 @@ public class BaseAreaRegenEffect : IRegenEffect
 
     public void OnTick(Player owner)
     {
-        owner.Hp = MathF.Min(owner.MaxHp, owner.Hp + BaseAreaHpRegen);
+        owner.ApplyHeal(BaseAreaHpRegen);
         owner.Stamina = MathF.Min(owner.MaxStamina, owner.Stamina + BaseAreaStaminaRegen);
     }
 }
