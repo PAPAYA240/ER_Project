@@ -22,17 +22,7 @@ public sealed class Theodore_R : SkillHandlerBase
         SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
 
-        // 90도 추가 회전
-       //Vector2 playerPos = new Vector2(p.Info.PosInfo.PosX, p.Info.PosInfo.PosZ);
-       //Vector2 mousePos = new Vector2(ctx.MousePos.X, ctx.MousePos.Y);
-       //Quaternion lookAtMouseRot = QuaternionHelper.LookRotationY(playerPos, mousePos);
-       //Quaternion xRotation = QuaternionHelper.FromYRotation(90f);
-       //Quaternion finalRot = lookAtMouseRot * xRotation;
         p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode);
-
-        //p.SendSkillEffect(new Vector2(ctx.MousePos.X, ctx.MousePos.Y), keyCode: _keyCode, sendLookatMousePacket: true,
-        //    targetPos: default, targetRot: finalRot, type: "Select", "FX_Skill04_linoleum");
-
         p.SendSkillEffect(new Vector2(ctx.MousePos.X, ctx.MousePos.Y), keyCode: _keyCode, sendLookatMousePacket: false,
              targetPos: default, targetRot: default, type: "Select", "FX_Skill04_Charging");
     }

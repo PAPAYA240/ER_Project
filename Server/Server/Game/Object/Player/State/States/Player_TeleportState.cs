@@ -12,7 +12,7 @@ using System.Text;
 public class Player_TeleportState : IPlayerState
 {
     readonly string _animName = "OPERATE";
-    private float _duration = 5.0f;
+    private float _duration = 3.0f;
     private double _startTime;
     private PositionInfo _ioPos = default;
 
@@ -32,7 +32,7 @@ public class Player_TeleportState : IPlayerState
         player.SendAnimPacket(_animName, 0.1f);
         player.SendStopPacket(StopReason.StopMoveOnly);
 
-        _duration = DataManager.AnimLengthInfoDict[player.Info.Player.CharType][_animName].Length;
+        //_duration = DataManager.AnimLengthInfoDict[player.Info.Player.CharType][_animName].Length;
         _startTime = TimeUtil.UtcSec();
 
         LookAtObject(player);
@@ -52,6 +52,7 @@ public class Player_TeleportState : IPlayerState
 
     public void Exit(Player player)
     {
+        player.SendDeployingPacket();
     }
 
     private void LookAtObject(Player player)
