@@ -407,6 +407,7 @@ class PacketHandler
         {
             pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));  
         }
+
         pc.PlayEffectFromServer(fxPacket, mousePos, targetPos, targetRot);
     }
 

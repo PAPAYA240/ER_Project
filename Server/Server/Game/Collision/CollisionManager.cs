@@ -257,7 +257,7 @@ namespace Server.Game
                         continue;
                     if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
                         continue;
-                    if (type == SkillType.SkillPoint)
+                    if (type == SkillType.SkillPoint && type == SkillType.SkillTargeting)
                         return;
 
                     if (type == SkillType.SkillProjectile)
@@ -996,24 +996,15 @@ namespace Server.Game
                     Interactions = ConvertProtoInteractionsToKeyCodeDictionary(skillHitbox.Interactions)
                 };
 
-                //if (System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
-                //{
-                //    if (type == SkillType.SkillTrack)
-                //    {
-                //        hitbox.PosX = targetPos.X;
-                //        hitbox.PosZ = targetPos.Y;
-                //    }
-                //}
-
                 UpdateTransformRay(hitbox);
-                SettingType(hitbox);
+                SettingType(hitbox, targetPos);
 
                 _pendingHitboxes.Add(hitbox);
             }
             return hitbox;
         }
 
-        void SettingType(Hitbox hitbox)
+        void SettingType(Hitbox hitbox, Vector2 targetPos = new Vector2())
         {
             if (System.Enum.TryParse<SkillShape>(hitbox.Data.Shape, out var shape))
             {
@@ -1022,6 +1013,15 @@ namespace Server.Game
                     hitbox.FixedPosition = hitbox.Creature.PosInfo.ToVector();
                     hitbox.PosX = hitbox.MousePos.X;
                     hitbox.PosZ = hitbox.MousePos.Y;
+                }
+            }
+
+            if (System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
+            {
+                if (type == SkillType.SkillTargeting)
+                {
+                    hitbox.PosX = targetPos.X;
+                    hitbox.PosZ = targetPos.Y;
                 }
             }
         }
