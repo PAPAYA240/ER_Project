@@ -464,9 +464,11 @@ enum AbigailFx{
 	W_Attack = 7;
 	W_Range = 8;
 	E_Portal = 9;
-	R_Range = 10;
-	R_Start = 11;
-	WpnSkill = 12;
+	R_Explode = 10;
+	R_Range = 11;
+	R_Start = 12;
+	R_Trail = 13;
+	WpnSkill = 14;
 }
 
 message S_TheodoreAttack

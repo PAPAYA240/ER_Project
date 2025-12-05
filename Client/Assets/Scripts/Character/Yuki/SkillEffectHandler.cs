@@ -14,7 +14,8 @@ public class SkillEffectHandler
 {
     private Dictionary<string, IEffect> _effectMap = new Dictionary<string, IEffect>();
     private Dictionary<string, Coroutine> _activeCoroutines = new Dictionary<string, Coroutine>();
-    private MonoBehaviour _coroutineRunner; // 코루틴을 실행할 MonoBehaviour
+    private PlayerController _coroutineRunner;
+    private Dictionary<string, GameObject> _parentMap = new Dictionary<string, GameObject>(); // 플레이어 따라가지 않는 이펙트
 
     public void InitEffects(PlayerController player)
     {
@@ -45,18 +46,20 @@ public class SkillEffectHandler
         else if(player.ObjInfo.Player.CharType == CharacterType.Abigail)
         {
             // "Fx_Hand_L", "Fx_Top","Fx_Hand_R" ,"Fx_Axe_bottom", "Fx_Axe_Blade","Fx_Axe_Head", "Fx_Center", "Fx_Bottom"
-            RegisterEffect(AbigailFx.Attack01, player, "Effect/Abigail/FX_BI_Abigail_NormalAttack_01_Axe");
-            RegisterEffect(AbigailFx.Attack02, player, "Effect/Abigail/FX_BI_Abigail_NormalAttack_02_Axe");
-            RegisterEffect(AbigailFx.RestEnd, player, "Effect/Abigail/FX_BI_Abigail_Rest_End");
-            RegisterEffect(AbigailFx.RestStart, player, "Effect/Abigail/FX_BI_Abigail_Rest_Start");
+            RegisterEffect(AbigailFx.Attack01, player, "Effect/Abigail/FX_BI_Abigail_NormalAttack_01_Axe", false);
+            RegisterEffect(AbigailFx.Attack02, player, "Effect/Abigail/FX_BI_Abigail_NormalAttack_02_Axe", false);
+            RegisterEffect(AbigailFx.RestEnd, player, "Effect/Abigail/FX_BI_Abigail_Rest_End", false);
+            RegisterEffect(AbigailFx.RestStart, player, "Effect/Abigail/FX_BI_Abigail_Rest_Start", false);
             RegisterEffect(AbigailFx.QAttack, player, "Effect/Abigail/FX_BI_Abigail_Skill01_02_Attack");
             RegisterEffect(AbigailFx.QAttack2, player, "Effect/Abigail/FX_BI_Abigail_Skill01_02_Attack_Second");
             RegisterEffect(AbigailFx.QRange, player, "Effect/Abigail/FX_BI_Abigail_Skill01_02_Range");
             RegisterEffect(AbigailFx.WAttack, player, "Effect/Abigail/FX_BI_Abigail_Skill02_02_Attack");
             RegisterEffect(AbigailFx.WRange, player, "Effect/Abigail/FX_BI_Abigail_Skill02_02_Range");
-            RegisterEffect(AbigailFx.EPortal, player, "Effect/Abigail/FX_BI_Abigail_Skill03_Portal");
-            RegisterEffect(AbigailFx.RRange, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Range");
-            RegisterEffect(AbigailFx.RStart, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Start");
+            RegisterEffect(AbigailFx.EPortal, player, "Effect/Abigail/FX_BI_Abigail_Skill03_Portal", false);
+            RegisterEffect(AbigailFx.RExplode, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Explode", false);
+            RegisterEffect(AbigailFx.RRange, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Range", false);
+            RegisterEffect(AbigailFx.RStart, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Start", false);
+            RegisterEffect(AbigailFx.RTrail, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Trail", false);
             RegisterEffect(AbigailFx.WpnSkill, player, "Effect/Abigail/FX_BI_Abigail_WSkill_Axe_02");
 
             //foreach (var effect in _effectMap.Values)
@@ -70,10 +73,17 @@ public class SkillEffectHandler
         _coroutineRunner = player;
     }
 
-    private void RegisterEffect<T>(T type, PlayerController player, string prefabPath) where T : Enum
+    private void RegisterEffect<T>(T type, PlayerController player, string prefabPath, bool setParent = true) where T : Enum
     {
-        GameObject prefab = Managers.Resource.Instantiate(prefabPath); 
-        prefab.transform.SetParent(player.transform);
+        GameObject prefab = Managers.Resource.Instantiate(prefabPath);
+        if (setParent)
+            prefab.transform.SetParent(player.transform);
+        else
+        {
+            _parentMap[GetFxKey(type)] = prefab;
+            prefab.SetActive(false);
+        }            
+
         prefab.transform.localPosition = Vector3.zero;
 
         // Fx_YukiEffect, Fx_YukiFlower, Fx_YukiR �� � Ÿ���̾ �ڵ����� ã��
@@ -125,6 +135,15 @@ public class SkillEffectHandler
                 var newCoroutine = _coroutineRunner.StartCoroutine(AutoStopCoroutine(key, duration));
                 _activeCoroutines[key] = newCoroutine;
             }
+        }
+
+        if (_parentMap.TryGetValue(key, out var go))
+        {
+            if (null == go)
+                return;
+
+            go.transform.position = _coroutineRunner.PosInfo.ToVector();
+            go.transform.rotation = _coroutineRunner.RotInfo;
         }
     }
 

@@ -8,8 +8,8 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FX_BI_Abigail_S002_Aura_5ABAW
-  m_Shader: {fileID: 4800000, guid: 5a5a4290e8a00494095f23003abc3631, type: 3}
-  m_Parent: {fileID: 0}
+  m_Shader: {fileID: 4800000, guid: fbf62089fa6eb83438737f2f9705c4e7, type: 3}
+  m_Parent: {fileID: 2100000, guid: 7112804dfb5d9904cb82358b6fc8a220, type: 2}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords:
@@ -27,64 +27,9 @@ Material:
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs:
-    - _DissolveMask:
-        m_Texture: {fileID: 2800000, guid: fb415f49992b67b48b02d78829ad4e98, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: a7fadc21f4f7e7442aff51cc702ffe37, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Mask:
-        m_Texture: {fileID: 2800000, guid: 32f77f1a869d1b54081851f1b5df6536, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 32f77f1a869d1b54081851f1b5df6536, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NoiseTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1.5, y: 2}
-        m_Offset: {x: 0, y: 0}
+    m_TexEnvs: []
     m_Ints: []
-    m_Floats:
-    - _AssignDissolveUV: 0
-    - _AssignNoiseUV: 0
-    - _ColorMask: 15
-    - _Cull: 0
-    - _DestBlend: 10
-    - _DissolveAlpha: 1
-    - _DissolveSmoothRange: 0.2
-    - _DistortStrength: 0.05
-    - _IsDissolve: 1
-    - _IsNoise: 0
-    - _IsNoiseComplex: 1
-    - _MainAlpha_To_R: 1
-    - _MainColor_To_Alpha_Amount: 1
-    - _MulAlpha: 1
-    - _MulVal_Color: 3
-    - _MulVal_Noise: 0.05
-    - _MulVal_alpha: 3
-    - _MulVal_rgb: 5
-    - _NoiseScale_1: 1
-    - _NoiseScale_2: 2
-    - _Rotate: 220
-    - _Speed: 2
-    - _SrcBlend: 5
-    - _Stencil: 0
-    - _StencilComp: 8
-    - _StencilOp: 0
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
-    - _ZTest: 4
-    - _ZTestMode: 2
-    - _ZWrite: 0
-    m_Colors:
-    - _Color: {r: 0.3726415, g: 0.5189314, b: 1, a: 1}
-    - _MaskScrollSpeed: {r: 0, g: 0, b: 0, a: 0}
-    - _NoiseScrollSpeed_1: {r: -1, g: -1, b: 0, a: 0}
-    - _NoiseScrollSpeed_2: {r: 1, g: 1, b: 0, a: 0}
+    m_Floats: []
+    m_Colors: []
   m_BuildTextureStacks: []
   m_AllowLocking: 1

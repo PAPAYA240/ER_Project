@@ -8,6 +8,8 @@ using static Server.Data.DataUtils;
 
 public sealed class Abigail_W : Skill_Abigail
 {
+    bool _attackPktSent = false;
+
     public Abigail_W()
     {
         _animName = "SKILL_W";
@@ -18,15 +20,18 @@ public sealed class Abigail_W : Skill_Abigail
 
     public override void OnTick(Player p, SkillContext ctx)
     {
-        if (CanStopSkill)
-            return;
-
         _elapsed += TimeUtil.Instance.DeltaTime;
 
-        if(_elapsed >= StopSkillTime)
+        if(!CanStopSkill && _elapsed >= StopSkillTime)
         {
             CanStopSkill = true;
             p.SendCanStopSkillPacket(CanStopSkill);
+        }
+
+        if(!_attackPktSent && _elapsed >= TimeUtil.FrameToSec(7))
+        {
+            _attackPktSent = true;
+            p.Room.Push(p.Room.BroadcastAbigailFx, p, AbigailFx.WAttack, 0f);
         }
     }
 
@@ -42,11 +47,12 @@ public sealed class Abigail_W : Skill_Abigail
         p.Room.BroadcastAbigailSound(p, AbigailSound.W, 1);
         p.Room.BroadcastAbigailSound(p, AbigailSound.Wvoice, 0.6f);
 
-        p.Room.BroadcastAbigailFx(p, AbigailFx.WRange, 0.6f);
+        p.Room.BroadcastAbigailFx(p, AbigailFx.WRange, 0.5f);
     }
 
     public override void OnExit(Player p, SkillContext ctx)
     {
         p.Room.BroadcastStopAbglFx(p, AbigailFx.WRange);
+        p.Room.BroadcastStopAbglFx(p, AbigailFx.WAttack);
     }
 }

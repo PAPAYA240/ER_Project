@@ -417,12 +417,13 @@ namespace Google.Protobuf.Protocol {
             "WXVraUVtb3ZlECMSDwoLWXVraUVhdHRhY2sQJBIMCghZdWtpRWhpdBAlEg8K",
             "C1l1a2lSYWN0aXZlECYSDwoLWXVraVJhdHRhY2sQJxIPCgtZdWtpUmRlYnVm",
             "ZhAoEhIKDll1a2lSZGVidWZmSGl0ECkSDAoIWXVraVJlbmQQKhIPCgtZdWtp",
-            "VmljdG9yeRArEgwKCFl1a2lSZXN0ECwSDAoIWXVraUtpbGwQLSrAAQoJQWJp",
+            "VmljdG9yeRArEgwKCFl1a2lSZXN0ECwSDAoIWXVraUtpbGwQLSrcAQoJQWJp",
             "Z2FpbEZ4EgwKCEF0dGFjazAxEAASDAoIQXR0YWNrMDIQARIMCghSZXN0X0Vu",
             "ZBACEg4KClJlc3RfU3RhcnQQAxIMCghRX0F0dGFjaxAEEg0KCVFfQXR0YWNr",
             "MhAFEgsKB1FfUmFuZ2UQBhIMCghXX0F0dGFjaxAHEgsKB1dfUmFuZ2UQCBIM",
-            "CghFX1BvcnRhbBAJEgsKB1JfUmFuZ2UQChILCgdSX1N0YXJ0EAsSDAoIV3Bu",
-            "U2tpbGwQDEIbqgIYR29vZ2xlLlByb3RvYnVmLlByb3RvY29sYgZwcm90bzM="));
+            "CghFX1BvcnRhbBAJEg0KCVJfRXhwbG9kZRAKEgsKB1JfUmFuZ2UQCxILCgdS",
+            "X1N0YXJ0EAwSCwoHUl9UcmFpbBANEgwKCFdwblNraWxsEA5CG6oCGEdvb2ds",
+            "ZS5Qcm90b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CombatState), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.SkillInputType), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.EnvType), typeof(global::Google.Protobuf.Protocol.ProjectileType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.MonsterSkill), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.Weapon), typeof(global::Google.Protobuf.Protocol.SkillShape), typeof(global::Google.Protobuf.Protocol.TraitType), typeof(global::Google.Protobuf.Protocol.EquipItemType), typeof(global::Google.Protobuf.Protocol.ItemGrade), typeof(global::Google.Protobuf.Protocol.StopReason), typeof(global::Google.Protobuf.Protocol.SkillMotionType), typeof(global::Google.Protobuf.Protocol.CollisionType), typeof(global::Google.Protobuf.Protocol.VariantKey), typeof(global::Google.Protobuf.Protocol.CombatTextType), typeof(global::Google.Protobuf.Protocol.Beacon), typeof(global::Google.Protobuf.Protocol.BOMB_ROZZI), typeof(global::Google.Protobuf.Protocol.SkillEffectType), typeof(global::Google.Protobuf.Protocol.SpawnPointType), typeof(global::Google.Protobuf.Protocol.AbigailSound), typeof(global::Google.Protobuf.Protocol.AbigailFx), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -1007,9 +1008,11 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("W_Attack")] WAttack = 7,
     [pbr::OriginalName("W_Range")] WRange = 8,
     [pbr::OriginalName("E_Portal")] EPortal = 9,
-    [pbr::OriginalName("R_Range")] RRange = 10,
-    [pbr::OriginalName("R_Start")] RStart = 11,
-    [pbr::OriginalName("WpnSkill")] WpnSkill = 12,
+    [pbr::OriginalName("R_Explode")] RExplode = 10,
+    [pbr::OriginalName("R_Range")] RRange = 11,
+    [pbr::OriginalName("R_Start")] RStart = 12,
+    [pbr::OriginalName("R_Trail")] RTrail = 13,
+    [pbr::OriginalName("WpnSkill")] WpnSkill = 14,
   }
 
   #endregion

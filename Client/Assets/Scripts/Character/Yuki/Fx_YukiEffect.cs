@@ -38,10 +38,7 @@ public class Fx_YukiEffect : MonoBehaviour, IEffect
     {
         if (ps != null && particleMaterial != null && ps.isPlaying)
         {
-            // ��ƼŬ �ý����� ��� ���� ���� _EffectTime�� ������Ʈ
             particleMaterial.SetFloat("_EffectTime", ps.time);
         }
-        // ��ƼŬ �ý����� ���߸� _EffectTime�� ������Ʈ���� �����Ƿ�, �޽� �ִϸ��̼ǵ� ����ϴ�.
-        // ��� ���� �� targetParticleSystem.time�� 0���� �����ϹǷ� �޽��� �ʱ�ȭ�˴ϴ�.
     }
 }

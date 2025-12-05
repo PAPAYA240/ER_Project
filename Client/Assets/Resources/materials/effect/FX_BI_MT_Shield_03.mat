@@ -18,86 +18,108 @@ Material:
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties:
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
-      _MainTex:
+    - _MainTex:
         m_Texture: {fileID: 2800000, guid: e7403a666d03fbf4a9cc42e13a962977, type: 3}
         m_Scale: {x: 1, y: 0.3}
         m_Offset: {x: 0, y: 0}
-    m_Ints: {}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: e7403a666d03fbf4a9cc42e13a962977, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
-      _ASEOutlineWidth: 0.03
-      _BlendOp: 0
-      _BumpScale: 1
-      _CameraFadingEnabled: 0
-      _CameraFarFadeDistance: 2
-      _CameraNearFadeDistance: 1
-      _ColorMode: 0
-      _Cull: 0
-      _Cutoff: 0.895
-      _DetailNormalMapScale: 1
-      _DistortionBlend: 0.5
-      _DistortionEnabled: 0
-      _DistortionStrength: 1
-      _DistortionStrengthScaled: 0.1
-      _DstBlend: 0
-      _EmissionEnabled: 0
-      _EmissionLM: 0
-      _FlipbookMode: 0
-      _Fresnel: 2
-      _GlossMapScale: 1
-      _Glossiness: 0.5
-      _GlossyReflections: 1
-      _InvFade: 1
-      _LightingEnabled: 1
-      _MKGlowPower: 1
-      _MKGlowTexStrength: 1
-      _Metallic: 0
-      _Mode: 1
-      _MulVal_rimwidth: 5.47
-      _OcclusionStrength: 1
-      _Parallax: 0.02
-      _RimPow: 5
-      _RimWidth: 0.24
-      _Shininess: 0.078125
-      _SmoothnessTextureChannel: 0
-      _SoftParticlesEnabled: 0
-      _SoftParticlesFarFadeDistance: 22.48
-      _SoftParticlesNearFadeDistance: 4.77
-      _SpecularHighlights: 1
-      _SrcBlend: 1
-      _U: -0.09
-      _UVSec: 0
-      _U_copy: -0.42
-      _V: -0.22
-      _V_copy: 0.23
-      _ZTestMode: 2
-      _ZWrite: 0
-      __dirty: 0
-      _center: 0
-      _hard: 2
-      _node_2252: 0.078
-      _node_7998: 0.48
-      _node_9393: 7.46
-      _node_9438: 0.398185
-      _power: 3.9
-      _speed: 0
-      _u: -0.3931613
-      _v: 0.4273504
+    - _ASEOutlineWidth: 0.03
+    - _BlendOp: 0
+    - _BumpScale: 1
+    - _CameraFadingEnabled: 0
+    - _CameraFarFadeDistance: 2
+    - _CameraNearFadeDistance: 1
+    - _ColorMode: 0
+    - _Cull: 0
+    - _Cutoff: 0.895
+    - _DetailNormalMapScale: 1
+    - _DistortionBlend: 0.5
+    - _DistortionEnabled: 0
+    - _DistortionStrength: 1
+    - _DistortionStrengthScaled: 0.1
+    - _DstBlend: 0
+    - _EmissionEnabled: 0
+    - _EmissionLM: 0
+    - _FlipbookMode: 0
+    - _Fresnel: 2
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _InvFade: 1
+    - _LightingEnabled: 1
+    - _MKGlowPower: 1
+    - _MKGlowTexStrength: 1
+    - _Metallic: 0
+    - _Mode: 1
+    - _MulVal_rimwidth: 5.47
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _RimPow: 5
+    - _RimWidth: 0.24
+    - _Shininess: 0.078125
+    - _SmoothnessTextureChannel: 0
+    - _SoftParticlesEnabled: 0
+    - _SoftParticlesFarFadeDistance: 22.48
+    - _SoftParticlesNearFadeDistance: 4.77
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _ThresholdHigh: 0.2
+    - _ThresholdLow: 0.05
+    - _U: -0.09
+    - _UVSec: 0
+    - _U_copy: -0.42
+    - _V: -0.22
+    - _V_copy: 0.23
+    - _ZTestMode: 2
+    - _ZWrite: 0
+    - __dirty: 0
+    - _center: 0
+    - _hard: 2
+    - _node_2252: 0.078
+    - _node_7998: 0.48
+    - _node_9393: 7.46
+    - _node_9438: 0.398185
+    - _power: 3.9
+    - _speed: 0
+    - _u: -0.3931613
+    - _v: 0.4273504
     m_Colors:
-      _ASEOutlineColor: {r: 0, g: 0.25517228, b: 1, a: 0}
-      _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-      _Color: {r: 1, g: 1, b: 1, a: 1}
-      _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
-      _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-      _MKGlowColor: {r: 1, g: 1, b: 1, a: 1}
-      _MKGlowTexColor: {r: 1, g: 1, b: 1, a: 1}
-      _ScrollSpeed: {r: 1, g: 1, b: 0.3, a: 1.5}
-      _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
-      _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-      _TintColor: {r: 1, g: 0.48042613, b: 0, a: 0.5}
-      _node_2580: {r: 0.6839622, g: 0.9054336, b: 1, a: 1}
+    - _ASEOutlineColor: {r: 0, g: 0.25517228, b: 1, a: 0}
+    - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _MKGlowColor: {r: 1, g: 1, b: 1, a: 1}
+    - _MKGlowTexColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ScrollSpeed: {r: 1, g: 1, b: 0.3, a: 1.5}
+    - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
+    - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _TintColor: {r: 1, g: 0.48042613, b: 0, a: 0.5}
+    - _node_2580: {r: 0.6839622, g: 0.9054336, b: 1, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
