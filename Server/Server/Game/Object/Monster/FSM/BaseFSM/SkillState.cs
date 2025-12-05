@@ -70,7 +70,9 @@ namespace Server.Game
                 desc.Duration = _skillData.descriptionInfo["Duration"];
                 desc.Speed = _skillData.descriptionInfo["Speed"];
                 desc.EndPos = endPos;
-                player.ChangeState(new Player_StunState(desc));
+
+                if(!player.IsUnstoppable())
+                    player.ChangeState(new Player_StunState(desc));
             }
         }
 
