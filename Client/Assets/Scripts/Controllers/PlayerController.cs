@@ -542,13 +542,9 @@ public class PlayerController : CreatureController
         Transform targetTransform = null;
         if(packet.UseTargetTransform)
         {
-            if (packet.TargetId == 0)
-                return;
-
             GameObject go = Managers.Object.FindById(packet.TargetId);
             if (go == null)
                 return;
-
             targetTransform = go.transform;
         }
 
