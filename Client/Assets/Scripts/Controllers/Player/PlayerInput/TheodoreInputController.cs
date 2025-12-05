@@ -15,6 +15,8 @@ public class TheodoreInputController : PlayerInputController
     private const float EFFECT_DURATION = 4f;
     private const float CANCEL_DURATION = 0.5f;
     private const float SNIPER_AIM_DURATION = 10f;
+    private const float AIM_WAIT_TIME = 1.4f;
+
     const bool SKIP_STATE_CHECK = false;
     #endregion
 
@@ -134,31 +136,32 @@ public class TheodoreInputController : PlayerInputController
         cc.StartAimMode(_player.transform, GetOppositeScreenEdgeFromPlayer());
 
         float elapsed = 0;
+        float waitElapsed = 2;
         while (elapsed < SNIPER_AIM_DURATION)
         {
             elapsed += Time.deltaTime;
+
             // 1. 스킬 취소
             if (Input.GetMouseButtonDown(1))
             {
-                Debug.Log($"[ExecuteSkill] 스킬 끝: {key}");
+                _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
                 _skillCoroutine = null;
                 cc.EndAimMode();
-                _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
                 SendSkillCancelPacket(key);
                 yield break;
             }
 
             // 2. 스킬 공격
-            if (Input.GetMouseButtonDown(0))
+            waitElapsed += Time.deltaTime;
+            if (Input.GetMouseButtonDown(0) && waitElapsed >= AIM_WAIT_TIME)
             {
+                waitElapsed = 0;
                 SendSkillExecutePacket(key);
-
                 StartCoroutine(SniperShooting(key)); 
             }
             yield return null;
         }
 
-        Debug.Log($"[ExecuteSkill] 스킬 끝: {key}");
         _skillCoroutine =null;
         cc.EndAimMode();
         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);

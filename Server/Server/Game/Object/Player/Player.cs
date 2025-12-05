@@ -1370,25 +1370,24 @@ namespace Server.Game
             Vector3 targetPos = new Vector3(),
             Quaternion targetRot = default(Quaternion),
             string type = "Caster",
-            string name = "",
+            string name = "", 
             bool useTargetTransform = false,
             int targetId = 0,
             bool isCommon = false,
             string commonName = "")
         {
-            Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
-            Vector2 dir = mousePos - myPos;
-
-            float angle = (float)Math.Atan2(dir.Y, dir.X);
-            Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle);
-            RotationInfo newRot = new RotationInfo
-            {
-                Qx = rot.X,
-                Qy = rot.Y,
-                Qz = rot.Z,
-                Qw = rot.W
-            };
-            RotInfo = newRot;
+            //Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
+            //Vector2 dir = mousePos - myPos;
+            //float angle = (float)Math.Atan2(dir.Y, dir.X);
+            //Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle);
+            //RotationInfo newRot = new RotationInfo
+            //{
+            //    Qx = rot.X,
+            //    Qy = rot.Y,
+            //    Qz = rot.Z,
+            //    Qw = rot.W
+            //};
+            //RotInfo = newRot;
 
             S_Fx fxPacket = new S_Fx
             {

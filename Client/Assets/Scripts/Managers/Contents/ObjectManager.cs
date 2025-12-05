@@ -112,8 +112,6 @@ public class ObjectManager
 
             if (Managers.Info.Team != pc.ObjInfo.Player.Team)
             {
-                HighlightEffect he = go.gameObject.AddComponent<HighlightEffect>();
-                he.Owner = pc;
                 if (ui_minimap != null)
                 {
                     ui_minimap.ActivatePlayerIcon(UI_MinimapCharIcon.IconType.EnemyPlayer, pc);
