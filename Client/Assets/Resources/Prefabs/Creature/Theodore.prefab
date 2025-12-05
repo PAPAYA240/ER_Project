@@ -5457,6 +5457,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55e86d03b5ee90343aeb5c705c87e670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _monsterMask:
+    serializedVersion: 2
+    m_Bits: 0
+  _playerMask:
+    serializedVersion: 2
+    m_Bits: 0
   Sound: {fileID: 0}
   HidingInBush: 0
   xRayIgnoreStencilID: 100
@@ -6769,6 +6775,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -0
       objectReference: {fileID: 0}
+    - target: {fileID: 137398829570390059, guid: ca5e362e49989f740a5b1dec630a1d6a,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 137398829570390059, guid: ca5e362e49989f740a5b1dec630a1d6a,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b1bbb630cb6af454d9b79ed51369e08e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
