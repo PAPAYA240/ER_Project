@@ -95,15 +95,7 @@ public class MyPlayerController : PlayerController
 
     private void Update()
     {
-        if (ChatHandler.IsChatting)
-            return;
-
-        // 1) 정지(S/H)
-        var stopCmd = _input.GetStopCommand();
-        if (stopCmd != null)
-            Managers.Network.Send(stopCmd);
-
-        // 2) 우클릭 : 타겟 공격 의도
+        // 1) 우클릭 : 타겟 공격 의도
         var atkCmd = _input.GetAttackCommand();
         if (atkCmd != null)
         {
@@ -113,7 +105,7 @@ public class MyPlayerController : PlayerController
         }
         else
         {
-            if(Time.time - _lastAttackTime >= _attackLockTime)
+            if (Time.time - _lastAttackTime >= _attackLockTime)
             {
                 var operate = _input.GetOperateCommand();
                 var deploying = _input.GetDeployingLoopCommand();
@@ -122,7 +114,7 @@ public class MyPlayerController : PlayerController
                     _lastOperateTime = Time.time;
                     Managers.Network.Send(operate);
                 }
-                else if(deploying != null)
+                else if (deploying != null)
                 {
                     _lastOperateTime = Time.time;
                     Managers.Network.Send(deploying);
@@ -141,8 +133,16 @@ public class MyPlayerController : PlayerController
                         }
                     }
                 }
-            }         
+            }
         }
+
+        if (ChatHandler.IsChatting)
+            return;
+
+        // 2) 정지(S/H)
+        var stopCmd = _input.GetStopCommand();
+        if (stopCmd != null)
+            Managers.Network.Send(stopCmd);
 
         // 스킬
         // 스킬 레벨 업

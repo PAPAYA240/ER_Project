@@ -433,6 +433,8 @@ class PacketHandler
                 pc.OnRespawn(respawnPacket);
                 if(pc.ObjInfo.Player.Team == Managers.Info.Team)
                     Managers.Sound.Play("sound/ui/TeamRevival");
+
+                Managers.Object.MyPlayer.View.TargetId = 0;
             }
         }
     }
@@ -900,7 +902,14 @@ class PacketHandler
         if (!IsSceneReady("Game", () => S_GameOverHandler(session, packet))) return;
         S_GameOver gameOverPkt = packet as S_GameOver;
 
+        bool isWin = false;
 
+        if(Managers.Info.Team == gameOverPkt.WinTeam)
+            isWin = true;
+        else
+            isWin = false;
+
+        Managers.Object.MyPlayer.UI.PlayerHUD.SetGameResult(isWin);
     }
 
     public static void S_ChangeTransformHandler(PacketSession session, IMessage packet)

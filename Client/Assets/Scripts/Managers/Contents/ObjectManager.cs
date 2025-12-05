@@ -76,8 +76,8 @@ public class ObjectManager
             MyPlayer.SyncPos(true);
             MyPlayer.Hp = info.StatInfo.MaxHp;
             MyPlayer.Stamina = info.StatInfo.MaxStamina;
-            MyPlayer.UI.PlayerHUD.AddPlayerBoardToBattleBoard(MyPlayer);
             MyPlayer.NickName = info.Player.Nickname;
+            MyPlayer.UI.PlayerHUD.AddPlayerBoardToBattleBoard(MyPlayer);
             if (Managers.Scene.CurrentScene is GameScene scene)
             {
                 scene.AddPlayer(go, MyPlayer);
