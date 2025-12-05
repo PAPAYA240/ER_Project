@@ -14,6 +14,7 @@ public class Projectile_Theodore_Attack : Projectile
     private float _deltaScale = 0.07f;
     private float _elapsed = 0f;
     private float _maxTravelTime = 1f;
+
     public void Init(S_TheodoreAttack packet)
     {
         _targetId = packet.TargetId;

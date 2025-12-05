@@ -22,7 +22,9 @@ public class PlayerController : CreatureController
     float _minDist = 3f;
     float _syncSpeed = 20f;
     Vector3 _serverPos;
-    float AGENT_SPEED_RATIO = 1.7f;
+
+    [SerializeField]
+    private float AGENT_SPEED_RATIO = 1.3f;
 
     // Fog
     private FogOfWarVision _fogOfWarVision;
@@ -202,14 +204,9 @@ public class PlayerController : CreatureController
 
     // 레이어
     protected string layerName;
-
+    
     // 화살
     protected Transform _equipTransform = null;
-
-    // Bush Material
-    private Dictionary<Renderer, Material[]> _originalMaterialsDict = new Dictionary<Renderer, Material[]>();
-    private Material _playerBushMaterial;
-    private Transform _lodTransform;
 
     public bool HidingInBush = false;
     #region KDA
@@ -294,7 +291,9 @@ public class PlayerController : CreatureController
         // 장비 슬롯
         InitEquipItem();
         InitializeXRay();
-        InitBushRenderSetting();
+
+        VisualEffectController he = gameObject.GetOrAddComponent<VisualEffectController>();
+        he.Owner = this;
 
         // NavMesh Agent
         _agent = GetComponent<NavMeshAgent>();
@@ -506,7 +505,7 @@ public class PlayerController : CreatureController
             else if (_eqipWeapon.gameObject.activeInHierarchy == false)
             {
                 _eqipWeapon.gameObject.SetActive(true);
-                ActiveRenderer(true);
+                BushRenderType(0);
             }
 
             if (name == "REST_START" || name == "REST_LOOP")
@@ -545,13 +544,9 @@ public class PlayerController : CreatureController
         Transform targetTransform = null;
         if(packet.UseTargetTransform)
         {
-            if (packet.TargetId == 0)
-                return;
-
             GameObject go = Managers.Object.FindById(packet.TargetId);
             if (go == null)
                 return;
-
             targetTransform = go.transform;
         }
 
@@ -766,7 +761,7 @@ public class PlayerController : CreatureController
     #endregion
 
     #region Effect
-    // 기본 스킬 이펙트 호출 : Caster Type
+    // 기본 스킬 이펙트 호출 : Caster Type - 무조건 플레이어 따라
     public void PlaySkillEffect(KeyCode skillKey, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot = default(Quaternion), Transform targetTransform = null)
     {
         CharacterType type = ObjInfo.Player.CharType;
@@ -1037,102 +1032,39 @@ public class PlayerController : CreatureController
     }
 
     #region Bush Renderer
-    private void InitBushRenderSetting()
-    {
-        _playerBushMaterial = Resources.Load<Material>("Material/ghostMaterial");
-
-        foreach (Transform child in transform)
-        {
-            if (child.name.Contains("LOD"))
-            {
-                _lodTransform = child;
-                break;
-            }
-        }
-
-        if (_lodTransform != null)
-        {
-            Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
-            foreach (Renderer renderer in renderers)
-            {
-                _originalMaterialsDict[renderer] = renderer.materials;
-            }
-        }
-    }
     Coroutine _coRenderer = null;
-    public void ActiveRenderer(bool active, float duration = 0f)
-    {
-        if (active == false)
-        {
-            MakeInvisible();
-        }
-        else
-        {
-            if (_coRenderer != null)
-                StopCoroutine(_coRenderer);
 
-            _coRenderer = StartCoroutine(MakeVisible(duration));
-        }
-    }
-
-    // 렌더러 비활성화
-    private void MakeInvisible()
+    public void BushRenderType(int state, float duration = 0f)
     {
-        if (_lodTransform == null)
+        VisualEffectController he = GetComponentInChildren<VisualEffectController>();
+        if (he == null)
             return;
 
-        HidingInBush = true;
-        _nameTag.gameObject.SetActive(false);
-
-        Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
-        foreach (Renderer renderer in renderers)
+        switch (state) 
         {
-            renderer.enabled = false;
-        }
-    }
+         case 0: // visible
+             {
+                 if (_coRenderer != null)
+                     StopCoroutine(_coRenderer);
 
-    // 렌더러 활성화
-    private IEnumerator MakeVisible(float duration = 0f)
-    {
-        if (_lodTransform == null)
-            yield break;
-
-        yield return new WaitForSeconds(duration);
-        HidingInBush = false;
-        _nameTag.gameObject.SetActive(true);
-
-        Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
-        foreach (Renderer renderer in renderers)
-        {
-            renderer.enabled = true;
-
-            // 각 Renderer의 원본 Material 복원
-            if (_originalMaterialsDict.TryGetValue(renderer, out Material[] originalMaterials))
-            {
-                renderer.materials = originalMaterials;
-            }
-        }
-    }
-
-    public void ChangeBushRenderer()
-    {
-        if (_lodTransform == null)
-            return;
-
-        HidingInBush = true;
-        Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
-
-        foreach (Renderer renderer in renderers)
-        {
-            renderer.enabled = true;
-
-            int materialCount = renderer.sharedMaterials.Length;
-            Material[] ghostMaterials = new Material[materialCount];
-            for (int i = 0; i < materialCount; i++)
-            {
-                ghostMaterials[i] = _playerBushMaterial;
-            }
-            renderer.sharedMaterials = ghostMaterials;
+                    HidingInBush = false;
+                 _nameTag.gameObject.SetActive(true);
+                 _coRenderer = StartCoroutine(he.MakeVisible(duration));
+             }
+             break;
+         case 1: // invisible
+             {
+                    HidingInBush = true;
+                 _nameTag.gameObject.SetActive(false);
+                 he.MakeInvisible();
+             }
+             break;
+         case 2: // change
+             {
+                    HidingInBush = true;
+                 he.ChangeBushRenderer();
+             }
+             break;
         }
     }
     #endregion

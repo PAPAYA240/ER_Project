@@ -59,7 +59,7 @@ Shader "ERBS_FX/FX_Slash_Animated"
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv = v.uv;
 
-                // ¿À¸¥ÂÊ ¡æ ¿ÞÂÊ FlowMap UV ¹ÝÀü
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ FlowMap UV ï¿½ï¿½ï¿½ï¿½
                 float2 flowUV = v.uv;
                 flowUV.x = 1.0 - flowUV.x;
                 o.uvFlow = flowUV + _Time.y * _FlowSpeed;
@@ -76,7 +76,7 @@ Shader "ERBS_FX/FX_Slash_Animated"
                 float emiss = flow.r * _FlowStrength * _EmissStrength;
                 float4 col = tex * _Color + tex * emiss;
 
-                // Particle Lifetime Alpha Àû¿ë ¡æ ÀÌµ¿ÇÏ¸é¼­ ¼­¼­È÷ »ç¶óÁü
+                // Particle Lifetime Alpha ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Ï¸é¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
                 col.a *= i.color.a;
 
                 if(col.a < _AlphaCutoff) discard;

@@ -90,11 +90,10 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 
         // 최초 타겟 변경 시 회전 패킷
         S_TargetChange pkt = new S_TargetChange();
-        Console.WriteLine(_targetId);
+
         pkt.TargetId = _targetId;
         player.SendTargetChangePacket(pkt);
         _isRotate = true;
-        _rotateStartUtc = DateTime.UtcNow;
 
         var now = DateTime.UtcNow;
         _nextAttackReadyUtc = now;              // 즉시 공격 가능
@@ -107,133 +106,145 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         if (player == null || player.Room == null || !player.CanAttack())
             return;
 
-        //*몬스터 공격 조건 추가
-        GameObject target = player.FindTarget(_targetId);
-       
-
-        if (target == null || target.State == CreatureState.Dead || target.IsUntargetable() 
-            || SameMonsterTeam(target , player))
+        // Target resolve
+        GameObject target = TryResolveTarget(player);
+        if (target == null)
         {
-            // 공격 중이 아니고 pending 타겟이 있으면 교체 후 재시도
+            player.ChangeState(new Player_IdleState());
+            return;
+        }
+
+        Vector3 pos = player.Position;
+        Vector3 targetPos = target.Position;
+        float dist = Vector3.Distance(pos, targetPos);
+        bool inRange = dist <= player.AttackRange;
+
+        var now = DateTime.UtcNow;
+
+        // 공격 중이면 스윙 처리만
+        if (_swingActive)
+        {
+            UpdateSwing(player, now, target);
+            return;
+        }
+
+        // 회전 중 공격은 막지 않음
+        if (_isRotate)
+        {
+            UpdateRotation(player, inRange, targetPos);
+            // 회전 중이라도 공격 가능하므로 여기서 return 해도 공격 개시 로직은 아래에서 처리됨
+        }
+
+        // 공격 및 회전이 끝났거나 회전 중이지만 공격 가능
+        // 사거리 밖
+        if (!inRange)
+        {
+            HandleOutOfRange(player, targetPos);
+            return;
+        }
+
+        // 사거리 안이고 공격 가능
+        if (now >= _nextAttackReadyUtc)
+        {
+            StartSwing(player, now);
+            return;
+        }
+    }
+
+    private GameObject TryResolveTarget(Player player)
+    {
+        GameObject target = player.FindTarget(_targetId);
+
+        if (target == null || target.State == CreatureState.Dead || target.IsUntargetable() || SameMonsterTeam(target, player))
+        {
             if (!_swingActive && _pendingTargetId.HasValue)
             {
                 _targetId = _pendingTargetId.Value;
                 _pendingTargetId = null;
+
                 target = player.FindTarget(_targetId);
                 if (target == null || target.State == CreatureState.Dead)
-                {
-                    player.ChangeState(new Player_IdleState());
-                    return;
-                }
+                    return null;
+
+                _isRotate = true;
+                _rotateStartUtc = DateTime.UtcNow;
+                return target;
             }
-            else
-            {
-                player.ChangeState(new Player_IdleState());
-                return;
-            }
+
+            return null;
         }
 
-        // 거리 판정
-        Vector3 pos = new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ);
-        Vector3 targetPos = new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ);
+        return target;
+    }
 
-        if (_isRotate)
+    private void UpdateRotation(Player player, bool inRange, Vector3 targetPos)
+    {
+        // 사거리 밖 → 회전 종료 & 이동
+        if (!inRange)
         {
-            // 회전 시작 0.1초 동안은 절대로 회전 완료 처리 금지
-            if ((DateTime.UtcNow - _rotateStartUtc).TotalSeconds < 0.1)
-            {
-                // 클라가 돌아오길 기다리는 시간
-                return;
-            }
-
-            if (IsLookingAtTargetYawOnly(player.Position, new Quaternion(player.RotInfo.Qx, player.RotInfo.Qy, player.RotInfo.Qz, player.RotInfo.Qw), targetPos))
-                _isRotate = false;
-
+            _isRotate = false;
+            HandleOutOfRange(player, targetPos);
             return;
         }
-        else
+
+        // 사거리 안이면 회전 유지 또는 완료
+        Quaternion rot = new Quaternion(player.RotInfo.Qx, player.RotInfo.Qy, player.RotInfo.Qz, player.RotInfo.Qw);
+        if (IsLookingAtTargetYawOnly(player.Position, rot, targetPos))
+            _isRotate = false;
+    }
+
+    private void HandleOutOfRange(Player player, Vector3 targetPos)
+    {
+        if (!_chaseAllowed)
         {
-            bool inRange = Vector3.Distance(pos, targetPos) <= player.AttackRange;
+            player.ChangeState(new Player_IdleState());
+            return;
+        }
 
-            var now = DateTime.UtcNow;
-
-            // ===== 공격 진행 중 =====
-            if (_swingActive)
+        var move = new C_Move
+        {
+            IsTargetOn = true,
+            TargetId = _targetId,
+            TargetPosition = new PositionInfo
             {
-                if (!_damageApplied && now >= _hitMomentUtc)
-                {
-                    // 히트 타이밍: 서버 거리 검증(위에서 inRange는 프레임 타임이라 다시 체크해도 됨)
-                    float distNow = Vector3.Distance(
-                        new Vector3(player.PosInfo.PosX, player.PosInfo.PosY, player.PosInfo.PosZ),
-                        new Vector3(target.PosInfo.PosX, target.PosInfo.PosY, target.PosInfo.PosZ));
-                    if (distNow <= player.AttackRange /* + player.HitTolerance 가능 */)
-                        ApplyHit(player, target);
-
-                    _damageApplied = true;
-                }
-
-                if (now >= _swingEndUtc)
-                {
-                    _swingActive = false;
-                    _damageApplied = false;
-                    _nextAttackReadyUtc = now.AddSeconds(ReattackGapSeconds);
-                    _comboResetDeadlineUtc = now.AddSeconds(ComboResetSeconds);
-
-                    // 공격 종료 후에만 타겟 변경 반영
-                    if (_pendingTargetId.HasValue)
-                    {
-                        _targetId = _pendingTargetId.Value;
-                        _pendingTargetId = null;
-
-                        S_TargetChange pkt = new S_TargetChange();
-                        pkt.TargetId = _targetId;
-                        player.SendTargetChangePacket(pkt);
-
-                        _isRotate = true;
-                        _rotateStartUtc = DateTime.UtcNow;
-                    }
-                }
-                return; // 스윙 중에는 추가 개시 없음
+                PosX = targetPos.X,
+                PosY = targetPos.Y,
+                PosZ = targetPos.Z
             }
+        };
 
-            // ===== 공격 중이 아님 =====
-            //// 콤보 리셋
-            //if (_comboResetDeadlineUtc != default && now >= _comboResetDeadlineUtc)
-            //{
-            //    _attackIndex = 0; // 다음 스윙은 첫타
-            //    _comboResetDeadlineUtc = default;
-            //}
+        player.ChangeState(new Player_MovingState(move));
+    }
 
-            // 사거리 밖
-            if (!inRange)
+    private void UpdateSwing(Player player, DateTime now, GameObject target)
+    {
+        if (!_damageApplied && now >= _hitMomentUtc)
+        {
+            float distNow = Vector3.Distance(player.Position, target.Position);
+            if (distNow <= player.AttackRange)
+                ApplyHit(player, target);
+
+            _damageApplied = true;
+        }
+
+        if (now >= _swingEndUtc)
+        {
+            _swingActive = false;
+            _damageApplied = false;
+
+            _nextAttackReadyUtc = now.AddSeconds(ReattackGapSeconds);
+            _comboResetDeadlineUtc = now.AddSeconds(ComboResetSeconds);
+
+            if (_pendingTargetId.HasValue)
             {
-                // CHANGED: H키 이후 추격 금지 모드면, 자리 지키기 → 범위 밖이면 종료
-                if (!_chaseAllowed)
-                {
-                    player.ChangeState(new Player_IdleState());
-                    return;
-                }
+                _targetId = _pendingTargetId.Value;
+                _pendingTargetId = null;
 
-                // 기존 이동 상태 재사용(타겟 추격)
-                var move = new C_Move
-                {
-                    IsTargetOn = true,
-                    TargetId = _targetId,
-                    TargetPosition = new PositionInfo
-                    {
-                        PosX = targetPos.X,
-                        PosY = targetPos.Y,
-                        PosZ = targetPos.Z
-                    }
-                };
-                player.ChangeState(new Player_MovingState(move));
-                return;
-            }
+                S_TargetChange pkt = new S_TargetChange { TargetId = _targetId };
+                player.SendTargetChangePacket(pkt);
 
-            // 사거리 내 + 다음 타 가능 → 스윙 개시
-            if (now >= _nextAttackReadyUtc && _isRotate == false)
-            {
-                StartSwing(player, now);
+                _isRotate = true;
+                _rotateStartUtc = DateTime.UtcNow;
             }
         }
     }

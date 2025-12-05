@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using static IRegenEffect;
 using static Lucene.Net.Util.AttributeSource;
 
 class StatRegenerator
@@ -65,11 +66,28 @@ class StatRegenerator
         _elapsedMs = 0;
     }
 
+    public void AddEffect(StatRegenType effect)
+    {
+        if (effect == StatRegenType.None)
+            return;
+        else if (effect == StatRegenType.BaseRegen)
+            AddEffect(new BaseRegenEffect());
+        else if (effect == StatRegenType.RestRegen)
+            AddEffect(new RestRegenEffect());
+        else if (effect == StatRegenType.BaseAreaRegen)
+            AddEffect(new BaseAreaRegenEffect());
+    }
+
     public void AddEffect(IRegenEffect effect)
     {
         if (effect == null)
             return;
         _effects.Add(effect);
+    }
+
+    public void RemoveEffect(StatRegenType effect)
+    {
+        RemoveEffect(FindEffect(effect));
     }
 
     public void RemoveEffect(IRegenEffect effect)
@@ -84,6 +102,17 @@ class StatRegenerator
     public void SetIntervalMs(int intervalMs)
     {
         _intervalMs = Math.Max(1, intervalMs);
+    }
+
+    private IRegenEffect FindEffect(StatRegenType effect)
+    {
+        foreach(var ef in _effects)
+        {
+            if (ef.Effect == effect)
+                return ef;
+        }
+
+        return null;
     }
 }
 

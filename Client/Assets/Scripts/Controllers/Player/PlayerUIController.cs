@@ -20,6 +20,7 @@ public class PlayerUIController : MonoBehaviour
     private UI_AppearMonsterBar _appearMonsterBar;
     public UI_PlayerHUD PlayerHUD;
     public UI_PlayerInterface PlayerInterface { get; protected set; }
+    public UI_InteractionCharge InteractionCharge { get; protected set; }
 
     List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
     const int _maxInventorySlot = 10;
@@ -67,6 +68,11 @@ public class PlayerUIController : MonoBehaviour
         _player.NameTag.GetComponentInChildren<UI_PlayerNameTag>().SetHPColor();
 
         MakeInventory();
+
+        // Interaction 
+        GameObject io = Managers.Resource.Instantiate("UI/Interaction/UI_InteractionCharge");
+        io.transform.SetParent(gameObject.transform);
+        InteractionCharge = io.GetComponent<UI_InteractionCharge>();
     }
 
     public void Update()

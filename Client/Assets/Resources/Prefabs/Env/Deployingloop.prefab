@@ -262,7 +262,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0, g: 0.20020704, b: 0.2627451, a: 0.80784315}
+      maxColor: {r: 0.6698113, g: 0, b: 0, a: 0.80784315}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -3034,6 +3034,14 @@ MonoBehaviour:
   id: 0
   side: 0
   _lookTarget: {fileID: 3583687465324388042}
+  targetRenderer: {fileID: 2028761444005563167}
+  outlineMaterial: {fileID: 2100000, guid: 2bd3fa087e9dfb248be434a9c061ce4a, type: 2}
+  effectParticle: {fileID: 3085700412350978075}
+  usableColor: {r: 0, g: 0.2, b: 0.26, a: 0.8}
+  unusableColor: {r: 0.67, g: 0, b: 0, a: 0.8}
+  chargeUI: {fileID: 0}
+  interactDuration: 3
+  interactDescribe: "\uB514\uD50C\uB85C\uC789 \uB8E8\uD504 \uAC00\uB3D9 \uC911"
 --- !u!65 &1422397889170288514
 BoxCollider:
   m_ObjectHideFlags: 0

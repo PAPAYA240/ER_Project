@@ -8,6 +8,7 @@ using Unity.Burst.Intrinsics;
 using UnityEditor;
 using UnityEngine;
 using static Data.EffectData;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 public class EffectFXManager : MonoBehaviour
 {
@@ -82,10 +83,8 @@ public class EffectFXManager : MonoBehaviour
             }
 
             // Transform 설정
-            Quaternion spawnRot
-                = GetSpawnRotation(data, copyTransform, rot);
-            Vector3 spawnPos 
-                = GetSpawnPosition(ownerId, data, copyTransform, mousePos, targetPos, spawnRot, out Transform parentTransform);
+            Quaternion spawnRot = GetSpawnRotation(data, copyTransform, rot);
+            Vector3 spawnPos = GetSpawnPosition(ownerId, data, copyTransform, mousePos, targetPos, rot, out Transform parentTransform);
 
             if (data.target == EEffectTarget.Self)
             {
@@ -215,7 +214,7 @@ public class EffectFXManager : MonoBehaviour
 
         Managers.FX.Push(effect);
 
-        effect.transform.SetParent(null);
+        effect?.transform.SetParent(null);
     }
 
     private IEnumerator ReturnToPoolAfterDelay(int ownerId, GameObject fxObject, string prefabName, float delayTime, float duration, Transform casterTransform)
@@ -236,7 +235,7 @@ public class EffectFXManager : MonoBehaviour
     #endregion
 
     #region Transform Helpers
-    private Vector3 GetSpawnPosition(int id, EffectData data, Transform casterTransform, Vector3 mousePos, Vector3 targetPos, Quaternion spawnRot, out Transform parentTransform)
+    private Vector3 GetSpawnPosition(int id, EffectData data, Transform casterTransform, Vector3 mousePos, Vector3 targetPos, Quaternion rot, out Transform parentTransform)
     {
         switch (data.target)
         {
@@ -248,7 +247,7 @@ public class EffectFXManager : MonoBehaviour
 
             case EEffectTarget.Target:
                 parentTransform = null;
-                Vector3 worldOffset = spawnRot * data.position;
+                Vector3 worldOffset = rot * data.position;
                 return targetPos + worldOffset;
 
             case EEffectTarget.Mouse:
@@ -261,8 +260,9 @@ public class EffectFXManager : MonoBehaviour
 
             case EEffectTarget.Default:
                 parentTransform = null;
+                Quaternion baseRot = rot != Quaternion.identity ? rot : casterTransform.rotation;
                 Vector3 flatOffset = new Vector3(data.position.x, 0, data.position.z);
-                Vector3 worldOffsetDefault = spawnRot * flatOffset;
+                Vector3 worldOffsetDefault = baseRot * flatOffset;
                 return casterTransform.position + worldOffsetDefault + new Vector3(0, data.position.y, 0);
 
             default:
@@ -288,8 +288,13 @@ public class EffectFXManager : MonoBehaviour
 
             case EEffectTarget.Default:
                 Quaternion baseRot = rot != Quaternion.identity ? rot : casterTransform.rotation;
-                Quaternion xRotation = Quaternion.Euler(-90f, 0f, 0f);
-                return baseRot * xRotation;
+                
+                Vector3 euler = data.rotation.eulerAngles;
+                if (euler.magnitude > 0.01f)
+                {
+                    baseRot = baseRot * data.rotation;
+                }
+                return baseRot ;
 
             default:
                 return Quaternion.identity;
@@ -298,7 +303,7 @@ public class EffectFXManager : MonoBehaviour
     #endregion
 
     #region Utils
-    public GameObject FindEffect(int ownerId, string prefabName)
+    public GameObject FindCurrentPlayEffect(int ownerId, string prefabName)
     {
         if (currentlyPlayingEffects.TryGetValue(ownerId, out List<GameObject> effectList))
         {
@@ -354,7 +359,7 @@ public class EffectFXManager : MonoBehaviour
         {
             foreach (EffectData data in myEffectList.Caster)
             {
-                GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+                GameObject fxObjectToRemove = FindCurrentPlayEffect(packet.ObjectId, data.prefabName);
 
                 if (fxObjectToRemove != null)
                     RemoveEffect(packet.ObjectId, fxObjectToRemove);
@@ -366,7 +371,7 @@ public class EffectFXManager : MonoBehaviour
             {
                 if(data.prefabName == packet.FxName)
                 {
-                    GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+                    GameObject fxObjectToRemove = FindCurrentPlayEffect(packet.ObjectId, data.prefabName);
 
                     if (fxObjectToRemove != null)
                         RemoveEffect(packet.ObjectId, fxObjectToRemove);
@@ -406,7 +411,7 @@ public class EffectFXManager : MonoBehaviour
             // Caster 그룹 전체 제거
             foreach (EffectData data in myEffectList.Caster)
             {
-                GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+                GameObject fxObjectToRemove = FindCurrentPlayEffect(packet.ObjectId, data.prefabName);
                 if (fxObjectToRemove != null)
                     RemoveEffect(packet.ObjectId, fxObjectToRemove);
             }
@@ -418,7 +423,7 @@ public class EffectFXManager : MonoBehaviour
             {
                 if (data.prefabName == packet.FxName)
                 {
-                    GameObject fxObjectToRemove = FindEffect(packet.ObjectId, data.prefabName);
+                    GameObject fxObjectToRemove = FindCurrentPlayEffect(packet.ObjectId, data.prefabName);
                     if (fxObjectToRemove != null)
                         RemoveEffect(packet.ObjectId, fxObjectToRemove);
                     break;

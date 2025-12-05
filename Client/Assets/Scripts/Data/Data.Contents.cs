@@ -361,7 +361,7 @@ namespace Data
         #region 추가
         public enum EEffectTarget
         {
-            Default,    // 기본 위치 (캐스터 or 타겟)
+            Default,    // static, 기본 위치 (캐스터 or 타겟)
             Self,       // 캐스터의 위치에 부착 (자식으로)
             Target,     // 아직까지 Target만 따라감
             TargetNoRotation,   // 타겟 위치만 따라감, 회전 반영X
@@ -374,7 +374,7 @@ namespace Data
         public float delayTime;
         public string skillType;
         public Vector3 position; // 부모or 기본 포지션에 추가적으로 옮겨줄 위치
-        public Quaternion rotation;
+        public Quaternion rotation = Quaternion.identity;
         public string sound;
         public EEffectTarget target; // 이펙트가 표시될 위치
         #endregion

@@ -27,10 +27,14 @@ public class PlayerInputController : MonoBehaviour
 
     // 사거리 밖에서 타겟팅된 DeployingLoop
     private IO_DeployingLoop _pendingDeployingLoop;
+    private IO_DeployingLoop _activeDeployingLoop; // 실제 상호작용 중인 대상
 
     // 공격 입력을 얼마나 자주 서버로 보낼지 제한 (스팸 방지)
     private float _nextAutoAttackSendTime;
     [SerializeField] private float _attackInputInterval = 0.08f; // 0.08초마다 1번(초당 약 12번)
+
+    // 최소 이동 가능 거리
+    private float _minClickMoveDistance = 0.3f; 
 
     private void Awake()
     {
@@ -64,6 +68,11 @@ public class PlayerInputController : MonoBehaviour
             {
                 // 땅 이동
                 if (!TryGetGroundDestination(out Vector3 final))
+                    return null;
+
+                // 너무 가까운 위치면 이동 패킷 보내지 않기
+                Vector3 diff = final - _player.transform.position;
+                if (diff.sqrMagnitude < _minClickMoveDistance * _minClickMoveDistance)
                     return null;
 
                 return new C_SetMoveTarget
@@ -229,8 +238,10 @@ public class PlayerInputController : MonoBehaviour
                 return null;
 
             // 사거리 안이면 즉시 상호작용 패킷 전송
-            if (clickedIo.IsPlayerInside)
+            if (clickedIo.IsPlayerInside && clickedIo.IsUsable)
             {
+                _activeDeployingLoop = clickedIo;
+                _activeDeployingLoop.Begin();
                 return new C_DeployingLoop
                 {
                     ObjectId = _player.Id,
@@ -247,8 +258,10 @@ public class PlayerInputController : MonoBehaviour
         if (_pendingDeployingLoop != null)
         {
             // 트리거 안에 들어온 순간 → 한 번만 패킷 전송
-            if (_pendingDeployingLoop.IsPlayerInside)
+            if (_pendingDeployingLoop.IsPlayerInside && _pendingDeployingLoop.IsUsable)
             {
+                _activeDeployingLoop = _pendingDeployingLoop;
+                _activeDeployingLoop.Begin();
                 var pkt = new C_DeployingLoop
                 {
                     ObjectId = _player.Id,
@@ -269,12 +282,12 @@ public class PlayerInputController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.S))
         {
-            _pendingDeployingLoop = null;
+            CancelDeployingLoopInteraction();
             return new C_Stop { Reason = StopReason.StopAll };
         }
         if (Input.GetKeyDown(KeyCode.H))
         {
-            _pendingDeployingLoop = null;
+            CancelDeployingLoopInteraction();
             return new C_Stop { Reason = StopReason.StopMoveOnly };
         }
         return null;
@@ -305,7 +318,7 @@ public class PlayerInputController : MonoBehaviour
         return null;
     }
 
-    private bool IsCharge(KeyCode key)
+    protected bool IsCharge(KeyCode key)
     {
         SkillData skillData = DataManager.SkillDict[_player.ObjInfo.Player.CharType][key];
         if (skillData == null)
@@ -364,17 +377,41 @@ public class PlayerInputController : MonoBehaviour
                             index = 9;
                         else
                             index = i - 1;
-
-                        _player.UseInventoryItem(i);
+                        
                         Vector3 playerToMouse = GetMouseWorldPosition() - _player.transform.position;
                         playerToMouse.y = 0;
                         float dist = playerToMouse.magnitude;
 
                         Vector3 result = GetMouseWorldPosition();
-                        if(dist > 8.5f)
+                        if (dist > 8.5f)
                         {
                             result = _player.transform.position + playerToMouse.normalized * 8.5f;
                         }
+
+                        C_SkillCollisionPropose propose = _skill.ComputeSkillCollision(0, 0, CollisionType.Pass, _player.transform.position.x, _player.transform.position.z, result.x, result.z);
+
+                        result.x = propose.CollisionX;
+                        result.z = propose.CollisionZ;
+                        //Vector3 validPos = GetMouseWorldPosition();
+
+                        //var path = new NavMeshPath();
+                        //if (!NavMesh.CalculatePath(_player.transform.position, result, _agent.areaMask, path) || path.status != NavMeshPathStatus.PathComplete)
+                        //{
+                        //    // 경로 자체가 없으면 레이캐스트로 첫 히트 포인트 클램프
+                        //    if (NavMesh.Raycast(_player.transform.position, result, out var hit, NavMesh.AllAreas))
+                        //    {
+                        //        result = hit.position;
+                        //    }
+                        //}
+                        //return validPos;
+
+
+                        //if (NavMesh.SamplePosition(result, out var navHit, 2f, NavMesh.AllAreas) && _skill.getvail)
+                        //    result = navHit.position;
+                        //else
+                        //    return null;
+
+                        _player.UseInventoryItem(i);
 
                         return new C_UseItem()
                         {
@@ -437,19 +474,9 @@ public class PlayerInputController : MonoBehaviour
         return Vector3.zero;
     }
 
-    private GameObject GetAttackableUnderCursor(float radius = 0.1f)
+    private GameObject GetAttackableUnderCursor(int mask = default,  float radius = 0.1f)
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.SphereCast(ray, radius, out RaycastHit hit, 1000f, _monsterMask | _playerMask))
-        {
-            var cc = hit.collider.GetComponentInChildren<CreatureController>();
-            if (cc != null && IsAttackable(hit.collider.gameObject))
-            {
-                return cc.gameObject;
-            }
-        }
-
-        return null;
+        return _player.GetAttackableUnderCursor(mask, radius);
     }
 
     protected int GetAttackableUnderCursorID(float radius = 0.1f)
@@ -554,33 +581,6 @@ public class PlayerInputController : MonoBehaviour
         return path.corners[path.corners.Length - 1];
     }
 
-    private bool IsAttackable(GameObject targetObject)
-    {
-        if (targetObject == null)
-            return false;
-
-        CreatureController cc = targetObject.GetComponentInChildren<CreatureController>();
-        if (cc == null)
-            return false;
-
-        if (cc.Untargetable)
-            return false;
-
-        // 나 자신일 때
-        if (cc.Id == _player.Id)
-            return false;
-
-        // 같은 팀일 때
-        if (cc.ObjInfo.Player != null && cc.ObjInfo.Player.Team == _player.ObjInfo.Player.Team)
-            return false;
-
-        // 대상이 죽었을 때 || 무적 상태일 때 || 시야 밖일 때(부시) 등등
-        if (cc.State == CreatureState.Dead)
-            return false;
-
-        return true;
-    }
-
     private bool IsInAttackRange(Vector3 myPos, Vector3 targetPos)
     {
         Vector2 myXZ = new Vector2(myPos.x, myPos.z);
@@ -589,6 +589,17 @@ public class PlayerInputController : MonoBehaviour
 
         float effectiveRange = Mathf.Max(0.05f, _player.AttackRange - _stopBuffer);
         return dist <= effectiveRange;
+    }
+
+    public void CancelDeployingLoopInteraction()
+    {
+        _pendingDeployingLoop = null;
+
+        if (_activeDeployingLoop != null)
+        {
+            _activeDeployingLoop.Cancel();    // 내부에서 UI_InteractionCharge.Cancel() 호출
+            _activeDeployingLoop = null;
+        }
     }
     #endregion
 

@@ -93,7 +93,7 @@ public sealed class Hyunwoo_E : SkillHandlerBase
         {
             if (TryConsumeLatest(ref _commitId, out SkillCollisionProposal prop))
             {
-                if(_players.TryGetValue(_commitId, out KeyValuePair<Player, Vector3> tartgetKVP))
+                if (_players.TryGetValue(_commitId, out KeyValuePair<Player, Vector3> tartgetKVP))
                 {
                     // Knockback
                     Vector3 start = tartgetKVP.Value;
@@ -136,7 +136,7 @@ public sealed class Hyunwoo_E : SkillHandlerBase
             else
             {
                 // hit the wall
-                if(_dashRange - (_startPos - _endPos).Length() > float.Epsilon)
+                if(_dashRange - (_startPos - _endPos).Length() > 0.1f)
                 {
                     p.ChangeState(new Player_SkillState(SkillRegistry.Create("Hyunwoo_E_End"), ctx));
                 }
@@ -145,6 +145,7 @@ public sealed class Hyunwoo_E : SkillHandlerBase
                 {
                     p.ChangeState(new Player_IdleState());
                 }
+                return;
             }
 
             p.SendSkillMotion(

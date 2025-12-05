@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Google.Protobuf.Protocol;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Protobuf.Protocol;
 using Unity.AI.Navigation;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
@@ -86,7 +87,7 @@ public class GameScene : BaseScene
 
     public void AddPlayer(GameObject go, PlayerController pc)
     {
-        if (Managers.Info.Team == 1)
+        if (pc.ObjInfo.Player.Team == 1)
         {
             Team1.Add(pc.Id, go);
         }
@@ -94,5 +95,17 @@ public class GameScene : BaseScene
         {
             Team2.Add(pc.Id, go);
         }
+    }
+
+    public bool IsVisibleObject(int id)
+    {
+        GameObject go = Managers.Object.FindById(id);
+        if(null == go) 
+            return false;
+
+        if (_visibleObjects.Contains(go))
+            return true;
+
+        return false;
     }
 }

@@ -200,6 +200,7 @@ namespace Server.Game
 
         #region Score
         private int[] _teamScores = new int[3] { 40, 40, 40 }; // 1번, 2번 팀 사용
+        private bool _isGameOver = false;
 
         public int ReduceScore(int team, int amount)
         {
@@ -209,6 +210,18 @@ namespace Server.Game
                 oldValue = _teamScores[team];
                 newValue = Math.Max(0, oldValue - amount);
             } while (Interlocked.CompareExchange(ref _teamScores[team], newValue, oldValue) != oldValue);
+
+            if(newValue == 0 && _isGameOver == false)
+            {
+                S_GameOver packet = new S_GameOver();
+                if(team == 1)
+                    packet.WinTeam = 2;
+                else
+                    packet.WinTeam = 1;
+
+                _isGameOver = true;
+                Push(Broadcast, packet);
+            }
 
             return newValue; // 감소 후 점수 반환
         }
@@ -314,9 +327,6 @@ namespace Server.Game
 
                 // 본인한테 정보 전송
                 {
-                    // Temp Cobalt Exp
-                    player.Info.StatInfo.Exp = 15800;
-                    player.CheckLevelUp();
                     if (Spawn == null)
                         SpawnRegister();
                     player.Info.PosInfo = Spawn.GetSpawnPoint(player.Team).ToPositionInfo();
@@ -352,6 +362,12 @@ namespace Server.Game
                     }
 
                     player.Session.Send(spawnPacket);
+
+                    // Temp Cobalt Exp
+                    player.Info.StatInfo.Exp = 15800;
+                    int levelUpCnt = player.CheckLevelUp();
+                    if (levelUpCnt > 0)
+                        Push(BroadcastLevelUp, player, levelUpCnt, player.Info.Player.CharType);
 
                     // 페이즈에 해당하는 아이템 장착
                     if (CurPhase > 0)
@@ -745,11 +761,26 @@ namespace Server.Game
         {
             S_LevelUp levelUpPkt = new S_LevelUp();
             levelUpPkt.ObjectId = player.Id;
+            levelUpPkt.Level = player.Stat.Level;
             levelUpPkt.LevelUpCnt = levelUpCnt;
 
-            StatInfo statInfo = new StatInfo(DataManager.StatGrowthDict[charType]);
-            statInfo.MultiplyForGrowth(levelUpCnt);
+            StatInfo grouwthStatInfo = new StatInfo(DataManager.StatGrowthDict[charType]);
+            grouwthStatInfo.MultiplyForGrowth(levelUpCnt);
+
+            StatInfo statInfo = new StatInfo(player.Stat);
+            statInfo.Attack = player.Attack;
+            statInfo.Defense = player.Defense;
+            statInfo.MaxHp = player.Stat.MaxHp;
+            statInfo.Hp = grouwthStatInfo.MaxHp;
+            statInfo.HpRegen = player.Stat.HpRegen;
+            statInfo.MaxStamina = player.Stat.MaxStamina;
+            statInfo.Stamina = grouwthStatInfo.MaxStamina;
+            statInfo.StaminaRegen = player.Stat.StaminaRegen;
+
             levelUpPkt.StatGrowth = statInfo;
+            //StatInfo statInfo = new StatInfo(DataManager.StatGrowthDict[charType]);
+            //statInfo.MultiplyForGrowth(levelUpCnt);
+            //levelUpPkt.StatGrowth = statInfo;
 
             levelUpPkt.NextMaxExp = DataManager.ExpDict[player.Stat.Level];
             levelUpPkt.CurExp = player.Exp;
@@ -907,6 +938,7 @@ namespace Server.Game
             S_Chat sendPkt = new S_Chat()
             {
                 ObjectId = player.Id,
+                PlayerName = player.Info.Player.Nickname,
                 Message = chatPkt.Message
             };
             Push(Broadcast, sendPkt);

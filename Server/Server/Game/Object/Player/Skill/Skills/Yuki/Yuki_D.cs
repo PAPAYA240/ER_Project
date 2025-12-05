@@ -15,6 +15,8 @@ public sealed class Yuki_D : SkillHandlerBase
     private float _waitDuration;
     private float _dashRange;       // 대쉬 이동거리
     private float _speed;
+    private float _stopElasped;
+    private float _stopSkillTime;
 
     public Yuki_D()
     {
@@ -35,6 +37,8 @@ public sealed class Yuki_D : SkillHandlerBase
         _stanceElapsed = 0f;
         _speed = 25f;
         _waitDuration = 0.75f;
+        _stopElasped = 0f;
+        _stopSkillTime = 1f; // 3프레임 * 30FPS
 
         Vector3 mouseWorldPos = new Vector3(ctx.MousePos.X, p.Position.Y, ctx.MousePos.Y);
 
@@ -59,6 +63,9 @@ public sealed class Yuki_D : SkillHandlerBase
         p.AddStatusEffect(statusEffectUnstoppable);
 
         p.LookAtMouse(ctx.MousePos);
+
+        p.SendYukiSkillEffect(SkillEffectType.WpSkill);
+        SendSkillConfirmPacket(p);
     }
 
     public override void OnHit(Player p, SkillContext ctx)
@@ -68,37 +75,50 @@ public sealed class Yuki_D : SkillHandlerBase
 
     public override void OnTick(Player p, SkillContext ctx)
     {
-        _stanceElapsed += TimeUtil.Instance.DeltaTime;
+        if (CanStopSkill)
+            return;
 
-        if (_stanceElapsed > _waitDuration)
+        _stopElasped += TimeUtil.Instance.DeltaTime;
+
+        if (_stopElasped >= _stopSkillTime)
         {
-            if (_requestId != _commitId)
+            CanStopSkill = true;
+            p.SendCanStopSkillPacket(CanStopSkill);
+        }
+        else
+        {
+            _stanceElapsed += TimeUtil.Instance.DeltaTime;
+
+            if (_stanceElapsed > _waitDuration)
             {
-                if (TryConsumeLatest(ref _commitId, out SkillCollisionProposal prop))
+                if (_requestId != _commitId)
                 {
-                    _startPos = p.Position;
-                    _endPos = prop.collisionPos;
-                }
-            }
-
-            if (_requestId == _commitId)
-            {
-                _dashElapsed += TimeUtil.Instance.DeltaTime;
-
-                if (_dashElapsed < _dashDuration)
-                {
-                    float t = Math.Clamp(_dashElapsed / _dashDuration, 0f, 1f);
-                    nextPos = Vector3.Lerp(_startPos, _endPos, t);
+                    if (TryConsumeLatest(ref _commitId, out SkillCollisionProposal prop))
+                    {
+                        _startPos = p.Position;
+                        _endPos = prop.collisionPos;
+                    }
                 }
 
-                p.SendSkillMotion(
-                    type: SkillMotionType.Transform,
-                    start: p.Position,
-                    end: nextPos
-                );
+                if (_requestId == _commitId)
+                {
+                    _dashElapsed += TimeUtil.Instance.DeltaTime;
+
+                    if (_dashElapsed < _dashDuration)
+                    {
+                        float t = Math.Clamp(_dashElapsed / _dashDuration, 0f, 1f);
+                        nextPos = Vector3.Lerp(_startPos, _endPos, t);
+                    }
+
+                    p.SendSkillMotion(
+                        type: SkillMotionType.Transform,
+                        start: p.Position,
+                        end: nextPos
+                    );
+                }
             }
         }
-
+            
         return;
     }
 

@@ -156,10 +156,12 @@ namespace Server.Game
             {
                 Player_SkillState skillstate = player.CurrentState as Player_SkillState;
                 skillstate.Ctx.MousePos = new Vector2(skillPacket.MousePosX, skillPacket.MousePosZ);
-                if (player.CurrentState is Player_SkillState skillState)
-                    skillState.Handler.OnAttack(player);
-            }
 
+                if (player.CurrentState is Player_SkillState skillState)
+                {
+                    skillState.Handler.OnAttack(player);
+                }
+            }
         }
 
         public void HandlerPrepareSkill(Player player, C_SkillPrepare skillPacket)
@@ -263,6 +265,9 @@ namespace Server.Game
             if (!(player.State == CreatureState.Idle || player.State == CreatureState.Moving))
                 return;
 
+            //if (CurPhase < 1 /*2*/)
+            //    return;
+
             player.ChangeState(new Player_TeleportState(pkt.IoPos));
         }
 
@@ -280,6 +285,28 @@ namespace Server.Game
             }
         }
 
+        public void HandleAttackTargetInvalid(Player player, C_AttackTargetInvalid pkt)
+        {
+            if (player == null || player.IsDead)
+                return;
+
+            //InvalidTargetReason reason = pkt.Reason;
+            player.ChangeState(new Player_IdleState());
+        }
+
+        public void HandleBaseTrigger(Player player, C_BaseTrigger pkt)
+        {
+            if (player == null || player.IsDead)
+                return;
+
+            if (pkt.Team != player.Team)
+                return;
+
+            if (pkt.IsInside)
+                player.AddStatEffect(IRegenEffect.StatRegenType.BaseAreaRegen);
+            else
+                player.RemoveStatEffect(IRegenEffect.StatRegenType.BaseAreaRegen);
+        }
 
         #region Utils
         public GameObject FindNearestEnemy(Player me, int range)

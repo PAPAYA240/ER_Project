@@ -26,6 +26,15 @@ public class BeaconController : BaseController
 
     private const string _effectPath = "effects/prefab/Common/Beacon_Complete";
     private bool _idleSound = false;
+
+    [Header("UI")]
+    [SerializeField] private float interactDuration = 5f;
+    [SerializeField] private string interactDescribe = "증폭 장치를 점령 중입니다.";
+
+    public void Begin() => Managers.Object.MyPlayer.UI.InteractionCharge.Begin(interactDuration, interactDescribe);
+    public void Complete() => Managers.Object.MyPlayer.UI.InteractionCharge.Complete();
+    public void Cancel() => Managers.Object.MyPlayer.UI.InteractionCharge.Cancel();
+
     void Start()
     {
         if (gaugeRenderer != null)
@@ -37,7 +46,6 @@ public class BeaconController : BaseController
         {
             Debug.LogError("GaugeRenderer is not assigned!", this);
         }
-
     }
 
     protected void Update()

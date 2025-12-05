@@ -27,7 +27,7 @@ namespace Server.Game
 
             monster.DelaySkillAnimationTimer = _skillData.skillCoolTime;
 
-            monster.Room.CollManager.AddHitbox(monster, _skillData.skillType);
+            monster.Room.CollManager.AddHitbox(monster, _skillData.skillType, new Vector2(monster.Target.PosInfo.PosX, monster.Target.PosInfo.PosZ));
             monster.PushState(CreatureState.Skill, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo), _skillData);
         }
 
@@ -70,7 +70,9 @@ namespace Server.Game
                 desc.Duration = _skillData.descriptionInfo["Duration"];
                 desc.Speed = _skillData.descriptionInfo["Speed"];
                 desc.EndPos = endPos;
-                player.ChangeState(new Player_StunState(desc));
+
+                if(!player.IsUnstoppable())
+                    player.ChangeState(new Player_StunState(desc));
             }
         }
 

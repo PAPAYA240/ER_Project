@@ -212,6 +212,7 @@ class PacketHandler
             PlayerController pc = cc as PlayerController;
             if (pc == null)
                 return;
+            pc.BushRenderType(0);
 
             // 공격 플레이어
             GameObject attackerGo = Managers.Object.FindById(diePacket.AttackerId);
@@ -354,25 +355,24 @@ class PacketHandler
         if (cc == null)
             return;
 
-        cc.Stat.Level += levelUpPkt.LevelUpCnt;
-
+        cc.Stat.Level = levelUpPkt.Level;
         cc.ChangeStat(levelUpPkt.StatGrowth);
 
-        Debug.Log($" Id {cc.Id} ");
-        Debug.Log($" LevelUpCnt : {levelUpPkt.LevelUpCnt}, After Level : {cc.Stat.Level} ");
-        Debug.Log($" MaxHp : {levelUpPkt.StatGrowth.MaxHp}, MaxStamina : {levelUpPkt.StatGrowth.MaxStamina} ");
+        //Debug.Log($" Id {cc.Id} ");
+        //Debug.Log($" LevelUpCnt : {levelUpPkt.LevelUpCnt}, After Level : {cc.Stat.Level} ");
+        //Debug.Log($" MaxHp : {levelUpPkt.StatGrowth.MaxHp}, MaxStamina : {levelUpPkt.StatGrowth.MaxStamina} ");
 
         //아래는 레벨이 제대로 표시되게 하는 코드
         //마이 플레이어면 업데이트 하고 리턴
-        MyPlayerController mpc = go.GetComponent<MyPlayerController>();
-        if (null != mpc)
+        
+        if (Managers.Object.MyPlayer != null && Managers.Object.MyPlayer.Id == levelUpPkt.ObjectId)
         {
-            mpc.UI.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
-            mpc.UpdateLevel();
-            mpc.UI.PlayerInterface.UpdateStat();
-            mpc.Exp = levelUpPkt.CurExp;
-            mpc.MaxExp = levelUpPkt.NextMaxExp;
-            Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(mpc.Id);
+            Managers.Object.MyPlayer.UI.PlayerInterface.OnLevelUp(levelUpPkt.LevelUpCnt);
+            Managers.Object.MyPlayer.UpdateLevel();
+            Managers.Object.MyPlayer.UI.PlayerInterface.UpdateStat();
+            Managers.Object.MyPlayer.Exp = levelUpPkt.CurExp;
+            Managers.Object.MyPlayer.MaxExp = levelUpPkt.NextMaxExp;
+            Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(Managers.Object.MyPlayer.Id);
             Managers.Sound.Play("sound/ui/effect_levelup");
             return;
         }
@@ -403,8 +403,11 @@ class PacketHandler
         Vector3 targetPos = fxPacket.TargetPosition.ToVector();
         Quaternion targetRot = fxPacket.TargetRotation;
 
-        if(fxPacket.CanLookatMouse == true)
-            pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));
+        if (fxPacket.CanLookatMouse == true)
+        {
+            pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));  
+        }
+
         pc.PlayEffectFromServer(fxPacket, mousePos, targetPos, targetRot);
     }
 
@@ -418,12 +421,21 @@ class PacketHandler
             return;
 
         if (Managers.Object.MyPlayer.Id == respawnPacket.ObjectId)
+        {
             Managers.Object.MyPlayer.OnServerUpdate(respawnPacket);
+            Managers.Sound.Play("sound/ui/TeamRevival");
+        }
         else
         {
             PlayerController pc = go.GetComponentInChildren<PlayerController>();
             if (pc != null)
+            {
                 pc.OnRespawn(respawnPacket);
+                if(pc.ObjInfo.Player.Team == Managers.Info.Team)
+                    Managers.Sound.Play("sound/ui/TeamRevival");
+
+                Managers.Object.MyPlayer.View.TargetId = 0;
+            }
         }
     }
 
@@ -436,7 +448,7 @@ class PacketHandler
 
         Managers.Object.MyPlayer.UI.PlayerInterface.SpecificSkillLevelUp(key);
         Managers.Object.MyPlayer.UI.UpdateSkillMaxCool();
-        Managers.Sound.Play("sound/ui/SkillUp");
+        Managers.Sound.Play("sound/ui/SkillUp", Define.Sound.Effect, 0.3f);
     }
 
     public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
@@ -716,7 +728,7 @@ class PacketHandler
         GameObject go = Managers.Object.FindById(stunPacket.ObjectId);
         if (go == null)     return;
         GameObject goAtk = Managers.Object.FindById(stunPacket.AttackerId);
-        if (go == null)     return;
+        if (goAtk == null)     return;
         CreatureController cc = go.GetComponentInChildren<CreatureController>();
         if (cc == null)     return;
         CreatureController atkc = goAtk.GetComponentInChildren<CreatureController>();
@@ -819,7 +831,7 @@ class PacketHandler
 
         if(soundPkt.Name.Contains("BGM"))
         {
-            Managers.Sound.Play($"sound/bgm/P{Managers.Object.MyPlayer.CurPhase}", Define.Sound.Bgm);
+            Managers.Sound.Play($"sound/bgm/P{Managers.Object.MyPlayer.CurPhase}", Define.Sound.Bgm, 0.1f);
             return;
         }
 
@@ -890,7 +902,14 @@ class PacketHandler
         if (!IsSceneReady("Game", () => S_GameOverHandler(session, packet))) return;
         S_GameOver gameOverPkt = packet as S_GameOver;
 
+        bool isWin = false;
 
+        if(Managers.Info.Team == gameOverPkt.WinTeam)
+            isWin = true;
+        else
+            isWin = false;
+
+        Managers.Object.MyPlayer.UI.PlayerHUD.SetGameResult(isWin);
     }
 
     public static void S_ChangeTransformHandler(PacketSession session, IMessage packet)
@@ -1046,7 +1065,7 @@ class PacketHandler
         if (chat == null)
             return;
 
-        chat.EnqueueMessage(chatPkt.ObjectId, chatPkt.Message);
+        chat.EnqueueMessage(chatPkt.PlayerName, chatPkt.Message);
     }
 
     public static void S_AnimSpeedHandler(PacketSession session, IMessage packet)
@@ -1259,6 +1278,9 @@ class PacketHandler
         if (bc == null) return;
 
         bc.StartCapture(startOperatePkt.Team);
+
+        if (startOperatePkt.ObjectId == Managers.Object.MyPlayer.Id)
+            bc.Begin();
     }
 
     public static void S_StopOperateHandler(PacketSession session, IMessage packet)
@@ -1273,6 +1295,9 @@ class PacketHandler
         if (bc == null) return;
 
         bc.FailCapture();
+
+        if (stopOperatePkt.ObjectId == Managers.Object.MyPlayer.Id)
+            bc.Cancel();
     }
 
     public static void S_AbigailSoundHandler(PacketSession session, IMessage packet)
@@ -1367,6 +1392,23 @@ class PacketHandler
         if (pc == null) return;
         pc.YukiEffects.StopEffect(stopAbglFx.Fx);
     }
+
+    public static void S_DeployingLoopHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_DeployingLoopHandler(session, packet)))
+            return;
+
+        S_DeployingLoop deploying = packet as S_DeployingLoop;
+        GameObject go = Managers.Object.FindById(deploying.ObjectId);
+        if (go == null)
+            return;
+
+        MyPlayerController mpc = go.GetComponentInChildren<MyPlayerController>();
+        if (mpc == null)
+            return;
+        mpc.OnServerUpdate(deploying);
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;

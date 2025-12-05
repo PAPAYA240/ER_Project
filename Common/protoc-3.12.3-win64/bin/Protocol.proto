@@ -146,7 +146,9 @@ enum MsgId {
   S_STOP_ABGL_FX = 115;
 
  S_THEODORE_ATTACK = 116;
-  
+  C_ATTACK_TARGET_INVALID = 117;
+  C_BASE_TRIGGER = 118;
+  S_DEPLOYING_LOOP = 119;
 }
 
 enum CombatState{
@@ -208,6 +210,7 @@ enum SkillType{
 	SKILL_STATIC = 3;
 	SKILL_TRACK = 4;
 	SKILL_POINT = 5;
+	SKILL_TARGETING = 6;
 }
 
 enum MonsterSkill{
@@ -391,9 +394,8 @@ enum SkillEffectType {
 	Q_Buff = 5;
 	W_Flower = 6;
 	W_EFFECT = 7;
-
-    DASH = 8;
-    Hit = 9;
+	E_Wind = 8;
+	WpSkill = 9;
 }
 
 enum SpawnPointType
@@ -469,6 +471,17 @@ enum AbigailFx{
 	R_Start = 12;
 	R_Trail = 13;
 	WpnSkill = 14;
+}
+
+enum InvalidTargetReason{
+	Invalid_Null = 0;
+	Invalid_Self = 1;
+	Invalid_Ally = 2;
+	Invalid_Untargetable = 3;
+	Invalid_Dead = 4;
+	Invalid_Invisible = 5;
+	Invalid_Hiding = 6;
+	Invalid_Valid = 7;
 }
 
 message S_TheodoreAttack
@@ -675,10 +688,11 @@ message S_VisibleObjects{
 
 message S_LevelUp{
 	int32 objectId = 1;
-	int32 levelUpCnt = 2;
-	StatInfo statGrowth = 3;
-	int32 nextMaxExp = 4;
-	int32 curExp = 5;
+	int32 level = 2;
+	int32 levelUpCnt = 3;
+	StatInfo statGrowth = 4;
+	int32 nextMaxExp = 5;
+	int32 curExp = 6;
 }
 
 message C_EnterLobby{
@@ -1163,12 +1177,14 @@ message S_CombatMode {
 
 message C_Chat {
 	int32 objectId = 1;
-	string message = 2;
+	string playerName = 2;
+	string message = 3;
 }
 
 message S_Chat {
 	int32 objectId = 1;
-	string message = 2;
+	string playerName = 2;
+	string message = 3;
 }
 
 message S_Unstoppable{
@@ -1273,10 +1289,12 @@ message S_LoadGameScene{
 message S_StartOperate{
 	string beaconName = 1;
 	int32 team = 2;
+	int32 objectId = 3;
 }
 
 message S_StopOperate{
 	string beaconName = 1;
+	int32 objectId = 2;
 }
 
 message S_AbigailSound{
@@ -1326,4 +1344,20 @@ message S_AbigailFx{
 message S_StopAbglFx{
 	int32 objectId = 1;
 	AbigailFx fx = 2;
+}
+
+message C_AttackTargetInvalid{
+	int32 objectId = 1;
+	int32 targetId = 2;
+	InvalidTargetReason reason = 3;
+}
+
+message C_BaseTrigger{
+	int32 objectId = 1;
+	int32 team = 2;
+	bool isInside = 3;
+}
+
+message S_DeployingLoop{
+	int32 objectId = 1;
 }

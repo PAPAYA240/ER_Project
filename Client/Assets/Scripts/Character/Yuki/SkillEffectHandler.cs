@@ -32,6 +32,8 @@ public class SkillEffectHandler
             RegisterEffect(SkillEffectType.RAttack, player, "Effect/Yuki/Yuki_SkillR_Attack");
             RegisterEffect(SkillEffectType.QAttack, player, "Effect/Yuki/Yuki_SkillQ_Attack");
             RegisterEffect(SkillEffectType.WEffect, player, "Effect/Yuki/Yuki_SkillW");
+            RegisterEffect(SkillEffectType.EWind, player, "Effect/Yuki/Yuki_Skill_Wind");
+            RegisterEffect(SkillEffectType.WpSkill, player, "Effect/Yuki/Yuki_WeaponSkill");
             RegisterEffectBone(SkillEffectType.QBuff, player, "Effect/Yuki/Yuki_SkillQ_Buff", "Fx_Hand_R");
 
             // ���� ���� Ŀ���� Fx Ŭ����

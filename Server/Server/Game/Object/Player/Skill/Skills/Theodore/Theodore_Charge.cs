@@ -1,6 +1,7 @@
 ﻿
 using Google.Protobuf.Protocol;
 using Server.Game;
+using System.Numerics;
 using System.Xml.Linq;
 using static Server.Data.DataUtils;
 
@@ -21,8 +22,7 @@ public sealed class Theodore_Charge : SkillHandlerBase
     {
         HitboxRequired = false;
         base.OnEnter(p, ctx);
-
-        p.SendSkillEffect(ctx.MousePos, KeyCode.Q, sendLookatMousePacket: true,
+        p.SendSkillEffect(default(Vector2), KeyCode.Q,
             type : "Select",
             name : "FX_Charging");
 

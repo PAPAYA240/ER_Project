@@ -21,7 +21,7 @@ public sealed class Rozzi_E : RozziSkillHandler
 
     private float _dashDistance = 3f;
 
-    private float _behindDistance = 2.5f;
+    private float _behindDistance = 4f;
     private float _behindSpeed = 10.0f;
 
     private float _stunDuration = 0.5f;

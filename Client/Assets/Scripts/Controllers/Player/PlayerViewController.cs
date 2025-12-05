@@ -41,21 +41,19 @@ public class PlayerViewController : MonoBehaviour
         if (!_syncing || _agent == null || _player == null)
             return;
 
-        //if (_player.State == CreatureState.Attack)
-        //{
-        //    if (_isRotating == false)
-        //    {
-        //        var targetView = Managers.Object.FindById(TargetId);
-        //        if (targetView != null)
-        //        {
-        //            Vector3 pos = targetView.transform.position;
-        //            UpdateTarget(pos);
-        //        }
-        //    }
-        //}
-        //else
-
-        _player.UpdateTransform();
+        if (_player.State == CreatureState.Attack)
+        {
+            Debug.Log("공격 중에 회전중");
+            var targetView = Managers.Object.FindById(TargetId);
+            if (targetView != null)
+            {
+                Debug.Log(targetView.transform.position);
+                Vector3 pos = targetView.transform.position;
+                UpdateTarget(pos);
+            }
+        }
+        else
+             _player.UpdateTransform();
     }
 
     public void OnMove(S_Move packet)
@@ -95,6 +93,7 @@ public class PlayerViewController : MonoBehaviour
     {
         _agent.Warp(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
         _player.Hp = packet.Hp;
+        _player.Stamina = packet.Stamina;
         _player.IsRest = packet.IsRest;
         Debug.Log(_player.IsRest);
         _player.UpdateTransform(true);
@@ -196,12 +195,11 @@ public class PlayerViewController : MonoBehaviour
         if (_followTargetId == 0)
             return;
 
-        // TEMP : 나중에 Target 상태 체크해서 쫓아갈지 검사
-        //var targetView = FindVisibleObjectById(_followTargetId);
         var targetView = Managers.Object.FindById(_followTargetId);
-        if (targetView == null)
+        if (!_player.IsAttackable(targetView, out var reason))
         {
             // 타겟이 사라졌으면 추적 종료
+            SendAttackTargetInvalid(_followTargetId, reason);
             StopFollowTarget();
             return;
         }
@@ -296,14 +294,16 @@ public class PlayerViewController : MonoBehaviour
         }
     }
 
-    private GameObject FindVisibleObjectById(int objectId)
+    private void SendAttackTargetInvalid(int targetId, InvalidTargetReason reason)
     {
-        if (VisibleObjectIds.Contains(objectId))
+        C_AttackTargetInvalid packet = new C_AttackTargetInvalid()
         {
-            return Managers.Object.FindById(objectId);
-        }
+            ObjectId = _player.Id,
+            TargetId = targetId,
+            Reason = reason
+        };
 
-        return null;
+        _player.SendPacket(packet);
     }
     #endregion
 }

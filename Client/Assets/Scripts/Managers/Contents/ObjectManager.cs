@@ -76,8 +76,8 @@ public class ObjectManager
             MyPlayer.SyncPos(true);
             MyPlayer.Hp = info.StatInfo.MaxHp;
             MyPlayer.Stamina = info.StatInfo.MaxStamina;
-            MyPlayer.UI.PlayerHUD.AddPlayerBoardToBattleBoard(MyPlayer);
             MyPlayer.NickName = info.Player.Nickname;
+            MyPlayer.UI.PlayerHUD.AddPlayerBoardToBattleBoard(MyPlayer);
             if (Managers.Scene.CurrentScene is GameScene scene)
             {
                 scene.AddPlayer(go, MyPlayer);
@@ -112,7 +112,6 @@ public class ObjectManager
 
             if (Managers.Info.Team != pc.ObjInfo.Player.Team)
             {
-                go.gameObject.AddComponent<HighlightEffect>();
                 if (ui_minimap != null)
                 {
                     ui_minimap.ActivatePlayerIcon(UI_MinimapCharIcon.IconType.EnemyPlayer, pc);
@@ -291,9 +290,6 @@ public class ObjectManager
                 continue;
 
             GameObject go = keyValue.Value;
-            if (go == null)
-                continue;
-
             if (go == null)
                 continue;
 

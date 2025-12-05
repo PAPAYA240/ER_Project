@@ -13,8 +13,6 @@ public class MyPlayerController : PlayerController
     private PlayerUIController _UI;
     public PlayerUIController UI {  get { return _UI; } }
 
-
-
     public SkillIndicator Indicator { get { return _skillIndicator; } }
 
     private SkillIndicator _skillIndicator;
@@ -63,7 +61,9 @@ public class MyPlayerController : PlayerController
     {
         base.Init();
 
-        if(ObjInfo.Player.CharType == CharacterType.Hyunwoo)
+        this.gameObject.layer = LayerMask.NameToLayer("MyPlayer");
+
+        if (ObjInfo.Player.CharType == CharacterType.Hyunwoo)
         {
             Destroy(_input);
             _input = gameObject.GetOrAddComponent<HyunwooInputController>();
@@ -95,12 +95,7 @@ public class MyPlayerController : PlayerController
 
     private void Update()
     {
-        // 1) 정지(S/H)
-        var stopCmd = _input.GetStopCommand();
-        if (stopCmd != null)
-            Managers.Network.Send(stopCmd);
-
-        // 2) 우클릭 : 타겟 공격 의도
+        // 1) 우클릭 : 타겟 공격 의도
         var atkCmd = _input.GetAttackCommand();
         if (atkCmd != null)
         {
@@ -110,7 +105,7 @@ public class MyPlayerController : PlayerController
         }
         else
         {
-            if(Time.time - _lastAttackTime >= _attackLockTime)
+            if (Time.time - _lastAttackTime >= _attackLockTime)
             {
                 var operate = _input.GetOperateCommand();
                 var deploying = _input.GetDeployingLoopCommand();
@@ -119,7 +114,7 @@ public class MyPlayerController : PlayerController
                     _lastOperateTime = Time.time;
                     Managers.Network.Send(operate);
                 }
-                else if(deploying != null)
+                else if (deploying != null)
                 {
                     _lastOperateTime = Time.time;
                     Managers.Network.Send(deploying);
@@ -132,13 +127,22 @@ public class MyPlayerController : PlayerController
                         var setMove = _input.GetSetMoveTarget();
                         if (setMove != null)
                         {
+                            _view.TargetId = setMove.TargetId;
                             _view.ApplyLocalSetMoveTarget(setMove);
                             Managers.Network.Send(setMove);
                         }
                     }
                 }
-            }         
+            }
         }
+
+        if (ChatHandler.IsChatting)
+            return;
+
+        // 2) 정지(S/H)
+        var stopCmd = _input.GetStopCommand();
+        if (stopCmd != null)
+            Managers.Network.Send(stopCmd);
 
         // 스킬
         // 스킬 레벨 업
@@ -218,6 +222,7 @@ public class MyPlayerController : PlayerController
     public void OnServerUpdate(S_SkillConfirm packet) => _skill.OnSkillConfirm(packet);
     public void OnServerUpdate(S_SkillCollisionRequest packet) => _skill.OnSkillCollisionRequest(packet);
     public void OnServerUpdate(S_SkillCost packet) => _skill.OnSkillCost(packet);
+    public void OnServerUpdate(S_DeployingLoop packet) => _input.CancelDeployingLoopInteraction();
 
     #region UI
     public override void SetKDA(int kill, int death, int asist)
@@ -371,7 +376,7 @@ public class MyPlayerController : PlayerController
     protected override void UpdateHp() { base.UpdateHp(); _UI.UpdateHp(); }
     protected override void UpdateMaxHp() { base.UpdateMaxHp(); _UI.UpdateMaxHp(); } 
     protected override void UpdateStamina() { base.UpdateStamina(); _UI.UpdateStamina(); }
-    protected override void UpdateMaxStamina() { base.UpdateMaxStamina(); _UI.UpdateMaxStamina(); Debug.Log($"Stamina : {Stamina}, MaxStamina {MaxStamina}, Stat.MaxStamina : {Stat.MaxStamina}, ItemStat.MaxStamina : {ItemStat.MaxStamina}"); }
+    protected override void UpdateMaxStamina() { base.UpdateMaxStamina(); _UI.UpdateMaxStamina(); /*Debug.Log($"Stamina : {Stamina}, MaxStamina {MaxStamina}, Stat.MaxStamina : {Stat.MaxStamina}, ItemStat.MaxStamina : {ItemStat.MaxStamina}");*/ }
     public void UpdateLevel() { _UI.UpdateLevel(); }
     public void UpdateCool() { _UI.UpdateCool(); }
 }

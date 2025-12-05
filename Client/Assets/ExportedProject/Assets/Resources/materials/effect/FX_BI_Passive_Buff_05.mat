@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FX_BI_Passive_Buff_05
+  m_Shader: {fileID: 4800000, guid: a064ba2fd9d506740bb9b1efb818ba59, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 0
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlowMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 3758faf0a346dba448c24435dcb8946e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 70377770a96f1854b8f071953cad66dd, type: 3}
+        m_Scale: {x: 1, y: 2}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex02:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Noise01:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Noise02:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - PixelSnap: 0
+    - _AlphaCutoff: 0.05
+    - _BlendMode: 0
+    - _Cull: 0
+    - _Cutoff: 0
+    - _Dissolve: 0
+    - _DistortStrength: 0.05
+    - _EdgeIntensity: 2
+    - _EdgeWidth: 2
+    - _EmissStrength: 2
+    - _EnableExternalAlpha: 0
+    - _FlowIntensity: 1
+    - _FlowSpeed: 1
+    - _FlowSpeedX: 0.1
+    - _FlowSpeedY: 0
+    - _FlowStrength: 0.3
+    - _Glow: 0
+    - _HitFlash: 0
+    - _Intensity: 1
+    - _IsPolar: 0
+    - _MulVal_Col: 1
+    - _MulVal_alpha: 1
+    - _MulVal_rgb: 5
+    - _Noise: 0
+    - _OuterRadius: 0.5
+    - _OuterStrength: 1
+    - _Scale: 1
+    - _Smooth: 0.05
+    - _Speed: 2
+    - _U: 0.57
+    - _U_copy: -0.38
+    - _V: 0.3
+    - _V_copy: -0.65
+    - _ZTestMode: 2
+    - _ZWrite: 0
+    - _power: 1
+    m_Colors:
+    - _Color: {r: 0.41568628, g: 0.028180461, b: 0, a: 0.36078432}
+    - _EdgeColor: {r: 0.5, g: 0.8, b: 1, a: 1}
+    - _MainTexUV_TilingSpeed: {r: 1, g: 1, b: 0, a: 0}
+    - _MaskUV_Tiling: {r: 1, g: 1, b: 0, a: 0}
+    - _Noise01UV_TilingSpeed: {r: 1, g: 1, b: 0, a: 0}
+    - _Noise02UV_TilingSpeed: {r: 1, g: 1, b: 0, a: 0}
+    - _ScrollSpeed: {r: 0, g: 0, b: 0.3, a: -1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

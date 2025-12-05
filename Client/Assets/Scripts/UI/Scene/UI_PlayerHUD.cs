@@ -66,10 +66,10 @@ public class UI_PlayerHUD : UI_Scene
         }
 
         //TODO ���� ������ �� ȣ��Ǿߵ�.
-        if(Input.GetKeyDown(KeyCode.M))
-        {
-            SetGameResult(true);
-        }
+        //if(Input.GetKeyDown(KeyCode.M))
+        //{
+        //    SetGameResult(true);
+        //}
     }
 
     #region Beacon

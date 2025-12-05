@@ -3,12 +3,12 @@ using Server.Game;
 using System;
 using static Player_StunState;
 using static Server.Data.DataUtils;
+using static System.Net.Mime.MediaTypeNames;
 
 public class Yuki_AttackState : Player_AttackState
 {
     private const string AnimAttackQ = "SKILL_Q";
     KeyCode _keyCode = KeyCode.Q;
-    bool IsPassiveAttack = false;
 
     public Yuki_AttackState(int targetId, bool chaseAllowed = true) : base(targetId, chaseAllowed)
     {
@@ -33,8 +33,6 @@ public class Yuki_AttackState : Player_AttackState
             // 이펙트 멈추기
             p.SendYukiSkillEffect(SkillEffectType.QBuff, false);
 
-            p.AttackActive = false;
-
             animName = AnimAttackQ;
             p.Skill.StartCooldown(_keyCode);
             p.SendSkillCostPacket(_keyCode, p.Skill.GetCooldown(_keyCode));
@@ -47,18 +45,6 @@ public class Yuki_AttackState : Player_AttackState
             _attackIndex = 1 - _attackIndex;
 
             p.Room.Push(p.Room.BroadcastAbigailSound, p, AbigailSound.YukiAttack1 + _attackIndex, 1f);
-        }
-
-        // 유키 단추
-        if (p.YukiStud > 0)
-        {
-            p.YukiStud--;
-
-            S_YukiStud yukiStudPkt = new S_YukiStud();
-            yukiStudPkt.ObjectId = p.Id;
-            yukiStudPkt.StudCnt = p.YukiStud;
-
-            p.Room.Push(p.Room.Broadcast, yukiStudPkt);
         }
 
         // 전투 상태 평타 칠 때마다 갱신
@@ -81,15 +67,17 @@ public class Yuki_AttackState : Player_AttackState
 
         GameRoom room = p.Room;
 
-        if (IsPassiveAttack)
+        if (p.AttackActive)
         {
+            p.AttackActive = false;
+
             Player targetPlayer = target as Player;
 
-            if (targetPlayer != null)
+            if (targetPlayer != null && !targetPlayer.IsUnstoppable())
             {
                 StunStateDesc desc = new StunStateDesc();
                 desc.EndPos = target.Position;
-                desc.Duration = 0.5f;
+                desc.Duration = 1f;
                 desc.Speed = 0f;
 
                 targetPlayer.ChangeState(new Player_StunState(desc));
@@ -99,6 +87,20 @@ public class Yuki_AttackState : Player_AttackState
         }
         else
             room.Push(room.BroadcastAbigailSound, p, AbigailSound.YukiAttackHit, 1f);
+
+        // 유키 단추
+        if (p.YukiStud > 0)
+        {
+            p.YukiStud--;
+
+            S_YukiStud yukiStudPkt = new S_YukiStud();
+            yukiStudPkt.ObjectId = p.Id;
+            yukiStudPkt.StudCnt = p.YukiStud;
+
+            p.Room.Push(p.Room.Broadcast, yukiStudPkt);
+
+            room.Push(target.OnDamaged, p, 40f, true, false);
+        }
 
         // 평타 데미지
         room.Push(target.OnDamaged, p, p.Attack, false, true);

@@ -1,11 +1,14 @@
+using Google.Protobuf.Protocol;
+using Google.Protobuf.WellKnownTypes;
+using Server.Data;
+using ServerCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
-using Google.Protobuf.Protocol;
-using Server.Data;
-using ServerCore;
+using static IRegenEffect;
 using static Server.Data.DataUtils;
 
 namespace Server.Game
@@ -83,20 +86,7 @@ namespace Server.Game
         public override float Hp
         {
             get { return base.Hp; }
-            set 
-            {
-                float cur = Stat.Hp;
-
-                if (value > cur) // 회복일 때만  Healing에 치유 증가/감소 반영
-                {
-                    float healAmount = (value - cur) * Healing; 
-                    Stat.Hp = Math.Clamp(cur + healAmount, 0, MaxHp);
-                }
-                else // 데미지일 때는 그대로
-                {
-                    Stat.Hp = Math.Clamp(value, 0, MaxHp);
-                }
-            }
+            set { Stat.Hp = Math.Clamp(value, 0, MaxHp); }
         }
 
         public override float HpRegen
@@ -486,6 +476,8 @@ namespace Server.Game
         #region Stat
         public void StartRegen() => _statRegenerator.Start();
         public void StopRegen() => _statRegenerator.Stop();
+        public void AddStatEffect(StatRegenType effect) => _statRegenerator.AddEffect(effect);
+        public void RemoveStatEffect(StatRegenType effect) => _statRegenerator.RemoveEffect(effect);
 
         public bool CanRegenerate()
         {
@@ -496,11 +488,6 @@ namespace Server.Game
                 return false;
 
             return true;
-        }
-
-        public void UseHealPack(float amount, float durationSeconds)
-        {
-            _statRegenerator.AddEffect(new HealPackEffect(amount, durationSeconds));
         }
 
         private void CheckUpdateStat()
@@ -1292,6 +1279,14 @@ namespace Server.Game
             Room.Push(Session.Send, packet);
         }
 
+        public void SendDeployingPacket()
+        {
+            S_DeployingLoop packet = new S_DeployingLoop()
+            {
+                ObjectId = Id,
+            };
+            Room.Push(Session.Send, packet);
+        }
         #endregion
 
         #region StatusEffect(버프, 디버프), Barrier(방어막) 관련
@@ -1334,22 +1329,6 @@ namespace Server.Game
                 _isUpdatedStatus = false;
             }
         }
-
-        public void SendUpdateStatusPacket(bool IsUnStoppable)
-        {
-            S_ChangeStatus packet = new S_ChangeStatus()
-            {
-                ObjectId = Id,
-
-                MoveSpeed = Speed,
-                Attack = Attack,
-                //AttackSpeed = 
-                Defense = Defense,
-                Healing = Healing,
-            };
-
-            Room.Push(Session.Send, packet);
-        }
         #endregion
 
         #region FX
@@ -1372,26 +1351,24 @@ namespace Server.Game
             Vector3 targetPos = new Vector3(),
             Quaternion targetRot = default(Quaternion),
             string type = "Caster",
-            string name = "",
+            string name = "", 
             bool useTargetTransform = false,
             int targetId = 0,
             bool isCommon = false,
             string commonName = "")
         {
-            Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
-            Vector2 dir = mousePos - myPos;
-
-            float angle = (float)Math.Atan2(dir.Y, dir.X);
-            Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle);
-
-            RotationInfo newRot = new RotationInfo
-            {
-                Qx = rot.X,
-                Qy = rot.Y,
-                Qz = rot.Z,
-                Qw = rot.W
-            };
-            RotInfo = newRot;
+            //Vector2 myPos = new Vector2(Info.PosInfo.PosX, Info.PosInfo.PosZ);
+            //Vector2 dir = mousePos - myPos;
+            //float angle = (float)Math.Atan2(dir.Y, dir.X);
+            //Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, angle);
+            //RotationInfo newRot = new RotationInfo
+            //{
+            //    Qx = rot.X,
+            //    Qy = rot.Y,
+            //    Qz = rot.Z,
+            //    Qw = rot.W
+            //};
+            //RotInfo = newRot;
 
             S_Fx fxPacket = new S_Fx
             {

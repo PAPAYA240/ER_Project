@@ -21,6 +21,8 @@ public sealed class Hyunwoo_E_End : SkillHandlerBase
 
         SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
+
+        Console.WriteLine($"@ E_End OnEnter : start - {p.Position}");
     }
 
     public override void OnHit(Player p, SkillContext ctx)

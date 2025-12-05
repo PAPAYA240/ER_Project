@@ -416,12 +416,22 @@ namespace Server.Game
         #endregion
 
         #region State
+        public void ApplyHeal(float baseAmount)
+        {
+            if (baseAmount <= 0f)
+                return;
+
+            float final = baseAmount * Healing;   // 여기서만 Healing 반영
+            Hp = Stat.Hp + final;
+        }
+
         public virtual void OnHeal(GameObject go, float heal)
         {
             if (Room == null || State == CreatureState.Dead || heal <= 0)
                 return;
 
-            Hp = Math.Min(MaxHp, Hp + heal);
+            //Hp = Math.Min(MaxHp, Hp + heal);
+            ApplyHeal(heal);
 
             S_ChangeHp changePacket = new S_ChangeHp();
             changePacket.ObjectId = Id;
@@ -530,7 +540,7 @@ namespace Server.Game
                         stunPacket.ObjectId = Id;
                         stunPacket.AttackerId = statusEffect.attacker.Id;
                         stunPacket.AttackerTeam = statusEffect.attacker.Info.Player.Team;
-                        stunPacket.Duration = statusEffect.duration;
+                        stunPacket.Duration = 4/*statusEffect.duration*/;
                         Room.Broadcast(stunPacket);
 
                         if (this is Player player)
@@ -706,6 +716,15 @@ namespace Server.Game
             }
         }
 
+        public bool FindStatStatusEffect(string name)
+        {
+            foreach (StatusEffect effect in _statusEffects)
+            {
+                if (effect.stat == name)
+                    return true;
+            }
+            return false;
+        }
         void OnStatusEffectRemove(StatusEffect statusEffect)
         {
             if (statusEffect.type == "Buff" || statusEffect.type == "Debuff")
@@ -856,11 +875,7 @@ namespace Server.Game
                 return;
 
             _mulByInst[inst] = (key, delta);
-
-            if (inst.type == "Buff")
-                _mulBuffAccum[key] = _mulBuffAccum.GetValueOrDefault(key) + delta;
-            else if (inst.type == "Debuff")
-                _mulDebuffAccum[key] = _mulDebuffAccum.GetValueOrDefault(key) + delta;
+            CalculateMaxMultiplier(type: inst.type, key);
 
             UpdateStatusFlag();
         }
@@ -890,18 +905,7 @@ namespace Server.Game
             var (key, delta) = pair;
             _mulByInst.Remove(inst);
 
-            if (inst.type == "Buff")
-            {
-                _mulBuffAccum[key] = _mulBuffAccum.GetValueOrDefault(key) - delta;
-                if (MathF.Abs(_mulBuffAccum[key]) < 1e-6f)
-                    _mulBuffAccum.Remove(key);
-            }
-            else if (inst.type == "Debuff")
-            {
-                _mulDebuffAccum[key] = _mulDebuffAccum.GetValueOrDefault(key) - delta;
-                if (MathF.Abs(_mulDebuffAccum[key]) < 1e-6f)
-                    _mulDebuffAccum.Remove(key);
-            }
+            CalculateMaxMultiplier(type: inst.type, key);
 
             UpdateStatusFlag();
         }
@@ -929,6 +933,34 @@ namespace Server.Game
             }
 
             UpdateStatusFlag();
+        }
+
+        private void CalculateMaxMultiplier(string type, string key)
+        {
+            float best = 0f;
+            bool has = false;
+
+            foreach (var kv in _mulByInst)
+            {
+                StatusEffect inst = kv.Key;
+                var (k, delta) = kv.Value;
+
+                if (inst.type == type && k == key)
+                {
+                    if (!has || MathF.Abs(delta) > MathF.Abs(best))
+                    {
+                        best = delta;
+                        has = true;
+                    }
+                }
+            }
+
+            var dict = (type == "Buff") ? _mulBuffAccum : _mulDebuffAccum;
+
+            if (has)
+                dict[key] = best;
+            else
+                dict.Remove(key);
         }
 
         // 이펙트 등록
