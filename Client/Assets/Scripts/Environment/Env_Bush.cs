@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,7 @@ public class Env_Bush : EnvController
         Translucent
     }
     List<int> _insidePlayersId = new List<int>();
+    Dictionary<int, Coroutine> _delayedVisibleCoroutines = new Dictionary<int, Coroutine>(); 
 
     [SerializeField] public BoxCollider _bushCollider;
     protected override void Init() => base.Init();
@@ -62,6 +64,7 @@ public class Env_Bush : EnvController
                 GameObject newGo = Managers.Object.FindById(newId);
                 if (newGo != null && newGo.TryGetComponent<PlayerController>(out PlayerController newPc))
                 {
+
                     BushEnterRender(newPc);
                 }
             }
@@ -73,21 +76,43 @@ public class Env_Bush : EnvController
     {
         if (pc.ObjInfo.Player.CharType == CharacterType.Theodore)
         {
-            if (pc.ObjInfo.Player.Team != Managers.Object.MyPlayer.ObjInfo.Player.Team)
+            bool isEnemyTeam = pc.ObjInfo.Player.Team != Managers.Object.MyPlayer.ObjInfo.Player.Team;
+            if (isEnemyTeam)
+            {
                 pc.BushRenderType((int)BushState.Hidden);
+
+                if (_delayedVisibleCoroutines.ContainsKey(pc.Id))
+                    StopCoroutine(_delayedVisibleCoroutines[pc.Id]);
+                _delayedVisibleCoroutines[pc.Id] = StartCoroutine(DelayedVisible(pc, 2.5f));
+            }
             else
             {
                 GameObject effect = Managers.FX.Effect.FindCurrentPlayEffect(pc.Id, "FX_PassiveShideld");
                 if (effect != null)
                     Managers.FX.Effect.RemoveEffect(pc.Id, effect);
+
                 pc.PlaySkillEffect(KeyCode.F1, default(Vector3), default(Vector3));
+                pc.BushRenderType((int)BushState.Translucent);
+
+                if (_delayedVisibleCoroutines.ContainsKey(pc.Id))
+                    StopCoroutine(_delayedVisibleCoroutines[pc.Id]);
+                _delayedVisibleCoroutines[pc.Id] = StartCoroutine(DelayedVisible(pc, 2.5f));
             }
-            pc.BushRenderType((int)BushState.Visible, 2.5f);
         }
         else
             pc.BushRenderType((int)BushState.Visible);
 
         UpdateRemainingPlayersRender();
+    }
+
+    private IEnumerator DelayedVisible(PlayerController pc, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (_delayedVisibleCoroutines.ContainsKey(pc.Id))
+            _delayedVisibleCoroutines.Remove(pc.Id);
+
+        pc.BushRenderType((int)BushState.Visible);
     }
 
     private void UpdateRemainingPlayersRender()
@@ -108,6 +133,16 @@ public class Env_Bush : EnvController
     #region Interaction
     private void BushEnterRender(PlayerController target)
     {
+        if (_delayedVisibleCoroutines.ContainsKey(target.Id))
+        {
+            StopCoroutine(_delayedVisibleCoroutines[target.Id]);
+            _delayedVisibleCoroutines.Remove(target.Id);
+
+            GameObject effect = Managers.FX.Effect.FindCurrentPlayEffect(target.Id, "FX_PassiveShideld");
+            if (effect != null)
+                Managers.FX.Effect.RemoveEffect(target.Id, effect);
+        }
+
         bool isSameTeam = Managers.Object.MyPlayer.ObjInfo.Player.Team == target.ObjInfo.Player.Team;
         bool amIInsideBush = _insidePlayersId.Contains(Managers.Object.MyPlayer.Id);
 

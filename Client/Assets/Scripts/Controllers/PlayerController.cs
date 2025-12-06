@@ -1033,9 +1033,8 @@ public class PlayerController : CreatureController
     }
 
     #region Bush Renderer
-    Coroutine _coRenderer = null;
 
-    public void BushRenderType(int state, float duration = 0f)
+    public void BushRenderType(int state)
     {
         VisualEffectController he = GetComponentInChildren<VisualEffectController>();
         if (he == null)  return;
@@ -1044,12 +1043,8 @@ public class PlayerController : CreatureController
         {
          case 0:    // visible
              {
-                    if (_coRenderer != null)
-                    {
-                        StopCoroutine(_coRenderer);
-                        _coRenderer = null;
-                    }
-                    _coRenderer = StartCoroutine(he.MakeVisible(duration));
+                 Hiding(false);
+                 he.MakeVisible();
              }
              break;
          case 1:    // invisible

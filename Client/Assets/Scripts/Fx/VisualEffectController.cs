@@ -73,16 +73,10 @@ public class VisualEffectController : MonoBehaviour
     }
 
     // 렌더러 활성화
-    public IEnumerator MakeVisible(float duration = 0f)
+    public void MakeVisible()
     {
         if (_mode == HighlightMode.None)
-            yield break;
-
-        yield return new WaitForSeconds(duration);
-
-        PlayerController pc = Owner as PlayerController;
-        if(pc)
-            pc.Hiding(false);
+            return;
 
         _mode = HighlightMode.None;
         Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
