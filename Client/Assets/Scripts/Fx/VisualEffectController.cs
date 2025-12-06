@@ -80,13 +80,15 @@ public class VisualEffectController : MonoBehaviour
 
         yield return new WaitForSeconds(duration);
 
+        PlayerController pc = Owner as PlayerController;
+        if(pc)
+            pc.Hiding(false);
+
         _mode = HighlightMode.None;
         Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
         foreach (Renderer renderer in renderers)
         {
             renderer.enabled = true;
-
-            // 각 Renderer의 원본 Material 복원
             if (_originalMaterialsDict.TryGetValue(renderer, out Material[] originalMaterials))
             {
                 renderer.materials = originalMaterials;
@@ -103,8 +105,13 @@ public class VisualEffectController : MonoBehaviour
         Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
         foreach (Renderer renderer in renderers)
         {
-            renderer.enabled = true;
+            if (renderer.gameObject.GetComponent<ParticleSystem>() != null)
+                continue; 
 
+            if (renderer.gameObject.GetComponent<TrailRenderer>() != null)
+                continue;
+
+            renderer.enabled = true;
             int materialCount = renderer.sharedMaterials.Length;
             Material[] ghostMaterials = new Material[materialCount];
             for (int i = 0; i < materialCount; i++)
@@ -118,16 +125,13 @@ public class VisualEffectController : MonoBehaviour
 
     private bool CheckCondition()
     {
-        if (myRenderers == null)
-            return false;
-
         if (Owner is MonsterController monster)
         {
             if (Managers.Object.MyPlayer.ObjInfo.Player.Team == monster.MonsterTeam)
                 return false;
         }
+
         return true;
-        
     }
     public void OnMouseEnter()
     {
@@ -150,8 +154,6 @@ public class VisualEffectController : MonoBehaviour
 
     public void OnMouseExit()
     {
-        if (myRenderers == null) 
-            return;
         if (_mode != HighlightMode.Outline)
             return;
 
@@ -181,7 +183,6 @@ public class VisualEffectController : MonoBehaviour
         originalMaterials = new Material[myRenderers.Length][];
         for (int i = 0; i < myRenderers.Length; i++)
             originalMaterials[i] = myRenderers[i].sharedMaterials;
-
     }
     private void InitCursor()
     {

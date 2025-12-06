@@ -299,7 +299,7 @@ public class ObjectManager
             PlayerController controller = go.GetComponent<PlayerController>();
             if (controller != null)
             {
-                if (controller.HidingInBush)
+                if (controller.IsHide)
                     continue;
             }
 

@@ -268,7 +268,7 @@ public class CreatureController : BaseController
     {
         if(cc is PlayerController pc)
         {
-            if (pc.NameTag.isActiveAndEnabled)
+            if (pc.IsHide)
                 return false;
             return true;
         }

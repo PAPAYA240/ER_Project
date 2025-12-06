@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 using static Data.SkillEffectList;
 
 public class PlayerController : CreatureController
@@ -208,7 +209,7 @@ public class PlayerController : CreatureController
     // 화살
     protected Transform _equipTransform = null;
 
-    public bool HidingInBush = false;
+    public bool IsHide = false;
     #region KDA
 
     public int KillAmount { get; private set; } = 0; 
@@ -1037,37 +1038,49 @@ public class PlayerController : CreatureController
     public void BushRenderType(int state, float duration = 0f)
     {
         VisualEffectController he = GetComponentInChildren<VisualEffectController>();
-        if (he == null)
-            return;
+        if (he == null)  return;
 
         switch (state) 
         {
-         case 0: // visible
+         case 0:    // visible
              {
-                 if (_coRenderer != null)
-                     StopCoroutine(_coRenderer);
-
-                    HidingInBush = false;
-                 _nameTag.gameObject.SetActive(true);
-                 _coRenderer = StartCoroutine(he.MakeVisible(duration));
+                    if (_coRenderer != null)
+                    {
+                        StopCoroutine(_coRenderer);
+                        _coRenderer = null;
+                    }
+                    _coRenderer = StartCoroutine(he.MakeVisible(duration));
              }
              break;
-         case 1: // invisible
+         case 1:    // invisible
              {
-                    HidingInBush = true;
-                 _nameTag.gameObject.SetActive(false);
+                 Hiding(true);
                  he.MakeInvisible();
              }
              break;
-         case 2: // change
+         case 2:    // change
              {
-                    HidingInBush = true;
+                 Hiding(true);
                  he.ChangeBushRenderer();
              }
              break;
         }
     }
     #endregion
+
+    public void Hiding(bool hide)
+    {
+        if (hide)
+        {
+            IsHide = true;
+            _nameTag.gameObject.SetActive(false);
+        }
+        else
+        {
+            IsHide = false;
+            _nameTag.gameObject.SetActive(true);
+        }
+    }
 
     #region State: Rest
     void RegisterRestItem()
