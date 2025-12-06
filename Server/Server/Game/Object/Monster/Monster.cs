@@ -37,6 +37,8 @@ namespace Server.Game
 
         // Position
         public Vector3 _spawnPosition = new Vector3();
+        public Quaternion _spawnRotation = new Quaternion();
+
         public bool ReturnToSpawn { get; set; }
         public Vector3 _lastTargetPos = new Vector3();
 
@@ -257,13 +259,23 @@ namespace Server.Game
         public bool IsReturnSpawn()
         {
             Vector3 monsterPosition = PosInfo.ToVector();
-            return Vector3.Distance(monsterPosition, _spawnPosition) >= ACTIVE_RANGE;
+
+            if (Vector3.Distance(monsterPosition, _spawnPosition) >= ACTIVE_RANGE)
+                return true;
+
+            if (Target == null)
+                return true;
+
+            if (Target != null && Target.State == CreatureState.Dead)
+                return true;
+
+            return false;
         }
 
         public bool IsAtSpawn()
         {
             var myPosition = PosInfo.ToVector();
-            return (Vector3.Distance(myPosition, _spawnPosition) < 0.1f);
+            return (Vector3.Distance(myPosition, _spawnPosition) < DIST_TO_TARGET);
         }
         #endregion
 
@@ -308,6 +320,7 @@ namespace Server.Game
                 Stat.MergeFrom(monsterData.stat);
                 Hp = MaxHp;
                 _spawnPosition = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
+                _spawnRotation = new Quaternion(RotInfo.Qx, RotInfo.Qy, RotInfo.Qz, RotInfo.Qw);
                 State = CreatureState.Appear;
                 if (monsterData.skills != null)
                     _skills.AddRange(monsterData.skills);

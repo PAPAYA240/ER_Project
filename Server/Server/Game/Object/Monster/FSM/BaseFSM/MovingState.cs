@@ -46,7 +46,9 @@ namespace Server.Game
             else if (!monster.HasPath)
             {
                 if (monster.ReturnToSpawn)
+                {
                     monster.ReturnToSpawn = false;
+                }
 
                 RecalculatePath(monster);
             }

@@ -1015,7 +1015,8 @@ namespace Server.Game
                     hitbox.PosZ = hitbox.MousePos.Y;
                 }
             }
-            else if (System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
+            
+            if (System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
             {
                 if (type == SkillType.SkillTargeting)
                 {

@@ -14,6 +14,7 @@ namespace Server.Game
         public void Enter(Monster monster)
         {
             _delayTimer = Environment.TickCount64 + (long)(monster.DelaySkillAnimationTimer * 1000f);
+
             _nextSearchTick = Environment.TickCount64 + SEARCH_INTERVAL_MS;
 
             monster.PushState(CreatureState.Idle, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
@@ -60,6 +61,7 @@ namespace Server.Game
                 if (monster.Target != null)
                     return;
             }
+
             if (!monster.IsAtSpawn())
                 monster.ChangeState(FSMManager.Instance.GetMovingState());
         }

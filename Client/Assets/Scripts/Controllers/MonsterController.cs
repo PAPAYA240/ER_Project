@@ -163,6 +163,7 @@ public class MonsterController : CreatureController
         _agent?.ResetPath();
         OnDead(); 
     }
+
     public void OnIdlePacket(S_State packet)
     {
         if (_agent != null)

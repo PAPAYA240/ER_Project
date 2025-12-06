@@ -8,8 +8,6 @@ public class MonsterAI : MonoBehaviour
     private float _timer = 0f;
     private MonsterController _controller;
 
-    public float PrevHp = 0;
-
     void Start()
     {
         _controller = GetComponentInChildren<MonsterController>();
@@ -27,7 +25,6 @@ public class MonsterAI : MonoBehaviour
         }
 
         _controller.OnStateChanged += OnExecute;
-        PrevHp = _controller.Hp;
         _rootNode?.Enter(gameObject);
     }
 
