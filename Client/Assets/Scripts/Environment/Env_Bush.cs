@@ -16,10 +16,10 @@ public class Env_Bush : EnvController
         Hidden,
         Translucent
     }
+    [SerializeField] public BoxCollider _bushCollider;
     List<int> _insidePlayersId = new List<int>();
     Dictionary<int, Coroutine> _delayedVisibleCoroutines = new Dictionary<int, Coroutine>(); 
 
-    [SerializeField] public BoxCollider _bushCollider;
     protected override void Init() => base.Init();
 
     void FixedUpdate()
@@ -49,6 +49,7 @@ public class Env_Bush : EnvController
             if (!currentInsidePlayersId.Contains(oldId))
             {
                 GameObject exGo = Managers.Object.FindById(oldId);
+                _insidePlayersId.RemoveAt(i);
                 if (exGo != null && exGo.TryGetComponent<PlayerController>(out PlayerController exPc))
                 {
                     BushExitRender(exPc);
@@ -64,13 +65,11 @@ public class Env_Bush : EnvController
                 GameObject newGo = Managers.Object.FindById(newId);
                 if (newGo != null && newGo.TryGetComponent<PlayerController>(out PlayerController newPc))
                 {
-
+                    _insidePlayersId.Add(newId);
                     BushEnterRender(newPc);
                 }
             }
         }
-
-        _insidePlayersId = currentInsidePlayersId; 
     }
     private void BushExitRender(PlayerController pc)
     {
@@ -82,7 +81,9 @@ public class Env_Bush : EnvController
                 pc.BushRenderType((int)BushState.Hidden);
 
                 if (_delayedVisibleCoroutines.ContainsKey(pc.Id))
+                {
                     StopCoroutine(_delayedVisibleCoroutines[pc.Id]);
+                }
                 _delayedVisibleCoroutines[pc.Id] = StartCoroutine(DelayedVisible(pc, 2.5f));
             }
             else
@@ -95,12 +96,16 @@ public class Env_Bush : EnvController
                 pc.BushRenderType((int)BushState.Translucent);
 
                 if (_delayedVisibleCoroutines.ContainsKey(pc.Id))
+                {
                     StopCoroutine(_delayedVisibleCoroutines[pc.Id]);
+                }
                 _delayedVisibleCoroutines[pc.Id] = StartCoroutine(DelayedVisible(pc, 2.5f));
             }
         }
         else
+        {
             pc.BushRenderType((int)BushState.Visible);
+        }
 
         UpdateRemainingPlayersRender();
     }
@@ -120,13 +125,18 @@ public class Env_Bush : EnvController
         foreach (int inPlayerId in _insidePlayersId)
         {
             GameObject inGo = Managers.Object.FindById(inPlayerId);
-            if (inGo == null) continue;
+            if (inGo == null) 
+                continue;
 
             PlayerController inPc = inGo.GetComponent<PlayerController>();
             if (inPc.ObjInfo.Player.Team == Managers.Object.MyPlayer.ObjInfo.Player.Team)
+            {
                 inPc.BushRenderType((int)BushState.Translucent);
+            }
             else
+            {
                 inPc.BushRenderType((int)BushState.Hidden);
+            }
         }
     }
 

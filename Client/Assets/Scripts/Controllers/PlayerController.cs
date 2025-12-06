@@ -1050,13 +1050,13 @@ public class PlayerController : CreatureController
          case 1:    // invisible
              {
                  Hiding(true);
-                 he.MakeInvisible();
+                    he.MakeInvisible();
              }
              break;
          case 2:    // change
              {
                  Hiding(true);
-                 he.ChangeBushRenderer();
+                    he.ChangeBushRenderer();
              }
              break;
         }
