@@ -17,25 +17,61 @@ public class Env_Bush : EnvController
     }
     List<int> _insidePlayersId = new List<int>();
 
-
+    [SerializeField] public BoxCollider _bushCollider;
     protected override void Init() => base.Init();
 
-    protected override void OnTriggerEnter(Collider other)
+    void FixedUpdate()
     {
-        PlayerController pc = other.gameObject.GetComponent<PlayerController>();
-        if (pc == null)
-            return ;
-        RequestCollect(other.gameObject.GetComponent<PlayerController>());
+        CheckBushStatus();
     }
-
-    protected override void OnTriggerExit(Collider other)
+    private void CheckBushStatus()
     {
-        PlayerController pc = other.gameObject.GetComponent<PlayerController>();
-        if (pc == null)
-            return;
+        Vector3 center = transform.TransformPoint(_bushCollider.center);
+        Vector3 halfExtents = Vector3.Scale(_bushCollider.size / 2f, transform.lossyScale);
+        Quaternion rotation = transform.rotation;
 
-        RemoveInsidePlayer(pc.Id);
-        if (pc.ObjInfo.Player.CharType == CharacterType.Theodore)   // 테오도르 패시브
+        Collider[] hitColliders = Physics.OverlapBox(center, halfExtents, rotation, ~0);
+        List<int> currentInsidePlayersId = new List<int>();
+        foreach (Collider hitCollider in hitColliders)
+        {
+            if (hitCollider.TryGetComponent<PlayerController>(out PlayerController pc))
+            {
+                currentInsidePlayersId.Add(pc.Id);
+            }
+        }
+
+        // 나간 플레이어 처리
+        for (int i = _insidePlayersId.Count - 1; i >= 0; i--)
+        {
+            int oldId = _insidePlayersId[i];
+            if (!currentInsidePlayersId.Contains(oldId))
+            {
+                GameObject exGo = Managers.Object.FindById(oldId);
+                if (exGo != null && exGo.TryGetComponent<PlayerController>(out PlayerController exPc))
+                {
+                    BushExitRender(exPc);
+                }
+            }
+        }
+
+        // 새로 들어온 플레이어 처리
+        foreach (int newId in currentInsidePlayersId)
+        {
+            if (!_insidePlayersId.Contains(newId))
+            {
+                GameObject newGo = Managers.Object.FindById(newId);
+                if (newGo != null && newGo.TryGetComponent<PlayerController>(out PlayerController newPc))
+                {
+                    BushEnterRender(newPc);
+                }
+            }
+        }
+
+        _insidePlayersId = currentInsidePlayersId; 
+    }
+    private void BushExitRender(PlayerController pc)
+    {
+        if (pc.ObjInfo.Player.CharType == CharacterType.Theodore)
         {
             if (pc.ObjInfo.Player.Team != Managers.Object.MyPlayer.ObjInfo.Player.Team)
                 pc.BushRenderType((int)BushState.Hidden);
@@ -50,20 +86,18 @@ public class Env_Bush : EnvController
         }
         else
             pc.BushRenderType((int)BushState.Visible);
+
+        UpdateRemainingPlayersRender();
     }
 
-    private void RemoveInsidePlayer(int id)
+    private void UpdateRemainingPlayersRender()
     {
-        if (_insidePlayersId.Contains(id))
-            _insidePlayersId.Remove(id);
-
         foreach (int inPlayerId in _insidePlayersId)
         {
             GameObject inGo = Managers.Object.FindById(inPlayerId);
-            if (inGo == null)
-                continue;
-            PlayerController inPc = inGo.GetComponent<PlayerController>();
+            if (inGo == null) continue;
 
+            PlayerController inPc = inGo.GetComponent<PlayerController>();
             if (inPc.ObjInfo.Player.Team == Managers.Object.MyPlayer.ObjInfo.Player.Team)
                 inPc.BushRenderType((int)BushState.Translucent);
             else
@@ -72,11 +106,8 @@ public class Env_Bush : EnvController
     }
 
     #region Interaction
-    protected override void TryHandleInteraction(PlayerController target)
+    private void BushEnterRender(PlayerController target)
     {
-        if (!_insidePlayersId.Contains(target.Id))
-            _insidePlayersId.Add(target.Id);
-
         bool isSameTeam = Managers.Object.MyPlayer.ObjInfo.Player.Team == target.ObjInfo.Player.Team;
         bool amIInsideBush = _insidePlayersId.Contains(Managers.Object.MyPlayer.Id);
 
@@ -84,7 +115,6 @@ public class Env_Bush : EnvController
 
         if (isSameTeam)
             targetState = BushState.Translucent;
-
         else if (amIInsideBush)
             targetState = BushState.Translucent;
         else
@@ -94,7 +124,7 @@ public class Env_Bush : EnvController
 
         foreach (int id in _insidePlayersId)
         {
-            if (id == target.Id) continue; 
+            if (id == target.Id) continue;
 
             GameObject inGo = Managers.Object.FindById(id);
             if (inGo == null) continue;
