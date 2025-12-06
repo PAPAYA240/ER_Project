@@ -10,6 +10,10 @@ public class Player_DeadState : IPlayerState
     {
         player.SendAnimPacket("DEAD", 0.1f);
 
+        player.SendStopPacket(StopReason.StopMoveOnly);
+
+        player.RemoveAllStatusEffects();
+
         //UI
 
         RespawnTime(player);

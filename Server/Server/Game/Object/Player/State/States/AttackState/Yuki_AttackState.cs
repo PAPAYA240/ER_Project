@@ -99,7 +99,7 @@ public class Yuki_AttackState : Player_AttackState
 
             p.Room.Push(p.Room.Broadcast, yukiStudPkt);
 
-            room.Push(target.OnDamaged, p, 40f, true, false);
+            room.Push(target.OnDamaged, p, 40f + (p.Attack * 0.4f), true, false);
         }
 
         // 평타 데미지
