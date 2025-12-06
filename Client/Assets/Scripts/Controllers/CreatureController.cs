@@ -204,7 +204,6 @@ public class CreatureController : BaseController
 
     public bool IsAttackable(CreatureController cc, out InvalidTargetReason reason)
     {
-            Debug.Log("IsAttackable 확인");
         if (cc == null)
         {
             reason = InvalidTargetReason.InvalidNull;
@@ -249,7 +248,6 @@ public class CreatureController : BaseController
         // 대상이 은신 상태일 때
         if (IsHiding(cc))
         {
-            Debug.Log("대상 은신");
             reason = InvalidTargetReason.InvalidHiding;
             return false;
         }
@@ -270,7 +268,7 @@ public class CreatureController : BaseController
     {
         if(cc is PlayerController pc)
         {
-            if (pc.IsHide)
+            if (!pc.IsHide) 
                 return false;
             return true;
         }
