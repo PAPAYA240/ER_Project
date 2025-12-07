@@ -208,7 +208,7 @@ namespace Server.Game
         {
             Dictionary<int, Dictionary<int, float>> damageDict = new Dictionary<int, Dictionary<int, float>>();
             List<Hitbox> hitSoundList = new List<Hitbox>();
-
+             
             CheckCollisionHit();
             CheckPlayerHit(teams, damageDict, hitSoundList);
             CheckHit(monsters, damageDict, hitSoundList);
@@ -1048,14 +1048,35 @@ namespace Server.Game
             {
                 case SkillShape.Circle:
                     {
-                        float dx = targetHitbox.PosX - myHitbox.PosX;
-                        float dz = targetHitbox.PosZ - myHitbox.PosZ;
-                        float distanceSq = dx * dx + dz * dz;
+                        Vector2 circleCenter = new Vector2(myHitbox.PosX, myHitbox.PosZ);
+                        float circleRadius = myHitbox.Data.Radius + myHitbox.OffsetRadius;
 
-                        float targetRadius = targetHitbox.Data.Radius + myHitbox.OffsetRadius;
-                        float effectiveRadius = myHitbox.Data.Radius + targetRadius;
+                        // Point OBB 설정
+                        Vector2 pointCenter = new Vector2(targetHitbox.PosX, targetHitbox.PosZ);
+                        Vector2 fixedPlayerPos = new Vector2(targetHitbox.FixedPosition.X, targetHitbox.FixedPosition.Z);
+                        Vector2 forward = Vector2.Normalize(pointCenter - fixedPlayerPos);
+                        Vector2 right = new Vector2(-forward.Y, forward.X);
+                        float halfHeight = targetHitbox.Data.Height * 0.5f;
+                        float halfWidth = targetHitbox.Data.Width * 0.5f;
 
-                        return distanceSq <= effectiveRadius * effectiveRadius;
+                        // Circle 중심에서 OBB로의 벡터
+                        Vector2 toCircle = circleCenter - pointCenter;
+
+                        // OBB 로컬 좌표계로 투영
+                        float projForward = Vector2.Dot(toCircle, forward);
+                        float projRight = Vector2.Dot(toCircle, right);
+
+                        // OBB 내에서 Circle 중심에 가장 가까운 점 찾기
+                        float clampedForward = MathF.Max(-halfHeight, MathF.Min(projForward, halfHeight));
+                        float clampedRight = MathF.Max(-halfWidth, MathF.Min(projRight, halfWidth));
+
+                        // 가장 가까운 점과 Circle 중심 사이의 거리
+                        float deltaForward = projForward - clampedForward;
+                        float deltaRight = projRight - clampedRight;
+                        float distSq = deltaForward * deltaForward + deltaRight * deltaRight;
+
+                        // Circle 반지름과 비교
+                        return distSq <= circleRadius * circleRadius;
                     }
                 case SkillShape.Rectangle:
                 case SkillShape.Point:
@@ -1103,6 +1124,17 @@ namespace Server.Game
                     if (!hitboxA.IsInteracted || !hitboxB.IsInteracted)
                         continue;
 
+                    // point가 B여야 함
+                    if (!System.Enum.TryParse<SkillShape>(hitboxB.Data.Shape, out var shape))
+                        continue;
+
+                    if (shape != SkillShape.Point)
+                    {
+                        Hitbox tmp = hitboxA;
+                        hitboxA = hitboxB;
+                        hitboxB = tmp;
+                    }
+
                     if (CheckCollision(hitboxA, hitboxB))
                         HandlerInteraction(hitboxA, hitboxB);
                 }
@@ -1111,54 +1143,52 @@ namespace Server.Game
 
         bool CheckPointRayCollision(Hitbox pointHitbox, Hitbox rayHitbox)
         {
-            // OBB A 설정
-            Vector2 originA = new Vector2(pointHitbox.PosX, pointHitbox.PosZ);
-            Vector2 forwardA = Vector2.Normalize(pointHitbox.MousePos - originA);
-            Vector2 rightA = new Vector2(-forwardA.Y, forwardA.X);
-            float halfHeightA = pointHitbox.Data.Height * 0.5f;
-            float halfWidthA = pointHitbox.Data.Width * 0.5f;
-            Vector2 centerA = originA + forwardA * halfHeightA;
+           // OBB A 설정
+           Vector2 centerA = new Vector2(pointHitbox.PosX, pointHitbox.PosZ);
+            Vector2 fixedPlayerPos = new Vector2(pointHitbox.FixedPosition.X, pointHitbox.FixedPosition.Z);
+           Vector2 forwardA = Vector2.Normalize(centerA - fixedPlayerPos);
+           Vector2 rightA = new Vector2(-forwardA.Y, forwardA.X);
+           float halfHeightA = pointHitbox.Data.Height * 0.5f;
+           float halfWidthA = pointHitbox.Data.Width * 0.5f;
 
-            // OBB B 설정
-            Vector2 originB = new Vector2(rayHitbox.PosX, rayHitbox.PosZ);
-            Vector2 forwardB = Vector2.Normalize(rayHitbox.MousePos - originB);
-            Vector2 rightB = new Vector2(-forwardB.Y, forwardB.X);
+           // OBB B 설정
+           Vector2 centerB = new Vector2(rayHitbox.PosX, rayHitbox.PosZ);  
+           Vector2 forwardB = Vector2.Normalize(rayHitbox.MousePos - centerB);
+           Vector2 rightB = new Vector2(-forwardB.Y, forwardB.X);
 
-            float rangeB = rayHitbox.Data.Height;
-            if (System.Enum.TryParse<SkillType>(rayHitbox.Data.Type, out SkillType type))
-            {
-                if (type == SkillType.SkillTrack)
-                    rangeB = rayHitbox.Data.MinRange + (rayHitbox.Data.MaxRange - rayHitbox.Data.MinRange) * rayHitbox.ChargeRatio;
-            }
+           float rangeB = rayHitbox.Data.Height;
+           if (System.Enum.TryParse<SkillType>(rayHitbox.Data.Type, out SkillType type))
+           {
+               if (type == SkillType.SkillTrack)
+                   rangeB = rayHitbox.Data.MinRange + (rayHitbox.Data.MaxRange - rayHitbox.Data.MinRange) * rayHitbox.ChargeRatio;
+           }
+           float halfHeightB = rangeB * 0.5f;
+           float halfWidthB = rayHitbox.Data.Width * 0.5f;
 
-            float halfHeightB = rangeB * 0.5f;
-            float halfWidthB = rayHitbox.Data.Width * 0.5f;
-            Vector2 centerB = originB + forwardB * halfHeightB;
+           // OBB 충돌 검사
+           Vector2 toTarget = centerB - centerA;
 
-            // OBB 충돌 검사
-            Vector2 toTarget = centerB - centerA;
+           // A forward 
+           float projCenterA1 = Vector2.Dot(toTarget, forwardA);
+           float projRadiusA1 = halfHeightA + MathF.Abs(Vector2.Dot(forwardA, forwardB)) * halfHeightB + MathF.Abs(Vector2.Dot(forwardA, rightB)) * halfWidthB;
+           if (MathF.Abs(projCenterA1) > projRadiusA1) return false;
 
-            // A forward 
-            float projCenterA1 = Vector2.Dot(toTarget, forwardA);
-            float projRadiusA1 = halfHeightA + MathF.Abs(Vector2.Dot(forwardA, forwardB)) * halfHeightB + MathF.Abs(Vector2.Dot(forwardA, rightB)) * halfWidthB;
-            if (MathF.Abs(projCenterA1) > projRadiusA1) return false;
+           // A right 
+           float projCenterA2 = Vector2.Dot(toTarget, rightA);
+           float projRadiusA2 = halfWidthA + MathF.Abs(Vector2.Dot(rightA, forwardB)) * halfHeightB + MathF.Abs(Vector2.Dot(rightA, rightB)) * halfWidthB;
+           if (MathF.Abs(projCenterA2) > projRadiusA2) return false;
 
-            // A right 
-            float projCenterA2 = Vector2.Dot(toTarget, rightA);
-            float projRadiusA2 = halfWidthA + MathF.Abs(Vector2.Dot(rightA, forwardB)) * halfHeightB + MathF.Abs(Vector2.Dot(rightA, rightB)) * halfWidthB;
-            if (MathF.Abs(projCenterA2) > projRadiusA2) return false;
+           // B forward 
+           float projCenterB1 = Vector2.Dot(toTarget, forwardB);
+           float projRadiusB1 = halfHeightB + MathF.Abs(Vector2.Dot(forwardB, forwardA)) * halfHeightA + MathF.Abs(Vector2.Dot(forwardB, rightA)) * halfWidthA;
+           if (MathF.Abs(projCenterB1) > projRadiusB1) return false;
 
-            // B forward 
-            float projCenterB1 = Vector2.Dot(toTarget, forwardB);
-            float projRadiusB1 = halfHeightB + MathF.Abs(Vector2.Dot(forwardB, forwardA)) * halfHeightA + MathF.Abs(Vector2.Dot(forwardB, rightA)) * halfWidthA;
-            if (MathF.Abs(projCenterB1) > projRadiusB1) return false;
+           // B right 
+           float projCenterB2 = Vector2.Dot(toTarget, rightB);
+           float projRadiusB2 = halfWidthB + MathF.Abs(Vector2.Dot(rightB, forwardA)) * halfHeightA + MathF.Abs(Vector2.Dot(rightB, rightA)) * halfWidthA;
+           if (MathF.Abs(projCenterB2) > projRadiusB2) return false;
 
-            // B right 
-            float projCenterB2 = Vector2.Dot(toTarget, rightB);
-            float projRadiusB2 = halfWidthB + MathF.Abs(Vector2.Dot(rightB, forwardA)) * halfHeightA + MathF.Abs(Vector2.Dot(rightB, rightA)) * halfWidthA;
-            if (MathF.Abs(projCenterB2) > projRadiusB2) return false;
-
-            return true;
+           return true;
         }
 
         // 몬스터에게 맞았다면 처리
