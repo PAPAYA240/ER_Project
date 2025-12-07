@@ -21,6 +21,7 @@ public class HyunwooInputController : PlayerInputController
                 continue;
             
             if (key == KeyCode.R && _skill.SkillDict[KeyCode.R].CurLevel > 0 
+                && _skill.CoolDownDict[KeyCode.R].coolTime == 0
                 && _player.State != CreatureState.Skill 
                 && _player.State != CreatureState.Stun)
             {
