@@ -1414,6 +1414,26 @@ class PacketHandler
         mpc.OnServerUpdate(deploying);
     }
 
+    public static void S_AbigailPortalHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_AbigailPortalHandler(session, packet))) return;
+
+        S_AbigailPortal abglPortal = packet as S_AbigailPortal;
+        GameObject go = Managers.Object.FindById(abglPortal.ObjectId);
+        if (go == null) return;
+        PlayerController pc = go.GetComponentInChildren<MyPlayerController>();
+        if (pc == null) return;
+
+        Vector3 startPos = new Vector3(abglPortal.StartX, pc.ObjInfo.PosInfo.PosY, abglPortal.StartZ);
+        Vector3 endPos = new Vector3(abglPortal.EndX, pc.ObjInfo.PosInfo.PosY, abglPortal.EndZ);
+        Vector3 dirAB = (endPos - startPos).normalized;
+        Quaternion rotA = Quaternion.LookRotation(dirAB, Vector3.up);
+        Quaternion rotB = Quaternion.LookRotation(-dirAB, Vector3.up);
+
+        pc.YukiEffects.PlayEffect(AbigailFx.EPortal1, startPos, rotA);
+        pc.YukiEffects.PlayEffect(AbigailFx.EPortal2, endPos, rotB);
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;

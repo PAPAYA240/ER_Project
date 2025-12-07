@@ -32,8 +32,6 @@ public sealed class Abigail_E : Skill_Abigail
         p.Room.BroadcastAbigailSound(p, AbigailSound.E, 1);
         p.Room.BroadcastAbigailSound(p, AbigailSound.Evoice, 0.6f);
         p.Room.BroadcastAbigailSound(p, AbigailSound.Ehit, 1);
-
-        p.Room.BroadcastAbigailFx(p, AbigailFx.EPortal1, 0);
     }
 
     public override void OnTick(Player p, SkillContext ctx)
@@ -44,13 +42,13 @@ public sealed class Abigail_E : Skill_Abigail
             {
                 Vector2 targetPos = new Vector2(prop.collisionPos.X, prop.collisionPos.Z);
 
-                p.Room.AttackSkillTarget(p, _target, _keyCode);
+                p.Room.Push(p.Room.BroadcastAbglPortal, p, new Vector2(p.PosInfo.PosX, p.PosInfo.PosZ), targetPos);
+                p.Room.Push(p.Room.AttackSkillTarget, p, _target, _keyCode);
+
                 p.PosInfo.PosX = targetPos.X;
                 p.PosInfo.PosZ = targetPos.Y;
-                CanStopSkill = true;
                 p.SendChangeTransformPacket(true);
-
-                p.Room.BroadcastAbigailFx(p, AbigailFx.EPortal2, 0);
+                CanStopSkill = true;
             }
         }
     }

@@ -5,12 +5,6 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-
-
-#if UNITY_EDITOR
-using UnityEditor.PackageManager.UI;
-#endif
-
 public class ObjectManager
 {
     public MyPlayerController MyPlayer { get; set; } = null;

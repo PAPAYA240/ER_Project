@@ -77,15 +77,17 @@ public class DataManager
 
     Loader LoadJson<Loader, Key, Value>(string path) where Loader : ILoader<Key, Value>
     {
-        string text = File.ReadAllText($"Assets/Resources/Data/{path}.json");
-        return Newtonsoft.Json.JsonConvert.DeserializeObject<Loader>(text);
+        //string text = File.ReadAllText($"Assets/Resources/Data/{path}.json");
+        TextAsset textAsset = Resources.Load<TextAsset>($"Data/{path}");
+        return Newtonsoft.Json.JsonConvert.DeserializeObject<Loader>(textAsset.text);
     }
 
     // 역직렬화 세팅 설정
     static Loader LoadJson<Loader, Key, Value>(string path, string key, JsonSerializerSettings settings) where Loader : ILoader<Key, Value>
     {
-        string text = File.ReadAllText($"Assets/Resources/Data/{path}.json");
-        return Newtonsoft.Json.JsonConvert.DeserializeObject<Loader>(text, settings);
+        //string text = File.ReadAllText($"Assets/Resources/Data/{path}.json");
+        TextAsset textAsset = Resources.Load<TextAsset>($"Data/{path}");
+        return Newtonsoft.Json.JsonConvert.DeserializeObject<Loader>(textAsset.text, settings);
     }
 
     #region Fx Data

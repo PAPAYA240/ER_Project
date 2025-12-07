@@ -5,10 +5,6 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Google.Protobuf.Protocol;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 [System.Serializable]
 public class NodeData
 {

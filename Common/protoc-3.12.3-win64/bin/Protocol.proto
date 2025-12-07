@@ -149,6 +149,7 @@ enum MsgId {
   C_ATTACK_TARGET_INVALID = 117;
   C_BASE_TRIGGER = 118;
   S_DEPLOYING_LOOP = 119;
+  S_ABIGAIL_PORTAL = 120;
 }
 
 enum CombatState{
@@ -1368,4 +1369,12 @@ message C_BaseTrigger{
 
 message S_DeployingLoop{
 	int32 objectId = 1;
+}
+
+message S_AbigailPortal{
+	int32 objectId = 1;
+	float startX = 2;
+	float startZ = 3;
+	float endX = 4;
+	float endZ = 5;
 }
