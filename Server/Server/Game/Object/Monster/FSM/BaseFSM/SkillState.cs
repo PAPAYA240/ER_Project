@@ -71,7 +71,7 @@ namespace Server.Game
                 desc.Speed = _skillData.descriptionInfo["Speed"];
                 desc.EndPos = endPos;
 
-                if(!player.IsUnstoppable())
+                if(!player.IsUnstoppable() && !player.IsDead)
                     player.ChangeState(new Player_StunState(desc));
             }
         }

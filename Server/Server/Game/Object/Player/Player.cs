@@ -335,12 +335,6 @@ namespace Server.Game
 
         public override void Update()
         {
-            if (IsDeath == true)
-            {
-                _isDeath = false;
-                _stateMachine.ChangeState(new Player_DeadState(), this);
-            }
-
             // 일정 시간 지나면 비전투 (용수야 여기야)
             if (CombatState == CombatState.Combat)
             {

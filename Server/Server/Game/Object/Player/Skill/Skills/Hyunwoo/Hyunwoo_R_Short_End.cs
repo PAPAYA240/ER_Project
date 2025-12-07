@@ -75,7 +75,8 @@ public sealed class Hyunwoo_R_Short_End : SkillHandlerBase
                     desc.EndPos = prop.collisionPos;
                     desc.Duration = 0.1f;
                     desc.Speed = 30f;
-                    tartget.ChangeState(new Player_StunState(desc));
+                    if(!tartget.IsDead)
+                        tartget.ChangeState(new Player_StunState(desc));
                 }
             }
         }
