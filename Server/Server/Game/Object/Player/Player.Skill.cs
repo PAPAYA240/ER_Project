@@ -59,7 +59,9 @@ namespace Server.Game
             Skill.StartCooldown(keyCode);
 
             // ���׹̳� ����
-            Stamina -= FindSkill(keyCode).CurLevelStamina;
+            Skill sk = FindSkill(keyCode);
+            if (sk != null)
+                Stamina -= sk.CurLevelStamina;
         }
 
         public float GetCoolTime(KeyCode key)
