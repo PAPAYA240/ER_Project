@@ -243,14 +243,9 @@ public class PlayerViewController : MonoBehaviour
         if (dir.sqrMagnitude < 0.001f)
             return;
 
-        //transform.rotation = Quaternion.LookRotation(dir);
-        //
-        //_player.UpdateTransform();
-
-        Quaternion targetRot = Quaternion.LookRotation(dir);
-        _player.RotInfo = targetRot;
-        //_player.SyncPos();
-        //_player.UpdateTransform();
+        transform.rotation = Quaternion.LookRotation(dir);
+        
+        _player.UpdateTransform();
     }
 
     public void RotateAttack(int targetId)
@@ -289,14 +284,6 @@ public class PlayerViewController : MonoBehaviour
                 targetRot,
                 rotateSpeed * Time.deltaTime * 50f
             );
-
-            _player.UpdateTransform();
-
-            //_player.RotInfo = Quaternion.RotateTowards(
-            //    transform.rotation,
-            //    targetRot,
-            //    rotateSpeed * Time.deltaTime * 50f
-            //);
 
             if (Quaternion.Angle(_player.RotInfo, targetRot) < 0.5f)
                 break;
