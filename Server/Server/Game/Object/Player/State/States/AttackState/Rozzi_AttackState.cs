@@ -267,7 +267,7 @@ public class Rozzi_AttackState : Player_AttackState
         if (_isPassiveAttack)
             damage = p.Attack * (0.6f + _attackBonus[p.GetSkillLevel(KeyCode.T)]);
 
-        //p.Room.Push(target.OnDamaged, p, damage, false, true);
+        p.Room.Push(target.OnDamaged, p, damage, false, true);
 
         Projectile_Rozzi_R pj = p.Room.FindProjectile(p, ProjectileType.ProjectileRozziR) as Projectile_Rozzi_R;
         if (pj != null && pj.Target != null && pj.Target == target)

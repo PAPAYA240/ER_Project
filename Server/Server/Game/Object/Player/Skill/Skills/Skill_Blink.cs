@@ -7,7 +7,6 @@ using static Server.Data.DataUtils;
 public sealed class Skill_Blink : SkillHandlerBase
 {
     private float _blinkDistance = 3.0f;
-    private Vector3 _finPosition;
 
     public Skill_Blink()
     {
@@ -51,19 +50,24 @@ public sealed class Skill_Blink : SkillHandlerBase
                     end: prop.collisionPos,
                     authoritativeEnd: true);
 
+                p.PosInfo.MergeFrom(prop.collisionPos.ToPositionInfo());
+                p.SendChangeTransformPacket(isWarp: true);
+
                 p.SendCommonSkillEffect(targetPos, commonName: "Blink", type: "Select", fxName: "FX_BI_Blink_Swift");
                 p.SendCommonSkillEffect(targetPos, commonName: "Blink", type: "Select", fxName: "FX_BI_Blink_End");
+
+                ctx.RequestFinish();
+                return;
             }
         }
+        else
+            return;
     }
 
     public override void OnExit(Player p, SkillContext ctx)
     {
         base.OnExit(p, ctx);
         p.SendRemoveCommonEffect(isCaster: false, commonName: "Blink", fxName: "FX_BI_Blink_End");
-
-        p.PosInfo.MergeFrom(_finPosition.ToPositionInfo());
-        p.SendChangeTransformPacket(isWarp: true);
     }
 }
 
