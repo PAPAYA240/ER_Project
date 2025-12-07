@@ -198,9 +198,8 @@ public class Projectile_Rozzi_R : Projectile
         // 더 이상 이동하지 않고 해당 위치에 고정
         // FX
         _owner.SendSkillEffect(new Vector2(Position.X, Position.Z), keyCode: KeyCode.R, sendLookatMousePacket: false,
-                targetPos: default, targetRot: default,
-                type: "Select", "FX_BI_Rozzi_Skill04_Set_Character_Count_Ground",
-                useTargetTransform: true, targetId: Id);
+                targetPos: new Vector3(Position.X, Owner.Position.Y, Position.Z), targetRot: default,
+                type: "Select", "FX_BI_Rozzi_Skill04_Set_Character_Count_Ground");
     }
 
     protected override bool Deactivation()
