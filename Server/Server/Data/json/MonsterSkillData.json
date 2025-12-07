@@ -14,7 +14,7 @@
       "skillType": "MsAttack2",
       "skillDuration": "1.15",
       "skillCoolTime": "0",
-      "damage": "300"
+      "damage": "350"
     },
     {
       "id": "3",
@@ -22,11 +22,11 @@
       "skillType": "MsSkill1",
       "skillDuration": "3.0",
       "skillCoolTime": "0.2",
-      "damage": "300",
+      "damage": "400",
       "SkillBehavior": "KnockbackSkill",
       "descriptionInfo": {
         "Duration": 0.5,
-        "Speed": 15.0,
+        "Speed": 30.0,
         "Distance" :  5.0
       }
       },
@@ -34,14 +34,14 @@
       "id": "4",
       "name": "MsSkill2",
       "skillType": "MsSkill2",
-      "skillDuration": "1.08",
-      "skillCoolTime": "1",
-      "damage": "300",
+      "skillDuration": "2.5",
+      "skillCoolTime": "0",
+      "damage": "450",
       "SkillBehavior": "FloatSkill",
       "descriptionInfo": {
         "Duration": 0.5,
-        "Speed": 15.0,
-        "Distance": 5.0
+        "Speed": 30.0,
+        "Distance": 3.5
       }
     },
     {

@@ -15,7 +15,7 @@ public class Env_BarrierSpawnpoint : EnvController
         if (phase2Transform != null)
         {
             _phase2Object = phase2Transform.gameObject;
-            _phase2Object.SetActive(false);
+            _phase2Object.SetActive(true);
         }
         else
             UnityEngine.Debug.LogError("Phase2 오브젝트를 찾을 수 없습니다");
