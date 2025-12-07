@@ -93,6 +93,7 @@ public class PlayerViewController : MonoBehaviour
         _player.Hp = packet.Hp;
         _player.Stamina = packet.Stamina;
         _player.IsRest = packet.IsRest;
+
         _player.UpdateTransform(true);
         //_syncing = false; // 리스폰 직후는 입력 올 때까지 동기화 중지
     }
