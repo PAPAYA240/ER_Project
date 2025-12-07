@@ -24,8 +24,6 @@ public class GameScene : BaseScene
         GameObject go = await Managers.Resource.InstantiateAsync("Map/Map_Cobalt");
         go.name = "Map";
 
-        Screen.SetResolution(960 , 540, false);
-
         await Task.Yield();
 
         LoadingManager.Instance.OnSceneReady();

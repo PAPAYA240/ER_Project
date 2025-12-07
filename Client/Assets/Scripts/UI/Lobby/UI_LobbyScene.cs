@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Google.Protobuf.Protocol;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -87,18 +88,25 @@ public class UI_LobbyScene : UI_Scene
     public void SetNickname(int idx, string nickname = null)
     {
         if(nickname == "" || nickname == null)
-        {
             _userNames[idx].text = _emptySlot;
-            _slotImages[idx].sprite = _emptySprite;
-        }
         else
+            _userNames[idx].text = nickname;          
+    }
+
+    public void SetSlotImage(int idx, Slot type)
+    {
+        switch (type)
         {
-            _userNames[idx].text = nickname;
-            if (nickname == Managers.Info.UserName)
+            case Slot.Empty:
+                _slotImages[idx].sprite = _emptySprite;
+                break;
+            case Slot.Player:
                 _slotImages[idx].sprite = _playerSprite;
-            else
+                break;
+            case Slot.Other:
                 _slotImages[idx].sprite = _otherSprite;
-        }            
+                break;
+        }
     }
 
     public void SetCount(int playerCnt, int observerCnt)

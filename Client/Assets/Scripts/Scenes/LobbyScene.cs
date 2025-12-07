@@ -39,6 +39,8 @@ public class LobbyScene : BaseScene
         _nicknamePopUpUI.OnConfirm += OnConfirmBtnClick;
 
         Managers.Sound.Play("sound/bgm/BGM_Lobby", Define.Sound.Bgm);
+
+        Screen.SetResolution(1440, 810, false);
     }
 
     void Start()

@@ -224,8 +224,8 @@ public class CreatureController : BaseController
             return false;
         }
 
-        // 지정 불가 상태일 때
-        if (cc.Untargetable)
+        // 지정 불가 상태일 때 or 포탑일 때
+        if (cc.Untargetable || (cc.ObjInfo.Monster != null && MonsterType.Turret == cc.ObjInfo.Monster.MonsterType))
         {
             reason = InvalidTargetReason.InvalidUntargetable;
             return false;

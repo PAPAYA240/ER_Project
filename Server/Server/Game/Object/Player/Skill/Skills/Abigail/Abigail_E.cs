@@ -1,4 +1,5 @@
-﻿using Google.Protobuf.Protocol;
+﻿using System.Numerics;
+using Google.Protobuf.Protocol;
 using Server.Game;
 using static Server.Data.DataUtils;
 
@@ -20,18 +21,38 @@ public sealed class Abigail_E : Skill_Abigail
     public override void OnEnter(Player p, SkillContext ctx)
     {
         base.OnEnter(p, ctx);
-        
+
+        p.SendStopPacket(StopReason.StopMoveOnly);
         SendSkillConfirmPacket(p);
 
-        p.PosInfo.PosX = ctx.MousePos.X;
-        p.PosInfo.PosZ = ctx.MousePos.Y;
-        p.SendChangeTransformPacket(true);
-        p.Room.AttackSkillTarget(p, _target, _keyCode);
-        CanStopSkill = true;
+        Vector3 mousePos = new Vector3(ctx.MousePos.X, p.Position.Y, ctx.MousePos.Y);
+
+        SendSkillCollisionRequestPacket(p, CollisionType.Pass, p.Position, mousePos);
 
         p.Room.BroadcastAbigailSound(p, AbigailSound.E, 1);
         p.Room.BroadcastAbigailSound(p, AbigailSound.Evoice, 0.6f);
         p.Room.BroadcastAbigailSound(p, AbigailSound.Ehit, 1);
+
+        p.Room.BroadcastAbigailFx(p, AbigailFx.EPortal1, 0);
+    }
+
+    public override void OnTick(Player p, SkillContext ctx)
+    {
+        if (_requestId != _commitId)
+        {
+            if (TryConsumeLatest(ref _commitId, out SkillCollisionProposal prop))
+            {
+                Vector2 targetPos = new Vector2(prop.collisionPos.X, prop.collisionPos.Z);
+
+                p.Room.AttackSkillTarget(p, _target, _keyCode);
+                p.PosInfo.PosX = targetPos.X;
+                p.PosInfo.PosZ = targetPos.Y;
+                CanStopSkill = true;
+                p.SendChangeTransformPacket(true);
+
+                p.Room.BroadcastAbigailFx(p, AbigailFx.EPortal2, 0);
+            }
+        }
     }
 
     public override bool CanCast(Player p, SkillContext ctx)
