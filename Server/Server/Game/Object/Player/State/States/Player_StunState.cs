@@ -53,7 +53,6 @@ public class Player_StunState : IPlayerState
         if (elapsedTime >= _desc.Duration)
         {
             // 기절 지속 시간 종료, IDLE 상태로 전환
-            //player.SendRemoveCommonEffect(isCaster: true, commonName: "Debuff_Stun");
             player.ChangeState(new Player_IdleState());
             return;
         }
