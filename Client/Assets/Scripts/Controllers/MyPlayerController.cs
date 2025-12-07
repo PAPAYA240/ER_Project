@@ -150,15 +150,20 @@ public class MyPlayerController : PlayerController
         // 스킬
         // 스킬 레벨 업
         var skillLevelUpCmd = _input.GetSkillLevelUpCommand();
-        if(State != CreatureState.Rest)
-        {
-            if (skillLevelUpCmd != KeyCode.None)
+        if (skillLevelUpCmd != KeyCode.None)
                 _UI.TrySkillLevelUp(skillLevelUpCmd);
-            else
+        else
+        {
+            if(State != CreatureState.Rest && State != CreatureState.Stun)
             {
                 var skillCmd = _input.GetSkillCommand();
                 if (skillCmd != null)
                     Managers.Network.Send(skillCmd);
+
+                // 아이템 사용
+                var useItemCmd = _input.GetUseItemCommand();
+                if (useItemCmd != null)
+                    Managers.Network.Send(useItemCmd);
             }
         }
 
@@ -166,16 +171,6 @@ public class MyPlayerController : PlayerController
         var restCmd = _input.GetRestCommand();
         if (restCmd != null)
             Managers.Network.Send(restCmd);
-
-        // 아이템 사용
-        var useItemCmd = _input.GetUseItemCommand();
-        if (useItemCmd != null)
-            Managers.Network.Send(useItemCmd);
-
-        // temp 임시 코드 나중에 삭제
-        var tempCmd = _input.Get_KeyInputForTestCommand();
-        if (tempCmd != null)
-            Managers.Network.Send(tempCmd);
 
         CheckUpdatedFlag();
     }
