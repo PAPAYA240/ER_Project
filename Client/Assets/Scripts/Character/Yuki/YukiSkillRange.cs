@@ -63,7 +63,6 @@ public class YukiSkillRange : MonoBehaviour, IEffect
         yield return new WaitForSeconds(0.1f);
 
         gameObject.SetActive(false);
-        _co = null;
     }
 
     public void Stop()
