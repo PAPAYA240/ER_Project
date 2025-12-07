@@ -169,52 +169,52 @@ public class EnvSaverEditor : MonoBehaviour
     [MenuItem("Tools/Save EnvController Data")]
     public static void SaveEnvControllerData()
     {
-        EnvController[] envControllers = GameObject.FindObjectsOfType<EnvController>(true);
+        //EnvController[] envControllers = GameObject.FindObjectsOfType<EnvController>(true);
 
-        if (envControllers.Length == 0)
-        {
-            Debug.LogWarning("Error: 현재 씬에서 저장할 EnvController 객체를 찾을 수 없습니다.");
-            return;
-        }
+        //if (envControllers.Length == 0)
+        //{
+        //    Debug.LogWarning("Error: 현재 씬에서 저장할 EnvController 객체를 찾을 수 없습니다.");
+        //    return;
+        //}
 
-        EnvList envList = new EnvList();
-        envList.EnvObjects = new List<EnvSaveData>();
+        //EnvList envList = new EnvList();
+        //envList.EnvObjects = new List<EnvSaveData>();
 
-        foreach (EnvController envController in envControllers)
-        {
-            Transform envTransform = envController.transform;
+        //foreach (EnvController envController in envControllers)
+        //{
+        //    Transform envTransform = envController.transform;
 
-            EnvType type = envController.Type;
+        //    EnvType type = envController.Type;
 
-            // if (envController.TryGetComponent<YourEnvTypeComponent>(out var typeComp))
-            // {
-            //     type = typeComp.EnvType;
-            // }
+        //    // if (envController.TryGetComponent<YourEnvTypeComponent>(out var typeComp))
+        //    // {
+        //    //     type = typeComp.EnvType;
+        //    // }
 
-            Vector3 pos = envTransform.position;
-            Quaternion rot = envTransform.rotation;
-            Vector3 scaled = envTransform.localScale;
+        //    Vector3 pos = envTransform.position;
+        //    Quaternion rot = envTransform.rotation;
+        //    Vector3 scaled = envTransform.localScale;
 
-            // EnvSaveData 생성자에 EnvType, 위치, 회전, 스케일 전달
-            EnvSaveData data = new EnvSaveData(type, pos, rot, scaled);
-            envList.EnvObjects.Add(data);
-        }
+        //    // EnvSaveData 생성자에 EnvType, 위치, 회전, 스케일 전달
+        //    EnvSaveData data = new EnvSaveData(type, pos, rot, scaled);
+        //    envList.EnvObjects.Add(data);
+        //}
 
-        string jsonData = JsonUtility.ToJson(envList, true);
+        //string jsonData = JsonUtility.ToJson(envList, true);
 
-        string path = Application.dataPath + "/Resources/Data/Env/CurrentSceneEnvData.json";
+        //string path = Application.dataPath + "/Resources/Data/Env/CurrentSceneEnvData.json";
 
-        string directoryPath = Path.GetDirectoryName(path);
-        if (!Directory.Exists(directoryPath))
-        {
-            Directory.CreateDirectory(directoryPath);
-        }
+        //string directoryPath = Path.GetDirectoryName(path);
+        //if (!Directory.Exists(directoryPath))
+        //{
+        //    Directory.CreateDirectory(directoryPath);
+        //}
 
-        File.WriteAllText(path, jsonData);
+        //File.WriteAllText(path, jsonData);
 
-        AssetDatabase.Refresh();
+        //AssetDatabase.Refresh();
 
-        Debug.Log($"**현재 씬 환경 데이터** ({envList.EnvObjects.Count}개 객체)가 **{path}** 경로에 성공적으로 저장되었습니다.");
+        //Debug.Log($"**현재 씬 환경 데이터** ({envList.EnvObjects.Count}개 객체)가 **{path}** 경로에 성공적으로 저장되었습니다.");
     }
 }
 

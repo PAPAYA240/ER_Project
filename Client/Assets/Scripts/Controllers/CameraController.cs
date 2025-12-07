@@ -3,7 +3,6 @@ using System;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 using TMPro;
 
 public class CameraController : MonoBehaviour

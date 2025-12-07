@@ -1140,11 +1140,12 @@ class PacketHandler
         S_EnterSlot enterSlotPkt = packet as S_EnterSlot;
         GameObject go = GameObject.Find("LobbySceneUI");
         if (go == null) return;
-
+        
         UI_LobbyScene lobbySceneUI = go.GetComponent<UI_LobbyScene>();
         if (lobbySceneUI == null) return;
 
         lobbySceneUI.SetNickname(enterSlotPkt.SlotIdx, enterSlotPkt.Nickname);
+        lobbySceneUI.SetSlotImage(enterSlotPkt.SlotIdx, enterSlotPkt.SlotType);
     }
 
     public static void S_SpawnSlotHandler(PacketSession session, IMessage packet)
@@ -1158,7 +1159,10 @@ class PacketHandler
 
         int cnt = spawnSlotPkt.SlotIdxs.Count;
         for (int i = 0; i < cnt; ++i)
+        {
             lobbySceneUI.SetNickname(spawnSlotPkt.SlotIdxs[i], spawnSlotPkt.Nicknames[i]);
+            lobbySceneUI.SetSlotImage(spawnSlotPkt.SlotIdxs[i], Slot.Other);
+        }
     }
 
     public static void S_LeaveLobbyHandler(PacketSession session, IMessage packet)
@@ -1171,6 +1175,7 @@ class PacketHandler
         if (lobbySceneUI == null) return;
 
         lobbySceneUI.SetNickname(leaveLobbyPkt.SlotIdx);
+        lobbySceneUI.SetSlotImage(leaveLobbyPkt.SlotIdx, Slot.Empty);
     }
 
     public static void S_LobbyCntHandler(PacketSession session, IMessage packet)

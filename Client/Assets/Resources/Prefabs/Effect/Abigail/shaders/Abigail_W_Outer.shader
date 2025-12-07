@@ -3,7 +3,7 @@ Shader "Abigail/W_Outer"
     Properties
     {
         _MainTex ("Main Tex", 2D) = "white" {}
-        _EffectTime ("Effect Time", Float) = 0.0
+        _StartTime ("Start Time", Float) = 0.0
         _Duration ("Duration", Float) = 0.57
         _LuminanceCutoff ("Luminance Cutoff", Range(0,1)) = 0.5
         _Feather ("Feather", Range(0,0.2)) = 0.02
@@ -27,7 +27,7 @@ Shader "Abigail/W_Outer"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            float _EffectTime;
+            float _StartTime;
             float _Duration;
             float _LuminanceCutoff;
             float _Feather;
@@ -43,13 +43,14 @@ Shader "Abigail/W_Outer"
                 v2f o;
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                o.time = _EffectTime;
+                o.time = _Time.y;
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float t = i.time;
+                float elapsedTime = i.time - _StartTime;
+                float t = max(0, elapsedTime); // 음수 방지
 
                 fixed4 tex = tex2D(_MainTex, i.uv);
                 float lum = dot(tex.rgb, float3(0.299, 0.587, 0.114));

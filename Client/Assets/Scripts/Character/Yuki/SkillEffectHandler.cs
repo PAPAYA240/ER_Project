@@ -57,7 +57,8 @@ public class SkillEffectHandler
             RegisterEffect(AbigailFx.QRange, player, "Effect/Abigail/FX_BI_Abigail_Skill01_02_Range");
             RegisterEffect(AbigailFx.WAttack, player, "Effect/Abigail/FX_BI_Abigail_Skill02_02_Attack");
             RegisterEffect(AbigailFx.WRange, player, "Effect/Abigail/FX_BI_Abigail_Skill02_02_Range");
-            RegisterEffect(AbigailFx.EPortal, player, "Effect/Abigail/FX_BI_Abigail_Skill03_Portal", false);
+            RegisterEffect(AbigailFx.EPortal1, player, "Effect/Abigail/FX_BI_Abigail_Skill03_Portal", false);
+            RegisterEffect(AbigailFx.EPortal2, player, "Effect/Abigail/FX_BI_Abigail_Skill03_Portal2", false);
             RegisterEffect(AbigailFx.RExplode, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Explode", false);
             RegisterEffect(AbigailFx.RRange, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Range", false);
             RegisterEffect(AbigailFx.RStart, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Start", false);

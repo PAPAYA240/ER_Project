@@ -448,7 +448,7 @@ namespace Server.Game
                      hitbox.IsUsed = true;
             }
 
-            //CheckAndApplyMonsterHit(hitbox, hitTargets);
+            CheckAndApplyMonsterHit(hitbox, hitTargets);
 
             if (hitbox.Omnivamp)
                 hitbox.AddDamage(totalDmg);
@@ -657,7 +657,9 @@ namespace Server.Game
 
 
             if (target is Player)
-                Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Creature.Id}, Target:{target.Info.Player.CharType}_{target.Id}, Damage:{dmg}");
+            {
+                Console.WriteLine($"Attacker:{hitbox.CharType}_{hitbox.Creature.Id}, Target:{target.Info.Player.CharType}_{target.Id}, Damage:{dmg}"); 
+            }
             else if (target is Monster)
             {
                 Monster monster = target as Monster;
@@ -1015,7 +1017,8 @@ namespace Server.Game
                     hitbox.PosZ = hitbox.MousePos.Y;
                 }
             }
-            else if (System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
+            
+            if (System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
             {
                 if (type == SkillType.SkillTargeting)
                 {
@@ -1168,9 +1171,9 @@ namespace Server.Game
                 {
                     foreach (T target in hitTargets)
                     {
-                       // Player p = target as Player;
-                       // if (p != null)
-                       //     monster.OnTargetHit(p);
+                        Player p = target as Player;
+                        if (p != null)
+                            monster.OnTargetHit(p);
                     }
                 }
             }

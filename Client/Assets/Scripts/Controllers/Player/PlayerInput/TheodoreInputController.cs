@@ -7,7 +7,6 @@ using UnityEngine.AI;
 using UnityEngine.InputSystem;
 using static CameraController;
 using static Define;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class TheodoreInputController : PlayerInputController
 {
@@ -78,8 +77,10 @@ public class TheodoreInputController : PlayerInputController
 
     protected override void ChargeSkill(KeyCode key)
     {
-        Debug.Log($"[ExecuteSkill] 스킬 실행: {key}");
         if (!UseSkill(key))
+            return;
+
+        if (_skillCoroutine != null)
             return;
 
         _player.Indicator.EnableIndicator(_player.ObjInfo.Player.CharType, key);
@@ -162,12 +163,10 @@ public class TheodoreInputController : PlayerInputController
             yield return null;
         }
 
-        _skillCoroutine =null;
+        _skillCoroutine = null;
         cc.EndAimMode();
         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
     }
-
-
     private IEnumerator SniperShooting(KeyCode key)
     {
         _player.Indicator.ActiveIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1, false);
@@ -236,12 +235,12 @@ public class TheodoreInputController : PlayerInputController
             yield return null;
         }
 
-        onCancel.Invoke();
         if (_elapsedTime < EFFECT_DURATION)
         {
             SendSkillInputPacket(key, SKIP_STATE_CHECK);
         }
         _player.Speed = _originSpeed;
+        onCancel.Invoke();
     }
 
     private void CancelSkill(KeyCode key)
@@ -251,8 +250,10 @@ public class TheodoreInputController : PlayerInputController
 
         _elapsedTime = 0;
         _currentSkillKey = null;
-        _skillCoroutine = null;
+
+        StartCoroutine(CancelCooldown(0.5f));
     }
+
 #endregion
 
     #region 이동 처리
@@ -281,14 +282,10 @@ public class TheodoreInputController : PlayerInputController
 
     private IEnumerator CancelCooldown(float duration = CANCEL_DURATION)
     {
-        float elapsedTime = 0f;
-        while (elapsedTime < duration)
-        {
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        _cancelCoroutine = null;
+        yield return new WaitForSeconds(duration);
 
+        _cancelCoroutine = null;
+        _skillCoroutine = null;
     }
     #endregion
 

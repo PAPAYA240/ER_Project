@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Unity.AI.Navigation;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
@@ -24,8 +23,6 @@ public class GameScene : BaseScene
 
         GameObject go = await Managers.Resource.InstantiateAsync("Map/Map_Cobalt");
         go.name = "Map";
-
-        Screen.SetResolution(960 , 540, false);
 
         await Task.Yield();
 

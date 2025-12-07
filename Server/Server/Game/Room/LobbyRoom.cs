@@ -49,12 +49,12 @@ namespace Server.Game
             S_EnterSlot enterSlotPkt = new S_EnterSlot();
             enterSlotPkt.SlotIdx = slotIdx;
             enterSlotPkt.Nickname = lobbyPlayer.UserName;
-            Broadcast(enterSlotPkt);
+            BroadcastSlot(enterSlotPkt);
 
             S_SpawnSlot spawnSlotPkt = new S_SpawnSlot();
             for(int i = 0; i < _maxPlayer; ++i)
             {
-                if (_lobbyPlayers[i] == null)
+                if (_lobbyPlayers[i] == null || i == slotIdx)
                     continue;
                 spawnSlotPkt.SlotIdxs.Add(i);
                 spawnSlotPkt.Nicknames.Add(_lobbyPlayers[i].UserName);
@@ -90,10 +90,11 @@ namespace Server.Game
             S_EnterSlot newEnterSlotPkt = new S_EnterSlot();
             newEnterSlotPkt.SlotIdx = newIdx;
             newEnterSlotPkt.Nickname = _lobbyPlayers[newIdx].UserName;
-            Broadcast(newEnterSlotPkt);
+            BroadcastSlot(newEnterSlotPkt);
 
             S_EnterSlot prevEnterSlotPkt = new S_EnterSlot();
             prevEnterSlotPkt.SlotIdx = prevIdx;
+            prevEnterSlotPkt.SlotType = Slot.Empty;
             Broadcast(prevEnterSlotPkt);
         }
 
@@ -158,6 +159,28 @@ namespace Server.Game
                     continue;
                 
                 _lobbyPlayers[i].Session.Send(packet);
+            }
+        }
+
+        public void BroadcastSlot(S_EnterSlot packet)
+        {
+            packet.SlotType = Slot.Other;
+
+            for (int i = 0; i < _maxPlayer; ++i)
+            {
+                if (_lobbyPlayers[i] == null)
+                    continue;
+
+                if (i == packet.SlotIdx)
+                {
+                    var tmpPkt = new S_EnterSlot();
+                    tmpPkt.SlotIdx = i;
+                    tmpPkt.Nickname = packet.Nickname;
+                    tmpPkt.SlotType = Slot.Player;
+                    _lobbyPlayers[i].Session.Send(tmpPkt);
+                }
+                else
+                    _lobbyPlayers[i].Session.Send(packet);
             }
         }
 

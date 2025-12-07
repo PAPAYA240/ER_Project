@@ -145,7 +145,7 @@ enum MsgId {
   S_ABIGAIL_FX = 114;
   S_STOP_ABGL_FX = 115;
 
- S_THEODORE_ATTACK = 116;
+  S_THEODORE_ATTACK = 116;
   C_ATTACK_TARGET_INVALID = 117;
   C_BASE_TRIGGER = 118;
   S_DEPLOYING_LOOP = 119;
@@ -465,12 +465,13 @@ enum AbigailFx{
 	Q_Range = 6;
 	W_Attack = 7;
 	W_Range = 8;
-	E_Portal = 9;
-	R_Explode = 10;
-	R_Range = 11;
-	R_Start = 12;
-	R_Trail = 13;
-	WpnSkill = 14;
+	E_Portal1 = 9;
+	E_Portal2 = 10;
+	R_Explode = 11;
+	R_Range = 12;
+	R_Start = 13;
+	R_Trail = 14;
+	WpnSkill = 15;
 }
 
 enum InvalidTargetReason{
@@ -482,6 +483,12 @@ enum InvalidTargetReason{
 	Invalid_Invisible = 5;
 	Invalid_Hiding = 6;
 	Invalid_Valid = 7;
+}
+
+enum Slot{
+	Slot_Empty = 0;
+	Slot_Player = 1;
+	Slot_Other = 2;
 }
 
 message S_TheodoreAttack
@@ -1218,6 +1225,7 @@ message S_SkillEffect {
 message S_EnterSlot{
 	int32 slotIdx = 1;
 	string nickname = 2;
+	Slot slotType = 3;
 }
 
 message S_SpawnSlot{

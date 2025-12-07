@@ -60,7 +60,6 @@ namespace Server.Game
                 else if (_skillData.SkillBehavior == "FloatSkill")
                 {
                     worldRight = new Vector3(0f, 0f, 1f);
-                    desc.skillMotionType = SkillMotionType.VerticalTransform;
                 }
 
                 float distance = _skillData.descriptionInfo["Distance"];
