@@ -220,9 +220,9 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     {
         if (!_damageApplied && now >= _hitMomentUtc)
         {
-            float distNow = Vector3.Distance(player.Position, target.Position);
-            if (distNow <= player.AttackRange)
-                ApplyHit(player, target);
+            //float distNow = Vector3.Distance(player.Position, target.Position);
+            //if (distNow <= player.AttackRange)
+            ApplyHit(player, target);
 
             _damageApplied = true;
         }

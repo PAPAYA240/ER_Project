@@ -656,7 +656,6 @@ public class PlayerController : CreatureController
             Quaternion newRotation = Quaternion.LookRotation(direction);
 
             RotInfo = newRotation;
-            SyncPos(true);
         }
     }
     Dictionary<KeyCode, SkillMesh> msDict = new Dictionary<KeyCode, SkillMesh>();

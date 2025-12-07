@@ -46,7 +46,6 @@ public class PlayerViewController : MonoBehaviour
             var targetView = Managers.Object.FindById(TargetId);
             if (targetView != null)
             {
-                Debug.Log(targetView.transform.position);
                 Vector3 pos = targetView.transform.position;
                 UpdateTarget(pos);
             }
@@ -244,9 +243,14 @@ public class PlayerViewController : MonoBehaviour
         if (dir.sqrMagnitude < 0.001f)
             return;
 
-        transform.rotation = Quaternion.LookRotation(dir);
+        //transform.rotation = Quaternion.LookRotation(dir);
+        //
+        //_player.UpdateTransform();
 
-        _player.UpdateTransform();
+        Quaternion targetRot = Quaternion.LookRotation(dir);
+        _player.RotInfo = targetRot;
+        //_player.SyncPos();
+        //_player.UpdateTransform();
     }
 
     public void RotateAttack(int targetId)
@@ -286,7 +290,15 @@ public class PlayerViewController : MonoBehaviour
                 rotateSpeed * Time.deltaTime * 50f
             );
 
-            if (Quaternion.Angle(transform.rotation, targetRot) < 0.5f)
+            _player.UpdateTransform();
+
+            //_player.RotInfo = Quaternion.RotateTowards(
+            //    transform.rotation,
+            //    targetRot,
+            //    rotateSpeed * Time.deltaTime * 50f
+            //);
+
+            if (Quaternion.Angle(_player.RotInfo, targetRot) < 0.5f)
                 break;
 
             yield return null;
