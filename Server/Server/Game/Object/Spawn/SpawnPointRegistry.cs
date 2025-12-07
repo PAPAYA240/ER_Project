@@ -18,6 +18,7 @@ public class SpawnPointRegistry
     }
 
     public bool IsSpawnDataLoaded() => _points.Any();
+    public void Clear() => _points.Clear();
 
     public void Add(SpawnPointInfo info)
     {
