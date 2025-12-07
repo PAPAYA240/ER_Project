@@ -171,7 +171,8 @@ public class FXManager : MonoBehaviour
             {
                 pool.InUse.Remove(obj);
                 obj.SetActive(false);
-                obj.transform.SetParent(pool.Root);
+                if(pool.Root != null) 
+                    obj.transform.SetParent(pool.Root);
                 pool.Available.Enqueue(obj);
                 return;
             }

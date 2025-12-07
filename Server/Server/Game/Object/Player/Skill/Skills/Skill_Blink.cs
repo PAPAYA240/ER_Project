@@ -15,16 +15,18 @@ public sealed class Skill_Blink : SkillHandlerBase
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
-        //LastSeq = 0;
-        //Latest = default;
-        //_committed = false;
-
         p.SendStopPacket(StopReason.StopMoveOnly);
         p.SendSkillCostPacket(_keyCode);
 
         Vector3 mousePos = new Vector3(ctx.MousePos.X, p.Position.Y, ctx.MousePos.Y);
         Vector3 dir = Vector3.Normalize(mousePos - p.Position);
-        Vector3 targetPos = p.Position + dir * _blinkDistance;
+
+        float distance =  Vector3.Distance(mousePos, p.Position);
+        Vector3 targetPos = p.Position;
+        if (distance < _blinkDistance)
+            targetPos = mousePos;
+        else
+            targetPos = p.Position + dir * _blinkDistance;
 
         SendSkillCollisionRequestPacket(p, CollisionType.Pass, p.Position, targetPos);
 
