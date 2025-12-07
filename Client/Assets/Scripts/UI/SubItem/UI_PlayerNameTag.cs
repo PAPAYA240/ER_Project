@@ -2,7 +2,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class UI_PlayerNameTag : UI_Base
 {
     enum Images { Hp, FillImage }
@@ -33,8 +32,14 @@ public class UI_PlayerNameTag : UI_Base
     static Color _blue_Dark;
     static Color _skyBlue_Dark;
 
+    private RectTransform _rect;
+    private Canvas _canvas;
+
     public override void Init()
     {
+        _rect = GetComponent<RectTransform>();
+        _canvas = GetComponentInParent<Canvas>();
+
         Bind<Image>(typeof(Images));
         Bind<TextMeshProUGUI>(typeof(Texts));
         Bind<GameObject>(typeof(GameObjects));
@@ -48,13 +53,21 @@ public class UI_PlayerNameTag : UI_Base
         _green_Dark = _green * 0.5f;
         _blue_Dark = _blue * 0.5f;
         _skyBlue_Dark = _skyBlue * 0.5f;
-
-        Camera.main.gameObject.GetOrAddComponent<CameraController>().LateUpdateAction += UpdatePosition;
     }
 
     private void Awake()
     {
         Init();
+    }
+
+    void OnEnable()
+    {
+        Canvas.willRenderCanvases += UpdatePosition;
+    }
+
+    void OnDisable()
+    {
+        Canvas.willRenderCanvases -= UpdatePosition;
     }
 
     void Start()
@@ -66,22 +79,22 @@ public class UI_PlayerNameTag : UI_Base
     {
 
     }
-    //private void LateUpdate()
-    //{
-    //    if (_target != null)
-    //    {
-    //        UpdatePosition();
-    //    }
-    //}
 
     private void UpdatePosition()
     {
-        if (_target == null)
-            return;
-
+        if (_target == null) return;
         Vector3 worldPos = _target.transform.position + new Vector3(0, _nameTagHeight, 0);
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPos);
-        gameObject.transform.position = screenPos;
+        Vector3 screenPoint = Camera.main.WorldToScreenPoint(worldPos);
+        if (screenPoint.z <= 0f)
+            return;
+        Vector2 localPos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            _canvas.transform as RectTransform,
+            screenPoint,
+            null,   // Overlay니까 반드시 null
+            out localPos
+        );
+        _rect.anchoredPosition = localPos;
     }
 
     public void SetLevelText(int level)
