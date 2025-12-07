@@ -12,7 +12,6 @@ public class BaseAreaRegenEffect : IRegenEffect
     private readonly float BaseAreaHpRegen = 500f;
     private readonly float BaseAreaStaminaRegen = 500f;
 
-
     public void OnTick(Player owner)
     {
         owner.ApplyHeal(BaseAreaHpRegen);

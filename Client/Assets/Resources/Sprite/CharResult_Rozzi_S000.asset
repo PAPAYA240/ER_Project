@@ -9,8 +9,8 @@ Sprite:
   m_Name: CharResult_Rozzi_S000
   m_Rect:
     serializedVersion: 2
-    x: 0
-    y: 1350
+    x: 1020
+    y: 2970
     width: 336
     height: 266
   m_Offset: {x: 0, y: 0}
@@ -19,15 +19,15 @@ Sprite:
   m_Pivot: {x: 0.5, y: 0.5}
   m_Extrude: 1
   m_IsPolygon: 0
-  m_AtlasName:
-  m_PackingTag:
+  m_AtlasName: 
+  m_PackingTag: 
   m_RenderDataKey:
-    3b63e6c8c34e9d24e8014b859e1abcb9: 21300000
+    65eb4633e8116bb44a09104ab9aac5e9: 21300000
   m_AtlasTags: []
   m_SpriteAtlas: {fileID: 0}
   m_RD:
     serializedVersion: 3
-    texture: {fileID: 2800000, guid: e570ac24a03796c49b38a1685b1241cb, type: 3}
+    texture: {fileID: 2800000, guid: 75d0fa8ba400dc841ac61c11d494e320, type: 3}
     alphaTexture: {fileID: 0}
     secondaryTextures: []
     m_SubMeshes:
@@ -107,14 +107,14 @@ Sprite:
     m_Bindpose: []
     textureRect:
       serializedVersion: 2
-      x: 0
-      y: 1350
+      x: 1020
+      y: 2970
       width: 336
       height: 266
     textureRectOffset: {x: 0, y: 0}
-    atlasRectOffset: {x: 0, y: 1350}
+    atlasRectOffset: {x: 1020, y: 2970}
     settingsRaw: 3
-    uvTransform: {x: 100, y: 168, z: 100, w: 1483}
+    uvTransform: {x: 100, y: 1188, z: 100, w: 3103}
     downscaleMultiplier: 1
   m_AtlasRD:
     serializedVersion: 3
@@ -122,13 +122,13 @@ Sprite:
     alphaTexture: {fileID: 0}
     secondaryTextures: []
     m_SubMeshes: []
-    m_IndexBuffer:
+    m_IndexBuffer: 
     m_VertexData:
       serializedVersion: 3
       m_VertexCount: 0
       m_Channels: []
       m_DataSize: 0
-      _typelessdata:
+      _typelessdata: 
     m_Bindpose: []
     textureRect:
       serializedVersion: 2
@@ -143,4 +143,4 @@ Sprite:
     downscaleMultiplier: 0
   m_PhysicsShape: []
   m_Bones: []
-  m_SpriteID:
+  m_SpriteID: 

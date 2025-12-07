@@ -10,17 +10,16 @@ public class RestRegenEffect : IRegenEffect
     public bool IsActive => true;
     public StatRegenType Effect => StatRegenType.RestRegen;
 
-    float bonusRegen = 200.0f;   // TEMP : 이건 고정인가
+    private readonly float RestRegenRatio = 0.2f;
 
     public void OnTick(Player owner)
     {
         if (owner.State != CreatureState.Rest)
             return;
 
-        float hpRegen = owner.HpRegen * bonusRegen;
-        float staminaRegen = owner.StaminaRegen * bonusRegen;
+        float hpRegen = owner.MaxHp * RestRegenRatio;
+        float staminaRegen = owner.MaxStamina * RestRegenRatio;
 
-        //owner.Hp = MathF.Min(owner.MaxHp, owner.Hp + hpRegen);
         owner.ApplyHeal(hpRegen);
         owner.Stamina = MathF.Min(owner.MaxStamina, owner.Stamina + staminaRegen);
     }
