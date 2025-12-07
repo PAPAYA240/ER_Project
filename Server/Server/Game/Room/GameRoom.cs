@@ -1013,6 +1013,17 @@ namespace Server.Game
             stopFx.Fx = fx;
             Broadcast(stopFx);
         }
+
+        public void BroadcastAbglPortal(Player player, Vector2 startPos, Vector2 endPos)
+        {
+            S_AbigailPortal abglPortal = new S_AbigailPortal();
+            abglPortal.ObjectId = player.Id;
+            abglPortal.StartX = startPos.X;
+            abglPortal.StartZ = startPos.Y;
+            abglPortal.EndX = endPos.X;
+            abglPortal.EndZ = endPos.Y;
+            Broadcast(abglPortal);
+        }
         #endregion
 
         public Player FindViableTarget(Monster monster, float range)

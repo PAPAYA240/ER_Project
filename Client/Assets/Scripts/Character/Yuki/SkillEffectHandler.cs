@@ -64,14 +64,7 @@ public class SkillEffectHandler
             RegisterEffect(AbigailFx.RStart, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Start", false);
             RegisterEffect(AbigailFx.RTrail, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Trail", false);
             RegisterEffect(AbigailFx.WpnSkill, player, "Effect/Abigail/FX_BI_Abigail_WSkill_Axe_02");
-
-            //foreach (var effect in _effectMap.Values)
-            //    (effect as MonoBehaviour).transform.localPosition = Vector3.zero;
         }
-
-        // ��� ����Ʈ �ʱ� ��Ȱ��ȭ
-        foreach (var effect in _effectMap.Values)
-            (effect as MonoBehaviour).gameObject.SetActive(false);
 
         _coroutineRunner = player;
     }
@@ -84,7 +77,7 @@ public class SkillEffectHandler
         else
         {
             _parentMap[GetFxKey(type)] = prefab;
-            prefab.SetActive(false);
+            //prefab.SetActive(false);
         }            
 
         prefab.transform.localPosition = Vector3.zero;
@@ -210,5 +203,20 @@ public class SkillEffectHandler
     string GetFxKey<T>(T type) where T : Enum
     {
         return $"{typeof(T).Name}_{type}";
+    }
+
+    public void PlayEffect(AbigailFx fx, Vector3 pos, Quaternion rot)
+    {
+        string key = GetFxKey(fx);
+
+        if (!_effectMap.TryGetValue(key, out var effect)) 
+            return;
+        if (!_parentMap.TryGetValue(key, out var go))
+            return;
+
+        go.transform.position = pos;
+        go.transform.rotation = rot;
+
+        effect.Play();
     }
 }

@@ -4,24 +4,19 @@ public class Fx_YukiEffect : MonoBehaviour, IEffect
 {
     private ParticleSystem ps;
 
-    private Material particleMaterial; // ��ƼŬ �ý��ۿ� ���Ǵ� ��Ƽ����
-
     void Awake()
     {
         ps = GetComponent<ParticleSystem>();
         if (ps == null)
         {
-            Debug.LogWarning($"ParticleSystem not found on {gameObject.name}");
+            //Debug.LogWarning($"ParticleSystem not found on {gameObject.name}");
         }
         else
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-
-        particleMaterial = ps.GetComponent<Renderer>().material;
     }
 
     public void Play()
     {
-        gameObject.SetActive(true);
         ps?.Play();
     }
 
@@ -29,16 +24,5 @@ public class Fx_YukiEffect : MonoBehaviour, IEffect
     {
         if (ps != null)
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        gameObject.SetActive(false);
-    }
-
-
-
-    void Update()
-    {
-        if (ps != null && particleMaterial != null && ps.isPlaying)
-        {
-            particleMaterial.SetFloat("_EffectTime", ps.time);
-        }
     }
 }
