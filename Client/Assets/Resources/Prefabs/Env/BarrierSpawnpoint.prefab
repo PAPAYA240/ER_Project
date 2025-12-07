@@ -178,6 +178,7 @@ GameObject:
   - component: {fileID: 33448321935590969}
   - component: {fileID: 23398249400766331}
   - component: {fileID: 65600879069114289}
+  - component: {fileID: 7165615468117576046}
   m_Layer: 0
   m_Name: Bg_Map_Cobalt_GammaDoor_Front_01_Re
   m_TagString: Untagged
@@ -274,6 +275,33 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.22999999, y: 13.800002, z: 4.3400006}
   m_Center: {x: -0.014996335, y: -0.0000097751645, z: 2.1700003}
+--- !u!54 &7165615468117576046
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1075431657061353}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1092495273389362
 GameObject:
   m_ObjectHideFlags: 0
@@ -625,6 +653,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4189279735356131}
+  - component: {fileID: 7983948173827289107}
   m_Layer: 0
   m_Name: Phase2
   m_TagString: Untagged
@@ -650,6 +679,28 @@ Transform:
   - {fileID: 4731131993135408}
   m_Father: {fileID: 4356257573320862}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &7983948173827289107
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1812205765815985}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 48073f14da462cc41bb965d7930842e0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1844476935476872
 GameObject:
   m_ObjectHideFlags: 0

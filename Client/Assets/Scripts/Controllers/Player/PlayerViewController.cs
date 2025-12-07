@@ -43,7 +43,6 @@ public class PlayerViewController : MonoBehaviour
 
         if (_player.State == CreatureState.Attack)
         {
-            Debug.Log("공격 중에 회전중");
             var targetView = Managers.Object.FindById(TargetId);
             if (targetView != null)
             {

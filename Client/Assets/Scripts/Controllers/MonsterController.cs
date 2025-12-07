@@ -11,10 +11,10 @@ public class MonsterController : CreatureController
     private System.Random _random = new System.Random();
 
     // 몬스터 정보
+    [SerializeField] private MonsterType type;
     public MonsterSkill Skill { get;  set; }
     public int MonsterTeam { get; set; }
 
-    [SerializeField] private MonsterType type;
     public MonsterType Type
     {
         get => type;
@@ -32,7 +32,10 @@ public class MonsterController : CreatureController
             _updated = true;
         }
     }
+
+    //컴포넌트
     public SoundController Sound;
+    private VisualEffectController _highlightEffect;
 
     public Vector3 TargetPosition { get; private set; }
     private Quaternion _targetRotation;
@@ -257,7 +260,6 @@ public class MonsterController : CreatureController
             SetLayerRecursively(child.gameObject, newLayer);
     }
 
-    private VisualEffectController _highlightEffect;
     private bool Add_Component()
     {
         _agent = GetComponentInParent<NavMeshAgent>();

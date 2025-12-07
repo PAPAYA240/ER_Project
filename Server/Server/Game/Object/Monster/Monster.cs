@@ -119,6 +119,7 @@ namespace Server.Game
                 return;
 
             State = CreatureState.Dead;
+
             ChangeState(new DeadState());
 
             // exp and score
@@ -162,11 +163,15 @@ namespace Server.Game
         {
             if (attacker is Player player)
                 return (MonsterTeam == player.Team);
+
             return false;
         }
         protected override void OnDamaged(GameObject attacker, float damage, bool isBasicAttack = false)
         {
             if (CheckTeam(attacker))
+                return;
+
+            if (State == CreatureState.Dead)
                 return;
 
             base.OnDamaged(attacker, damage, isBasicAttack);
