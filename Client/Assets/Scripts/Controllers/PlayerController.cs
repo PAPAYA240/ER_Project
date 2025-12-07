@@ -659,7 +659,6 @@ public class PlayerController : CreatureController
             SyncPos(true);
         }
     }
-    Dictionary<KeyCode, SkillMesh> msDict = new Dictionary<KeyCode, SkillMesh>();
 
     #region NameTagAndHp
     protected void InitNameTag()

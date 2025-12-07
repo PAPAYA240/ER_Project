@@ -95,18 +95,18 @@ public class MonsterController : CreatureController
     {
         if (!_bMesh && State == CreatureState.Skill)
         {
-            _bMesh = true;
-            GameObject skillMeshGO = Managers.Resource.Instantiate("Debug/SkillMesh", this.transform);
-            SkillMesh sm = skillMeshGO.GetComponent<SkillMesh>();
-            if (sm == null) return;
+            //_bMesh = true;
+            //GameObject skillMeshGO = Managers.Resource.Instantiate("Debug/SkillMesh", this.transform);
+            //SkillMesh sm = skillMeshGO.GetComponent<SkillMesh>();
+            //if (sm == null) return;
 
-            if (!DataManager.MonstSkillHitboxDict.ContainsKey(Type))
-                return;
-            if (!DataManager.MonstSkillHitboxDict[Type].ContainsKey(Skill))
-                return;
+            //if (!DataManager.MonstSkillHitboxDict.ContainsKey(Type))
+            //    return;
+            //if (!DataManager.MonstSkillHitboxDict[Type].ContainsKey(Skill))
+            //    return;
 
-            SkillHitbox hitbox = DataManager.MonstSkillHitboxDict[Type][Skill];
-            sm.Init(hitbox, this.transform, 0, 0, this.GetMouseWorldPosition());
+            //SkillHitbox hitbox = DataManager.MonstSkillHitboxDict[Type][Skill];
+            //sm.Init(hitbox, this.transform, 0, 0, this.GetMouseWorldPosition());
         }
     }
     public Vector3 GetMouseWorldPosition()
