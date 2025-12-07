@@ -42,7 +42,6 @@ public class Projectile_Rozzi : Projectile
                     if(_visionCircle != null && pc != null)
                     {
                         _visionCircle.SetActivate(true);
-                        Debug.Log("hi");
 
                         if(pc.ObjInfo.Player.Team == 1)
                         {

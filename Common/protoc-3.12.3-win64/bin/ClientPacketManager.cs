@@ -190,7 +190,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.STheodoreAttack, MakePacket<S_TheodoreAttack>);
 		_handler.Add((ushort)MsgId.STheodoreAttack, PacketHandler.S_TheodoreAttackHandler);		
 		_onRecv.Add((ushort)MsgId.SDeployingLoop, MakePacket<S_DeployingLoop>);
-		_handler.Add((ushort)MsgId.SDeployingLoop, PacketHandler.S_DeployingLoopHandler);
+		_handler.Add((ushort)MsgId.SDeployingLoop, PacketHandler.S_DeployingLoopHandler);		
+		_onRecv.Add((ushort)MsgId.SAbigailPortal, MakePacket<S_AbigailPortal>);
+		_handler.Add((ushort)MsgId.SAbigailPortal, PacketHandler.S_AbigailPortalHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

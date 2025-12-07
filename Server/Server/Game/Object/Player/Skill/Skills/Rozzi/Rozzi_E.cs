@@ -183,7 +183,7 @@ public sealed class Rozzi_E : RozziSkillHandler
 
     private void MakeTargetPlayerStun()
     {
-        if (_target is Player targetPlayer && !targetPlayer.IsUnstoppable())
+        if (_target is Player targetPlayer && !targetPlayer.IsUnstoppable() && !targetPlayer.IsDead)
         {
             StunStateDesc desc = new StunStateDesc();
             desc.EndPos = _target.Position;

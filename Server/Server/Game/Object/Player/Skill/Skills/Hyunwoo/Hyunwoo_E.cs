@@ -110,7 +110,8 @@ public sealed class Hyunwoo_E : SkillHandlerBase
                     else
                         desc.Duration = _duration ;
 
-                    tartgetKVP.Key.ChangeState(new Player_StunState(desc));
+                    if(!tartgetKVP.Key.IsDead)
+                        tartgetKVP.Key.ChangeState(new Player_StunState(desc));
                 }
                 else
                 {

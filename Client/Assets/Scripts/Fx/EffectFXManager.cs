@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
-using UnityEditor;
 using UnityEngine;
 using static Data.EffectData;
 using static UnityEngine.Rendering.DebugUI.Table;

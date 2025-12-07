@@ -582,4 +582,48 @@ namespace Server.Data
     #endregion
 
     #endregion
+
+    #region Spawn
+    public class SpawnPointDTO
+    {
+        public int id { get; set; }
+        public string side { get; set; }   // "0", "1"
+        public string type { get; set; }   // "BaseSpawn", "BushTeleport", "BushNone"
+        public float x { get; set; }
+        public float y { get; set; }
+        public float z { get; set; }
+    }
+
+    public class SpawnPointData : ILoader<int, SpawnPointInfo>
+    {
+        public List<SpawnPointDTO> spawns = new List<SpawnPointDTO>();
+
+        public Dictionary<int, SpawnPointInfo> MakeDict()
+        {
+            var dict = new Dictionary<int, SpawnPointInfo>();
+
+            if (spawns == null)
+                return dict;
+
+            foreach (var s in spawns)
+            {
+                if (s == null)
+                    continue;
+
+                var info = new SpawnPointInfo
+                {
+                    Id = s.id,
+                    Team = s.side == "1",
+                    Type = (SpawnPointType)Enum.Parse(typeof(SpawnPointType), s.type, ignoreCase: true),
+                    Position = new Vector3(s.x, s.y, s.z)
+                };
+
+                // 같은 id 가 있으면 마지막 값으로 덮어쓰기
+                dict[info.Id] = info;
+            }
+
+            return dict;
+        }
+    }
+    #endregion
 }
