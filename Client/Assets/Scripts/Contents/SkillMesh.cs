@@ -79,7 +79,7 @@ public class SkillMesh : MonoBehaviour
 
             visualObject.transform.localPosition = Vector3.zero;
             visualObject.transform.localRotation = Quaternion.identity;
-            Debug.Log($"{transform.position}");
+            //Debug.Log($"{transform.position}");
         }
         else
         {
