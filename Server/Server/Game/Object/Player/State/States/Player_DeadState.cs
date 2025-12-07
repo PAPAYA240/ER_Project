@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -29,7 +30,6 @@ public class Player_DeadState : IPlayerState
 
     public void Exit(Player player)
     {
-
     }
 
     void RespawnTime(Player player)
@@ -38,10 +38,11 @@ public class Player_DeadState : IPlayerState
         diePacket.ObjectId = player.Id;
         diePacket.AttackerId = player.GetLastAttackerId();
 
-        diePacket.RespawnTime = DataManager.RespawnDict[player.Stat.Level];
+        //diePacket.RespawnTime = DataManager.RespawnDict[player.Stat.Level];
+        diePacket.RespawnTime = 2;
         _ = CoRespawnTime(player, diePacket.RespawnTime, respawnAtZero: false);
 
-        player.Room.Broadcast(diePacket);
+        player.Room.Push(player.Room.Broadcast, diePacket);
     }
 
     private async Task CoRespawnTime(Player player, float respawnTime, bool respawnAtZero = true)

@@ -299,12 +299,15 @@ public class PlayerSkillController : MonoBehaviour
         if(_agent != null || _agent.enabled)
             _agent.enabled = false;
 
-        // NavMesh 위로 수정
-        //if (NavMesh.SamplePosition(targetPos, out var endHit, 2.0f, NavMesh.AllAreas))
-        //    _endPosition = endHit.position;
-
         Vector3 finalPos = targetPos;
         finalPos.y = transform.position.y;
+
+        //if (authoritativeEnd)
+        //{
+        //    if (NavMesh.SamplePosition(finalPos, out var finHit, 0.1f, NavMesh.AllAreas))
+        //        finalPos = finHit.position;
+        //}
+
         transform.position = finalPos;
         _player.UpdateTransform();
 

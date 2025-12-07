@@ -89,7 +89,7 @@ public class MonsterController : CreatureController
     {
         transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, Time.deltaTime * _rotationSpeed);
         
-        MeshDebug();
+        //MeshDebug();
     }
     private void MeshDebug()
     {

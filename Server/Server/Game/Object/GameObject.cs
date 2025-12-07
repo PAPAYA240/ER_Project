@@ -543,14 +543,14 @@ namespace Server.Game
                         stunPacket.Duration = 4/*statusEffect.duration*/;
                         Room.Broadcast(stunPacket);
 
-                        if (this is Player player)
+                        if (this is Player player && !player.IsDead)
                         {
                             player.ChangeState(new Player_StunState(new StunStateDesc
                             {
                                 Duration = statusEffect.duration
                             }));
                         }
-                        else if (this is Monster monster)
+                        else if (this is Monster monster && !monster.IsDead)
                         {
                             monster.ChangeState(new StunState(new MonsterStunDesc
                             {

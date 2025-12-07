@@ -19,6 +19,20 @@ namespace Server.Game
 {
     public partial class GameRoom : Room
     {
+        public GameRoom()
+        {
+            SpawnRegistry = new SpawnPointRegistry(spawnCooldownSec: 5.0);
+
+            foreach (var kv in DataManager.SpawnPointDict)
+            {
+                var info = kv.Value;
+                SpawnRegistry.Add(info);
+            }
+
+            Spawn = new SpawnSystem(SpawnRegistry);
+            Teleport = new TeleportSystem(SpawnRegistry);
+        }
+
         ConcurrentDictionary<int, Player> _players = new ConcurrentDictionary<int, Player>();
         ConcurrentDictionary<int, EnvironmentObject> _envs = new ConcurrentDictionary<int, EnvironmentObject>();
         ConcurrentDictionary<int, Monster> _monsters = new ConcurrentDictionary<int, Monster>();
@@ -263,9 +277,6 @@ namespace Server.Game
             SkillRegistry.InitRegister();
             SetUpStatusEffectDict(); // StatusEffectDict 초기화 
 
-            // Spawn Register
-            SpawnRegister();
-
             StartPhase();
             StartSyncTimer();
         }
@@ -343,7 +354,8 @@ namespace Server.Game
                 // 본인한테 정보 전송
                 {
                     if (Spawn == null)
-                        SpawnRegister();
+                        Console.WriteLine($"Spawn Error! : Spawn is null");
+                    
                     player.Info.PosInfo = Spawn.GetSpawnPoint(player.Team).ToPositionInfo();
 
                     S_EnterGame enterPacket = new S_EnterGame();
@@ -636,22 +648,6 @@ namespace Server.Game
         {
             if (player == null)
                 return;
-
-            //var clientPos = new Vector3(movePacket.PosInfo.PosX, movePacket.PosInfo.PosY, movePacket.PosInfo.PosZ);
-
-            //if (movePacket.IsSkillMotion || player.Flags.IsInSkillMotion)
-            //{
-            //    // 감시 모드: 브로드캐스트 X
-            //    // 가벼운 보정 1회
-            //    player.SendMovePacket(new PositionInfo { PosX = player.PosInfo.PosX, PosY = player.PosInfo.PosY, PosZ = player.PosInfo.PosZ },
-            //                         new RotationInfo(player.RotInfo));
-
-            //    return;
-            //}
-
-            //player.PosInfo.PosX = movePacket.PosInfo.PosX;
-            //player.PosInfo.PosY = movePacket.PosInfo.PosY;
-            //player.PosInfo.PosZ = movePacket.PosInfo.PosZ;
 
             player.PosInfo.SetPosInfoFromVector3(movePacket.PosInfo.ToVector());
             player.RotInfo.MergeFrom(movePacket.RotInfo);
@@ -962,21 +958,6 @@ namespace Server.Game
         public void HandleUseItem(Player player, C_UseItem packet)
         {
             player.UseItem(packet.InventoryIndex, new Vector3(packet.MouseX, 0, packet.MouseZ));
-        }
-
-        private void SpawnRegister()
-        {
-            if(SpawnRegistry == null)
-                SpawnRegistry = new SpawnPointRegistry(spawnCooldownSec: 5.0);
-
-            // JSON 로드해서 스폰 포인트 채우기
-            if(!SpawnRegistry.IsSpawnDataLoaded())
-                SpawnPointLoader.LoadSpawnPoints("Data/json/SpawnPoints.json", SpawnRegistry);
-
-            if(Spawn == null)
-                Spawn = new SpawnSystem(SpawnRegistry);
-            if(Teleport == null)
-                Teleport = new TeleportSystem(SpawnRegistry);
         }
 
         #region AbigailPkts

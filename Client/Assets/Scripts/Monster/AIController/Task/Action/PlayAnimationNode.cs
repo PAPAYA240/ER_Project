@@ -166,7 +166,6 @@ public class PlayAnimatorFloatNode : AnimationControlNode
     public override void Exit(GameObject obj, bool clear)
     {
     }
-
 }
 
 #endregion
