@@ -79,7 +79,7 @@ namespace Server.Game
                 _phaseEndTick = long.MaxValue; // 지속시간 정의 안되면 수동 종료
             }
 
-            DestroyPhase(CurPhase);
+            DestroyMonsterPhase(CurPhase);
             _monsterManager.Add(CurPhase, this);
 
             // 클라이언트 동기화
@@ -116,7 +116,7 @@ namespace Server.Game
             }
         }
 
-        private void DestroyPhase(int phase)
+        private void DestroyMonsterPhase(int phase)
         {
             List<int> destroyTargetIds = new List<int>();
             foreach (var item in _monsters)
@@ -124,22 +124,12 @@ namespace Server.Game
                 Monster monster = item.Value;
                 if (monster == null || monster.State != CreatureState.Dead)
                     continue; 
-
-                MonsterType monsterType = monster.Info.Monster.MonsterType;
-                bool shouldDestroy = false;
-
-                if (phase == 2)
-                    shouldDestroy = (monsterType == MonsterType.Drone);
-                else if (phase == 3)
-                    shouldDestroy = (monsterType == MonsterType.Drone || monsterType == MonsterType.Omega);
-
-                if (shouldDestroy)
-                    destroyTargetIds.Add(monster.Id);
+                 destroyTargetIds.Add(monster.Id);
             }
-
             foreach (int monsterId in destroyTargetIds)
                 LeaveGame(monsterId);
         }
+
         public void SyncTimer(object state = null)
         {
             S_SyncTimer syncTimerPacket = new S_SyncTimer();
