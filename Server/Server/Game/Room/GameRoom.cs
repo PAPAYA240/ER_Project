@@ -1030,7 +1030,12 @@ namespace Server.Game
                 PositionInfo playerPos = player.Info.PosInfo;
 
                 if (monster.Info.PosInfo.GetDistanceSq(playerPos) <= rangeSq)
-                    return player;
+                {
+                    if (player.State == CreatureState.Dead)
+                        continue;
+
+                    return player; 
+                }
             }
             return null;
         }

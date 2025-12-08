@@ -258,7 +258,7 @@ namespace Server.Game
                     if (false == System.Enum.TryParse<SkillType>(hitbox.Data.Type, out SkillType type))
                         continue;
                     if (type == SkillType.SkillPoint || type == SkillType.SkillTargeting)
-                        return;
+                        continue;
 
                     if (type == SkillType.SkillProjectile)
                     {
@@ -1051,37 +1051,37 @@ namespace Server.Game
                         Vector2 circleCenter = new Vector2(myHitbox.PosX, myHitbox.PosZ);
                         float circleRadius = myHitbox.Data.Radius + myHitbox.OffsetRadius;
 
-                        // Point OBB 설정
                         Vector2 pointCenter = new Vector2(targetHitbox.PosX, targetHitbox.PosZ);
-                        Vector2 fixedPlayerPos = new Vector2(targetHitbox.FixedPosition.X, targetHitbox.FixedPosition.Z);
-                        Vector2 forward = Vector2.Normalize(pointCenter - fixedPlayerPos);
+                        Vector2 pointPrevPos = new Vector2(targetHitbox.FixedPosition.X, targetHitbox.FixedPosition.Z);
+
+                        float actualDist = Vector2.Distance(circleCenter, pointCenter);
+
+                        Vector2 direction = pointCenter - pointPrevPos;
+
+                        Vector2 forward = Vector2.Normalize(direction);
                         Vector2 right = new Vector2(-forward.Y, forward.X);
+
                         float halfHeight = targetHitbox.Data.Height * 0.5f;
                         float halfWidth = targetHitbox.Data.Width * 0.5f;
 
-                        // Circle 중심에서 OBB로의 벡터
                         Vector2 toCircle = circleCenter - pointCenter;
 
-                        // OBB 로컬 좌표계로 투영
                         float projForward = Vector2.Dot(toCircle, forward);
                         float projRight = Vector2.Dot(toCircle, right);
 
-                        // OBB 내에서 Circle 중심에 가장 가까운 점 찾기
                         float clampedForward = MathF.Max(-halfHeight, MathF.Min(projForward, halfHeight));
                         float clampedRight = MathF.Max(-halfWidth, MathF.Min(projRight, halfWidth));
 
-                        // 가장 가까운 점과 Circle 중심 사이의 거리
                         float deltaForward = projForward - clampedForward;
                         float deltaRight = projRight - clampedRight;
                         float distSq = deltaForward * deltaForward + deltaRight * deltaRight;
 
-                        // Circle 반지름과 비교
                         return distSq <= circleRadius * circleRadius;
                     }
                 case SkillShape.Rectangle:
                 case SkillShape.Point:
                 case SkillShape.Ray:
-                    return CheckPointRayCollision(myHitbox, targetHitbox);
+                    return CheckPointRayCollision(targetHitbox, myHitbox);
 
                 case SkillShape.Sector:
                     {
@@ -1125,15 +1125,19 @@ namespace Server.Game
                         continue;
 
                     // point가 B여야 함
-                    if (!System.Enum.TryParse<SkillShape>(hitboxB.Data.Shape, out var shape))
+                    if (!System.Enum.TryParse<SkillShape>(hitboxA.Data.Shape, out var shapeA))
+                        continue;
+                    if (!System.Enum.TryParse<SkillShape>(hitboxB.Data.Shape, out var shapeB))
                         continue;
 
-                    if (shape != SkillShape.Point)
+                    if (shapeB != SkillShape.Point && shapeA == SkillShape.Point)
                     {
                         Hitbox tmp = hitboxA;
                         hitboxA = hitboxB;
                         hitboxB = tmp;
                     }
+                    else if (shapeB != SkillShape.Point && shapeA != SkillShape.Point)
+                        continue;
 
                     if (CheckCollision(hitboxA, hitboxB))
                         HandlerInteraction(hitboxA, hitboxB);
