@@ -1072,12 +1072,7 @@ class PacketHandler
         if (go == null)
             return;
 
-        ChatHandler chat = go.GetComponentInChildren<ChatHandler>();
-        if (chat == null)
-            return;
-
-        Debug.Log(chatPkt.ChatType);
-        chat.EnqueueMessage(chatPkt.PlayerName, chatPkt.Message, chatPkt.ChatType, chatPkt.CharType);
+        ChatHandler.Instance.EnqueueMessage(chatPkt.PlayerName, chatPkt.Message, chatPkt.ChatType, chatPkt.CharType);
     }
 
     public static void S_AnimSpeedHandler(PacketSession session, IMessage packet)

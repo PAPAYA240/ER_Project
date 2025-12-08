@@ -286,8 +286,8 @@ public class PlayerController : CreatureController
         YukiEffects.InitEffects(this);
 
         // Chat
-        GameObject goChat = Managers.Resource.Instantiate("UI/Chat/ChatBackground");
-        goChat.transform.SetParent(gameObject.transform);
+        //GameObject goChat = Managers.Resource.Instantiate("UI/Chat/ChatBackground");
+        //goChat.transform.SetParent(gameObject.transform);
 
         // 장비 슬롯
         InitEquipItem();

@@ -1,13 +1,14 @@
 using Google.Protobuf.Protocol;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.Experimental.AI;
 using UnityEngine.UI;
 
 public class ChatHandler : MonoBehaviour
 {
+    public static ChatHandler Instance;
+
     public static bool IsChatting { get; private set; }
 
     [SerializeField] private TMP_InputField inputField;
@@ -16,7 +17,6 @@ public class ChatHandler : MonoBehaviour
     [SerializeField] private TMP_Text placeholderText;
 
     private CanvasGroup cg;
-    private PlayerController player;
     private ChatType chatType;
 
     // ¸Þ½ÃÁö Å¥
@@ -24,16 +24,18 @@ public class ChatHandler : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
         cg = inputField.GetComponent<CanvasGroup>();
         if (cg == null)
             cg = inputField.gameObject.AddComponent<CanvasGroup>();
 
         HideInputField(); // ½ÃÀÛ ½Ã ¼û±è
-    }
-
-    private void Start()
-    {
-        player = GetComponentInParent<PlayerController>();
     }
 
     public void EnqueueMessage(string playerName, string message, ChatType chatType, CharacterType charType)
@@ -49,7 +51,7 @@ public class ChatHandler : MonoBehaviour
             AddMessage(msg.playerName, msg.message, msg.chatType, msg.charType);
         }
 
-        // ½ÃÇÁÆ® + ¿£ÅÍ (ÆÀÃª)
+        // Shift + enter (all chat)
         if ((Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
             && Input.GetKey(KeyCode.LeftShift))
         {
@@ -57,7 +59,7 @@ public class ChatHandler : MonoBehaviour
             return;
         }
 
-        // ¿£ÅÍ (ÀüÃ¼Ãª)
+        // enter (team chat)
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             if (!cg.interactable)
@@ -87,10 +89,20 @@ public class ChatHandler : MonoBehaviour
 
         chatType = isTeam ? ChatType.Team : ChatType.All;
 
+        inputField.text = isTeam ? "" : "/All ";
+
         inputField.ActivateInputField();
         inputField.Select();
 
-        inputField.caretPosition = 0;
+        StartCoroutine(SetCaretToEnd());
+    }
+
+    private IEnumerator SetCaretToEnd()
+    {
+        yield return null;
+
+        inputField.caretPosition = inputField.text.Length;
+        inputField.stringPosition = inputField.text.Length;
     }
 
     private void HideInputField()
@@ -105,8 +117,15 @@ public class ChatHandler : MonoBehaviour
     private void SendChat()
     {
         string msg = inputField.text.Trim();
+
         if (msg.Length <= 0)
             return;
+
+        if (chatType == ChatType.All)
+        {
+            if (msg.StartsWith("/All "))
+                msg = msg.Substring(5).Trim();
+        }
 
         C_Chat chatPkt = new C_Chat();
 
