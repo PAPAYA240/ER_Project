@@ -211,7 +211,7 @@ public class PlayerInputController : MonoBehaviour
     public C_DeployingLoop GetDeployingLoopCommand()
     {
         // 스킬/휴식/스턴 등 다른 상태면 상호작용 대기 취소
-        if (_player.State != CreatureState.Idle && _player.State != CreatureState.Moving)
+        if ((_player.State != CreatureState.Idle && _player.State != CreatureState.Moving) || _player.State == CreatureState.Dead)
         {
             _pendingDeployingLoop = null;
             return null;
@@ -280,6 +280,9 @@ public class PlayerInputController : MonoBehaviour
     // H키 : 이동 중지
     public C_Stop GetStopCommand()
     {
+        if(_player.State == CreatureState.Dead)
+            return null;
+
         if (Input.GetKeyDown(KeyCode.S))
         {
             CancelDeployingLoopInteraction();
@@ -300,6 +303,9 @@ public class PlayerInputController : MonoBehaviour
 
     public virtual C_SkillInput GetSkillCommand()
     {
+        if (_player.State == CreatureState.Dead)
+            return null;
+
         // 배열 순서대로 키다운 검사 -> 처음 눌린 키에 대해 바로 생성/리턴
         for (int i = 0; i < _skillKeys.Length; i++)
         {
@@ -335,6 +341,9 @@ public class PlayerInputController : MonoBehaviour
     public C_Rest GetRestCommand()
     {
         if (_player.CombatStat == CombatState.Combat)
+            return null;
+
+        if (_player.State == CreatureState.Dead)
             return null;
 
         if (_player.IsRest == false && _player.State != CreatureState.Rest)

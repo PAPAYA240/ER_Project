@@ -374,9 +374,7 @@ namespace Server.Game
 
             UpdateAttackRange();
 
-            //base.Update();
-
-            TickTokens(); // ��ū ����/����
+            TickTokens();
             _stateMachine.Update(this);
             _statRegenerator.Update();
             CheckUpdateStat();
