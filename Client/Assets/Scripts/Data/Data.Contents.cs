@@ -485,6 +485,7 @@ namespace Data
         public List<MonsterSkill> skills;
         public float appearTime;
         public int activePhase;
+        public float deadTime;
     }
 
     [Serializable]

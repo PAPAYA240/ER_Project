@@ -115,6 +115,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         }
 
         Vector3 pos = player.Position;
+
         Vector3 targetPos = target.Position;
         float dist = Vector3.Distance(pos, targetPos);
         bool inRange = dist <= player.AttackRange;

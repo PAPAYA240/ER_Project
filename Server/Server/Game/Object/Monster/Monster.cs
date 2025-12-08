@@ -68,9 +68,14 @@ namespace Server.Game
             DIST_TO_TARGET = DataManager.MonsterDict[type].attackDist;
             OnAttacked += HandlerRegisterTarget;
         }
+
         bool _appeared = false;
         public override void Update()
         {
+            if (Info.Monster.MonsterType == MonsterType.Omega)
+            {
+                Console.WriteLine($"{Info.PosInfo.PosX}, {Info.PosInfo.PosZ}");
+            }
             if (Room != null && _appeared == false)
             {
                 ChangeState(FSMManager.Instance.GetAppearState());

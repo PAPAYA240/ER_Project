@@ -67,7 +67,6 @@ namespace Server.Game
             if (monster.CurrentSkill == MonsterSkill.MsGammaSkill2)
                 RotationSkill(monster);
 
-                    Console.WriteLine("상대한테 쏨");
             if (IsSkillFinished())
             {
                 if (monster.IsInSkillRange())

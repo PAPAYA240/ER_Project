@@ -87,10 +87,32 @@ public class MonsterController : CreatureController
 
     protected override void UpdateController()
     {
+        if (_agent != null)
+        {
+            Vector3 newPosition = _agent.nextPosition;
+
+            if (transform.parent != null)
+            {
+                transform.parent.position = newPosition;
+            }
+            else
+            {
+                transform.position = newPosition;
+            }
+
+            CellPos = newPosition;
+
+            if (_agent.desiredVelocity.sqrMagnitude > 0.01f)
+            {
+                Quaternion targetRot = Quaternion.LookRotation(_agent.desiredVelocity.normalized);
+                _targetRotation = targetRot;
+            }
+        }
+
         transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, Time.deltaTime * _rotationSpeed);
-        
-        //MeshDebug();
+        RotInfo = _targetRotation;
     }
+
     private void MeshDebug()
     {
         if (!_bMesh && State == CreatureState.Skill)
@@ -170,7 +192,9 @@ public class MonsterController : CreatureController
     public void OnIdlePacket(S_State packet)
     {
         if (_agent != null)
-            _agent.SetDestination(packet.PosInfo.ToVector());
+        {
+            _agent.SetDestination(packet.PosInfo.ToVector()); 
+        }
 
         if (packet.RotInfo != null)
             _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
@@ -179,7 +203,9 @@ public class MonsterController : CreatureController
     public void OnMovePacket(S_State packet)
     {
         if (_agent != null)
-             _agent.SetDestination(packet.PosInfo.ToVector());
+         {    
+            _agent.SetDestination(packet.PosInfo.ToVector());
+        }
 
         if(packet.RotInfo != null)
             _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
@@ -201,7 +227,7 @@ public class MonsterController : CreatureController
         if (_agent != null)
         {
            _agent.ResetPath();
-           _agent.SetDestination(packet.PosInfo.ToVector());
+            _agent.SetDestination(packet.PosInfo.ToVector());
         }
 
         if (packet.RotInfo != null)
@@ -265,8 +291,8 @@ public class MonsterController : CreatureController
         _agent = GetComponentInParent<NavMeshAgent>();
         if (_agent != null)
         {
-            _agent.updatePosition = true;
-            _agent.updateRotation = true;
+            _agent.updatePosition = false;
+            _agent.updateRotation = false;
             _agent.speed = _agentSpeed;
             SyncPos(true);
         }
