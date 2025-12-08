@@ -78,8 +78,17 @@ public class PlayerViewController : MonoBehaviour
     {
     }
 
+    public void OnRest(S_Rest packet)
+    {
+        UI_InteractionCharge ic = _player.UI.InteractionCharge;
+        if (packet.IsRest)
+            ic.Begin(packet.Duration, "휴식 준비 중");
+        else
+            ic.Begin(packet.Duration, "휴식 해제 중");
+    }
+
     public void OnDead(S_Die packet)
-    {      
+    {
     }
 
     public S_Die GetRestCommand()

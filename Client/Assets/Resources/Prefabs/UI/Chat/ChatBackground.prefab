@@ -270,6 +270,7 @@ MonoBehaviour:
   inputField: {fileID: 739661718232781510}
   contentRect: {fileID: 7771892328317473420}
   scrollRect: {fileID: 5985252910022495025}
+  placeholderText: {fileID: 1113430163422103050}
 --- !u!1 &758416928793113487
 GameObject:
   m_ObjectHideFlags: 0
@@ -1213,7 +1214,7 @@ MonoBehaviour:
     m_Top: 10
     m_Bottom: 10
   m_ChildAlignment: 0
-  m_Spacing: 10
+  m_Spacing: 1
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0

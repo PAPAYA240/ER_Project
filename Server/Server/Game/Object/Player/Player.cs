@@ -172,7 +172,7 @@ namespace Server.Game
 
         #region Yuki Privacy
         // 유키 단추용
-        private static readonly int MaxStud = 4;
+        private readonly int MaxStud = 4;
         private int _yukiStud_cnt = 4;
 
         public int YukiStud
@@ -350,7 +350,14 @@ namespace Server.Game
 
                     // 유키 단추용
                     if (Info.Player.CharType == CharacterType.Yuki)
+                    {
                         YukiStud = MaxStud;
+                        S_YukiStud yukiStudPkt = new S_YukiStud();
+                        yukiStudPkt.ObjectId = Id;
+                        yukiStudPkt.StudCnt = YukiStud;
+
+                        Room.Push(Room.Broadcast, yukiStudPkt);
+                    }
                 }
             }
 
@@ -374,9 +381,7 @@ namespace Server.Game
 
             UpdateAttackRange();
 
-            //base.Update();
-
-            TickTokens(); // ��ū ����/����
+            TickTokens();
             _stateMachine.Update(this);
             _statRegenerator.Update();
             CheckUpdateStat();

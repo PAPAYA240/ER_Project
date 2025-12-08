@@ -65,6 +65,9 @@ public class PlayerController : CreatureController
     private float _currentMultiKillCount = 0;
     private float _lastKillTime = 0.0f;
 
+    // Ping
+    public PingController Ping { get; private set; }
+
     #region Property
     public override float Attack
     {
@@ -286,8 +289,8 @@ public class PlayerController : CreatureController
         YukiEffects.InitEffects(this);
 
         // Chat
-        GameObject goChat = Managers.Resource.Instantiate("UI/Chat/ChatBackground");
-        goChat.transform.SetParent(gameObject.transform);
+        //GameObject goChat = Managers.Resource.Instantiate("UI/Chat/ChatBackground");
+        //goChat.transform.SetParent(gameObject.transform);
 
         // 장비 슬롯
         InitEquipItem();
@@ -312,7 +315,10 @@ public class PlayerController : CreatureController
         RegisterRestItem();
 
         // Weapon Anim
-        RegisterWeaponAnimator();           
+        RegisterWeaponAnimator();
+
+        // Ping
+        Ping = new PingController(this);
     }
 
     private void InitEquipItem()

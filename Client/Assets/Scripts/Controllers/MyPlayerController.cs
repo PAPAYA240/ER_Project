@@ -158,7 +158,7 @@ public class MyPlayerController : PlayerController
             {
                 var skillCmd = _input.GetSkillCommand();
                 if (skillCmd != null)
-                    Managers.Network.Send(skillCmd);
+                    Managers.Network.Send(skillCmd);          
 
                 // 아이템 사용
                 var useItemCmd = _input.GetUseItemCommand();
@@ -171,6 +171,14 @@ public class MyPlayerController : PlayerController
         var restCmd = _input.GetRestCommand();
         if (restCmd != null)
             Managers.Network.Send(restCmd);
+
+        // Ping
+        _input.GetPingCommand();
+
+        // For Test
+        var testCmd = _input.Get_KeyInputForTestCommand();
+        if (testCmd != null)
+            Managers.Network.Send(testCmd);
 
         CheckUpdatedFlag();
     }
@@ -216,6 +224,7 @@ public class MyPlayerController : PlayerController
     public void OnServerUpdate(S_SkillCollisionRequest packet) => _skill.OnSkillCollisionRequest(packet);
     public void OnServerUpdate(S_SkillCost packet) => _skill.OnSkillCost(packet);
     public void OnServerUpdate(S_DeployingLoop packet) => _input.CancelDeployingLoopInteraction();
+    public void OnServerUpdate(S_Rest packet) => _view.OnRest(packet);
 
     #region UI
     public override void SetKDA(int kill, int death, int asist)

@@ -536,6 +536,33 @@
             }
           ]
         },
+        "Move": {
+          "Caster": [
+            {
+              "prefabName": "FX_Common_MoveArrow",
+              "target": "Mouse",
+              "duration": 0.5
+            }
+          ]
+        },
+        "LevelUp": {
+          "Caster": [
+            {
+              "prefabName": "FX_BI_Character_LevelUp",
+              "target": "TargetNoRotation",
+              "duration": 3
+            }
+          ]
+        },
+        "Ping": {
+          "Caster": [
+            {
+              "prefabName": "Fx_BI_PingSelect_01",
+              "target": "Mouse",
+              "duration": 3
+            }
+          ]
+        },
         "Debuff_Slow": {
           "Caster": [
             {

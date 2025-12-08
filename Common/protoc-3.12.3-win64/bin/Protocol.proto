@@ -150,6 +150,9 @@ enum MsgId {
   C_BASE_TRIGGER = 118;
   S_DEPLOYING_LOOP = 119;
   S_ABIGAIL_PORTAL = 120;
+
+  C_PING_MARKER = 121;
+  S_PING_MARKER = 122;
 }
 
 enum CombatState{
@@ -396,7 +399,8 @@ enum SkillEffectType {
 	W_Flower = 6;
 	W_EFFECT = 7;
 	E_Wind = 8;
-	WpSkill = 9;
+	E_Attack = 9;
+ 	WpSkill = 10;
 }
 
 enum SpawnPointType
@@ -490,6 +494,11 @@ enum Slot{
 	Slot_Empty = 0;
 	Slot_Player = 1;
 	Slot_Other = 2;
+}
+
+enum ChatType {
+	All = 0;
+	Team = 1;
 }
 
 message S_TheodoreAttack
@@ -1101,6 +1110,7 @@ message C_Rest {
 message S_Rest {
   int32 objectId = 1;
   bool isRest = 2;
+  float duration = 3;
 }
 
 message S_MoveSync {
@@ -1187,12 +1197,15 @@ message C_Chat {
 	int32 objectId = 1;
 	string playerName = 2;
 	string message = 3;
+	ChatType chatType = 4;
 }
 
 message S_Chat {
 	int32 objectId = 1;
 	string playerName = 2;
 	string message = 3;
+	ChatType chatType = 4;
+	CharacterType charType = 5;
 }
 
 message S_Unstoppable{
@@ -1377,4 +1390,14 @@ message S_AbigailPortal{
 	float startZ = 3;
 	float endX = 4;
 	float endZ = 5;
+}
+
+message C_PingMarker{
+	int32 ObjectId = 1;
+	PositionInfo targetPos = 2;
+}
+
+message S_PingMarker{
+	int32 ObjectId = 1;
+	PositionInfo targetPos = 2;
 }
