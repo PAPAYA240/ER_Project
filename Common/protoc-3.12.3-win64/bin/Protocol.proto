@@ -150,6 +150,9 @@ enum MsgId {
   C_BASE_TRIGGER = 118;
   S_DEPLOYING_LOOP = 119;
   S_ABIGAIL_PORTAL = 120;
+
+  C_PING_MARKER = 121;
+  S_PING_MARKER = 122;
 }
 
 enum CombatState{
@@ -1387,4 +1390,14 @@ message S_AbigailPortal{
 	float startZ = 3;
 	float endX = 4;
 	float endZ = 5;
+}
+
+message C_PingMarker{
+	int32 ObjectId = 1;
+	PositionInfo targetPos = 2;
+}
+
+message S_PingMarker{
+	int32 ObjectId = 1;
+	PositionInfo targetPos = 2;
 }

@@ -8,6 +8,7 @@ Shader "Unlit/Common_MoveArrow_Ground"
         _MulVal_rgb     ("RGB Multiplier", Float) = 1
         _MulVal_alpha   ("Alpha Multiplier", Float) = 1
         _CenterGlow     ("Center Glow Strength", Float) = 2 // 1이 기본, 값↑ = 중앙 더 밝게
+        _HexTiling      ("Hex Tiling", Float) = 1
 
         [Space(20)]
         [Enum(LESS,0,GREATER,1,LEQUAL,2,GEQUAL,3,EQUAL,4,NOTEQUAL,5,ALWAYS,6)]
@@ -41,6 +42,7 @@ Shader "Unlit/Common_MoveArrow_Ground"
             float     _MulVal_rgb;
             float     _MulVal_alpha;
             float     _CenterGlow;
+            float     _HexTiling;
 
             struct appdata
             {
@@ -68,7 +70,8 @@ Shader "Unlit/Common_MoveArrow_Ground"
             fixed4 frag (v2f i) : SV_Target
             {
                 // Hex 패턴
-                fixed4 mainCol = tex2D(_MainTex, i.uv);
+                float2 hexUV = i.uv * _HexTiling;
+                fixed4 mainCol = tex2D(_MainTex, hexUV);
 
                 // 바깥으로 갈수록 0이 되는 Radial 마스크
                 float2 maskUV = TRANSFORM_TEX(i.uv, _MaskTex);

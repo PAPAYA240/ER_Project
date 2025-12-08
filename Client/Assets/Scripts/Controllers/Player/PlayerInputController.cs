@@ -38,6 +38,7 @@ public class PlayerInputController : MonoBehaviour
 
     readonly private string Rest_Desc_NotReady = "전투 중에는 휴식을 할 수 없습니다.";
     readonly private string DeployingLoop_Desc_NotReady = "지금은 준비되지 않았습니다.";
+    readonly private string Ping_Desc_NotReady = "추가 신호를 보내려면 기다려야 합니다.";
 
     private void Awake()
     {
@@ -468,6 +469,17 @@ public class PlayerInputController : MonoBehaviour
         }
 
         return KeyCode.None;
+    }
+
+    public void GetPingCommand()
+    {
+        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetMouseButtonDown(0))
+        {
+            Vector3 mousePos = GetMouseWorldPosition();
+            mousePos.y = _player.transform.position.y;
+            if(_player.Ping.TryPlacePing(mousePos) == false)
+                _player.UI.ActionNotReady.Show(Ping_Desc_NotReady);
+        }
     }
 
     public C_KeyInputForTest Get_KeyInputForTestCommand()

@@ -537,4 +537,20 @@ class PacketHandler
 
         room.Push(room.HandleBaseTrigger, player, basePacket);
     }
+
+    public static void C_PingMarkerHandler(PacketSession session, IMessage packet)
+    {
+        C_PingMarker pingPacket = packet as C_PingMarker;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandlePingMarker, player, pingPacket);
+    }
 }

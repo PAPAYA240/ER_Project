@@ -172,6 +172,14 @@ public class MyPlayerController : PlayerController
         if (restCmd != null)
             Managers.Network.Send(restCmd);
 
+        // Ping
+        _input.GetPingCommand();
+
+        // For Test
+        var testCmd = _input.Get_KeyInputForTestCommand();
+        if (testCmd != null)
+            Managers.Network.Send(testCmd);
+
         CheckUpdatedFlag();
     }
 

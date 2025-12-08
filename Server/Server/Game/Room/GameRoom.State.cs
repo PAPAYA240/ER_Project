@@ -14,6 +14,7 @@ using static Lucene.Net.Util.AttributeSource;
 using static Server.Data.DataUtils;
 using static Server.Game.Player;
 using Server.Game;
+using ServerCore;
 
 namespace Server.Game
 {
@@ -306,6 +307,19 @@ namespace Server.Game
                 player.AddStatEffect(IRegenEffect.StatRegenType.BaseAreaRegen);
             else
                 player.RemoveStatEffect(IRegenEffect.StatRegenType.BaseAreaRegen);
+        }
+
+        public void HandlePingMarker(Player player, C_PingMarker pkt)
+        {
+            if (player == null)
+                return;
+
+            S_PingMarker pingPacket = new S_PingMarker() { ObjectId =  pkt.ObjectId, TargetPos = pkt.TargetPos };
+            foreach(var p in _players)
+            {
+                if (p.Value != player && p.Value.Team == player.Team)
+                    Push(p.Value.Session.Send, pingPacket);
+            }
         }
 
         #region Utils
