@@ -940,9 +940,25 @@ namespace Server.Game
             {
                 ObjectId = player.Id,
                 PlayerName = player.Info.Player.Nickname,
-                Message = chatPkt.Message
+                Message = chatPkt.Message,
+                ChatType = chatPkt.ChatType,
+                CharType = player.CharType
             };
-            Push(Broadcast, sendPkt);
+
+            if (chatPkt.ChatType == ChatType.Team)
+            {
+                // 같은 팀에게만 채팅 전송
+                foreach (var p in _players.Values)
+                {
+                    if (p.Team == player.Team)
+                        p.Session.Send(sendPkt);
+                }
+            }
+            else
+            {
+                // 전체 채팅
+                Push(Broadcast, sendPkt);
+            }
         }
 
         public void HandleUseItem(Player player, C_UseItem packet)

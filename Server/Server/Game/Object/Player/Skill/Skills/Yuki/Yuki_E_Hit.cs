@@ -43,6 +43,8 @@ public sealed class Yuki_E_Hit : SkillHandlerBase
         SendSkillCollisionRequestPacket(p, CollisionType.Block, _startPos, _endPos);
 
         p.Room.Push(p.Room.BroadcastAbigailSound, p, AbigailSound.YukiEhit, 1f);
+
+        p.SendYukiSkillEffect(SkillEffectType.EAttack);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

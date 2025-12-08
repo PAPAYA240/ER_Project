@@ -1076,7 +1076,8 @@ class PacketHandler
         if (chat == null)
             return;
 
-        chat.EnqueueMessage(chatPkt.PlayerName, chatPkt.Message);
+        Debug.Log(chatPkt.ChatType);
+        chat.EnqueueMessage(chatPkt.PlayerName, chatPkt.Message, chatPkt.ChatType, chatPkt.CharType);
     }
 
     public static void S_AnimSpeedHandler(PacketSession session, IMessage packet)
