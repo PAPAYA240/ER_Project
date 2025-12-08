@@ -311,7 +311,10 @@ public class ObjectManager
 
             foreach (var r in go.GetComponentsInChildren<Canvas>())
             {
-                r.enabled = isVisible;
+                if(controller != null && controller.State == CreatureState.Dead)
+                    r.enabled = false;
+                else
+                    r.enabled = isVisible;
             }
 
             if(go.GetComponent<PlayerController>() != null && Managers.Object.MyPlayer != null)
