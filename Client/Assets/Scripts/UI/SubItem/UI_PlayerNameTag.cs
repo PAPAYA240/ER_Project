@@ -18,7 +18,7 @@ public class UI_PlayerNameTag : UI_Base
         StaminaBar,
     }
 
-    const float _nameTagHeight = 2.6f;
+    const float _nameTagHeight = 2.74f;
 
     GameObject _target;
 
