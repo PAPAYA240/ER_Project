@@ -118,7 +118,7 @@ public class UI_PlayerNameTag : UI_Base
         Vector2 centerOffset = new Vector2(screenX - 0.5f, screenY - 0.5f);
 
         // 좌우/상하 별도 보정 강도 설정
-        float horizontalPullStrength = 0.13f;  // 좌우 보정 강도 증가
+        float horizontalPullStrength = 0.1f;  // 좌우 보정 강도 증가
         float verticalPullStrength = 0.08f;    // 상하 보정 강도
 
         // 좌우 보정을 위한 추가 계산
@@ -126,7 +126,7 @@ public class UI_PlayerNameTag : UI_Base
         float verticalEdgeFactor = Mathf.Abs(centerOffset.y) * 2f;    // 0~1
 
         // 좌우 보정 강화: 가장자리일수록 더 강하게
-        horizontalEdgeFactor = Mathf.Pow(horizontalEdgeFactor, 1.5f);  // 곡선적으로 증가
+        horizontalEdgeFactor = Mathf.Pow(horizontalEdgeFactor, 1.3f);  // 곡선적으로 증가
         verticalEdgeFactor = Mathf.Pow(verticalEdgeFactor, 1.2f);      // 상하는 덜 강하게
 
         // X축: 살짝 안쪽으로 당기기
@@ -144,7 +144,7 @@ public class UI_PlayerNameTag : UI_Base
         if (screenPoint.z < 0f) return false;
 
         // 2. 화면 경계 밖에 있음 (약간의 여유 공간 추가)
-        float margin = 80f; // 픽셀 단위 여유공간
+        float margin = 100f; // 픽셀 단위 여유공간
         if (screenPoint.x < -margin || screenPoint.x > Screen.width + margin ||
             screenPoint.y < -margin || screenPoint.y > Screen.height + margin)
         {            
