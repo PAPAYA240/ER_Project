@@ -536,6 +536,15 @@
             }
           ]
         },
+        "Move": {
+          "Caster": [
+            {
+              "prefabName": "FX_MoveArrow",
+              "target": "Mouse",
+              "duration": 0.5
+            }
+          ]
+        },
         "Debuff_Slow": {
           "Caster": [
             {

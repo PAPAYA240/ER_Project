@@ -78,6 +78,13 @@ public class PlayerInputController : MonoBehaviour
                 if (diff.sqrMagnitude < _minClickMoveDistance * _minClickMoveDistance)
                     return null;
 
+                if (Input.GetMouseButtonDown(1))
+                {
+                    Vector3 mousePos = GetMouseWorldPosition();
+                    mousePos.y = _player.transform.position.y;
+                    _player.PlayCommonCasterEffect(commonName: "Move", mousePos: mousePos, default, default);
+                }
+                    
                 return new C_SetMoveTarget
                 {
                     IsGround = true,
