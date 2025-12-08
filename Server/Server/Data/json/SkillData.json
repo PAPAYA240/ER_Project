@@ -1262,6 +1262,11 @@
             "staminaCost": 100,
             "effects": [
               {
+                "type": "Unstoppable",
+                "duration": 1,
+                "subject": "Self"
+              },
+              {
                 "type": "Debuff",
                 "condition": "Hit",
                 "stat": "MoveSpeed",
@@ -1284,6 +1289,11 @@
             "staminaCost": 125,
             "effects": [
               {
+                "type": "Unstoppable",
+                "duration": 1,
+                "subject": "Self"
+              },
+              {
                 "type": "Debuff",
                 "condition": "Hit",
                 "stat": "MoveSpeed",
@@ -1305,6 +1315,11 @@
             "cooldown": 60,
             "staminaCost": 150,
             "effects": [
+              {
+                "type": "Unstoppable",
+                "duration": 1,
+                "subject": "Self"
+              },
               {
                 "type": "Debuff",
                 "condition": "Hit",
