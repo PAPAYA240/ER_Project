@@ -68,6 +68,9 @@ public class PlayerController : CreatureController
     // Ping
     public PingController Ping { get; private set; }
 
+    // Buff
+    private PlayerBuffUI BuffUI;
+
     #region Property
     public override float Attack
     {
@@ -319,6 +322,10 @@ public class PlayerController : CreatureController
 
         // Ping
         Ping = new PingController(this);
+
+        // Buff Icon
+        BuffUI = gameObject.GetOrAddComponent<PlayerBuffUI>();
+        BuffUI.transform.SetParent(gameObject.transform);
     }
 
     private void InitEquipItem()
@@ -857,6 +864,24 @@ public class PlayerController : CreatureController
             return;
 
         Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, targetTransform ? targetTransform : transform, mousePos, targetPos, targetRot, isCommon: true);
+    }
+
+    public void ShowCommonUIEffect(string commonName) => BuffUI.ShowIcon(commonName);
+    public void HideCommonUIEffect(string commonName) => BuffUI.HideIcon(commonName);
+
+    public bool IsFxEffect(string commonName)
+    {
+        switch (commonName)
+        {
+            case "Debuff_Slow":
+                return true;
+            case "Debuff_HealedDecrease":
+                return false;
+            case "Debuff_Defense":
+                return false;
+        }
+
+        return true;
     }
     #endregion
 
