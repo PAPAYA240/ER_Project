@@ -695,6 +695,17 @@ class PacketHandler
         GameObject go = Managers.Object.FindById(textPacket.ObjectId);
         if (go == null)
             return;
+        CreatureController cc = go.GetComponentInChildren<CreatureController>();
+        if (cc)
+        {
+            GameObjectType objectType = ObjectManager.GetObjectTypeById(cc.Id);
+            if (objectType == GameObjectType.Monster)
+            {
+                MonsterController mc = go.GetComponentInChildren<MonsterController>();
+                Managers.CombatText.SetCombatText(textPacket.Type, textPacket.Value, mc.transform.position);
+                return;
+            }
+        }
 
         Managers.CombatText.SetCombatText(textPacket.Type, textPacket.Value, go.transform.position);
     }
