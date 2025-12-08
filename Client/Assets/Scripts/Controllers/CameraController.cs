@@ -10,11 +10,11 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     Define.CameraMode _mode = Define.CameraMode.QuaterView;
 
-    Vector3 _farDelta = new Vector3(-4.0f, 14.0f, 5.0f);
+    Vector3 _farDelta = new Vector3(-4.0f, 15.0f, 5.0f);
     Vector3 _nearDelta = new Vector3(-4.0f, 6.0f, 5.0f);
     Vector3 _delta;
     float _lastZoom = 0f;
-    float[] _zoomSteps = { 10f, 8f, 5f, 4f };
+    float[] _zoomSteps = { 11f, 9f, 6f, 4f };
     int _currentStep = 0;
     float _currentZoom = 0f;
     float _targetZoom = 0f;
@@ -42,8 +42,8 @@ public class CameraController : MonoBehaviour
         _currentZoom = _zoomSteps[_currentStep];
         _targetZoom = _currentZoom;
         _lastZoom = _zoomSteps[_zoomSteps.Length - 1];
-        _zoomSpeed = 8f;
-        _lerpSpeed = 16f;
+        _zoomSpeed = 10f;
+        _lerpSpeed = 18f;
 
         SetupLayerCameras_URP();
     }
