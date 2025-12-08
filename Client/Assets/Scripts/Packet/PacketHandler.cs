@@ -1455,6 +1455,23 @@ class PacketHandler
         pc.YukiEffects.PlayEffect(AbigailFx.EPortal2, endPos, rotB);
     }
 
+    public static void S_PingMarkerHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_PingMarkerHandler(session, packet)))
+            return;
+
+        S_PingMarker pingPacket = packet as S_PingMarker;
+        GameObject go = Managers.Object.FindById(pingPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.Ping.PlayPing(pingPacket.TargetPos.ToVector());
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;

@@ -7078,7 +7078,6 @@ GameObject:
   - component: {fileID: 4518392753358329}
   - component: {fileID: 198695207439060061}
   - component: {fileID: 199513476638079248}
-  - component: {fileID: 114344124637714495}
   m_Layer: 15
   m_Name: Fx_BI_PingSelect_01
   m_TagString: Untagged
@@ -9378,16 +9377,3 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &114344124637714495
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1994908483791075}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36cbf226ee13bccfdee14097ee974fb0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  time: 3

@@ -192,7 +192,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SDeployingLoop, MakePacket<S_DeployingLoop>);
 		_handler.Add((ushort)MsgId.SDeployingLoop, PacketHandler.S_DeployingLoopHandler);		
 		_onRecv.Add((ushort)MsgId.SAbigailPortal, MakePacket<S_AbigailPortal>);
-		_handler.Add((ushort)MsgId.SAbigailPortal, PacketHandler.S_AbigailPortalHandler);
+		_handler.Add((ushort)MsgId.SAbigailPortal, PacketHandler.S_AbigailPortalHandler);		
+		_onRecv.Add((ushort)MsgId.SPingMarker, MakePacket<S_PingMarker>);
+		_handler.Add((ushort)MsgId.SPingMarker, PacketHandler.S_PingMarkerHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)
