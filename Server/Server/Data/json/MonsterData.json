@@ -4,6 +4,7 @@
       "id": 1,
       "name": "Alpha",
       "appearTime": 6,
+      "deadTime": 3.1,
       "activePhase": 2,
       "stat": {
         "level": 1,
@@ -22,6 +23,7 @@
       "name": "Omega",
       "attackDist": "2",
       "appearTime": 6,
+      "deadTime": 3.1,
       "activePhase": 2,
       "stat": {
         "level": 1,
@@ -40,6 +42,7 @@
       "name": "Drone",
       "attackDist": "6",
       "appearTime": 2,
+      "deadTime": 3.1,
       "activePhase": 1,
       "stat": {
         "level": 1,
@@ -55,6 +58,7 @@
       "name": "Gamma",
       "attackDist": "10",
       "appearTime": 2.5,
+      "deadTime": 4.1,
       "activePhase": 3,
       "stat": {
         "level": 1,
@@ -73,6 +77,7 @@
       "name": "Turret",
       "attackDist": "10",
       "activePhase": 0,
+      "deadTime" : 0.25, 
       "stat": {
         "level": 1,
         "maxHp": 1500,

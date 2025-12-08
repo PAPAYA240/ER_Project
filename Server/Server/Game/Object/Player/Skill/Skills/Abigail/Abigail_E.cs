@@ -59,7 +59,7 @@ public sealed class Abigail_E : Skill_Abigail
         if (dist > _range + _radius)
             return false;
 
-        GameObject target = p.Room.FindNearest(p.Id, ctx.MousePos, _radius);
+        GameObject target = p.Room.FindNearestEnemy(p.Info.Player.Team, p.Id, ctx.MousePos, _radius);
         if (null == target)
             return false;
 
