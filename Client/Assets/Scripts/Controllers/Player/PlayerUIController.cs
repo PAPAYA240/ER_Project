@@ -73,6 +73,11 @@ public class PlayerUIController : MonoBehaviour
         GameObject io = Managers.Resource.Instantiate("UI/Interaction/UI_InteractionCharge");
         io.transform.SetParent(gameObject.transform);
         InteractionCharge = io.GetComponent<UI_InteractionCharge>();
+
+        // DeathCount
+        GameObject dc = Managers.Resource.Instantiate("UI/Etc/DeathUI");
+        dc.transform.SetParent(gameObject.transform);
+        PlayerInterface.DeathUI = dc.GetComponent<UI_Death>();
     }
 
     public void Update()
