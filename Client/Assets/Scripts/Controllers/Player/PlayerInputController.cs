@@ -470,6 +470,14 @@ public class PlayerInputController : MonoBehaviour
         return KeyCode.None;
     }
 
+    public void GetPingCommand()
+    {
+        if (Input.GetKey(KeyCode.LeftAlt) && Input.GetMouseButtonDown(0))
+        {
+
+        }
+    }
+
     public C_KeyInputForTest Get_KeyInputForTestCommand()
     {
         if (Input.GetKeyDown(KeyCode.L))
