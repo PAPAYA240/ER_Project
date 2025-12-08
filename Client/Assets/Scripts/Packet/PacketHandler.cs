@@ -1110,6 +1110,9 @@ class PacketHandler
             return;
 
         pc.IsRest = restPkt.IsRest;
+
+        if (pc is MyPlayerController mpc)
+            mpc.OnServerUpdate(restPkt);
     }
 
     public static void S_ProjectileRozziHandler(PacketSession session, IMessage packet)

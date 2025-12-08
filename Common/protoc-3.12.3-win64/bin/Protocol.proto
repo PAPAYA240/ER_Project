@@ -1107,6 +1107,7 @@ message C_Rest {
 message S_Rest {
   int32 objectId = 1;
   bool isRest = 2;
+  float duration = 3;
 }
 
 message S_MoveSync {

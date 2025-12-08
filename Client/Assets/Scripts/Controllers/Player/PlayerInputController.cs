@@ -34,7 +34,10 @@ public class PlayerInputController : MonoBehaviour
     [SerializeField] private float _attackInputInterval = 0.08f; // 0.08초마다 1번(초당 약 12번)
 
     // 최소 이동 가능 거리
-    private float _minClickMoveDistance = 0.3f; 
+    private float _minClickMoveDistance = 0.3f;
+
+    readonly private string Rest_Desc_NotReady = "전투 중에는 휴식을 할 수 없습니다.";
+    readonly private string DeployingLoop_Desc_NotReady = "지금은 준비되지 않았습니다.";
 
     private void Awake()
     {
@@ -75,6 +78,13 @@ public class PlayerInputController : MonoBehaviour
                 if (diff.sqrMagnitude < _minClickMoveDistance * _minClickMoveDistance)
                     return null;
 
+                if (Input.GetMouseButtonDown(1))
+                {
+                    Vector3 mousePos = GetMouseWorldPosition();
+                    mousePos.y = _player.transform.position.y;
+                    _player.PlayCommonCasterEffect(commonName: "Move", mousePos: mousePos, default, default);
+                }
+                    
                 return new C_SetMoveTarget
                 {
                     IsGround = true,
@@ -211,16 +221,11 @@ public class PlayerInputController : MonoBehaviour
     public C_DeployingLoop GetDeployingLoopCommand()
     {
         // 스킬/휴식/스턴 등 다른 상태면 상호작용 대기 취소
-        if (_player.State != CreatureState.Idle && _player.State != CreatureState.Moving)
+        if ((_player.State != CreatureState.Idle && _player.State != CreatureState.Moving) || _player.State == CreatureState.Dead)
         {
             _pendingDeployingLoop = null;
             return null;
         }
-
-        // 2페이즈 이후부터 사용가능
-        // UI : 지금은 준비되지 않았습니다.
-        //if (_player.CurPhase < 2)
-        //    return null;
 
         // 1) 새 우클릭이 들어온 경우 → 기존 pending 취소/갱신
         if (Input.GetMouseButtonDown(1))
@@ -248,6 +253,8 @@ public class PlayerInputController : MonoBehaviour
                     IoPos = clickedIo.GetLookTargetPosition(),
                 };
             }
+            else
+                _player.UI.ActionNotReady.Show(DeployingLoop_Desc_NotReady);
 
             // 사거리 밖이면 : 도착 후 자동 상호작용을 위해 pending 으로 기록만 해 둠
             _pendingDeployingLoop = clickedIo;
@@ -280,6 +287,9 @@ public class PlayerInputController : MonoBehaviour
     // H키 : 이동 중지
     public C_Stop GetStopCommand()
     {
+        if(_player.State == CreatureState.Dead)
+            return null;
+
         if (Input.GetKeyDown(KeyCode.S))
         {
             CancelDeployingLoopInteraction();
@@ -300,6 +310,9 @@ public class PlayerInputController : MonoBehaviour
 
     public virtual C_SkillInput GetSkillCommand()
     {
+        if (_player.State == CreatureState.Dead)
+            return null;
+
         // 배열 순서대로 키다운 검사 -> 처음 눌린 키에 대해 바로 생성/리턴
         for (int i = 0; i < _skillKeys.Length; i++)
         {
@@ -335,6 +348,13 @@ public class PlayerInputController : MonoBehaviour
     public C_Rest GetRestCommand()
     {
         if (_player.CombatStat == CombatState.Combat)
+        {
+            if (Input.GetKeyDown(KeyCode.X))
+                _player.UI.ActionNotReady.Show(Rest_Desc_NotReady);
+            return null;
+        }
+
+        if (_player.State == CreatureState.Dead)
             return null;
 
         if (_player.IsRest == false && _player.State != CreatureState.Rest)

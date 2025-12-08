@@ -21,6 +21,7 @@ public class PlayerUIController : MonoBehaviour
     public UI_PlayerHUD PlayerHUD;
     public UI_PlayerInterface PlayerInterface { get; protected set; }
     public UI_InteractionCharge InteractionCharge { get; protected set; }
+    public UI_ActionNotReady ActionNotReady { get; protected set; }
 
     List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
     const int _maxInventorySlot = 10;
@@ -69,10 +70,7 @@ public class PlayerUIController : MonoBehaviour
 
         MakeInventory();
 
-        // Interaction 
-        GameObject io = Managers.Resource.Instantiate("UI/Interaction/UI_InteractionCharge");
-        io.transform.SetParent(gameObject.transform);
-        InteractionCharge = io.GetComponent<UI_InteractionCharge>();
+        InstantiateUI();
     }
 
     public void Update()
@@ -358,6 +356,24 @@ public class PlayerUIController : MonoBehaviour
         }
 
         return skillBase;
+    }
+
+    private void InstantiateUI()
+    {
+        // Interaction 
+        GameObject io = Managers.Resource.Instantiate("UI/Interaction/UI_InteractionCharge");
+        io.transform.SetParent(gameObject.transform);
+        InteractionCharge = io.GetComponent<UI_InteractionCharge>();
+
+        // ActionNotReady 
+        GameObject anr = Managers.Resource.Instantiate("UI/Interaction/UI_ActionNotReady");
+        anr.transform.SetParent(gameObject.transform);
+        ActionNotReady = anr.GetComponent<UI_ActionNotReady>();
+
+        // DeathCount
+        GameObject dc = Managers.Resource.Instantiate("UI/Etc/DeathUI");
+        dc.transform.SetParent(gameObject.transform);
+        PlayerInterface.DeathUI = dc.GetComponent<UI_Death>();
     }
     #endregion
 }

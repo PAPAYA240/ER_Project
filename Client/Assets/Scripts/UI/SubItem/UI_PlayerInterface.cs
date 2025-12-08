@@ -56,6 +56,10 @@ public class UI_PlayerInterface : UI_Base
     bool _isDead = false;
     float _respawnCool = 0.0f;
 
+    public UI_Death DeathUI;
+    public event Action<int> OnSecondsChanged;     // 초가 바뀔 때 UI에게 알려주는 이벤트
+    private int _lastNotifiedSeconds = -1;
+
     public override void Init()
     {
         Bind<TextMeshProUGUI>(typeof(Texts));
@@ -124,12 +128,26 @@ public class UI_PlayerInterface : UI_Base
         if (_isDead)
         {
             _respawnCool = Mathf.Max(0, _respawnCool - Time.deltaTime);
-            GetText((int)Texts.DeathTimerText).text = _respawnCool.ToString("F0");
+            //GetText((int)Texts.DeathTimerText).text = _respawnCool.ToString("F0");
+            //
+            //// 초 단위가 바뀔 때만 이벤트 호출
+            //int seconds = Mathf.CeilToInt(_respawnCool);
 
-            if(_respawnCool <= Mathf.Epsilon)
+            int seconds = Mathf.CeilToInt(_respawnCool);
+
+            // 2) 텍스트도 이 값으로 표시
+            GetText((int)Texts.DeathTimerText).text = seconds.ToString();
+            if (seconds != _lastNotifiedSeconds) 
+            {
+                _lastNotifiedSeconds = seconds;
+                OnSecondsChanged?.Invoke(seconds);
+            }
+
+            if (_respawnCool <= Mathf.Epsilon)
             {
                 //TODO 부활
                 GetObject((int)GameObjects.Death).SetActive(false);
+                DeathUI.Hide();
             }
         }
         #endregion
@@ -400,7 +418,11 @@ public class UI_PlayerInterface : UI_Base
     {
         _isDead = true;
         _respawnCool = respawnTime;
+        _lastNotifiedSeconds = -1;      
         GetObject((int)GameObjects.Death).SetActive(true);
+
+        DeathUI.Bind(this);
+        DeathUI.Show();
     }
 
     #endregion

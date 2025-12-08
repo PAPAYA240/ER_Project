@@ -5,6 +5,7 @@ using Server.Game;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
+using System.Numerics;
 using System.Text;
 
 public class Player_RestState : IPlayerState
@@ -33,9 +34,9 @@ public class Player_RestState : IPlayerState
             player.IsHit = false;
 
             if (player.Info.Player.CharType == CharacterType.Abigail)
-                player.Room.BroadcastAbigailSound(player, AbigailSound.Rest, 1f);
+                player.Room.Push(player.Room.BroadcastAbigailSound, player, AbigailSound.Rest, 1f);
             else if (player.Info.Player.CharType == CharacterType.Yuki)
-                player.Room.BroadcastAbigailSound(player, AbigailSound.YukiRest, 1f);
+                player.Room.Push(player.Room.BroadcastAbigailSound, player, AbigailSound.YukiRest, 1f);
         }
         else
         {
@@ -44,6 +45,8 @@ public class Player_RestState : IPlayerState
 
         player.SendAnimPacket(_animName, 0.1f);
         _duration = DataManager.AnimLengthInfoDict[player.Info.Player.CharType][_animName].Length;
+
+        SendRestPacket(player, _isRest);
     }
 
     public void Execute(Player player)
@@ -62,12 +65,6 @@ public class Player_RestState : IPlayerState
         else if (player.IsHit == true)
         {
             player.IsHit = false;
-
-            S_Rest restPkt = new S_Rest();
-            restPkt.ObjectId = player.Id;
-            restPkt.IsRest = false;
-            player.SendRestPacket(restPkt);
-
             player.ChangeState(new Player_RestState(false));
             return;
         }
@@ -75,6 +72,15 @@ public class Player_RestState : IPlayerState
 
     public void Exit(Player player)
     {
+    }
+
+    private void SendRestPacket(Player player, bool isRest)
+    {
+        S_Rest restPkt = new S_Rest();
+        restPkt.ObjectId = player.Id;
+        restPkt.IsRest = isRest;
+        restPkt.Duration = _duration;
+        player.SendRestPacket(restPkt);
     }
 }
 

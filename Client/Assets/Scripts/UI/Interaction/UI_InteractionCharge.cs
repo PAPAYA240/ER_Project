@@ -54,6 +54,9 @@ public class UI_InteractionCharge : UI_Base
         float remain = Mathf.Max(0f, _totalDuration - _elapsed);
         if (remainTimeText != null)
             remainTimeText.text = remain.ToString("0.0");
+
+        if(remain <= 0)
+            Complete();
     }
 
     /// <summary>
