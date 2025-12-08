@@ -358,12 +358,15 @@ class PacketHandler
         cc.Stat.Level = levelUpPkt.Level;
         cc.ChangeStat(levelUpPkt.StatGrowth);
 
+
+
         //Debug.Log($" Id {cc.Id} ");
         //Debug.Log($" LevelUpCnt : {levelUpPkt.LevelUpCnt}, After Level : {cc.Stat.Level} ");
         //Debug.Log($" MaxHp : {levelUpPkt.StatGrowth.MaxHp}, MaxStamina : {levelUpPkt.StatGrowth.MaxStamina} ");
 
         //아래는 레벨이 제대로 표시되게 하는 코드
         //마이 플레이어면 업데이트 하고 리턴
+        const int BaseLevel = 9;
         
         if (Managers.Object.MyPlayer != null && Managers.Object.MyPlayer.Id == levelUpPkt.ObjectId)
         {
@@ -374,6 +377,8 @@ class PacketHandler
             Managers.Object.MyPlayer.MaxExp = levelUpPkt.NextMaxExp;
             Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(Managers.Object.MyPlayer.Id);
             Managers.Sound.Play("sound/ui/effect_levelup");
+            if(levelUpPkt.Level != BaseLevel)
+                Managers.Object.MyPlayer.PlayCommonCasterEffect(commonName: "LevelUp", mousePos: default, targetPos: default, targetRot: default, targetTransform: Managers.Object.MyPlayer.transform);
             return;
         }
 
@@ -384,6 +389,8 @@ class PacketHandler
             pc.SetNameTagLevel();
             Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(pc.Id);
             Managers.Sound.Play3D("sound/ui/effect_levelup", pc.transform.position);
+            if (levelUpPkt.Level != BaseLevel)
+                Managers.Object.MyPlayer.PlayCommonCasterEffect(commonName: "LevelUp", mousePos: default, targetPos: default, targetRot: default, targetTransform: pc.transform);
         }
     }
 

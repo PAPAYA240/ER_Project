@@ -172,6 +172,13 @@ public class MyPlayerController : PlayerController
         if (restCmd != null)
             Managers.Network.Send(restCmd);
 
+        // For Test
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            var testPacket = new C_KeyInputForTest() { KeyCode = (int)KeyCode.L };
+            Managers.Network.Send(testPacket);
+        }
+
         CheckUpdatedFlag();
     }
 

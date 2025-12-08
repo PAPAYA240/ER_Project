@@ -681,7 +681,7 @@ namespace Server.Game
             ////desc.Speed = 17;
             //desc.EndPos = Vector3.Zero;
             //player.ChangeState(new Player_StunState(desc));
-            player.Hp += 100f;
+            player.Exp += 500;
         }
 
         #endregion
