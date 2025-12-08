@@ -858,24 +858,29 @@ namespace Server.Game
             return null;
         }
 
-        public GameObject FindNearest(int id, Vector2 pos, float radius)
+        public GameObject FindNearestEnemy(int team, int id, Vector2 pos, float radius)
         {
             GameObject nearest = null;
             float nearestDistSq = radius * radius;
 
-            foreach (var kvp in _players)
+            int enemyTeam = (team == 1) ? 2 : 1;
+
+            if (_teams.TryGetValue(enemyTeam, out var enemyDict) && enemyDict != null)
             {
-                if (kvp.Key == id || kvp.Value.IsUntargetable() || kvp.Value.IsDead)
-                    continue;
-                var player = kvp.Value;
-                Vector2 playerPos = new Vector2(player.PosInfo.PosX, player.PosInfo.PosZ);
-                float distSq = Vector2.DistanceSquared(pos, playerPos);
-                if (distSq < nearestDistSq)
+                foreach (var kvp in enemyDict)
                 {
-                    nearestDistSq = distSq;
-                    nearest = player;
+                    if (kvp.Key == id || kvp.Value.IsUntargetable() || kvp.Value.IsDead)
+                        continue;
+                    var player = kvp.Value;
+                    Vector2 playerPos = new Vector2(player.PosInfo.PosX, player.PosInfo.PosZ);
+                    float distSq = Vector2.DistanceSquared(pos, playerPos);
+                    if (distSq < nearestDistSq)
+                    {
+                        nearestDistSq = distSq;
+                        nearest = player;
+                    }
                 }
-            }
+            }            
 
             foreach (var kvp in _monsters)
             {
