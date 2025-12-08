@@ -4,6 +4,7 @@ using Server.Game;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using static Server.Game.GameObject;
 
 public class Player_DeadState : IPlayerState
 {
@@ -91,6 +92,11 @@ public class Player_DeadState : IPlayerState
         player.SendDeadPacket(respawnPacket);
 
         player.ChangeState(new Player_IdleState());
+
+        StatusEffect se = new StatusEffect();
+        se.type = "Untargetable";
+        se.duration = 1f;
+        player.AddStatusEffect(se);
     }
 }
 

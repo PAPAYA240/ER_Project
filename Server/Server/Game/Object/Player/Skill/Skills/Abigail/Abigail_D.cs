@@ -46,6 +46,7 @@ public sealed class Abigail_D : Skill_Abigail
         p.LookAtMouse(new Vector2(ctx.MousePos.X, ctx.MousePos.Y));
 
         p.Room.BroadcastAbigailSound(p, AbigailSound.WeaponSkill, 1);
+        p.Room.BroadcastAbigailFx(p, AbigailFx.WpnSkill, 0f);
     }
 
     public override void OnTick(Player p, SkillContext ctx)
