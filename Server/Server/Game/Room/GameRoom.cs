@@ -93,7 +93,6 @@ namespace Server.Game
                 _phaseEndTick = long.MaxValue; // 지속시간 정의 안되면 수동 종료
             }
 
-            DestroyMonsterPhase(CurPhase);
             _monsterManager.Add(CurPhase, this);
 
             // 클라이언트 동기화
@@ -128,20 +127,6 @@ namespace Server.Game
                     PlayBGMByPhase(newPhase);
                     break;
             }
-        }
-
-        private void DestroyMonsterPhase(int phase)
-        {
-            List<int> destroyTargetIds = new List<int>();
-            foreach (var item in _monsters)
-            {
-                Monster monster = item.Value;
-                if (monster == null || monster.State != CreatureState.Dead)
-                    continue; 
-                 destroyTargetIds.Add(monster.Id);
-            }
-            foreach (int monsterId in destroyTargetIds)
-                LeaveGame(monsterId);
         }
 
         public void SyncTimer(object state = null)
@@ -1027,7 +1012,12 @@ namespace Server.Game
                 PositionInfo playerPos = player.Info.PosInfo;
 
                 if (monster.Info.PosInfo.GetDistanceSq(playerPos) <= rangeSq)
-                    return player;
+                {
+                    if (player.State == CreatureState.Dead)
+                        continue;
+
+                    return player; 
+                }
             }
             return null;
         }

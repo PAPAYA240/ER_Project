@@ -58,6 +58,8 @@ public class Yuki_AttackState : Player_AttackState
         }
 
         p.SendAnimPacket(animName, 0.05f, p.AttackSpeed, true);
+
+        p.AttackActive = false;
     }
 
     protected override void ApplyHit(Player p, GameObject target)
@@ -69,8 +71,6 @@ public class Yuki_AttackState : Player_AttackState
 
         if (p.AttackActive)
         {
-            p.AttackActive = false;
-
             Player targetPlayer = target as Player;
 
             if (targetPlayer != null && !targetPlayer.IsUnstoppable() && !targetPlayer.IsDead)
