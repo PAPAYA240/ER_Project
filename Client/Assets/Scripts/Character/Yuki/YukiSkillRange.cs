@@ -38,7 +38,7 @@ public class YukiSkillRange : MonoBehaviour, IEffect
         if (_co != null)
             StopCoroutine(_co);
 
-        _co = StartCoroutine(FillAndHide(_player, 1f));
+        _co = StartCoroutine(FillAndHide(_player, 0.75f));
     }
 
     private IEnumerator FillAndHide(PlayerController player, float duration)

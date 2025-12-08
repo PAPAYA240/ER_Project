@@ -39,8 +39,9 @@ public class SkillEffectHandler
             // ���� ���� Ŀ���� Fx Ŭ����
             RegisterEffect(SkillEffectType.WFlower, player, "Effect/Yuki/YukiFlower");
             RegisterEffect(SkillEffectType.RRange, player, "Effect/Yuki/Yuki_R");
+            RegisterEffectBone(SkillEffectType.EWind, player, "Effect/Yuki/Yuki_Trail", "Fx_Center");
 
-            //(_effectMap[GetFxKey(SkillEffectType.RShadow)] as MonoBehaviour).transform.localPosition = Vector3.zero;
+            (_effectMap[GetFxKey(SkillEffectType.EWind)] as MonoBehaviour).transform.localPosition = Vector3.zero;
             (_effectMap[GetFxKey(SkillEffectType.QBuff)] as MonoBehaviour).transform.localPosition = Vector3.zero;
             (_effectMap[GetFxKey(SkillEffectType.RAttack)] as MonoBehaviour).transform.localPosition = new Vector3(0, 1f, 0);
             (_effectMap[GetFxKey(SkillEffectType.QAttack)] as MonoBehaviour).transform.localPosition = new Vector3(0, 1f, 1f);

@@ -1,4 +1,5 @@
 ﻿using Google.Protobuf.Protocol;
+using Server.Data;
 using System;
 
 
@@ -6,10 +7,11 @@ namespace Server.Game
 {
     public class DeadState : IMonsterState
     {
-        private const int SEARCH_INTERVAL_MS = 1000;
         float _nextSearchTick = 0;
         public void Enter(Monster monster)
         {
+            _nextSearchTick = Environment.TickCount64 + (DataManager.MonsterDict[monster.Info.Monster.MonsterType].deadTime * 1000);
+
             monster.PushState(CreatureState.Dead, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
         }
 
@@ -18,7 +20,7 @@ namespace Server.Game
             if (Environment.TickCount64 < _nextSearchTick)
                 return;
 
-            _nextSearchTick = Environment.TickCount64 + SEARCH_INTERVAL_MS;
+            monster.Room.Push(monster.Room.LeaveGame, monster.Id);
         }
 
         public void OnHit(Monster monster, Creature target) {}

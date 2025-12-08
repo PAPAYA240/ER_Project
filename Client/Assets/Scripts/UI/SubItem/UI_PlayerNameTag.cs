@@ -18,7 +18,7 @@ public class UI_PlayerNameTag : UI_Base
         StaminaBar,
     }
 
-    const float _nameTagHeight = 2.5f;
+    const float _nameTagHeight = 2.6f;
 
     GameObject _target;
 
@@ -72,7 +72,7 @@ public class UI_PlayerNameTag : UI_Base
 
     void Start()
     {
-        
+
     }
 
     void Update()
@@ -85,16 +85,73 @@ public class UI_PlayerNameTag : UI_Base
         if (_target == null) return;
         Vector3 worldPos = _target.transform.position + new Vector3(0, _nameTagHeight, 0);
         Vector3 screenPoint = Camera.main.WorldToScreenPoint(worldPos);
-        if (screenPoint.z <= 0f)
-            return;
-        Vector2 localPos;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            _canvas.transform as RectTransform,
-            screenPoint,
-            null,   // Overlay니까 반드시 null
-            out localPos
-        );
-        _rect.anchoredPosition = localPos;
+
+        bool isOnScreen = IsOnScreen(screenPoint);
+
+        if (isOnScreen)
+        {
+            Vector2 localPos;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                _canvas.transform as RectTransform,
+                screenPoint,
+                null,
+                out localPos
+            );
+
+            localPos = ApplyScreenEdgeCorrection(localPos, screenPoint);
+            _rect.anchoredPosition = localPos;
+        }
+        else
+        {
+            // 화면 밖일 때는 위치를 화면 밖으로 이동
+            _rect.anchoredPosition = new Vector2(10000, 10000);
+        }
+    }
+
+    private Vector2 ApplyScreenEdgeCorrection(Vector2 localPos, Vector3 screenPoint)
+    {
+        // 화면 중심에서의 거리 계산 (0~1 정규화)
+        float screenX = screenPoint.x / Screen.width;
+        float screenY = screenPoint.y / Screen.height;
+
+        // 화면 중심 기준으로 오프셋 계산 (0.5가 중심)
+        Vector2 centerOffset = new Vector2(screenX - 0.5f, screenY - 0.5f);
+
+        // 좌우/상하 별도 보정 강도 설정
+        float horizontalPullStrength = 0.1f;  // 좌우 보정 강도 증가
+        float verticalPullStrength = 0.08f;    // 상하 보정 강도
+
+        // 좌우 보정을 위한 추가 계산
+        float horizontalEdgeFactor = Mathf.Abs(centerOffset.x) * 2f;  // 0~1
+        float verticalEdgeFactor = Mathf.Abs(centerOffset.y) * 2f;    // 0~1
+
+        // 좌우 보정 강화: 가장자리일수록 더 강하게
+        horizontalEdgeFactor = Mathf.Pow(horizontalEdgeFactor, 1.3f);  // 곡선적으로 증가
+        verticalEdgeFactor = Mathf.Pow(verticalEdgeFactor, 1.2f);      // 상하는 덜 강하게
+
+        // X축: 살짝 안쪽으로 당기기
+        float adjustedX = localPos.x - (centerOffset.x * Mathf.Abs(localPos.x) * horizontalPullStrength * horizontalEdgeFactor);
+
+        // Y축: 원래 Y값 유지하거나 약간만 조정
+        float adjustedY = localPos.y - (centerOffset.y * Mathf.Abs(localPos.y) * verticalPullStrength * verticalEdgeFactor);
+
+        return new Vector2(adjustedX, adjustedY);
+    }
+
+    private bool IsOnScreen(Vector3 screenPoint)
+    {
+        // 1. 카메라 뒤에 있음
+        if (screenPoint.z < 0f) return false;
+
+        // 2. 화면 경계 밖에 있음 (약간의 여유 공간 추가)
+        float margin = 100f; // 픽셀 단위 여유공간
+        if (screenPoint.x < -margin || screenPoint.x > Screen.width + margin ||
+            screenPoint.y < -margin || screenPoint.y > Screen.height + margin)
+        {            
+            return false;
+        }
+
+        return true;
     }
 
     public void SetLevelText(int level)

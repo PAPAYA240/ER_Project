@@ -56,7 +56,7 @@ public sealed class Yuki_E : SkillHandlerBase
 
         p.LookAtMouse(ctx.MousePos);
 
-        //p.SendYukiSkillEffect(SkillEffectType.EWind);
+        p.SendYukiSkillEffect(SkillEffectType.EWind);
 
         p.Room.Push(p.Room.BroadcastAbigailSound, p, AbigailSound.YukiEmove, 1f);
     }
@@ -122,6 +122,8 @@ public sealed class Yuki_E : SkillHandlerBase
 
     public override void OnExit(Player p, SkillContext ctx)
     {
+        p.SendYukiSkillEffect(SkillEffectType.EWind, false);
+
         base.OnExit(p, ctx);
     }
 }

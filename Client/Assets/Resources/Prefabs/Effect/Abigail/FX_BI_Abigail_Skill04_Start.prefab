@@ -2448,7 +2448,6 @@ GameObject:
   - component: {fileID: 4685291220455810}
   - component: {fileID: 198130771409887535}
   - component: {fileID: 199537603177886236}
-  - component: {fileID: 114772915681280677}
   - component: {fileID: 135433155043600277}
   m_Layer: 15
   m_Name: FX_BI_Abigail_Skill04_Start
@@ -4735,19 +4734,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &114772915681280677
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1225792129145339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36cbf226ee13bccfdee14097ee974fb0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  time: 3
 --- !u!135 &135433155043600277
 SphereCollider:
   m_ObjectHideFlags: 0
