@@ -378,7 +378,10 @@ class PacketHandler
             Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(Managers.Object.MyPlayer.Id);
             Managers.Sound.Play("sound/ui/effect_levelup");
             if(levelUpPkt.Level != BaseLevel)
+            {
                 Managers.Object.MyPlayer.PlayCommonCasterEffect(commonName: "LevelUp", mousePos: default, targetPos: default, targetRot: default, targetTransform: Managers.Object.MyPlayer.transform);
+                Managers.Object.MyPlayer.Sound.GetEffect3D("LevelUp", Managers.Object.MyPlayer.transform.position);
+            }
             return;
         }
 
@@ -390,7 +393,10 @@ class PacketHandler
             Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(pc.Id);
             Managers.Sound.Play3D("sound/ui/effect_levelup", pc.transform.position);
             if (levelUpPkt.Level != BaseLevel)
+            {
                 Managers.Object.MyPlayer.PlayCommonCasterEffect(commonName: "LevelUp", mousePos: default, targetPos: default, targetRot: default, targetTransform: pc.transform);
+                Managers.Object.MyPlayer.Sound.GetEffect3D("LevelUp", pc.transform.position);
+            }
         }
     }
 

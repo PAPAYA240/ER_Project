@@ -44,6 +44,7 @@ public class PingController
         }
 
         _owner.PlayCommonCasterEffect(commonName: "Ping", mousePos: pos, targetPos: default, targetRot: default);
+        Managers.Object.MyPlayer.Sound.GetEffect3D("Ping", pos);
     }
 
     private int GetSlot()
