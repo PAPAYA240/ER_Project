@@ -34,7 +34,10 @@ public class PlayerInputController : MonoBehaviour
     [SerializeField] private float _attackInputInterval = 0.08f; // 0.08초마다 1번(초당 약 12번)
 
     // 최소 이동 가능 거리
-    private float _minClickMoveDistance = 0.3f; 
+    private float _minClickMoveDistance = 0.3f;
+
+    readonly private string Rest_Desc_NotReady = "전투 중에는 휴식을 할 수 없습니다.";
+    readonly private string DeployingLoop_Desc_NotReady = "지금은 준비되지 않았습니다.";
 
     private void Awake()
     {
@@ -217,11 +220,6 @@ public class PlayerInputController : MonoBehaviour
             return null;
         }
 
-        // 2페이즈 이후부터 사용가능
-        // UI : 지금은 준비되지 않았습니다.
-        //if (_player.CurPhase < 2)
-        //    return null;
-
         // 1) 새 우클릭이 들어온 경우 → 기존 pending 취소/갱신
         if (Input.GetMouseButtonDown(1))
         {
@@ -248,6 +246,8 @@ public class PlayerInputController : MonoBehaviour
                     IoPos = clickedIo.GetLookTargetPosition(),
                 };
             }
+            else
+                _player.UI.ActionNotReady.Show(DeployingLoop_Desc_NotReady);
 
             // 사거리 밖이면 : 도착 후 자동 상호작용을 위해 pending 으로 기록만 해 둠
             _pendingDeployingLoop = clickedIo;
@@ -341,7 +341,11 @@ public class PlayerInputController : MonoBehaviour
     public C_Rest GetRestCommand()
     {
         if (_player.CombatStat == CombatState.Combat)
+        {
+            if (Input.GetKeyDown(KeyCode.X))
+                _player.UI.ActionNotReady.Show(Rest_Desc_NotReady);
             return null;
+        }
 
         if (_player.State == CreatureState.Dead)
             return null;

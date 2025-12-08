@@ -28,8 +28,6 @@ public class PlayerSkillController : MonoBehaviour
     private Coroutine _motionCo;
     private bool _isSkillMotion;
     public bool IsInSkillMotion => _isSkillMotion;
-    Coroutine _streamCo;
-    int _currentInstanceId;
 
     public bool CanMoveDuringCast = false;
 
@@ -38,8 +36,8 @@ public class PlayerSkillController : MonoBehaviour
     int _targetId;
     Vector3 _mousePos;
 
-    // TEMP
-    Vector3 _endPosition;
+    readonly private string Skill_Desc_NotLearned = "아직 배우지 않은 스킬입니다.";
+    readonly private string Skill_Desc_NotReady = "스킬이 아직 준비되지 않았습니다!";
 
     private void Awake()
     {
@@ -62,22 +60,23 @@ public class PlayerSkillController : MonoBehaviour
 
         if (_coolDownDict.ContainsKey(_key))
         {
-            // When the skill level is 0
-            //if (FindSkill(_key).CurLevel <= 0)
-            //    return null;
-
-            // 스킬을 사용하고 있는 상태가 아닐 때
-            //if (checkSkillState && 
-            //    /*_player.State == CreatureState.Skill &&*/ false == _player.CanStopSkill)
-            //    return null;
-
-            // 쿨타임이 끝났을 때
-            if (_coolDownDict[_key].isCoolDown)
+            SkillBase skill = FindSkill(_key);
+            if (skill == null)
                 return null;
-        
-            // 스태미나가 충분할 때
-            if (_player.Stamina < FindSkill(_key).CurLevelStamina)
+
+            // 0 레벨일 때 
+            if(skill.CurLevel <= 0)
+            {
+                _player.UI.ActionNotReady.Show(Skill_Desc_NotLearned);
                 return null;
+            }
+
+            // 쿨일 때 || 스태미너가 부족할 때
+            if (_coolDownDict[_key].isCoolDown || _player.Stamina < skill.CurLevelStamina)
+            {
+                _player.UI.ActionNotReady.Show(Skill_Desc_NotReady);
+                return null;
+            }
 
             // 패킷 보내기
             Debug.Log($"스킬 사용시도! : {_key}");
@@ -237,7 +236,7 @@ public class PlayerSkillController : MonoBehaviour
         if (NavMesh.SamplePosition(start, out var startHit, 2.0f, NavMesh.AllAreas))
             start = startHit.position;
         if (NavMesh.SamplePosition(end, out var endHit, 2.0f, NavMesh.AllAreas))
-            _endPosition = end = endHit.position;
+            end = endHit.position;
 
         // 시작점 동기화
         _agent.nextPosition = start;
