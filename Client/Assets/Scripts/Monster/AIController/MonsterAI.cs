@@ -13,14 +13,14 @@ public class MonsterAI : MonoBehaviour
         _controller = GetComponentInChildren<MonsterController>();
         if (_controller == null)
         {
-            Debug.LogWarning($"MonsterAI : {_controller.Type} Controller 찾기 실패");
+            //Debug.LogWarning($"MonsterAI : {_controller.Type} Controller 찾기 실패");
             return;
         }
 
         CreateBehaviorTree();
         if (!FindAllListeners(_rootNode))
         {
-            Debug.LogWarning($"MonsterAI : {_controller.Type} 행동 트리 노드 찾기 실패");
+            //Debug.LogWarning($"MonsterAI : {_controller.Type} 행동 트리 노드 찾기 실패");
             return;
         }
 
@@ -58,7 +58,7 @@ public class MonsterAI : MonoBehaviour
         TextAsset jsonAsset = Resources.Load<TextAsset>("Data/MonsterData/MonsterBehaviorTrees");
         if (jsonAsset == null)
         {
-            Debug.LogError("MonsterBehaviorTrees.json 파일을 찾을 수 없습니다!");
+            //Debug.LogError("MonsterBehaviorTrees.json 파일을 찾을 수 없습니다!");
             return;
         }
 

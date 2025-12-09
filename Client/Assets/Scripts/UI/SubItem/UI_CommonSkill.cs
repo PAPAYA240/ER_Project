@@ -67,7 +67,7 @@ public class UI_CommonSkill : UI_SkillBase
 
         ui_PlayerInterface = GetComponentInParent<UI_PlayerInterface>();
         if (ui_PlayerInterface == null)
-            Debug.Log("null  == ui_PlayerInterface");
+            //Debug.Log("null  == ui_PlayerInterface");
 
         SetStaminaCost(0);
         GetObject(_stamina).gameObject.SetActive(false);
@@ -140,7 +140,7 @@ public class UI_CommonSkill : UI_SkillBase
         {
             if (!ColorUtility.TryParseHtmlString(_yellow, out destColor))
             {
-                Debug.Log($"Failed to TryParseHtmlString : {_yellow}");
+                //Debug.Log($"Failed to TryParseHtmlString : {_yellow}");
                 return;
             }
         }
@@ -148,7 +148,7 @@ public class UI_CommonSkill : UI_SkillBase
         {
             if (!ColorUtility.TryParseHtmlString(_gray, out destColor))
             {
-                Debug.Log($"Failed to TryParseHtmlString : {_gray}");
+                //Debug.Log($"Failed to TryParseHtmlString : {_gray}");
                 return;
             }
         }
@@ -268,7 +268,7 @@ public class UI_CommonSkill : UI_SkillBase
         Sprite sprite = Managers.Resource.Load<Sprite>(path);
         if(sprite == null)
         {
-            Debug.Log($"null : {path}");
+            //Debug.Log($"null : {path}");
             return;
         }
 

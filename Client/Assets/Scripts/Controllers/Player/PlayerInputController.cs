@@ -365,7 +365,7 @@ public class PlayerInputController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
-                Debug.Log("휴식 진입");
+                //Debug.Log("휴식 진입");
                 _player.IsRest = true;
                 return new C_Rest() { IsRest = _player.IsRest };
             }
@@ -374,7 +374,7 @@ public class PlayerInputController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.X) || Input.GetMouseButtonDown(1))
             {
-                Debug.Log("휴식 해제");
+                //Debug.Log("휴식 해제");
                 _player.IsRest = false;
                 return new C_Rest() { IsRest = _player.IsRest };
             }

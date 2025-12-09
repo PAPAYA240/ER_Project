@@ -16,13 +16,16 @@ public class YukiFlower : MonoBehaviour, IEffect
         Texture2D sheet = Resources.Load<Texture2D>("effects/textures/FX_BI_Yuki_01SE");
         if (sheet == null)
         {
-            Debug.LogError($"Not found in Resources");
+            //Debug.LogError($"Not found in Resources");
             return;
         }
 
         _frames = Util.Slice(sheet, 6, 6);
         if (_frames == null || _frames.Length == 0)
-            Debug.LogError("Sprite slicing failed");
+        {
+            //Debug.LogError("Sprite slicing failed");
+        }
+            
 
         image.enabled = false;
     }
