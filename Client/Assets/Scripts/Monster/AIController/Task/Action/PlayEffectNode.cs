@@ -19,16 +19,26 @@ public class PlayEffectNode : ActionNode
 
         if (DataManager.MonsterEffectDict.TryGetValue(monster.Skill, out List<EffectData> data))
         {
-            List<EffectData> nonHitEffects = data.Where(effect =>
-                string.IsNullOrEmpty(effect.prefabName) ||
-                effect.prefabName.IndexOf("hit", StringComparison.OrdinalIgnoreCase) < 0
-            ).ToList();
-
-            if (nonHitEffects.Count > 0)
+            if (monster.State == CreatureState.Appear)
             {
-                Managers.FX.PlayEffect(monster.ObjInfo.ObjectId, nonHitEffects, monster.transform, monster.TargetPosition, monster.TargetPosition);
+                string targetName = $"{monster.Type}_{monster.State}";
+                List<EffectData> targetEffects = data.Where(effect => effect.prefabName == targetName ).ToList();
+                Managers.FX.PlayEffect(monster.ObjInfo.ObjectId, targetEffects, monster.transform, monster.TargetPosition, monster.TargetPosition);
+            }
+            else
+            {
+                List<EffectData> nonHitEffects = data.Where(effect =>
+                string.IsNullOrEmpty(effect.prefabName) ||
+                effect.prefabName.IndexOf("hit", StringComparison.OrdinalIgnoreCase) < 0 ).ToList();
+
+                if (nonHitEffects.Count > 0)
+                {
+                    Managers.FX.PlayEffect(monster.ObjInfo.ObjectId, nonHitEffects, monster.transform, monster.TargetPosition, monster.TargetPosition);
+                }
             }
         }
+
+      
 
         return NodeStatus.Success;
     }

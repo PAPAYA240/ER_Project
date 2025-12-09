@@ -42,6 +42,10 @@
                   "Name": "Animation",
                   "Type": "PlayAnimation",
                   "Properties": { "chainAnimNames": [ "APPEAR" ] }
+                },
+                {
+                  "Name": "Effect",
+                  "Type": "PlayEffectNode"
                 }
               ]
             }
@@ -59,6 +63,21 @@
               "Name": "Animation",
               "Type": "PlayAnimatorFloatNode",
               "Properties": { "paramName": "walk" }
+            }
+          ]
+        },
+        {
+          "Name": "Idle",
+          "Type": "SequenceNode",
+          "Children": [
+            {
+              "Name": "Condition",
+              "Type": "WaitConditionNode"
+            },
+            {
+              "Name": "Animation",
+              "Type": "PlayAnimation",
+              "Properties": { "chainAnimNames": [ "WAIT" ] }
             }
           ]
         }
