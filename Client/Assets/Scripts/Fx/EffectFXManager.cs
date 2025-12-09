@@ -220,7 +220,7 @@ public class EffectFXManager : MonoBehaviour
 
         Managers.FX.Push(effect);
 
-        effect?.transform.SetParent(null);
+        //effect?.transform.SetParent(null);
     }
 
     private IEnumerator ReturnToPoolAfterDelay(int ownerId, GameObject fxObject, string prefabName, float delayTime, float duration, Transform casterTransform)
