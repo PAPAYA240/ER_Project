@@ -145,6 +145,11 @@ public class MonsterController : CreatureController
         if (tbc == null || tbc == this)
             return;
 
+        GameObjectType targetType = ObjectManager.GetObjectTypeById(tbc.Id);
+        GameObjectType atkType = ObjectManager.GetObjectTypeById(atkInfoPacket.AttackerId);
+        if (targetType == atkType)
+            return;
+
         Vector3 targetPosition = tbc.transform.position;
 
         // *Monster Sound
