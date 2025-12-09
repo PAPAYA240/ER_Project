@@ -55,7 +55,6 @@ namespace Server.Game
     {
         public Vector3 Left;
         public Vector3 Right;
-        //public bool IsGoalGate;
     }
 
     [Flags]
