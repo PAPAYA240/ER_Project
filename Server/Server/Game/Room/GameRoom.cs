@@ -1029,7 +1029,7 @@ namespace Server.Game
 
                 if (monster.Info.PosInfo.GetDistanceSq(playerPos) <= rangeSq)
                 {
-                    if (player.State == CreatureState.Dead)
+                    if (player.CurrentState is Player_IdleState)
                         continue;
 
                     return player; 

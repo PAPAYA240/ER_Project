@@ -212,7 +212,6 @@ public class PlayerController : CreatureController
     // 화살
     protected Transform _equipTransform = null;
 
-    public bool IsHide = false;
     #region KDA
 
     public int KillAmount { get; private set; } = 0; 
@@ -1060,7 +1059,7 @@ public class PlayerController : CreatureController
              break;
          case 2:    // change
              {
-                 Hiding(true);
+                 Hiding(false);
                     he.ChangeBushRenderer();
              }
              break;

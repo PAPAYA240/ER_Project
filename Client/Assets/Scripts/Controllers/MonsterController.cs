@@ -1,7 +1,9 @@
 using Data;
 using Google.Protobuf.Protocol;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
@@ -40,7 +42,7 @@ public class MonsterController : CreatureController
     public Vector3 TargetPosition { get; private set; }
     private Quaternion _targetRotation;
 
-    private float _rotationSpeed = 10f;
+    private float _rotationSpeed = 50f;
     private float _agentSpeed = 6;
 
     // 애니메이션 끝났을 때 호출
@@ -70,8 +72,28 @@ public class MonsterController : CreatureController
         Sound = gameObject.GetOrAddComponent<SoundController>();
         if (Sound != null)
             Sound.PreloadMonsterAllSounds(Type);
+
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        foreach (var renderer in renderers)
+        {
+            renderer.enabled = false;
+        }
+
+        IsHide = true;
+        StartCoroutine(coActive());
     }
 
+    // todo* 임시 조치 => 애니메이션 entry가 wait라서 appear 전에 wait가 먼저 보임
+    private IEnumerator coActive()
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        yield return new WaitForSeconds(0.3f);
+        foreach (var renderer in renderers)
+        {
+            IsHide = false;
+            renderer.enabled = true;
+        }
+    }
 
     protected override void UpdateController()
     {
@@ -100,9 +122,6 @@ public class MonsterController : CreatureController
         Transform rotationTarget = transform.parent != null ? transform.parent : transform;
         RotInfo = _targetRotation;
         rotationTarget.rotation = Quaternion.Slerp(rotationTarget.rotation, _targetRotation, Time.deltaTime * _rotationSpeed);
-
-        if(Type == MonsterType.Omega)
-            Debug.Log($"{rotationTarget.rotation }");
     }
 
     private void MeshDebug()
@@ -345,7 +364,6 @@ public class MonsterController : CreatureController
 
         if (null == ui)
         {
-            Debug.Log("_hpBar is null");
             return;
         }
 
