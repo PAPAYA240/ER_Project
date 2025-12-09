@@ -42,7 +42,7 @@ public class MonsterController : CreatureController
     public Vector3 TargetPosition { get; private set; }
     private Quaternion _targetRotation;
 
-    private float _rotationSpeed = 50f;
+    private float _rotationSpeed = 10f;
     private float _agentSpeed = 6;
 
     // 애니메이션 끝났을 때 호출
@@ -55,24 +55,24 @@ public class MonsterController : CreatureController
     protected override void Init()
 	{
         base.Init();
-
         SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("Monster"));
-
-        if (!Add_Component())
-            return;
+        Add_Component();
 
         TriggerEnvironmentEvent();
-
         State = CreatureState.Appear;
-
         InitHpBar();
 
+        // Shader XRay 비활성화
         UnActiveShaderXRay();
 
+        // Sound
         Sound = gameObject.GetOrAddComponent<SoundController>();
         if (Sound != null)
+        {
             Sound.PreloadMonsterAllSounds(Type);
+        }
 
+        // Renderer
         Renderer[] renderers = GetComponentsInChildren<Renderer>();
         foreach (var renderer in renderers)
         {
@@ -318,6 +318,7 @@ public class MonsterController : CreatureController
 
     private bool Add_Component()
     {
+        // NavMeshAgent
         _agent = GetComponentInParent<NavMeshAgent>();
         if (_agent != null)
         {
@@ -326,15 +327,23 @@ public class MonsterController : CreatureController
             _agent.speed = _agentSpeed;
             SyncPos(true);
         }
-
         _targetRotation = transform.rotation;
+
+        // VisualEffectController
         _highlightEffect = gameObject.AddComponent<VisualEffectController>();
         _highlightEffect.Owner = this;
 
+        // Animator
         if (_animator == null)
             return false;
         _animator.applyRootMotion = false;
-         
+
+        // Rotation Speed
+        if (Type == MonsterType.Gamma || Type == MonsterType.Omega)
+            _rotationSpeed = 10.0f;
+        else
+            _rotationSpeed = 40.0f;
+
         return true;
     }
     #endregion

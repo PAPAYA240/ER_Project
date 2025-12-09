@@ -14,6 +14,7 @@ public sealed class Theodore_Q : SkillHandlerBase
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
+        CanStopSkill = true;
         base.OnEnter(p, ctx);
 
         SendSkillConfirmPacket(p);

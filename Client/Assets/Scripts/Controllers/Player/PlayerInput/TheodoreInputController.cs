@@ -12,9 +12,9 @@ public class TheodoreInputController : PlayerInputController
 {
     #region const /enum 변수
     private const float EFFECT_DURATION = 4f;
-    private const float CANCEL_DURATION = 0.5f;
+    private const float CANCEL_DURATION = 0.3f;
     private const float SNIPER_AIM_DURATION = 10f;
-    private const float AIM_WAIT_TIME = 1.4f;
+    private const float AIM_WAIT_TIME = 0.8f;
 
     const bool SKIP_STATE_CHECK = false;
     #endregion

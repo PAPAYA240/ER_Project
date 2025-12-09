@@ -226,7 +226,7 @@ public class CameraController : MonoBehaviour
         Vector3 startPosition = transform.position;
         Quaternion startRotation = transform.rotation;
 
-        const float ZOOM_DURATION = 0.8f;
+        const float ZOOM_DURATION = 1.0f;
         const float STOPPING_DISTANCE = 0.01f;
 
         float elapsed = 0f;
