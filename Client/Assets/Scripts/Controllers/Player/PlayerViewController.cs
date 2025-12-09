@@ -223,14 +223,14 @@ public class PlayerViewController : MonoBehaviour
             return;
         dir /= dist;
 
-        //float _stopBuffer = 0.1f;
+        float _stopBuffer = 0.1f;
         //float stop = Mathf.Max(0.05f, _player.AttackRange - _stopBuffer);
         //Vector3 finPos = targetPos - dir * stop;
 
         Vector3 finPos = myPos;
         float distance = Vector3.Distance(myPos, targetPos);
-        if(distance > _player.AttackRange)
-            finPos = targetPos - dir * _player.AttackRange;
+        if(distance >= _player.AttackRange - _stopBuffer)
+            finPos = targetPos - dir * (_player.AttackRange - _stopBuffer);
 
         if (NavMesh.SamplePosition(finPos, out var navHit, 2.0f, NavMesh.AllAreas))
             finPos = navHit.position;

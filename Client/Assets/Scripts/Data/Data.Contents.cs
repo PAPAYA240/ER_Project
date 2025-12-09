@@ -370,6 +370,7 @@ namespace Data
             Enemy,      // 적에게 부착
             EnemyHit,   // 처음 재생할 때만 타겟 transform 반영
         }
+        public float speed;
         public string prefabName;
         public float delayTime;
         public string skillType;

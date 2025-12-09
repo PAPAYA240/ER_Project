@@ -689,7 +689,7 @@ namespace Server.Game
             ////desc.Speed = 17;
             //desc.EndPos = Vector3.Zero;
             //player.ChangeState(new Player_StunState(desc));
-            player.Exp += 500;
+            player.Exp += 5000;
         }
 
         #endregion
@@ -1038,7 +1038,7 @@ namespace Server.Game
 
                 if (monster.Info.PosInfo.GetDistanceSq(playerPos) <= rangeSq)
                 {
-                    if (player.State == CreatureState.Dead)
+                    if (player.CurrentState is Player_IdleState)
                         continue;
 
                     return player; 

@@ -147,6 +147,7 @@ public class TheodoreInputController : PlayerInputController
             {
                 _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
                 _skillCoroutine = null;
+                _SniperShotIdx = 0;
                 cc.EndAimMode();
                 SendSkillCancelPacket(key);
                 yield break;
@@ -163,6 +164,7 @@ public class TheodoreInputController : PlayerInputController
             yield return null;
         }
 
+         _SniperShotIdx = 0;
         _skillCoroutine = null;
         cc.EndAimMode();
         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
@@ -208,7 +210,7 @@ public class TheodoreInputController : PlayerInputController
     {
         if(key == KeyCode.R)
         {
-            _player.UI.PlayerInterface.SetChargingBar(DataManager.SkillDict[CharacterType.Theodore][key].name, 1.5f, 3); 
+            _player.UI.PlayerInterface.SetMaintainChargingBar(DataManager.SkillDict[CharacterType.Theodore][key].name, 1.5f, 3); 
         }
 
         while (!Input.GetKeyUp(key) && !Input.GetMouseButtonDown(0))
@@ -220,6 +222,7 @@ public class TheodoreInputController : PlayerInputController
             }
             yield return null;
         }
+        
         onConfirm?.Invoke();
     }
 

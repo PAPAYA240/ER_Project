@@ -296,7 +296,7 @@ public class ObjectManager
             if (go.GetComponent<EnvController>() != null)
                 continue;
 
-            PlayerController controller = go.GetComponent<PlayerController>();
+            CreatureController controller = go.GetComponent<CreatureController>();
             if (controller != null)
             {
                 if (controller.IsHide)
