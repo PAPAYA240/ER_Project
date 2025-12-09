@@ -25,8 +25,7 @@ public class WardController : BaseController
     [Header("Life Bar UI ������")]
     public GameObject wardLifeBarUIPrefab; // <<--- Canvas�� ���Ե��� ���� WardLifeBarUI �������� �������ּ���!
 
-    [Header("Life Bar UI ��ġ ������")]
-    public Vector3 uiOffset = new Vector3(0, 2f, 0); // �͵� �Ӹ� �� 2m ������ Life Bar ǥ��
+    Vector3 uiOffset = new Vector3(0, 1.3f, 0); 
 
     private GameObject _lifeBarInstance; // Instantiate�� ������ LifeBar UI GameObject �ν��Ͻ�
     private UI_WardLifeBar _lifeBarController; // Life Bar UI�� �����ϴ� ��ũ��Ʈ
@@ -50,6 +49,8 @@ public class WardController : BaseController
         Init();
         StartCoroutine(LifecycleRoutine());    
     }
+
+    private RectTransform _rect;
 
     protected override void Init()
     {
@@ -85,6 +86,7 @@ public class WardController : BaseController
         }
 
         _lifeBarController.SetMaxValue(_lifeTime);
+        _rect = _lifeBarInstance.GetComponent<RectTransform>();
     }
 
     IEnumerator LifecycleRoutine()
@@ -153,17 +155,78 @@ public class WardController : BaseController
         // _lifeBarInstance.transform.localScale = Vector3.one; // �Ϲ������� 1�� ����
     }
 
-    // ī�޶� �̵� �Ŀ��� UI�� ������Ʈ�� ����ٴϵ��� LateUpdate���� ��ġ�� �����մϴ�.
-    void LateUpdate()
+    void OnEnable()
     {
-        if (_lifeBarInstance == null || mainScreenCanvas == null || Camera.main == null) return;
+        Canvas.willRenderCanvases += UpdateWardPosition;
+    }
 
-        // 1. �͵��� ���� ������ + �������� ����մϴ�.
+    void OnDisable()
+    {
+        if(_rect != null)
+            _rect.anchoredPosition = new Vector2(10000, 10000);
+        Canvas.willRenderCanvases -= UpdateWardPosition;
+    }
+
+    private void UpdateWardPosition()
+    {
+        if (_rect == null)
+            return;
+        if (_lifeBarInstance == null || mainScreenCanvas == null || Camera.main == null)
+        {
+            _rect.anchoredPosition = new Vector2(10000, 10000);
+            return;
+        }
+
         Vector3 wardWorldPos = transform.position + uiOffset;
-
-        // 2. ���� �������� ��ũ��(�ȼ�) ���������� ��ȯ�մϴ�.
         Vector3 screenPoint = Camera.main.WorldToScreenPoint(wardWorldPos);
-        _lifeBarInstance.transform.position = screenPoint;
+        if (screenPoint.z <= 0)
+        {
+            _rect.anchoredPosition = new Vector2(10000, 10000);
+            return;
+        }
+
+        Vector2 screenDirection = Vector2.up;
+
+        float screenOffset = 35f;
+        Vector2 screenPos = new Vector2(screenPoint.x, screenPoint.y) + (screenDirection * screenOffset);
+
+        screenPos = new Vector2(
+            Mathf.Round(screenPos.x * 2f) / 2f,
+            Mathf.Round(screenPos.y * 2f) / 2f
+        );
+
+        if (IsOnScreen(screenPos))
+        {
+            Vector2 localPos;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                mainScreenCanvas.transform as RectTransform,
+                screenPos,
+                null,
+                out localPos
+            );
+
+            _rect.anchoredPosition = localPos;
+        }
+        else
+        {
+            _rect.anchoredPosition = new Vector2(10000, 10000);
+        }
+    }
+
+    private bool IsOnScreen(Vector3 screenPoint)
+    {
+        // 1. 카메라 뒤에 있음
+        if (screenPoint.z < 0f) return false;
+
+        // 2. 화면 경계 밖에 있음 (약간의 여유 공간 추가)
+        float margin = 100f; // 픽셀 단위 여유공간
+        if (screenPoint.x < -margin || screenPoint.x > Screen.width + margin ||
+            screenPoint.y < -margin || screenPoint.y > Screen.height + margin)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public void SetWardLifeBarActive(bool isActive)

@@ -13,6 +13,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: MonsterHpBar_Boss
       objectReference: {fileID: 0}
+    - target: {fileID: 1425096091977357729, guid: 9568a29dd7556cb46b857c6ba7c8fc6e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 65
+      objectReference: {fileID: 0}
     - target: {fileID: 1639480836708710327, guid: 9568a29dd7556cb46b857c6ba7c8fc6e,
         type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
@@ -171,6 +176,11 @@ PrefabInstance:
     - target: {fileID: 5801035674361803149, guid: 9568a29dd7556cb46b857c6ba7c8fc6e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6313803409978231511, guid: 9568a29dd7556cb46b857c6ba7c8fc6e,
+        type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6809335154306984031, guid: 9568a29dd7556cb46b857c6ba7c8fc6e,
