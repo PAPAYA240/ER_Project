@@ -34,13 +34,21 @@ public class Player_RestState : IPlayerState
             player.IsHit = false;
 
             if (player.Info.Player.CharType == CharacterType.Abigail)
+            {
                 player.Room.Push(player.Room.BroadcastAbigailSound, player, AbigailSound.Rest, 1f);
+                player.Room.Push(player.Room.BroadcastAbigailFx, player, AbigailFx.RestStart, 0f);
+            }
+                
             else if (player.Info.Player.CharType == CharacterType.Yuki)
                 player.Room.Push(player.Room.BroadcastAbigailSound, player, AbigailSound.YukiRest, 1f);
         }
         else
         {
             _animName = "REST_END";
+            if (player.Info.Player.CharType == CharacterType.Abigail)
+            {
+                player.Room.Push(player.Room.BroadcastAbigailFx, player, AbigailFx.RestEnd, 0f);
+            }
         }
 
         player.SendAnimPacket(_animName, 0.1f);

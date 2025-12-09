@@ -563,6 +563,14 @@ namespace Server.Game
                     case Subject.Enemy:
                         Push(target.AddStatusEffect, effect);
                         break;
+                    case Subject.W:
+                        if (effect.type == "CDR")
+                            player.Skill.Reduce(KeyCode.W, effect.value, effect.valueType == ValueType.Ratio);
+                        break;
+                    case Subject.E:
+                        if (effect.type == "CDR")
+                            player.Skill.Reduce(KeyCode.E, effect.value, effect.valueType == ValueType.Ratio);
+                        break;
                 }                
             }
         }

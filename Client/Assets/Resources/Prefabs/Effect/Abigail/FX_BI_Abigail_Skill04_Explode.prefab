@@ -11695,7 +11695,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1502111037971451}
   serializedVersion: 8
-  lengthInSec: 5
+  lengthInSec: 3
   simulationSpeed: 1.25
   stopAction: 0
   cullingMode: 0
@@ -21110,7 +21110,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.7
+      scalar: 1.1
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -25773,6 +25773,7 @@ GameObject:
   - component: {fileID: 199829028336266889}
   - component: {fileID: 114094307567358839}
   - component: {fileID: 135934119718260039}
+  - component: {fileID: 9122306516666595870}
   m_Layer: 15
   m_Name: FX_BI_Abigail_Skill04_Explode
   m_TagString: Untagged
@@ -28092,3 +28093,15 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &9122306516666595870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1955513612957855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 980d8b2a176ef0f4cb2fda1a6496775f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
