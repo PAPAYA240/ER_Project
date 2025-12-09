@@ -90,9 +90,9 @@ public class PlayerBuffUI : MonoBehaviour
         // --- 위치/회전 제어: BuffUIFollower 붙이기 ---
         _follower = canvasGO.AddComponent<BuffUIFollower>();
         _follower.SetTarget(transform);           // 이 스크립트가 붙은 Player
-        _follower.rightOffset = rightOffset;
-        _follower.upOffset = upOffset;
-        _follower.forwardOffset = forwardOffset;
+        //_follower.rightOffset = rightOffset;
+        //_follower.upOffset = upOffset;
+        //_follower.forwardOffset = forwardOffset;
     }
 
     // 버프 아이콘UI 추가용
