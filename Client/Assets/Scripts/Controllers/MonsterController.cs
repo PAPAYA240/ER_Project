@@ -72,18 +72,6 @@ public class MonsterController : CreatureController
             Sound.PreloadMonsterAllSounds(Type);
     }
 
-    private void TriggerEnvironmentEvent()
-    {
-        if (Type == MonsterType.Gamma)
-        {
-            GameObject targetObject = GameObject.Find("BarrierSpawnpoint");
-            if (targetObject != null)
-            {
-                Env_BarrierSpawnpoint component = targetObject.GetComponent<Env_BarrierSpawnpoint>();
-                component.ActivatePhase2();
-            }
-        }
-    }
 
     protected override void UpdateController()
     {
@@ -109,8 +97,12 @@ public class MonsterController : CreatureController
             }
         }
 
-        transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, Time.deltaTime * _rotationSpeed);
+        Transform rotationTarget = transform.parent != null ? transform.parent : transform;
         RotInfo = _targetRotation;
+        rotationTarget.rotation = Quaternion.Slerp(rotationTarget.rotation, _targetRotation, Time.deltaTime * _rotationSpeed);
+
+        if(Type == MonsterType.Omega)
+            Debug.Log($"{rotationTarget.rotation }");
     }
 
     private void MeshDebug()
@@ -197,7 +189,9 @@ public class MonsterController : CreatureController
         }
 
         if (packet.RotInfo != null)
+        {
             _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
+        }
     }
 
     public void OnMovePacket(S_State packet)
@@ -247,8 +241,11 @@ public class MonsterController : CreatureController
             return;
         }
 
-        if (State == CreatureState.Appear && packet.MyState == CreatureState.Idle)
+        if ((State == CreatureState.Appear || State == CreatureState.Skill)
+            && packet.MyState == CreatureState.Idle)
+        {
             OnStateChanged?.Invoke(true);
+        }
 
         State = packet.MyState;
         if (packet.TargetPosition != null)
@@ -372,6 +369,19 @@ public class MonsterController : CreatureController
     public Vector3 GetTargetForwardVector()
     {
         return _targetRotation * Vector3.forward;
+    }
+
+    private void TriggerEnvironmentEvent()
+    {
+        if (Type == MonsterType.Gamma)
+        {
+            GameObject targetObject = GameObject.Find("BarrierSpawnpoint");
+            if (targetObject != null)
+            {
+                Env_BarrierSpawnpoint component = targetObject.GetComponent<Env_BarrierSpawnpoint>();
+                component.ActivatePhase2();
+            }
+        }
     }
     #endregion
 }

@@ -2,16 +2,17 @@
 using Google.Protobuf.Protocol;
 using Server.Game;
 using System.Numerics;
-using System.Xml.Linq;
 using static Server.Data.DataUtils;
 
 public sealed class Theodore_Charge : SkillHandlerBase
 {
     public override bool CanMoveDuringCast => true;
     private bool _isChargingAnimPlaying = false;
-
+    
     const string ANIM_CHARGE = "CHARGE";
     const string ANIM_CHARGE_RUN = "CHARGE_RUN";
+    private string ANIM_IDLE = "WAIT";
+
     public Theodore_Charge()
     {
         _characterType = CharacterType.Theodore;
@@ -21,12 +22,14 @@ public sealed class Theodore_Charge : SkillHandlerBase
     public override void OnEnter(Player p, SkillContext ctx)
     {
         HitboxRequired = false;
+        CanStopSkill = true;
+
         base.OnEnter(p, ctx);
         p.SendSkillEffect(default(Vector2), KeyCode.Q,
             type : "Select",
             name : "FX_Charging");
 
-        SendSkillConfirmPacket(p);
+        SendSkillConfirmPacket(p, false);
     }
     public override void OnTick(Player p, SkillContext ctx)
     {
@@ -38,10 +41,6 @@ public sealed class Theodore_Charge : SkillHandlerBase
 
     public override void OnExit(Player p, SkillContext ctx)
     {
-        // Skill_Q 로 이동했을 때 위치가 초기화 된다. 
-        //base.OnExit(p, ctx); 
-
-        // *todo : 나중에 Effect Remove 해주기
         p.SendRemoveEffect(KeyCode.Q, type : "Select");
     }
 
@@ -58,10 +57,7 @@ public sealed class Theodore_Charge : SkillHandlerBase
 
     public override void OnStop(Player p)
     {
-        if (_isChargingAnimPlaying)
-        {
-            p.SendAnimPacket(ANIM_CHARGE, 0.1f);
-            _isChargingAnimPlaying = false;
-        }
+         p.SendAnimPacket(ANIM_IDLE, 0.1f);
+         _isChargingAnimPlaying = false;
     }
 }

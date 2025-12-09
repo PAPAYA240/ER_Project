@@ -108,7 +108,7 @@ namespace Server.Game
 
             // elapsedTime이 너무 크면 제한 (첫 프레임 보호)
             if (elapsedTime > 0.1)
-                elapsedTime = 0.016; // 약 60fps 기준
+                elapsedTime = 0.016; 
 
             _lastRotationUpdateTime = currentTick;
 

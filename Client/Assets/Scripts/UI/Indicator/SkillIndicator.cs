@@ -124,11 +124,12 @@ public class SkillIndicator : UI_Base
     {
         Vector3 position = GetMousePosition();
 
-        Quaternion rot = Quaternion.LookRotation(position - transform.position);
-        rot.eulerAngles = new Vector3(0, rot.eulerAngles.y, rot.eulerAngles.z);
-        canvas.transform.rotation = Quaternion.Lerp(rot, canvas.transform.rotation, 0);
-
         Util.FindChildByName(map.transform, prefabName).transform.position = position;
+
+        Quaternion rot = Quaternion.LookRotation(position - transform.position);
+        rot.eulerAngles = new Vector3(0, rot.eulerAngles.y, 0);
+
+        map.transform.rotation = rot;
     }
     private void AimAtMousePosition(Canvas canvs, GameObject map, string prefabName)
     {

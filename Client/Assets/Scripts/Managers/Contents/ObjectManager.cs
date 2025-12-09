@@ -133,8 +133,14 @@ public class ObjectManager
         MonsterController mc = go.GetComponentInChildren<MonsterController>();
         mc.ObjInfo = info;
         mc.Id = info.ObjectId;
+
+        Transform rotationTarget = mc.transform.parent != null ? mc.transform.parent : mc.transform;
         mc.PosInfo = info.PosInfo;
+        rotationTarget.position = mc.PosInfo.ToVector();
+
         mc.RotInfo = info.RotInfo;
+        rotationTarget.rotation = mc.RotInfo;
+
         mc.Stat = info.StatInfo;
         mc.Hp = info.StatInfo.MaxHp;
         mc.Type = info.Monster.MonsterType;
