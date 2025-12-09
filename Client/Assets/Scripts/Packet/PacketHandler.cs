@@ -1090,7 +1090,7 @@ class PacketHandler
         //if (go == null)
         //    return;
 
-        ChatHandler.Instance.EnqueueMessage(chatPkt.ObjectId, chatPkt.PlayerName, chatPkt.Message, chatPkt.ChatType, chatPkt.CharType);
+        ChatHandler.Instance.EnqueueMessage(chatPkt.ObjectId, chatPkt.TeamId, chatPkt.PlayerName, chatPkt.Message, chatPkt.ChatType, chatPkt.CharType);
     }
 
     public static void S_AnimSpeedHandler(PacketSession session, IMessage packet)
