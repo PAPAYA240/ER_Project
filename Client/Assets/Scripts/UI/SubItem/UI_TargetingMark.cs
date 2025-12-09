@@ -59,12 +59,12 @@ public class UI_TargetingMark : UI_Base
         // 생명주기 코루틴 시작
         _lifetimeCoroutine = StartCoroutine(Co_Lifetime(duration));
 
-        Debug.Log($"Mark Show: duration={duration}초");
+        //Debug.Log($"Mark Show: duration={duration}초");
     }
 
     public void Hide()
     {
-        Debug.Log($"Mark Hide 호출");
+        //Debug.Log($"Mark Hide 호출");
 
         if (_lifetimeCoroutine != null)
         {
@@ -141,7 +141,7 @@ public class UI_TargetingMark : UI_Base
             yield return null;
         }
 
-        Debug.Log($"Mark Lifetime 끝: {duration}초 경과");
+        //Debug.Log($"Mark Lifetime 끝: {duration}초 경과");
 
         _onComplete?.Invoke();
         _lifetimeCoroutine = null;

@@ -29,13 +29,13 @@ public class Rozzi_FXSoundAnimEvent : MonoBehaviour
 
         if (!TryParseEvent(eventName, out var evt))
         {
-            Debug.LogWarning($"[Rozzi_FXSoundAnimEvent] Unknown eventName: {eventName}");
+            //Debug.LogWarning($"[Rozzi_FXSoundAnimEvent] Unknown eventName: {eventName}");
             return;
         }
 
         if (!TryParseKeyCode(keyStr, out var key))
         {
-            Debug.LogWarning($"[Rozzi_FXSoundAnimEvent] Unknown keyCode: {keyStr}");
+            //Debug.LogWarning($"[Rozzi_FXSoundAnimEvent] Unknown keyCode: {keyStr}");
             return;
         }
 

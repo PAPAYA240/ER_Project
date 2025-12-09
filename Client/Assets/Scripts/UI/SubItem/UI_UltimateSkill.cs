@@ -65,7 +65,9 @@ public class UI_UltimateSkill : UI_SkillBase
 
         ui_PlayerInterface = GetComponentInParent<UI_PlayerInterface>();
         if (ui_PlayerInterface == null)
-            Debug.Log("null  == ui_PlayerInterface");
+        {
+            //Debug.Log("null  == ui_PlayerInterface");
+        }
 
         GetObject(_stamina).gameObject.SetActive(false);
         //GetObject(_cooldownTimer).gameObject.SetActive(false);
@@ -140,7 +142,7 @@ public class UI_UltimateSkill : UI_SkillBase
         {
             if (!ColorUtility.TryParseHtmlString(_yellow, out destColor))
             {
-                Debug.Log($"Failed to TryParseHtmlString : {_yellow}");
+                //Debug.Log($"Failed to TryParseHtmlString : {_yellow}");
                 return;
             }
         }
@@ -148,7 +150,7 @@ public class UI_UltimateSkill : UI_SkillBase
         {
             if (!ColorUtility.TryParseHtmlString(_gray, out destColor))
             {
-                Debug.Log($"Failed to TryParseHtmlString : {_gray}");
+                //Debug.Log($"Failed to TryParseHtmlString : {_gray}");
                 return;
             }
         }
@@ -249,7 +251,7 @@ public class UI_UltimateSkill : UI_SkillBase
         Sprite sprite = Managers.Resource.Load<Sprite>(path);
         if (sprite == null)
         {
-            Debug.Log($"null : {path}");
+            //Debug.Log($"null : {path}");
             return;
         }
         GetButton((int)Buttons.SkillButton).image.sprite = sprite;

@@ -62,7 +62,7 @@ public class PickScene : BaseScene
 
     public override void Clear()
     {
-        Debug.Log("PickScene Clear");
+        //Debug.Log("PickScene Clear");
     }
 
     private void ClickedCharPickButton(string charName)

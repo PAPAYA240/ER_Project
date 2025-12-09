@@ -26,13 +26,15 @@ public class LoadingUIController : MonoBehaviour
         Texture2D sheet = Resources.Load<Texture2D>("uieffects/textures/FX_UI_Indicator_02");
         if (sheet == null)
         {
-            Debug.LogError($"Not found in Resources");
+            //Debug.LogError($"Not found in Resources");
             return;
         }
 
         _frames = Util.Slice(sheet, 6, 4, 1);
         if (_frames == null || _frames.Length == 0)
-            Debug.LogError("Sprite slicing failed");
+        {
+            //Debug.LogError("Sprite slicing failed");
+        }
 
         if (Managers.Scene.CurrentScene is GameScene scene)
         {

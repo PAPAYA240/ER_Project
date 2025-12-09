@@ -29,7 +29,7 @@ public class LobbyScene : BaseScene
         _nicknamePopUpUI = _nicknamePopUp.GetComponent<UI_NicknamePopUp>();
         if (_nicknamePopUpUI == null)
         {
-            Debug.Log("NicknamePopUpUI Null");
+            //Debug.Log("NicknamePopUpUI Null");
             return;
         }
 
@@ -79,7 +79,7 @@ public class LobbyScene : BaseScene
 
     public override void Clear()
     {
-        Debug.Log("LobbyScene Clear");
+        //Debug.Log("LobbyScene Clear");
     }
 }
 

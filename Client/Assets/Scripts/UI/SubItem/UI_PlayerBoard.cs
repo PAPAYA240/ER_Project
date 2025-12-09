@@ -136,7 +136,7 @@ public class UI_PlayerBoard : UI_Base
     {
         if (_targetPc == null)
         {
-            Debug.Log("_targetPc == null");
+            //Debug.Log("_targetPc == null");
             return;
         }
 

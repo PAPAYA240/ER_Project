@@ -78,11 +78,6 @@ public class IO_DeployingLoop : MonoBehaviour
     {
         _cursorDefault = Managers.Resource?.Load<Texture2D>("Cursor/Cursor_01") ?? Resources.Load<Texture2D>("Cursor/Cursor_01");
         _cursorOperate = Managers.Resource?.Load<Texture2D>("Cursor/Cursor_12") ?? Resources.Load<Texture2D>("Cursor/Cursor_12");
-
-        if (_cursorDefault == null)
-            Debug.LogWarning("_cursorDefault 텍스처를 찾을 수 없습니다. Resources/Cursor/Cursor_01 경로 확인.");
-        if (_cursorOperate == null)
-            Debug.LogWarning("_cursorOperate 텍스처를 찾을 수 없습니다. Resources/Cursor/Cursor_12 경로 확인.");
     }
 
     void Update()

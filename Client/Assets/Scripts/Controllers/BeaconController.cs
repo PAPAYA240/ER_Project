@@ -44,7 +44,7 @@ public class BeaconController : BaseController
         }
         else
         {
-            Debug.LogError("GaugeRenderer is not assigned!", this);
+            //.LogError("GaugeRenderer is not assigned!", this);
         }
     }
 
