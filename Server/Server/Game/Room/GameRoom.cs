@@ -947,6 +947,7 @@ namespace Server.Game
             S_Chat sendPkt = new S_Chat()
             {
                 ObjectId = player.Id,
+                TeamId = player.Team,
                 PlayerName = player.Info.Player.Nickname,
                 Message = chatPkt.Message,
                 ChatType = chatPkt.ChatType,
