@@ -233,6 +233,19 @@ public class MonsterController : CreatureController
         if (packet.RotInfo != null)
             _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
+    private void CheckBehaviorCondition(CreatureState nextState)
+    {
+        if (State == CreatureState.Appear && nextState == CreatureState.Idle)
+        {
+            OnStateChanged?.Invoke(true);
+        }
+
+        if (Type == MonsterType.Omega && 
+            (State == CreatureState.Skill && nextState == CreatureState.Idle))
+        {
+            OnStateChanged?.Invoke(true);
+        }
+    }
     public void OnRecvStatePacket(S_State packet)
     {
         if (packet.ChangeState == false)
@@ -241,13 +254,9 @@ public class MonsterController : CreatureController
             return;
         }
 
-        if ((State == CreatureState.Appear || State == CreatureState.Skill)
-            && packet.MyState == CreatureState.Idle)
-        {
-            OnStateChanged?.Invoke(true);
-        }
-
+        CheckBehaviorCondition(packet.MyState);
         State = packet.MyState;
+
         if (packet.TargetPosition != null)
             TargetPosition = packet.TargetPosition.ToVector();
 
