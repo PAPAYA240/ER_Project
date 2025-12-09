@@ -174,8 +174,8 @@ namespace Server.Game
         {
             if (CheckTeam(attacker))
                 return;
-            Player player = Target as Player;
-            if (player.CurrentState is Player_DeadState)
+
+            if (State == CreatureState.Dead)
                 return;
 
             base.OnDamaged(attacker, damage, isBasicAttack);
@@ -265,7 +265,7 @@ namespace Server.Game
 
         public Player SearchForPlayerInRange()
         {
-             return Room?.FindViableTarget(this, DIST_TO_TARGET);
+            return Room?.FindViableTarget(this, DIST_TO_TARGET);
         }
         public bool IsReturnSpawn()
         {
@@ -276,8 +276,8 @@ namespace Server.Game
 
             if (Target == null)
                 return true;
-            Player player = Target as Player;
-            if (Target != null && player?.CurrentState is Player_DeadState)
+
+            if (Target != null && Target.State == CreatureState.Dead)
                 return true;
 
             return false;
@@ -293,7 +293,7 @@ namespace Server.Game
         #region 패킷 전달
         public void PushState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null, bool stateChange = true)
         {
-             Room?.Push(() => BroadcastState(newState, posInfo, rotInfo, skillData, stateChange));
+            Room?.Push(() => BroadcastState(newState, posInfo, rotInfo, skillData, stateChange));
         }
 
         private void BroadcastState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null, bool stateChange = true)
@@ -319,7 +319,7 @@ namespace Server.Game
 
             Room?.Broadcast(statePacket);
         }
-    
+
         #endregion
 
         #region 초기화
@@ -340,7 +340,7 @@ namespace Server.Game
 
             return true;
         }
-#endregion
+        #endregion
     }
 }
 
