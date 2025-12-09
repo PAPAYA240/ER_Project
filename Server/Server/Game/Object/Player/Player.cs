@@ -969,9 +969,13 @@ namespace Server.Game
 
         #region Level
         private readonly object _lock = new object();
+        private readonly int _maxLevel = 20;
 
         bool CanLevelUp()
         {
+            if (Stat.Level >= _maxLevel)
+                return false;
+
             return DataManager.ExpDict.ContainsKey(Stat.Level) &&
                    Stat.Exp >= DataManager.ExpDict[Stat.Level];
         }
@@ -992,8 +996,15 @@ namespace Server.Game
                 {
                     Stat.Exp -= DataManager.ExpDict[Stat.Level];
                     Stat.Level++;
+                    if (Stat.Level > _maxLevel)
+                    {
+                        Stat.Level = _maxLevel;
+                        break;
+                    }
+
                     StatInfo statInfo = DataManager.StatGrowthDict[Info.Player.CharType];
                     Stat.AddStat(statInfo);
+
                     levelUp++;
                 }
                 return levelUp;
