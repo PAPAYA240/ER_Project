@@ -24,12 +24,24 @@ public class BuffUIFollower : MonoBehaviour
         if (target == null || _cam == null)
             return;
 
-        // 위치: 월드 기준
+        //// 위치: 월드 기준
+        //Vector3 worldPos =
+        //    target.position +
+        //    Vector3.right * rightOffset +
+        //    Vector3.up * upOffset;
+
+        // 카메라 기준 방향 벡터
+        Vector3 camRight = _cam.transform.right;
+        Vector3 camUp = _cam.transform.up;
+        Vector3 camForward = _cam.transform.forward;
+
+        // 타겟 위치 + 카메라 기준 오프셋
         Vector3 worldPos =
             target.position +
-            Vector3.right * rightOffset +
-            Vector3.up * upOffset;
-        
+            camRight * rightOffset +
+            camUp * upOffset +
+            camForward * forwardOffset;
+
         transform.position = worldPos;
         transform.rotation = _cam.transform.rotation;
     }

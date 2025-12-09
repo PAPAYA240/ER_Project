@@ -865,24 +865,6 @@ public class PlayerController : CreatureController
 
         Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, targetTransform ? targetTransform : transform, mousePos, targetPos, targetRot, isCommon: true);
     }
-
-    public void ShowCommonUIEffect(string commonName) => BuffUI.ShowIcon(commonName);
-    public void HideCommonUIEffect(string commonName) => BuffUI.HideIcon(commonName);
-
-    public bool IsFxEffect(string commonName)
-    {
-        switch (commonName)
-        {
-            case "Debuff_Slow":
-                return true;
-            case "Debuff_HealedDecrease":
-                return false;
-            case "Debuff_Defense":
-                return false;
-        }
-
-        return true;
-    }
     #endregion
 
     #region State:Operate
