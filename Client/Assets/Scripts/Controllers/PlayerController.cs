@@ -1085,7 +1085,7 @@ public class PlayerController : CreatureController
              break;
          case 2:    // change
              {
-                 Hiding(true);
+                 Hiding(false);
                     he.ChangeBushRenderer();
              }
              break;

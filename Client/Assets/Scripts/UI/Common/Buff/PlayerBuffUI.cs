@@ -38,14 +38,14 @@ public class PlayerBuffUI : MonoBehaviour
 
     public void ShowIcon(string effect)
     {
-        StatusEffect se = ResolveEffect(effect);
-        _icons[(int)se].SetActive(true);
+        //StatusEffect se = ResolveEffect(effect);
+        //_icons[(int)se].SetActive(true);
     }
 
     public void HideIcon(string effect)
     {
-        StatusEffect se = ResolveEffect(effect);
-        _icons[(int)se].SetActive(false);
+        //StatusEffect se = ResolveEffect(effect);
+        //_icons[(int)se].SetActive(false);
     }
 
     private void CreateWorldBuffCanvas()

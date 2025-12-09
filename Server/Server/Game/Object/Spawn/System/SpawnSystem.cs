@@ -19,9 +19,11 @@ public class SpawnSystem
 
     public Vector3 GetSpawnPoint(int team)
     {
-        bool myTeam = (team == 1)
-            ? true
-            : false;
+        //bool myTeam = (team == 1)
+        //    ? true
+        //    : false;
+
+        bool myTeam = true;
 
         var state = _registry.SelectSpawnPoint(
             myTeam,

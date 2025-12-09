@@ -419,11 +419,11 @@ class PacketHandler
         if (fxPacket.CanLookatMouse == true)
             pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));
 
-        if (fxPacket.IsCommon && !pc.IsFxEffect(fxPacket.CommonName))
-        {
-            pc.ShowCommonUIEffect(fxPacket.CommonName);
-            return;
-        }
+        //if (fxPacket.IsCommon && !pc.IsFxEffect(fxPacket.CommonName))
+        //{
+        //    pc.ShowCommonUIEffect(fxPacket.CommonName);
+        //    return;
+        //}
 
         pc.PlayEffectFromServer(fxPacket, mousePos, targetPos, targetRot);
     }
@@ -1303,10 +1303,10 @@ class PacketHandler
             if (pc == null)
                 return;
 
-            if(pc.IsFxEffect(removeEffectPacket.CommonName))
+            //if(pc.IsFxEffect(removeEffectPacket.CommonName))
                 Managers.FX.Effect.RemoveCommonEffect(removeEffectPacket);
-            else
-                pc.HideCommonUIEffect(removeEffectPacket.CommonName);
+            //else
+            //    pc.HideCommonUIEffect(removeEffectPacket.CommonName);
         }
     }
 
