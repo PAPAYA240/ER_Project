@@ -68,7 +68,7 @@ public class OnBeacon : MonoBehaviour
 
         if (targetRenderers == null || targetRenderers.Length == 0)
         {
-            Debug.LogWarning($"{gameObject.name}에 렌더러가 없습니다. OnBeacon을 적용할 수 없습니다.");
+            //Debug.LogWarning($"{gameObject.name}에 렌더러가 없습니다. OnBeacon을 적용할 수 없습니다.");
             enabled = false;
             return;
         }
@@ -77,13 +77,13 @@ public class OnBeacon : MonoBehaviour
 
         if (targetRenderers.Length > 1)
         {
-            Debug.LogWarning($"'{gameObject.name}'에 'Cobalt_OBJ_Turbine_01_Base' 이름의 렌더러가 {targetRenderers.Length}개 있습니다. 첫 번째만 사용합니다.");
+            //Debug.LogWarning($"'{gameObject.name}'에 'Cobalt_OBJ_Turbine_01_Base' 이름의 렌더러가 {targetRenderers.Length}개 있습니다. 첫 번째만 사용합니다.");
         }
 
         Shader outlineShader = Shader.Find("Custom/BeaconOutline");
         if (outlineShader == null)
         {
-            Debug.LogError("Custom/BeaconOutline 셰이더를 찾을 수 없습니다!");
+            //Debug.LogError("Custom/BeaconOutline 셰이더를 찾을 수 없습니다!");
             enabled = false;
             return;
         }
@@ -107,9 +107,6 @@ public class OnBeacon : MonoBehaviour
     {
         _cursorDefault = Managers.Resource?.Load<Texture2D>("Cursor/Cursor_01") ?? Resources.Load<Texture2D>("Cursor/Cursor_01");
         _cursorEnemy = Managers.Resource?.Load<Texture2D>("Cursor/Cursor_12") ?? Resources.Load<Texture2D>("Cursor/Cursor_12");
-
-        if (_cursorDefault == null) Debug.LogWarning("기본 커서 텍스처를 찾을 수 없습니다. Resources/Cursor/Cursor_01 경로 확인.");
-        if (_cursorEnemy == null) Debug.LogWarning("적 커서 텍스처를 찾을 수 없습니다. Resources/Cursor/Cursor_12 경로 확인.");
     }
 
 

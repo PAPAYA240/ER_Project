@@ -118,7 +118,7 @@ class PacketHandler
         GameObject go = Managers.Object.FindById(skillPacket.ObjectId);
         if (go == null)
         {
-            Debug.Log($"ID {skillPacket.ObjectId}를 가진 몬스터 오브젝트를 찾을 수 없습니다");
+            //Debug.Log($"ID {skillPacket.ObjectId}를 가진 몬스터 오브젝트를 찾을 수 없습니다");
             return;
         }
 
@@ -1159,7 +1159,7 @@ class PacketHandler
         UI_YukiNameTag yukiNameTag = go.GetComponentInChildren<UI_YukiNameTag>();
         if (yukiNameTag == null)
         {
-            Debug.Log("null");
+            //Debug.Log("null");
             return;
         }
 
@@ -1452,7 +1452,7 @@ class PacketHandler
         S_AbigailPortal abglPortal = packet as S_AbigailPortal;
         GameObject go = Managers.Object.FindById(abglPortal.ObjectId);
         if (go == null) return;
-        PlayerController pc = go.GetComponentInChildren<MyPlayerController>();
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
         if (pc == null) return;
 
         Vector3 startPos = new Vector3(abglPortal.StartX, pc.ObjInfo.PosInfo.PosY, abglPortal.StartZ);

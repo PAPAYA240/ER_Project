@@ -63,14 +63,14 @@ public class EffectFXManager : MonoBehaviour
             GameObject fxPrefab = GetFxPrefab(ownerId, data.prefabName, isCommon);
             if(fxPrefab == null)
             {
-                Debug.LogWarning($"FX Prefab not found: {data.prefabName}");
+                //Debug.LogWarning($"FX Prefab not found: {data.prefabName}");
                 continue;
             }
 
             GameObject fxObject = Managers.FX.Pop(fxPrefab, null);
             if (fxObject == null)
             {
-                Debug.LogError($"Failed to pop FX from pool: {data.prefabName}");
+                //Debug.LogError($"Failed to pop FX from pool: {data.prefabName}");
                 continue;
             }
 

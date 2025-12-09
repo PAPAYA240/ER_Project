@@ -7,10 +7,8 @@ public class Fx_YukiEffect : MonoBehaviour, IEffect
     void Awake()
     {
         ps = GetComponent<ParticleSystem>();
-        if (ps == null)
-            Debug.LogWarning($"ParticleSystem not found on {gameObject.name}");
-        else
-            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        if(ps != null)
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear); 
     }
 
     public void Play()

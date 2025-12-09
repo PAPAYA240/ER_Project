@@ -35,7 +35,7 @@ public class BehaviorTreeBuilder
 
         if (collection == null || collection.behaviorTrees == null)
         {
-            Debug.LogError("BehaviorTreeCollection 파싱 실패!");
+            //Debug.LogError("BehaviorTreeCollection 파싱 실패!");
             return nodes;
         }
 
@@ -110,7 +110,7 @@ public class BehaviorTreeBuilder
         Type type = Type.GetType(typeName);
         if (null == type)
         {
-            Debug.LogError($"BT_Builder 타입을 찾을 수 없음: {typeName}");
+            //Debug.LogError($"BT_Builder 타입을 찾을 수 없음: {typeName}");
             return null;
         }
 

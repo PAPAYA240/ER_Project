@@ -81,7 +81,7 @@ public class WardController : BaseController
         }
         else
         {
-            Debug.LogError("Life Bar UI�� �ʱ�ȭ�� �� �����ϴ�. �ʿ��� ������ �����ϴ�.");
+            //Debug.LogError("Life Bar UI�� �ʱ�ȭ�� �� �����ϴ�. �ʿ��� ������ �����ϴ�.");
         }
 
         _lifeBarController.SetMaxValue(_lifeTime);
@@ -130,7 +130,7 @@ public class WardController : BaseController
 
         if (_lifeBarInstance == null)
         {
-            Debug.LogError("WardLifeBarUI ������ Instantiate ����!");
+            //Debug.LogError("WardLifeBarUI ������ Instantiate ����!");
             return;
         }
 
@@ -144,7 +144,7 @@ public class WardController : BaseController
 
         if (_lifeBarController == null)
         {
-            Debug.LogError("UI_BarNonText ������Ʈ�� Life Bar UI �����տ��� ã�� �� �����ϴ�!");
+            //Debug.LogError("UI_BarNonText ������Ʈ�� Life Bar UI �����տ��� ã�� �� �����ϴ�!");
             Destroy(_lifeBarInstance); // UI �ν��Ͻ� ����
             return;
         }

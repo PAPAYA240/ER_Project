@@ -682,14 +682,14 @@ public class PlayerController : CreatureController
 
         if (null == go)
         {
-            Debug.Log("go is null : InitNameTag()");
+            //Debug.Log("go is null : InitNameTag()");
             return;
         }
 
         _nameTag = go.GetComponentInChildren<UI_PlayerNameTag>();
         if (null == _nameTag)
         {
-            Debug.Log("_nameTag is null : InitNameTag()");
+            //Debug.Log("_nameTag is null : InitNameTag()");
             return;
         }
 
@@ -1130,9 +1130,6 @@ public class PlayerController : CreatureController
             {
                 // AbigailWeapon의 자식에서 Animator 찾기
                 _weaponAnimator = weaponTransform.GetComponentInChildren<Animator>();
-
-                if (_weaponAnimator == null)
-                    Debug.LogWarning("AbigailWeapon 자식에서 Animator를 찾을 수 없습니다.");
             }
         }
     }

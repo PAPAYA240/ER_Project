@@ -23,6 +23,8 @@ public class SpawnSystem
             ? true
             : false;
 
+        //bool myTeam = true;
+
         var state = _registry.SelectSpawnPoint(
             myTeam,
             SpawnPointType.BaseSpawn);

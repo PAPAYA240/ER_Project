@@ -39,7 +39,7 @@ public class UIFXManager : MonoBehaviour
             fxObject = Managers.FX.Pop(prefab, target.transform);
             if (fxObject == null)
             {
-                Debug.LogError($"UIFXManager: Failed to pop poolable for {prefabPath}");
+                //Debug.LogError($"UIFXManager: Failed to pop poolable for {prefabPath}");
                 return;
             }
         }

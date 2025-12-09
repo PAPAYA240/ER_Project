@@ -134,7 +134,7 @@ public class UI_GameResult : UI_Base
         if (_allyCount > 2)
             return;
 
-        Debug.Log($"AddAlly, _allyCount : {_allyCount}");
+        //Debug.Log($"AddAlly, _allyCount : {_allyCount}");
 
 
         GameObject go = GetObject((int)GameObjects.Ally_1 + _allyCount);
@@ -156,6 +156,6 @@ public class UI_GameResult : UI_Base
         ui.SetKill(pc.KillAmount);
         ui.SetDeath(pc.DeathAmount);
         ui.SetAsist(pc.AsistAmount);
-        Debug.Log($"AddAlly, Success");
+        //Debug.Log($"AddAlly, Success");
     }
 }
