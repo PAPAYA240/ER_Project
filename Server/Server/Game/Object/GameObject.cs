@@ -577,7 +577,7 @@ namespace Server.Game
                         // 유키 궁 표식 데미지
                         int curLevel = player.GetSkillLevel(Data.DataUtils.KeyCode.R);
                         float curAttack = player.Attack;
-                        _ = CoDelayYukiCoupDeGrace(player, curAttack, curLevel, 1000);
+                        _ = CoDelayYukiCoupDeGrace(player, curAttack, curLevel, 750);
                     }
                     else if (statusEffect.type == "Buff" || statusEffect.type == "Debuff")
                     {

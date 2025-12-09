@@ -6,6 +6,7 @@ public class CreatureController : BaseController
 {
     [SerializeField] private LayerMask _monsterMask;
     [SerializeField] private LayerMask _playerMask;
+    public bool IsHide = false;
 
     public override StatInfo Stat
     {
@@ -266,14 +267,9 @@ public class CreatureController : BaseController
 
     private bool IsHiding(CreatureController cc)
     {
-        if(cc is PlayerController pc)
-        {
-            if (!pc.IsHide) 
-                return false;
-            return true;
-        }
-
-        return false;
+         if (!cc.IsHide) 
+             return false;
+         return true;
     }
 
     private int GetAttackableLayerMask()

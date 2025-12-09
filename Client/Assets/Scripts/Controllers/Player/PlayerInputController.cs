@@ -123,7 +123,7 @@ public class PlayerInputController : MonoBehaviour
         }
     }
 
-    // 타겟 + 사거리 안”
+    // 타겟 + 사거리 안
     public C_Attack GetAttackCommand()
     {
         // 공격 가능한 상태만 처리
@@ -244,19 +244,22 @@ public class PlayerInputController : MonoBehaviour
                 return null;
 
             // 사거리 안이면 즉시 상호작용 패킷 전송
-            if (clickedIo.IsPlayerInside && clickedIo.IsUsable)
+            if (clickedIo.IsPlayerInside)
             {
-                _activeDeployingLoop = clickedIo;
-                _activeDeployingLoop.Begin();
-                return new C_DeployingLoop
+                if(clickedIo.IsUsable)
                 {
-                    ObjectId = _player.Id,
-                    IoPos = clickedIo.GetLookTargetPosition(),
-                };
+                    _activeDeployingLoop = clickedIo;
+                    _activeDeployingLoop.Begin();
+                    return new C_DeployingLoop
+                    {
+                        ObjectId = _player.Id,
+                        IoPos = clickedIo.GetLookTargetPosition(),
+                    };
+                }
+                else
+                    _player.UI.ActionNotReady.Show(DeployingLoop_Desc_NotReady);
             }
-            else
-                _player.UI.ActionNotReady.Show(DeployingLoop_Desc_NotReady);
-
+                         
             // 사거리 밖이면 : 도착 후 자동 상호작용을 위해 pending 으로 기록만 해 둠
             _pendingDeployingLoop = clickedIo;
             return null;
@@ -288,7 +291,10 @@ public class PlayerInputController : MonoBehaviour
     // H키 : 이동 중지
     public C_Stop GetStopCommand()
     {
-        if(_player.State == CreatureState.Dead)
+        if (ChatHandler.Instance.IsChatting)
+            return null;
+
+        if (_player.State == CreatureState.Dead)
             return null;
 
         if (Input.GetKeyDown(KeyCode.S))
@@ -311,6 +317,9 @@ public class PlayerInputController : MonoBehaviour
 
     public virtual C_SkillInput GetSkillCommand()
     {
+        if (ChatHandler.Instance.IsChatting)
+            return null;
+
         if (_player.State == CreatureState.Dead)
             return null;
 
@@ -348,6 +357,9 @@ public class PlayerInputController : MonoBehaviour
 
     public C_Rest GetRestCommand()
     {
+        if (ChatHandler.Instance.IsChatting)
+            return null;
+
         if (_player.CombatStat == CombatState.Combat)
         {
             if (Input.GetKeyDown(KeyCode.X))

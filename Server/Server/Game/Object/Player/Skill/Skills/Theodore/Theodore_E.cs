@@ -22,6 +22,8 @@ public sealed class Theodore_E : SkillHandlerBase
 
     public override void OnEnter(Player p, SkillContext ctx)
     {
+        CanStopSkill = true;
+
         base.OnEnter(p, ctx);
         p.LookAtMouse(ctx.MousePos);
         SendSkillConfirmPacket(p);

@@ -9,7 +9,8 @@ public class ChatHandler : MonoBehaviour
 {
     public static ChatHandler Instance;
 
-    public static bool IsChatting { get; private set; }
+    public bool IsChatting { get; private set; } = false;
+    public int MyId => Managers.Object.MyPlayer.Id;
 
     [SerializeField] private TMP_InputField inputField;
     [SerializeField] private RectTransform contentRect;
@@ -20,7 +21,7 @@ public class ChatHandler : MonoBehaviour
     private ChatType chatType;
 
     // 메시지 큐
-    private static Queue<(string playerName, string message, ChatType chatType, CharacterType charType)> messageQueue = new Queue<(string, string, ChatType, CharacterType)>();
+    private static Queue<(int playerId, string playerName, string message, ChatType chatType, CharacterType charType)> messageQueue = new Queue<(int, string, string, ChatType, CharacterType)>();
 
     private void Awake()
     {
@@ -38,9 +39,9 @@ public class ChatHandler : MonoBehaviour
         HideInputField(); // 시작 시 숨김
     }
 
-    public void EnqueueMessage(string playerName, string message, ChatType chatType, CharacterType charType)
+    public void EnqueueMessage(int playerId, string playerName, string message, ChatType chatType, CharacterType charType)
     {
-        messageQueue.Enqueue((playerName, message, chatType, charType));
+        messageQueue.Enqueue((playerId, playerName, message, chatType, charType));
     }
 
     void Update()
@@ -48,7 +49,7 @@ public class ChatHandler : MonoBehaviour
         while (messageQueue.Count > 0)
         {
             var msg = messageQueue.Dequeue();
-            AddMessage(msg.playerName, msg.message, msg.chatType, msg.charType);
+            AddMessage(msg.playerId, msg.playerName, msg.message, msg.chatType, msg.charType);
         }
 
         // Shift + enter (all chat)
@@ -137,14 +138,24 @@ public class ChatHandler : MonoBehaviour
         inputField.text = "";
     }
 
-    private void AddMessage(string playerName, string message, ChatType type, CharacterType charType)
+    private void AddMessage(int playerId, string playerName, string message, ChatType type, CharacterType charType)
     {
         GameObject textPrefab = Resources.Load<GameObject>("Prefabs/UI/Chat/ChatText");
         GameObject inst = Instantiate(textPrefab, contentRect, false);
 
         string prefix = type == ChatType.Team ? "<color=#52D1FF>[팀]</color>" : "<color=#FFD400>[전체]</color>";
 
-        inst.GetComponent<TMP_Text>().text = $"{prefix} <color=#01DCE3>{playerName}({CharacterName(charType)})</color> : {message}";
+        // 내가 보낸 메시지
+        bool isMine = playerId == Managers.Object.MyPlayer.Id;
+
+        string nameColor;
+        if (type == ChatType.All)
+            nameColor = isMine ? "#01DCE3" : "#FF0000";
+        else
+            nameColor = "#01DCE3";
+
+        inst.GetComponent<TMP_Text>().text =
+            $"{prefix} <color={nameColor}>{playerName}({CharacterName(charType)})</color> : {message}";
     }
 
     private string CharacterName(CharacterType charType)

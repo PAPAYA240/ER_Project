@@ -575,7 +575,20 @@ public class UI_PlayerInterface : UI_Base
             _coChargingBar = StartCoroutine(CoChargingBar(maxChargingTime));
         }
     }
+    public void SetMaintainChargingBar(string skillName, float fullChargingTime, float maxChargingTime)
+    {
+        GameObject chargingBar = GetObject((int)GameObjects.ChargingBar);
+        if (chargingBar != null)
+        {
+            chargingBar.SetActive(true);
 
+            UI_ChargingBar ui = chargingBar.GetComponent<UI_ChargingBar>();
+            if (ui != null)
+            {
+                ui.SetChargingBar(skillName, fullChargingTime, maxChargingTime);
+            }
+        }
+    }
     public void StopChargingBar()
     {
         GameObject chargingBar = GetObject((int)GameObjects.ChargingBar);
