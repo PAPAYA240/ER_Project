@@ -6,7 +6,7 @@
           "Caster": [
             {
               "prefabName": "FX_Skill01_Shot",
-              "target": "Self",
+              "target": "Default",
               "duration": 2.5,
               "attachBoneName": "ShotPoint"
             },
@@ -22,7 +22,7 @@
             },
             {
               "prefabName": "FX_Skill01_Iinoleum",
-              "target": "Self",
+              "target": "Default",
               "delayTime": 0.3,
               "duration": 1,
               "position": {
@@ -111,6 +111,13 @@
               "attachBoneName": "Fx_Center",
               "duration": 0.05,
               "delayTime": 0
+            },
+            {
+              "prefabName": "FX_Skill03_Shield",
+              "target": "Self",
+              "attachBoneName": "Fx_Center",
+              "duration": 2,
+              "delayTime": 0
             }
           ]
         },
@@ -189,6 +196,7 @@
             {
               "prefabName": "FX_Attack_Default",
               "target": "Shot",
+              "speed": 20,
               "duration": 1.3,
               "attachBoneName": "ShotPoint",
               "delayTime": 0,

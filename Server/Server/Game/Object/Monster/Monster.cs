@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading;
 using Google.Protobuf.Protocol;
 using Lucene.Net.Index;
 using Server.Data;
@@ -36,14 +37,14 @@ namespace Server.Game
         public float DelaySkillAnimationTimer = 0;
 
         // Position
-        public Vector3 _spawnPosition = new Vector3();
-        public Quaternion _spawnRotation = new Quaternion();
+        public PositionInfo _spawnPosition = new PositionInfo();
+        public RotationInfo _spawnRotation = new RotationInfo();
 
         public bool ReturnToSpawn { get; set; }
         public Vector3 _lastTargetPos = new Vector3();
 
         // Detection
-        private const float ACTIVE_RANGE = 20f;
+        private float ACTIVE_RANGE = 20f;
 
         // Events
         public Action<GameObject> OnAttacked;
@@ -66,16 +67,13 @@ namespace Server.Game
 
             MonsterTeam = team;
             DIST_TO_TARGET = DataManager.MonsterDict[type].attackDist;
+            ACTIVE_RANGE = DataManager.MonsterDict[type].activeDist;
             OnAttacked += HandlerRegisterTarget;
         }
 
         bool _appeared = false;
         public override void Update()
         {
-            if (Info.Monster.MonsterType == MonsterType.Omega)
-            {
-                Console.WriteLine($"{Info.PosInfo.PosX}, {Info.PosInfo.PosZ}");
-            }
             if (Room != null && _appeared == false)
             {
                 ChangeState(FSMManager.Instance.GetAppearState());
@@ -85,7 +83,8 @@ namespace Server.Game
 
             if (Target != null)
             {
-                if (Target.State == CreatureState.Dead)
+                Player player = Target as Player;
+                if (player.CurrentState is Player_DeadState)
                 {
                     Target = null;
                     ChangeState(FSMManager.Instance.GetIdleState());
@@ -214,6 +213,8 @@ namespace Server.Game
             if (DataManager.MonsterSkillDict.TryGetValue(skillName, out MonsterSkillData skillData) == false)
                 return null;
 
+            CurrentSkill = skillData.skillType;
+
             return skillData;
         }
         public void CreateHitbox(MonsterSkill skilltype)
@@ -264,13 +265,13 @@ namespace Server.Game
 
         public Player SearchForPlayerInRange()
         {
-             return Room?.FindViableTarget(this, DIST_TO_TARGET);
+            return Room?.FindViableTarget(this, DIST_TO_TARGET);
         }
         public bool IsReturnSpawn()
         {
             Vector3 monsterPosition = PosInfo.ToVector();
-
-            if (Vector3.Distance(monsterPosition, _spawnPosition) >= ACTIVE_RANGE)
+            Vector3 spawnPosition = _spawnPosition.ToVector();
+            if (Vector3.Distance(monsterPosition, spawnPosition) >= ACTIVE_RANGE)
                 return true;
 
             if (Target == null)
@@ -285,14 +286,14 @@ namespace Server.Game
         public bool IsAtSpawn()
         {
             var myPosition = PosInfo.ToVector();
-            return (Vector3.Distance(myPosition, _spawnPosition) < DIST_TO_TARGET);
+            return (Vector3.Distance(myPosition, _spawnPosition.ToVector()) < DIST_TO_TARGET);
         }
         #endregion
 
         #region 패킷 전달
         public void PushState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null, bool stateChange = true)
         {
-             Room?.Push(() => BroadcastState(newState, posInfo, rotInfo, skillData, stateChange));
+            Room?.Push(() => BroadcastState(newState, posInfo, rotInfo, skillData, stateChange));
         }
 
         private void BroadcastState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null, bool stateChange = true)
@@ -314,12 +315,11 @@ namespace Server.Game
             if (skillData != null)
             {
                 statePacket.Skilltype = skillData.skillType;
-                CurrentSkill = skillData.skillType;
             }
 
             Room?.Broadcast(statePacket);
         }
-    
+
         #endregion
 
         #region 초기화
@@ -329,8 +329,8 @@ namespace Server.Game
             {
                 Stat.MergeFrom(monsterData.stat);
                 Hp = MaxHp;
-                _spawnPosition = new Vector3(PosInfo.PosX, PosInfo.PosY, PosInfo.PosZ);
-                _spawnRotation = new Quaternion(RotInfo.Qx, RotInfo.Qy, RotInfo.Qz, RotInfo.Qw);
+                _spawnPosition = new PositionInfo(PosInfo);
+                _spawnRotation = new RotationInfo(RotInfo);
                 State = CreatureState.Appear;
                 if (monsterData.skills != null)
                     _skills.AddRange(monsterData.skills);
@@ -340,7 +340,7 @@ namespace Server.Game
 
             return true;
         }
-#endregion
+        #endregion
     }
 }
 

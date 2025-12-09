@@ -103,10 +103,14 @@ public class PlayAnimation : AnimationControlNode
         if (_controller.State == CreatureState.Dead)
             return;
 
+        if(_animator.GetBool("bWait") == false)
+            _animator.SetBool("bWait", true);
+
         int waitAnimHash = Animator.StringToHash(_waitAnim);
         if (_animator != null && _animator.HasState(0, waitAnimHash))
             _animator?.CrossFadeInFixedTime(_waitAnim, 0.1f, 0);
     }
+
     public override void Exit(GameObject obj, bool clear)
     {
         ClearAnim();

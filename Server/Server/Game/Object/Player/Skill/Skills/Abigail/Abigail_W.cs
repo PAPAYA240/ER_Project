@@ -15,7 +15,7 @@ public sealed class Abigail_W : Skill_Abigail
         _animName = "SKILL_W";
         _keyCode = KeyCode.W;
         _animDuration = GetDuration();
-        StopSkillTime = 0.433f; // 12프레임 * 30FPS
+        StopSkillTime = 0.5f;
     }
 
     public override void OnTick(Player p, SkillContext ctx)

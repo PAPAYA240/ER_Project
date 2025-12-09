@@ -1,0 +1,107 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FX_BI_MT_Dissolve_Lightning_07
+  m_Shader: {fileID: 4800000, guid: a064ba2fd9d506740bb9b1efb818ba59, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 0
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _DissolveTexture:
+        m_Texture: {fileID: 2800000, guid: 17b45d5d9cd25054aad8684eb82ac1f1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DissolveTexture_gradiant:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 5ddac23f159c5e44b91f8206d880e48a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 02d84c97c7f1442429960d84a1c54997, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTexture01:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTexture02:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Cull: 0
+    - _Dissolve: 0.88
+    - _Float0: 0.08
+    - _Float3: 1
+    - _Float4: 0.5
+    - _Float5: 1
+    - _FlowSpeedX: 0.1
+    - _FlowSpeedY: 0
+    - _GlowStrength: 0.5
+    - _GlowWidth: 1
+    - _Keyword0: 1
+    - _LimitCustomY: 0
+    - _MulVal_Alpha: 0.25
+    - _MulVal_alpha: 1
+    - _MulVal_rgb: 1
+    - _OuterRadius: 0.5
+    - _OuterStrength: 1
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _Smooth: 0.2
+    - _Speed: 3.6
+    - _ZTestMode: 2
+    - __dirty: 0
+    - _dissolve2Path: 0
+    - _gra: 1
+    - _gradiant: 0
+    - _hard: 1
+    - _mask: 1
+    - _mask01: 1
+    - _mask02: 0
+    - _mu: 0
+    - _mv: 0
+    - _no_gra: 0
+    - _soft: 1
+    - _su: 0.75
+    - _sv: 1
+    - _u: 2.96
+    - _v: 1
+    - _v1: 1
+    m_Colors:
+    - _Color: {r: 0.9680982, g: 0.9411217, b: 0.9748427, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Data.EffectData;
-using static UnityEngine.Rendering.DebugUI.Table;
 
 class PacketHandler
 {
@@ -118,7 +117,6 @@ class PacketHandler
         GameObject go = Managers.Object.FindById(skillPacket.ObjectId);
         if (go == null)
         {
-            Debug.Log($"ID {skillPacket.ObjectId}를 가진 몬스터 오브젝트를 찾을 수 없습니다");
             return;
         }
 
@@ -278,14 +276,22 @@ class PacketHandler
            creature.OnHitboxCollision(mkey, tKey);
 
             PlayerController pc = creature.GetComponentInChildren<PlayerController>();
-            if (pc == null) return;
+            if (pc == null)
+                return;
 
             if (pc.Sound != null) // 테오도르 WQ skill 사운드
             {
                 if(tKey == KeyCode.Q)
-                    pc.Sound.GetEffect3D("SKILL_WQ", pc.transform.position);
+                { 
+                    pc.Sound.GetEffect3D("SKILL_WQ", pc.transform.position); 
+                }
                 else if(tKey == KeyCode.E)
-                    pc.Sound.GetEffect3D("SKILL_WE", pc.transform.position);
+                {
+                    GameObject effect = Managers.FX.Effect.FindCurrentPlayEffect(pc.Id, "FX_Skill03_Shield");
+                    if(effect)
+                        effect.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+                    pc.Sound.GetEffect3D("SKILL_WE", pc.transform.position); 
+                }
             }
         }
     }
@@ -742,7 +748,6 @@ class PacketHandler
                 {
                     pc.SetKDA(info.Kill, info.Death, info.Asist);
                     Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(pc.Id);
-                    //Debug.Log($"{pc.Id} {pc.name} K: {pc.KillAmount} D: {pc.DeathAmount} A: {pc.AsistAmount}");
                 }
             }               
         }
@@ -1085,15 +1090,11 @@ class PacketHandler
         if (!IsSceneReady("Game", () => S_ChatHandler(session, packet))) return;
         S_Chat chatPkt = packet as S_Chat;
 
-        GameObject go = Managers.Object.FindById(chatPkt.ObjectId);
-        if (go == null)
-            return;
+        //GameObject go = Managers.Object.FindById(chatPkt.ObjectId);
+        //if (go == null)
+        //    return;
 
-        ChatHandler chat = go.GetComponentInChildren<ChatHandler>();
-        if (chat == null)
-            return;
-
-        chat.EnqueueMessage(chatPkt.PlayerName, chatPkt.Message);
+        ChatHandler.Instance.EnqueueMessage(chatPkt.ObjectId, chatPkt.TeamId, chatPkt.PlayerName, chatPkt.Message, chatPkt.ChatType, chatPkt.CharType);
     }
 
     public static void S_AnimSpeedHandler(PacketSession session, IMessage packet)
@@ -1159,7 +1160,6 @@ class PacketHandler
         UI_YukiNameTag yukiNameTag = go.GetComponentInChildren<UI_YukiNameTag>();
         if (yukiNameTag == null)
         {
-            Debug.Log("null");
             return;
         }
 
@@ -1461,7 +1461,7 @@ class PacketHandler
         S_AbigailPortal abglPortal = packet as S_AbigailPortal;
         GameObject go = Managers.Object.FindById(abglPortal.ObjectId);
         if (go == null) return;
-        PlayerController pc = go.GetComponentInChildren<MyPlayerController>();
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
         if (pc == null) return;
 
         Vector3 startPos = new Vector3(abglPortal.StartX, pc.ObjInfo.PosInfo.PosY, abglPortal.StartZ);

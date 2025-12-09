@@ -1,6 +1,21 @@
 {
   "effectData": [
     {
+      "prefabName": "FX_Attack",
+      "skillType": "MsTurretAttack",
+      "attachBoneName": "Fx_Center",
+      "target": "Shot",
+      "speed" :  35,
+      "duration": 1,
+      "delayTime": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+
+    {
       "prefabName": "FX_BI_Gamma_skill02_Shot",
       "skillType": "MsGammaAttack1",
       "target": "Self",
@@ -121,6 +136,18 @@
     },
 
     {
+      "prefabName": "Omega_Appear",
+      "skillType": "MsNone",
+      "target": "Self",
+      "duration": 3.5,
+      "delayTime": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
       "prefabName": "Omega_Skill1",
       "skillType": "MsSkill1",
       "target": "Self",
@@ -194,10 +221,24 @@
       }
     },
     {
+      "prefabName": "Drone_Appear",
+      "skillType": "MsNone",
+      "attachBoneName": "Fx_Center",
+      "target": "Self",
+      "duration": 3,
+      "delayTime": 0,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
       "prefabName": "FX_Attack",
       "skillType": "MsDroneAttack1",
       "target": "Shot",
-      "duration": 0.5,
+      "speed": 40,
+      "duration": 0.15,
       "delayTime": 0,
       "position": {
         "x": 0,

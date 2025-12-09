@@ -22,7 +22,9 @@ public class UI_LevelUpButton : UI_Base
 
         _ImageComponent = gameObject.GetComponent<Image>();
         if (null == _ImageComponent)
-            Debug.Log("null : _ImageComponent");
+        {
+            //Debug.Log("null : _ImageComponent");
+        }
 
         //TODO 주소가 하드 코딩되어있음.
         _basicImg = Managers.Resource.Load<Sprite>("Sprite/Btn_LevelUp_Basic_02");

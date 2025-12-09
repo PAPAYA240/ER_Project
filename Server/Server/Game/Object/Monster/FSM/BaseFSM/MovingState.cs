@@ -42,6 +42,9 @@ namespace Server.Game
                     new PositionInfo(monster.PosInfo),
                     new RotationInfo(monster.RotInfo)
                 );
+
+                if(monster.IsAtSpawn() && monster.Target == null)
+                    monster.ChangeState(FSMManager.Instance.GetIdleState());
             }
             else if (!monster.HasPath)
             {
@@ -77,7 +80,7 @@ namespace Server.Game
         private void CalculateInitPath(Monster monster)
         {
             if (monster.ReturnToSpawn)
-                monster.SearchPath(monster._spawnPosition);
+                monster.SearchPath(monster._spawnPosition.ToVector());
 
             else if (monster.Target is Creature target)
             {

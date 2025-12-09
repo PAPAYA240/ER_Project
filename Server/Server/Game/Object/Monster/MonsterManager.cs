@@ -102,6 +102,7 @@ namespace Server.Game
                 monster.Info.RotInfo.Qw = monsterData.rotInfo.W;
 
                 MonsterType type = monsterData.monsterType;
+
                 monster.Info.Monster.MonsterType = type;
                 
                 monster.Info.Name = $"{monster.Id} {type}";

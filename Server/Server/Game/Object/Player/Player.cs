@@ -32,6 +32,7 @@ namespace Server.Game
             get { return _isDeath; }
             set { _isDeath = value; }
         }
+        public long DeadRespawnEndTick { get; set; }
 
         // Exp
         const int KillExp = 1000;
@@ -172,7 +173,7 @@ namespace Server.Game
 
         #region Yuki Privacy
         // 유키 단추용
-        private static readonly int MaxStud = 4;
+        private readonly int MaxStud = 4;
         private int _yukiStud_cnt = 4;
 
         public int YukiStud
@@ -188,6 +189,13 @@ namespace Server.Game
         {
             get { return _isAttackActive; }
             set { _isAttackActive = value; }
+        }
+
+        private bool _isStunActive = false;
+        public bool StunActive
+        {
+            get { return _isStunActive; }
+            set { _isStunActive = value; }
         }
         #endregion
 
@@ -350,7 +358,14 @@ namespace Server.Game
 
                     // 유키 단추용
                     if (Info.Player.CharType == CharacterType.Yuki)
+                    {
                         YukiStud = MaxStud;
+                        S_YukiStud yukiStudPkt = new S_YukiStud();
+                        yukiStudPkt.ObjectId = Id;
+                        yukiStudPkt.StudCnt = YukiStud;
+
+                        Room.Push(Room.Broadcast, yukiStudPkt);
+                    }
                 }
             }
 
@@ -954,9 +969,13 @@ namespace Server.Game
 
         #region Level
         private readonly object _lock = new object();
+        private readonly int _maxLevel = 20;
 
         bool CanLevelUp()
         {
+            if (Stat.Level >= _maxLevel)
+                return false;
+
             return DataManager.ExpDict.ContainsKey(Stat.Level) &&
                    Stat.Exp >= DataManager.ExpDict[Stat.Level];
         }
@@ -977,8 +996,15 @@ namespace Server.Game
                 {
                     Stat.Exp -= DataManager.ExpDict[Stat.Level];
                     Stat.Level++;
+                    if (Stat.Level > _maxLevel)
+                    {
+                        Stat.Level = _maxLevel;
+                        break;
+                    }
+
                     StatInfo statInfo = DataManager.StatGrowthDict[Info.Player.CharType];
                     Stat.AddStat(statInfo);
+
                     levelUp++;
                 }
                 return levelUp;

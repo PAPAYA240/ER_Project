@@ -75,7 +75,7 @@ public class Util
     {
         if (spriteSheet == null)
         {
-            Debug.LogError("No sprite sheet");
+            //Debug.LogError("No sprite sheet");
             return null;
         }
 

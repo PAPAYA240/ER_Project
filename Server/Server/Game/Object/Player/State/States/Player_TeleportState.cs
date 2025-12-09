@@ -1,12 +1,13 @@
-﻿using Google.Protobuf.Protocol;
+﻿using System;
+using System.Collections.Generic;
+using System.Numerics;
+using System.Text;
+using Google.Protobuf.Protocol;
 using Google.Protobuf.WellKnownTypes;
 using NUnit.Framework.Interfaces;
 using Server.Data;
 using Server.Game;
-using System;
-using System.Collections.Generic;
-using System.Numerics;
-using System.Text;
+using static Server.Game.GameObject;
 
 
 public class Player_TeleportState : IPlayerState
@@ -47,6 +48,11 @@ public class Player_TeleportState : IPlayerState
             player.PosInfo.MergeFrom(player.Room.Teleport.GetTeleportPoint(player).ToPositionInfo());
             player.SendChangeTransformPacket(true);
             player.ChangeState(new Player_IdleState());
+
+            StatusEffect se = new StatusEffect();
+            se.type = "Untargetable";
+            se.duration = 1f;
+            player.AddStatusEffect(se);
         }
     }
 

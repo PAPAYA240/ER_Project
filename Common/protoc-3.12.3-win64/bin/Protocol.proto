@@ -399,7 +399,8 @@ enum SkillEffectType {
 	W_Flower = 6;
 	W_EFFECT = 7;
 	E_Wind = 8;
-	WpSkill = 9;
+	E_Attack = 9;
+ 	WpSkill = 10;
 }
 
 enum SpawnPointType
@@ -493,6 +494,11 @@ enum Slot{
 	Slot_Empty = 0;
 	Slot_Player = 1;
 	Slot_Other = 2;
+}
+
+enum ChatType {
+	All = 0;
+	Team = 1;
 }
 
 message S_TheodoreAttack
@@ -1191,12 +1197,16 @@ message C_Chat {
 	int32 objectId = 1;
 	string playerName = 2;
 	string message = 3;
+	ChatType chatType = 4;
 }
 
 message S_Chat {
 	int32 objectId = 1;
-	string playerName = 2;
-	string message = 3;
+	int32 teamId = 2;
+	string playerName = 3;
+	string message = 4;
+	ChatType chatType = 5;
+	CharacterType charType = 6;
 }
 
 message S_Unstoppable{

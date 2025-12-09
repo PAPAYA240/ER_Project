@@ -58,8 +58,6 @@ public class Yuki_AttackState : Player_AttackState
         }
 
         p.SendAnimPacket(animName, 0.05f, p.AttackSpeed, true);
-
-        p.AttackActive = false;
     }
 
     protected override void ApplyHit(Player p, GameObject target)
@@ -79,7 +77,7 @@ public class Yuki_AttackState : Player_AttackState
                 desc.EndPos = target.Position;
                 desc.Duration = 1f;
                 desc.Speed = 0f;
-
+                room.Push(room.AttackSkillTarget, p, target, _keyCode);
                 targetPlayer.ChangeState(new Player_StunState(desc));
             }
 
@@ -102,6 +100,7 @@ public class Yuki_AttackState : Player_AttackState
             room.Push(target.OnDamaged, p, 40f + (p.Attack * 0.4f), true, false);
         }
 
+        p.AttackActive = false;
         // 평타 데미지
         room.Push(target.OnDamaged, p, p.Attack, false, true);
     }

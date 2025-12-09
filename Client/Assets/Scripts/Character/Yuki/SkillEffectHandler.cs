@@ -34,6 +34,7 @@ public class SkillEffectHandler
             RegisterEffect(SkillEffectType.WEffect, player, "Effect/Yuki/Yuki_SkillW");
             RegisterEffect(SkillEffectType.EWind, player, "Effect/Yuki/Yuki_Skill_Wind");
             RegisterEffect(SkillEffectType.WpSkill, player, "Effect/Yuki/Yuki_WeaponSkill");
+            RegisterEffect(SkillEffectType.EAttack, player, "Effect/Yuki/Yuki_SkillE_Attack");
             RegisterEffectBone(SkillEffectType.QBuff, player, "Effect/Yuki/Yuki_SkillQ_Buff", "Fx_Hand_R");
 
             // ���� ���� Ŀ���� Fx Ŭ����
@@ -43,8 +44,9 @@ public class SkillEffectHandler
 
             (_effectMap[GetFxKey(SkillEffectType.EWind)] as MonoBehaviour).transform.localPosition = Vector3.zero;
             (_effectMap[GetFxKey(SkillEffectType.QBuff)] as MonoBehaviour).transform.localPosition = Vector3.zero;
-            (_effectMap[GetFxKey(SkillEffectType.RAttack)] as MonoBehaviour).transform.localPosition = new Vector3(0, 1f, 0);
-            (_effectMap[GetFxKey(SkillEffectType.QAttack)] as MonoBehaviour).transform.localPosition = new Vector3(0, 1f, 1f);
+            (_effectMap[GetFxKey(SkillEffectType.RAttack)] as MonoBehaviour).transform.localPosition = new Vector3(0f, 1f, 0f);
+            (_effectMap[GetFxKey(SkillEffectType.QAttack)] as MonoBehaviour).transform.localPosition = new Vector3(0f, 1f, 1f);
+            (_effectMap[GetFxKey(SkillEffectType.EAttack)] as MonoBehaviour).transform.localPosition = new Vector3(0f, 2f, 0f);
         }
         else if(player.ObjInfo.Player.CharType == CharacterType.Abigail)
         {

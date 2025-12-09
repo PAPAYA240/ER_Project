@@ -4,18 +4,16 @@ using Server.Game;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using static Server.Game.GameObject;
 
 public class Player_DeadState : IPlayerState
 {
     public void Enter(Player player)
     {
         player.SendAnimPacket("DEAD", 0.1f);
-
         player.SendStopPacket(StopReason.StopMoveOnly);
 
         player.RemoveAllStatusEffects();
-
-        //UI
 
         RespawnTime(player);
 
@@ -25,11 +23,19 @@ public class Player_DeadState : IPlayerState
 
     public void Execute(Player player)
     {
-
+        if (TimeUtil.Instance.IsPastOrNow(player.DeadRespawnEndTick))
+        {
+            DoRespawn(player);
+            return;
+        }
     }
 
     public void Exit(Player player)
     {
+        StatusEffect se = new StatusEffect();
+        se.type = "Untargetable";
+        se.duration = 1f;
+        player.AddStatusEffect(se);
     }
 
     void RespawnTime(Player player)
@@ -38,21 +44,18 @@ public class Player_DeadState : IPlayerState
         diePacket.ObjectId = player.Id;
         diePacket.AttackerId = player.GetLastAttackerId();
 
-        diePacket.RespawnTime = DataManager.RespawnDict[player.Stat.Level];
-        _ = CoRespawnTime(player, diePacket.RespawnTime, respawnAtZero: false);
+        float respawnSec = DataManager.RespawnDict[player.Stat.Level];
+        diePacket.RespawnTime = respawnSec;
+
+        long start = TimeUtil.Instance.LastTick;
+        long end = unchecked(start + (int)(respawnSec * 1000));
+        player.DeadRespawnEndTick = end;
 
         player.Room.Push(player.Room.Broadcast, diePacket);
     }
 
-    private async Task CoRespawnTime(Player player, float respawnTime, bool respawnAtZero = true)
+    private void DoRespawn(Player player)
     {
-        var sw = Stopwatch.StartNew();
-
-        while (sw.Elapsed.TotalSeconds < respawnTime)
-        {
-            await Task.Delay(10); // 0.01초마다 남은 쿨타임 갱신
-        }
-
         if (player.Room == null)
             return;
 
@@ -63,30 +66,9 @@ public class Player_DeadState : IPlayerState
         respawnPacket.Hp = player.Hp = player.MaxHp;
         respawnPacket.Stamina = player.Stamina = player.MaxStamina;
 
-        if (true == respawnAtZero)
-        {
-            respawnPacket.PosInfo = new PositionInfo
-            {
-                PosX = 0,
-                PosY = 0,
-                PosZ = 0
-            };
-            respawnPacket.RotInfo = new RotationInfo
-            {
-                Qx = 0,
-                Qy = 0,
-                Qz = 0,
-                Qw = 1
-            };
-
-            player.Info.PosInfo = new PositionInfo(respawnPacket.PosInfo);
-            player.Info.RotInfo = new RotationInfo(respawnPacket.RotInfo);
-        }
-        else
-        {
-            respawnPacket.PosInfo = player.Room.Spawn.GetSpawnPoint(player.Team).ToPositionInfo();
-            respawnPacket.RotInfo = player.Info.RotInfo;
-        }
+        // 스폰 포인트
+        respawnPacket.PosInfo = player.Room.Spawn.GetSpawnPoint(player.Team).ToPositionInfo();
+        respawnPacket.RotInfo = player.Info.RotInfo;
 
         player.SendDeadPacket(respawnPacket);
 

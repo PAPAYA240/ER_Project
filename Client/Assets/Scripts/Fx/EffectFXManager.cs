@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
 using static Data.EffectData;
-using static UnityEngine.Rendering.DebugUI.Table;
 
 public class EffectFXManager : MonoBehaviour
 {
@@ -63,14 +62,12 @@ public class EffectFXManager : MonoBehaviour
             GameObject fxPrefab = GetFxPrefab(ownerId, data.prefabName, isCommon);
             if(fxPrefab == null)
             {
-                Debug.LogWarning($"FX Prefab not found: {data.prefabName}");
                 continue;
             }
 
             GameObject fxObject = Managers.FX.Pop(fxPrefab, null);
             if (fxObject == null)
             {
-                Debug.LogError($"Failed to pop FX from pool: {data.prefabName}");
                 continue;
             }
 
@@ -174,18 +171,17 @@ public class EffectFXManager : MonoBehaviour
             if (objectType == GameObjectType.Monster)
             {
                 MonsterController mc = bc as MonsterController;
-                StartCoroutine(ControlEffect(fxObject, mc.GetTargetForwardVector(), data.duration));
+                StartCoroutine(ControlEffect(fxObject, mc.GetTargetForwardVector(), data.duration, data.speed));
             }
             else
-                StartCoroutine(ControlEffect(fxObject, casterTransform.forward, data.duration));
+                StartCoroutine(ControlEffect(fxObject, casterTransform.forward, data.duration, data.speed));
         }
     }
 
     #region Shooting
-    IEnumerator ControlEffect(GameObject effect, Vector3 forwardTrans, float duration)
+    IEnumerator ControlEffect(GameObject effect, Vector3 forwardTrans, float duration, float moveSpeed = 20.0f)
     {
         float timer = 0f;
-        float moveSpeed = 20f;
 
         while (timer < duration)
         {
@@ -219,7 +215,6 @@ public class EffectFXManager : MonoBehaviour
         }
 
         Managers.FX.Push(effect);
-
         //effect?.transform.SetParent(null);
     }
 
@@ -466,7 +461,7 @@ public class EffectFXManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        Clear();
+        //Clear();
     }
     #endregion
 

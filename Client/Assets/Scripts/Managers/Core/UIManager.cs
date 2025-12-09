@@ -100,7 +100,7 @@ public class UIManager
 
         if (_popupStack.Peek() != popup)
         {
-            Debug.Log("Close Popup Failed!");
+            //Debug.Log("Close Popup Failed!");
             return;
         }
 
@@ -128,5 +128,21 @@ public class UIManager
     {
         CloseAllPopupUI();
         _sceneUI = null;
+    }
+
+    public Transform RootCanvasTransform
+    {
+        get
+        {
+            GameObject rootGo = Root; 
+            Canvas rootCanvas = rootGo.GetComponent<Canvas>();
+
+            if (rootCanvas == null)
+            {
+                rootCanvas = rootGo.AddComponent<Canvas>();
+                rootCanvas.renderMode = RenderMode.ScreenSpaceOverlay; 
+            }
+            return rootGo.transform;
+        }
     }
 }

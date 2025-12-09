@@ -212,7 +212,6 @@ public class PlayerController : CreatureController
     // 화살
     protected Transform _equipTransform = null;
 
-    public bool IsHide = false;
     #region KDA
 
     public int KillAmount { get; private set; } = 0; 
@@ -289,8 +288,8 @@ public class PlayerController : CreatureController
         YukiEffects.InitEffects(this);
 
         // Chat
-        GameObject goChat = Managers.Resource.Instantiate("UI/Chat/ChatBackground");
-        goChat.transform.SetParent(gameObject.transform);
+        //GameObject goChat = Managers.Resource.Instantiate("UI/Chat/ChatBackground");
+        //goChat.transform.SetParent(gameObject.transform);
 
         // 장비 슬롯
         InitEquipItem();
@@ -682,14 +681,14 @@ public class PlayerController : CreatureController
 
         if (null == go)
         {
-            Debug.Log("go is null : InitNameTag()");
+            //Debug.Log("go is null : InitNameTag()");
             return;
         }
 
         _nameTag = go.GetComponentInChildren<UI_PlayerNameTag>();
         if (null == _nameTag)
         {
-            Debug.Log("_nameTag is null : InitNameTag()");
+            //Debug.Log("_nameTag is null : InitNameTag()");
             return;
         }
 
@@ -1130,9 +1129,6 @@ public class PlayerController : CreatureController
             {
                 // AbigailWeapon의 자식에서 Animator 찾기
                 _weaponAnimator = weaponTransform.GetComponentInChildren<Animator>();
-
-                if (_weaponAnimator == null)
-                    Debug.LogWarning("AbigailWeapon 자식에서 Animator를 찾을 수 없습니다.");
             }
         }
     }

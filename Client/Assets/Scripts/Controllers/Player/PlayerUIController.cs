@@ -351,7 +351,7 @@ public class PlayerUIController : MonoBehaviour
 
         if (!_skillDict.TryGetValue(keyCode, out skillBase))
         {
-            Debug.Log($"Skill을 찾을 수 없음 : {keyCode}");
+            //Debug.Log($"Skill을 찾을 수 없음 : {keyCode}");
             return null;
         }
 

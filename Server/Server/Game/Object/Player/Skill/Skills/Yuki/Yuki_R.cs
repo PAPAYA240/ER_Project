@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.Protocol;
 using Server.Game;
 using static Server.Data.DataUtils;
+using static Server.Game.GameObject;
 
 public sealed class Yuki_R : SkillHandlerBase
 {
@@ -20,6 +21,15 @@ public sealed class Yuki_R : SkillHandlerBase
         p.LookAtMouse(ctx.MousePos);
 
         p.SendYukiSkillEffect(SkillEffectType.RRange);
+
+        Skill skill = p.GetSkill(KeyCode.R);
+
+        StatusEffect statusEffectUnstoppable = new StatusEffect();
+        statusEffectUnstoppable.type = skill.SkillData.levels[skill.CurLevel].effects[0].type;
+        statusEffectUnstoppable.duration = skill.SkillData.levels[skill.CurLevel].effects[0].duration;
+        if (!System.Enum.TryParse<Subject>(skill.SkillData.levels[skill.CurLevel].effects[0].subject, out statusEffectUnstoppable.subject))
+            return;
+        p.AddStatusEffect(statusEffectUnstoppable);
 
         p.Room.Push(p.Room.BroadcastAbigailSound, p, AbigailSound.YukiRactive, 1f);
     }

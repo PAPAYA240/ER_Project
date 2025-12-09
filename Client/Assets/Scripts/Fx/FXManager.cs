@@ -3,7 +3,6 @@ using Data;
 using Google.Protobuf.Protocol;
 using System.Collections.Generic;
 using System.Collections;
-using static UnityEngine.Rendering.DebugUI.Table;
 
 
 public class FXManager : MonoBehaviour
@@ -104,12 +103,17 @@ public class FXManager : MonoBehaviour
     private Transform _poolRoot;
     public void CreatePool(GameObject prefab, int initialSize)
     {
-        if (prefab == null) return;
+        if (prefab == null) 
+            return;
 
         int prefabId = prefab.GetInstanceID();
-        if (_pools.ContainsKey(prefabId)) return;
+        if (_pools.ContainsKey(prefabId)) 
+            return;
 
         GameObject poolRoot = new GameObject($"Pool_{prefab.name}");
+        if (poolRoot == null)
+            return;
+
         poolRoot.transform.SetParent(_poolRoot);
 
         Pool pool = new Pool

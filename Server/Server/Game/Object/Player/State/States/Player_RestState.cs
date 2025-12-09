@@ -1,12 +1,7 @@
 ﻿using Google.Protobuf.Protocol;
-using Google.Protobuf.WellKnownTypes;
 using Server.Data;
 using Server.Game;
 using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Numerics;
-using System.Text;
 
 public class Player_RestState : IPlayerState
 {
@@ -34,13 +29,21 @@ public class Player_RestState : IPlayerState
             player.IsHit = false;
 
             if (player.Info.Player.CharType == CharacterType.Abigail)
+            {
                 player.Room.Push(player.Room.BroadcastAbigailSound, player, AbigailSound.Rest, 1f);
+                player.Room.Push(player.Room.BroadcastAbigailFx, player, AbigailFx.RestStart, 0f);
+            }
+                
             else if (player.Info.Player.CharType == CharacterType.Yuki)
                 player.Room.Push(player.Room.BroadcastAbigailSound, player, AbigailSound.YukiRest, 1f);
         }
         else
         {
             _animName = "REST_END";
+            if (player.Info.Player.CharType == CharacterType.Abigail)
+            {
+                player.Room.Push(player.Room.BroadcastAbigailFx, player, AbigailFx.RestEnd, 0f);
+            }
         }
 
         player.SendAnimPacket(_animName, 0.1f);

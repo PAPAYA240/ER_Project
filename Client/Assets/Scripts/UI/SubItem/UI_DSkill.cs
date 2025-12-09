@@ -126,7 +126,7 @@ public class UI_DSkill : UI_SkillBase
         Sprite sprite = Managers.Resource.Load<Sprite>(path);
         if (sprite == null)
         {
-            Debug.Log($"null : {path}");
+            //Debug.Log($"null : {path}");
             return;
         }
         GetButton((int)Buttons.SkillButton).image.sprite = sprite;
