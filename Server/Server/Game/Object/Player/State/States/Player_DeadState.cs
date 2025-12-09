@@ -8,9 +8,6 @@ using static Server.Game.GameObject;
 
 public class Player_DeadState : IPlayerState
 {
-    private bool _hasRespawnTime = false;
-    private float _respawnTime = 0;
-
     public void Enter(Player player)
     {
         player.SendAnimPacket("DEAD", 0.1f);
