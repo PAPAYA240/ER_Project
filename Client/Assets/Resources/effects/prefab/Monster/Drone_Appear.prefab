@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4684539913072926}
   - component: {fileID: 198238932669429967}
   - component: {fileID: 199213889680478416}
+  - component: {fileID: 114780377398674995}
   m_Layer: 15
   m_Name: smoke
   m_TagString: Untagged
@@ -2329,6 +2330,19 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &114780377398674995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1093407084058667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59c3ad779e6d89127faf311a41099091, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: -3000000
 --- !u!1 &1308997214729040
 GameObject:
   m_ObjectHideFlags: 0
@@ -2341,6 +2355,7 @@ GameObject:
   - component: {fileID: 198407450531626058}
   - component: {fileID: 199203010336978041}
   - component: {fileID: 135934334778176522}
+  - component: {fileID: 114489428145164618}
   m_Layer: 15
   m_Name: Drone_Appear
   m_TagString: Untagged
@@ -4659,6 +4674,19 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114489428145164618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308997214729040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36cbf226ee13bccfdee14097ee974fb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  time: 1.5
 --- !u!1 &1317168033003801
 GameObject:
   m_ObjectHideFlags: 0

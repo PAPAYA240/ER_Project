@@ -29,7 +29,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
@@ -55,6 +55,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _DetailNormalMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DissolveTex:
+        m_Texture: {fileID: 2800000, guid: f23b6e7c9313f0b40bcd75a1886aa06c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
@@ -116,6 +120,8 @@ Material:
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DissolveAmount: 0
+    - _DissolveDuration: 1.1
+    - _DissolveScale: 3
     - _DissolveTime: 1
     - _DissolveWidth: 0.1
     - _DstBlend: 0
@@ -123,12 +129,14 @@ Material:
     - _EdgeIntensity: 2
     - _EdgeWidth: 0.05
     - _EnvironmentReflections: 1
+    - _FlowSpeed: 0.1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _MaskCutoff: 0.5
     - _Metallic: 0
-    - _NoiseScale: 1
+    - _NoiseIntensity: 0.44
+    - _NoiseScale: 2
     - _NoiseSpeed: 1
     - _NoiseStrength: 1
     - _OcclusionStrength: 1
@@ -140,6 +148,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
+    - _StartTime: 0
     - _Surface: 0
     - _TimeScale: 1
     - _UVScale: 1
