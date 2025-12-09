@@ -1003,7 +1003,7 @@ namespace Server.Game
                     case "Healing":
                         return "Debuff_HealedDecrease";
                     case "Defense":
-                        return "Debuff_Defense";
+                        return "Debuff_DefenseDecrease";
                 }
             }
 

@@ -68,9 +68,6 @@ public class PlayerController : CreatureController
     // Ping
     public PingController Ping { get; private set; }
 
-    // Buff
-    private PlayerBuffUI BuffUI;
-
     #region Property
     public override float Attack
     {
@@ -322,10 +319,6 @@ public class PlayerController : CreatureController
 
         // Ping
         Ping = new PingController(this);
-
-        // Buff Icon
-        BuffUI = gameObject.GetOrAddComponent<PlayerBuffUI>();
-        BuffUI.transform.SetParent(gameObject.transform);
     }
 
     private void InitEquipItem()

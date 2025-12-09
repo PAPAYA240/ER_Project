@@ -111,17 +111,10 @@ public class EffectFXManager : MonoBehaviour
             }
             else if (data.target == EEffectTarget.TargetUI)
             {
-                //Transform followTarget = casterTransform;
-                //fxObject.transform.position = spawnPos;
-                //Quaternion fixedRot = Quaternion.identity;
-                //fxObject.transform.rotation = fixedRot;
-
-                var follow = fxObject.GetOrAddComponent<BuffUIFollower>();
+                var follow = fxObject.GetOrAddComponent<FX_Follower>();
                 if (follow == null)
                     return null;
 
-                // data.position 을 world offset으로 쓰고 싶으면
-                // follow.Setup(followTarget, data.position, fixedRot, faceCamera: false);
                 follow.SetTarget(casterTransform);
             }
             else

@@ -591,7 +591,16 @@
             {
               "prefabName": "FX_Common_Debuff_HealedDecrease",
               "target": "TargetUI",
-              "duration": 3           
+              "duration": 3
+            }
+          ]
+        },
+        "Debuff_DefenseDecrease": {
+          "Caster": [
+            {
+              "prefabName": "FX_BI_DefenseDecrease",
+              "target": "TargetUI",
+              "duration": 3
             }
           ]
         }
