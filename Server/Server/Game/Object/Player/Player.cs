@@ -189,6 +189,13 @@ namespace Server.Game
             get { return _isAttackActive; }
             set { _isAttackActive = value; }
         }
+
+        private bool _isStunActive = false;
+        public bool StunActive
+        {
+            get { return _isStunActive; }
+            set { _isStunActive = value; }
+        }
         #endregion
 
         #region Rozzi Privacy

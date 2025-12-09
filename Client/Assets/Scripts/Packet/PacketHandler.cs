@@ -1089,11 +1089,11 @@ class PacketHandler
         if (!IsSceneReady("Game", () => S_ChatHandler(session, packet))) return;
         S_Chat chatPkt = packet as S_Chat;
 
-        GameObject go = Managers.Object.FindById(chatPkt.ObjectId);
-        if (go == null)
-            return;
+        //GameObject go = Managers.Object.FindById(chatPkt.ObjectId);
+        //if (go == null)
+        //    return;
 
-        ChatHandler.Instance.EnqueueMessage(chatPkt.PlayerName, chatPkt.Message, chatPkt.ChatType, chatPkt.CharType);
+        ChatHandler.Instance.EnqueueMessage(chatPkt.ObjectId, chatPkt.PlayerName, chatPkt.Message, chatPkt.ChatType, chatPkt.CharType);
     }
 
     public static void S_AnimSpeedHandler(PacketSession session, IMessage packet)

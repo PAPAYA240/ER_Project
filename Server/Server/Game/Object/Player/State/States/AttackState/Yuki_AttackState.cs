@@ -58,8 +58,6 @@ public class Yuki_AttackState : Player_AttackState
         }
 
         p.SendAnimPacket(animName, 0.05f, p.AttackSpeed, true);
-
-        p.AttackActive = false;
     }
 
     protected override void ApplyHit(Player p, GameObject target)
@@ -75,6 +73,7 @@ public class Yuki_AttackState : Player_AttackState
 
             if (targetPlayer != null && !targetPlayer.IsUnstoppable() && !targetPlayer.IsDead)
             {
+                Console.WriteLine("타겟 스턴");
                 StunStateDesc desc = new StunStateDesc();
                 desc.EndPos = target.Position;
                 desc.Duration = 1f;
@@ -102,6 +101,7 @@ public class Yuki_AttackState : Player_AttackState
             room.Push(target.OnDamaged, p, 40f + (p.Attack * 0.4f), true, false);
         }
 
+        p.AttackActive = false;
         // 평타 데미지
         room.Push(target.OnDamaged, p, p.Attack, false, true);
     }

@@ -139,9 +139,6 @@ public class MyPlayerController : PlayerController
             }
         }  
 
-        if (ChatHandler.IsChatting)
-            return;
-
         // 2) 정지(S/H)
         var stopCmd = _input.GetStopCommand();
         if (stopCmd != null)
