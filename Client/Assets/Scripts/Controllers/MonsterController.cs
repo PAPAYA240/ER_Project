@@ -101,8 +101,8 @@ public class MonsterController : CreatureController
         RotInfo = _targetRotation;
         rotationTarget.rotation = Quaternion.Slerp(rotationTarget.rotation, _targetRotation, Time.deltaTime * _rotationSpeed);
 
-        if(Type == MonsterType.Omega)
-            Debug.Log($"{rotationTarget.rotation }");
+        //if(Type == MonsterType.Omega)
+        //    Debug.Log($"{rotationTarget.rotation }");
     }
 
     private void MeshDebug()

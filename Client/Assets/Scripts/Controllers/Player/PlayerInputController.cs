@@ -244,19 +244,22 @@ public class PlayerInputController : MonoBehaviour
                 return null;
 
             // 사거리 안이면 즉시 상호작용 패킷 전송
-            if (clickedIo.IsPlayerInside && clickedIo.IsUsable)
+            if (clickedIo.IsPlayerInside)
             {
-                _activeDeployingLoop = clickedIo;
-                _activeDeployingLoop.Begin();
-                return new C_DeployingLoop
+                if(clickedIo.IsUsable)
                 {
-                    ObjectId = _player.Id,
-                    IoPos = clickedIo.GetLookTargetPosition(),
-                };
+                    _activeDeployingLoop = clickedIo;
+                    _activeDeployingLoop.Begin();
+                    return new C_DeployingLoop
+                    {
+                        ObjectId = _player.Id,
+                        IoPos = clickedIo.GetLookTargetPosition(),
+                    };
+                }
+                else
+                    _player.UI.ActionNotReady.Show(DeployingLoop_Desc_NotReady);
             }
-            else
-                _player.UI.ActionNotReady.Show(DeployingLoop_Desc_NotReady);
-
+                         
             // 사거리 밖이면 : 도착 후 자동 상호작용을 위해 pending 으로 기록만 해 둠
             _pendingDeployingLoop = clickedIo;
             return null;
