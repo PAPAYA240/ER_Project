@@ -174,8 +174,8 @@ namespace Server.Game
         {
             if (CheckTeam(attacker))
                 return;
-
-            if (State == CreatureState.Dead)
+            Player player = Target as Player;
+            if (player.CurrentState is Player_DeadState)
                 return;
 
             base.OnDamaged(attacker, damage, isBasicAttack);
@@ -276,8 +276,8 @@ namespace Server.Game
 
             if (Target == null)
                 return true;
-
-            if (Target != null && Target.State == CreatureState.Dead)
+            Player player = Target as Player;
+            if (Target != null && player?.CurrentState is Player_DeadState)
                 return true;
 
             return false;

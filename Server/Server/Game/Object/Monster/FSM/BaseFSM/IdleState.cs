@@ -7,7 +7,6 @@ namespace Server.Game
 {
     public class IdleState : IMonsterState
     {
-        private long _nextSearchTick = 0;
         private float _delayTimer = 0;
 
         public void Enter(Monster monster)
@@ -67,7 +66,6 @@ namespace Server.Game
     
         public void Exit(Monster monster)
         {
-            _nextSearchTick = 0;
             _delayTimer = 0;
         }
         public void OnHit(Monster monster, Creature target) { }
