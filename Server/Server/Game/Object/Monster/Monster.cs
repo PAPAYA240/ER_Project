@@ -74,7 +74,6 @@ namespace Server.Game
         bool _appeared = false;
         public override void Update()
         {
-   
             if (Room != null && _appeared == false)
             {
                 ChangeState(FSMManager.Instance.GetAppearState());
@@ -84,7 +83,8 @@ namespace Server.Game
 
             if (Target != null)
             {
-                if (Target.State == CreatureState.Dead)
+                Player player = Target as Player;
+                if (player.CurrentState is Player_DeadState)
                 {
                     Target = null;
                     ChangeState(FSMManager.Instance.GetIdleState());
@@ -174,8 +174,8 @@ namespace Server.Game
         {
             if (CheckTeam(attacker))
                 return;
-
-            if (State == CreatureState.Dead)
+            Player player = Target as Player;
+            if (player.CurrentState is Player_DeadState)
                 return;
 
             base.OnDamaged(attacker, damage, isBasicAttack);
@@ -212,6 +212,8 @@ namespace Server.Game
 
             if (DataManager.MonsterSkillDict.TryGetValue(skillName, out MonsterSkillData skillData) == false)
                 return null;
+
+            CurrentSkill = skillData.skillType;
 
             return skillData;
         }
@@ -274,8 +276,8 @@ namespace Server.Game
 
             if (Target == null)
                 return true;
-
-            if (Target != null && Target.State == CreatureState.Dead)
+            Player player = Target as Player;
+            if (Target != null && player?.CurrentState is Player_DeadState)
                 return true;
 
             return false;
@@ -313,7 +315,6 @@ namespace Server.Game
             if (skillData != null)
             {
                 statePacket.Skilltype = skillData.skillType;
-                CurrentSkill = skillData.skillType;
             }
 
             Room?.Broadcast(statePacket);

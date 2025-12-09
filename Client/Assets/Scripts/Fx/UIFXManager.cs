@@ -9,7 +9,9 @@ public class UIFXManager : MonoBehaviour
         [CharacterType.Theodore] = "Prefabs/UI/Character/Theodore/FX_BI_Theodore_Skill03_Target_Mark"
     };
 
-    private Dictionary<int, List<GameObject>> currentlyPlayingMarks = new Dictionary<int, List<GameObject>>();
+    private Dictionary<int, Dictionary<CharacterType, GameObject>> currentlyPlayingMarks =
+        new Dictionary<int, Dictionary<CharacterType, GameObject>>();
+
     public void Init()
     {
         foreach (var pair in _statusMarkEffectPaths)
@@ -22,87 +24,108 @@ public class UIFXManager : MonoBehaviour
 
     public void PlayStatusEffect(GameObject target, CharacterType charType, float duration)
     {
-        if (target == null || !_statusMarkEffectPaths.ContainsKey(charType)) 
+        if (target == null || !_statusMarkEffectPaths.ContainsKey(charType))
             return;
 
         string prefabPath = _statusMarkEffectPaths[charType];
         GameObject prefab = Managers.Resource.Load<GameObject>(prefabPath);
-        if (prefab == null) 
+        if (prefab == null)
             return;
 
+        // 기존 같은 타입 이펙트 중지
         StopStatusEffect(target, charType);
 
-        GameObject fxObject = Managers.FX.Pop(prefab, target.transform);
+        GameObject fxObject = Managers.FX.Pop(prefab, null);
+
         if (fxObject == null)
-        { 
+        {
             Managers.FX.CreatePool(prefab, 1);
-            fxObject = Managers.FX.Pop(prefab, target.transform);
+            fxObject = Managers.FX.Pop(prefab, null);
             if (fxObject == null)
-            {
-                //Debug.LogError($"UIFXManager: Failed to pop poolable for {prefabPath}");
                 return;
-            }
         }
 
-        UI_TargetingMark mark = fxObject.GetOrAddComponent<UI_TargetingMark>();
-        if (!currentlyPlayingMarks.ContainsKey(target.GetInstanceID()))
+        fxObject.transform.position = target.transform.position;
+        fxObject.transform.rotation = Quaternion.identity;
+        fxObject.transform.localScale = Vector3.one;
+
+        UI_TargetingMark mark = fxObject.GetComponentInChildren<UI_TargetingMark>();
+
+        if (mark == null)
         {
-            currentlyPlayingMarks[target.GetInstanceID()] = new List<GameObject>();
+            Managers.FX.Push(fxObject);
+            return;
         }
-        currentlyPlayingMarks[target.GetInstanceID()].Add(fxObject);
+
+        int targetId = target.GetInstanceID();
+
+        // Dictionary 구조 초기화
+        if (!currentlyPlayingMarks.ContainsKey(targetId))
+        {
+            currentlyPlayingMarks[targetId] = new Dictionary<CharacterType, GameObject>();
+        }
+
+        currentlyPlayingMarks[targetId][charType] = fxObject;
 
         mark.Show(target, duration, () => {
-            if (currentlyPlayingMarks.ContainsKey(target.GetInstanceID()))
+            // 콜백에서 풀로 반환
+            if (currentlyPlayingMarks.ContainsKey(targetId) &&
+                currentlyPlayingMarks[targetId].ContainsKey(charType))
             {
-                currentlyPlayingMarks[target.GetInstanceID()].Remove(fxObject);
-                Managers.FX.Push(fxObject);
+                currentlyPlayingMarks[targetId].Remove(charType);
+                if (currentlyPlayingMarks[targetId].Count == 0)
+                    currentlyPlayingMarks.Remove(targetId);
             }
+            Managers.FX.Push(fxObject);
         });
     }
 
-    public void StopStatusEffect(GameObject target, CharacterType effectName)
+    public void StopStatusEffect(GameObject target, CharacterType charType)
     {
-        if (currentlyPlayingMarks.TryGetValue(target.GetInstanceID(), out List<GameObject> effectList))
+        int targetId = target.GetInstanceID();
+
+        if (currentlyPlayingMarks.TryGetValue(targetId, out var effectDict))
         {
-            GameObject markToStop = null;
-            string targetName = effectName.ToString();
-
-            foreach (GameObject mark in effectList)
+            if (effectDict.TryGetValue(charType, out GameObject markObject))
             {
-                if (mark.name.Replace("(Clone)", "") == targetName)
-                {
-                    markToStop = mark;
-                    break;
-                }
-            }
+                UI_TargetingMark mark = markObject.GetComponentInChildren<UI_TargetingMark>();
+                mark?.Hide();
 
-            if (markToStop != null)
-            {
-                markToStop.GetComponent<UI_TargetingMark>()?.Hide();
+                effectDict.Remove(charType);
+                if (effectDict.Count == 0)
+                    currentlyPlayingMarks.Remove(targetId);
 
-                currentlyPlayingMarks[target.GetInstanceID()].Remove(markToStop);
-                Managers.FX.Push(markToStop);
+                Managers.FX.Push(markObject);
             }
         }
     }
 
-    // 특정 타겟의 모든 마크를 강제로 중지 및 정리
-    public void RemoveAllMarks(int ownerId)
+    public void RemoveAllMarks(int targetId)
     {
-        if (currentlyPlayingMarks.TryGetValue(ownerId, out List<GameObject> effectList))
+        if (currentlyPlayingMarks.TryGetValue(targetId, out var effectDict))
         {
-            foreach (GameObject mark in new List<GameObject>(effectList))
+            foreach (var pair in new Dictionary<CharacterType, GameObject>(effectDict))
             {
-                mark.GetComponent<UI_TargetingMark>()?.Hide();
-                Managers.FX.Push(mark);
+                UI_TargetingMark mark = pair.Value.GetComponentInChildren<UI_TargetingMark>();
+                mark?.Hide();
+                Managers.FX.Push(pair.Value);
             }
-            effectList.Clear();
-            currentlyPlayingMarks.Remove(ownerId);
+            effectDict.Clear();
+            currentlyPlayingMarks.Remove(targetId);
         }
     }
 
     public void Clear()
     {
+        foreach (var targetDict in currentlyPlayingMarks.Values)
+        {
+            foreach (var markObject in targetDict.Values)
+            {
+                UI_TargetingMark mark = markObject.GetComponentInChildren<UI_TargetingMark>();
+                mark?.Hide();
+                Managers.FX.Push(markObject);
+            }
+        }
         currentlyPlayingMarks.Clear();
     }
 }

@@ -18,7 +18,7 @@ public class NetworkManager
 
 	public void Init()
 	{
-		// DNS (Domain Name System)
+        // DNS (Domain Name System)
 
         //IPAddress ipAddr = IPAddress.Loopback;
         IPAddress ipAddr = IPAddress.Parse("129.154.59.53"); // Public IP
