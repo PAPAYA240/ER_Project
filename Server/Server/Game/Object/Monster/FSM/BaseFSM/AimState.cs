@@ -50,7 +50,8 @@ namespace Server.Game
                     _initialDirection = Vector3.Normalize(_initialDirection);
             }
 
-            if (monster.Info.Monster.MonsterType == MonsterType.Turret)
+            if (monster.Info.Monster.MonsterType == MonsterType.Drone ||
+                monster.Info.Monster.MonsterType == MonsterType.Turret)
             {
                 float damage = monster.CalcDamage(monster, monster.Target);
                 monster.Target.Room.Push(monster.Target.OnDamaged, monster, damage, false, false);

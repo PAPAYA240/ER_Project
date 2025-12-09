@@ -183,21 +183,6 @@ public class MyPlayerController : PlayerController
         CheckUpdatedFlag();
     }
 
-    protected override void UpdateCharging()
-    {
-        if (_agent == null || !_agent.isOnNavMesh)
-            return;
-        //if (_agent.remainingDistance <= _agent.stoppingDistance)
-        //{
-        //    if (_moveKeyPressed)
-        //        PlayAnimation("CHARGING", 0.1f);
-
-        //    _agent.speed = _originSpeed;
-        //    _moveKeyPressed = false;
-        //}
-        //UpdateTransform();
-    }
-
     public override void OnDead()
     {
         base.OnDead();
