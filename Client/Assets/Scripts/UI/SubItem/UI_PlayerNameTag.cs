@@ -1,3 +1,4 @@
+using Google.Protobuf.Protocol;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,7 +19,7 @@ public class UI_PlayerNameTag : UI_Base
         StaminaBar,
     }
 
-    const float _nameTagHeight = 2.6f;
+    const float _nameTagHeight = 1.8f;
 
     GameObject _target;
 
@@ -34,6 +35,7 @@ public class UI_PlayerNameTag : UI_Base
 
     private RectTransform _rect;
     private Canvas _canvas;
+    private PlayerController _pc;
 
     public override void Init()
     {
@@ -67,6 +69,7 @@ public class UI_PlayerNameTag : UI_Base
 
     void OnDisable()
     {
+        _rect.anchoredPosition = new Vector2(10000, 10000);
         Canvas.willRenderCanvases -= UpdatePosition;
     }
 
@@ -82,60 +85,47 @@ public class UI_PlayerNameTag : UI_Base
 
     private void UpdatePosition()
     {
-        if (_target == null) return;
-        Vector3 worldPos = _target.transform.position + new Vector3(0, _nameTagHeight, 0);
-        Vector3 screenPoint = Camera.main.WorldToScreenPoint(worldPos);
+        if (_target == null || _pc == null || _pc.State == CreatureState.Dead)
+        {
+            _rect.anchoredPosition = new Vector2(10000, 10000);
+            return;
+        }
 
-        bool isOnScreen = IsOnScreen(screenPoint);
+        Vector3 headWorldPos = _target.transform.position + new Vector3(0, _nameTagHeight, 0);
+        Vector3 screenHead = Camera.main.WorldToScreenPoint(headWorldPos);
 
-        if (isOnScreen)
+        if (screenHead.z <= 0)
+        {
+            _rect.anchoredPosition = new Vector2(10000, 10000);
+            return;
+        }
+
+        Vector2 screenDirection = Vector2.up;
+
+        float screenOffset = 40f;
+        Vector2 nameTagScreenPos = new Vector2(screenHead.x, screenHead.y) + (screenDirection * screenOffset);
+
+        nameTagScreenPos = new Vector2(
+            Mathf.Round(nameTagScreenPos.x * 2f) / 2f,
+            Mathf.Round(nameTagScreenPos.y * 2f) / 2f
+        );
+
+        if (IsOnScreen(nameTagScreenPos))
         {
             Vector2 localPos;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 _canvas.transform as RectTransform,
-                screenPoint,
+                nameTagScreenPos,
                 null,
                 out localPos
             );
 
-            localPos = ApplyScreenEdgeCorrection(localPos, screenPoint);
             _rect.anchoredPosition = localPos;
         }
         else
         {
-            // 화면 밖일 때는 위치를 화면 밖으로 이동
             _rect.anchoredPosition = new Vector2(10000, 10000);
         }
-    }
-
-    private Vector2 ApplyScreenEdgeCorrection(Vector2 localPos, Vector3 screenPoint)
-    {
-        // 화면 중심에서의 거리 계산 (0~1 정규화)
-        float screenX = screenPoint.x / Screen.width;
-        float screenY = screenPoint.y / Screen.height;
-
-        // 화면 중심 기준으로 오프셋 계산 (0.5가 중심)
-        Vector2 centerOffset = new Vector2(screenX - 0.5f, screenY - 0.5f);
-
-        // 좌우/상하 별도 보정 강도 설정
-        float horizontalPullStrength = 0.1f;  // 좌우 보정 강도 증가
-        float verticalPullStrength = 0.08f;    // 상하 보정 강도
-
-        // 좌우 보정을 위한 추가 계산
-        float horizontalEdgeFactor = Mathf.Abs(centerOffset.x) * 2f;  // 0~1
-        float verticalEdgeFactor = Mathf.Abs(centerOffset.y) * 2f;    // 0~1
-
-        // 좌우 보정 강화: 가장자리일수록 더 강하게
-        horizontalEdgeFactor = Mathf.Pow(horizontalEdgeFactor, 1.3f);  // 곡선적으로 증가
-        verticalEdgeFactor = Mathf.Pow(verticalEdgeFactor, 1.2f);      // 상하는 덜 강하게
-
-        // X축: 살짝 안쪽으로 당기기
-        float adjustedX = localPos.x - (centerOffset.x * Mathf.Abs(localPos.x) * horizontalPullStrength * horizontalEdgeFactor);
-
-        // Y축: 원래 Y값 유지하거나 약간만 조정
-        float adjustedY = localPos.y - (centerOffset.y * Mathf.Abs(localPos.y) * verticalPullStrength * verticalEdgeFactor);
-
-        return new Vector2(adjustedX, adjustedY);
     }
 
     private bool IsOnScreen(Vector3 screenPoint)
@@ -183,6 +173,10 @@ public class UI_PlayerNameTag : UI_Base
     public void SetTarget(GameObject target)
     {
         _target = target;
+        PlayerController targetPc = _target.GetComponent<PlayerController>();
+        if (null == targetPc)
+            return;
+        _pc = targetPc;
     }
 
     public void SetHPColor(bool darkMode = false)

@@ -211,9 +211,8 @@ public class EffectFXManager : MonoBehaviour
             activeCoroutines.Remove(effect.GetInstanceID());
         }
 
-        Managers.FX.Push(effect);
-
         effect?.transform.SetParent(null);
+        Managers.FX.Push(effect);
     }
 
     private IEnumerator ReturnToPoolAfterDelay(int ownerId, GameObject fxObject, string prefabName, float delayTime, float duration, Transform casterTransform)
@@ -459,7 +458,7 @@ public class EffectFXManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        Clear();
+        //Clear();
     }
     #endregion
 

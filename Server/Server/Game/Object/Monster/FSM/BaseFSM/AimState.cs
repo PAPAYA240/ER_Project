@@ -23,7 +23,7 @@ namespace Server.Game
         public void Enter(Monster monster)
         {
             _skillData = monster.CastRandomSkill();
-            if (_skillData == null)
+            if (_skillData == null || monster.Target == null)
             {
                 monster.ChangeState(FSMManager.Instance.GetIdleState());
                 return;
@@ -108,7 +108,7 @@ namespace Server.Game
 
             // elapsedTime이 너무 크면 제한 (첫 프레임 보호)
             if (elapsedTime > 0.1)
-                elapsedTime = 0.016; // 약 60fps 기준
+                elapsedTime = 0.016; 
 
             _lastRotationUpdateTime = currentTick;
 

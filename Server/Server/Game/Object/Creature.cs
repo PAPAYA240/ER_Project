@@ -39,19 +39,19 @@ namespace Server.Game
             if (_path == null || _path.Count == 0)
                 return;
 
-            Node nextNode = _path[_pathIdx];
-            Vector3 nextWaypoint = nextNode.Center;
-            if (CheckArrival(nextWaypoint, (_pathIdx >= _path.Count)))
+            // todo* 문제 해결 : 인덱스 마지막 경로는 무시하는 문제 해결
+            if (_pathIdx >= _path.Count)
             {
-                _pathIdx++;
-                if (_pathIdx >= _path.Count )
-                {
-                    _path.Clear();
-                    _pathIdx = 0;
-                    return;
-                }
+                _path.Clear();
+                _pathIdx = 0;
+                return;
             }
 
+            Node nextNode = _path[_pathIdx];
+            Vector3 nextWaypoint = nextNode.Center;
+            if (CheckArrival(nextWaypoint, (_pathIdx > _path.Count)))
+                _pathIdx++;
+              
             FollowToTarget(nextWaypoint);
         }
 

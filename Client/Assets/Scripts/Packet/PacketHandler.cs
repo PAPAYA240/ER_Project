@@ -278,14 +278,22 @@ class PacketHandler
            creature.OnHitboxCollision(mkey, tKey);
 
             PlayerController pc = creature.GetComponentInChildren<PlayerController>();
-            if (pc == null) return;
+            if (pc == null)
+                return;
 
             if (pc.Sound != null) // 테오도르 WQ skill 사운드
             {
                 if(tKey == KeyCode.Q)
-                    pc.Sound.GetEffect3D("SKILL_WQ", pc.transform.position);
+                { 
+                    pc.Sound.GetEffect3D("SKILL_WQ", pc.transform.position); 
+                }
                 else if(tKey == KeyCode.E)
-                    pc.Sound.GetEffect3D("SKILL_WE", pc.transform.position);
+                {
+                    GameObject effect = Managers.FX.Effect.FindCurrentPlayEffect(pc.Id, "FX_Skill03_Shield");
+                    if(effect)
+                        effect.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+                    pc.Sound.GetEffect3D("SKILL_WE", pc.transform.position); 
+                }
             }
         }
     }

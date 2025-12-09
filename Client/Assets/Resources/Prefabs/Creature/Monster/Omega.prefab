@@ -1030,7 +1030,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8aaf8e885585ec34ca0cd6eb6ac2e534, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _monsterMask:
+    serializedVersion: 2
+    m_Bits: 0
+  _playerMask:
+    serializedVersion: 2
+    m_Bits: 0
   type: 2
+  Sound: {fileID: 0}
 --- !u!114 &5436007510401939844
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1043,7 +1050,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6415413e3af48b24fa745e2bd62f04a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PrevHp: 0
 --- !u!195 &394807638893448977
 NavMeshAgent:
   m_ObjectHideFlags: 0

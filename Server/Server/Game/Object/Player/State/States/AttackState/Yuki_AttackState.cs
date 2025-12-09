@@ -79,7 +79,7 @@ public class Yuki_AttackState : Player_AttackState
                 desc.EndPos = target.Position;
                 desc.Duration = 1f;
                 desc.Speed = 0f;
-
+                room.Push(room.AttackSkillTarget, p, target, _keyCode);
                 targetPlayer.ChangeState(new Player_StunState(desc));
             }
 

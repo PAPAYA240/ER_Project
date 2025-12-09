@@ -239,6 +239,11 @@ public class TheodoreInputController : PlayerInputController
         {
             SendSkillInputPacket(key, SKIP_STATE_CHECK);
         }
+        else
+        {
+            SendSkillCancelPacket(key);
+        }
+
         _player.Speed = _originSpeed;
         onCancel.Invoke();
     }

@@ -14,12 +14,9 @@ namespace Server.Game
         public void Enter(Monster monster)
         {
             _delayTimer = Environment.TickCount64 + (long)(monster.DelaySkillAnimationTimer * 1000f);
-
             _nextSearchTick = Environment.TickCount64 + SEARCH_INTERVAL_MS;
-
             monster.PushState(CreatureState.Idle, new PositionInfo(monster.PosInfo), new RotationInfo(monster.RotInfo));
         }
-
 
         public void Execute(Monster monster)
         {
@@ -52,6 +49,7 @@ namespace Server.Game
             }
             monster.ChangeState(FSMManager.Instance.EvaluateTargetForNextState(monster));
         }
+
         private void ExecuteIdle(Monster monster)
         {
             if (monster.Info.Monster.MonsterType == MonsterType.Turret)
@@ -63,15 +61,21 @@ namespace Server.Game
             }
 
             if (!monster.IsAtSpawn())
+            {
                 monster.ChangeState(FSMManager.Instance.GetMovingState());
+            }
+            else
+            {
+                if(monster.PosInfo != monster._spawnPosition)
+                    monster.PushState(CreatureState.Idle, monster._spawnPosition, monster._spawnRotation);
+            }
         }
     
-        public void OnHit(Monster monster, Creature target) { }
         public void Exit(Monster monster)
         {
-            //_lastRotationUpdateTime = 0;
             _nextSearchTick = 0;
             _delayTimer = 0;
         }
+        public void OnHit(Monster monster, Creature target) { }
     }
 }

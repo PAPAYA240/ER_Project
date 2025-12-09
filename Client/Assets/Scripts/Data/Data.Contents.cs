@@ -480,7 +480,8 @@ namespace Data
     {
         public int id;
         public string name;
-        public float attackDist;
+        public float attackDist; // 공격 범위
+        public float activeDist; // 활동 범위
         public StatInfo stat;
         public List<MonsterSkill> skills;
         public float appearTime;
