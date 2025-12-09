@@ -6,165 +6,163 @@ Shader "Unlit/Common_Ping_Bound"
         _MainTex        ("MainTex", 2D) = "white" {}
         _MaskTex        ("MaskTex", 2D) = "white" {}
 
-        _MulVal_rgb     ("RGB Multiplier",   Float) = 1
+        // 아래 값들은 스크립트에서 SetFloat 하고 있다면 그대로 사용됨
+        _MulVal_rgb     ("RGB Multiplier", Float)   = 1
         _MulVal_alpha   ("Alpha Multiplier", Float) = 1
 
-        _ShrinkSpeed    ("Shrink Speed",     Float)        = 1.5   // 전체 애니메이션 속도
-        _MinScale       ("Min Scale",        Range(0.1,1)) = 0.3   // 가장 작아질 크기
-        _ScaleCurve     ("Scale Curve",      Range(1,4))   = 2.0   // 커브(클수록 초반 느리고 후반 빨라짐)
+        _ShrinkSpeed    ("Shrink Speed", Float) = 1
+        _MinScale       ("Min Scale", Float) = 0.15
+        _ScaleCurve     ("Scale Curve", Float) = 1
 
-        _RingCount      ("Ring Count",       Range(1,3))   = 3     // 동시에 보일 링 개수
-        _RingSpacing    ("Ring Spacing",     Range(0.1,1)) = 0.3   // 링 사이 시간 간격(0~1)
+        _RingCount      ("Ring Count (0~3)", Range(0,3)) = 3
+        _RingSpacing    ("Ring Spacing", Float) = 0.33
 
-        _PulseAmp       ("Brightness Pulse", Range(0,2))   = 0.3   // 밝기 숨쉬기(0이면 고정)
+        _PulseAmp       ("Pulse Amplitude", Float) = 0.25
+
+        [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull", Float) = 0
+        [Enum(UnityEngine.Rendering.CompareFunction)] _ZTestMode ("ZTest", Float) = 4
     }
 
     SubShader
     {
-        Tags
-        {
-            "RenderType"="Transparent"
-            "Queue"="Transparent"
-            "IgnoreProjector"="True"
-            "RenderPipeline"="UniversalRenderPipeline"
-        }
+        // MoveArrow와 동일하게 URP 태그 빼고 빌트인 방식으로
+        Tags { "Queue"="Transparent" "RenderType"="Transparent" }
+        LOD 100
 
         Blend SrcAlpha OneMinusSrcAlpha
         ZWrite Off
-        Cull Off
+        Cull [_Cull]
+        ZTest [_ZTestMode]
 
         Pass
         {
-            Name "Forward"
-            Tags { "LightMode"="UniversalForward" }
-
-            HLSLPROGRAM
+            CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
 
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "UnityCG.cginc"
 
-            struct Attributes
+            struct appdata
             {
-                float4 positionOS : POSITION;
-                float2 uv         : TEXCOORD0;
-                float4 color      : COLOR;     // StartColor
+                float4 vertex : POSITION;
+                float2 uv     : TEXCOORD0;
+                fixed4 color  : COLOR;
             };
 
-            struct Varyings
+            struct v2f
             {
-                float4 positionCS : SV_POSITION;
-                float2 uv         : TEXCOORD0;
-                float4 color      : COLOR;
+                float4 pos   : SV_POSITION;
+                float2 uv    : TEXCOORD0;
+                fixed4 color : COLOR;
             };
 
-            CBUFFER_START(UnityPerMaterial)
-                float4 _Color;
-                float4 _MainTex_ST;
-                float4 _MaskTex_ST;
-                float  _MulVal_rgb;
-                float  _MulVal_alpha;
+            sampler2D _MainTex;
+            float4    _MainTex_ST;
 
-                float  _ShrinkSpeed;
-                float  _MinScale;
-                float  _ScaleCurve;
+            sampler2D _MaskTex;
+            float4    _MaskTex_ST;
 
-                float  _RingCount;
-                float  _RingSpacing;
+            fixed4 _Color;
 
-                float  _PulseAmp;
-            CBUFFER_END
+            float  _MulVal_rgb;
+            float  _MulVal_alpha;
 
-            TEXTURE2D(_MainTex);
-            SAMPLER(sampler_MainTex);
+            float  _ShrinkSpeed;
+            float  _MinScale;
+            float  _ScaleCurve;
 
-            TEXTURE2D(_MaskTex);
-            SAMPLER(sampler_MaskTex);
+            float  _RingCount;
+            float  _RingSpacing;
 
-            Varyings vert (Attributes IN)
+            float  _PulseAmp;
+
+            v2f vert (appdata v)
             {
-                Varyings OUT;
-                OUT.positionCS = TransformObjectToHClip(IN.positionOS.xyz);
-                OUT.uv = IN.uv;
-                OUT.color = IN.color; // StartColor
-                return OUT;
+                v2f o;
+                o.pos   = UnityObjectToClipPos(v.vertex);
+                o.uv    = v.uv;
+                o.color = v.color;
+                return o;
             }
 
-            half4 frag (Varyings IN) : SV_Target
+            fixed4 frag (v2f i) : SV_Target
             {
-                // 기본 uv + ST
-                float2 uvMain0 = IN.uv * _MainTex_ST.xy + _MainTex_ST.zw;
-                float2 uvMask0 = IN.uv * _MaskTex_ST.xy + _MaskTex_ST.zw;
+                // 기본 UV 변환
+                float2 uvMain0 = i.uv * _MainTex_ST.xy + _MainTex_ST.zw;
+                float2 uvMask0 = i.uv * _MaskTex_ST.xy + _MaskTex_ST.zw;
 
+                // 가운데(0.5, 0.5)를 기준으로 원형 스케일링
                 float2 centeredMain = uvMain0 - 0.5;
                 float2 centeredMask = uvMask0 - 0.5;
 
-                // 전역 시간 (여러 링에 공유)
+                // 시간에 따른 전체 진행도
                 float tGlobal = _Time.y * _ShrinkSpeed;
 
-                half3 accumRGB = half3(0,0,0);
-                half  accumA   = 0;
+                // 링 개수는 0~3 사이
+                float ringCount = clamp(_RingCount, 0.0, 3.0);
 
-                // 최대 3개의 링
+                float3 accumRGB = float3(0,0,0);
+                float  accumA   = 0.0;
+
                 [unroll]
-                for (int i = 0; i < 3; ++i)
+                for (int idx = 0; idx < 3; ++idx)
                 {
-                    if (i >= (int)_RingCount)
-                        break;
+                    float fi = (float)idx;
 
-                    // 각 링의 시작 시간을 어긋나게 해서 여러 개가 동시에 보이게
-                    float t = frac(tGlobal - i * _RingSpacing); // 0~1
+                    // 현재 링 인덱스가 ringCount 안에 들어오면 1, 아니면 0
+                    float enabled = step(fi, ringCount - 0.5);
 
-                    // 아직 시작 전이나(이론상 0~1이므로 필요 없지만) 버릴 조건이 있으면 여기서 continue 가능
-
-                    // 1 → MinScale 로만 줄어드는 스케일, 초반 느리고 후반 빨라지게
-                    float eased  = pow(t, _ScaleCurve);                // ease-in
+                    // 링별로 시차를 둠
+                    float t      = frac(tGlobal - fi * _RingSpacing);
+                    float eased  = pow(t, _ScaleCurve);
                     float scale  = lerp(1.0, _MinScale, eased);
-                    scale = max(scale, 0.01);
+                    scale        = max(scale, 0.01);
 
                     float2 sampleMainUV = centeredMain / scale + 0.5;
                     float2 sampleMaskUV = centeredMask / scale + 0.5;
 
-                    // 텍스쳐 영역 밖이면 이 링은 무시 (다른 링은 계속)
-                    if (sampleMainUV.x < 0.0 || sampleMainUV.x > 1.0 ||
-                        sampleMainUV.y < 0.0 || sampleMainUV.y > 1.0 ||
-                        sampleMaskUV.x < 0.0 || sampleMaskUV.x > 1.0 ||
-                        sampleMaskUV.y < 0.0 || sampleMaskUV.y > 1.0)
-                    {
-                        continue;
-                    }
+                    // 0~1 범위 안인지 체크
+                    float inMain =
+                        step(0.0, sampleMainUV.x) * step(0.0, sampleMainUV.y) *
+                        step(sampleMainUV.x, 1.0) * step(sampleMainUV.y, 1.0);
 
-                    half4 mainC = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, sampleMainUV);
-                    half  mask  = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, sampleMaskUV).r;
+                    float inMask =
+                        step(0.0, sampleMaskUV.x) * step(0.0, sampleMaskUV.y) *
+                        step(sampleMaskUV.x, 1.0) * step(sampleMaskUV.y, 1.0);
 
-                    half  a = mainC.a * mask;
-                    half3 rgb = mask;
+                    float inside = inMain * inMask;
+                    float weight = enabled * inside;
 
-                    // 링끼리는 단순히 더해서 중첩(필요하면 max로 바꿔도 됨)
+                    fixed4 mainC = tex2D(_MainTex, sampleMainUV);
+                    fixed  mask  = tex2D(_MaskTex, sampleMaskUV).r;
+
+                    float a   = mainC.a * mask * weight;
+                    float3 rgb = mask * weight;
+
                     accumRGB += rgb;
                     accumA   = max(accumA, a);
                 }
 
-                // 어떤 링도 그려질 게 없으면 discard
-                if (accumA <= 0.0001h)
-                    clip(-1);
+                if (accumA <= 0.0001)
+                    discard;
 
-                // 기본 색 / StartColor 반영
-                half4 col = half4(accumRGB, accumA);
-                half4 tint = _Color * IN.color;
+                fixed4 col  = fixed4(accumRGB, accumA);
+                fixed4 tint = _Color * i.color;
+
                 col.rgb *= tint.rgb;
                 col.a   *= tint.a;
 
-                // 살짝 밝기 숨쉬기 (싫으면 _PulseAmp = 0)
+                // 전체 Ping에 약간의 밝기 펄스
                 float tNorm = frac(tGlobal);
                 float brightnessPulse = 1.0 + sin(tNorm * 6.28318) * _PulseAmp;
+
                 col.rgb *= brightnessPulse * _MulVal_rgb;
                 col.a   *= _MulVal_alpha;
 
-                clip(col.a - 0.001h);
+                clip(col.a - 0.001);
                 return col;
             }
-            ENDHLSL
+            ENDCG
         }
     }
 }

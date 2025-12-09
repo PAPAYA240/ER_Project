@@ -32,6 +32,7 @@ namespace Server.Game
             get { return _isDeath; }
             set { _isDeath = value; }
         }
+        public long DeadRespawnEndTick { get; set; }
 
         // Exp
         const int KillExp = 1000;
