@@ -30,10 +30,6 @@ public class Abigail_AttackState : Player_AttackState
         _swingActive = true;
         _damageApplied = false;
 
-        _swingStartUtc = now;
-        _hitMomentUtc = now.AddSeconds(WindupSeconds / p.AttackSpeed);
-        _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds / p.AttackSpeed);
-
         // 애니 송출(서버 권한)
         string animName = AnimAttackT;
 
@@ -64,7 +60,16 @@ public class Abigail_AttackState : Player_AttackState
             p.CombatTime = 0f;
         }
 
-        p.SendAnimPacket(animName, 0.05f, p.AttackSpeed, true);
+        float originalTime = _originalFrames / _originalFPS;
+        float targetPeriod = 1f / p.AttackSpeed;
+
+        float animSpeed = originalTime / targetPeriod;
+
+        _swingStartUtc = now;
+        _hitMomentUtc = now.AddSeconds(WindupSeconds / animSpeed);
+        _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds / animSpeed);
+
+        p.SendAnimPacket(animName, 0.05f, animSpeed, true);
     }
 
     protected override void ApplyHit(Player p, GameObject target)

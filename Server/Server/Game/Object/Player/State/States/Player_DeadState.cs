@@ -1,9 +1,6 @@
 ﻿using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.Game;
-using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using static Server.Game.GameObject;
 
 public class Player_DeadState : IPlayerState

@@ -203,12 +203,17 @@ public class Rozzi_AttackState : Player_AttackState
 
         _swingStartUtc = now;
 
-        // 첫 번째 샷(기본 히트 타이밍)
-        _hitMomentUtc = now.AddSeconds(RozziWindupSeconds / p.AttackSpeed);
-
         // 기본은 1타 공격
         _isPassiveAttack = false;
         string nextCombo = (_attackIndex == 0) ? AnimAttackA : AnimAttackB;
+
+        float originalTime = _originalFrames / _originalFPS;
+        float targetPeriod = 1f / p.AttackSpeed;
+
+        float animSpeed = originalTime / targetPeriod;
+
+        // 첫 번째 샷(기본 히트 타이밍)
+        _hitMomentUtc = now.AddSeconds(RozziWindupSeconds / animSpeed);
 
         if (p.OnAttackPerformed())
             _curAnimName = nextCombo;
@@ -218,7 +223,7 @@ public class Rozzi_AttackState : Player_AttackState
             _isPassiveAttack = true;
 
             // 두 번째 샷 타이밍: 첫 샷 이후 0.12초(공속 보정)
-            double gap = 0.12 / p.AttackSpeed;
+            double gap = 0.12 / animSpeed;
             _hitMomentUtc2 = _hitMomentUtc.AddSeconds(gap);
         }
         else
@@ -229,9 +234,9 @@ public class Rozzi_AttackState : Player_AttackState
 
         // 스윙 종료 시점: 패시브면 두 번째 샷 이후, 아니면 첫 샷 이후
         if (_isPassiveAttack)
-            _swingEndUtc = _hitMomentUtc2.AddSeconds(BackswingSeconds / p.AttackSpeed);
+            _swingEndUtc = _hitMomentUtc2.AddSeconds(BackswingSeconds / animSpeed);
         else
-            _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds / p.AttackSpeed);
+            _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds / animSpeed);
 
         // 전투 모드 + 애니 송출 그대로
         {
@@ -242,7 +247,7 @@ public class Rozzi_AttackState : Player_AttackState
             p.CombatTime = 0f;
         }
 
-        p.SendAnimPacket(_curAnimName, 0.05f, p.AttackSpeed);
+        p.SendAnimPacket(_curAnimName, 0.05f, animSpeed, true);
     }
 
     private void CreateProjectile(Player p, bool isLWeapon)
