@@ -2341,6 +2341,7 @@ GameObject:
   - component: {fileID: 198056269679416931}
   - component: {fileID: 199142976140854547}
   - component: {fileID: 135590444618408067}
+  - component: {fileID: 1223424846357033698}
   m_Layer: 7
   m_Name: FX_BI_Rozzi_Skill02_Debuff
   m_TagString: Untagged
@@ -4660,6 +4661,18 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1223424846357033698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1409212284968363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75813abec3fea2547bf453971e1dd43e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1438345768300331
 GameObject:
   m_ObjectHideFlags: 0

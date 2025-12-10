@@ -9411,6 +9411,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4071078129626388}
   - component: {fileID: 7122780361317658980}
+  - component: {fileID: 4774131438040029559}
   m_Layer: 7
   m_Name: FX_Common_Debuff_HealedDecrease
   m_TagString: Untagged
@@ -9443,10 +9444,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 1883971872042585}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d056cd2d91711640ae23ba50f6770d4, type: 3}
+  m_Script: {fileID: 11500000, guid: 602475e192e106b44af238230001ba3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   rightOffset: 0.9
   upOffset: 1.5
   forwardOffset: 0.15
+--- !u!114 &4774131438040029559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883971872042585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75813abec3fea2547bf453971e1dd43e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

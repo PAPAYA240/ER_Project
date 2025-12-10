@@ -6982,6 +6982,7 @@ GameObject:
   - component: {fileID: 4758863559558701}
   - component: {fileID: 198734251741955539}
   - component: {fileID: 199209482889243688}
+  - component: {fileID: 1791102471842772487}
   m_Layer: 7
   m_Name: FX_Common_Debuff_Slow
   m_TagString: Untagged
@@ -9267,6 +9268,18 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &1791102471842772487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1303307659359229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75813abec3fea2547bf453971e1dd43e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1654022111380398
 GameObject:
   m_ObjectHideFlags: 0

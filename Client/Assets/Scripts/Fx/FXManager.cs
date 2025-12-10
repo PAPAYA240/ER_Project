@@ -194,6 +194,7 @@ public class FXManager : MonoBehaviour
             CreateEffect(obj);
 
             obj.SetActive(false);
+
             return;
         }
     }
