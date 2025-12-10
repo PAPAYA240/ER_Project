@@ -84,7 +84,6 @@ public class EffectFXManager : MonoBehaviour
             Vector3 spawnPos = GetSpawnPosition(fxObject, ownerId, data, copyTransform, mousePos, targetPos, rot);
             int targetId = ownerId;
 
-
             if (data.target == EEffectTarget.TargetNoRotation)
             {
                 Transform followTarget = casterTransform;
@@ -115,8 +114,8 @@ public class EffectFXManager : MonoBehaviour
                 // 지금 이 owner가 나에게 숨김 상태라면 바로 꺼둠
                 bool ownerHidden = _hiddenOwners.Contains(targetId);
                 fxVis.SetVisible(!ownerHidden);
-                PlayerController pc = Managers.Object.FindById(targetId).GetComponentInChildren<PlayerController>();
-                Debug.Log($"@ SetVisible! : MyPlayer - {Managers.Object.MyPlayer.ObjInfo.Player.CharType}, Owner - {pc.ObjInfo.Player.CharType}, ownerHidden - {ownerHidden}, Fx - {fxObject.name}");
+                //PlayerController pc = Managers.Object.FindById(targetId).GetComponentInChildren<PlayerController>();
+                //Debug.Log($"@ SetVisible! : MyPlayer - {Managers.Object.MyPlayer.ObjInfo.Player.CharType}, Owner - {pc.ObjInfo.Player.CharType}, ownerHidden - {ownerHidden}, Fx - {fxObject.name}");
             }
 
             // Moving 동작
@@ -508,9 +507,6 @@ public class EffectFXManager : MonoBehaviour
     /// </summary>
     public void SetOwnerVisible(int ownerId, bool visible)
     {
-        PlayerController pc = Managers.Object.FindById(ownerId).GetComponentInChildren<PlayerController>();
-        Debug.Log($"@ SetOwnerVisible : Owner - {pc.ObjInfo.Player.CharType}, Visible - {visible} ");
-
         if (visible)
             _hiddenOwners.Remove(ownerId);
         else
@@ -518,6 +514,9 @@ public class EffectFXManager : MonoBehaviour
 
         if (!currentlyPlayingEffects.TryGetValue(ownerId, out List<GameObject> effectList))
             return;
+
+        //PlayerController pc = Managers.Object.FindById(ownerId).GetComponentInChildren<PlayerController>();
+        //Debug.Log($"@ SetOwnerVisible : Owner - {pc.ObjInfo.Player.CharType}, Visible - {visible}, Count - {effectList.Count} ");
 
         foreach (var fx in effectList)
         {

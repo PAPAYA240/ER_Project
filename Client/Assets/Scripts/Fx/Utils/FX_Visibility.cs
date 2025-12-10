@@ -37,7 +37,7 @@ public class FX_Visibility : MonoBehaviour
             }
         }
 
-        Debug.Log($"@ FX_Visibility : Owner - {gameObject.name}, Visible - {visible} ");
+        //Debug.Log($"@ FX_Visibility : Owner - {gameObject.name}, Visible - {visible} ");
     }
 
     public bool IsVisible => _visible;
