@@ -79,6 +79,7 @@ public class Env_Bush : EnvController
             if (isEnemyTeam)
             {
                 pc.BushRenderType((int)BushState.Hidden);
+                Managers.FX.Effect.SetOwnerVisible(pc.Id, false);
 
                 if (_delayedVisibleCoroutines.ContainsKey(pc.Id))
                 {
@@ -94,6 +95,7 @@ public class Env_Bush : EnvController
 
                 pc.PlaySkillEffect(KeyCode.F1, default(Vector3), default(Vector3));
                 pc.BushRenderType((int)BushState.Translucent);
+                Managers.FX.Effect.SetOwnerVisible(pc.Id, true);
 
                 if (_delayedVisibleCoroutines.ContainsKey(pc.Id))
                 {
@@ -105,6 +107,7 @@ public class Env_Bush : EnvController
         else
         {
             pc.BushRenderType((int)BushState.Visible);
+            Managers.FX.Effect.SetOwnerVisible(pc.Id, true);
         }
 
         UpdateRemainingPlayersRender();
@@ -118,6 +121,7 @@ public class Env_Bush : EnvController
             _delayedVisibleCoroutines.Remove(pc.Id);
 
         pc.BushRenderType((int)BushState.Visible);
+        Managers.FX.Effect.SetOwnerVisible(pc.Id, true);
     }
 
     private void UpdateRemainingPlayersRender()
@@ -132,10 +136,12 @@ public class Env_Bush : EnvController
             if (inPc.ObjInfo.Player.Team == Managers.Object.MyPlayer.ObjInfo.Player.Team)
             {
                 inPc.BushRenderType((int)BushState.Translucent);
+                Managers.FX.Effect.SetOwnerVisible(inPc.Id, true);
             }
             else
             {
                 inPc.BushRenderType((int)BushState.Hidden);
+                Managers.FX.Effect.SetOwnerVisible(inPc.Id, false);
             }
         }
     }
@@ -166,6 +172,7 @@ public class Env_Bush : EnvController
             targetState = BushState.Hidden;
 
         target.BushRenderType((int)targetState);
+        Managers.FX.Effect.SetOwnerVisible(target.Id, targetState != BushState.Hidden);
 
         foreach (int id in _insidePlayersId)
         {
@@ -178,7 +185,10 @@ public class Env_Bush : EnvController
             if (inPc == null) continue;
 
             if (Managers.Object.MyPlayer.Id == target.Id)
+            {
                 inPc.BushRenderType((int)BushState.Translucent);
+                Managers.FX.Effect.SetOwnerVisible(inPc.Id, true); 
+            }
         }
     }
     #endregion

@@ -6,13 +6,17 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static Data.EffectData;
+using static UnityEngine.GraphicsBuffer;
 
 public class EffectFXManager : MonoBehaviour
 {
     private Dictionary<int, List<GameObject>> currentlyPlayingEffects = new Dictionary<int, List<GameObject>>();
     private Dictionary<int, Coroutine> activeCoroutines = new Dictionary<int, Coroutine>();
     private int fxLayer;
+
+    private HashSet<int> _hiddenOwners = new HashSet<int>();
 
     public void Init()
     {
@@ -81,6 +85,7 @@ public class EffectFXManager : MonoBehaviour
             // Transform 설정
             Quaternion spawnRot = GetSpawnRotation(data, copyTransform, rot);
             Vector3 spawnPos = GetSpawnPosition(ownerId, data, copyTransform, mousePos, targetPos, rot, out Transform parentTransform);
+            int targetId = ownerId;
 
             if (data.target == EEffectTarget.Self)
             {
@@ -92,6 +97,8 @@ public class EffectFXManager : MonoBehaviour
             {
                 fxObject.transform.SetParent(casterTransform);
                 fxObject.transform.SetPositionAndRotation(spawnPos, spawnRot);
+
+                targetId = GetTargetId(casterTransform);
             }
             else if (data.target == EEffectTarget.TargetNoRotation)
             {
@@ -103,8 +110,9 @@ public class EffectFXManager : MonoBehaviour
                 var follow = fxObject.GetOrAddComponent<FX_TargetNoRotation>();
                 if (follow == null)
                     return null;
-                // data.position 을 world offset으로 쓰고 싶으면
+
                 follow.Setup(followTarget, data.position, fixedRot, faceCamera: false);
+                targetId = GetTargetId(followTarget);
             }
             else if (data.target == EEffectTarget.TargetUI)
             {
@@ -113,11 +121,22 @@ public class EffectFXManager : MonoBehaviour
                     return null;
 
                 follow.SetTarget(casterTransform);
+                targetId = GetTargetId(casterTransform);
             }
             else
             {
                 fxObject.transform.SetParent(null);
                 fxObject.transform.SetPositionAndRotation(spawnPos, spawnRot);
+            }
+
+            var fxVis = fxObject.GetComponent<FX_Visibility>();
+            if (fxVis != null)
+            {
+                // 지금 이 owner가 나에게 숨김 상태라면 바로 꺼둠
+                bool ownerHidden = _hiddenOwners.Contains(targetId);
+                fxVis.SetVisible(!ownerHidden);
+                PlayerController pc = Managers.Object.FindById(targetId).GetComponentInChildren<PlayerController>();
+                Debug.Log($"@ SetVisible! : MyPlayer - {Managers.Object.MyPlayer.ObjInfo.Player.CharType}, Owner - {pc.ObjInfo.Player.CharType}, ownerHidden - {ownerHidden}, Fx - {fxObject.name}");
             }
 
             // Moving 동작
@@ -457,6 +476,7 @@ public class EffectFXManager : MonoBehaviour
 
         currentlyPlayingEffects.Clear();
         activeCoroutines.Clear();
+        _hiddenOwners.Clear();
     }
 
     private void OnDestroy()
@@ -465,4 +485,44 @@ public class EffectFXManager : MonoBehaviour
     }
     #endregion
 
+    #region Visible
+    /// <summary>
+    /// 이 클라(나)의 시점에서 ownerId 캐릭터가 보이는지/안 보이는지에 따라
+    /// 그 캐릭터에 붙은 FX들을 전부 켜거나 끈다.
+    /// </summary>
+    public void SetOwnerVisible(int ownerId, bool visible)
+    {
+        PlayerController pc = Managers.Object.FindById(ownerId).GetComponentInChildren<PlayerController>();
+        Debug.Log($"@ SetOwnerVisible : Owner - {pc.ObjInfo.Player.CharType}, Visible - {visible} ");
+
+        if (visible)
+            _hiddenOwners.Remove(ownerId);
+        else
+            _hiddenOwners.Add(ownerId);
+
+        if (!currentlyPlayingEffects.TryGetValue(ownerId, out List<GameObject> effectList))
+            return;
+
+        foreach (var fx in effectList)
+        {
+            if (fx == null)
+                continue;
+
+            var fxVis = fx.GetComponent<FX_Visibility>();
+            if (fxVis == null)
+                continue;
+
+            fxVis.SetVisible(visible);
+        }
+    }
+
+    private int GetTargetId(Transform targetTransform)
+    {
+        PlayerController target = targetTransform.gameObject.GetComponentInChildren<PlayerController>();
+        if (target != null)
+            return target.Id;
+
+        return 0;
+    }
+    #endregion
 }
