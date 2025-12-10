@@ -61,7 +61,7 @@ public class EffectFXManager : MonoBehaviour
 
         List<GameObject> effectList = new List<GameObject>();
         GameObject owner = Managers.Object.FindById(ownerId);
-        PlayerController player =owner.GetComponent<PlayerController>();
+        PlayerController player = owner.GetComponent<PlayerController>();
 
         foreach (EffectData data in effectData)
         {
@@ -274,7 +274,6 @@ public class EffectFXManager : MonoBehaviour
         {
             case EEffectTarget.Self:
             case EEffectTarget.Enemy:
-            case EEffectTarget.EnemyHit:
                 Fx_FollowEffect follower = fxObject.GetOrAddComponent<Fx_FollowEffect>();
                 follower.Setup(casterTransform, data.position, data.rotation);
                 return Vector3.zero;
@@ -286,6 +285,7 @@ public class EffectFXManager : MonoBehaviour
             case EEffectTarget.Mouse:
                 return mousePos;
 
+            case EEffectTarget.EnemyHit:
             case EEffectTarget.Shot:
                 return casterTransform.position + data.position;
 
@@ -311,8 +311,8 @@ public class EffectFXManager : MonoBehaviour
         {
             //case EEffectTarget.Self:
             //case EEffectTarget.Enemy:
-            //case EEffectTarget.EnemyHit:
-            //    return casterTransform.rotation;
+            case EEffectTarget.EnemyHit:
+                return casterTransform.rotation;
 
             case EEffectTarget.Target:
                 return rot;
