@@ -1203,10 +1203,11 @@ message C_Chat {
 
 message S_Chat {
 	int32 objectId = 1;
-	string playerName = 2;
-	string message = 3;
-	ChatType chatType = 4;
-	CharacterType charType = 5;
+	int32 teamId = 2;
+	string playerName = 3;
+	string message = 4;
+	ChatType chatType = 5;
+	CharacterType charType = 6;
 }
 
 message S_Unstoppable{

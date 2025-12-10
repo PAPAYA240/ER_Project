@@ -291,7 +291,10 @@ public class PlayerInputController : MonoBehaviour
     // H키 : 이동 중지
     public C_Stop GetStopCommand()
     {
-        if(_player.State == CreatureState.Dead)
+        if (ChatHandler.Instance.IsChatting)
+            return null;
+
+        if (_player.State == CreatureState.Dead)
             return null;
 
         if (Input.GetKeyDown(KeyCode.S))
@@ -314,6 +317,9 @@ public class PlayerInputController : MonoBehaviour
 
     public virtual C_SkillInput GetSkillCommand()
     {
+        if (ChatHandler.Instance.IsChatting)
+            return null;
+
         if (_player.State == CreatureState.Dead)
             return null;
 
@@ -351,6 +357,9 @@ public class PlayerInputController : MonoBehaviour
 
     public C_Rest GetRestCommand()
     {
+        if (ChatHandler.Instance.IsChatting)
+            return null;
+
         if (_player.CombatStat == CombatState.Combat)
         {
             if (Input.GetKeyDown(KeyCode.X))

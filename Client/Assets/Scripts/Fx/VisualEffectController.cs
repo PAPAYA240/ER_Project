@@ -19,7 +19,7 @@ public class VisualEffectController : MonoBehaviour
     private Material[][] originalMaterials;
 
     private Material _bushMaterial;
-    private Transform _lodTransform;
+    private List<Transform> _renderTargets = new List<Transform>();
     private Dictionary<Renderer, Material[]> _originalMaterialsDict = new Dictionary<Renderer, Material[]>();
 
     // 커서
@@ -65,10 +65,14 @@ public class VisualEffectController : MonoBehaviour
             return;
 
         _mode = HighlightMode.Bush_Invisible;
-        Renderer[] r = _lodTransform.GetComponentsInChildren<Renderer>();
-        foreach (Renderer rr in r)
+        foreach (Transform target in _renderTargets)
         {
-            rr.enabled = false;
+            if (target == null) continue;
+            Renderer[] renderers = target.GetComponentsInChildren<Renderer>(true);
+            foreach (Renderer renderer in renderers)
+            {
+                renderer.enabled = false;
+            }
         }
     }
 
@@ -79,40 +83,48 @@ public class VisualEffectController : MonoBehaviour
             return;
 
         _mode = HighlightMode.None;
-        Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
-        foreach (Renderer renderer in renderers)
+        foreach (Transform target in _renderTargets)
         {
-            renderer.enabled = true;
-            if (_originalMaterialsDict.TryGetValue(renderer, out Material[] originalMaterials))
+            if (target == null) continue;
+            Renderer[] renderers = target.GetComponentsInChildren<Renderer>(true);
+            foreach (Renderer renderer in renderers)
             {
-                renderer.materials = originalMaterials;
+                renderer.enabled = true;
+                if (_originalMaterialsDict.TryGetValue(renderer, out Material[] originalMaterials))
+                {
+                    renderer.materials = originalMaterials;
+                }
             }
         }
     }
 
     public void ChangeBushRenderer()
     {
-        if(_mode == HighlightMode.Bush)
+        if (_mode == HighlightMode.Bush)
             return;
 
         _mode = HighlightMode.Bush;
-        Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
-        foreach (Renderer renderer in renderers)
+        foreach (Transform target in _renderTargets)
         {
-            if (renderer.gameObject.GetComponent<ParticleSystem>() != null)
-                continue; 
-
-            if (renderer.gameObject.GetComponent<TrailRenderer>() != null)
-                continue;
-
-            renderer.enabled = true;
-            int materialCount = renderer.sharedMaterials.Length;
-            Material[] ghostMaterials = new Material[materialCount];
-            for (int i = 0; i < materialCount; i++)
+            if (target == null) continue;
+            Renderer[] renderers = target.GetComponentsInChildren<Renderer>(true);
+            foreach (Renderer renderer in renderers)
             {
-                ghostMaterials[i] = _bushMaterial;
+                if (renderer.gameObject.GetComponent<ParticleSystem>() != null)
+                    continue;
+
+                if (renderer.gameObject.GetComponent<TrailRenderer>() != null)
+                    continue;
+
+                renderer.enabled = true;
+                int materialCount = renderer.sharedMaterials.Length;
+                Material[] ghostMaterials = new Material[materialCount];
+                for (int i = 0; i < materialCount; i++)
+                {
+                    ghostMaterials[i] = _bushMaterial;
+                }
+                renderer.sharedMaterials = ghostMaterials;
             }
-            renderer.sharedMaterials = ghostMaterials;
         }
     }
     #endregion
@@ -189,19 +201,21 @@ public class VisualEffectController : MonoBehaviour
 
         foreach (Transform child in Owner.transform)
         {
-            if (child.name.Contains("LOD"))
+            if (child.name.Contains("LOD") || child.name.Contains("Rest"))
             {
-                _lodTransform = child;
-                break;
+                _renderTargets.Add(child);
             }
         }
 
-        if (_lodTransform != null)
+        foreach (Transform target in _renderTargets)
         {
-            Renderer[] renderers = _lodTransform.GetComponentsInChildren<Renderer>();
-            foreach (Renderer renderer in renderers)
+            if (target != null)
             {
-                _originalMaterialsDict[renderer] = renderer.materials;
+                Renderer[] renderers = target.GetComponentsInChildren<Renderer>(true);
+                foreach (Renderer renderer in renderers)
+                {
+                    _originalMaterialsDict[renderer] = renderer.materials;
+                }
             }
         }
     }

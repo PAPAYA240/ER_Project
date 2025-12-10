@@ -1,7 +1,9 @@
 using Data;
 using Google.Protobuf.Protocol;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
@@ -53,25 +55,45 @@ public class MonsterController : CreatureController
     protected override void Init()
 	{
         base.Init();
-
         SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("Monster"));
-
-        if (!Add_Component())
-            return;
+        Add_Component();
 
         TriggerEnvironmentEvent();
-
         State = CreatureState.Appear;
-
         InitHpBar();
 
+        // Shader XRay 비활성화
         UnActiveShaderXRay();
 
+        // Sound
         Sound = gameObject.GetOrAddComponent<SoundController>();
         if (Sound != null)
+        {
             Sound.PreloadMonsterAllSounds(Type);
+        }
+
+        // Renderer
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        foreach (var renderer in renderers)
+        {
+            renderer.enabled = false;
+        }
+
+        IsHide = true;
+        StartCoroutine(coActive());
     }
 
+    // todo* 임시 조치 => 애니메이션 entry가 wait라서 appear 전에 wait가 먼저 보임
+    private IEnumerator coActive()
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        yield return new WaitForSeconds(0.3f);
+        foreach (var renderer in renderers)
+        {
+            IsHide = false;
+            renderer.enabled = true;
+        }
+    }
 
     protected override void UpdateController()
     {
@@ -100,11 +122,6 @@ public class MonsterController : CreatureController
         Transform rotationTarget = transform.parent != null ? transform.parent : transform;
         RotInfo = _targetRotation;
         rotationTarget.rotation = Quaternion.Slerp(rotationTarget.rotation, _targetRotation, Time.deltaTime * _rotationSpeed);
-
-        if(Type == MonsterType.Omega)
-        {
-            //Debug.Log($"{rotationTarget.rotation}");
-        }            
     }
 
     private void MeshDebug()
@@ -301,6 +318,7 @@ public class MonsterController : CreatureController
 
     private bool Add_Component()
     {
+        // NavMeshAgent
         _agent = GetComponentInParent<NavMeshAgent>();
         if (_agent != null)
         {
@@ -309,15 +327,23 @@ public class MonsterController : CreatureController
             _agent.speed = _agentSpeed;
             SyncPos(true);
         }
-
         _targetRotation = transform.rotation;
+
+        // VisualEffectController
         _highlightEffect = gameObject.AddComponent<VisualEffectController>();
         _highlightEffect.Owner = this;
 
+        // Animator
         if (_animator == null)
             return false;
         _animator.applyRootMotion = false;
-         
+
+        // Rotation Speed
+        if (Type == MonsterType.Gamma || Type == MonsterType.Omega)
+            _rotationSpeed = 10.0f;
+        else
+            _rotationSpeed = 40.0f;
+
         return true;
     }
     #endregion
@@ -347,7 +373,6 @@ public class MonsterController : CreatureController
 
         if (null == ui)
         {
-            //Debug.Log("_hpBar is null");
             return;
         }
 

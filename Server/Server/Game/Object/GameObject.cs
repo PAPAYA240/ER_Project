@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Threading.Tasks;
 using static Player_StunState;
 using static Server.Game.StunState;
@@ -577,7 +578,7 @@ namespace Server.Game
                         // 유키 궁 표식 데미지
                         int curLevel = player.GetSkillLevel(Data.DataUtils.KeyCode.R);
                         float curAttack = player.Attack;
-                        _ = CoDelayYukiCoupDeGrace(player, curAttack, curLevel, 1000);
+                        _ = CoDelayYukiCoupDeGrace(player, curAttack, curLevel, 750);
                     }
                     else if (statusEffect.type == "Buff" || statusEffect.type == "Debuff")
                     {
@@ -992,6 +993,7 @@ namespace Server.Game
 
         protected string ResolveCommonEffect(StatusEffect inst, string key)
         {
+            // Client에서 FX인지 UI인지 판단
             if (inst.type == "Debuff")
             {
                 switch (key)
@@ -1000,6 +1002,8 @@ namespace Server.Game
                         return "Debuff_Slow";
                     case "Healing":
                         return "Debuff_HealedDecrease";
+                    case "Defense":
+                        return "Debuff_DefenseDecrease";
                 }
             }
 

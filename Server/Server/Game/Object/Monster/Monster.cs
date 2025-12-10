@@ -74,7 +74,6 @@ namespace Server.Game
         bool _appeared = false;
         public override void Update()
         {
-   
             if (Room != null && _appeared == false)
             {
                 ChangeState(FSMManager.Instance.GetAppearState());
@@ -84,7 +83,8 @@ namespace Server.Game
 
             if (Target != null)
             {
-                if (Target.State == CreatureState.Dead)
+                Player player = Target as Player;
+                if (player.CurrentState is Player_DeadState)
                 {
                     Target = null;
                     ChangeState(FSMManager.Instance.GetIdleState());
@@ -213,6 +213,8 @@ namespace Server.Game
             if (DataManager.MonsterSkillDict.TryGetValue(skillName, out MonsterSkillData skillData) == false)
                 return null;
 
+            CurrentSkill = skillData.skillType;
+
             return skillData;
         }
         public void CreateHitbox(MonsterSkill skilltype)
@@ -263,7 +265,7 @@ namespace Server.Game
 
         public Player SearchForPlayerInRange()
         {
-             return Room?.FindViableTarget(this, DIST_TO_TARGET);
+            return Room?.FindViableTarget(this, DIST_TO_TARGET);
         }
         public bool IsReturnSpawn()
         {
@@ -291,7 +293,7 @@ namespace Server.Game
         #region 패킷 전달
         public void PushState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null, bool stateChange = true)
         {
-             Room?.Push(() => BroadcastState(newState, posInfo, rotInfo, skillData, stateChange));
+            Room?.Push(() => BroadcastState(newState, posInfo, rotInfo, skillData, stateChange));
         }
 
         private void BroadcastState(CreatureState newState, PositionInfo posInfo = null, RotationInfo rotInfo = null, MonsterSkillData skillData = null, bool stateChange = true)
@@ -313,12 +315,11 @@ namespace Server.Game
             if (skillData != null)
             {
                 statePacket.Skilltype = skillData.skillType;
-                CurrentSkill = skillData.skillType;
             }
 
             Room?.Broadcast(statePacket);
         }
-    
+
         #endregion
 
         #region 초기화
@@ -339,7 +340,7 @@ namespace Server.Game
 
             return true;
         }
-#endregion
+        #endregion
     }
 }
 

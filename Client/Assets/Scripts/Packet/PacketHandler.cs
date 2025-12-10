@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Data.EffectData;
-using static UnityEngine.Rendering.DebugUI.Table;
 
 class PacketHandler
 {
@@ -118,7 +117,6 @@ class PacketHandler
         GameObject go = Managers.Object.FindById(skillPacket.ObjectId);
         if (go == null)
         {
-            //Debug.Log($"ID {skillPacket.ObjectId}를 가진 몬스터 오브젝트를 찾을 수 없습니다");
             return;
         }
 
@@ -212,7 +210,6 @@ class PacketHandler
             PlayerController pc = cc as PlayerController;
             if (pc == null)
                 return;
-            pc.BushRenderType(0);
 
             // 공격 플레이어
             GameObject attackerGo = Managers.Object.FindById(diePacket.AttackerId);
@@ -425,9 +422,13 @@ class PacketHandler
         Quaternion targetRot = fxPacket.TargetRotation;
 
         if (fxPacket.CanLookatMouse == true)
-        {
-            pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));  
-        }
+            pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));
+
+        //if (fxPacket.IsCommon && !pc.IsFxEffect(fxPacket.CommonName))
+        //{
+        //    pc.ShowCommonUIEffect(fxPacket.CommonName);
+        //    return;
+        //}
 
         pc.PlayEffectFromServer(fxPacket, mousePos, targetPos, targetRot);
     }
@@ -746,7 +747,6 @@ class PacketHandler
                 {
                     pc.SetKDA(info.Kill, info.Death, info.Asist);
                     Managers.Object.MyPlayer.UI.PlayerHUD.UpdateBattleBoard(pc.Id);
-                    //Debug.Log($"{pc.Id} {pc.name} K: {pc.KillAmount} D: {pc.DeathAmount} A: {pc.AsistAmount}");
                 }
             }               
         }
@@ -1089,11 +1089,11 @@ class PacketHandler
         if (!IsSceneReady("Game", () => S_ChatHandler(session, packet))) return;
         S_Chat chatPkt = packet as S_Chat;
 
-        GameObject go = Managers.Object.FindById(chatPkt.ObjectId);
-        if (go == null)
-            return;
+        //GameObject go = Managers.Object.FindById(chatPkt.ObjectId);
+        //if (go == null)
+        //    return;
 
-        ChatHandler.Instance.EnqueueMessage(chatPkt.PlayerName, chatPkt.Message, chatPkt.ChatType, chatPkt.CharType);
+        ChatHandler.Instance.EnqueueMessage(chatPkt.ObjectId, chatPkt.TeamId, chatPkt.PlayerName, chatPkt.Message, chatPkt.ChatType, chatPkt.CharType);
     }
 
     public static void S_AnimSpeedHandler(PacketSession session, IMessage packet)
@@ -1159,7 +1159,6 @@ class PacketHandler
         UI_YukiNameTag yukiNameTag = go.GetComponentInChildren<UI_YukiNameTag>();
         if (yukiNameTag == null)
         {
-            //Debug.Log("null");
             return;
         }
 
@@ -1298,7 +1297,16 @@ class PacketHandler
         if(!removeEffectPacket.IsCommon)
             Managers.FX.Effect.RemoveEffect(removeEffectPacket);
         else
-            Managers.FX.Effect.RemoveCommonEffect(removeEffectPacket);
+        {
+            PlayerController pc = Managers.Object.FindById(removeEffectPacket.ObjectId).GetComponentInChildren<PlayerController>();
+            if (pc == null)
+                return;
+
+            //if(pc.IsFxEffect(removeEffectPacket.CommonName))
+                Managers.FX.Effect.RemoveCommonEffect(removeEffectPacket);
+            //else
+            //    pc.HideCommonUIEffect(removeEffectPacket.CommonName);
+        }
     }
 
     public static void S_StartOperateHandler(PacketSession session, IMessage packet)

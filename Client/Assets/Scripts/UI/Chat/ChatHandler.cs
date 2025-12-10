@@ -9,7 +9,8 @@ public class ChatHandler : MonoBehaviour
 {
     public static ChatHandler Instance;
 
-    public static bool IsChatting { get; private set; }
+    public bool IsChatting { get; private set; } = false;
+    public int MyId => Managers.Object.MyPlayer.Id;
 
     [SerializeField] private TMP_InputField inputField;
     [SerializeField] private RectTransform contentRect;
@@ -20,7 +21,7 @@ public class ChatHandler : MonoBehaviour
     private ChatType chatType;
 
     // ¸Þ½ÃÁö Å¥
-    private static Queue<(string playerName, string message, ChatType chatType, CharacterType charType)> messageQueue = new Queue<(string, string, ChatType, CharacterType)>();
+    private static Queue<(int playerId, int teamId, string playerName, string message, ChatType chatType, CharacterType charType)> messageQueue = new Queue<(int, int, string, string, ChatType, CharacterType)>();
 
     private void Awake()
     {
@@ -38,9 +39,9 @@ public class ChatHandler : MonoBehaviour
         HideInputField(); // ½ÃÀÛ ½Ã ¼û±è
     }
 
-    public void EnqueueMessage(string playerName, string message, ChatType chatType, CharacterType charType)
+    public void EnqueueMessage(int playerId, int teamId, string playerName, string message, ChatType chatType, CharacterType charType)
     {
-        messageQueue.Enqueue((playerName, message, chatType, charType));
+        messageQueue.Enqueue((playerId, teamId, playerName, message, chatType, charType));
     }
 
     void Update()
@@ -48,7 +49,7 @@ public class ChatHandler : MonoBehaviour
         while (messageQueue.Count > 0)
         {
             var msg = messageQueue.Dequeue();
-            AddMessage(msg.playerName, msg.message, msg.chatType, msg.charType);
+            AddMessage(msg.playerId, msg.teamId, msg.playerName, msg.message, msg.chatType, msg.charType);
         }
 
         // Shift + enter (all chat)
@@ -137,14 +138,34 @@ public class ChatHandler : MonoBehaviour
         inputField.text = "";
     }
 
-    private void AddMessage(string playerName, string message, ChatType type, CharacterType charType)
+    private void AddMessage(int playerId, int teamId, string playerName, string message, ChatType type, CharacterType charType)
     {
         GameObject textPrefab = Resources.Load<GameObject>("Prefabs/UI/Chat/ChatText");
         GameObject inst = Instantiate(textPrefab, contentRect, false);
 
         string prefix = type == ChatType.Team ? "<color=#52D1FF>[ÆÀ]</color>" : "<color=#FFD400>[ÀüÃ¼]</color>";
 
-        inst.GetComponent<TMP_Text>().text = $"{prefix} <color=#01DCE3>{playerName}({CharacterName(charType)})</color> : {message}";
+        int myId = Managers.Object.MyPlayer.Id;
+        int myTeam = Managers.Object.MyPlayer.ObjInfo.Player.Team;
+
+        bool isMine = playerId == myId;
+        bool isTeam = teamId == myTeam;
+
+        string nameColor;
+
+        if (type == ChatType.Team)
+            nameColor = "#01DCE3";
+        // ÀüÃ¼ Ã¤ÆÃ
+        else
+        {
+            if (isTeam)
+                nameColor = "#01DCE3"; // ¾Æ±º = ÆÄ¶û
+            else
+                nameColor = "#FF0000"; // Àû±º = »¡°­
+        }
+
+        inst.GetComponent<TMP_Text>().text =
+                $"{prefix} <color={nameColor}>{playerName}({CharacterName(charType)})</color> : {message}";
     }
 
     private string CharacterName(CharacterType charType)

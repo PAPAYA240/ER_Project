@@ -98,13 +98,19 @@ public class PlayerViewController : MonoBehaviour
 
     public void OnRespawn(S_Respawn packet)
     {
-        _agent.Warp(new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ));
+        _agent.enabled = false;
+
+        Vector3 respawnPos = new Vector3(packet.PosInfo.PosX, packet.PosInfo.PosY, packet.PosInfo.PosZ);
+        transform.position = respawnPos;
+
+        _agent.enabled = true;
+        _agent.Warp(respawnPos);
+
         _player.Hp = packet.Hp;
         _player.Stamina = packet.Stamina;
         _player.IsRest = packet.IsRest;
 
         _player.UpdateTransform(true);
-        //_syncing = false; // 리스폰 직후는 입력 올 때까지 동기화 중지
     }
 
     public void OnStop(S_Stop packet)
@@ -223,14 +229,14 @@ public class PlayerViewController : MonoBehaviour
             return;
         dir /= dist;
 
-        //float _stopBuffer = 0.1f;
+        float _stopBuffer = 0.1f;
         //float stop = Mathf.Max(0.05f, _player.AttackRange - _stopBuffer);
         //Vector3 finPos = targetPos - dir * stop;
 
         Vector3 finPos = myPos;
         float distance = Vector3.Distance(myPos, targetPos);
-        if(distance > _player.AttackRange)
-            finPos = targetPos - dir * _player.AttackRange;
+        if(distance >= _player.AttackRange - _stopBuffer)
+            finPos = targetPos - dir * (_player.AttackRange - _stopBuffer);
 
         if (NavMesh.SamplePosition(finPos, out var navHit, 2.0f, NavMesh.AllAreas))
             finPos = navHit.position;

@@ -12,19 +12,11 @@ public abstract class SkillHandlerBase : ISkill
     public virtual float MoveSpeedMultiplier => 1.0f;
     public bool CanStopSkill { get; set; } = false;
 
-    //public int                      LastSeq { get { return _lastSeq; } set { _lastSeq = value; } }
-    //public SkillCollisionProposal   Latest { get { return _latest; } set { _latest = value; } }
     public Dictionary<int, SkillCollisionProposal> _collisions = new Dictionary<int, SkillCollisionProposal>();
-
-
-    //protected int _lastSeq;
-    //protected SkillCollisionProposal _latest;
-    //protected bool _committed;
-    protected Vector3 _finalEnd;
-
-    // TEMP
     protected int _requestId = 0;
     protected int _commitId = 0;
+
+    protected Vector3 _finalEnd;
 
     protected CharacterType _characterType;
     protected string _animName;
@@ -71,34 +63,25 @@ public abstract class SkillHandlerBase : ISkill
     }
     public virtual void OnExit(Player p, SkillContext ctx)
     {
-        //p.SendSkillMotion(
-        //    type: SkillMotionType.Transform,
-        //    start: p.Position,
-        //    end: _finalEnd,
-        //    authoritativeEnd: true);
     }
 
     public virtual void OnAttack(Player p)
     {
     }
     public virtual void OnHit(Player p, SkillContext ctx)
-    {
-        
+    {       
     }
 
     public virtual void OnCollision<T>(Player p, List<T> targets, GameObject.StatusEffect effect)
-    {
-        
+    {       
     }
 
     public virtual void OnCollision<T>(Player p, T nearestTarget, GameObject.StatusEffect effect)
-    {
-        
+    {        
     }
 
     public virtual void OnTick(Player p, SkillContext ctx)
-    {
-        
+    {        
     }
 
     public virtual void OnPropose(Player p, in SkillCollisionProposal prop)
@@ -135,10 +118,10 @@ public abstract class SkillHandlerBase : ISkill
     public float GetDuration()
     {
         if (_animName == null)
-            return 0.15f;
+            return 0.25f;
 
         if (!DataManager.AnimLengthInfoDict[_characterType].ContainsKey(_animName))
-            return 0.15f;
+            return 0.25f;
 
         return DataManager.AnimLengthInfoDict[_characterType][_animName].Length;
     }
@@ -161,7 +144,5 @@ public abstract class SkillHandlerBase : ISkill
         prop = default;
         return false;
     }
-
-
     #endregion
 }

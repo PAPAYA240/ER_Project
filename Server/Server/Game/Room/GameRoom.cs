@@ -563,7 +563,15 @@ namespace Server.Game
                     case Subject.Enemy:
                         Push(target.AddStatusEffect, effect);
                         break;
-                }                
+                    case Subject.W:
+                        if (effect.type == "CDR")
+                            player.Skill.Reduce(KeyCode.W, effect.value, effect.valueType == ValueType.Ratio);
+                        break;
+                    case Subject.E:
+                        if (effect.type == "CDR")
+                            player.Skill.Reduce(KeyCode.E, effect.value, effect.valueType == ValueType.Ratio);
+                        break;
+                }
             }
         }
 
@@ -681,7 +689,7 @@ namespace Server.Game
             ////desc.Speed = 17;
             //desc.EndPos = Vector3.Zero;
             //player.ChangeState(new Player_StunState(desc));
-            player.Exp += 500;
+            player.Exp += 5000;
         }
 
         #endregion
@@ -939,6 +947,7 @@ namespace Server.Game
             S_Chat sendPkt = new S_Chat()
             {
                 ObjectId = player.Id,
+                TeamId = player.Team,
                 PlayerName = player.Info.Player.Nickname,
                 Message = chatPkt.Message,
                 ChatType = chatPkt.ChatType,
@@ -1029,7 +1038,7 @@ namespace Server.Game
 
                 if (monster.Info.PosInfo.GetDistanceSq(playerPos) <= rangeSq)
                 {
-                    if (player.State == CreatureState.Dead)
+                    if (player.CurrentState is Player_IdleState)
                         continue;
 
                     return player; 

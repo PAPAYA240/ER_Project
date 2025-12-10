@@ -12,9 +12,9 @@ public class TheodoreInputController : PlayerInputController
 {
     #region const /enum 변수
     private const float EFFECT_DURATION = 4f;
-    private const float CANCEL_DURATION = 0.5f;
+    private const float CANCEL_DURATION = 0.3f;
     private const float SNIPER_AIM_DURATION = 10f;
-    private const float AIM_WAIT_TIME = 1.4f;
+    private const float AIM_WAIT_TIME = 0.8f;
 
     const bool SKIP_STATE_CHECK = false;
     #endregion
@@ -147,6 +147,7 @@ public class TheodoreInputController : PlayerInputController
             {
                 _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
                 _skillCoroutine = null;
+                _SniperShotIdx = 0;
                 cc.EndAimMode();
                 SendSkillCancelPacket(key);
                 yield break;
@@ -163,6 +164,7 @@ public class TheodoreInputController : PlayerInputController
             yield return null;
         }
 
+         _SniperShotIdx = 0;
         _skillCoroutine = null;
         cc.EndAimMode();
         _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
@@ -208,7 +210,7 @@ public class TheodoreInputController : PlayerInputController
     {
         if(key == KeyCode.R)
         {
-            _player.UI.PlayerInterface.SetChargingBar(DataManager.SkillDict[CharacterType.Theodore][key].name, 1.5f, 3); 
+            _player.UI.PlayerInterface.SetMaintainChargingBar(DataManager.SkillDict[CharacterType.Theodore][key].name, 1.5f, 3); 
         }
 
         while (!Input.GetKeyUp(key) && !Input.GetMouseButtonDown(0))
@@ -220,6 +222,7 @@ public class TheodoreInputController : PlayerInputController
             }
             yield return null;
         }
+        
         onConfirm?.Invoke();
     }
 

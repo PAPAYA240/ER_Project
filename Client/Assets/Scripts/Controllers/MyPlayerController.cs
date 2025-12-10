@@ -139,9 +139,6 @@ public class MyPlayerController : PlayerController
             }
         }  
 
-        if (ChatHandler.IsChatting)
-            return;
-
         // 2) 정지(S/H)
         var stopCmd = _input.GetStopCommand();
         if (stopCmd != null)
@@ -181,21 +178,6 @@ public class MyPlayerController : PlayerController
             Managers.Network.Send(testCmd);
 
         CheckUpdatedFlag();
-    }
-
-    protected override void UpdateCharging()
-    {
-        if (_agent == null || !_agent.isOnNavMesh)
-            return;
-        //if (_agent.remainingDistance <= _agent.stoppingDistance)
-        //{
-        //    if (_moveKeyPressed)
-        //        PlayAnimation("CHARGING", 0.1f);
-
-        //    _agent.speed = _originSpeed;
-        //    _moveKeyPressed = false;
-        //}
-        //UpdateTransform();
     }
 
     public override void OnDead()

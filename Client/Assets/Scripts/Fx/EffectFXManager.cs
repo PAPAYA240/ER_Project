@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
 using static Data.EffectData;
-using static UnityEngine.Rendering.DebugUI.Table;
 
 public class EffectFXManager : MonoBehaviour
 {
@@ -63,14 +62,12 @@ public class EffectFXManager : MonoBehaviour
             GameObject fxPrefab = GetFxPrefab(ownerId, data.prefabName, isCommon);
             if(fxPrefab == null)
             {
-                //Debug.LogWarning($"FX Prefab not found: {data.prefabName}");
                 continue;
             }
 
             GameObject fxObject = Managers.FX.Pop(fxPrefab, null);
             if (fxObject == null)
             {
-                //Debug.LogError($"Failed to pop FX from pool: {data.prefabName}");
                 continue;
             }
 
@@ -103,12 +100,19 @@ public class EffectFXManager : MonoBehaviour
                 Quaternion fixedRot = Quaternion.identity;
                 fxObject.transform.rotation = fixedRot;
 
-                var follow = fxObject.GetComponent<FX_TargetNoRotation>();
+                var follow = fxObject.GetOrAddComponent<FX_TargetNoRotation>();
                 if (follow == null)
-                    follow = fxObject.AddComponent<FX_TargetNoRotation>();
-
+                    return null;
                 // data.position 을 world offset으로 쓰고 싶으면
                 follow.Setup(followTarget, data.position, fixedRot, faceCamera: false);
+            }
+            else if (data.target == EEffectTarget.TargetUI)
+            {
+                var follow = fxObject.GetOrAddComponent<FX_Follower>();
+                if (follow == null)
+                    return null;
+
+                follow.SetTarget(casterTransform);
             }
             else
             {
@@ -167,18 +171,17 @@ public class EffectFXManager : MonoBehaviour
             if (objectType == GameObjectType.Monster)
             {
                 MonsterController mc = bc as MonsterController;
-                StartCoroutine(ControlEffect(fxObject, mc.GetTargetForwardVector(), data.duration));
+                StartCoroutine(ControlEffect(fxObject, mc.GetTargetForwardVector(), data.duration, data.speed));
             }
             else
-                StartCoroutine(ControlEffect(fxObject, casterTransform.forward, data.duration));
+                StartCoroutine(ControlEffect(fxObject, casterTransform.forward, data.duration, data.speed));
         }
     }
 
     #region Shooting
-    IEnumerator ControlEffect(GameObject effect, Vector3 forwardTrans, float duration)
+    IEnumerator ControlEffect(GameObject effect, Vector3 forwardTrans, float duration, float moveSpeed = 20.0f)
     {
         float timer = 0f;
-        float moveSpeed = 20f;
 
         while (timer < duration)
         {
@@ -211,8 +214,8 @@ public class EffectFXManager : MonoBehaviour
             activeCoroutines.Remove(effect.GetInstanceID());
         }
 
-        effect?.transform.SetParent(null);
         Managers.FX.Push(effect);
+        //effect?.transform.SetParent(null);
     }
 
     private IEnumerator ReturnToPoolAfterDelay(int ownerId, GameObject fxObject, string prefabName, float delayTime, float duration, Transform casterTransform)

@@ -3,13 +3,14 @@ using Data;
 using Google.Protobuf.Protocol;
 using System.Collections.Generic;
 using System.Collections;
-using static UnityEngine.Rendering.DebugUI.Table;
 
 
 public class FXManager : MonoBehaviour
 {
     public EffectFXManager Effect { get; private set; }
     public UIFXManager UI { get; private set; }
+
+    private bool _isShuttingDown = false;
 
     public void Init()
     {
@@ -102,12 +103,17 @@ public class FXManager : MonoBehaviour
     private Transform _poolRoot;
     public void CreatePool(GameObject prefab, int initialSize)
     {
-        if (prefab == null) return;
+        if (prefab == null) 
+            return;
 
         int prefabId = prefab.GetInstanceID();
-        if (_pools.ContainsKey(prefabId)) return;
+        if (_pools.ContainsKey(prefabId)) 
+            return;
 
         GameObject poolRoot = new GameObject($"Pool_{prefab.name}");
+        if (poolRoot == null)
+            return;
+
         poolRoot.transform.SetParent(_poolRoot);
 
         Pool pool = new Pool
@@ -154,7 +160,10 @@ public class FXManager : MonoBehaviour
         obj.transform.SetParent(parent);
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localRotation = Quaternion.identity;
-        obj.SetActive(true);
+        //obj.SetActive(true);
+
+        ParticleSystem ps = obj.GetComponentInChildren<ParticleSystem>();
+        ps.Play();
 
         pool.InUse.Add(obj);
         return obj;
@@ -167,17 +176,37 @@ public class FXManager : MonoBehaviour
         // 어느 풀에 속하는지 찾기
         foreach (var pool in _pools.Values)
         {
-            if (pool.InUse.Contains(obj))
+            if (!pool.InUse.Contains(obj))
+                continue;
+
+            pool.InUse.Remove(obj);
+
+            // 매니저/풀 파괴 중이면 그냥 버림
+            if (_isShuttingDown || pool.Root == null ||
+                !pool.Root.gameObject.scene.IsValid())
             {
-                pool.InUse.Remove(obj);
-                obj.SetActive(false);
-                if(obj != null && pool.Root != null) 
-                    obj.transform.SetParent(pool.Root);
-                pool.Available.Enqueue(obj);
+                Destroy(obj);
                 return;
             }
+
+            //obj.SetActive(false);
+            obj.transform.SetParent(pool.Root, false);
+            pool.Available.Enqueue(obj);
+
+            ParticleSystem ps = obj.GetComponentInChildren<ParticleSystem>();
+            ps.Stop();
+            return;
         }
     }
 
+    private void OnDestroy()
+    {
+        _isShuttingDown = true;
+    }
+
+    private void OnApplicationQuit()
+    {
+        _isShuttingDown = true;
+    }
     #endregion
 }

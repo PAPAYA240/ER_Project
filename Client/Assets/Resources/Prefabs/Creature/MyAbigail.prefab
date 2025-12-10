@@ -1245,8 +1245,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d07a4ac14489814e9692da7473da8c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _monsterMask:
+    serializedVersion: 2
+    m_Bits: 0
+  _playerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  IsHide: 0
+  AGENT_SPEED_RATIO: 1.3
   Sound: {fileID: 0}
-  HidingInBush: 0
   xRayIgnoreStencilID: 100
 --- !u!114 &6165833819830594196
 MonoBehaviour:
@@ -5805,7 +5812,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1385972337252670, guid: 26d2f508c3ecc1f4ab8da2f1c0d55a26, type: 3}
       propertyPath: m_Name
-      value: AbigailTable
+      value: RestTable
       objectReference: {fileID: 0}
     - target: {fileID: 1385972337252670, guid: 26d2f508c3ecc1f4ab8da2f1c0d55a26, type: 3}
       propertyPath: m_IsActive

@@ -212,7 +212,6 @@ public class PlayerController : CreatureController
     // 화살
     protected Transform _equipTransform = null;
 
-    public bool IsHide = false;
     #region KDA
 
     public int KillAmount { get; private set; } = 0; 
@@ -1060,7 +1059,7 @@ public class PlayerController : CreatureController
              break;
          case 2:    // change
              {
-                 Hiding(true);
+                 Hiding(false);
                     he.ChangeBushRenderer();
              }
              break;
@@ -1089,7 +1088,7 @@ public class PlayerController : CreatureController
         {
             foreach (Transform child in transform.GetComponentsInChildren<Transform>(true))
             {
-                if (child.name == "AbigailTable")
+                if (child.name == "RestTable")
                 {
                     _restItem = child.gameObject;
                     RenderRestItem(false);

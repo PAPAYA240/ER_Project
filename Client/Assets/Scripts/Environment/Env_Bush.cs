@@ -17,9 +17,11 @@ public class Env_Bush : EnvController
         Hidden,
         Translucent
     }
+
     [SerializeField] public BoxCollider _bushCollider;
+
     List<int> _insidePlayersId = new List<int>();
-    Dictionary<int, Coroutine> _delayedVisibleCoroutines = new Dictionary<int, Coroutine>(); 
+    Dictionary<int, Coroutine> _delayedVisibleCoroutines = new Dictionary<int, Coroutine>();
 
     protected override void Init() => base.Init();
 
@@ -43,14 +45,36 @@ public class Env_Bush : EnvController
             }
         }
 
+
         // 나간 플레이어 처리
         for (int i = _insidePlayersId.Count - 1; i >= 0; i--)
         {
             int oldId = _insidePlayersId[i];
+            GameObject exGo = Managers.Object.FindById(oldId);
+            PlayerController pc = exGo.GetComponentInChildren<PlayerController>();
+
+            if (pc != null && pc.State == CreatureState.Dead)
+            {
+                _insidePlayersId.RemoveAt(i);
+
+                if (_delayedVisibleCoroutines.ContainsKey(oldId))
+                {
+                    StopCoroutine(_delayedVisibleCoroutines[oldId]);
+                    _delayedVisibleCoroutines.Remove(oldId);
+                }
+
+                GameObject effect = Managers.FX.Effect.FindCurrentPlayEffect(oldId, "FX_PassiveShideld");
+                if (effect != null)
+                    Managers.FX.Effect.RemoveEffect(oldId, effect);
+
+                pc.BushRenderType((int)BushState.Visible);
+                continue;
+            }
+
             if (!currentInsidePlayersId.Contains(oldId))
             {
-                GameObject exGo = Managers.Object.FindById(oldId);
                 _insidePlayersId.RemoveAt(i);
+
                 if (exGo != null && exGo.TryGetComponent<PlayerController>(out PlayerController exPc))
                 {
                     BushExitRender(exPc);
@@ -64,6 +88,11 @@ public class Env_Bush : EnvController
             if (!_insidePlayersId.Contains(newId))
             {
                 GameObject newGo = Managers.Object.FindById(newId);
+                PlayerController pc = newGo.GetComponentInChildren<PlayerController>();
+
+                if (pc != null && pc.State == CreatureState.Dead)
+                    continue;
+
                 if (newGo != null && newGo.TryGetComponent<PlayerController>(out PlayerController newPc))
                 {
                     _insidePlayersId.Add(newId);
@@ -71,7 +100,10 @@ public class Env_Bush : EnvController
                 }
             }
         }
+
+        UpdateInsidePlayersRender(); 
     }
+
     private void BushExitRender(PlayerController pc)
     {
         if (pc.ObjInfo.Player.CharType == CharacterType.Theodore)
@@ -108,6 +140,7 @@ public class Env_Bush : EnvController
             pc.BushRenderType((int)BushState.Visible);
         }
 
+
         Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapCharImgEnable(pc.Id, false);
         foreach (int id in _insidePlayersId)
         {
@@ -122,37 +155,93 @@ public class Env_Bush : EnvController
                 Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapCharImgEnable(id, false);
         }
 
-        UpdateRemainingPlayersRender();
+        //UpdateRemainingPlayersRender();
     }
+    private void UpdateInsidePlayersRender()
+    {
+        bool hasMyTeammate = false;
+
+        foreach (int id in _insidePlayersId)
+        {
+            GameObject go = Managers.Object.FindById(id);
+            if (go == null) continue;
+
+            PlayerController pc = go.GetComponent<PlayerController>();
+            if (pc == null) continue;
+
+            if (pc.ObjInfo.Player.Team == Managers.Object.MyPlayer.ObjInfo.Player.Team)
+            {
+                hasMyTeammate = true;
+                break;
+            }
+        }
+
+        foreach (int id in _insidePlayersId)
+        {
+            GameObject go = Managers.Object.FindById(id);
+            if (go == null) continue;
+
+            PlayerController pc = go.GetComponent<PlayerController>();
+            if (pc == null) continue;
+
+            bool isSameTeam = pc.ObjInfo.Player.Team == Managers.Object.MyPlayer.ObjInfo.Player.Team;
+            bool isTheodore = pc.ObjInfo.Player.CharType == CharacterType.Theodore;
+            bool hasTheodorePassive = false;
+
+            if (isTheodore && !isSameTeam)
+            {
+                GameObject effect = Managers.FX.Effect.FindCurrentPlayEffect(pc.Id, "FX_PassiveShideld");
+                hasTheodorePassive = (effect != null);
+            }
+
+            BushState targetState;
+            if (hasTheodorePassive)
+            {
+                targetState = BushState.Hidden;
+            }
+            else if (isSameTeam || hasMyTeammate)
+            {
+                targetState = BushState.Translucent;
+            }
+            else
+            {
+                targetState = BushState.Hidden;
+            }
+
+            pc.BushRenderType((int)targetState);
+        }
+    }
+
 
     private IEnumerator DelayedVisible(PlayerController pc, float delay)
     {
-        yield return new WaitForSeconds(delay);
+        float elapsed = 0f;
+
+        while (elapsed < delay)
+        {
+            if (pc == null || pc.State == CreatureState.Dead)
+            {
+                CleanupDelayedVisible(pc);
+                yield break;
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+         CleanupDelayedVisible(pc);
+    }
+
+    private void CleanupDelayedVisible(PlayerController pc)
+    {
+        GameObject effect = Managers.FX.Effect.FindCurrentPlayEffect(pc.Id, "FX_PassiveShideld");
+        if (effect != null)
+            Managers.FX.Effect.RemoveEffect(pc.Id, effect);
 
         if (_delayedVisibleCoroutines.ContainsKey(pc.Id))
             _delayedVisibleCoroutines.Remove(pc.Id);
 
         pc.BushRenderType((int)BushState.Visible);
-    }
-
-    private void UpdateRemainingPlayersRender()
-    {
-        foreach (int inPlayerId in _insidePlayersId)
-        {
-            GameObject inGo = Managers.Object.FindById(inPlayerId);
-            if (inGo == null) 
-                continue;
-
-            PlayerController inPc = inGo.GetComponent<PlayerController>();
-            if (inPc.ObjInfo.Player.Team == Managers.Object.MyPlayer.ObjInfo.Player.Team)
-            {
-                inPc.BushRenderType((int)BushState.Translucent);
-            }
-            else
-            {
-                inPc.BushRenderType((int)BushState.Hidden);
-            }
-        }
     }
 
     #region Interaction
@@ -170,11 +259,25 @@ public class Env_Bush : EnvController
 
         bool isSameTeam = Managers.Object.MyPlayer.ObjInfo.Player.Team == target.ObjInfo.Player.Team;
         bool amIInsideBush = _insidePlayersId.Contains(Managers.Object.MyPlayer.Id);
+        bool isTheodore = target.ObjInfo.Player.CharType == CharacterType.Theodore;
+        bool hasTheodorePassive = false;
+
+        if (isTheodore && !isSameTeam)
+        {
+            GameObject effect = Managers.FX.Effect.FindCurrentPlayEffect(target.Id, "FX_PassiveShideld");
+            hasTheodorePassive = (effect != null);
+        }
 
         BushState targetState;
 
-        if (isSameTeam)
+        if (hasTheodorePassive)
+        {
+            targetState = BushState.Hidden;
+        }
+        else if (isSameTeam)
+        {
             targetState = BushState.Translucent;
+        }
         else if (amIInsideBush)
         {
             targetState = BushState.Translucent;
