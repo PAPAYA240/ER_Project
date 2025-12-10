@@ -22,7 +22,7 @@ public sealed class Hyunwoo_Q : SkillHandlerBase
 
         SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
-        p.Room.BroadcastAbigailFx(p, AbigailFx.HyunwooQ, 0f);
+        p.Room.BroadcastAbigailFx(p, AbigailFx.HyunwooQ, 0.8f);
         //p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode);
     }
 

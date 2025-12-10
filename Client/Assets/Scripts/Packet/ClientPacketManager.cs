@@ -194,7 +194,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SAbigailPortal, MakePacket<S_AbigailPortal>);
 		_handler.Add((ushort)MsgId.SAbigailPortal, PacketHandler.S_AbigailPortalHandler);		
 		_onRecv.Add((ushort)MsgId.SPingMarker, MakePacket<S_PingMarker>);
-		_handler.Add((ushort)MsgId.SPingMarker, PacketHandler.S_PingMarkerHandler);
+		_handler.Add((ushort)MsgId.SPingMarker, PacketHandler.S_PingMarkerHandler);		
+		_onRecv.Add((ushort)MsgId.SMinimapIcon, MakePacket<S_MinimapIcon>);
+		_handler.Add((ushort)MsgId.SMinimapIcon, PacketHandler.S_MinimapIconHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

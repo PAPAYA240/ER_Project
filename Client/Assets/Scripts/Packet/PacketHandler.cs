@@ -1491,6 +1491,27 @@ class PacketHandler
         pc.Ping.PlayPing(pingPacket.TargetPos.ToVector());
     }
 
+    public static void S_MinimapIconHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_MinimapIconHandler(session, packet)))
+            return;
+
+        S_MinimapIcon minimapIconPacket = packet as S_MinimapIcon;
+
+        switch (minimapIconPacket.Type)
+        {
+            case MinimapIcon.OmegaExpected:
+                Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapOmegaExpected(minimapIconPacket.IsActivate);
+                break;
+            case MinimapIcon.OmegaGo:
+                Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapOmegaGo(minimapIconPacket.IsActivate);
+                break;
+            case MinimapIcon.GammaGo:
+                Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapGammaGo(minimapIconPacket.IsActivate);
+                break;
+        }
+    }
+
     static float GetCurrentEstimatedOneWayLatency()
     {
         return 0.05f;
