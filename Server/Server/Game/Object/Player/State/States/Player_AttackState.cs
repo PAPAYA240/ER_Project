@@ -28,6 +28,9 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
     protected bool _damageApplied;
     protected int _attackIndex;               // 0/1 → A/B 번갈이
 
+    protected float _originalFPS = 30f;
+    protected float _originalFrames = 18f;
+
     // 회전
     protected bool _isRotate = false;
 
@@ -99,7 +102,6 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         _nextAttackReadyUtc = now;              // 즉시 공격 가능
         _comboResetDeadlineUtc = default;
     }
-
 
     public virtual void Execute(Player player)
     {
@@ -271,10 +273,6 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
         _swingActive = true;
         _damageApplied = false;
 
-        _swingStartUtc = now;
-        _hitMomentUtc = now.AddSeconds(WindupSeconds / p.AttackSpeed);
-        _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds / p.AttackSpeed);
-
         // A/B 번갈이
         string animName = (_attackIndex == 0) ? AnimAttackA : AnimAttackB;
         _attackIndex = 1 - _attackIndex;
@@ -289,8 +287,16 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
             p.CombatTime = 0f;
         }
 
-        // 애니 송출(서버 권한)
-        p.SendAnimPacket(animName, 0.05f, p.AttackSpeed, true);
+        float originalTime = _originalFrames / _originalFPS;
+        float targetPeriod = 1f / p.AttackSpeed;
+
+        float animSpeed = originalTime / targetPeriod;
+
+        _swingStartUtc = now;
+        _hitMomentUtc = now.AddSeconds(WindupSeconds / animSpeed);
+        _swingEndUtc = _hitMomentUtc.AddSeconds(BackswingSeconds / animSpeed);
+
+        p.SendAnimPacket(animName, 0.05f, animSpeed, true);
 
         //p.FaceToTarget(_targetId);
     }
