@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using JetBrains.Annotations;
 
 public class ObjectManager
 {
@@ -145,6 +146,16 @@ public class ObjectManager
         mc.Hp = info.StatInfo.MaxHp;
         mc.Type = info.Monster.MonsterType;
         mc.MonsterTeam = info.Monster.Team;
+
+        if (mc.Type == MonsterType.Omega && Managers.Object.MyPlayer != null )
+        {
+            Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapOmegaExpected(false);
+            Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapOmegaGo(true);
+        }
+        else if (mc.Type == MonsterType.Gamma && Managers.Object.MyPlayer != null)
+        {
+            Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapGammaGo(true);
+        }
     }
     private void AddProjectile(ObjectInfo info)
     {

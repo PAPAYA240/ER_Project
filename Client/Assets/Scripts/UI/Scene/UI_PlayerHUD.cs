@@ -276,4 +276,16 @@ public class UI_PlayerHUD : UI_Scene
     {
         GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetImageEnable(id, isEnable);
     }
+    public void SetMinimapOmegaExpected(bool isActivate)
+    {
+        GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetOmegaExpected(isActivate);
+    }
+    public void SetMinimapOmegaGo(bool isActivate)
+    {
+        GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetOmegaGo(isActivate);
+    }
+    public void SetMinimapGammaGo(bool isActivate)
+    {
+        GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetGammaGo(isActivate);
+    }
 }

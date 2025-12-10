@@ -3,6 +3,7 @@ using Data;
 using Google.Protobuf.Protocol;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.VFX;
 
 
 public class FXManager : MonoBehaviour
@@ -152,7 +153,6 @@ public class FXManager : MonoBehaviour
         }
         else
         {
-            // 풀이 비었으면 새로 생성
             obj = Instantiate(pool.Prefab, pool.Root);
             obj.name = pool.Prefab.name;
         }
@@ -160,10 +160,9 @@ public class FXManager : MonoBehaviour
         obj.transform.SetParent(parent);
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localRotation = Quaternion.identity;
-        //obj.SetActive(true);
+        obj.SetActive(true);
 
-        ParticleSystem ps = obj.GetComponentInChildren<ParticleSystem>();
-        ps.Play();
+        CreateEffect(obj);
 
         pool.InUse.Add(obj);
         return obj;
@@ -189,16 +188,32 @@ public class FXManager : MonoBehaviour
                 return;
             }
 
-            //obj.SetActive(false);
             obj.transform.SetParent(pool.Root, false);
             pool.Available.Enqueue(obj);
 
-            ParticleSystem ps = obj.GetComponentInChildren<ParticleSystem>();
-            ps.Stop();
+            CreateEffect(obj);
+
+            obj.SetActive(false);
             return;
         }
     }
 
+    void CreateEffect(GameObject obj)
+    {
+        ParticleSystem ps = obj.GetComponentInChildren<ParticleSystem>();
+        if (ps != null)
+        {
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            ps.Clear(true);
+        }
+
+        VisualEffect vfx = obj.GetComponentInChildren<VisualEffect>();
+        if (vfx != null)
+        {
+            vfx.Stop();
+            vfx.Reinit();
+        }
+    }
     private void OnDestroy()
     {
         _isShuttingDown = true;
