@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using static UnityEngine.Analytics.IAnalytic;
+using static UnityEngine.GraphicsBuffer;
 
 public class Env_Bush : EnvController
 {
@@ -107,6 +108,20 @@ public class Env_Bush : EnvController
             pc.BushRenderType((int)BushState.Visible);
         }
 
+        Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapCharImgEnable(pc.Id, false);
+        foreach (int id in _insidePlayersId)
+        {
+            GameObject inGo = Managers.Object.FindById(id);
+            if (inGo == null) continue;
+
+            PlayerController inPc = inGo.GetComponent<PlayerController>();
+            if (inPc == null) continue;
+
+            // 안에 있는 적팀 아이콘 끄기
+            if (Managers.Object.MyPlayer.ObjInfo.Player.Team != inPc.ObjInfo.Player.Team)
+                Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapCharImgEnable(id, false);
+        }
+
         UpdateRemainingPlayersRender();
     }
 
@@ -161,9 +176,15 @@ public class Env_Bush : EnvController
         if (isSameTeam)
             targetState = BushState.Translucent;
         else if (amIInsideBush)
+        {
             targetState = BushState.Translucent;
+            Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapCharImgEnable(id: target.Id, true);
+        }
         else
+        {
             targetState = BushState.Hidden;
+            Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapCharImgEnable(id: target.Id, false);
+        }
 
         target.BushRenderType((int)targetState);
 
@@ -176,6 +197,9 @@ public class Env_Bush : EnvController
 
             PlayerController inPc = inGo.GetComponent<PlayerController>();
             if (inPc == null) continue;
+
+            if (inPc.ObjInfo.Player.Team != target.ObjInfo.Player.Team)
+                Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapCharImgEnable(id: inPc.Id, true);
 
             if (Managers.Object.MyPlayer.Id == target.Id)
                 inPc.BushRenderType((int)BushState.Translucent);

@@ -99,12 +99,14 @@ public sealed class Hyunwoo_E : SkillHandlerBase
                     Vector3 start = tartgetKVP.Value;
                     Vector3 end = prop.collisionPos;
 
+                    float epsilon = 0.3f;
+
                     StunStateDesc desc = new StunStateDesc();
                     desc.EndPos = end;
                     desc.Speed = _speed * 2f;
 
                     // hit the wall
-                    if ((start - end).Length() - _knockbackRange < float.Epsilon)
+                    if ((start - end).Length() - _knockbackRange < epsilon)
                         desc.Duration = _duration + 1.2f;
                     // do not hit the wall
                     else
