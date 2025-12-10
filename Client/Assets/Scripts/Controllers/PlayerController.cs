@@ -1088,7 +1088,7 @@ public class PlayerController : CreatureController
         {
             foreach (Transform child in transform.GetComponentsInChildren<Transform>(true))
             {
-                if (child.name == "AbigailTable")
+                if (child.name == "RestTable")
                 {
                     _restItem = child.gameObject;
                     RenderRestItem(false);

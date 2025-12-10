@@ -46,9 +46,28 @@ public class Env_Bush : EnvController
         for (int i = _insidePlayersId.Count - 1; i >= 0; i--)
         {
             int oldId = _insidePlayersId[i];
+            GameObject exGo = Managers.Object.FindById(oldId);
+            PlayerController pc = exGo.GetComponentInChildren<PlayerController>();
+
+            if (pc != null && pc.State == CreatureState.Dead)
+            {
+                _insidePlayersId.RemoveAt(i);
+                if (_delayedVisibleCoroutines.ContainsKey(oldId))
+                {
+                    StopCoroutine(_delayedVisibleCoroutines[oldId]);
+                    _delayedVisibleCoroutines.Remove(oldId);
+                }
+
+                GameObject effect = Managers.FX.Effect.FindCurrentPlayEffect(oldId, "FX_PassiveShideld");
+                if (effect != null)
+                    Managers.FX.Effect.RemoveEffect(oldId, effect);
+
+                pc.BushRenderType((int)BushState.Visible);
+                continue;
+            }
+
             if (!currentInsidePlayersId.Contains(oldId))
             {
-                GameObject exGo = Managers.Object.FindById(oldId);
                 _insidePlayersId.RemoveAt(i);
                 if (exGo != null && exGo.TryGetComponent<PlayerController>(out PlayerController exPc))
                 {
@@ -63,6 +82,11 @@ public class Env_Bush : EnvController
             if (!_insidePlayersId.Contains(newId))
             {
                 GameObject newGo = Managers.Object.FindById(newId);
+                PlayerController pc = newGo.GetComponentInChildren<PlayerController>();
+
+                if (pc != null && pc.State == CreatureState.Dead)
+                    continue;
+
                 if (newGo != null && newGo.TryGetComponent<PlayerController>(out PlayerController newPc))
                 {
                     _insidePlayersId.Add(newId);
@@ -112,7 +136,28 @@ public class Env_Bush : EnvController
 
     private IEnumerator DelayedVisible(PlayerController pc, float delay)
     {
-        yield return new WaitForSeconds(delay);
+        float elapsed = 0f;
+
+        while (elapsed < delay)
+        {
+            if (pc == null || pc.State == CreatureState.Dead)
+            {
+                CleanupDelayedVisible(pc);
+                yield break;
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+         CleanupDelayedVisible(pc);
+    }
+
+    private void CleanupDelayedVisible(PlayerController pc)
+    {
+        GameObject effect = Managers.FX.Effect.FindCurrentPlayEffect(pc.Id, "FX_PassiveShideld");
+        if (effect != null)
+            Managers.FX.Effect.RemoveEffect(pc.Id, effect);
 
         if (_delayedVisibleCoroutines.ContainsKey(pc.Id))
             _delayedVisibleCoroutines.Remove(pc.Id);
