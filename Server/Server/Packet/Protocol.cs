@@ -438,19 +438,19 @@ namespace Google.Protobuf.Protocol {
             "DAoIWXVraUVoaXQQJRIPCgtZdWtpUmFjdGl2ZRAmEg8KC1l1a2lSYXR0YWNr",
             "ECcSDwoLWXVraVJkZWJ1ZmYQKBISCg5ZdWtpUmRlYnVmZkhpdBApEgwKCFl1",
             "a2lSZW5kECoSDwoLWXVraVZpY3RvcnkQKxIMCghZdWtpUmVzdBAsEgwKCFl1",
-            "a2lLaWxsEC0q7AEKCUFiaWdhaWxGeBIMCghBdHRhY2swMRAAEgwKCEF0dGFj",
+            "a2lLaWxsEC0q+wEKCUFiaWdhaWxGeBIMCghBdHRhY2swMRAAEgwKCEF0dGFj",
             "azAyEAESDAoIUmVzdF9FbmQQAhIOCgpSZXN0X1N0YXJ0EAMSDAoIUV9BdHRh",
             "Y2sQBBINCglRX0F0dGFjazIQBRILCgdRX1JhbmdlEAYSDAoIV19BdHRhY2sQ",
             "BxILCgdXX1JhbmdlEAgSDQoJRV9Qb3J0YWwxEAkSDQoJRV9Qb3J0YWwyEAoS",
             "DQoJUl9FeHBsb2RlEAsSCwoHUl9SYW5nZRAMEgsKB1JfU3RhcnQQDRILCgdS",
-            "X1RyYWlsEA4SDAoIV3BuU2tpbGwQDyq1AQoTSW52YWxpZFRhcmdldFJlYXNv",
-            "bhIQCgxJbnZhbGlkX051bGwQABIQCgxJbnZhbGlkX1NlbGYQARIQCgxJbnZh",
-            "bGlkX0FsbHkQAhIYChRJbnZhbGlkX1VudGFyZ2V0YWJsZRADEhAKDEludmFs",
-            "aWRfRGVhZBAEEhUKEUludmFsaWRfSW52aXNpYmxlEAUSEgoOSW52YWxpZF9I",
-            "aWRpbmcQBhIRCg1JbnZhbGlkX1ZhbGlkEAcqNwoEU2xvdBIOCgpTbG90X0Vt",
-            "cHR5EAASDwoLU2xvdF9QbGF5ZXIQARIOCgpTbG90X090aGVyEAIqHQoIQ2hh",
-            "dFR5cGUSBwoDQWxsEAASCAoEVGVhbRABQhuqAhhHb29nbGUuUHJvdG9idWYu",
-            "UHJvdG9jb2xiBnByb3RvMw=="));
+            "X1RyYWlsEA4SDAoIV3BuU2tpbGwQDxINCglIeXVud29vX1EQECq1AQoTSW52",
+            "YWxpZFRhcmdldFJlYXNvbhIQCgxJbnZhbGlkX051bGwQABIQCgxJbnZhbGlk",
+            "X1NlbGYQARIQCgxJbnZhbGlkX0FsbHkQAhIYChRJbnZhbGlkX1VudGFyZ2V0",
+            "YWJsZRADEhAKDEludmFsaWRfRGVhZBAEEhUKEUludmFsaWRfSW52aXNpYmxl",
+            "EAUSEgoOSW52YWxpZF9IaWRpbmcQBhIRCg1JbnZhbGlkX1ZhbGlkEAcqNwoE",
+            "U2xvdBIOCgpTbG90X0VtcHR5EAASDwoLU2xvdF9QbGF5ZXIQARIOCgpTbG90",
+            "X090aGVyEAIqHQoIQ2hhdFR5cGUSBwoDQWxsEAASCAoEVGVhbRABQhuqAhhH",
+            "b29nbGUuUHJvdG9idWYuUHJvdG9jb2xiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.MsgId), typeof(global::Google.Protobuf.Protocol.CombatState), typeof(global::Google.Protobuf.Protocol.CreatureState), typeof(global::Google.Protobuf.Protocol.SkillInputType), typeof(global::Google.Protobuf.Protocol.GameObjectType), typeof(global::Google.Protobuf.Protocol.EnvType), typeof(global::Google.Protobuf.Protocol.ProjectileType), typeof(global::Google.Protobuf.Protocol.SkillType), typeof(global::Google.Protobuf.Protocol.MonsterSkill), typeof(global::Google.Protobuf.Protocol.AnimType), typeof(global::Google.Protobuf.Protocol.CharacterType), typeof(global::Google.Protobuf.Protocol.MonsterType), typeof(global::Google.Protobuf.Protocol.Weapon), typeof(global::Google.Protobuf.Protocol.SkillShape), typeof(global::Google.Protobuf.Protocol.TraitType), typeof(global::Google.Protobuf.Protocol.EquipItemType), typeof(global::Google.Protobuf.Protocol.ItemGrade), typeof(global::Google.Protobuf.Protocol.StopReason), typeof(global::Google.Protobuf.Protocol.SkillMotionType), typeof(global::Google.Protobuf.Protocol.CollisionType), typeof(global::Google.Protobuf.Protocol.VariantKey), typeof(global::Google.Protobuf.Protocol.CombatTextType), typeof(global::Google.Protobuf.Protocol.Beacon), typeof(global::Google.Protobuf.Protocol.BOMB_ROZZI), typeof(global::Google.Protobuf.Protocol.SkillEffectType), typeof(global::Google.Protobuf.Protocol.SpawnPointType), typeof(global::Google.Protobuf.Protocol.AbigailSound), typeof(global::Google.Protobuf.Protocol.AbigailFx), typeof(global::Google.Protobuf.Protocol.InvalidTargetReason), typeof(global::Google.Protobuf.Protocol.Slot), typeof(global::Google.Protobuf.Protocol.ChatType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -1055,6 +1055,7 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("R_Start")] RStart = 13,
     [pbr::OriginalName("R_Trail")] RTrail = 14,
     [pbr::OriginalName("WpnSkill")] WpnSkill = 15,
+    [pbr::OriginalName("Hyunwoo_Q")] HyunwooQ = 16,
   }
 
   public enum InvalidTargetReason {
