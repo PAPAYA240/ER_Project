@@ -6,9 +6,7 @@ using static Server.Data.DataUtils;
 
 public sealed class Yuki_W : SkillHandlerBase
 {
-    private bool _onMoveCmd, _hasSentRunAnimation;
-    private Vector3 _targetPosition;
-    private const float STOP_RANGE = 0.1f;
+    private bool _hasSentRunAnimation;
 
     private string ANIM_RUN = "RUN";
     private string ANIM_IDLE = "WAIT";
