@@ -160,10 +160,10 @@ public class FXManager : MonoBehaviour
         obj.transform.SetParent(parent);
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localRotation = Quaternion.identity;
-        //obj.SetActive(true);
+        obj.SetActive(true);
 
-        ParticleSystem ps = obj.GetComponentInChildren<ParticleSystem>();
-        ps.Play();
+        //ParticleSystem ps = obj.GetComponentInChildren<ParticleSystem>();
+        //ps?.Play();
 
         pool.InUse.Add(obj);
         return obj;
@@ -189,12 +189,12 @@ public class FXManager : MonoBehaviour
                 return;
             }
 
-            //obj.SetActive(false);
+            obj.SetActive(false);
             obj.transform.SetParent(pool.Root, false);
             pool.Available.Enqueue(obj);
 
-            ParticleSystem ps = obj.GetComponentInChildren<ParticleSystem>();
-            ps.Stop();
+            //ParticleSystem ps = obj.GetComponentInChildren<ParticleSystem>();
+            //ps?.Stop();
             return;
         }
     }

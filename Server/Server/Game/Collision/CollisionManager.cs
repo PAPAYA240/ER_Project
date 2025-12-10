@@ -317,27 +317,8 @@ namespace Server.Game
                     {
                         if(hitbox.CharType == CharacterType.Rozzi)
                         {
-                            Projectile_Rozzi_R pj = hitbox.Creature.Room.FindProjectile(hitbox.Creature, ProjectileType.ProjectileRozziR) as Projectile_Rozzi_R;
-                            if (pj != null)
-                            {
-                                if (hitbox.KeyCode == KeyCode.R)
-                                {
-                                    foreach(var player in hitPlayers)
-                                    {
-                                        if(player.Id != ownerId)
-                                        {
-                                            pj.OnProjectileHit(player);
-                                            break;
-                                        }
-                                    }                               
-                                    continue;
-                                }
-                                else if(pj.Target != null && hitPlayers.Contains(pj.Target as Player))                                   
-                                    pj.RegisterOwnerHit(isSkillHit: true);
-                            }
-
-                            if (hitbox.KeyCode == KeyCode.F2)
-                                hitbox.KeyCode = KeyCode.R;
+                            if (HandleRozziRHitbox(hitbox, hitPlayers, ownerId, isPlayerTarget: true))
+                                continue;
                         }
 
                         HandleDamage<Player>(hitbox, hitPlayers, damageDict);
@@ -370,6 +351,12 @@ namespace Server.Game
 
                     if (hitTargets.Count > 0)
                     {
+                        if (hitbox.CharType == CharacterType.Rozzi)
+                        {
+                            if (HandleRozziRHitbox<T>(hitbox, hitTargets, ownerId, isPlayerTarget: false))
+                                continue;
+                        }
+
                         HandleDamage<T>(hitbox, hitTargets, damageDict);
                         HandleStatusEffects<T>(hitbox, hitTargets);
                         if (hitbox.TryAddToSoundList())
@@ -1322,6 +1309,58 @@ namespace Server.Game
                         break;
                 }
             }
+        }
+        #endregion
+
+        #region Rozzi Projectile
+        bool HandleRozziRHitbox<T>(Hitbox hitbox,
+                           List<T> hitTargets,
+                           int ownerId,
+                           bool isPlayerTarget)   // true: Player, false: Monster
+        where T : GameObject
+        {
+            if (hitbox.CharType != CharacterType.Rozzi)
+                return false;
+
+            Projectile_Rozzi_R pj = hitbox.Creature.Room.FindProjectile(hitbox.Creature, ProjectileType.ProjectileRozziR) as Projectile_Rozzi_R;
+
+            if (pj != null)
+            {
+                // 1) R 스킬: 투사체가 처음 맞은 대상만 처리, 이후 공통 데미지/상태는 스킵
+                if (hitbox.KeyCode == KeyCode.R)
+                {
+                    foreach (var target in hitTargets)
+                    {
+                        if (target.Id != ownerId)
+                        {
+                            pj.OnProjectileHit(target);
+                            break;
+                        }
+                    }
+
+                    return true;
+                }
+
+                // 2) 그 외: Owner 에게 돌아오는 히트 처리
+                GameObject baseTarget = pj.Target;
+                if (baseTarget != null)
+                {
+                    // isPlayerTarget 플래그는 필요하다면 로직 분기용으로 쓸 수 있음
+                    // 캐스팅은 T에 맡기기 때문에 둘 다 동일 코드로 처리 가능
+                    T typedTarget = baseTarget as T;
+
+                    if (typedTarget != null && hitTargets.Contains(typedTarget))
+                    {
+                        pj.RegisterOwnerHit(isSkillHit: true);
+                    }
+                }
+            }
+
+            // 3) F2 → R 치환
+            if (hitbox.KeyCode == KeyCode.F2)
+                hitbox.KeyCode = KeyCode.R;
+
+            return false; // 이후 데미지/상태이상 계속 처리
         }
         #endregion
     }
