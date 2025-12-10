@@ -27,7 +27,7 @@ public sealed class Hyunwoo_R_Short_End : SkillHandlerBase
 
         //SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
-        p.SendRemoveEffect(keyCode: _keyCode);
+        //p.SendRemoveEffect(keyCode: _keyCode);
     }
 
     public override void OnHit(Player p, SkillContext ctx)

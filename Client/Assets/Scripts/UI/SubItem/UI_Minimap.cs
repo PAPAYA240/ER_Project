@@ -179,7 +179,10 @@ public class UI_Minimap : UI_Base
 
             foreach(var img in go.GetComponentsInChildren<Image>())
             {
-                img.enabled = isEnable;
+                if (id == Managers.Object.MyPlayer.Id)
+                    img.enabled = true;
+                else
+                    img.enabled = isEnable;
             }
         }
     }

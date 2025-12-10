@@ -936,11 +936,12 @@ class PacketHandler
 
         bool isWin = false;
 
-        if(Managers.Info.Team == gameOverPkt.WinTeam)
+        if (Managers.Info.Team == gameOverPkt.WinTeam)
             isWin = true;
         else
             isWin = false;
-
+        // 여기여기다
+        //LoadingManager.Instance.LoadScene(Define.Scene.GameResult);
         Managers.Object.MyPlayer.UI.PlayerHUD.SetGameResult(isWin);
     }
 
