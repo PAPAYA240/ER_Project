@@ -51,29 +51,6 @@ public sealed class Yuki_W : SkillHandlerBase
 
     public override void OnTick(Player p, SkillContext ctx)
     {
-        //if (_onMoveCmd)
-        //{
-        //    if (!_hasSentRunAnimation)
-        //    {
-        //        p.SendAnimPacket(ANIM_RUN);
-        //        _hasSentRunAnimation = true;
-        //    }
-        //}
-        //else
-        //{
-        //    if (_hasSentRunAnimation)
-        //    {
-        //        if (Vector3.Distance(p.Position, _targetPosition) <= STOP_RANGE)
-        //        {
-        //            p.SendAnimPacket(ANIM_IDLE);
-        //            p.SendStopPacket();
-        //            _hasSentRunAnimation = false;
-        //        }
-        //    }
-        //}
-
-        //_onMoveCmd = false;
-
         return;
     }
 
