@@ -60,7 +60,10 @@ public class Projectile_Theodore_Attack : Projectile
 
         // Rotation
         Vector3 dir = targetPos - transform.position;
-        finRot = Quaternion.LookRotation(dir, Vector3.up);
+        if (dir.sqrMagnitude > 0.001f)  
+            finRot = Quaternion.LookRotation(dir, Vector3.up);
+        else
+            finRot = transform.rotation;  
 
         // Sync
         CellPos = finPos;

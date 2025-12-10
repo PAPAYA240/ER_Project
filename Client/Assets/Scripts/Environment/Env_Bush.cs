@@ -140,7 +140,7 @@ public class Env_Bush : EnvController
             pc.BushRenderType((int)BushState.Visible);
         }
 
-        UpdateRemainingPlayersRender();
+        //UpdateRemainingPlayersRender();
     }
     private void UpdateInsidePlayersRender()
     {
@@ -229,26 +229,6 @@ public class Env_Bush : EnvController
         pc.BushRenderType((int)BushState.Visible);
     }
 
-    private void UpdateRemainingPlayersRender()
-    {
-        foreach (int inPlayerId in _insidePlayersId)
-        {
-            GameObject inGo = Managers.Object.FindById(inPlayerId);
-            if (inGo == null) 
-                continue;
-
-            PlayerController inPc = inGo.GetComponent<PlayerController>();
-            if (inPc.ObjInfo.Player.Team == Managers.Object.MyPlayer.ObjInfo.Player.Team)
-            {
-                inPc.BushRenderType((int)BushState.Translucent);
-            }
-            else
-            {
-                inPc.BushRenderType((int)BushState.Hidden);
-            }
-        }
-    }
-
     #region Interaction
     private void BushEnterRender(PlayerController target)
     {
@@ -264,15 +244,32 @@ public class Env_Bush : EnvController
 
         bool isSameTeam = Managers.Object.MyPlayer.ObjInfo.Player.Team == target.ObjInfo.Player.Team;
         bool amIInsideBush = _insidePlayersId.Contains(Managers.Object.MyPlayer.Id);
+        bool isTheodore = target.ObjInfo.Player.CharType == CharacterType.Theodore;
+        bool hasTheodorePassive = false;
+
+        if (isTheodore && !isSameTeam)
+        {
+            GameObject effect = Managers.FX.Effect.FindCurrentPlayEffect(target.Id, "FX_PassiveShideld");
+            hasTheodorePassive = (effect != null);
+        }
 
         BushState targetState;
-
-        if (isSameTeam)
-            targetState = BushState.Translucent;
-        else if (amIInsideBush)
-            targetState = BushState.Translucent;
-        else
+        if (hasTheodorePassive)
+        {
             targetState = BushState.Hidden;
+        }
+        else if (isSameTeam)
+        {
+            targetState = BushState.Translucent;
+        }
+        else if (amIInsideBush)
+        {
+            targetState = BushState.Translucent;
+        }
+        else
+        {
+            targetState = BushState.Hidden;
+        }
 
         target.BushRenderType((int)targetState);
 
