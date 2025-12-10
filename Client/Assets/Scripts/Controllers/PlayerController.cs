@@ -4,14 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Data;
 using Google.Protobuf.Protocol;
-using NUnit.Framework;
-using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
-using UnityEngine.UIElements;
-using static Data.SkillEffectList;
 
 public class PlayerController : CreatureController
 {
@@ -64,6 +58,8 @@ public class PlayerController : CreatureController
     private const float _multiKillTimeLimit = 20.0f;
     private float _currentMultiKillCount = 0;
     private float _lastKillTime = 0.0f;
+
+    private float _baseMoveSpeed; // 기본 이동속도
 
     // Ping
     public PingController Ping { get; private set; }
@@ -301,6 +297,13 @@ public class PlayerController : CreatureController
         // NavMesh Agent
         _agent = GetComponent<NavMeshAgent>();
         _agent.speed = Speed * AGENT_SPEED_RATIO;
+        _baseMoveSpeed = Speed;
+        Debug.Log(Speed);
+
+        float animRate = Speed / _baseMoveSpeed;
+
+        ChangeSpeed("MoveSpeed", animRate);
+
         _agent.acceleration = 999;
         _agent.angularSpeed = 720;
         _agent.stoppingDistance = 0.1f;
@@ -436,6 +439,9 @@ public class PlayerController : CreatureController
     public void ChangeStatus(S_ChangeStatus packet)
     {
         Speed = packet.MoveSpeed;
+        float animRate = Speed / _baseMoveSpeed;
+        ChangeSpeed("MoveSpeed", animRate);
+
         Attack = packet.Attack;
         AttackSpeed = packet.AttackSpeed;
         Defense = packet.Defense;
