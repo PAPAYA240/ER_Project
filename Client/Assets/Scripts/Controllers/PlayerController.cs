@@ -298,7 +298,6 @@ public class PlayerController : CreatureController
         _agent = GetComponent<NavMeshAgent>();
         _agent.speed = Speed * AGENT_SPEED_RATIO;
         _baseMoveSpeed = Speed;
-        Debug.Log(Speed);
 
         float animRate = Speed / _baseMoveSpeed;
 

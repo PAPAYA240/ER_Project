@@ -64,5 +64,4 @@ Shader "Unlit/UIAlwaysOnTopShader"
             ENDCG
         }
     }
-    FallBack "Unlit/Opaque" //Fallback 셰이더 (지원되지 않을 경우 대체 셰이더)
 }
