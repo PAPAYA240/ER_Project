@@ -341,6 +341,7 @@ namespace Server.Data
         public string name;
         public float attackDist; // 공격 범위
         public float activeDist; // 활동 범위
+        public float rotSpeed; 
         public StatInfo stat;
         public List<MonsterSkill> skills;
         public float appearTime;

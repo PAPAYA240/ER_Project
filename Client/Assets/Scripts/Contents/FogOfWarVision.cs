@@ -6,10 +6,9 @@ using UnityEngine.AI;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class FogOfWarVision : MonoBehaviour
 {
-    public int _rayCount = 200;          // 레이 개수
+    public int _rayCount = 360;          // 레이 개수
     private float _viewDistance = 8.5f;     // 시야 거리
     public float ViewDistance { get { return _viewDistance; } set { _viewDistance = value; } }
-    public LayerMask _obstacleMask;      // 구조물 마스크
 
     Mesh _mesh;
     Vector3 _origin;
@@ -20,7 +19,6 @@ public class FogOfWarVision : MonoBehaviour
     {
         _meshRenderer = GetComponent<MeshRenderer>();
 
-        _obstacleMask = LayerMask.GetMask("Map");
         _mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = _mesh;
         _origin = transform.position;
@@ -32,47 +30,61 @@ public class FogOfWarVision : MonoBehaviour
 
     void LateUpdate()
     {
-        _origin = transform.position;
+        _origin = transform.position + Vector3.up * 1.5f;
         GenerateVisionMesh();
     }
 
     void GenerateVisionMesh()
     {
         float angleIncrement = 360f / _rayCount;
+
+        // 정점 개수 증가 (더 부드럽게)
+        int vertexCount = _rayCount * 2;  // 2배로 증가
+        Vector3[] vertices = new Vector3[vertexCount + 1];
+        int[] triangles = new int[vertexCount * 3];
+
+        vertices[0] = Vector3.zero;
+
         float angle = 0f;
-
-        List<Vector3> vertices = new List<Vector3>();
-        List<int> triangles = new List<int>();
-
-        vertices.Add(Vector3.zero); // 원점 추가
-
-        for (int i = 0; i <= _rayCount; i++)
+        for (int i = 0; i < vertexCount; i++)
         {
             Vector3 dir = DirFromAngle(angle);
-            Vector3 vertex;
+            Vector3 worldHit = GetVisionPoint(dir);
+            Vector3 localHit = transform.InverseTransformPoint(worldHit);
+            localHit.y = 0.02f;
 
-            if (NavMesh.Raycast(_origin, _origin + dir * _viewDistance, out NavMeshHit hit, NavMesh.AllAreas))
-                vertex = hit.position;
-            else
-                vertex = _origin + dir * _viewDistance;
+            vertices[i + 1] = localHit;
+            angle -= angleIncrement / 2f;  // 각도를 절반으로
+        }
 
-            // 레이캐스팅 후 나온 위치에 정점 추가
-            vertices.Add(transform.InverseTransformPoint(vertex));
+        for (int i = 0; i < vertexCount; i++)
+        {
+            int triangleIndex = i * 3;
+            triangles[triangleIndex] = 0;
+            triangles[triangleIndex + 1] = i + 1;
 
-            if (i > 0)
-            {
-                // 삼각형 추가
-                triangles.Add(0);
-                triangles.Add(i);
-                triangles.Add(i + 1);
-            }
-
-            angle -= angleIncrement;
+            int nextIndex = (i == vertexCount - 1) ? 1 : i + 2;
+            triangles[triangleIndex + 2] = nextIndex;
         }
 
         _mesh.Clear();
-        _mesh.vertices = vertices.ToArray();
-        _mesh.triangles = triangles.ToArray();
+        _mesh.vertices = vertices;
+        _mesh.triangles = triangles;
+        _mesh.RecalculateNormals();
+    }
+
+    Vector3 GetVisionPoint(Vector3 direction)
+    {
+        float maxDistance = _viewDistance;
+
+        LayerMask blockingLayers = LayerMask.GetMask("VisionWall");
+
+        if (Physics.Raycast(_origin, direction, out RaycastHit highHit, maxDistance, blockingLayers))
+        {
+            return highHit.point;
+        }
+
+        return _origin + direction * maxDistance;
     }
 
     Vector3 DirFromAngle(float angleDegrees)

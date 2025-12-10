@@ -18,6 +18,7 @@ public class UI_Minimap : UI_Base
 
     public enum Images
     {
+        GammaArea,
         TurbineIconLeft,
         TurbineIconCenter,
         TurbineIconRight,
@@ -34,6 +35,9 @@ public class UI_Minimap : UI_Base
 
     enum GameObjects
     {
+        OmegaExpected,
+        OmegaGo,
+        GammaGo,
         CharIcon_0,
         CharIcon_1,
         CharIcon_2,
@@ -55,6 +59,10 @@ public class UI_Minimap : UI_Base
     {
         Bind<Image>(typeof(Images));
         Bind<GameObject>(typeof(GameObjects));
+
+        GetObject((int)GameObjects.OmegaExpected).SetActive(false);
+        GetObject((int)GameObjects.OmegaGo).SetActive(false);
+        GetObject((int)GameObjects.GammaGo).SetActive(false);
 
         GetObject((int)GameObjects.CharIcon_0).SetActive(false);
         GetObject((int)GameObjects.CharIcon_1).SetActive(false);
@@ -179,8 +187,28 @@ public class UI_Minimap : UI_Base
 
             foreach(var img in go.GetComponentsInChildren<Image>())
             {
-                img.enabled = isEnable;
+                if (id == Managers.Object.MyPlayer.Id)
+                    img.enabled = true;
+                else
+                    img.enabled = isEnable;
             }
+        }
+    }
+
+    public void SetOmegaExpected(bool isActivate)
+    {
+        GetObject((int)GameObjects.OmegaExpected).SetActive(isActivate);
+    }
+    public void SetOmegaGo(bool isActivate)
+    {
+        GetObject((int)GameObjects.OmegaGo).SetActive(isActivate);
+    }
+    public void SetGammaGo(bool isActivate)
+    {
+        GetObject((int)GameObjects.GammaGo).SetActive(isActivate);
+        if(isActivate == true) // when Gamma appear, change minimap area Color
+        {
+            GetImage((int)Images.GammaArea).color = Color.white;
         }
     }
 }

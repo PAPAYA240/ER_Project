@@ -6,7 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.VFX;
 using static Data.EffectData;
 using static UnityEngine.GraphicsBuffer;
 
@@ -60,20 +60,18 @@ public class EffectFXManager : MonoBehaviour
             return null;
 
         List<GameObject> effectList = new List<GameObject>();
+        GameObject owner = Managers.Object.FindById(ownerId);
+        PlayerController player =owner.GetComponent<PlayerController>();
 
         foreach (EffectData data in effectData)
         {
             GameObject fxPrefab = GetFxPrefab(ownerId, data.prefabName, isCommon);
-            if(fxPrefab == null)
-            {
+            if (fxPrefab == null)
                 continue;
-            }
 
             GameObject fxObject = Managers.FX.Pop(fxPrefab, null);
             if (fxObject == null)
-            {
                 continue;
-            }
 
             // CasterTransform 부모 설정
             Transform copyTransform = casterTransform;
@@ -82,25 +80,12 @@ public class EffectFXManager : MonoBehaviour
                 copyTransform = Util.FindChildByName(casterTransform, data.attachBoneName).transform;
             }
 
-            // Transform 설정
-            Quaternion spawnRot = GetSpawnRotation(data, copyTransform, rot);
-            Vector3 spawnPos = GetSpawnPosition(ownerId, data, copyTransform, mousePos, targetPos, rot, out Transform parentTransform);
+            Quaternion spawnRot = GetSpawnRotation(fxObject, data, copyTransform, rot);
+            Vector3 spawnPos = GetSpawnPosition(fxObject, ownerId, data, copyTransform, mousePos, targetPos, rot);
             int targetId = ownerId;
 
-            if (data.target == EEffectTarget.Self)
-            {
-                fxObject.transform.SetParent(copyTransform);
-                fxObject.transform.localPosition = data.position;
-                fxObject.transform.localRotation = Quaternion.identity;
-            }
-            else if (data.target == EEffectTarget.Enemy)
-            {
-                fxObject.transform.SetParent(casterTransform);
-                fxObject.transform.SetPositionAndRotation(spawnPos, spawnRot);
 
-                targetId = GetTargetId(casterTransform);
-            }
-            else if (data.target == EEffectTarget.TargetNoRotation)
+            if (data.target == EEffectTarget.TargetNoRotation)
             {
                 Transform followTarget = casterTransform;
                 fxObject.transform.position = spawnPos;
@@ -114,13 +99,8 @@ public class EffectFXManager : MonoBehaviour
                 follow.Setup(followTarget, data.position, fixedRot, faceCamera: false);
                 targetId = GetTargetId(followTarget);
             }
-            else if (data.target == EEffectTarget.TargetUI)
+            else if (data.target == EEffectTarget.TargetUI || data.target == EEffectTarget.Enemy)
             {
-                var follow = fxObject.GetOrAddComponent<FX_Follower>();
-                if (follow == null)
-                    return null;
-
-                follow.SetTarget(casterTransform);
                 targetId = GetTargetId(casterTransform);
             }
             else
@@ -172,11 +152,13 @@ public class EffectFXManager : MonoBehaviour
 
     private void StartEffectLogic(int ownerId, GameObject fxObject, EffectData data, Transform casterTransform)
     {
-        if (casterTransform == null) 
+        if (casterTransform == null || casterTransform.gameObject == null || !casterTransform.gameObject.activeInHierarchy)
             return;
-
-        fxObject.SetActive(false);
-
+        int instanceId = fxObject.GetInstanceID();
+        if (activeCoroutines.ContainsKey(instanceId))
+        {
+            StopCoroutine(activeCoroutines[instanceId]);
+        }
         activeCoroutines[fxObject.GetInstanceID()] = StartCoroutine(ReturnToPoolAfterDelay(ownerId, fxObject, data.prefabName, data.delayTime, data.duration, casterTransform));
 
         if (data.target == EEffectTarget.Shot)
@@ -227,10 +209,11 @@ public class EffectFXManager : MonoBehaviour
         if (effect == null)
             return;
 
-        if (activeCoroutines.ContainsKey(effect.GetInstanceID()))
+        int instanceId = effect.GetInstanceID();
+        if (activeCoroutines.ContainsKey(instanceId))
         {
-            StopCoroutine(activeCoroutines[effect.GetInstanceID()]);
-            activeCoroutines.Remove(effect.GetInstanceID());
+            StopCoroutine(activeCoroutines[instanceId]);
+            activeCoroutines.Remove(instanceId); 
         }
 
         Managers.FX.Push(effect);
@@ -242,62 +225,95 @@ public class EffectFXManager : MonoBehaviour
         if (fxObject == null)
             yield break;
 
-        yield return new WaitForSeconds(delayTime);
+        if (delayTime > 0.001f)
+        {
+            yield return new WaitForSeconds(delayTime);
+        }
+        else
+        {
+            yield return null;
+        }
+
         if (fxObject == null)
             yield break;
-        fxObject.SetActive(true);
+
+        Play(fxObject);
 
         yield return new WaitForSeconds(duration);
+
         if (fxObject == null)
             yield break;
+
+        int instanceId = fxObject.GetInstanceID();
+
+        if (!activeCoroutines.ContainsKey(instanceId))
+            yield break;
+
         RemoveEffect(ownerId, fxObject);
     }
     #endregion
 
+    private void Play(GameObject obj)
+    {
+        ParticleSystem ps = obj.GetComponentInChildren<ParticleSystem>();
+        if (ps != null)
+        {
+            ps.Play(true);
+        }
+
+        VisualEffect vfx = obj.GetComponentInChildren<VisualEffect>();
+        if (vfx != null)
+        {
+            vfx.Play();
+        }
+
+    }
     #region Transform Helpers
-    private Vector3 GetSpawnPosition(int id, EffectData data, Transform casterTransform, Vector3 mousePos, Vector3 targetPos, Quaternion rot, out Transform parentTransform)
+    private Vector3 GetSpawnPosition(GameObject fxObject, int id, EffectData data, Transform casterTransform, Vector3 mousePos, Vector3 targetPos, Quaternion rot)
     {
         switch (data.target)
         {
             case EEffectTarget.Self:
             case EEffectTarget.Enemy:
             case EEffectTarget.EnemyHit:
-                parentTransform = casterTransform;
-                return casterTransform.position + data.position;
+                Fx_FollowEffect follower = fxObject.GetOrAddComponent<Fx_FollowEffect>();
+                follower.Setup(casterTransform, data.position, data.rotation);
+                return Vector3.zero;
 
             case EEffectTarget.Target:
-                parentTransform = null;
                 Vector3 worldOffset = rot * data.position;
                 return targetPos + worldOffset;
 
             case EEffectTarget.Mouse:
-                parentTransform = null;
                 return mousePos;
 
             case EEffectTarget.Shot:
-                parentTransform = null;
                 return casterTransform.position + data.position;
 
             case EEffectTarget.Default:
-                parentTransform = null;
                 Quaternion baseRot = rot != Quaternion.identity ? rot : casterTransform.rotation;
                 Vector3 flatOffset = new Vector3(data.position.x, 0, data.position.z);
                 Vector3 worldOffsetDefault = baseRot * flatOffset;
                 return casterTransform.position + worldOffsetDefault + new Vector3(0, data.position.y, 0);
 
+            case EEffectTarget.TargetUI:
+                var follow = fxObject.GetOrAddComponent<FX_Follower>();
+                if (follow != null)
+                    follow.SetTarget(casterTransform);
+                return Vector3.zero;
+
             default:
-                parentTransform = null;
                 return Vector3.zero;
         }
     }
-    private Quaternion GetSpawnRotation(EffectData data, Transform casterTransform, Quaternion rot)
+    private Quaternion GetSpawnRotation(GameObject fxObject, EffectData data, Transform casterTransform, Quaternion rot)
     {
         switch (data.target)
         {
-            case EEffectTarget.Self:
-            case EEffectTarget.Enemy:
-            case EEffectTarget.EnemyHit:
-                return casterTransform.rotation;
+            //case EEffectTarget.Self:
+            //case EEffectTarget.Enemy:
+            //case EEffectTarget.EnemyHit:
+            //    return casterTransform.rotation;
 
             case EEffectTarget.Target:
                 return rot;

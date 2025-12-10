@@ -65,7 +65,7 @@ public class UI_PlayerHUD : UI_Scene
         }
 
         //TODO ���� ������ �� ȣ��Ǿߵ�.
-        //if(Input.GetKeyDown(KeyCode.M))
+        //if (Input.GetKeyDown(KeyCode.M))
         //{
         //    SetGameResult(true);
         //}
@@ -146,6 +146,7 @@ public class UI_PlayerHUD : UI_Scene
                 break;
         }
 
+        //if(Managers.Scene.CurrentScene is GameScene)
         GetObject((int)go).GetComponent<UI_Turbine>().SetTimer(Time);
     }
 
@@ -232,6 +233,8 @@ public class UI_PlayerHUD : UI_Scene
 
             ui_GameResult.AddAlly(pc);
         }
+
+        gameObject.GetComponent<Canvas>().sortingOrder = 1;
     }
 
     public void SetMinimapHealPackImg(int id, bool isActivate)
@@ -272,5 +275,17 @@ public class UI_PlayerHUD : UI_Scene
     public void SetMinimapCharImgEnable(int id, bool isEnable)
     {
         GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetImageEnable(id, isEnable);
+    }
+    public void SetMinimapOmegaExpected(bool isActivate)
+    {
+        GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetOmegaExpected(isActivate);
+    }
+    public void SetMinimapOmegaGo(bool isActivate)
+    {
+        GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetOmegaGo(isActivate);
+    }
+    public void SetMinimapGammaGo(bool isActivate)
+    {
+        GetObject((int)GameObjects.Minimap).GetComponent<UI_Minimap>().SetGammaGo(isActivate);
     }
 }

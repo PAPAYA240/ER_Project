@@ -68,6 +68,10 @@ public class SkillEffectHandler
             RegisterEffect(AbigailFx.RTrail, player, "Effect/Abigail/FX_BI_Abigail_Skill04_Trail", false);
             RegisterEffect(AbigailFx.WpnSkill, player, "Effect/Abigail/FX_BI_Abigail_WSkill_Axe_02");
         }
+        else if (player.ObjInfo.Player.CharType == CharacterType.Hyunwoo)
+        {
+            RegisterEffect(AbigailFx.HyunwooQ, player, "Effect/Hyunwoo/FX_BI_Hyunwoo_Skill01_Attack_Ys", false);
+        }
 
         _coroutineRunner = player;
     }

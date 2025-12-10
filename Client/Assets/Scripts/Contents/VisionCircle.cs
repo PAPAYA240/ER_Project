@@ -90,6 +90,7 @@ public class VisionCircle : MonoBehaviour
 
     public void SetActivate(bool isActivate)
     {
+        gameObject.SetActive(isActivate);
         _meshRenderer.enabled = isActivate;
     }
 }

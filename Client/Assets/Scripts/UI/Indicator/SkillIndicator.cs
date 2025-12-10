@@ -358,8 +358,17 @@ public class SkillIndicator : UI_Base
     private Vector3 GetMousePosition()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
-            return new Vector3(hit.point.x, hit.point.y, hit.point.z);
+
+        // 고정된 Y=0 평면과의 교차점 계산
+        float rayDistance;
+        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+
+        if (groundPlane.Raycast(ray, out rayDistance))
+        {
+            Vector3 point = ray.GetPoint(rayDistance);
+            return new Vector3(point.x, 0f, point.z); // Y를 0으로 고정
+        }
+
         return Vector3.zero;
     }
     #endregion

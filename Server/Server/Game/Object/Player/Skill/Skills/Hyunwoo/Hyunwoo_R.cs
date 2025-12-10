@@ -10,6 +10,7 @@ using static Server.Data.DataUtils;
 public sealed class Hyunwoo_R : ChargingSkillHandler
 {
     double _start;
+    bool _isForceChange = true;
 
     public Hyunwoo_R()
     {
@@ -50,7 +51,10 @@ public sealed class Hyunwoo_R : ChargingSkillHandler
     public override void OnTick(Player p, SkillContext ctx)
     {
         if(_start + 2 < TimeUtil.UtcSec())
+        {
+            _isForceChange = false;
             p.ChangeState(new Player_SkillState(SkillRegistry.Create("Hyunwoo_R_Loop"), ctx));
+        }
     }
 
     public override void OnExit(Player p, SkillContext ctx)
@@ -58,6 +62,9 @@ public sealed class Hyunwoo_R : ChargingSkillHandler
         base.OnExit(p, ctx);
 
         _start = 0;
+
+        if(_isForceChange == true)
+            p.SendRemoveEffect(keyCode: _keyCode);
     }
 }
 
