@@ -3,12 +3,15 @@ using Data;
 using Google.Protobuf.Protocol;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.VFX;
 
 
 public class FXManager : MonoBehaviour
 {
     public EffectFXManager Effect { get; private set; }
     public UIFXManager UI { get; private set; }
+
+    private bool _isShuttingDown = false;
 
     public void Init()
     {
@@ -150,7 +153,6 @@ public class FXManager : MonoBehaviour
         }
         else
         {
-            // 풀이 비었으면 새로 생성
             obj = Instantiate(pool.Prefab, pool.Root);
             obj.name = pool.Prefab.name;
         }
@@ -159,6 +161,8 @@ public class FXManager : MonoBehaviour
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localRotation = Quaternion.identity;
         obj.SetActive(true);
+
+        CreateEffect(obj);
 
         pool.InUse.Add(obj);
         return obj;
@@ -171,17 +175,53 @@ public class FXManager : MonoBehaviour
         // 어느 풀에 속하는지 찾기
         foreach (var pool in _pools.Values)
         {
-            if (pool.InUse.Contains(obj))
+            if (!pool.InUse.Contains(obj))
+                continue;
+
+            pool.InUse.Remove(obj);
+
+            // 매니저/풀 파괴 중이면 그냥 버림
+            if (_isShuttingDown || pool.Root == null ||
+                !pool.Root.gameObject.scene.IsValid())
             {
-                pool.InUse.Remove(obj);
-                obj.SetActive(false);
-                if(obj != null && pool.Root != null) 
-                    obj.transform.SetParent(pool.Root);
-                pool.Available.Enqueue(obj);
+                Destroy(obj);
                 return;
             }
+
+            obj.transform.SetParent(pool.Root, false);
+            pool.Available.Enqueue(obj);
+
+            CreateEffect(obj);
+
+            obj.SetActive(false);
+            return;
         }
     }
 
+    void CreateEffect(GameObject obj)
+    {
+        ParticleSystem ps = obj.GetComponentInChildren<ParticleSystem>();
+        if (ps != null)
+        {
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            ps.Clear(true);
+        }
+
+        VisualEffect vfx = obj.GetComponentInChildren<VisualEffect>();
+        if (vfx != null)
+        {
+            vfx.Stop();
+            vfx.Reinit();
+        }
+    }
+    private void OnDestroy()
+    {
+        _isShuttingDown = true;
+    }
+
+    private void OnApplicationQuit()
+    {
+        _isShuttingDown = true;
+    }
     #endregion
 }

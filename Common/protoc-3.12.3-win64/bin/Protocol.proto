@@ -153,6 +153,8 @@ enum MsgId {
 
   C_PING_MARKER = 121;
   S_PING_MARKER = 122;
+
+  S_MINIMAP_ICON = 123;
 }
 
 enum CombatState{
@@ -477,6 +479,7 @@ enum AbigailFx{
 	R_Start = 13;
 	R_Trail = 14;
 	WpnSkill = 15;
+	Hyunwoo_Q = 16;
 }
 
 enum InvalidTargetReason{
@@ -499,6 +502,12 @@ enum Slot{
 enum ChatType {
 	All = 0;
 	Team = 1;
+}
+
+enum MinimapIcon{
+	OmegaExpected = 0;
+	OmegaGo = 1;
+	GammaGo = 2;
 }
 
 message S_TheodoreAttack
@@ -1401,4 +1410,9 @@ message C_PingMarker{
 message S_PingMarker{
 	int32 ObjectId = 1;
 	PositionInfo targetPos = 2;
+}
+
+message S_MinimapIcon{
+	MinimapIcon type = 1;
+	bool isActivate = 2;
 }

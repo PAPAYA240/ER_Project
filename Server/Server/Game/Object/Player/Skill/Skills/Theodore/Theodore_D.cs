@@ -46,6 +46,7 @@ public sealed class Theodore_D : SkillHandlerBase
         if (_isEnding)
         {
             _timeElapsed += TimeUtil.Instance.DeltaTime;
+             CanStopSkill = true;
             if (_timeElapsed >= _tAnimEnd)
             {
                 p.ChangeState(new Player_IdleState());
@@ -76,7 +77,7 @@ public sealed class Theodore_D : SkillHandlerBase
     public override void OnStop(Player p)
     {
         _animName = ANIM_END;
-         p.SendAnimPacket(_animName, 0.1f);
+        p.SendAnimPacket(_animName, 0.1f);
 
         _isEnding = true;
         _timeElapsed = 0.0f; 

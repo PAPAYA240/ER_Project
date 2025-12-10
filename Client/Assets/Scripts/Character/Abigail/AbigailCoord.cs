@@ -41,8 +41,8 @@ public class AbigailCoord : MonoBehaviour
 
     public void DeactivateAbigailCoord()
     {
-        image.enabled = false;
-        _vision.SetActivate(false);
+        if (image != null) image.enabled = false;
+        if (_vision != null) _vision.SetActivate(false);
     }
 
     IEnumerator RenderForTime(float duration)
@@ -50,7 +50,6 @@ public class AbigailCoord : MonoBehaviour
         image.enabled = true;
         _vision.SetActivate(true);
         yield return new WaitForSeconds(duration);
-        image.enabled = false;
-        _vision.SetActivate(false);
+        DeactivateAbigailCoord();
     }
 }

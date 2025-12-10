@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using JetBrains.Annotations;
 
 public class ObjectManager
 {
@@ -145,6 +146,16 @@ public class ObjectManager
         mc.Hp = info.StatInfo.MaxHp;
         mc.Type = info.Monster.MonsterType;
         mc.MonsterTeam = info.Monster.Team;
+
+        if (mc.Type == MonsterType.Omega && Managers.Object.MyPlayer != null )
+        {
+            Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapOmegaExpected(false);
+            Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapOmegaGo(true);
+        }
+        else if (mc.Type == MonsterType.Gamma && Managers.Object.MyPlayer != null)
+        {
+            Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapGammaGo(true);
+        }
     }
     private void AddProjectile(ObjectInfo info)
     {
@@ -230,42 +241,36 @@ public class ObjectManager
     {
         _myPlayerReady = true;
     }
+
     public void ResiterVisibleObjects(GameObject go, HashSet<GameObject> outObjects, float visionRange = 8.5f)
     {
+        BaseController bc = go.GetComponentInChildren<BaseController>();
+        if (bc == null) return;
+
+        Vector3 playerPos = bc.PosInfo.ToVector();
+        playerPos.y = 0.5f;
+
+        LayerMask blockingLayers = LayerMask.GetMask("VisionWall");
+
         foreach (var keyValue in _objects)
         {
-            int key = keyValue.Key;
-            //PlayerController pc = go.GetComponentInChildren<PlayerController>();
-            BaseController pc = go.GetComponentInChildren<BaseController>();
-
-            if (pc == null || pc.Id == key)
+            if (bc.Id == keyValue.Key)
                 continue;
 
             GameObject target = keyValue.Value;
             if (target == null)
                 continue;
 
-            //float visionRange = 8.5f;
-
-            Vector3 playerPos = go.transform.position;
             Vector3 targetPos = target.transform.position;
-
-            UnityEngine.AI.NavMeshHit hit;
-
-            if (UnityEngine.AI.NavMesh.SamplePosition(playerPos, out hit, 1, UnityEngine.AI.NavMesh.AllAreas))
-                playerPos = hit.position;
-
-            if (UnityEngine.AI.NavMesh.SamplePosition(targetPos, out hit, 1, UnityEngine.AI.NavMesh.AllAreas))
-                targetPos = hit.position;
-
-            playerPos.y = 0.5f;
             targetPos.y = 0.5f;
+            float distance = Vector3.Distance(playerPos, targetPos);
+            if (distance > visionRange) continue;
 
-            // Vector3 dir = targetPos - playerPos;
+            Vector3 direction = (targetPos - playerPos).normalized;
 
-            if (Vector3.Distance(playerPos, targetPos) < visionRange && !UnityEngine.AI.NavMesh.Raycast(playerPos, targetPos, out hit, UnityEngine.AI.NavMesh.AllAreas))
+            if (!Physics.Raycast(playerPos, direction, distance, blockingLayers))
             {
-                outObjects.Add(target); /*장애물없고 시야 범위 내에 있으면*/
+                outObjects.Add(target);
             }
         }
     }

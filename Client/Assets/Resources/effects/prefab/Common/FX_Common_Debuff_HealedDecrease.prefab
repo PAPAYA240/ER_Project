@@ -2459,7 +2459,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.23529412, g: 0.14248581, b: 0, a: 0.11372549}
+      maxColor: {r: 0.23529412, g: 0.14248581, b: 0, a: 0.02745098}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -7005,7 +7005,7 @@ ParticleSystemRenderer:
   m_VertexStreams: 00010304
   m_UseCustomTrailVertexStreams: 0
   m_TrailVertexStreams: 00010304
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: 2575674034331655531, guid: b0362a95b79192a47b85313646eaf116, type: 3}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
@@ -9392,7 +9392,7 @@ Transform:
   m_GameObject: {fileID: 1775106354394841}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -9410,6 +9410,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4071078129626388}
+  - component: {fileID: 7122780361317658980}
   m_Layer: 7
   m_Name: FX_Common_Debuff_HealedDecrease
   m_TagString: Untagged
@@ -9433,3 +9434,19 @@ Transform:
   - {fileID: 4583996274185667}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
+--- !u!114 &7122780361317658980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883971872042585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d056cd2d91711640ae23ba50f6770d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  rightOffset: 0.9
+  upOffset: 1.5
+  forwardOffset: 0.15

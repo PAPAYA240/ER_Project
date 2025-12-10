@@ -371,7 +371,7 @@ public class PlayerUIController : MonoBehaviour
         ActionNotReady = anr.GetComponent<UI_ActionNotReady>();
 
         // DeathCount
-        GameObject dc = Managers.Resource.Instantiate("UI/Etc/DeathUI");
+        GameObject dc = Managers.Resource.Instantiate("UI/Common/DeathUI");
         dc.transform.SetParent(gameObject.transform);
         PlayerInterface.DeathUI = dc.GetComponent<UI_Death>();
     }

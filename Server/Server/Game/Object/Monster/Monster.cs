@@ -143,6 +143,11 @@ namespace Server.Game
                         changeScorePacket.Team = Team;
                         changeScorePacket.Score = score;
                         Room.Push(Room.Broadcast, changeScorePacket);
+
+                        S_MinimapIcon minimapIcon = new S_MinimapIcon();
+                        minimapIcon.Type = MinimapIcon.OmegaGo;
+                        minimapIcon.IsActivate = false;
+                        Room.Push(Room.Broadcast, minimapIcon);
                     }
                     break;
                 case MonsterType.Gamma:
@@ -156,6 +161,11 @@ namespace Server.Game
                         changeScorePacket.Team = Team;
                         changeScorePacket.Score = score;
                         Room.Push(Room.Broadcast, changeScorePacket);
+
+                        S_MinimapIcon minimapIcon = new S_MinimapIcon();
+                        minimapIcon.Type = MinimapIcon.GammaGo;
+                        minimapIcon.IsActivate = false;
+                        Room.Push(Room.Broadcast, minimapIcon);
                     }
                     break;
             }

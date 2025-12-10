@@ -113,8 +113,14 @@ namespace Server.Game
                             p.Value.AcquireItem(new WardInfo()/*DataManager.ItemDict[502212] as WardInfo*/);
                             Push(p.Value.EquipItemSet, p.Value.Info.Player.CharType, CurPhase - 1);
                         }
+
                         StartExpTimer(); // 1페이즈부터 경험치 획득
                         PlayBGMByPhase(newPhase);
+
+                        S_MinimapIcon minimapIcon = new S_MinimapIcon();
+                        minimapIcon.Type = MinimapIcon.OmegaExpected;
+                        minimapIcon.IsActivate = true;
+                        Push(Broadcast, minimapIcon);
                         break;
                     }
                 case 2:

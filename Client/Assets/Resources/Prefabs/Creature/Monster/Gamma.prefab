@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 1011759436752957}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0.7071068, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.91, y: -1.96, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1597,6 +1597,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8aaf8e885585ec34ca0cd6eb6ac2e534, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _monsterMask:
+    serializedVersion: 2
+    m_Bits: 0
+  _playerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  IsHide: 0
   type: 4
   Sound: {fileID: 0}
 --- !u!114 &5982808847859787181
@@ -1611,7 +1618,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6415413e3af48b24fa745e2bd62f04a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PrevHp: 0
 --- !u!136 &2191528182206692574
 CapsuleCollider:
   m_ObjectHideFlags: 0

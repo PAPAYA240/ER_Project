@@ -27376,7 +27376,8 @@ GameObject:
   - component: {fileID: 1628269067036950347}
   - component: {fileID: 3899385177739246698}
   - component: {fileID: 1867581213459766121}
-  m_Layer: 11
+  - component: {fileID: 7407766738960476337}
+  m_Layer: 22
   m_Name: Bg_Map_Cobalt_TurbineRoom_Re
   m_TagString: Map
   m_Icon: {fileID: 0}
@@ -27451,6 +27452,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &7407766738960476337
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2409296294315119677}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: bd0b562888cf24048ad085a11ff5f3dd, type: 2}
 --- !u!1 &2420890483579201703
 GameObject:
   m_ObjectHideFlags: 0
@@ -105145,7 +105168,8 @@ GameObject:
   - component: {fileID: 2720150872242638740}
   - component: {fileID: 1027224016027167240}
   - component: {fileID: 1062783391226379505}
-  m_Layer: 11
+  - component: {fileID: 5177654565420958363}
+  m_Layer: 22
   m_Name: Bg_Map_Cobalt_TurbineRoom_Re
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105220,6 +105244,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5177654565420958363
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9147766603729973966}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: bd0b562888cf24048ad085a11ff5f3dd, type: 2}
 --- !u!1 &9149457920658361528
 GameObject:
   m_ObjectHideFlags: 0

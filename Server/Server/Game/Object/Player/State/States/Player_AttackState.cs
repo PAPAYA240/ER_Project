@@ -240,7 +240,7 @@ public class Player_AttackState : IPlayerState, IReceivesAttackCommand
 
             if (_pendingTargetId.HasValue)
             {
-                _targetId = _pendingTargetId.Value;
+                _targetId = _pendingTargetId.Value; // 여기
                 _pendingTargetId = null;
 
                 S_TargetChange pkt = new S_TargetChange { TargetId = _targetId };

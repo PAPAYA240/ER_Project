@@ -210,7 +210,6 @@ class PacketHandler
             PlayerController pc = cc as PlayerController;
             if (pc == null)
                 return;
-            pc.BushRenderType(0);
 
             // 공격 플레이어
             GameObject attackerGo = Managers.Object.FindById(diePacket.AttackerId);
@@ -423,9 +422,13 @@ class PacketHandler
         Quaternion targetRot = fxPacket.TargetRotation;
 
         if (fxPacket.CanLookatMouse == true)
-        {
-            pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));  
-        }
+            pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));
+
+        //if (fxPacket.IsCommon && !pc.IsFxEffect(fxPacket.CommonName))
+        //{
+        //    pc.ShowCommonUIEffect(fxPacket.CommonName);
+        //    return;
+        //}
 
         pc.PlayEffectFromServer(fxPacket, mousePos, targetPos, targetRot);
     }
@@ -933,11 +936,12 @@ class PacketHandler
 
         bool isWin = false;
 
-        if(Managers.Info.Team == gameOverPkt.WinTeam)
+        if (Managers.Info.Team == gameOverPkt.WinTeam)
             isWin = true;
         else
             isWin = false;
-
+        // 여기여기다
+        //LoadingManager.Instance.LoadScene(Define.Scene.GameResult);
         Managers.Object.MyPlayer.UI.PlayerHUD.SetGameResult(isWin);
     }
 
@@ -1294,7 +1298,16 @@ class PacketHandler
         if(!removeEffectPacket.IsCommon)
             Managers.FX.Effect.RemoveEffect(removeEffectPacket);
         else
-            Managers.FX.Effect.RemoveCommonEffect(removeEffectPacket);
+        {
+            PlayerController pc = Managers.Object.FindById(removeEffectPacket.ObjectId).GetComponentInChildren<PlayerController>();
+            if (pc == null)
+                return;
+
+            //if(pc.IsFxEffect(removeEffectPacket.CommonName))
+                Managers.FX.Effect.RemoveCommonEffect(removeEffectPacket);
+            //else
+            //    pc.HideCommonUIEffect(removeEffectPacket.CommonName);
+        }
     }
 
     public static void S_StartOperateHandler(PacketSession session, IMessage packet)
@@ -1476,6 +1489,27 @@ class PacketHandler
             return;
 
         pc.Ping.PlayPing(pingPacket.TargetPos.ToVector());
+    }
+
+    public static void S_MinimapIconHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_MinimapIconHandler(session, packet)))
+            return;
+
+        S_MinimapIcon minimapIconPacket = packet as S_MinimapIcon;
+
+        switch (minimapIconPacket.Type)
+        {
+            case MinimapIcon.OmegaExpected:
+                Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapOmegaExpected(minimapIconPacket.IsActivate);
+                break;
+            case MinimapIcon.OmegaGo:
+                Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapOmegaGo(minimapIconPacket.IsActivate);
+                break;
+            case MinimapIcon.GammaGo:
+                Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapGammaGo(minimapIconPacket.IsActivate);
+                break;
+        }
     }
 
     static float GetCurrentEstimatedOneWayLatency()

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Threading.Tasks;
 using static Player_StunState;
 using static Server.Game.StunState;
@@ -992,6 +993,7 @@ namespace Server.Game
 
         protected string ResolveCommonEffect(StatusEffect inst, string key)
         {
+            // Client에서 FX인지 UI인지 판단
             if (inst.type == "Debuff")
             {
                 switch (key)
@@ -1000,6 +1002,8 @@ namespace Server.Game
                         return "Debuff_Slow";
                     case "Healing":
                         return "Debuff_HealedDecrease";
+                    case "Defense":
+                        return "Debuff_DefenseDecrease";
                 }
             }
 

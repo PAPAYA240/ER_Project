@@ -1072,12 +1072,14 @@ public class PlayerController : CreatureController
         if (hide)
         {
             IsHide = true;
-            _nameTag.gameObject.SetActive(false);
+            _nameTag.SetVisible(false);
+            //_nameTag.gameObject.SetActive(false);
         }
         else
         {
             IsHide = false;
-            _nameTag.gameObject.SetActive(true);
+            _nameTag.SetVisible(true);
+            //_nameTag.gameObject.SetActive(true);
         }
     }
 
@@ -1088,7 +1090,7 @@ public class PlayerController : CreatureController
         {
             foreach (Transform child in transform.GetComponentsInChildren<Transform>(true))
             {
-                if (child.name == "AbigailTable")
+                if (child.name == "RestTable")
                 {
                     _restItem = child.gameObject;
                     RenderRestItem(false);
