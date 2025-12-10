@@ -218,4 +218,14 @@ public class UI_PlayerNameTag : UI_Base
     {
         GetObject((int)GameObjects.StaminaBar).GetComponent<UI_BarNonText>().SetMaxValue(newMaxStamina);
     }
+
+    public void SetVisible(bool visible)
+    {
+        // UI는 CanvasRenderer로 충분
+        CanvasRenderer[] canvasRenderers = GetComponentsInChildren<CanvasRenderer>(true);
+        foreach (var cr in canvasRenderers)
+        {
+            cr.SetAlpha(visible ? 1f : 0f);
+        }
+    }
 }

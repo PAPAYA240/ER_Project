@@ -1072,12 +1072,14 @@ public class PlayerController : CreatureController
         if (hide)
         {
             IsHide = true;
-            _nameTag.gameObject.SetActive(false);
+            _nameTag.SetVisible(false);
+            //_nameTag.gameObject.SetActive(false);
         }
         else
         {
             IsHide = false;
-            _nameTag.gameObject.SetActive(true);
+            _nameTag.SetVisible(true);
+            //_nameTag.gameObject.SetActive(true);
         }
     }
 

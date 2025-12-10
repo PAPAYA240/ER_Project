@@ -10,7 +10,7 @@ using static UnityEngine.Analytics.IAnalytic;
 
 public class Env_Bush : EnvController
 {
-    enum BushState
+    public enum BushState
     {
         Visible,
         Hidden,
@@ -21,7 +21,6 @@ public class Env_Bush : EnvController
 
     List<int> _insidePlayersId = new List<int>();
     Dictionary<int, Coroutine> _delayedVisibleCoroutines = new Dictionary<int, Coroutine>();
-    private BushState myBushState = BushState.Hidden;
 
     protected override void Init() => base.Init();
 
@@ -51,6 +50,8 @@ public class Env_Bush : EnvController
         {
             int oldId = _insidePlayersId[i];
             GameObject exGo = Managers.Object.FindById(oldId);
+            if (exGo == null) 
+                continue;
             PlayerController pc = exGo.GetComponentInChildren<PlayerController>();
 
             if (pc != null && pc.State == CreatureState.Dead)
@@ -191,6 +192,11 @@ public class Env_Bush : EnvController
             else
             {
                 targetState = BushState.Hidden;
+            }
+
+            if (Managers.Object.MyPlayer.View.VisibleObjectIds.Contains(id)) // VisionShare 상태이면
+            {
+                targetState = BushState.Translucent;
             }
 
             pc.BushRenderType((int)targetState);
