@@ -9,7 +9,6 @@ public class FogOfWarVision : MonoBehaviour
     public int _rayCount = 200;          // 레이 개수
     private float _viewDistance = 8.5f;     // 시야 거리
     public float ViewDistance { get { return _viewDistance; } set { _viewDistance = value; } }
-    public LayerMask _obstacleMask;      // 구조물 마스크
 
     Mesh _mesh;
     Vector3 _origin;
@@ -20,7 +19,6 @@ public class FogOfWarVision : MonoBehaviour
     {
         _meshRenderer = GetComponent<MeshRenderer>();
 
-        _obstacleMask = LayerMask.GetMask("Map");
         _mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = _mesh;
         _origin = transform.position;
@@ -32,7 +30,7 @@ public class FogOfWarVision : MonoBehaviour
 
     void LateUpdate()
     {
-        _origin = transform.position;
+        _origin = transform.position + Vector3.up * 1.5f;
         GenerateVisionMesh();
     }
 
@@ -49,13 +47,8 @@ public class FogOfWarVision : MonoBehaviour
         for (int i = 0; i <= _rayCount; i++)
         {
             Vector3 dir = DirFromAngle(angle);
-            Vector3 vertex;
-
-            if (NavMesh.Raycast(_origin, _origin + dir * _viewDistance, out NavMeshHit hit, NavMesh.AllAreas))
-                vertex = hit.position;
-            else
-                vertex = _origin + dir * _viewDistance;
-
+            Vector3 vertex = GetVisionPoint(dir);
+            vertex.y = 0.02f;
             // 레이캐스팅 후 나온 위치에 정점 추가
             vertices.Add(transform.InverseTransformPoint(vertex));
 
@@ -73,6 +66,20 @@ public class FogOfWarVision : MonoBehaviour
         _mesh.Clear();
         _mesh.vertices = vertices.ToArray();
         _mesh.triangles = triangles.ToArray();
+    }
+
+    Vector3 GetVisionPoint(Vector3 direction)
+    {
+        float maxDistance = _viewDistance;
+
+        LayerMask blockingLayers = LayerMask.GetMask("VisionWall");
+
+        if (Physics.Raycast(_origin, direction, out RaycastHit highHit, maxDistance, blockingLayers))
+        {
+            return highHit.point;
+        }
+
+        return _origin + direction * maxDistance;
     }
 
     Vector3 DirFromAngle(float angleDegrees)
