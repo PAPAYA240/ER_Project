@@ -21,7 +21,6 @@ public class Env_Bush : EnvController
 
     List<int> _insidePlayersId = new List<int>();
     Dictionary<int, Coroutine> _delayedVisibleCoroutines = new Dictionary<int, Coroutine>();
-    private BushState myBushState = BushState.Hidden;
 
     protected override void Init() => base.Init();
 
