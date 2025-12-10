@@ -374,6 +374,7 @@ namespace Data
         public float speed;
         public string prefabName;
         public float delayTime;
+        public bool attachToParent;
         public string skillType;
         public Vector3 position; // 부모or 기본 포지션에 추가적으로 옮겨줄 위치
         public Quaternion rotation = Quaternion.identity;
