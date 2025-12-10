@@ -41,6 +41,7 @@ public sealed class Abigail_W : Skill_Abigail
         // TODO: 코스트/쿨타임 차감
 
         SendSkillConfirmPacket(p);
+        p.SendStopPacket();
         p.LookAtMouse(ctx.MousePos);
         p.SendCanStopSkillPacket(false);
 
