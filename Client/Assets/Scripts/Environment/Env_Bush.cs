@@ -43,6 +43,7 @@ public class Env_Bush : EnvController
             }
         }
 
+        IsOurTeamWardInBush = CheckOurTeamWardInBush(hitColliders);
 
         // 나간 플레이어 처리
         for (int i = _insidePlayersId.Count - 1; i >= 0; i--)
@@ -202,7 +203,7 @@ public class Env_Bush : EnvController
             {
                 targetState = BushState.Hidden;
             }
-            else if (isSameTeam || hasMyTeammate)
+            else if (isSameTeam || hasMyTeammate || IsOurTeamWardInBush)
             {
                 targetState = BushState.Translucent;
             }
@@ -324,8 +325,20 @@ public class Env_Bush : EnvController
     #endregion
 
     #region Ward
-    private List<int>[] _teamWards = new List<int>[2] { new List<int>(), new List<int>() };
+    bool IsOurTeamWardInBush = false;
 
+    bool CheckOurTeamWardInBush(Collider[] hitColliders) // 우리팀이 설치한 와드가 이 부쉬 안에 있는지
+    {
+        foreach (Collider hitCollider in hitColliders)
+        {
+            if (!hitCollider.TryGetComponent<WardController>(out WardController wc))
+                continue;
+            if (wc.TeamIndex == Managers.Object.MyPlayer.ObjInfo.Player.Team)
+                return true;
+        }
+
+        return false;
+    }
     
     #endregion
 }
