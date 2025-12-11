@@ -169,8 +169,10 @@ public class MyPlayerController : PlayerController
         if (restCmd != null)
             Managers.Network.Send(restCmd);
 
-        // Ping
+        // Ping 
         _input.GetPingCommand();
+        // Emoticon
+        _input.GetEmoticonCommand();
 
         // For Test
         var testCmd = _input.Get_KeyInputForTestCommand();

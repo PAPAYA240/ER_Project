@@ -1465,6 +1465,9 @@ class PacketHandler
             return;
 
         S_PingMarker pingPacket = packet as S_PingMarker;
+        if (pingPacket.ObjectId == Managers.Object.MyPlayer.Id)
+            return;
+
         GameObject go = Managers.Object.FindById(pingPacket.ObjectId);
         if (go == null)
             return;
@@ -1495,6 +1498,26 @@ class PacketHandler
                 Managers.Object.MyPlayer.UI.PlayerHUD.SetMinimapGammaGo(minimapIconPacket.IsActivate);
                 break;
         }
+    }
+
+    public static void S_EmoticonHandler(PacketSession session, IMessage packet)
+    {
+        if (!IsSceneReady("Game", () => S_EmoticonHandler(session, packet)))
+            return;
+
+        S_Emoticon emoticonPacket = packet as S_Emoticon;
+        if (emoticonPacket.ObjectId == Managers.Object.MyPlayer.Id)
+            return;
+
+        GameObject go = Managers.Object.FindById(emoticonPacket.ObjectId);
+        if (go == null)
+            return;
+
+        PlayerController pc = go.GetComponentInChildren<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.Emoticon.PlayEmoticonFromServer(emoticonPacket.EmoticonId);
     }
 
     static float GetCurrentEstimatedOneWayLatency()

@@ -322,6 +322,19 @@ namespace Server.Game
             }
         }
 
+        public void HandleEmoticon(Player player, C_Emoticon pkt)
+        {
+            if (player == null)
+                return;
+
+            S_Emoticon emoticonPacket = new S_Emoticon() { ObjectId = pkt.ObjectId, EmoticonId = pkt.EmoticonId };
+            foreach (var p in _players)
+            {
+                if (p.Value != player)
+                    Push(p.Value.Session.Send, emoticonPacket);
+            }
+        }
+
         #region Utils
         public GameObject FindNearestEnemy(Player me, int range)
         {
