@@ -14,8 +14,8 @@ public class EmoticonController
     // 최근 사용 시간 기록 (슬라이딩 윈도우용)
     private readonly Queue<float> _useTimes = new Queue<float>();
 
-    private const int MAX_USES = 5;         // 5번까지 가능
-    private const float WINDOW = 10f;       // 10초 창
+    private const int MAX_USES = 50;         // 5번까지 가능
+    private const float WINDOW = 1f;       // 10초 창
     private const float MIN_INTERVAL = 1f;  // 사용 간 최소 텀 1초
 
     private float _lastUseTime = -999f;     // 연속 사용 방지용
@@ -50,7 +50,7 @@ public class EmoticonController
         SendEmoticonPacket(_emoticonId);
 
         // 6) UI 재생 (내 화면)
-        _owner.EmoticonUI.Play(_emoticonId);
+        Managers.WorldUI.PlayEmoticon(_owner.Id, _emoticonId);
 
         return true;
     }
@@ -72,7 +72,7 @@ public class EmoticonController
     // 서버에서 브로드캐스트 받은 경우 (남이 쓴 이모티콘 재생)
     public void PlayEmoticonFromServer(int emoticonId)
     {
-        _owner.EmoticonUI.Play(emoticonId);
+        Managers.WorldUI.PlayEmoticon(_owner.Id, _emoticonId);
     }
 
     private int GetSpriteId(CharacterType characterType)

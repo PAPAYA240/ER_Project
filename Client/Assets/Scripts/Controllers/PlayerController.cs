@@ -327,7 +327,6 @@ public class PlayerController : CreatureController
         Ping = new PingController(this);
 
         // Emoticon
-        Emoticon = new EmoticonController(this);
         InstantiateUI();
     }
 
@@ -719,6 +718,7 @@ public class PlayerController : CreatureController
         UpdateStamina();
         UpdateMaxStamina();
     }
+
     protected override void UpdateHp()
     {
         if (_nameTag == null)
@@ -1167,11 +1167,14 @@ public class PlayerController : CreatureController
     #region Emoticon
     private void InstantiateUI()
     {
+        Managers.WorldUI.RegisterEmoticonUI(Id, transform);
+
+        Emoticon = new EmoticonController(this);
         // Emoticon
-        GameObject em = Managers.Resource.Instantiate("UI/Common/EmoticonUI");
-        em?.transform.SetParent(gameObject.transform);
-        EmoticonUI = em.GetComponentInChildren<UI_Emoticon>(true);
-        EmoticonUI?.SetTarget(gameObject);
+        //GameObject em = Managers.Resource.Instantiate("UI/Common/EmoticonUI");
+        //em?.transform.SetParent(gameObject.transform);
+        //EmoticonUI = em.GetComponentInChildren<UI_Emoticon>(true);
+        //EmoticonUI?.SetTarget(gameObject);
     }
     #endregion
 }
