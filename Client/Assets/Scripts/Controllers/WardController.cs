@@ -19,20 +19,17 @@ public class WardController : BaseController
 
 
     [Header("UI Canvas ����")]
-    public Canvas mainScreenCanvas; // <<--- ���� �ִ� ���� UI Canvas�� Inspector���� �������ּ���!
-                                    //       Render Mode�� Screen Space-Camera �Ǵ� Overlay���� �մϴ�.
-
-    [Header("Life Bar UI ������")]
-    public GameObject wardLifeBarUIPrefab; // <<--- Canvas�� ���Ե��� ���� WardLifeBarUI �������� �������ּ���!
+    public Canvas mainScreenCanvas; 
+                                    
 
     Vector3 uiOffset = new Vector3(0, 1.3f, 0); 
 
-    private GameObject _lifeBarInstance; // Instantiate�� ������ LifeBar UI GameObject �ν��Ͻ�
-    private UI_WardLifeBar _lifeBarController; // Life Bar UI�� �����ϴ� ��ũ��Ʈ
+    private GameObject _lifeBarInstance;
+    private UI_WardLifeBar _lifeBarController;
+    Canvas _canvas;
 
     private void Awake()
     {
-
         if (mainScreenCanvas == null)
         {
             GameObject go = GameObject.FindGameObjectWithTag("MainCanvas");
@@ -42,11 +39,11 @@ public class WardController : BaseController
                 mainScreenCanvas = go.GetComponent<Canvas>();
             }
         }
+        Init();
     }
 
     void Start()
     {
-        Init();
         StartCoroutine(LifecycleRoutine());    
     }
 
@@ -80,13 +77,11 @@ public class WardController : BaseController
         {
             InitializeLifeBarUI();
         }
-        else
-        {
-            //Debug.LogError("Life Bar UI�� �ʱ�ȭ�� �� �����ϴ�. �ʿ��� ������ �����ϴ�.");
-        }
 
         _lifeBarController.SetMaxValue(_lifeTime);
         _rect = _lifeBarInstance.GetComponent<RectTransform>();
+
+        IsInBush = CheckIsInBush();
     }
 
     IEnumerator LifecycleRoutine()
@@ -100,9 +95,6 @@ public class WardController : BaseController
 
             yield return null;
         }
-
-
-        //yield return new WaitForSeconds(_lifeTime);
 
         if (_animator != null)
         {
@@ -125,7 +117,7 @@ public class WardController : BaseController
 
     private void InitializeLifeBarUI()
     {
-        _lifeBarInstance = Managers.Resource.Instantiate("UI/SubItem/WardLifeBarCanvas", /*gameObject.transform*/ mainScreenCanvas.transform);
+        _lifeBarInstance = Managers.Resource.Instantiate("UI/SubItem/WardLifeBarCanvas", mainScreenCanvas.transform);
 
         if (_lifeBarInstance == null)
         {
@@ -133,17 +125,18 @@ public class WardController : BaseController
         }
 
         _lifeBarController = _lifeBarInstance.GetComponent<UI_WardLifeBar>();
-        if (_lifeBarController == null) // ���� ��Ʈ�� ���ٸ� �ڽĿ��� ã�ƺ��ϴ�.
+        if (_lifeBarController == null)
         {
             _lifeBarController = _lifeBarInstance.GetComponentInChildren<UI_WardLifeBar>();
         }
 
         if (_lifeBarController == null)
         {
-            Destroy(_lifeBarInstance); // UI �ν��Ͻ� ����
+            Destroy(_lifeBarInstance); 
             return;
         }
         _cg = _lifeBarInstance.GetComponentInChildren<CanvasGroup>();
+        _canvas = _lifeBarInstance.GetComponent<Canvas>();
     }
 
     void OnEnable()
@@ -233,6 +226,13 @@ public class WardController : BaseController
 
     public void SetVisible(bool isVisible)
     {
+        if (TeamIndex == Managers.Object.MyPlayer.ObjInfo.Player.Team)
+            isVisible = true;
+
+        if (_canvas == null)
+            return;
+        
+        _canvas.enabled = isVisible;
         foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>())
         {
             if (r == null) continue;
@@ -248,5 +248,15 @@ public class WardController : BaseController
     {
         if(IsInBush)
             SetVisible(IsVisible);
+    }
+
+    bool CheckIsInBush() // 적군 와드의 위치가 부쉬 내부인지 확인
+    {
+        if (TeamIndex == Managers.Object.MyPlayer.ObjInfo.Player.Team) // 아군와드는 그냥 보여야 함
+        {
+            return false;
+        }
+
+        return Managers.Object.IsWardInBush(Id);
     }
 }

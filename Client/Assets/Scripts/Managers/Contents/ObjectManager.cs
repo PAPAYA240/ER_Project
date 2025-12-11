@@ -336,9 +336,11 @@ public class ObjectManager
             if(go.name == "Ward")
             {
                 WardController wc = go.GetComponentInChildren<WardController>();
-                if (wc != null)
-                    wc.SetWardLifeBarActive(isVisible);
-                wc.SetVisible(isVisible);
+                //if (wc != null)
+                //    wc.SetWardLifeBarActive(isVisible);
+
+                if(false == wc.IsInBush)
+                    wc.SetVisible(isVisible);
             }
         }
     }
@@ -387,6 +389,26 @@ public class ObjectManager
 		}
 		return null;
 	}
+
+    public bool IsWardInBush(int wardId) // 와드가 부쉬 내부인지 확인
+    {
+        foreach(GameObject obj in _objects.Values)
+        {
+            if (obj.TryGetComponent<Env_Bush>(out Env_Bush bush))
+            {
+                Collider[] colliders = bush.GetHitColliders();
+                foreach (Collider collider in colliders)
+                {
+                    if(collider.GetComponentInParent<WardController>() is WardController wc)
+                    {
+                        if (wardId == wc.Id)
+                            return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
 	public void Clear()
 	{
