@@ -37,6 +37,8 @@ public class UI_PlayerNameTag : UI_Base
     private Canvas _canvas;
     private PlayerController _pc;
 
+    CanvasGroup cg;
+
     public override void Init()
     {
         _rect = GetComponent<RectTransform>();
@@ -55,6 +57,7 @@ public class UI_PlayerNameTag : UI_Base
         _green_Dark = _green * 0.5f;
         _blue_Dark = _blue * 0.5f;
         _skyBlue_Dark = _skyBlue * 0.5f;
+        cg = gameObject.GetComponent<CanvasGroup>();
     }
 
     private void Awake()
@@ -221,11 +224,6 @@ public class UI_PlayerNameTag : UI_Base
 
     public void SetVisible(bool visible)
     {
-        // UI는 CanvasRenderer로 충분
-        CanvasRenderer[] canvasRenderers = GetComponentsInChildren<CanvasRenderer>(true);
-        foreach (var cr in canvasRenderers)
-        {
-            cr.SetAlpha(visible ? 1f : 0f);
-        }
+        cg.alpha = visible ? 1f : 0f;
     }
 }
