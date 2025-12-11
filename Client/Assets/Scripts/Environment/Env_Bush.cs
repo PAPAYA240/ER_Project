@@ -43,7 +43,7 @@ public class Env_Bush : EnvController
             }
         }
 
-        IsOurTeamWardInBush = CheckOurTeamWardInBush(hitColliders);
+        CheckWardsInBush(hitColliders);
 
         // 나간 플레이어 처리
         for (int i = _insidePlayersId.Count - 1; i >= 0; i--)
@@ -219,8 +219,9 @@ public class Env_Bush : EnvController
 
             pc.BushRenderType((int)targetState);
         }
-    }
 
+        UpdateInsideEnemyWardsRender(hasMyTeammate || IsOurTeamWardInBush);
+    }
 
     private IEnumerator DelayedVisible(PlayerController pc, float delay)
     {
@@ -326,19 +327,41 @@ public class Env_Bush : EnvController
 
     #region Ward
     bool IsOurTeamWardInBush = false;
+    HashSet<int> enemyWardIds = new HashSet<int>();
 
-    bool CheckOurTeamWardInBush(Collider[] hitColliders) // 우리팀이 설치한 와드가 이 부쉬 안에 있는지
+    void CheckWardsInBush(Collider[] hitColliders) // 우리팀이 설치한 와드가 이 부쉬 안에 있는지
     {
+        bool ourTeamWardInBush = false;
+        enemyWardIds.Clear();
+
         foreach (Collider hitCollider in hitColliders)
         {
             if (!hitCollider.TryGetComponent<WardController>(out WardController wc))
                 continue;
-            if (wc.TeamIndex == Managers.Object.MyPlayer.ObjInfo.Player.Team)
-                return true;
+            if (wc.TeamIndex == Managers.Object.MyPlayer.ObjInfo.Player.Team) // 아군 와드
+            {
+                ourTeamWardInBush = true;
+            }
+            else // 적군 와드
+            {
+                enemyWardIds.Add(wc.Id);
+            }
         }
 
-        return false;
+        IsOurTeamWardInBush = ourTeamWardInBush;
     }
-    
+
+    void UpdateInsideEnemyWardsRender(bool hasVision)
+    {
+        foreach (int id in enemyWardIds)
+        {
+            GameObject go = Managers.Object.FindById(id);
+            if (go == null) continue;
+            WardController wc = go.GetComponentInChildren<WardController>();
+            if (wc == null) continue;
+            wc.IsVisible = hasVision;
+            wc.IsInBush = true;
+        }
+    }
     #endregion
 }

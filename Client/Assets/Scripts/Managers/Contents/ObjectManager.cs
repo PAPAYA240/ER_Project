@@ -335,7 +335,10 @@ public class ObjectManager
 
             if(go.name == "Ward")
             {
-                go.GetComponentInChildren<WardController>().SetWardLifeBarActive(isVisible);
+                WardController wc = go.GetComponentInChildren<WardController>();
+                if (wc != null)
+                    wc.SetWardLifeBarActive(isVisible);
+                wc.SetVisible(isVisible);
             }
         }
     }

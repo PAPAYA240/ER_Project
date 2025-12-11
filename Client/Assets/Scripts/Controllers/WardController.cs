@@ -125,19 +125,13 @@ public class WardController : BaseController
 
     private void InitializeLifeBarUI()
     {
-        // 1. Life Bar UI �������� ���� UI Canvas�� �ڽ����� �ν��Ͻ�ȭ�մϴ�.
-        //    �̷��� �ؾ� UI �ý����� �ùٸ� ���� ���� �ȿ� ���� �˴ϴ�.
-        //_lifeBarInstance = Instantiate(wardLifeBarUIPrefab, mainScreenCanvas.transform);
         _lifeBarInstance = Managers.Resource.Instantiate("UI/SubItem/WardLifeBarCanvas", /*gameObject.transform*/ mainScreenCanvas.transform);
 
         if (_lifeBarInstance == null)
         {
-            //Debug.LogError("WardLifeBarUI ������ Instantiate ����!");
             return;
         }
 
-        // 2. Life Bar UI�� �����ϴ� ��ũ��Ʈ�� �����ɴϴ�.
-        //    _lifeBarInstance GameObject ��ü�� UI_BarNonText�� �پ��ְų� �ڽĿ� �پ����� �� �ֽ��ϴ�.
         _lifeBarController = _lifeBarInstance.GetComponent<UI_WardLifeBar>();
         if (_lifeBarController == null) // ���� ��Ʈ�� ���ٸ� �ڽĿ��� ã�ƺ��ϴ�.
         {
@@ -146,13 +140,10 @@ public class WardController : BaseController
 
         if (_lifeBarController == null)
         {
-            //Debug.LogError("UI_BarNonText ������Ʈ�� Life Bar UI �����տ��� ã�� �� �����ϴ�!");
             Destroy(_lifeBarInstance); // UI �ν��Ͻ� ����
             return;
         }
-
-        // �������� Canvas Scaler�� ���� ����������, ���� UI ��ü �������� �ٿ��� �Ѵٸ� ���⼭ ����
-        // _lifeBarInstance.transform.localScale = Vector3.one; // �Ϲ������� 1�� ����
+        _cg = _lifeBarInstance.GetComponentInChildren<CanvasGroup>();
     }
 
     void OnEnable()
@@ -228,10 +219,34 @@ public class WardController : BaseController
 
         return true;
     }
-
+    
     public void SetWardLifeBarActive(bool isActive)
     {
         if(null == _lifeBarInstance) return;
         _lifeBarInstance.SetActive(isActive);
+    }
+
+    CanvasGroup _cg = null;
+
+    public bool IsVisible = true;
+    public bool IsInBush = false;
+
+    public void SetVisible(bool isVisible)
+    {
+        foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>())
+        {
+            if (r == null) continue;
+            r.enabled = isVisible;
+        }
+        if (_lifeBarInstance == null || _cg == null)
+            return;
+        if (_cg != null)
+            _cg.alpha = isVisible ? 1f : 0f; 
+    }
+
+    public void LateUpdate()
+    {
+        if(IsInBush)
+            SetVisible(IsVisible);
     }
 }
