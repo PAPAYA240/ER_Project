@@ -162,7 +162,7 @@ public class UI_MonsterHpBar : UI_Base
                 NameTagHeight = 1.8f;
                 break;
             case MonsterType.Gamma:
-                NameTagHeight = 2.7f;
+                NameTagHeight = 2.9f;
                 break;
         }
 
