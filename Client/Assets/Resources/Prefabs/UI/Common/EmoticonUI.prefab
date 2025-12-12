@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6874263561307286742}
   - component: {fileID: 5242948892307917152}
   - component: {fileID: 1753974689424685557}
+  - component: {fileID: 364416212294080903}
   m_Layer: 5
   m_Name: EmoticonUI
   m_TagString: Untagged
@@ -96,7 +97,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: a0f3c86ea3be4b64bbea4ebc3fe3a7bd, type: 2}
   - {fileID: 21300000, guid: 2812d5ab50df8884eb431d409077aadd, type: 2}
   - {fileID: 21300000, guid: 154dfc8f997a0b045be780d6f587ef40, type: 2}
-  - {fileID: 0}
   popInDuration: 0.25
   keepDuration: 1.5
   popOutDuration: 0.2
@@ -173,6 +173,18 @@ MonoBehaviour:
   target: {fileID: 0}
   worldHeight: 1.8
   screenOffset: 105
+--- !u!225 &364416212294080903
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5134794141780623480}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &8349743837344204157
 GameObject:
   m_ObjectHideFlags: 0

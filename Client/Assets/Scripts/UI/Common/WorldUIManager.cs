@@ -16,7 +16,7 @@ public class WorldUIManager : MonoBehaviour
 
     // objectId 기준으로 이모티콘 UI를 관리
     private readonly Dictionary<int, UI_Emoticon> _emoticonDict = new();
-    private readonly Dictionary<int, UI_Follower> _followerDict = new();
+    private readonly HashSet<int> _hiddenOwners = new();
 
     private void Awake()
     {
@@ -88,8 +88,10 @@ public class WorldUIManager : MonoBehaviour
 
         follower.SetTarget(target);
 
+        bool hidden = _hiddenOwners.Contains(objectId);
+        ui.SetVisible(!hidden);
+
         _emoticonDict[objectId] = ui;
-        _followerDict[objectId] = follower;
     }
 
     /// <summary>
@@ -102,10 +104,8 @@ public class WorldUIManager : MonoBehaviour
             if (ui != null)
                 Destroy(ui.gameObject);
             _emoticonDict.Remove(objectId);
+            _hiddenOwners.Remove(objectId);
         }
-
-        if (_followerDict.ContainsKey(objectId))
-            _followerDict.Remove(objectId);
     }
 
     /// <summary>
@@ -127,6 +127,19 @@ public class WorldUIManager : MonoBehaviour
         if (_emoticonDict.TryGetValue(objectId, out var ui) && ui != null)
         {
             ui.Hide();
+        }
+    }
+
+    public void SetEmoticonVisibility(int ownerId, bool visible)
+    {
+        if (visible)
+            _hiddenOwners.Remove(ownerId);
+        else
+            _hiddenOwners.Add(ownerId);
+
+        if (_emoticonDict.TryGetValue(ownerId, out var ui) && ui != null)
+        {
+            ui.SetVisible(visible);
         }
     }
 }

@@ -36,12 +36,17 @@ public class UI_Emoticon : MonoBehaviour
 
     [SerializeField] private float maxScale = 0.5f;
 
+    [Header("Visibility")]
+    private CanvasGroup _visibilityGroup;  // 은신/비은신
+
     private Coroutine _playCo;
 
     private void Awake()
     {
         transform.localScale = Vector3.zero;
         gameObject.SetActive(false);
+
+        _visibilityGroup = GetComponent<CanvasGroup>();
     }
 
     public void Play(int emoticonIndex)
@@ -98,5 +103,11 @@ public class UI_Emoticon : MonoBehaviour
         transform.localScale = Vector3.zero;
         gameObject.SetActive(false);
         _playCo = null;
+    }
+
+    public void SetVisible(bool visible)
+    {
+        _visibilityGroup.alpha = visible ? 1f : 0f;
+        _visibilityGroup.blocksRaycasts = visible;
     }
 }
