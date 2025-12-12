@@ -5,6 +5,7 @@ using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.AI;
+using static EmoticonController;
 
 public class PlayerInputController : MonoBehaviour
 {
@@ -499,7 +500,7 @@ public class PlayerInputController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
-            if(_player.Emoticon.TryUseEmoticon() == false)
+            if(_player.Emoticon.TryUseEmoticon() == EmoticonUseResult.Fail_WindowLimit)
                 _player.UI.ActionNotReady.Show(Emoticon_Desc_NotReady);
         }
     }

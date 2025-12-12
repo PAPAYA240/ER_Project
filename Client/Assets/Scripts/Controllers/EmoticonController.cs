@@ -14,11 +14,18 @@ public class EmoticonController
     // 최근 사용 시간 기록 (슬라이딩 윈도우용)
     private readonly Queue<float> _useTimes = new Queue<float>();
 
-    private const int MAX_USES = 50;         // 5번까지 가능
-    private const float WINDOW = 1f;       // 10초 창
+    private const int MAX_USES = 5;         // 5번까지 가능
+    private const float WINDOW = 10f;       // 10초 창
     private const float MIN_INTERVAL = 1f;  // 사용 간 최소 텀 1초
 
     private float _lastUseTime = -999f;     // 연속 사용 방지용
+
+    public enum EmoticonUseResult
+    {
+        Success,
+        Fail_MinInterval,  // 1초 텀을 지키지 않음
+        Fail_WindowLimit   // 5초 동안 5회 초과
+    }
 
     public EmoticonController(PlayerController owner)
     {
@@ -26,13 +33,13 @@ public class EmoticonController
         _emoticonId = GetSpriteId(owner.ObjInfo.Player.CharType);
     }
 
-    public bool TryUseEmoticon()
+    public EmoticonUseResult TryUseEmoticon()
     {
         float now = Time.time;
 
         // 1) 최소 텀(1초) 체크
         if (now - _lastUseTime < MIN_INTERVAL)
-            return false;
+            return EmoticonUseResult.Fail_MinInterval;
 
         // 2) 5초 슬라이딩 윈도우 정리
         while (_useTimes.Count > 0 && now - _useTimes.Peek() > WINDOW)
@@ -40,7 +47,7 @@ public class EmoticonController
 
         // 3) 5회 제한 체크
         if (_useTimes.Count >= MAX_USES)
-            return false;
+            return EmoticonUseResult.Fail_WindowLimit;
 
         // 4) 사용 허가 → 기록 저장
         _useTimes.Enqueue(now);
@@ -52,7 +59,7 @@ public class EmoticonController
         // 6) UI 재생 (내 화면)
         Managers.WorldUI.PlayEmoticon(_owner.Id, _emoticonId);
 
-        return true;
+        return EmoticonUseResult.Success;
     }
 
     private void SendEmoticonPacket(int emoticonId)
