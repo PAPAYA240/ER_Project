@@ -6,8 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using static UnityEngine.Analytics.IAnalytic;
-using static UnityEngine.GraphicsBuffer;
 
 public class Env_Bush : EnvController
 {
@@ -323,5 +321,11 @@ public class Env_Bush : EnvController
             }
         }
     }
+    #endregion
+
+    #region Ward
+    private List<int>[] _teamWards = new List<int>[2] { new List<int>(), new List<int>() };
+
+    
     #endregion
 }

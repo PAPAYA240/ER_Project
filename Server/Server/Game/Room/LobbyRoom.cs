@@ -21,7 +21,7 @@ namespace Server.Game
 
         public override void Update()
         {
-            TimeUtil.Instance.Update(Environment.TickCount);
+            TimeUtil.Instance.Update(Environment.TickCount64);
 
             Flush();
             CheckLastPing();
