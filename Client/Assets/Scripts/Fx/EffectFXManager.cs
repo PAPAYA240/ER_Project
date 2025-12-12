@@ -63,6 +63,7 @@ public class EffectFXManager : MonoBehaviour
         GameObject owner = Managers.Object.FindById(ownerId);
         PlayerController player = owner.GetComponent<PlayerController>();
 
+        int targetId = ownerId;
         foreach (EffectData data in effectData)
         {
             GameObject fxPrefab = GetFxPrefab(ownerId, data.prefabName, isCommon);
@@ -82,7 +83,6 @@ public class EffectFXManager : MonoBehaviour
 
             Quaternion spawnRot = GetSpawnRotation(fxObject, data, copyTransform, rot);
             Vector3 spawnPos = GetSpawnPosition(fxObject, ownerId, data, copyTransform, mousePos, targetPos, rot);
-            int targetId = ownerId;
 
             if (data.target == EEffectTarget.TargetNoRotation)
             {
@@ -114,8 +114,6 @@ public class EffectFXManager : MonoBehaviour
                 // 지금 이 owner가 나에게 숨김 상태라면 바로 꺼둠
                 bool ownerHidden = _hiddenOwners.Contains(targetId);
                 fxVis.SetVisible(!ownerHidden);
-                //PlayerController pc = Managers.Object.FindById(targetId).GetComponentInChildren<PlayerController>();
-                //Debug.Log($"@ SetVisible! : MyPlayer - {Managers.Object.MyPlayer.ObjInfo.Player.CharType}, Owner - {pc.ObjInfo.Player.CharType}, ownerHidden - {ownerHidden}, Fx - {fxObject.name}");
             }
 
             // Moving 동작
@@ -127,9 +125,9 @@ public class EffectFXManager : MonoBehaviour
         // 진행 중인 이펙트 리스트
         if (effectList != null && effectList.Count > 0)
         {
-            if (!currentlyPlayingEffects.ContainsKey(ownerId))
-                currentlyPlayingEffects[ownerId] = new List<GameObject>();
-            currentlyPlayingEffects[ownerId].AddRange(effectList);
+            if (!currentlyPlayingEffects.ContainsKey(targetId))
+                currentlyPlayingEffects[targetId] = new List<GameObject>();
+            currentlyPlayingEffects[targetId].AddRange(effectList);
         }
         return effectList;
     }
@@ -514,9 +512,6 @@ public class EffectFXManager : MonoBehaviour
 
         if (!currentlyPlayingEffects.TryGetValue(ownerId, out List<GameObject> effectList))
             return;
-
-        //PlayerController pc = Managers.Object.FindById(ownerId).GetComponentInChildren<PlayerController>();
-        //Debug.Log($"@ SetOwnerVisible : Owner - {pc.ObjInfo.Player.CharType}, Visible - {visible}, Count - {effectList.Count} ");
 
         foreach (var fx in effectList)
         {
