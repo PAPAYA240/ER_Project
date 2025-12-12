@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
-public class WorldUIManager : MonoBehaviour
+public class WorldUIManager 
 {
     public static WorldUIManager Instance { get; private set; }
 
@@ -17,21 +16,6 @@ public class WorldUIManager : MonoBehaviour
     // objectId 기준으로 이모티콘 UI를 관리
     private readonly Dictionary<int, UI_Emoticon> _emoticonDict = new();
     private readonly HashSet<int> _hiddenOwners = new();
-
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-
-        if (_worldUICanvas == null)
-            Debug.LogError("[WorldUIManager] worldUICanvas 할당되지 않았습니다.");
-        if (_emoticonBubble == null)
-            Debug.LogError("[WorldUIManager] EmoticonBubble 할당되지 않았습니다.");
-    }
 
     public void Init()
     {
@@ -75,14 +59,15 @@ public class WorldUIManager : MonoBehaviour
         if (_emoticonDict.ContainsKey(objectId))
             return;
 
-        GameObject go = Instantiate(_emoticonBubble, _worldUICanvas.transform);
+       // GameObject go = Instantiate(_emoticonBubble, _worldUICanvas.transform);
+        GameObject go = Managers.Resource.Instantiate("UI/Common/EmoticonUI", _worldUICanvas.transform);
         var follower = go.GetComponentInChildren<UI_Follower>(true);
         var ui = go.GetComponentInChildren<UI_Emoticon>(true);
 
         if (follower == null || ui == null)
         {
             Debug.LogError("[WorldUIManager] EmoticonBubble에 UI_Follower 또는 UI_Emoticon이 없습니다.");
-            Destroy(go);
+            //Destroy(go);
             return;
         }
 
@@ -101,8 +86,8 @@ public class WorldUIManager : MonoBehaviour
     {
         if (_emoticonDict.TryGetValue(objectId, out var ui))
         {
-            if (ui != null)
-                Destroy(ui.gameObject);
+            //if (ui != null)
+            //    Destroy(ui.gameObject);
             _emoticonDict.Remove(objectId);
             _hiddenOwners.Remove(objectId);
         }
