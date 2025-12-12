@@ -41,7 +41,7 @@ public class PlayerController : CreatureController
 
     // 애니메이션 관련
     protected GameObject _eqipWeapon = null;
-    protected GameObject _restItem = null;
+    protected List<GameObject> _restItems = new List<GameObject>();
     protected Animator _weaponAnimator = null;
 
     public SoundController Sound;
@@ -1095,13 +1095,12 @@ public class PlayerController : CreatureController
         {
             foreach (Transform child in transform.GetComponentsInChildren<Transform>(true))
             {
-                if (child.name == "RestTable")
+                if (child.name == "RestTable" || child.name == "AbigailCard")
                 {
-                    _restItem = child.gameObject;
-                    RenderRestItem(false);
-                    return;
+                    _restItems.Add(child.gameObject);
                 }
             }
+            RenderRestItem(false);
         }
         else if (ObjInfo.Player.CharType == CharacterType.Theodore)
         {
@@ -1109,7 +1108,7 @@ public class PlayerController : CreatureController
             {
                 if (child.name == "RestBox")
                 {
-                    _restItem = child.gameObject;
+                    _restItems.Add(child.gameObject);
                     RenderRestItem(false);
                     return;
                 }
@@ -1119,9 +1118,13 @@ public class PlayerController : CreatureController
 
     public void RenderRestItem(bool render)
     {
-        if (_restItem == null)
+        if (_restItems == null || _restItems.Count() == 0)
             return;
-        _restItem.SetActive(render);
+        foreach (GameObject restItem in _restItems)
+        {
+            if (restItem == null) continue;
+            restItem.SetActive(render);
+        }        
     }
     #endregion
 
