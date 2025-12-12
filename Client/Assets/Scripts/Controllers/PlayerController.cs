@@ -949,7 +949,7 @@ public class PlayerController : CreatureController
                             mat.SetColor("_OccludedColor", occludedColor);
                         }
 
-                        Debug.Log($"Set X-Ray for {renderer.gameObject.name}: StencilRef={stencilID}");
+                        //Debug.Log($"Set X-Ray for {renderer.gameObject.name}: StencilRef={stencilID}");
                     }
                 }
             }
