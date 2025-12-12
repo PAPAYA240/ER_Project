@@ -47,7 +47,6 @@ public class UIFXManager : MonoBehaviour
 
         fxObject.transform.position = target.transform.position;
         fxObject.transform.rotation = Quaternion.identity;
-        fxObject.transform.localScale = Vector3.one;
 
         UI_TargetingMark mark = fxObject.GetComponentInChildren<UI_TargetingMark>();
 
