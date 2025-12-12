@@ -340,9 +340,12 @@ public class ObjectManager
 
                 if (wc != null)
                 {
-                    if (false == wc.IsInBush)
+                    bool isInBush = Managers.Object.IsInBush(wc.ObjInfo.PosInfo.ToVector());
+                    if (false == isInBush)
+                    {
                         wc.SetVisible(isVisible);
-                    wc.SetWardLifeBarActive(isVisible);
+                        wc.SetWardLifeBarActive(isVisible);
+                    }                    
                 }
             }
         }

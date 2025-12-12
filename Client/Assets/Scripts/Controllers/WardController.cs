@@ -90,8 +90,8 @@ public class WardController : BaseController
         if (TeamIndex == Managers.Object.MyPlayer.ObjInfo.Player.Team || false == IsInBush)
             IsHide = false;
 
-        Debug.Log($"WardTeam: {TeamIndex}");
-        Debug.Log($"PlayerTeam: {Managers.Object.MyPlayer.ObjInfo.Player.Team}");
+        //Debug.Log($"WardTeam: {TeamIndex}");
+        //Debug.Log($"PlayerTeam: {Managers.Object.MyPlayer.ObjInfo.Player.Team}");
     }
 
     IEnumerator LifecycleRoutine()

@@ -69144,7 +69144,8 @@ GameObject:
   - component: {fileID: 1157261989533625236}
   - component: {fileID: 4251324176417275002}
   - component: {fileID: 853609772872749428}
-  m_Layer: 11
+  - component: {fileID: 6241310229822277812}
+  m_Layer: 22
   m_Name: Bg_Map_Cobalt_Center_Wall_01_Re
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69219,6 +69220,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &6241310229822277812
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6044392123851961142}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 312ab2e5f1438664b956f77a3f3cb873, type: 2}
 --- !u!1 &6057371539887435001
 GameObject:
   m_ObjectHideFlags: 0
@@ -72048,7 +72071,8 @@ GameObject:
   - component: {fileID: 443149436146572122}
   - component: {fileID: 4232749176834338799}
   - component: {fileID: 8181478720096158316}
-  m_Layer: 15
+  - component: {fileID: 2379303992812514669}
+  m_Layer: 22
   m_Name: Bg_Map_Cobalt_Center_Wall_02_Re
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72123,6 +72147,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &2379303992812514669
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6328640655017567255}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 1ca0010c1cc2ca64c9e274afaebcb5ac, type: 2}
 --- !u!1 &6330472759874948455
 GameObject:
   m_ObjectHideFlags: 0
@@ -84175,7 +84221,8 @@ GameObject:
   - component: {fileID: 7637983413216901021}
   - component: {fileID: 2570490964207161358}
   - component: {fileID: 2741059400516635331}
-  m_Layer: 11
+  - component: {fileID: 97381131568674036}
+  m_Layer: 22
   m_Name: Bg_Map_Cobalt_Center_Wall_01_Re
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84250,6 +84297,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &97381131568674036
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7301146837211321526}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 312ab2e5f1438664b956f77a3f3cb873, type: 2}
 --- !u!1 &7301304369184863793
 GameObject:
   m_ObjectHideFlags: 0
@@ -96957,7 +97026,8 @@ GameObject:
   - component: {fileID: 2848239047139418164}
   - component: {fileID: 5953527917368376143}
   - component: {fileID: 1394080776793760395}
-  m_Layer: 15
+  - component: {fileID: 7557036319461559282}
+  m_Layer: 22
   m_Name: Bg_Map_Cobalt_Center_Wall_02_Re
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97032,6 +97102,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &7557036319461559282
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8381413562622037256}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 1ca0010c1cc2ca64c9e274afaebcb5ac, type: 2}
 --- !u!1 &8391786730130599276
 GameObject:
   m_ObjectHideFlags: 0
@@ -103781,7 +103873,8 @@ GameObject:
   - component: {fileID: 8153596769320295355}
   - component: {fileID: 6697182239834159253}
   - component: {fileID: 6601072729332807271}
-  m_Layer: 11
+  - component: {fileID: 7398882864936682900}
+  m_Layer: 22
   m_Name: Bg_Map_Cobalt_Gamma_Hangar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103857,6 +103950,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &7398882864936682900
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9054662304120138290}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 888684999c6db7f4c8577e8393368cc2, type: 2}
 --- !u!1 &9059833925003303269
 GameObject:
   m_ObjectHideFlags: 0
