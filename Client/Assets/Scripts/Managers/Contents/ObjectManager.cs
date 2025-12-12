@@ -222,7 +222,8 @@ public class ObjectManager
         wc.Stat = info.StatInfo;
         wc.TeamIndex = teamIndex;
         wc.SyncPos();
-
+        if(wc.TeamIndex != Managers.Object.MyPlayer.ObjInfo.Player.Team)
+            wc.IsInBush = IsInBush(go.transform.position);
         //EnvController ec = go.GetComponent<EnvController>();
         //ec.ObjInfo = info;
         //ec.Id = info.ObjectId;
@@ -301,7 +302,7 @@ public class ObjectManager
             if (go.GetComponent<EnvController>() != null)
                 continue;
 
-            CreatureController controller = go.GetComponent<CreatureController>();
+            BaseController controller = go.GetComponent<BaseController>();
             if (controller != null)
             {
                 if (controller.IsHide)
@@ -336,11 +337,13 @@ public class ObjectManager
             if(go.name == "Ward")
             {
                 WardController wc = go.GetComponentInChildren<WardController>();
-                //if (wc != null)
-                //    wc.SetWardLifeBarActive(isVisible);
 
-                if(false == wc.IsInBush)
-                    wc.SetVisible(isVisible);
+                if (wc != null)
+                {
+                    if (false == wc.IsInBush)
+                        wc.SetVisible(isVisible);
+                    wc.SetWardLifeBarActive(isVisible);
+                }
             }
         }
     }
@@ -390,21 +393,14 @@ public class ObjectManager
 		return null;
 	}
 
-    public bool IsWardInBush(int wardId) // 와드가 부쉬 내부인지 확인
+    public bool IsInBush(Vector3 pos) // 와드가 부쉬 내부인지 확인
     {
         foreach(GameObject obj in _objects.Values)
         {
             if (obj.TryGetComponent<Env_Bush>(out Env_Bush bush))
             {
-                Collider[] colliders = bush.GetHitColliders();
-                foreach (Collider collider in colliders)
-                {
-                    if(collider.GetComponentInParent<WardController>() is WardController wc)
-                    {
-                        if (wardId == wc.Id)
-                            return true;
-                    }
-                }
+                if(bush.IsInBush(pos)) 
+                    return true;
             }
         }
         return false;

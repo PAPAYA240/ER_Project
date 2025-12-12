@@ -26,7 +26,11 @@ public class WardController : BaseController
 
     private GameObject _lifeBarInstance;
     private UI_WardLifeBar _lifeBarController;
+
     Canvas _canvas;
+    CanvasGroup _cg = null;
+    public bool IsVisible = true;
+    public bool IsInBush = false;
 
     private void Awake()
     {
@@ -39,11 +43,12 @@ public class WardController : BaseController
                 mainScreenCanvas = go.GetComponent<Canvas>();
             }
         }
-        Init();
+
     }
 
     void Start()
     {
+        Init();
         StartCoroutine(LifecycleRoutine());    
     }
 
@@ -81,7 +86,12 @@ public class WardController : BaseController
         _lifeBarController.SetMaxValue(_lifeTime);
         _rect = _lifeBarInstance.GetComponent<RectTransform>();
 
-        IsInBush = CheckIsInBush();
+        IsHide = true;
+        if (TeamIndex == Managers.Object.MyPlayer.ObjInfo.Player.Team || false == IsInBush)
+            IsHide = false;
+
+        Debug.Log($"WardTeam: {TeamIndex}");
+        Debug.Log($"PlayerTeam: {Managers.Object.MyPlayer.ObjInfo.Player.Team}");
     }
 
     IEnumerator LifecycleRoutine()
@@ -219,11 +229,6 @@ public class WardController : BaseController
         _lifeBarInstance.SetActive(isActive);
     }
 
-    CanvasGroup _cg = null;
-
-    public bool IsVisible = true;
-    public bool IsInBush = false;
-
     public void SetVisible(bool isVisible)
     {
         if (TeamIndex == Managers.Object.MyPlayer.ObjInfo.Player.Team)
@@ -248,15 +253,5 @@ public class WardController : BaseController
     {
         if(IsInBush)
             SetVisible(IsVisible);
-    }
-
-    bool CheckIsInBush() // 적군 와드의 위치가 부쉬 내부인지 확인
-    {
-        if (TeamIndex == Managers.Object.MyPlayer.ObjInfo.Player.Team) // 아군와드는 그냥 보여야 함
-        {
-            return false;
-        }
-
-        return Managers.Object.IsWardInBush(Id);
     }
 }

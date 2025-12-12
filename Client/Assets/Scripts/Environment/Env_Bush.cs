@@ -364,13 +364,16 @@ public class Env_Bush : EnvController
         }
     }
 
-    public Collider[] GetHitColliders()
+    public bool IsInBush(Vector3 pos)
     {
         Vector3 center = transform.TransformPoint(_bushCollider.center);
         Vector3 halfExtents = Vector3.Scale(_bushCollider.size / 2f, transform.lossyScale);
         Quaternion rotation = transform.rotation;
-
-        return Physics.OverlapBox(center, halfExtents, rotation, ~0);
+        var bounds = new Bounds(center, halfExtents * 2f);
+        if (bounds.Contains(pos))
+            return true;
+        return false;
     }
+
     #endregion
 }
