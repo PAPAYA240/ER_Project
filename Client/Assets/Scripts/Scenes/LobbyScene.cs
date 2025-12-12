@@ -40,7 +40,7 @@ public class LobbyScene : BaseScene
 
         Managers.Sound.Play("sound/bgm/BGM_Lobby", Define.Sound.Bgm);
 
-        Screen.SetResolution(1440, 810, false);
+        Screen.SetResolution(1920, 1080, false);
     }
 
     void Start()
