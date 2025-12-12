@@ -147,6 +147,16 @@ public class WardController : BaseController
         }
         _cg = _lifeBarInstance.GetComponentInChildren<CanvasGroup>();
         _canvas = _lifeBarInstance.GetComponent<Canvas>();
+
+        // 와드UI 색상 지정
+        if (TeamIndex == Managers.Object.MyPlayer.ObjInfo.Player.Team)
+        {
+            _lifeBarController.SetColor(new Color(0.2f, 0.5f, 1f, 1f));
+        }
+        else
+        {
+            _lifeBarController.SetColor(new Color(1f, 0f, 0f, 1f));
+        }
     }
 
     void OnEnable()
