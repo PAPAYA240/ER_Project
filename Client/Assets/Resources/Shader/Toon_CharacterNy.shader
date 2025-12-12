@@ -1,5 +1,7 @@
-Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_EmissiveAnimation_Optimized" {
-	Properties {
+Shader "ERBS_CHR/Toon_CharacterNy"
+{
+	Properties
+	{
 		[HideInInspector] _simpleUI ("SimpleUI", Float) = 0
 		[HideInInspector] _utsVersion ("Version", Float) = 2.07
 		[HideInInspector] _utsTechnique ("Technique", Float) = 0
@@ -84,11 +86,7 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_EmissiveAnimation_Optimized" {
 		_Offset_Y_Axis_BLD (" Offset Y-Axis (Built-in Light Direction)", Range(-1, 1)) = 0.09
 		[Toggle(_)] _Inverse_Z_Axis_BLD (" Inverse Z-Axis (Built-in Light Direction)", Float) = 1
 		[Enum(UnityEngine.Rendering.CompareFunction)] _ZTestMode ("ZTest Mode", Float) = 4
-		
-		[Header(X-Ray Settings)]
-		[HDR] _OccludedColor ("X-Ray Color (When Occluded)", Color) = (0.5, 0.8, 1, 0.5)
-		
-		[Header(Stencil)]
+		[HDR] _OccludedColor ("X-Ray Color", Color) = (0.5, 0.8, 1, 1)
 		_StencilRef ("Stencil Reference", Float) = 0
 		[Enum(UnityEngine.Rendering.CompareFunction)] _StencilComp ("Stencil Comparison", Float) = 8
 		[Enum(UnityEngine.Rendering.StencilOp)] _StencilOp ("Stencil Operation", Float) = 0
@@ -96,24 +94,28 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_EmissiveAnimation_Optimized" {
 		_StencilReadMask ("Stencil Read Mask", Float) = 255
 	}
 	
-	SubShader {
+	SubShader
+	{
 		Tags { "RenderType"="Opaque" "Queue"="Geometry" "RenderPipeline"="UniversalPipeline" }
 		LOD 200
 
-		Pass {
+		Pass
+		{
 			Name "OccludedPass"
 			Tags { "LightMode" = "SRPDefaultUnlit" }
 			
 			ZWrite Off
 			ZTest Greater
-			Blend SrcAlpha OneMinusSrcAlpha
-			Cull [_CullMode]
-			
-			Stencil {
-				Ref [_StencilRef]
-				Comp NotEqual
-				Pass Keep
-				ReadMask [_StencilReadMask]
+			Blend One Zero
+			Cull Back
+
+			Stencil
+			{
+			    Ref [_StencilRef]
+			    Comp NotEqual
+			    Pass Keep
+			    ReadMask [_StencilReadMask]
+			    Fail Keep        // 추가: 스텐실 테스트 실패 시에도 Keep
 			}
 			
 			HLSLPROGRAM
@@ -121,39 +123,43 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_EmissiveAnimation_Optimized" {
 			#pragma fragment frag
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-			struct Attributes {
+			struct Attributes
+			{
 				float4 positionOS : POSITION;
 			};
 
-			struct Varyings {
+			struct Varyings
+			{
 				float4 positionCS : SV_POSITION;
 			};
 
-			CBUFFER_START(UnityPerMaterial)
-				half4 _OccludedColor;
-			CBUFFER_END
+			half4 _OccludedColor;
 
-			Varyings vert(Attributes input) {
+			Varyings vert(Attributes input)
+			{
 				Varyings output;
 				output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
 				return output;
 			}
 
-			half4 frag(Varyings input) : SV_Target {
+			half4 frag(Varyings input) : SV_Target
+			{
 				return _OccludedColor;
 			}
 			ENDHLSL
 		}
 
-		Pass {
+		Pass
+		{
 			Name "ForwardLit"
 			Tags { "LightMode" = "UniversalForward" }
 			
 			ZWrite On
 			ZTest LEqual
-			Cull [_CullMode]
+			Cull Back
 			
-			Stencil {
+			Stencil
+			{
 				Ref [_StencilRef]
 				Comp [_StencilComp]
 				Pass [_StencilOp]
@@ -167,13 +173,15 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_EmissiveAnimation_Optimized" {
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
-			struct Attributes {
+			struct Attributes
+			{
 				float4 positionOS : POSITION;
 				float3 normalOS : NORMAL;
 				float2 uv : TEXCOORD0;
 			};
 
-			struct Varyings {
+			struct Varyings
+			{
 				float2 uv : TEXCOORD0;
 				float3 normalWS : TEXCOORD1;
 				float3 positionWS : TEXCOORD2;
@@ -187,25 +195,24 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_EmissiveAnimation_Optimized" {
 			TEXTURE2D(_Emissive_Tex);
 			SAMPLER(sampler_Emissive_Tex);
 
-			CBUFFER_START(UnityPerMaterial)
-				float4 _MainTex_ST;
-				half4 _BaseColor;
-				half4 _1st_ShadeColor;
-				half4 _2nd_ShadeColor;
-				half4 _Emissive_Color;
-				half4 _OverColor;
-				half _AddValOffset;
-				half _CurrPos;
-				half _BaseColor_Step;
-				half _BaseShade_Feather;
-				half _ShadeColor_Step;
-				half _1st2nd_Shades_Feather;
-				half _Use_BaseAs1st;
-				half _Unlit_Intensity;
-				half _GI_Intensity;
-			CBUFFER_END
+			float4 _MainTex_ST;
+			half4 _BaseColor;
+			half4 _1st_ShadeColor;
+			half4 _2nd_ShadeColor;
+			half4 _Emissive_Color;
+			half4 _OverColor;
+			half _AddValOffset;
+			half _CurrPos;
+			half _BaseColor_Step;
+			half _BaseShade_Feather;
+			half _ShadeColor_Step;
+			half _1st2nd_Shades_Feather;
+			half _Use_BaseAs1st;
+			half _Unlit_Intensity;
+			half _GI_Intensity;
 
-			Varyings vert(Attributes input) {
+			Varyings vert(Attributes input)
+			{
 				Varyings output;
 				
 				VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
@@ -219,7 +226,8 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_EmissiveAnimation_Optimized" {
 				return output;
 			}
 
-			half4 frag(Varyings input) : SV_Target {
+			half4 frag(Varyings input) : SV_Target
+			{
 				half4 baseColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv) * _BaseColor;
 				
 				Light mainLight = GetMainLight();
