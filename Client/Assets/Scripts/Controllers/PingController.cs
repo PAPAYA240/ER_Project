@@ -34,13 +34,15 @@ public class PingController
     {
         if(isMyPlayer)
         {
-            C_PingMarker packet = new C_PingMarker() 
-            { 
-                ObjectId = _owner.Id, 
-                TargetPos = pos 
-            };
             if(_owner is MyPlayerController mpc)
+            {
+                C_PingMarker packet = new C_PingMarker()
+                {
+                    ObjectId = _owner.Id,
+                    TargetPos = pos
+                };
                 mpc.SendPacket(packet);
+            }
         }
 
         _owner.PlayCommonCasterEffect(commonName: "Ping", mousePos: pos, targetPos: default, targetRot: default);

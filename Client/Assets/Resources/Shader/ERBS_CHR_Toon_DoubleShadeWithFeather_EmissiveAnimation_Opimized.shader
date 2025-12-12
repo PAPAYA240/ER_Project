@@ -85,6 +85,9 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_EmissiveAnimation_Optimized" {
 		[Toggle(_)] _Inverse_Z_Axis_BLD (" Inverse Z-Axis (Built-in Light Direction)", Float) = 1
 		[Enum(UnityEngine.Rendering.CompareFunction)] _ZTestMode ("ZTest Mode", Float) = 4
 		
+		[Header(X-Ray Settings)]
+		[HDR] _OccludedColor ("X-Ray Color (When Occluded)", Color) = (0.5, 0.8, 1, 0.5)
+		
 		[Header(Stencil)]
 		_StencilRef ("Stencil Reference", Float) = 0
 		[Enum(UnityEngine.Rendering.CompareFunction)] _StencilComp ("Stencil Comparison", Float) = 8
@@ -98,11 +101,56 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_EmissiveAnimation_Optimized" {
 		LOD 200
 
 		Pass {
+			Name "OccludedPass"
+			Tags { "LightMode" = "SRPDefaultUnlit" }
+			
+			ZWrite Off
+			ZTest Greater
+			Blend SrcAlpha OneMinusSrcAlpha
+			Cull [_CullMode]
+			
+			Stencil {
+				Ref [_StencilRef]
+				Comp NotEqual
+				Pass Keep
+				ReadMask [_StencilReadMask]
+			}
+			
+			HLSLPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
+			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+			struct Attributes {
+				float4 positionOS : POSITION;
+			};
+
+			struct Varyings {
+				float4 positionCS : SV_POSITION;
+			};
+
+			CBUFFER_START(UnityPerMaterial)
+				half4 _OccludedColor;
+			CBUFFER_END
+
+			Varyings vert(Attributes input) {
+				Varyings output;
+				output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
+				return output;
+			}
+
+			half4 frag(Varyings input) : SV_Target {
+				return _OccludedColor;
+			}
+			ENDHLSL
+		}
+
+		Pass {
 			Name "ForwardLit"
 			Tags { "LightMode" = "UniversalForward" }
 			
 			ZWrite On
-			ZTest [_ZTestMode]
+			ZTest LEqual
 			Cull [_CullMode]
 			
 			Stencil {
@@ -178,7 +226,6 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_EmissiveAnimation_Optimized" {
 				half3 normalWS = normalize(input.normalWS);
 				half NdotL = dot(normalWS, mainLight.direction);
 				
-				// 툰 셰이딩 
 				half lightIntensity = NdotL * 0.5 + 0.5;
 				half toonStep = step(_BaseColor_Step, lightIntensity);
 				
@@ -201,21 +248,17 @@ Shader "ERBS_CHR/Toon_DoubleShadeWithFeather_EmissiveAnimation_Optimized" {
 				}
 				half4 secondShade = shadeMap * _2nd_ShadeColor;
 				
-				// 셰이드 믹스
 				half4 shadedColor = lerp(secondShade, firstShade, shade2Step);
 				half4 finalColor = lerp(shadedColor, baseColor, toonStep);
 				
-				// 조명 적용
 				finalColor.rgb *= _Unlit_Intensity;
 				
 				half3 ambient = half3(unity_SHAr.w, unity_SHAg.w, unity_SHAb.w) * _GI_Intensity * 0.3;
 				finalColor.rgb += ambient * baseColor.rgb;
 				
-				// Emissive
 				half4 emissive = SAMPLE_TEXTURE2D(_Emissive_Tex, sampler_Emissive_Tex, input.uv) * _Emissive_Color;
 				finalColor.rgb += emissive.rgb;
 				
-				// Overlay Color
 				half maskValue = saturate((_CurrPos - _AddValOffset) * 10.0);
 				finalColor.rgb = lerp(finalColor.rgb, _OverColor.rgb, _OverColor.a * maskValue);
 				

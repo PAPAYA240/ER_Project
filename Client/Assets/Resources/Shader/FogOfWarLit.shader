@@ -140,8 +140,8 @@ Shader "Custom/FogOfWarLit"
 
             // -------------------------------------
             // Includes
-            #include "Assets/Resources/Shader/MySimpleLitInput.hlsl"
-            #include "Assets/Resources/Shader/MySimpleLitForwardPass.hlsl"
+            #include "MySimpleLitInput.hlsl"
+            #include "MySimpleLitForwardPass.hlsl"
             ENDHLSL
         }
 
@@ -187,7 +187,7 @@ Shader "Custom/FogOfWarLit"
 
             // -------------------------------------
             // Includes
-            #include "Assets/Resources/Shader/MySimpleLitInput.hlsl"
+            #include "MySimpleLitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/ShadowCasterPass.hlsl"
             ENDHLSL
         }
@@ -264,7 +264,7 @@ Shader "Custom/FogOfWarLit"
 
             // -------------------------------------
             // Includes
-            #include "Assets/Resources/Shader/MySimpleLitInput.hlsl"
+            #include "MySimpleLitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/SimpleLitGBufferPass.hlsl"
             ENDHLSL
         }
@@ -307,7 +307,7 @@ Shader "Custom/FogOfWarLit"
 
             // -------------------------------------
             // Includes
-            #include "Assets/Resources/Shader/MySimpleLitInput.hlsl"
+            #include "MySimpleLitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/DepthOnlyPass.hlsl"
             ENDHLSL
         }
@@ -354,7 +354,7 @@ Shader "Custom/FogOfWarLit"
 
             // -------------------------------------
             // Includes
-            #include "Assets/Resources/Shader/MySimpleLitInput.hlsl"
+            #include "MySimpleLitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/SimpleLitDepthNormalsPass.hlsl"
             ENDHLSL
         }
@@ -388,7 +388,7 @@ Shader "Custom/FogOfWarLit"
 
             // -------------------------------------
             // Includes
-            #include "Assets/Resources/Shader/MySimpleLitInput.hlsl"
+            #include "MySimpleLitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/SimpleLitMetaPass.hlsl"
 
             ENDHLSL
@@ -419,7 +419,7 @@ Shader "Custom/FogOfWarLit"
 
             // -------------------------------------
             // Includes
-            #include "Assets/Resources/Shader/MySimpleLitInput.hlsl"
+            #include "MySimpleLitInput.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Utils/Universal2D.hlsl"
             ENDHLSL
         }
@@ -435,7 +435,7 @@ Shader "Custom/FogOfWarLit"
             #pragma multi_compile _ LOD_FADE_CROSSFADE
             #pragma shader_feature_local_vertex _ADD_PRECOMPUTED_VELOCITY
 
-            #include "Assets/Resources/Shader/MySimpleLitInput.hlsl"
+            #include "MySimpleLitInput.hlsl"
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ObjectMotionVectors.hlsl"
             ENDHLSL
         }
@@ -460,7 +460,7 @@ Shader "Custom/FogOfWarLit"
             #pragma multi_compile _ LOD_FADE_CROSSFADE
             #pragma shader_feature_local_vertex _ADD_PRECOMPUTED_VELOCITY
             #define APLICATION_SPACE_WARP_MOTION 1
-            #include "Assets/Resources/Shader/MySimpleLitInput.hlsl"
+            #include "MySimpleLitInput.hlsl"
             #include_with_pragmas "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ObjectMotionVectors.hlsl"
             ENDHLSL
         }

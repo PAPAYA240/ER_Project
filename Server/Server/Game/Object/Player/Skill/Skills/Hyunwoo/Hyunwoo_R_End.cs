@@ -10,8 +10,12 @@ using static Server.Data.DataUtils;
 
 public sealed class Hyunwoo_R_End : SkillHandlerBase
 {
-    float _knockbackRange = 1.5f;
-    Dictionary<int, Player> _players = new Dictionary<int, Player>();
+    private float _knockbackRange = 1.5f;
+    private Dictionary<int, Player> _players = new Dictionary<int, Player>();
+
+    private float _stateDuration = TimeUtil.FrameToSec(24);
+    private float _elapsed = 0;
+
     public Hyunwoo_R_End()
     {
         _characterType = CharacterType.Hyunwoo;
@@ -78,6 +82,16 @@ public sealed class Hyunwoo_R_End : SkillHandlerBase
                         tartget.ChangeState(new Player_StunState(desc));
                 }
             }
+        }
+
+        if (CanStopSkill)
+            return;
+
+        _elapsed += TimeUtil.Instance.DeltaTime;
+        if (_elapsed >= _stateDuration)
+        {
+            CanStopSkill = true;
+            p.SendCanStopSkillPacket(CanStopSkill);
         }
     }
 

@@ -54,4 +54,12 @@ public class UI_WardLifeBar : UI_Base
     {
         SetValue(Mathf.Max(_value - value, 0));
     }
+
+    public void SetColor(Color color)
+    {
+        Image fillImage = GetImage((int)Images.FillImage);
+        if (fillImage == null)
+            return;
+        fillImage.color = color;
+    }
 }

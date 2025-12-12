@@ -155,6 +155,9 @@ enum MsgId {
   S_PING_MARKER = 122;
 
   S_MINIMAP_ICON = 123;
+
+  C_EMOTICON = 124;
+  S_EMOTICON = 125;
 }
 
 enum CombatState{
@@ -1415,4 +1418,14 @@ message S_PingMarker{
 message S_MinimapIcon{
 	MinimapIcon type = 1;
 	bool isActivate = 2;
+}
+
+message C_Emoticon{
+	int32 objectId = 1;
+	int32 emoticonId = 2;
+}
+
+message S_Emoticon{
+	int32 objectId = 1;
+	int32 emoticonId = 2;
 }

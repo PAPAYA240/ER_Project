@@ -5,6 +5,7 @@ using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.AI;
+using static EmoticonController;
 
 public class PlayerInputController : MonoBehaviour
 {
@@ -39,6 +40,7 @@ public class PlayerInputController : MonoBehaviour
     readonly private string Rest_Desc_NotReady = "전투 중에는 휴식을 할 수 없습니다.";
     readonly private string DeployingLoop_Desc_NotReady = "지금은 준비되지 않았습니다.";
     readonly private string Ping_Desc_NotReady = "추가 신호를 보내려면 기다려야 합니다.";
+    readonly private string Emoticon_Desc_NotReady = "추가 감정표현을 하려면 기다려야 합니다.";
 
     private void Awake()
     {
@@ -491,6 +493,15 @@ public class PlayerInputController : MonoBehaviour
             mousePos.y = _player.transform.position.y;
             if(_player.Ping.TryPlacePing(mousePos) == false)
                 _player.UI.ActionNotReady.Show(Ping_Desc_NotReady);
+        }
+    }
+
+    public void GetEmoticonCommand()
+    {
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            if(_player.Emoticon.TryUseEmoticon() == EmoticonUseResult.Fail_WindowLimit)
+                _player.UI.ActionNotReady.Show(Emoticon_Desc_NotReady);
         }
     }
 

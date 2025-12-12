@@ -16,9 +16,6 @@ public sealed class Theodore_D : SkillHandlerBase
     private float _timeElapsed = 0.0f;
     private bool _isEnding = false;
 
-    // 코스트는 한 번만 줄도록
-    bool sendCostPacket = true;
-
     public Theodore_D()
     {
         _characterType = CharacterType.Theodore;

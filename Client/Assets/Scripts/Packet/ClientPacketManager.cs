@@ -196,7 +196,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.SPingMarker, MakePacket<S_PingMarker>);
 		_handler.Add((ushort)MsgId.SPingMarker, PacketHandler.S_PingMarkerHandler);		
 		_onRecv.Add((ushort)MsgId.SMinimapIcon, MakePacket<S_MinimapIcon>);
-		_handler.Add((ushort)MsgId.SMinimapIcon, PacketHandler.S_MinimapIconHandler);
+		_handler.Add((ushort)MsgId.SMinimapIcon, PacketHandler.S_MinimapIconHandler);		
+		_onRecv.Add((ushort)MsgId.SEmoticon, MakePacket<S_Emoticon>);
+		_handler.Add((ushort)MsgId.SEmoticon, PacketHandler.S_EmoticonHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

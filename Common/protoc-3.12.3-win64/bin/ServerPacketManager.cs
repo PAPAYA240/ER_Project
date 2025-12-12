@@ -96,7 +96,9 @@ class PacketManager
 		_onRecv.Add((ushort)MsgId.CBaseTrigger, MakePacket<C_BaseTrigger>);
 		_handler.Add((ushort)MsgId.CBaseTrigger, PacketHandler.C_BaseTriggerHandler);		
 		_onRecv.Add((ushort)MsgId.CPingMarker, MakePacket<C_PingMarker>);
-		_handler.Add((ushort)MsgId.CPingMarker, PacketHandler.C_PingMarkerHandler);
+		_handler.Add((ushort)MsgId.CPingMarker, PacketHandler.C_PingMarkerHandler);		
+		_onRecv.Add((ushort)MsgId.CEmoticon, MakePacket<C_Emoticon>);
+		_handler.Add((ushort)MsgId.CEmoticon, PacketHandler.C_EmoticonHandler);
 	}
 
 	public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

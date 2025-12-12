@@ -395,8 +395,8 @@ MonoBehaviour:
   _lifeTime: 15
   _destructionAnimationDuration: 3
   mainScreenCanvas: {fileID: 0}
-  wardLifeBarUIPrefab: {fileID: 0}
-  uiOffset: {x: 0, y: 2, z: 0}
+  IsVisible: 1
+  IsInBush: 0
 --- !u!1 &1642728497391241
 GameObject:
   m_ObjectHideFlags: 0
@@ -467,7 +467,7 @@ SkinnedMeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1724484505948742}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

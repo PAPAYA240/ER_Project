@@ -19,20 +19,21 @@ public class WardController : BaseController
 
 
     [Header("UI Canvas ����")]
-    public Canvas mainScreenCanvas; // <<--- ���� �ִ� ���� UI Canvas�� Inspector���� �������ּ���!
-                                    //       Render Mode�� Screen Space-Camera �Ǵ� Overlay���� �մϴ�.
-
-    [Header("Life Bar UI ������")]
-    public GameObject wardLifeBarUIPrefab; // <<--- Canvas�� ���Ե��� ���� WardLifeBarUI �������� �������ּ���!
+    public Canvas mainScreenCanvas; 
+                                    
 
     Vector3 uiOffset = new Vector3(0, 1.3f, 0); 
 
-    private GameObject _lifeBarInstance; // Instantiate�� ������ LifeBar UI GameObject �ν��Ͻ�
-    private UI_WardLifeBar _lifeBarController; // Life Bar UI�� �����ϴ� ��ũ��Ʈ
+    private GameObject _lifeBarInstance;
+    private UI_WardLifeBar _lifeBarController;
+
+    Canvas _canvas;
+    CanvasGroup _cg = null;
+    public bool IsVisible = true;
+    public bool IsInBush = false;
 
     private void Awake()
     {
-
         if (mainScreenCanvas == null)
         {
             GameObject go = GameObject.FindGameObjectWithTag("MainCanvas");
@@ -42,6 +43,7 @@ public class WardController : BaseController
                 mainScreenCanvas = go.GetComponent<Canvas>();
             }
         }
+
     }
 
     void Start()
@@ -80,13 +82,16 @@ public class WardController : BaseController
         {
             InitializeLifeBarUI();
         }
-        else
-        {
-            //Debug.LogError("Life Bar UI�� �ʱ�ȭ�� �� �����ϴ�. �ʿ��� ������ �����ϴ�.");
-        }
 
         _lifeBarController.SetMaxValue(_lifeTime);
         _rect = _lifeBarInstance.GetComponent<RectTransform>();
+
+        IsHide = true;
+        if (TeamIndex == Managers.Object.MyPlayer.ObjInfo.Player.Team || false == IsInBush)
+            IsHide = false;
+
+        //Debug.Log($"WardTeam: {TeamIndex}");
+        //Debug.Log($"PlayerTeam: {Managers.Object.MyPlayer.ObjInfo.Player.Team}");
     }
 
     IEnumerator LifecycleRoutine()
@@ -100,9 +105,6 @@ public class WardController : BaseController
 
             yield return null;
         }
-
-
-        //yield return new WaitForSeconds(_lifeTime);
 
         if (_animator != null)
         {
@@ -125,34 +127,36 @@ public class WardController : BaseController
 
     private void InitializeLifeBarUI()
     {
-        // 1. Life Bar UI �������� ���� UI Canvas�� �ڽ����� �ν��Ͻ�ȭ�մϴ�.
-        //    �̷��� �ؾ� UI �ý����� �ùٸ� ���� ���� �ȿ� ���� �˴ϴ�.
-        //_lifeBarInstance = Instantiate(wardLifeBarUIPrefab, mainScreenCanvas.transform);
-        _lifeBarInstance = Managers.Resource.Instantiate("UI/SubItem/WardLifeBarCanvas", /*gameObject.transform*/ mainScreenCanvas.transform);
+        _lifeBarInstance = Managers.Resource.Instantiate("UI/SubItem/WardLifeBarCanvas", mainScreenCanvas.transform);
 
         if (_lifeBarInstance == null)
         {
-            //Debug.LogError("WardLifeBarUI ������ Instantiate ����!");
             return;
         }
 
-        // 2. Life Bar UI�� �����ϴ� ��ũ��Ʈ�� �����ɴϴ�.
-        //    _lifeBarInstance GameObject ��ü�� UI_BarNonText�� �پ��ְų� �ڽĿ� �پ����� �� �ֽ��ϴ�.
         _lifeBarController = _lifeBarInstance.GetComponent<UI_WardLifeBar>();
-        if (_lifeBarController == null) // ���� ��Ʈ�� ���ٸ� �ڽĿ��� ã�ƺ��ϴ�.
+        if (_lifeBarController == null)
         {
             _lifeBarController = _lifeBarInstance.GetComponentInChildren<UI_WardLifeBar>();
         }
 
         if (_lifeBarController == null)
         {
-            //Debug.LogError("UI_BarNonText ������Ʈ�� Life Bar UI �����տ��� ã�� �� �����ϴ�!");
-            Destroy(_lifeBarInstance); // UI �ν��Ͻ� ����
+            Destroy(_lifeBarInstance); 
             return;
         }
+        _cg = _lifeBarInstance.GetComponentInChildren<CanvasGroup>();
+        _canvas = _lifeBarInstance.GetComponent<Canvas>();
 
-        // �������� Canvas Scaler�� ���� ����������, ���� UI ��ü �������� �ٿ��� �Ѵٸ� ���⼭ ����
-        // _lifeBarInstance.transform.localScale = Vector3.one; // �Ϲ������� 1�� ����
+        // 와드UI 색상 지정
+        if (TeamIndex == Managers.Object.MyPlayer.ObjInfo.Player.Team)
+        {
+            _lifeBarController.SetColor(new Color(0.2f, 0.5f, 1f, 1f));
+        }
+        else
+        {
+            _lifeBarController.SetColor(new Color(1f, 0f, 0f, 1f));
+        }
     }
 
     void OnEnable()
@@ -228,10 +232,36 @@ public class WardController : BaseController
 
         return true;
     }
-
+    
     public void SetWardLifeBarActive(bool isActive)
     {
         if(null == _lifeBarInstance) return;
         _lifeBarInstance.SetActive(isActive);
+    }
+
+    public void SetVisible(bool isVisible)
+    {
+        if (TeamIndex == Managers.Object.MyPlayer.ObjInfo.Player.Team)
+            isVisible = true;
+
+        if (_canvas == null)
+            return;
+        
+        _canvas.enabled = isVisible;
+        foreach (Renderer r in gameObject.GetComponentsInChildren<Renderer>())
+        {
+            if (r == null) continue;
+            r.enabled = isVisible;
+        }
+        if (_lifeBarInstance == null || _cg == null)
+            return;
+        if (_cg != null)
+            _cg.alpha = isVisible ? 1f : 0f; 
+    }
+
+    public void LateUpdate()
+    {
+        if(IsInBush)
+            SetVisible(IsVisible);
     }
 }

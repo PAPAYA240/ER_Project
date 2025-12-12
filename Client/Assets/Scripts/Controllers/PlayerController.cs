@@ -41,7 +41,7 @@ public class PlayerController : CreatureController
 
     // 애니메이션 관련
     protected GameObject _eqipWeapon = null;
-    protected GameObject _restItem = null;
+    protected List<GameObject> _restItems = new List<GameObject>();
     protected Animator _weaponAnimator = null;
 
     public SoundController Sound;
@@ -63,6 +63,10 @@ public class PlayerController : CreatureController
 
     // Ping
     public PingController Ping { get; private set; }
+
+    // Emoticon
+    public EmoticonController Emoticon { get; private set; }
+    public UI_Emoticon EmoticonUI { get; protected set; }
 
     #region Property
     public override float Attack
@@ -320,6 +324,9 @@ public class PlayerController : CreatureController
 
         // Ping
         Ping = new PingController(this);
+
+        // Emoticon
+        InstantiateUI();
     }
 
     private void InitEquipItem()
@@ -385,8 +392,7 @@ public class PlayerController : CreatureController
             }
         }
     }
-
-    
+ 
     protected virtual void CheckUpdatedFlag() { }
 
     public override void OnDamaged()
@@ -622,6 +628,7 @@ public class PlayerController : CreatureController
     }
 
     #endregion
+
     public void LookAtMouse()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -710,6 +717,7 @@ public class PlayerController : CreatureController
         UpdateStamina();
         UpdateMaxStamina();
     }
+
     protected override void UpdateHp()
     {
         if (_nameTag == null)
@@ -892,8 +900,8 @@ public class PlayerController : CreatureController
     #endregion
 
     [Header("X-Ray Settings")]
-    [SerializeField] private int xRayIgnoreStencilID = 100;
-    #region Shader
+    [SerializeField] private int xRayGroupStencilID = 100; // 플레이어+무기 그룹 ID
+
     void InitializeXRay()
     {
         SetupPlayerWeaponXRay();
@@ -901,99 +909,65 @@ public class PlayerController : CreatureController
 
     void SetupPlayerWeaponXRay()
     {
-        // Player 본체
-        SetXRayGroup(gameObject, xRayIgnoreStencilID);
+        // Player와 무기 모두 같은 ID 사용
+        SetXRayGroup(gameObject, xRayGroupStencilID);
 
         if (_eqipWeapon != null)
-            SetXRayGroup(_eqipWeapon, xRayIgnoreStencilID);
+            SetXRayGroup(_eqipWeapon, xRayGroupStencilID);
     }
+
     public void SetxRayFromPlayer(GameObject player)
     {
-         SetXRayGroup(player, xRayIgnoreStencilID);
+        SetXRayGroup(player, xRayGroupStencilID);
     }
+
     void SetXRayGroup(GameObject root, int stencilID)
     {
         Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
-
         foreach (Renderer renderer in renderers)
         {
-            foreach (Material mat in renderer.materials)
+            // 중요: 머티리얼 인스턴스 배열을 가져와서 수정
+            Material[] materials = renderer.materials;
+
+            for (int i = 0; i < materials.Length; i++)
             {
-                if (mat.shader.name.Contains("Toon_DoubleShadeWithFeather"))
+                Material mat = materials[i];
+
+                if ( mat.shader.name.Contains("Toon_CharacterNy"))
                 {
                     if (mat.HasProperty("_StencilRef"))
                     {
                         mat.SetInt("_StencilRef", stencilID);
                         mat.SetInt("_StencilComp", (int)UnityEngine.Rendering.CompareFunction.Always);
                         mat.SetInt("_StencilOp", (int)UnityEngine.Rendering.StencilOp.Replace);
+                        mat.SetInt("_ZTestMode", (int)UnityEngine.Rendering.CompareFunction.LessEqual);
+
+                        if (mat.HasProperty("_OccludedColor"))
+                        {
+                            Color occludedColor = mat.GetColor("_OccludedColor");
+                            occludedColor.a = 0.5f;
+                            mat.SetColor("_OccludedColor", occludedColor);
+                        }
+
+                        Debug.Log($"Set X-Ray for {renderer.gameObject.name}: StencilRef={stencilID}");
                     }
                 }
             }
+
+            // 변경된 머티리얼 배열을 다시 할당
+            renderer.materials = materials;
         }
     }
 
-    // 무기 교체 시 호출 (기존 EquipWeapon 메서드에 추가)
     void OnWeaponEquipped(GameObject newWeapon)
     {
         if (newWeapon != null)
         {
-            SetXRayGroup(newWeapon, xRayIgnoreStencilID);
+            SetXRayGroup(newWeapon, xRayGroupStencilID);
         }
     }
 
-    // Player와 Weapon의 X-Ray 효과 끄기/켜기
-    public void SetPlayerWeaponXRayEnabled(bool enabled)
-    {
-        float alpha = enabled ? 0.5f : 0f;
 
-        SetOccludedColorAlpha(gameObject, alpha);
-
-        if (_eqipWeapon != null)
-        {
-            SetOccludedColorAlpha(_eqipWeapon, alpha);
-        }
-    }
-
-    void SetOccludedColorAlpha(GameObject root, float alpha)
-    {
-        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
-
-        foreach (Renderer renderer in renderers)
-        {
-            foreach (Material mat in renderer.materials)
-            {
-                if (mat.HasProperty("_OccludedColor"))
-                {
-                    Color occludedColor = mat.GetColor("_OccludedColor");
-                    occludedColor.a = alpha;
-                    mat.SetColor("_OccludedColor", occludedColor);
-                }
-            }
-        }
-    }
-    void SetRenderingLayerMask(GameObject root, uint layerMask)
-    {
-        Renderer[] renderers = root.GetComponentsInChildren<Renderer>(true);
-
-        foreach (Renderer renderer in renderers)
-        {
-            renderer.renderingLayerMask = layerMask;
-        }
-    }
-    void SetupRenderingLayer()
-    {
-        uint playerLayer = 1u << 1; // Layer 1
-
-        SetRenderingLayerMask(gameObject, playerLayer);
-
-        if (_eqipWeapon != null)
-        {
-            SetRenderingLayerMask(_eqipWeapon, playerLayer);
-        }
-    }
-
-   
-    #endregion
     public void SyncPosFromServer(S_Move movePacket)
     {
         if (_agent == null || !_agent.isOnNavMesh)
@@ -1095,13 +1069,12 @@ public class PlayerController : CreatureController
         {
             foreach (Transform child in transform.GetComponentsInChildren<Transform>(true))
             {
-                if (child.name == "RestTable")
+                if (child.name == "RestTable" || child.name == "AbigailCard")
                 {
-                    _restItem = child.gameObject;
-                    RenderRestItem(false);
-                    return;
+                    _restItems.Add(child.gameObject);
                 }
             }
+            RenderRestItem(false);
         }
         else if (ObjInfo.Player.CharType == CharacterType.Theodore)
         {
@@ -1109,7 +1082,7 @@ public class PlayerController : CreatureController
             {
                 if (child.name == "RestBox")
                 {
-                    _restItem = child.gameObject;
+                    _restItems.Add(child.gameObject);
                     RenderRestItem(false);
                     return;
                 }
@@ -1119,9 +1092,13 @@ public class PlayerController : CreatureController
 
     public void RenderRestItem(bool render)
     {
-        if (_restItem == null)
+        if (_restItems == null || _restItems.Count() == 0)
             return;
-        _restItem.SetActive(render);
+        foreach (GameObject restItem in _restItems)
+        {
+            if (restItem == null) continue;
+            restItem.SetActive(render);
+        }        
     }
     #endregion
 
@@ -1152,6 +1129,20 @@ public class PlayerController : CreatureController
             _weaponAnimator.CrossFadeInFixedTime(animName, transDuration);
         else
             _weaponAnimator.CrossFadeInFixedTime("WAIT", transDuration);
+    }
+    #endregion
+
+    #region Emoticon
+    private void InstantiateUI()
+    {
+        Managers.WorldUI.RegisterEmoticonUI(Id, transform);
+
+        Emoticon = new EmoticonController(this);
+        // Emoticon
+        //GameObject em = Managers.Resource.Instantiate("UI/Common/EmoticonUI");
+        //em?.transform.SetParent(gameObject.transform);
+        //EmoticonUI = em.GetComponentInChildren<UI_Emoticon>(true);
+        //EmoticonUI?.SetTarget(gameObject);
     }
     #endregion
 }

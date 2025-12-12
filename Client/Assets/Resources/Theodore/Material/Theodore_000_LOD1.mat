@@ -21,12 +21,11 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Theodore_000_LOD1
-  m_Shader: {fileID: 4800000, guid: 36ebdcda199c55b4e8685f5f8891b8fe, type: 3}
+  m_Shader: {fileID: 4800000, guid: 5b0cf217a6597b04f9724d7e68e07fea, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords:
-  - _EMISSION
   - _EMISSIVE_SIMPLE
   - _ISOUTLINE_ON
   - _IS_BLENDADDTOHICOLOR_ON
@@ -70,6 +69,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _AnimatedEmissionTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BakedNormal:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -98,6 +101,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _EmissiveMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Emissive_Tex:
         m_Texture: {fileID: 2800000, guid: dec148964f15a854499c0317d1bac0d9, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -108,6 +115,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: d4ea138204615e742b71f10930ede039, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -192,8 +203,10 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EMISSIVE: 0
+    - _EmissiveValue: 0
     - _EnvironmentReflections: 1
     - _Farthest_Distance: 0
+    - _GIFlag: 0
     - _GI_Intensity: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -201,6 +214,8 @@ Material:
     - _HighColor_Power: 0
     - _Inverse_MatcapMask: 0
     - _Inverse_Z_Axis_BLD: 0
+    - _IsAnimatedEmission: 0
+    - _IsEmission: 0
     - _Is_BLD: 0
     - _Is_BakedNormal: 0
     - _Is_BlendAddToHiColor: 1
@@ -251,6 +266,7 @@ Material:
     - _Rotate_EmissiveUV: 0
     - _Rotate_MatCapUV: 0
     - _Rotate_NormalMapForMatCapUV: 0
+    - _ScrollSpeedEmit: 0.5
     - _Scroll_EmissiveU: 0
     - _Scroll_EmissiveV: 0
     - _Set_SystemShadowsToBase: 1
@@ -288,6 +304,7 @@ Material:
     m_Colors:
     - _1st_ShadeColor: {r: 0.62264144, g: 0.50809896, b: 0.5609647, a: 1}
     - _2nd_ShadeColor: {r: 1, g: 1, b: 1, a: 1}
+    - _AddColor: {r: 1, g: 1, b: 1, a: 1}
     - _Ap_RimLightColor: {r: 0, g: 0, b: 0, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
@@ -295,8 +312,9 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Emissive_Color: {r: 0, g: 0.027173785, b: 2.5950618, a: 1}
     - _HighColor: {r: 0, g: 0, b: 0, a: 1}
+    - _MaskColor: {r: 1, g: 1, b: 1, a: 1}
     - _MatCapColor: {r: 0, g: 0, b: 0, a: 1}
-    - _OccludedColor: {r: 0.07861614, g: 0.5414916, b: 1, a: 1}
+    - _OccludedColor: {r: 0.059748232, g: 0.51328146, b: 1, a: 1}
     - _Outline_Color: {r: 0, g: 0, b: 0, a: 1}
     - _OverColor: {r: 0, g: 0.6862744, b: 1, a: 0.3921}
     - _RimLightColor: {r: 0.2509804, g: 0.23137255, b: 0.3019608, a: 1}

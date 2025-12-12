@@ -6,8 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using static UnityEngine.Analytics.IAnalytic;
-using static UnityEngine.GraphicsBuffer;
 
 public class Env_Bush : EnvController
 {
@@ -45,6 +43,7 @@ public class Env_Bush : EnvController
             }
         }
 
+        CheckWardsInBush(hitColliders);
 
         // 나간 플레이어 처리
         for (int i = _insidePlayersId.Count - 1; i >= 0; i--)
@@ -114,7 +113,7 @@ public class Env_Bush : EnvController
             if (isEnemyTeam)
             {
                 pc.BushRenderType((int)BushState.Hidden);
-                Managers.FX.Effect.SetOwnerVisible(pc.Id, false);
+                SetVisibility(pc.Id, false);
 
                 if (_delayedVisibleCoroutines.ContainsKey(pc.Id))
                 {
@@ -130,7 +129,7 @@ public class Env_Bush : EnvController
 
                 pc.PlaySkillEffect(KeyCode.F1, default(Vector3), default(Vector3));
                 pc.BushRenderType((int)BushState.Translucent);
-                Managers.FX.Effect.SetOwnerVisible(pc.Id, true);
+                SetVisibility(pc.Id, true);
 
                 if (_delayedVisibleCoroutines.ContainsKey(pc.Id))
                 {
@@ -142,7 +141,7 @@ public class Env_Bush : EnvController
         else
         {
             pc.BushRenderType((int)BushState.Visible);
-            Managers.FX.Effect.SetOwnerVisible(pc.Id, true);
+            SetVisibility(pc.Id, true);
         }
 
 
@@ -204,7 +203,7 @@ public class Env_Bush : EnvController
             {
                 targetState = BushState.Hidden;
             }
-            else if (isSameTeam || hasMyTeammate)
+            else if (isSameTeam || hasMyTeammate || IsOurTeamWardInBush)
             {
                 targetState = BushState.Translucent;
             }
@@ -219,9 +218,11 @@ public class Env_Bush : EnvController
             }
 
             pc.BushRenderType((int)targetState);
+            SetVisibility(pc.Id, targetState != BushState.Hidden);
         }
-    }
 
+        UpdateInsideEnemyWardsRender(hasMyTeammate || IsOurTeamWardInBush);
+    }
 
     private IEnumerator DelayedVisible(PlayerController pc, float delay)
     {
@@ -252,7 +253,7 @@ public class Env_Bush : EnvController
             _delayedVisibleCoroutines.Remove(pc.Id);
 
         pc.BushRenderType((int)BushState.Visible);
-        Managers.FX.Effect.SetOwnerVisible(pc.Id, true);
+        SetVisibility(pc.Id, true);
     }
 
     #region Interaction
@@ -301,7 +302,7 @@ public class Env_Bush : EnvController
         }
 
         target.BushRenderType((int)targetState);
-        Managers.FX.Effect.SetOwnerVisible(target.Id, targetState != BushState.Hidden);
+        SetVisibility(target.Id, targetState != BushState.Hidden);
 
         foreach (int id in _insidePlayersId)
         {
@@ -319,9 +320,70 @@ public class Env_Bush : EnvController
             if (Managers.Object.MyPlayer.Id == target.Id)
             {
                 inPc.BushRenderType((int)BushState.Translucent);
-                Managers.FX.Effect.SetOwnerVisible(inPc.Id, true); 
+                SetVisibility(inPc.Id, true); 
             }
         }
+    }
+    #endregion
+
+    #region Ward
+    bool IsOurTeamWardInBush = false;
+    HashSet<int> enemyWardIds = new HashSet<int>();
+
+    void CheckWardsInBush(Collider[] hitColliders) // 우리팀이 설치한 와드가 이 부쉬 안에 있는지
+    {
+        bool ourTeamWardInBush = false;
+        enemyWardIds.Clear();
+
+        foreach (Collider hitCollider in hitColliders)
+        {
+            if (!hitCollider.TryGetComponent<WardController>(out WardController wc))
+                continue;
+            if (wc.TeamIndex == Managers.Object.MyPlayer.ObjInfo.Player.Team) // 아군 와드
+            {
+                ourTeamWardInBush = true;
+            }
+            else // 적군 와드
+            {
+                enemyWardIds.Add(wc.Id);
+            }
+        }
+
+        IsOurTeamWardInBush = ourTeamWardInBush;
+    }
+
+    void UpdateInsideEnemyWardsRender(bool hasVision)
+    {
+        foreach (int id in enemyWardIds)
+        {
+            GameObject go = Managers.Object.FindById(id);
+            if (go == null) continue;
+            WardController wc = go.GetComponentInChildren<WardController>();
+            if (wc == null) continue;
+            wc.IsVisible = hasVision;
+            wc.IsInBush = true;
+        }
+    }
+
+    public bool IsInBush(Vector3 pos)
+    {
+        Vector3 center = transform.TransformPoint(_bushCollider.center);
+        Vector3 halfExtents = Vector3.Scale(_bushCollider.size / 2f, transform.lossyScale);
+        Quaternion rotation = transform.rotation;
+        var bounds = new Bounds(center, halfExtents * 2f);
+        if (bounds.Contains(pos))
+            return true;
+        return false;
+    }
+
+
+    #endregion
+
+    #region FX/UI
+    private void SetVisibility(int targetId, bool visible)
+    {
+        Managers.FX.Effect.SetOwnerVisible(targetId, visible);
+        Managers.WorldUI.SetEmoticonVisibility(targetId, visible);
     }
     #endregion
 }

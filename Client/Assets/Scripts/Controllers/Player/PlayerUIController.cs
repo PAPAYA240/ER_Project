@@ -362,17 +362,17 @@ public class PlayerUIController : MonoBehaviour
     {
         // Interaction 
         GameObject io = Managers.Resource.Instantiate("UI/Interaction/UI_InteractionCharge");
-        io.transform.SetParent(gameObject.transform);
+        io?.transform.SetParent(gameObject.transform);
         InteractionCharge = io.GetComponent<UI_InteractionCharge>();
 
         // ActionNotReady 
         GameObject anr = Managers.Resource.Instantiate("UI/Interaction/UI_ActionNotReady");
-        anr.transform.SetParent(gameObject.transform);
+        anr?.transform.SetParent(gameObject.transform);
         ActionNotReady = anr.GetComponent<UI_ActionNotReady>();
 
         // DeathCount
         GameObject dc = Managers.Resource.Instantiate("UI/Common/DeathUI");
-        dc.transform.SetParent(gameObject.transform);
+        dc?.transform.SetParent(gameObject.transform);
         PlayerInterface.DeathUI = dc.GetComponent<UI_Death>();
     }
     #endregion

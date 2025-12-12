@@ -9,6 +9,10 @@ using static Server.Data.DataUtils;
 
 public sealed class Hyunwoo_Q : SkillHandlerBase
 {
+
+    private float _stateDuration = TimeUtil.FrameToSec(24);
+    private float _elapsed = 0;
+
     public Hyunwoo_Q()
     {
         _characterType = CharacterType.Hyunwoo;
@@ -22,7 +26,7 @@ public sealed class Hyunwoo_Q : SkillHandlerBase
 
         SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
-        p.Room.BroadcastAbigailFx(p, AbigailFx.HyunwooQ, 0.8f);
+        p.Room.Push(p.Room.BroadcastAbigailFx, p, AbigailFx.HyunwooQ, 0.8f);
         //p.SendSkillEffect(ctx.MousePos, keyCode: _keyCode);
     }
 
@@ -41,7 +45,15 @@ public sealed class Hyunwoo_Q : SkillHandlerBase
 
     public override void OnTick(Player p, SkillContext ctx)
     {
+        if (CanStopSkill)
+            return;
 
+        _elapsed += TimeUtil.Instance.DeltaTime;
+        if (_elapsed >= _stateDuration)
+        {
+            CanStopSkill = true;
+            p.SendCanStopSkillPacket(CanStopSkill);
+        }
     }
 
     public override void OnExit(Player p, SkillContext ctx)
