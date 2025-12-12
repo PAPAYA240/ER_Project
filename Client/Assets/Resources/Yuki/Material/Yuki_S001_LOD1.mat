@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Yuki_S001_LOD1
-  m_Shader: {fileID: 4800000, guid: 36ebdcda199c55b4e8685f5f8891b8fe, type: 3}
+  m_Shader: {fileID: 4800000, guid: 5b0cf217a6597b04f9724d7e68e07fea, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -64,6 +64,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _DissolveTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DissolveTexture_gradiant:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Emissive_Tex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -74,6 +82,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: 1b7ece8159946d74e82b7f3caa77e2ef, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTexture01:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTexture02:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OutlineTex:
@@ -105,6 +121,7 @@ Material:
     - _2nd_ShadeColor_Step: 0
     - _AddValOffset: 0
     - _Add_Antipodean_RimLight: 0
+    - _AnimateDissolve: 0
     - _Ap_RimLight_FeatherOff: 0
     - _Ap_RimLight_Power: 0.1
     - _BaseColor_Step: 0.68
@@ -115,9 +132,15 @@ Material:
     - _BumpScaleMatcap: 1
     - _CameraRolling_Stabilizer: 0
     - _ColorShift_Speed: 0
+    - _Cull: 0
     - _CullMode: 2
     - _CurrPos: 0
+    - _DissolveAmount: 0
+    - _DissolveSpeed: 0.5
+    - _DstBlend: 10
     - _EMISSIVE: 0
+    - _EdgeEmission: 2
+    - _EdgeWidth: 0.05
     - _Farthest_Distance: 0
     - _GI_Intensity: 0
     - _HighColor_Power: 0
@@ -152,8 +175,10 @@ Material:
     - _Is_ViewCoord_Scroll: 0
     - _Is_ViewShift: 0
     - _LightDirection_MaskOn: 0
+    - _LimitCustomY: 0
     - _Limit_Unlit_Intensity: 0.15
     - _MatCap: 0
+    - _MulVal_Alpha: 1
     - _Nearest_Distance: 3
     - _OUTLINE: 0
     - _Offset_X_Axis_BLD: -0.39
@@ -167,10 +192,13 @@ Material:
     - _Rotate_EmissiveUV: 0
     - _Rotate_MatCapUV: 0
     - _Rotate_NormalMapForMatCapUV: 0
+    - _ScrollSpeedX: 0
+    - _ScrollSpeedY: 0
     - _Scroll_EmissiveU: 0
     - _Scroll_EmissiveV: 0
     - _Set_SystemShadowsToBase: 1
     - _ShadeColor_Step: 0
+    - _SrcBlend: 5
     - _StencilComp: 8
     - _StencilOp: 0
     - _StencilReadMask: 255
@@ -188,7 +216,10 @@ Material:
     - _Unlit_Intensity: 1.2
     - _Use_1stAs2nd: 0
     - _Use_BaseAs1st: 1
+    - _ZTest: 4
     - _ZTestMode: 4
+    - _ZWrite: 0
+    - _hard: 0
     - _simpleUI: 0
     - _utsTechnique: 0
     - _utsVersion: 2.072
@@ -199,6 +230,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorShift: {r: 0, g: 0, b: 0, a: 1}
+    - _EdgeColor: {r: 1, g: 0.5, b: 0, a: 1}
     - _Emissive_Color: {r: 0, g: 0, b: 0, a: 1}
     - _HighColor: {r: 0, g: 0, b: 0, a: 1}
     - _MatCapColor: {r: 0, g: 0, b: 0, a: 1}

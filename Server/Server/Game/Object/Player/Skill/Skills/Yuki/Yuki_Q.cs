@@ -14,6 +14,15 @@ public sealed class Yuki_Q : InstantHandlerBase
 
     public override void ExecuteInstant(Player p)
     {
+        // 전투 모드
+        {
+            p.CombatState = CombatState.Combat;
+            S_CombatMode combatModePkt = new S_CombatMode();
+            combatModePkt.CombatMode = p.CombatState;
+            p.Room.Push(p.Session.Send, combatModePkt);
+            p.CombatTime = 0f;
+        }
+
         p.AttackActive = true;
         p.SendYukiSkillEffect(SkillEffectType.QBuff);
         p.Room.Push(p.Room.BroadcastAbigailSound, p, AbigailSound.YukiQactive, 1f);

@@ -5,6 +5,9 @@ using static Server.Game.GameObject;
 
 public sealed class Yuki_R : SkillHandlerBase
 {
+    private float _stopElasped;
+    private float _stopSkillTime;
+
     public Yuki_R()
     {
         _characterType = CharacterType.Yuki;
@@ -16,6 +19,10 @@ public sealed class Yuki_R : SkillHandlerBase
     {
         base.OnEnter(p, ctx);
         // TODO: 코스트/쿨타임 차감
+
+        _stopElasped = 0f;
+        _stopSkillTime = 0f;
+        _stopSkillTime = 2.8f;
 
         SendSkillConfirmPacket(p);
         p.LookAtMouse(ctx.MousePos);
@@ -41,6 +48,16 @@ public sealed class Yuki_R : SkillHandlerBase
 
     public override void OnTick(Player p, SkillContext ctx)
     {
+        if (CanStopSkill)
+            return;
+
+        _stopElasped += TimeUtil.Instance.DeltaTime;
+
+        if (_stopElasped >= _stopSkillTime)
+        {
+            CanStopSkill = true;
+            p.SendCanStopSkillPacket(CanStopSkill);
+        }
 
         return;
     }

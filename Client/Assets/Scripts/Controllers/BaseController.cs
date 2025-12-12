@@ -12,6 +12,8 @@ public class BaseController : MonoBehaviour
 
     float _speedCoeff = 2.3f;
 
+    public bool IsHide = false;
+
     public virtual StatInfo Stat
     {
         get { return ObjInfo.StatInfo; }

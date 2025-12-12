@@ -222,7 +222,8 @@ public class ObjectManager
         wc.Stat = info.StatInfo;
         wc.TeamIndex = teamIndex;
         wc.SyncPos();
-
+        if(wc.TeamIndex != Managers.Object.MyPlayer.ObjInfo.Player.Team)
+            wc.IsInBush = IsInBush(go.transform.position);
         //EnvController ec = go.GetComponent<EnvController>();
         //ec.ObjInfo = info;
         //ec.Id = info.ObjectId;
@@ -301,7 +302,7 @@ public class ObjectManager
             if (go.GetComponent<EnvController>() != null)
                 continue;
 
-            CreatureController controller = go.GetComponent<CreatureController>();
+            BaseController controller = go.GetComponent<BaseController>();
             if (controller != null)
             {
                 if (controller.IsHide)
@@ -335,7 +336,17 @@ public class ObjectManager
 
             if(go.name == "Ward")
             {
-                go.GetComponentInChildren<WardController>().SetWardLifeBarActive(isVisible);
+                WardController wc = go.GetComponentInChildren<WardController>();
+
+                if (wc != null)
+                {
+                    bool isInBush = Managers.Object.IsInBush(wc.ObjInfo.PosInfo.ToVector());
+                    if (false == isInBush)
+                    {
+                        wc.SetVisible(isVisible);
+                        wc.SetWardLifeBarActive(isVisible);
+                    }                    
+                }
             }
         }
     }
@@ -384,6 +395,19 @@ public class ObjectManager
 		}
 		return null;
 	}
+
+    public bool IsInBush(Vector3 pos) // 와드가 부쉬 내부인지 확인
+    {
+        foreach(GameObject obj in _objects.Values)
+        {
+            if (obj.TryGetComponent<Env_Bush>(out Env_Bush bush))
+            {
+                if(bush.IsInBush(pos)) 
+                    return true;
+            }
+        }
+        return false;
+    }
 
 	public void Clear()
 	{

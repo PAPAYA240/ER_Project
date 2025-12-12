@@ -22,7 +22,7 @@ public class UI_MonsterHpBar : UI_Base
         TextBg
     }
 
-    public float NameTagHeight { get; set; } = 2.5f;
+    public float NameTagHeight { get; set; } = 1.9f;
 
     GameObject _target;
     private RectTransform _rect;
@@ -152,6 +152,20 @@ public class UI_MonsterHpBar : UI_Base
         MonsterController targetMc = _target.GetComponentInChildren<MonsterController>();
         if (null == targetMc)
             return;
+
+        switch (targetMc.ObjInfo.Monster.MonsterType)
+        {
+            case MonsterType.Drone:
+                NameTagHeight = 1.2f;
+                break;
+            case MonsterType.Omega:
+                NameTagHeight = 1.8f;
+                break;
+            case MonsterType.Gamma:
+                NameTagHeight = 2.9f;
+                break;
+        }
+
         _mc = targetMc;
     }
 

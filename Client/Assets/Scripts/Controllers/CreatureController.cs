@@ -6,7 +6,6 @@ public class CreatureController : BaseController
 {
     [SerializeField] private LayerMask _monsterMask;
     [SerializeField] private LayerMask _playerMask;
-    public bool IsHide = false;
 
     public override StatInfo Stat
     {
