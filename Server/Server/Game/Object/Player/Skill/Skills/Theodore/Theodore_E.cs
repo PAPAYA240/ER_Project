@@ -9,8 +9,6 @@ public sealed class Theodore_E : SkillHandlerBase
 
     private readonly float _animDuration;
 
-    float _projectileSpeed = 10.0f;
-
     public Theodore_E()
     {
         _characterType = CharacterType.Theodore;

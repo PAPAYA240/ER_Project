@@ -16,7 +16,6 @@ public class FX_Visibility : MonoBehaviour
         RefreshRenderers();
     }
 
-
     public void RefreshRenderers()
     {
         _renderers = GetComponentsInChildren<Renderer>(true);
@@ -36,8 +35,6 @@ public class FX_Visibility : MonoBehaviour
                     r.enabled = visible;
             }
         }
-
-        //Debug.Log($"@ FX_Visibility : Owner - {gameObject.name}, Visible - {visible} ");
     }
 
     public bool IsVisible => _visible;

@@ -553,4 +553,20 @@ class PacketHandler
 
         room.Push(room.HandlePingMarker, player, pingPacket);
     }
+
+    public static void C_EmoticonHandler(PacketSession session, IMessage packet)
+    {
+        C_Emoticon emoticonPacket = packet as C_Emoticon;
+        ClientSession clientSession = session as ClientSession;
+
+        Player player = clientSession.MyPlayer;
+        if (player == null)
+            return;
+
+        GameRoom room = player.Room;
+        if (room == null)
+            return;
+
+        room.Push(room.HandleEmoticon, player, emoticonPacket);
+    }
 }

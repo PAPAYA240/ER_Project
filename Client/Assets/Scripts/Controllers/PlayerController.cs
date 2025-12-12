@@ -64,6 +64,10 @@ public class PlayerController : CreatureController
     // Ping
     public PingController Ping { get; private set; }
 
+    // Emoticon
+    public EmoticonController Emoticon { get; private set; }
+    public UI_Emoticon EmoticonUI { get; protected set; }
+
     #region Property
     public override float Attack
     {
@@ -320,6 +324,9 @@ public class PlayerController : CreatureController
 
         // Ping
         Ping = new PingController(this);
+
+        // Emoticon
+        InstantiateUI();
     }
 
     private void InitEquipItem()
@@ -385,8 +392,7 @@ public class PlayerController : CreatureController
             }
         }
     }
-
-    
+ 
     protected virtual void CheckUpdatedFlag() { }
 
     public override void OnDamaged()
@@ -622,6 +628,7 @@ public class PlayerController : CreatureController
     }
 
     #endregion
+
     public void LookAtMouse()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -710,6 +717,7 @@ public class PlayerController : CreatureController
         UpdateStamina();
         UpdateMaxStamina();
     }
+
     protected override void UpdateHp()
     {
         if (_nameTag == null)
@@ -1155,6 +1163,20 @@ public class PlayerController : CreatureController
             _weaponAnimator.CrossFadeInFixedTime(animName, transDuration);
         else
             _weaponAnimator.CrossFadeInFixedTime("WAIT", transDuration);
+    }
+    #endregion
+
+    #region Emoticon
+    private void InstantiateUI()
+    {
+        Managers.WorldUI.RegisterEmoticonUI(Id, transform);
+
+        Emoticon = new EmoticonController(this);
+        // Emoticon
+        //GameObject em = Managers.Resource.Instantiate("UI/Common/EmoticonUI");
+        //em?.transform.SetParent(gameObject.transform);
+        //EmoticonUI = em.GetComponentInChildren<UI_Emoticon>(true);
+        //EmoticonUI?.SetTarget(gameObject);
     }
     #endregion
 }

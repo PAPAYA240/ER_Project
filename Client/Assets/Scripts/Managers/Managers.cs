@@ -13,6 +13,7 @@ public class Managers : MonoBehaviour
     ObjectManager _obj = new ObjectManager();
     NetworkManager _network = new NetworkManager();
     CombatTextManager _combatText = new CombatTextManager();
+    WorldUIManager _worldUI = new WorldUIManager();
     private FXManager _fx;
     public static FXManager FX { get { return s_instance._fx; } }
 
@@ -20,6 +21,7 @@ public class Managers : MonoBehaviour
     public static ObjectManager Object { get { return Instance._obj; } }
     public static NetworkManager Network { get { return Instance._network; } }
     public static CombatTextManager CombatText { get { return Instance._combatText; } }
+    public static WorldUIManager WorldUI { get { return Instance._worldUI; } }
     #endregion
 
     #region Core
@@ -69,6 +71,7 @@ public class Managers : MonoBehaviour
             s_instance._data.Init();
             s_instance._pool.Init();
             s_instance._combatText.Init();
+            s_instance._worldUI.Init();
             s_instance._sound.Init();
             s_instance._fx.Init();
         }		
