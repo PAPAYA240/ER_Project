@@ -22,7 +22,6 @@ public class Env_Bush : EnvController
     Dictionary<int, Coroutine> _delayedVisibleCoroutines = new Dictionary<int, Coroutine>();
 
     protected override void Init() => base.Init();
-
     void FixedUpdate()
     {
         CheckBushStatus();
