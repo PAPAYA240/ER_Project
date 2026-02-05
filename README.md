@@ -11,7 +11,7 @@
 <br>
 
 ## 📅 1. 프로젝트 정보
-- **개발 기간:** 2025.10.28 ~ 2025.12.12
+- **개발 기간:** 2025.10 ~ 2025.12.12
 - **프로젝트 개요:** 전략적 팀 전투와 거점 점령이 결합된 MOBA 장르의 멀티플레이 프로젝트입니다. 
 
 <br>
@@ -39,9 +39,10 @@
   
 | 👾 몬스터 (Monster) | 🗡️ 플레이어 (Player) | 🔊 이펙트/사운드 | 🍄 **기타 환경 오브젝트** |
 | :--- | :--- | :--- | :--- |
-| **Client**: Behavior Tree 로직 <br> [코드 보러가기](주소) | **Player Input Manager** <br> [코드 보러가기](주소) | **이펙트 시스템** <br> [코드 보러가기](주소) | **Bush (은신)** <br> [코드 보러가기](주소) |
-| **Server**: FSM 상태 제어 <br> [코드 보러가기](주소) | **Player Camera** <br> [코드 보러가기](주소) | **사운드 시스템** <br> [코드 보러가기](주소) | **X-Ray 시스템** <br> [코드 보러가기](주소) |
-| **AI**: A* + Funnel 알고리즘 <br> [코드 보러가기](주소) | **Player Indicator** <br> [코드 보러가기](주소) | | **OBB 충돌** <br> [코드 보러가기](주소) |
+| **Client**: Behavior Tree 순서 <br> [코드 보러가기](https://github.com/PAPAYA240/ER_Project/blob/b2cc2ae85f6b1ed3ea839192021584c4d4da0eec/Server/Server/Data/json/MonsterBehaviorTrees.json#L2) | **Player Input Manager** <br> [코드 보러가기](https://github.com/PAPAYA240/ER_Project/blob/b2cc2ae85f6b1ed3ea839192021584c4d4da0eec/Client/Assets/Scripts/Controllers/Player/PlayerInput/TheodoreInputController.cs#L110) | **이펙트 시스템** <br> [코드 보러가기](https://github.com/PAPAYA240/ER_Project/blob/b2cc2ae85f6b1ed3ea839192021584c4d4da0eec/Client/Assets/Scripts/Fx/EffectFXManager.cs#L50) | **Bush (은신)** <br> [코드 보러가기](https://github.com/PAPAYA240/ER_Project/blob/b2cc2ae85f6b1ed3ea839192021584c4d4da0eec/Client/Assets/Scripts/Environment/Env_Bush.cs#L29) |
+| **Server**: FSM : IdleState 예시 <br> [코드 보러가기](https://github.com/PAPAYA240/ER_Project/blob/b2cc2ae85f6b1ed3ea839192021584c4d4da0eec/Server/Server/Game/Object/Monster/FSM/BaseFSM/IdleState.cs#L8) | **Camera : 조준 스킬** <br> [코드 보러가기](https://github.com/PAPAYA240/ER_Project/blob/b2cc2ae85f6b1ed3ea839192021584c4d4da0eec/Client/Assets/Scripts/Controllers/CameraController.cs#L170) | **사운드 시스템** <br> [코드 보러가기](주소) | **X-Ray 시스템 세팅** <br> [코드 보러가기](https://github.com/PAPAYA240/ER_Project/blob/b2cc2ae85f6b1ed3ea839192021584c4d4da0eec/Client/Assets/Scripts/Controllers/PlayerController.cs#L945) |
+| **AI**: A* 알고리즘 <br> [코드 보러가기](https://github.com/PAPAYA240/ER_Project/blob/b2cc2ae85f6b1ed3ea839192021584c4d4da0eec/Server/Server/Game/Object/Monster/AStar/Pathfinding.cs#L51) | **Player Indicator : Overay Camera** <br> [코드 보러가기](https://github.com/PAPAYA240/ER_Project/blob/b2cc2ae85f6b1ed3ea839192021584c4d4da0eec/Client/Assets/Scripts/Controllers/CameraController.cs#L51) | | **OBB 충돌** <br> [코드 보러가기](https://github.com/PAPAYA240/ER_Project/blob/b2cc2ae85f6b1ed3ea839192021584c4d4da0eec/Server/Server/Game/Collision/CollisionManager.cs#L1135) |
+| **AI**: Funnel 알고리즘 <br> [코드 보러가기](https://github.com/PAPAYA240/ER_Project/blob/b2cc2ae85f6b1ed3ea839192021584c4d4da0eec/Server/Server/Game/Object/Monster/AStar/Funnel.cs#L50) | | | |
 <br>
 
 ## 🚀 5. 문제 해결
