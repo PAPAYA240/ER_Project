@@ -6,140 +6,147 @@ using Data;
 
 public abstract class AnimationControlNode : ActionNode
 {
-    protected Animator _animator;
     protected MonsterController _controller;
+    protected Animator _animator;
     protected NavMeshAgent _agent;
-    protected string _waitAnim = "WAIT";
 
-    protected readonly int MoveVelocityHash = Animator.StringToHash("moveVelocity");
+    protected readonly int _waitAnimHash = Animator.StringToHash("WAIT");
+    protected readonly int _isWaitParamHash = Animator.StringToHash("bWait");
+    protected readonly int _moveVelocityHash = Animator.StringToHash("moveVelocity");
+
     protected bool _hasMoveVelocityParam = false;
+    private bool _isInitialized = false;
 
-    protected bool Check(GameObject owner)
+    protected bool Initialize(GameObject owner)
     {
-        if (_controller == null)
-            _controller = owner.GetComponentInChildren<MonsterController>();
+        if (_isInitialized) 
+            return true;
 
-        if (_animator == null)
-            _animator = owner.GetComponentInChildren<Animator>();
+        _controller = owner.GetComponentInChildren<MonsterController>();
+        _animator = owner.GetComponentInChildren<Animator>();
+        _agent = owner.GetComponentInChildren<NavMeshAgent>();
 
-        if (_agent == null)
-            _agent = owner.GetComponentInChildren<NavMeshAgent>();
-
-        foreach (AnimatorControllerParameter param in _animator.parameters)
+        if (_animator != null)
         {
-            if (param.nameHash == MoveVelocityHash &&
-                param.type == AnimatorControllerParameterType.Float)
+            foreach (var param in _animator.parameters)
             {
-                _hasMoveVelocityParam = true;
-                break;
+                if (param.nameHash == _moveVelocityHash && param.type == AnimatorControllerParameterType.Float)
+                {
+                    _hasMoveVelocityParam = true;
+                    break;
+                }
             }
         }
 
-        return (_controller != null && _animator != null);
+        _isInitialized = (_controller != null && _animator != null);
+        return _isInitialized;
     }
 }
 
+#region Trigger Animation
 public class PlayAnimation : AnimationControlNode
 {
     public List<string> chainAnimNames;
 
-    private int _currentChainIndex = 0;
+    private int _currentIndex = 0;
+    private bool _isPlaying = false;
     private string _currentAnimName;
-    private bool _play = false;
+
+    private const float CROSSFADE_DURATION = 0.1f;
+    private const float TRANSITION_THRESHOLD = 0.95f;
+
     public override void Enter(GameObject obj)
     {
-        if (!Check(obj))
+        if (!Initialize(obj))
             return;
 
         if (_hasMoveVelocityParam)
-            _animator.SetFloat(MoveVelocityHash, 0);
+            _animator.SetFloat(_moveVelocityHash, 0);
 
-        _play = false;
-        _currentChainIndex = 0;
+        _isPlaying = false;
+        _currentIndex = 0;
     }
+
     public override NodeStatus Execute(GameObject owner)
     {
-        if(!_play)
+        if(!_isPlaying)
         {
-             int animHash = Animator.StringToHash(chainAnimNames[_currentChainIndex]);
-            if(_animator.HasState(0, animHash))
-                Play(chainAnimNames[_currentChainIndex]); 
+             int animHash = Animator.StringToHash(chainAnimNames[_currentIndex]);
+            if (_animator.HasState(0, animHash))
+            {
+                Play();
+            }
             else
+            {
                 return NodeStatus.Failure;
+            }
         }
 
         AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName(_currentAnimName))
         {
-            if (stateInfo.normalizedTime >= 0.95f)
+            if (stateInfo.normalizedTime >= TRANSITION_THRESHOLD)
             {
-                ++_currentChainIndex;
-
-                // 애니메이션 끝
-                if (_currentChainIndex >= chainAnimNames.Count)
+                ++_currentIndex;
+                if (_currentIndex >= chainAnimNames.Count)
                 {
                     return NodeStatus.Success;
                 }
-
-                // 다음 애니메이션 재생
-                Play(chainAnimNames[_currentChainIndex]);
                 return NodeStatus.Running;
             }
         }
         return NodeStatus.Running;
     }
 
-    private void Play(string anim)
+    private void Play()
     {
-        _play = true;
-        _currentAnimName = anim;
-        _animator.CrossFadeInFixedTime(anim, 0.1f, 0);
-
+        _isPlaying = true;
+        _currentAnimName = chainAnimNames[_currentIndex];
+        _animator?.CrossFadeInFixedTime(_currentAnimName, CROSSFADE_DURATION, 0);
         _controller.Sound.GetEffect3D(_currentAnimName, _controller.transform.position);
-    }
-
-    private void ClearAnim()
-    {
-        if (_controller.State == CreatureState.Dead)
-            return;
-
-        if(_animator.GetBool("bWait") == false)
-            _animator.SetBool("bWait", true);
-
-        int waitAnimHash = Animator.StringToHash(_waitAnim);
-        if (_animator != null && _animator.HasState(0, waitAnimHash))
-            _animator?.CrossFadeInFixedTime(_waitAnim, 0.1f, 0);
     }
 
     public override void Exit(GameObject obj, bool clear)
     {
-        ClearAnim();
-        _currentAnimName = string.Empty;
-        _currentChainIndex = 0;
-        _play = false;
-    }
-}
+        ClearAnim(clear);
 
-#region 조건 Anim
-// 움직임에 사용될 애니메이션 노드
+        _currentAnimName = string.Empty;
+        _isPlaying = false;
+        _currentIndex = 0;
+    }
+
+    private void ClearAnim(bool clear)
+    {
+        if (_controller.State == CreatureState.Dead || !clear)
+            return;
+
+        _animator.SetBool(_isWaitParamHash, true);
+        if (_animator != null && _animator.HasState(0, _waitAnimHash))
+        {
+            _animator?.CrossFadeInFixedTime(_waitAnimHash, CROSSFADE_DURATION, 0);
+        }
+    }
+
+}
+#endregion
+
+#region Float Animation
 public class PlayAnimatorFloatNode : AnimationControlNode
 {
     private Vector3 _lastPos;
     private bool _isFirstFrame = true;
 
-    public override void Enter(GameObject obj)
-    {
-    }
+    public override void Enter(GameObject obj) { }
 
     public override NodeStatus Execute(GameObject owner)
     {
-        if (Check(owner) == false)
+        if (Initialize(owner) == false)
             return NodeStatus.Failure;
 
         if (_controller.State != CreatureState.Moving)
         {
             if (_hasMoveVelocityParam)
-                _animator.SetFloat(MoveVelocityHash, 0);
+                _animator.SetFloat(_moveVelocityHash, 0);
             return NodeStatus.Failure;
         }
 
@@ -154,16 +161,14 @@ public class PlayAnimatorFloatNode : AnimationControlNode
         _isFirstFrame = false;
 
         if (_hasMoveVelocityParam)
-            _animator.SetFloat(MoveVelocityHash, speed);
+            _animator.SetFloat(_moveVelocityHash, speed);
 
         _lastPos = owner.transform.position;
 
         return NodeStatus.Running;
     }
 
-    public override void Exit(GameObject obj, bool clear)
-    {
-    }
+    public override void Exit(GameObject obj, bool clear) { }
 }
 
 #endregion

@@ -7,23 +7,27 @@ using UnityEngine;
 
 public class PlayEffectNode : ActionNode
 {
-    public override void Enter(GameObject obj)
+    MonsterController _monster;
+
+
+    public override void Enter(GameObject owner)
     {
+        MonsterController monster = owner.GetComponentInChildren<MonsterController>();
+        if (monster == null)
+            return;
     }
 
     public override NodeStatus Execute(GameObject owner)
     {
-        MonsterController monster = owner.GetComponentInChildren<MonsterController>();
-         if (monster == null)
-            return NodeStatus.Failure;
-
-        if (DataManager.MonsterEffectDict.TryGetValue(monster.Skill, out List<EffectData> data))
+        if (DataManager.MonsterEffectDict.TryGetValue(_monster.Skill, out List<EffectData> data))
         {
-            if (monster.State == CreatureState.Appear)
+            if (_monster.State == CreatureState.Appear)
             {
-                string targetName = $"{monster.Type}_{monster.State}";
-                List<EffectData> targetEffects = data.Where(effect => effect.prefabName == targetName ).ToList();
-                Managers.FX.PlayEffect(monster.ObjInfo.ObjectId, targetEffects, monster.transform, monster.TargetPosition, monster.TargetPosition);
+                string targetName = $"{_monster.Type}_{_monster.State}";
+                List<EffectData> targetEffects =
+                    data.Where(effect => effect.prefabName == targetName ).ToList();
+
+                Managers.FX.PlayEffect(_monster.ObjInfo.ObjectId, targetEffects, _monster.transform, _monster.TargetPosition, _monster.TargetPosition);
             }
             else
             {
@@ -33,17 +37,13 @@ public class PlayEffectNode : ActionNode
 
                 if (nonHitEffects.Count > 0)
                 {
-                    Managers.FX.PlayEffect(monster.ObjInfo.ObjectId, nonHitEffects, monster.transform, monster.TargetPosition, monster.TargetPosition);
+                    Managers.FX.PlayEffect(_monster.ObjInfo.ObjectId, nonHitEffects, _monster.transform, _monster.TargetPosition, _monster.TargetPosition);
                 }
             }
         }
 
-      
-
         return NodeStatus.Success;
     }
 
-    public override void Exit(GameObject obj, bool clear)
-    {
-    }
+    public override void Exit(GameObject owner, bool clear) { }
 }

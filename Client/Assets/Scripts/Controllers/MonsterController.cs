@@ -10,9 +10,8 @@ using UnityEngine.AI;
 
 public class MonsterController : CreatureController
 {
-    private System.Random _random = new System.Random();
 
-    // 몬스터 정보
+    #region 몬스터 정보
     [SerializeField] private MonsterType type;
     public MonsterSkill Skill { get;  set; }
     public int MonsterTeam { get; set; }
@@ -34,11 +33,16 @@ public class MonsterController : CreatureController
             _updated = true;
         }
     }
+    #endregion
 
-    //컴포넌트
+    #region Component
     public SoundController Sound;
     private VisualEffectController _highlightEffect;
 
+    protected GameObject _hpBar;
+    #endregion
+
+    #region Val
     public Vector3 TargetPosition { get; private set; }
     private Quaternion _targetRotation;
 
@@ -48,115 +52,57 @@ public class MonsterController : CreatureController
     // 애니메이션 끝났을 때 호출
     public Action<bool> OnStateChanged;
 
-    // HpBar
-    protected GameObject _hpBar;
-    private bool _bMesh = false;
+    private System.Random _random = new System.Random();
+    #endregion
 
     protected override void Init()
 	{
         base.Init();
+
         SetLayerRecursively(this.gameObject, LayerMask.NameToLayer("Monster"));
-        Add_Component();
+
+        AddComponent();
 
         TriggerEnvironmentEvent();
-        State = CreatureState.Appear;
+
         InitHpBar();
 
-        // Shader XRay 비활성화
         UnActiveShaderXRay();
 
-        // Sound
-        Sound = gameObject.GetOrAddComponent<SoundController>();
-        if (Sound != null)
-        {
-            Sound.PreloadMonsterAllSounds(Type);
-        }
-
-        // Renderer
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
-        foreach (var renderer in renderers)
-        {
-            renderer.enabled = false;
-        }
-
-        IsHide = true;
-        StartCoroutine(coActive());
-    }
-
-    // todo* 임시 조치 => 애니메이션 entry가 wait라서 appear 전에 wait가 먼저 보임
-    private IEnumerator coActive()
-    {
-        Renderer[] renderers = GetComponentsInChildren<Renderer>();
-        yield return new WaitForSeconds(0.3f);
-        foreach (var renderer in renderers)
-        {
-            IsHide = false;
-            renderer.enabled = true;
-        }
+        StartCoroutine(coAppearActive());
     }
 
     protected override void UpdateController()
     {
+        if (State == CreatureState.Dead)
+            return;
+
+        Moving();
+    }
+
+    private void Moving()
+    {
         if (_agent != null)
         {
+            Transform root = transform.parent != null ? transform.parent : transform;
+
             Vector3 newPosition = _agent.nextPosition;
-
-            if (transform.parent != null)
-            {
-                transform.parent.position = newPosition;
-            }
-            else
-            {
-                transform.position = newPosition;
-            }
-
+            root.position = newPosition;
             CellPos = newPosition;
 
             if (_agent.desiredVelocity.sqrMagnitude > 0.01f)
             {
-                Quaternion targetRot = Quaternion.LookRotation(_agent.desiredVelocity.normalized);
-                _targetRotation = targetRot;
+                _targetRotation = Quaternion.LookRotation(_agent.desiredVelocity);
+            }
+
+            if (Quaternion.Angle(root.rotation, _targetRotation) > 0.5f)
+            {
+                root.rotation = Quaternion.Slerp(root.rotation, _targetRotation, Time.deltaTime * _rotationSpeed);
+                RotInfo = _targetRotation;
             }
         }
-
-        Transform rotationTarget = transform.parent != null ? transform.parent : transform;
-        RotInfo = _targetRotation;
-        rotationTarget.rotation = Quaternion.Slerp(rotationTarget.rotation, _targetRotation, Time.deltaTime * _rotationSpeed);
     }
-
-    private void MeshDebug()
-    {
-        if (!_bMesh && State == CreatureState.Skill)
-        {
-            //_bMesh = true;
-            //GameObject skillMeshGO = Managers.Resource.Instantiate("Debug/SkillMesh", this.transform);
-            //SkillMesh sm = skillMeshGO.GetComponent<SkillMesh>();
-            //if (sm == null) return;
-
-            //if (!DataManager.MonstSkillHitboxDict.ContainsKey(Type))
-            //    return;
-            //if (!DataManager.MonstSkillHitboxDict[Type].ContainsKey(Skill))
-            //    return;
-
-            //SkillHitbox hitbox = DataManager.MonstSkillHitboxDict[Type][Skill];
-            //sm.Init(hitbox, this.transform, 0, 0, this.GetMouseWorldPosition());
-        }
-    }
-    public Vector3 GetMouseWorldPosition()
-    {
-        Camera mainCam = Camera.main;
-        if (mainCam == null) return Vector3.zero;
-
-        Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Map")))
-            return hit.point;
-
-        return Vector3.zero;
-    }
-    public override void OnDamaged()
-    {
-    }
+    public override void OnDamaged() {}
 
     public void OnHit(S_AttackInfo atkInfoPacket)
     {
@@ -171,11 +117,11 @@ public class MonsterController : CreatureController
 
         Vector3 targetPosition = tbc.transform.position;
 
-        // *Monster Sound
         if (Sound != null)
+        {
             Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
+        }
 
-        // *Monster Effect
         if (DataManager.MonsterEffectDict.TryGetValue(Skill, out List<EffectData> data))
         {
             List<EffectData> hitEffects = data.Where(effect =>
@@ -202,6 +148,7 @@ public class MonsterController : CreatureController
     public void OnDeadPacket(S_State packet)
     {
         _agent?.ResetPath();
+
         OnDead(); 
     }
 
@@ -232,15 +179,11 @@ public class MonsterController : CreatureController
     public void OnSkillPacket(S_State packet)
     {
         Skill = packet.Skilltype;
+
         if (Type == MonsterType.Drone || Type == MonsterType.Turret)
-        {
             OnStateChanged?.Invoke(false);
-        }
         else
-        {
             OnStateChanged?.Invoke(true);
-        }
-        
         
         if (_agent != null)
         {
@@ -257,36 +200,36 @@ public class MonsterController : CreatureController
         if (packet.RotInfo != null)
             _targetRotation = new Quaternion(packet.RotInfo.Qx, packet.RotInfo.Qy, packet.RotInfo.Qz, packet.RotInfo.Qw);
     }
-    private void CheckBehaviorCondition(CreatureState nextState)
+    private bool CheckBehaviorCondition(CreatureState nextState)
     {
         if (State == CreatureState.Appear && nextState == CreatureState.Idle)
-        {
-            OnStateChanged?.Invoke(true);
-        }
+            return true;
 
-        if (Type == MonsterType.Omega && 
-            (State == CreatureState.Skill && nextState == CreatureState.Idle))
-        {
-            OnStateChanged?.Invoke(true);
-        }
+        if (Type == MonsterType.Omega && (State == CreatureState.Skill && nextState == CreatureState.Idle))
+            return true;
+
+        return false;
     }
     public void OnRecvStatePacket(S_State packet)
     {
-        if (packet.ChangeState == false)
+        if (!packet.ChangeState)
         {
             ChangeTransformInfo(packet);
             return;
         }
 
-        CheckBehaviorCondition(packet.MyState);
-        State = packet.MyState;
+        if (CheckBehaviorCondition(packet.MyState))
+        {
+            OnStateChanged?.Invoke(true);
+        }
 
         if (packet.TargetPosition != null)
+        {
             TargetPosition = packet.TargetPosition.ToVector();
+        }
 
+        State = packet.MyState;
         Skill = MonsterSkill.MsNone;
-        if (State == CreatureState.Skill)
-            _bMesh = false;
 
         switch (State)
         {
@@ -306,6 +249,21 @@ public class MonsterController : CreatureController
                 break;
         }
     }
+
+    // todo* Appear Animation
+    private IEnumerator coAppearActive()
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+
+        yield return new WaitForSeconds(0.3f);
+
+        foreach (var renderer in renderers)
+        {
+            IsHide = false;
+            renderer.enabled = true;
+        }
+    }
+
     #endregion
 
     #region 컴포넌트 추가
@@ -316,8 +274,10 @@ public class MonsterController : CreatureController
             SetLayerRecursively(child.gameObject, newLayer);
     }
 
-    private bool Add_Component()
+    private bool AddComponent()
     {
+        State = CreatureState.Appear;
+
         // NavMeshAgent
         _agent = GetComponentInParent<NavMeshAgent>();
         if (_agent != null)
@@ -343,6 +303,19 @@ public class MonsterController : CreatureController
             _rotationSpeed = 10.0f;
         else
             _rotationSpeed = 40.0f;
+
+        Sound = gameObject.GetOrAddComponent<SoundController>();
+        if (Sound != null)
+        {
+            Sound.PreloadMonsterAllSounds(Type);
+        }
+
+        // Renderer
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        foreach (var renderer in renderers)
+        {
+            renderer.enabled = false;
+        }
 
         return true;
     }

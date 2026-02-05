@@ -2,19 +2,22 @@
 
 public class PlayIndicatorNode : ActionNode
 {
-    public string indicatorPrefabPath;
-    public float delayTime;
-
-    private GameObject indicator = null;
+    private GameObject _indicator = null;
+    public string _indicatorPrefabPath = null;
     private bool _isActive = false;
+
+    public float _delayTime;
     private float _elapsedTime = 0f;
 
     public override void Enter(GameObject obj)
     {
-        _isActive = false;
         _elapsedTime = 0f;
-        if(indicator == null)
-            indicator = Managers.Resource.Instantiate(indicatorPrefabPath);
+        _isActive = false;
+
+        if (_indicator == null)
+        {
+            _indicator = Managers.Resource.Instantiate(_indicatorPrefabPath);
+        }
     }
 
     public override NodeStatus Execute(GameObject obj)
@@ -23,25 +26,29 @@ public class PlayIndicatorNode : ActionNode
         if (monster == null)
             return NodeStatus.Failure;
 
-        if (indicator == null)
+        if (_indicator == null)
             return NodeStatus.Failure;
 
         if (!_isActive)
         {
             _elapsedTime += Time.deltaTime;
-            if (_elapsedTime < delayTime)
+            if (_elapsedTime < _delayTime)
+            {
                 return NodeStatus.Running;
-
-            indicator.SetActive(true);
+            }
+            _indicator.SetActive(true);
             _isActive = true;
         }
+
         return NodeStatus.Running;
     }
 
     public override void Exit(GameObject obj, bool clear)
     {
-        if (indicator != null)
-            indicator.SetActive(false);
+        if (_indicator != null)
+        {
+            _indicator.SetActive(false);
+        }
 
         _elapsedTime = 0f;
         _isActive = false;

@@ -5,41 +5,45 @@ using UnityEngine;
 
 public class SetMaterialNode : ActionNode
 {
-    public string strChangeMaterial;
+    public string _strChangeMaterial;
 
-    private Material changeMaterial = null;
-    private Material originalMaterial = null;
-    private Renderer monsterRenderer = null;
+    private Material _changeMaterial = null;
+    private Material _originalMaterial = null;
+    private Renderer _monsterRenderer = null;
 
-    public override void Enter(GameObject obj)
+    public override void Enter(GameObject owner)
     {
-        MonsterController monster = obj.GetComponentInChildren<MonsterController>();
+        MonsterController monster = owner.GetComponentInChildren<MonsterController>();
         if (monster == null)
+        {
             return;
+        }
 
-        monsterRenderer = monster.GetComponentInChildren<Renderer>();
-        changeMaterial = Resources.Load<Material>(strChangeMaterial);
+        _monsterRenderer = monster.GetComponentInChildren<Renderer>();
+        _changeMaterial = Resources.Load<Material>(_strChangeMaterial);
     }
 
     public override NodeStatus Execute(GameObject owner)
     {
-        if (monsterRenderer == null || changeMaterial == null)
+        if (_monsterRenderer == null || _changeMaterial == null)
             return NodeStatus.Failure;
 
-        if (originalMaterial == null)
-            originalMaterial = monsterRenderer.material;
+        if (_originalMaterial == null)
+            _originalMaterial = _monsterRenderer.material;
 
-        if (originalMaterial == null)
+        if (_originalMaterial == null)
             return NodeStatus.Failure;
 
-        monsterRenderer.material = changeMaterial;
+        _monsterRenderer.material = _changeMaterial;
+
         return NodeStatus.Running;
     }
 
-    public override void Exit(GameObject obj, bool clear)
+    public override void Exit(GameObject owner, bool clear)
     {
-        if (monsterRenderer == null || originalMaterial == null)
+        if (_monsterRenderer == null || _originalMaterial == null)
             return;
-        monsterRenderer.material = originalMaterial;
+
+        _monsterRenderer.material = _originalMaterial;
     }
 }

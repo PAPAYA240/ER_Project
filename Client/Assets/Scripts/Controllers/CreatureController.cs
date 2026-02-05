@@ -289,6 +289,7 @@ public class CreatureController : BaseController
     // 벽 파란색 막기
     protected void UnActiveShaderXRay()
     {
+        IsHide = true;
         Renderer[] renderers = GetComponentsInChildren<Renderer>();
 
         foreach (Renderer renderer in renderers)

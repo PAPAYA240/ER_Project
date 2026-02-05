@@ -1,7 +1,5 @@
-﻿using Google.Protobuf.Protocol;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.UI.GridLayoutGroup;
 
 public class ParallelNode : CompositeNode
 {
@@ -13,7 +11,9 @@ public class ParallelNode : CompositeNode
             _childStates = new List<NodeStatus>(new NodeStatus[children.Count]);
 
         for (int i = 0; i < _childStates.Count; i++)
+        {
             _childStates[i] = NodeStatus.Running;
+        }
 
         foreach (var child in children)
         {
@@ -29,9 +29,7 @@ public class ParallelNode : CompositeNode
         for (int i = 0; i < children.Count; i++)
         {
             if (_childStates[i] == NodeStatus.Running)
-            {
                 _childStates[i] = children[i].Execute(obj);
-            }
 
             if (_childStates[i] == NodeStatus.Running)
                 allCompleted = false;
@@ -41,7 +39,9 @@ public class ParallelNode : CompositeNode
         }
 
         if (allCompleted)
+        {
             return anyFailed ? NodeStatus.Failure : NodeStatus.Success;
+        }
 
         return NodeStatus.Running;
     }
@@ -49,6 +49,8 @@ public class ParallelNode : CompositeNode
     public override void Exit(GameObject obj, bool clear)
     {
         foreach (var child in children)
+        {
             child.Exit(obj, clear);
+        }
     }
 }

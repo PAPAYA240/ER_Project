@@ -27,7 +27,6 @@ public class BehaviorTreeBuilder
     private Node _root;
     private Stack<CompositeNode> _parentNodeStack = new Stack<CompositeNode>();
 
-
     public List<Node> BuildMultipleFromJson(string json, MonsterType type)
     {
         List<Node> nodes = new List<Node>();
@@ -35,7 +34,6 @@ public class BehaviorTreeBuilder
 
         if (collection == null || collection.behaviorTrees == null)
         {
-            //Debug.LogError("BehaviorTreeCollection 파싱 실패!");
             return nodes;
         }
 
@@ -110,7 +108,6 @@ public class BehaviorTreeBuilder
         Type type = Type.GetType(typeName);
         if (null == type)
         {
-            //Debug.LogError($"BT_Builder 타입을 찾을 수 없음: {typeName}");
             return null;
         }
 

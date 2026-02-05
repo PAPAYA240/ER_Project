@@ -3,26 +3,22 @@ using UnityEngine;
 
 public class MonsterAI : MonoBehaviour
 {
-    private Node _rootNode; // List가 아닌 단일 루트
+    private Node _rootNode;
+    private MonsterController _controller;
+
     private float _tickInterval = 0.2f;
     private float _timer = 0f;
-    private MonsterController _controller;
 
     void Start()
     {
         _controller = GetComponentInChildren<MonsterController>();
         if (_controller == null)
-        {
-            //Debug.LogWarning($"MonsterAI : {_controller.Type} Controller 찾기 실패");
             return;
-        }
 
         CreateBehaviorTree();
+
         if (!FindAllListeners(_rootNode))
-        {
-            //Debug.LogWarning($"MonsterAI : {_controller.Type} 행동 트리 노드 찾기 실패");
             return;
-        }
 
         _controller.OnStateChanged += OnExecute;
         _rootNode?.Enter(gameObject);
@@ -35,13 +31,9 @@ public class MonsterAI : MonoBehaviour
          {
              _timer = 0f;
              NodeStatus status = _rootNode.Execute(gameObject);
-
-            if (status == NodeStatus.Success)
-            {
-                OnExecute( true);
-            }
         }
     }
+
     private void OnExecute(bool clear)
     {
         _rootNode?.Exit(gameObject, clear);
@@ -58,7 +50,6 @@ public class MonsterAI : MonoBehaviour
         TextAsset jsonAsset = Resources.Load<TextAsset>("Data/MonsterData/MonsterBehaviorTrees");
         if (jsonAsset == null)
         {
-            //Debug.LogError("MonsterBehaviorTrees.json 파일을 찾을 수 없습니다!");
             return;
         }
 
@@ -76,7 +67,6 @@ public class MonsterAI : MonoBehaviour
                     rootSelector.children.AddRange(selector.children);
                 }
             }
-
             _rootNode = rootSelector;
         }
     }
@@ -89,9 +79,10 @@ public class MonsterAI : MonoBehaviour
         if (node is CompositeNode composite)
         {
             foreach (var child in composite.children)
+            {
                 FindAllListeners(child);
+            }
         }
-
         return (_rootNode != null) ? true : false;
     }
 }
