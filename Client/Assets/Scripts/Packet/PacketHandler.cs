@@ -363,14 +363,6 @@ class PacketHandler
         cc.Stat.Level = levelUpPkt.Level;
         cc.ChangeStat(levelUpPkt.StatGrowth);
 
-
-
-        //Debug.Log($" Id {cc.Id} ");
-        //Debug.Log($" LevelUpCnt : {levelUpPkt.LevelUpCnt}, After Level : {cc.Stat.Level} ");
-        //Debug.Log($" MaxHp : {levelUpPkt.StatGrowth.MaxHp}, MaxStamina : {levelUpPkt.StatGrowth.MaxStamina} ");
-
-        //아래는 레벨이 제대로 표시되게 하는 코드
-        //마이 플레이어면 업데이트 하고 리턴
         const int BaseLevel = 9;
         
         if (Managers.Object.MyPlayer != null && Managers.Object.MyPlayer.Id == levelUpPkt.ObjectId)
@@ -384,13 +376,12 @@ class PacketHandler
             Managers.Sound.Play("sound/ui/effect_levelup");
             if(levelUpPkt.Level != BaseLevel)
             {
-                Managers.Object.MyPlayer.PlayCommonCasterEffect(commonName: "LevelUp", mousePos: default, targetPos: default, targetRot: default, targetTransform: Managers.Object.MyPlayer.transform);
+                Managers.Object.MyPlayer.Effect.PlayEffect(commonName: "LevelUp", mousePos: default, targetPos: default, targetRot: default, targetTransform: Managers.Object.MyPlayer.transform);
                 Managers.Object.MyPlayer.Sound.GetEffect3D("LevelUp", Managers.Object.MyPlayer.transform.position);
             }
             return;
         }
 
-        //다른 플레이어면 위에서 안걸리고 내려와서 여기 걸림. 몬스터도 레벨업 하나?
         PlayerController pc = go.GetComponent<PlayerController>();
         if(null !=  pc)
         {
@@ -399,7 +390,7 @@ class PacketHandler
             Managers.Sound.Play3D("sound/ui/effect_levelup", pc.transform.position);
             if (levelUpPkt.Level != BaseLevel)
             {
-                Managers.Object.MyPlayer.PlayCommonCasterEffect(commonName: "LevelUp", mousePos: default, targetPos: default, targetRot: default, targetTransform: pc.transform);
+                Managers.Object.MyPlayer.Effect.PlayEffect(commonName: "LevelUp", mousePos: default, targetPos: default, targetRot: default, targetTransform: pc.transform);
                 Managers.Object.MyPlayer.Sound.GetEffect3D("LevelUp", pc.transform.position);
             }
         }
@@ -408,6 +399,7 @@ class PacketHandler
     public static void S_FxHandler(PacketSession session, IMessage packet)
     {
         if (!IsSceneReady("Game", () => S_FxHandler(session, packet))) return;
+
         S_Fx fxPacket = packet as S_Fx;
         GameObject go = Managers.Object.FindById(fxPacket.ObjectId);
         if (go == null)     
@@ -424,7 +416,7 @@ class PacketHandler
         if (fxPacket.CanLookatMouse == true)
             pc.LookAtMouse(new Vector2(mousePos.x, mousePos.z));
 
-        pc.PlayEffectFromServer(fxPacket, mousePos, targetPos, targetRot);
+        pc.Effect.PlayEffect(fxPacket, mousePos, targetPos, targetRot);
     }
 
     public static void S_RespawnHandler(PacketSession session, IMessage packet)

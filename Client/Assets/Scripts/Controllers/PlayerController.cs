@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Data;
 using Google.Protobuf.Protocol;
+using NUnit.Framework.Internal;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -213,6 +214,10 @@ public class PlayerController : CreatureController
     // 화살
     protected Transform _equipTransform = null;
 
+    // Effect
+    private PlayerEffectController _effect;
+    public PlayerEffectController Effect { get { return _effect; } }
+
     #region KDA
 
     public int KillAmount { get; private set; } = 0; 
@@ -285,12 +290,10 @@ public class PlayerController : CreatureController
         // 체력바
         InitNameTag();
 
-        // 유키용
+        // Effect
+        _effect = gameObject.GetOrAddComponent<PlayerEffectController>();
+        _effect.Init(this);
         YukiEffects.InitEffects(this);
-
-        // Chat
-        //GameObject goChat = Managers.Resource.Instantiate("UI/Chat/ChatBackground");
-        //goChat.transform.SetParent(gameObject.transform);
 
         // 장비 슬롯
         InitEquipItem();
@@ -422,11 +425,11 @@ public class PlayerController : CreatureController
             Sound.GetRandom3DEffect($"{atkInfoPacket.AttackType}_Hit", targetPosition);
 
         if (Enum.TryParse<KeyCode>(atkInfoPacket.AttackType, out KeyCode key))
-            PlaySelectEffect(key, default(Vector3), default(Vector3), default(Quaternion), $"FX_{atkInfoPacket.AttackType}_Hit", tbc.transform);
+            Effect.PlayEffect(key, default(Vector3), default(Vector3), default(Quaternion), $"FX_{atkInfoPacket.AttackType}_Hit", tbc.transform);
         else
         {
             if (ObjInfo.Player.CharType == CharacterType.Theodore) // Normal Attack
-                PlaySelectEffect(KeyCode.F2, default(Vector3), default(Vector3), default(Quaternion), $"FX_{atkInfoPacket.AttackType}_Hit", tbc.transform);
+                Effect.PlayEffect(KeyCode.F2, default(Vector3), default(Vector3), default(Quaternion), $"FX_{atkInfoPacket.AttackType}_Hit", tbc.transform);
         }
     }
 
@@ -566,32 +569,8 @@ public class PlayerController : CreatureController
         _animator.SetFloat(paramName, speed);
     }
 
-    public void PlayEffectFromServer(S_Fx packet, Vector3 mousePos, Vector3 targetPos = new Vector3(), Quaternion targetRot = default(Quaternion))
-    {
-        Transform targetTransform = null;
-        if(packet.UseTargetTransform)
-        {
-            GameObject go = Managers.Object.FindById(packet.TargetId);
-            if (go == null)
-                return;
-            targetTransform = go.transform;
-        }
 
-        if(!packet.IsCommon)
-        {
-            if (packet.Type == "Caster")
-                PlaySkillEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot, targetTransform: targetTransform);
-            else if (packet.Type == "Select")
-                PlaySelectEffect((KeyCode)packet.SkillKey, mousePos, targetPos, targetRot, packet.FxName, targetTransform: targetTransform);
-        }
-        else
-        {
-            if (packet.Type == "Caster")
-                PlayCommonCasterEffect(packet.CommonName, mousePos, targetPos, targetRot);
-            else if(packet.Type == "Select")
-                PlayCommonSelectEffect(packet.CommonName, packet.FxName, mousePos, targetPos, targetRot);
-        }
-    }
+   
     #endregion
 
     #region Sound
@@ -786,100 +765,6 @@ public class PlayerController : CreatureController
         _equipItemSlot[item.Type] = item;
     }
 
-    #endregion
-
-    #region Effect
-    // 기본 스킬 이펙트 호출 : Caster Type - 무조건 플레이어 따라
-    public void PlaySkillEffect(KeyCode skillKey, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot = default(Quaternion), Transform targetTransform = null)
-    {
-        CharacterType type = ObjInfo.Player.CharType;
-        CreatureState state = CreatureState.Skill;
-
-        if (!DataManager.PlayerFxDict.ContainsKey(type))
-            return;
-        if (!DataManager.PlayerFxDict[type].ContainsKey(state))
-            return;
-        if (!DataManager.PlayerFxDict[type][state].ContainsKey(skillKey))
-            return;
-
-        SkillEffectList myEffectList = DataManager.PlayerFxDict[type][state][skillKey];
-        List<EffectData> dataList = new List<EffectData>();
-        foreach (EffectData effect in myEffectList.Caster)
-        {
-            dataList.Add(effect);
-        }
-
-        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, targetTransform ? targetTransform : transform, mousePos);
-    }
-
-    // 직접 선택해서 호출하는 이펙트 : Type Select
-    public void PlaySelectEffect(KeyCode skillKey, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot, string fxName, Transform targetTransform = null)
-    {
-        CharacterType type = ObjInfo.Player.CharType;
-        CreatureState state = CreatureState.Skill;
-
-        if (!DataManager.PlayerFxDict.ContainsKey(type))
-            return;
-        if (!DataManager.PlayerFxDict[type].ContainsKey(state))
-            return;
-        if (!DataManager.PlayerFxDict[type][state].ContainsKey(skillKey))
-            return;
-
-        SkillEffectList myEffectList = DataManager.PlayerFxDict[type][state][skillKey];
-        if (myEffectList?.Select == null)
-            return;
-
-        List<EffectData> dataList = myEffectList.Select
-       .Where(effect => effect != null && effect.prefabName == fxName)
-       .ToList();
-
-        if (dataList.Count == 0)
-            return;
-
-        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, targetTransform ? targetTransform : transform, mousePos, targetPos, targetRot);
-    }
-
-    // 공통 이펙트 : Type Common - Caster
-    public void PlayCommonCasterEffect(string commonName, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot, Transform targetTransform = null)
-    {
-        if (DataManager.CommonFxDict == null)
-            return;
-
-        if (!DataManager.CommonFxDict.TryGetValue(commonName, out SkillEffectList effectList))
-            return;
-
-        var dataList = new List<EffectData>();
-        if (effectList.Caster != null)
-            dataList.AddRange(effectList.Caster);
-
-        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, targetTransform ? targetTransform : transform, mousePos, targetPos, targetRot, isCommon: true);
-    }
-
-    // 공통 이펙트 : Type Common - Select
-    public void PlayCommonSelectEffect(string commonName, string fxName, Vector3 mousePos, Vector3 targetPos, Quaternion targetRot, Transform targetTransform = null)
-    {
-        if (DataManager.CommonFxDict == null)
-            return;
-
-        if (!DataManager.CommonFxDict.TryGetValue(commonName, out SkillEffectList effectList))
-            return;
-
-        var dataList = new List<EffectData>();
-
-        if (effectList.Select != null)
-        {
-            foreach (EffectData effect in effectList.Select)
-            {
-                if (effect.prefabName == fxName)
-                    dataList.Add(effect);
-            }
-        }
-
-        if (dataList.Count == 0)
-            return;
-
-        Managers.FX.PlayEffect(ObjInfo.ObjectId, dataList, targetTransform ? targetTransform : transform, mousePos, targetPos, targetRot, isCommon: true);
-    }
     #endregion
 
     #region State:Operate

@@ -17,9 +17,9 @@ public class AnimatorEvent : MonoBehaviour
     {
         if (_player?.Sound != null)
         {
-            _player.PlaySelectEffect(KeyCode.R, default(Vector3), default(Vector3), Quaternion.identity, "FX_Skill04_Attack", _player.transform);
-            _player.PlaySelectEffect(KeyCode.R, default(Vector3), default(Vector3), Quaternion.identity, "FX_Skill04_ShotWind", _player.transform);
-            _player.PlaySelectEffect(KeyCode.R, default(Vector3), default(Vector3), Quaternion.identity, "FX_Skill04_Shot", _player.transform);
+            _player.Effect.PlayEffect(KeyCode.R, default(Vector3), default(Vector3), Quaternion.identity, "FX_Skill04_Attack", _player.transform);
+            _player.Effect.PlayEffect(KeyCode.R, default(Vector3), default(Vector3), Quaternion.identity, "FX_Skill04_ShotWind", _player.transform);
+            _player.Effect.PlayEffect(KeyCode.R, default(Vector3), default(Vector3), Quaternion.identity, "FX_Skill04_Shot", _player.transform);
         }
     }
 }

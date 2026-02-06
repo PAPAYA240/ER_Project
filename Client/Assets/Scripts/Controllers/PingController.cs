@@ -45,7 +45,7 @@ public class PingController
             }
         }
 
-        _owner.PlayCommonCasterEffect(commonName: "Ping", mousePos: pos, targetPos: default, targetRot: default);
+        _owner.Effect.PlayEffect(commonName: "Ping", mousePos: pos, targetPos: default, targetRot: default);
         Managers.Object.MyPlayer.Sound.GetEffect3D("Ping", pos);
     }
 

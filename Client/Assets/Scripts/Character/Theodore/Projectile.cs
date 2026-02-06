@@ -13,7 +13,7 @@ public class Projectile : BaseController
         if (Type == ProjectileType.ProjectileTheodoreE)
         {
             PlayerController player = Owner.GetComponent<PlayerController>();
-            player.PlaySelectEffect(KeyCode.E, default(Vector3), default(Vector3), Quaternion.identity, "FX_Skill03_Shield", this.transform);
+            player.Effect.PlayEffect(KeyCode.E, default(Vector3), default(Vector3), Quaternion.identity, "FX_Skill03_Shield", this.transform);
         }
     }
 

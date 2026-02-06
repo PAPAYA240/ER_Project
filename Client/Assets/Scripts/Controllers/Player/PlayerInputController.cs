@@ -85,7 +85,7 @@ public class PlayerInputController : MonoBehaviour
                 {
                     Vector3 mousePos = GetMouseWorldPosition();
                     mousePos.y = _player.transform.position.y;
-                    _player.PlayCommonCasterEffect(commonName: "Move", mousePos: mousePos, default, default);
+                    _player.Effect.PlayEffect(commonName: "Move", mousePos: mousePos, default, default);
                 }
                     
                 return new C_SetMoveTarget

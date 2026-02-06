@@ -126,7 +126,7 @@ public class Env_Bush : EnvController
                 if (effect != null)
                     Managers.FX.Effect.RemoveEffect(pc.Id, effect);
 
-                pc.PlaySkillEffect(KeyCode.F1, default(Vector3), default(Vector3));
+                pc.Effect.PlayEffect(KeyCode.F1, default(Vector3), default(Vector3));
                 pc.BushRenderType((int)BushState.Translucent);
                 SetVisibility(pc.Id, true);
 

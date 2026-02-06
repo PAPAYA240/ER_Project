@@ -140,7 +140,7 @@ public class PlayAnimatorFloatNode : AnimationControlNode
 
     public override NodeStatus Execute(GameObject owner)
     {
-        if (Initialize(owner) == false)
+        if (!Initialize(owner))
             return NodeStatus.Failure;
 
         if (_controller.State != CreatureState.Moving)
