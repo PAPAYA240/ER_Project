@@ -41,7 +41,7 @@
 | :--- | :--- | :--- | :--- |
 | **Monster 구조 - FSM와 Behavior Tree** <br> [코드 보러가기](https://gist.github.com/PAPAYA240/b00553e7e2e3fed6ba989559c3a53a7f) | **Player Input Manager** <br> [코드 보러가기](https://github.com/PAPAYA240/ER_Project/blob/b2cc2ae85f6b1ed3ea839192021584c4d4da0eec/Client/Assets/Scripts/Controllers/Player/PlayerInput/TheodoreInputController.cs#L110) | **이펙트/사운드 시스템** <br> [코드 보러가기](https://gist.github.com/PAPAYA240/af7c579b4aa6380699eb4a908345b667) | **Bush (은신)** <br> [코드 보러가기](https://gist.github.com/PAPAYA240/48b1b1b04979cd8cbaa6d198346a024c) |
 | **Monster AI** <br> [코드 보러가기](https://gist.github.com/PAPAYA240/da494eef1ece7720d5d8770603122e37) | **Camera : 조준 스킬** <br> [코드 보러가기](https://gist.github.com/PAPAYA240/d9c3b4fe9d52355c7b5b4d7aa6b5c764) |  | **X-Ray 시스템** <br> [코드 보러가기](https://gist.github.com/PAPAYA240/47bc0b9259ed091a19ce7120429f0b58) |
-|| **Player Indicator : Overay Camera** <br> [코드 보러가기](https://github.com/PAPAYA240/ER_Project/blob/b2cc2ae85f6b1ed3ea839192021584c4d4da0eec/Client/Assets/Scripts/Controllers/CameraController.cs#L51) | | **OBB 충돌** <br> [코드 보러가기](https://github.com/PAPAYA240/ER_Project/blob/b2cc2ae85f6b1ed3ea839192021584c4d4da0eec/Server/Server/Game/Collision/CollisionManager.cs#L1135) |
+|| **Player Indicator : Overay Camera** <br> [코드 보러가기](https://gist.github.com/PAPAYA240/9f5bbce150539bbd86b2fbbe815cd2d1) | | **OBB 충돌** <br> [코드 보러가기](https://github.com/PAPAYA240/ER_Project/blob/b2cc2ae85f6b1ed3ea839192021584c4d4da0eec/Server/Server/Game/Collision/CollisionManager.cs#L1135) |
 <br>
 
 ## 🚀 5. 문제 해결
