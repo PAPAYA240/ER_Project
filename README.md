@@ -19,7 +19,7 @@
 ## 🛠 2. 기술 스택
 - **Language:** C#
 - **Graphics API:** Unity
-- **Tools:** Visual Studio 2022,
+- **Tools:** Visual Studio 2022
 
 <br>
 
@@ -37,10 +37,11 @@
 ## 🚀 4. 핵심 구현 내용
 - 캐릭터 스킬 연계와 부쉬(은신)를 활용한 시야 심리전, 중립 몬스터 사냥 등 다양한 전술적 전투를 필요로 하는 콘텐츠를 담당했습니다.
   
-| 👾 몬스터 (Monster) | 🗡️ 플레이어 (Player) | 🔊 이펙트/사운드 | 🍄 **기타 환경 오브젝트** |
+| 👾 몬스터 (Monster) | 🗡️ 플레이어 (Player) | 🔊 이펙트/사운드 | 🍄 환경/전술 (Env) |
 | :--- | :--- | :--- | :--- |
-| **Monster 구조 - FSM와 Behavior Tree** <br> [코드 보러가기](https://gist.github.com/PAPAYA240/b00553e7e2e3fed6ba989559c3a53a7f) | **Player Input Manager** <br> [코드 보러가기](https://github.com/PAPAYA240/ER_Project/blob/b2cc2ae85f6b1ed3ea839192021584c4d4da0eec/Client/Assets/Scripts/Controllers/Player/PlayerInput/TheodoreInputController.cs#L110) | **이펙트/사운드 시스템** <br> [코드 보러가기](https://gist.github.com/PAPAYA240/af7c579b4aa6380699eb4a908345b667) | **Bush (은신)** <br> [코드 보러가기](https://gist.github.com/PAPAYA240/48b1b1b04979cd8cbaa6d198346a024c) |
-| **Monster AI** <br> [코드 보러가기](https://gist.github.com/PAPAYA240/da494eef1ece7720d5d8770603122e37) | **Camera : 조준 스킬** <br> [코드 보러가기](https://gist.github.com/PAPAYA240/d9c3b4fe9d52355c7b5b4d7aa6b5c764) |  | **X-Ray 시스템** <br> [코드 보러가기](https://gist.github.com/PAPAYA240/47bc0b9259ed091a19ce7120429f0b58) |
-|| **Player Indicator : Overay Camera** <br> [코드 보러가기](https://gist.github.com/PAPAYA240/9f5bbce150539bbd86b2fbbe815cd2d1) | | **OBB 충돌** <br> [코드 보러가기](https://github.com/PAPAYA240/ER_Project/blob/b2cc2ae85f6b1ed3ea839192021584c4d4da0eec/Server/Server/Game/Collision/CollisionManager.cs#L1135) |
+| [**🧠 FSM / BT 구조**](링크)<br> `Pattern`| [**⚡ 선입력 & 캔슬**](링크)<br>`조작감`,  | [**💥 타격감 동기화**](링크)<br>`Effect/Sound`, | [**🌿 은신 & 시야**](링크)<br>`Physics.Overlap` |
+| [**⚔️ AI**](링크)<br>`A*/Funnel` | [**🔭 저격 카메라**](링크)<br>`Dynamic Camera` | | [**👁️ X-Ray 투시**](링크)<br>`Stencil Buffer` |
+| | [**🎯 인디케이터**](링크)<br>(`URP Overlay Camera` ) | | [**📐 OBB 충돌**](링크)<br>`SAT` |
+
 <br>
 
