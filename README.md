@@ -17,16 +17,18 @@
 <br>
 
 ## 🛠 2. 기술 스택
+- **Engine:** Unity 6 
 - **Language:** C#
-- **Graphics API:** Unity
-- **Tools:** Visual Studio 2022
+- **IDE:** Visual Studio 2022
+- **Version Control:** Git / GitHub
+- **Collaboration:** Notion, Discord
 
 <br>
 
 ## 👥 3. 역할 분담
 | 이름 | 담당 역할 |
 | :--- | :--- |
-| **이나영** | 플레이어(테오도르), 몬스터(AI), 이펙트/사운드 프레임워크, 환경 오브젝트 |
+| **이나영 (ME)** | 플레이어(테오도르), 몬스터(AI), 이펙트/사운드 프레임워크, 환경 오브젝트 |
 | **안정현** | 플레이어(아비게일), 서버, 맵, 스킬 충돌 처리 |
 | **박준수** | 플레이어(유키, 프레임워크), 채팅, 카메라 |
 | **박연진** | 플레이어(로지, 프레임워크), 환경 오브젝트 |
@@ -35,13 +37,13 @@
 <br>
 
 ## 🚀 4. 핵심 구현 내용
-- 캐릭터 스킬 연계와 부쉬(은신)를 활용한 시야 심리전, 중립 몬스터 사냥 등 다양한 전술적 전투를 필요로 하는 콘텐츠를 담당했습니다.
+- 캐릭터 스킬 연계와 은신(Bush)를 활용한 시야 심리전, 중립 몬스터 사냥 등 **전술적 전투를 필요로 하는 콘텐츠**를 담당했습니다.
   
-| 👾 몬스터 (Monster) | 🗡️ 플레이어 (Player) | 🔊 이펙트/사운드 | 🍄 환경/전술 (Env) |
+| 👾 몬스터 (AI) | 🗡️ 플레이어 (Control) | 🔊 이펙트/사운드 | 🍄 환경/전술 (Env) |
 | :--- | :--- | :--- | :--- |
-| [**🧠 FSM / BT 구조**](링크)<br> `Pattern`| [**⚡ 선입력 & 캔슬**](링크)<br>`조작감`,  | [**💥 타격감 동기화**](링크)<br>`Effect/Sound`, | [**🌿 은신 & 시야**](링크)<br>`Physics.Overlap` |
-| [**⚔️ AI**](링크)<br>`A*/Funnel` | [**🔭 저격 카메라**](링크)<br>`Dynamic Camera` | | [**👁️ X-Ray 투시**](링크)<br>`Stencil Buffer` |
-| | [**🎯 인디케이터**](링크)<br>(`URP Overlay Camera` ) | | [**📐 OBB 충돌**](링크)<br>`SAT` |
+| [**🧠 FSM / BT 구조**](링크)<br>`FSM` `Behavior Tree` | [**⚡ 선입력 & 캔슬**](링크)<br>`Input Buffer` `Anim Cancel` | [**💥 타격감 동기화**](링크)<br>`Anim Event` `Audio Sync` | [**🌿 은신 & 시야**](링크)<br>`Physics.Overlap` `Server Auth` |
+| [**⚔️ 추적 알고리즘**](링크)<br>`NavMesh` `Funnel Modifier` | [**🔭 저격 모드 카메라**](링크)<br>`Dynamic Camera`  | | [**👁️ X-Ray 투시**](링크)<br>`Stencil Buffer` `Occlusion` |
+| | [**🎯 Overlay 인디케이터**](링크)<br>`Camera Stacking` `URP` | | [**📐 확장 스킬**](링크)<br>`OBB Collision` `SAT` |
 
 <br>
 
