@@ -41,9 +41,9 @@
   
 | 👾 몬스터 (AI) | 🗡️ 플레이어 (Control) | 🔊 이펙트/사운드 | 🍄 환경/전술 (Env) |
 | :--- | :--- | :--- | :--- |
-| [**🧠 FSM / BT 구조**](링크)<br>`FSM` `Behavior Tree` | [**⚡ 선입력 & 캔슬**](링크)<br>`Input Buffer` `Anim Cancel` | [**💥 타격감 동기화**](링크)<br>`Anim Event` `Audio Sync` | [**🌿 은신 & 시야**](링크)<br>`Physics.Overlap` `Server Auth` |
-| [**⚔️ 추적 알고리즘**](링크)<br>`NavMesh` `Funnel Modifier` | [**🔭 저격 모드 카메라**](링크)<br>`Dynamic Camera`  | | [**👁️ X-Ray 투시**](링크)<br>`Stencil Buffer` `Occlusion` |
-| | [**🎯 Overlay 인디케이터**](링크)<br>`Camera Stacking` `URP` | | [**📐 확장 스킬**](링크)<br>`OBB Collision` `SAT` |
+| [**🧠 FSM / BT 구조**](https://gist.github.com/PAPAYA240/b00553e7e2e3fed6ba989559c3a53a7f)<br>`FSM` `Behavior Tree` | [**⚡ 선입력 & 캔슬**](https://gist.github.com/PAPAYA240/28c82e2124d1cd0b3a0f30fc90e4a821)<br>`Input Buffer` `Anim Cancel` | [**💥 타격감 동기화**](https://gist.github.com/PAPAYA240/af7c579b4aa6380699eb4a908345b667)<br>`Effect` `Sound` | [**🌿 은신 & 시야**](https://gist.github.com/PAPAYA240/48b1b1b04979cd8cbaa6d198346a024c)<br>`Physics.Overlap` `Server Auth` |
+| [**⚔️ AI 알고리즘**](https://gist.github.com/PAPAYA240/da494eef1ece7720d5d8770603122e37)<br>`NavMesh` `Funnel Modifier` | [**🔭 저격 모드 카메라**](https://gist.github.com/PAPAYA240/d9c3b4fe9d52355c7b5b4d7aa6b5c764)<br>`Dynamic Camera`  | | [**👁️ X-Ray 투시**](https://gist.github.com/PAPAYA240/47bc0b9259ed091a19ce7120429f0b58)<br>`Stencil Buffer` `Occlusion` |
+| | [**🎯 Overlay 인디케이터**](https://gist.github.com/PAPAYA240/9f5bbce150539bbd86b2fbbe815cd2d1)<br>`Camera Stacking` `URP` | | [**📐 확장 스킬**](https://gist.github.com/PAPAYA240/9f5bbce150539bbd86b2fbbe815cd2d1)<br>`OBB Collision` `SAT` |
 
 <br>
 
