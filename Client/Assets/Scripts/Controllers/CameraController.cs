@@ -55,10 +55,10 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float _verticalZoomOffset = 10.0f;
     [SerializeField] private float _smoothTime = 0.2f;
     [SerializeField] private float _cameraSpeed = 5.0f;
+    private float heightIncrease = 12.0f;
 
     private const float VIEWPORT_MIN = 0.05f;
     private const float VIEWPORT_MAX = 0.95f;
-    private const float HEIGHT_INC = 12.0f;
     private const float ZOOM_DURATION = 0.8f;
 
     #endregion
@@ -170,54 +170,57 @@ public class CameraController : MonoBehaviour
     #endregion
 
     #region Theodore D Skill Mode
-    public void StartAimMode(Transform playerTransform, ScreenEdge _direct)
+    public void StartAimMode(Transform playerTransform, ScreenEdge targetEdge)
     {
         if(_zoomCoroutine != null)
             StopCoroutine(_zoomCoroutine);
 
         _bSkillCam = true;
+        switch (targetEdge)
+        {
+            case ScreenEdge.Left:
+            case ScreenEdge.Right:
+                heightIncrease = 7.0f;
+                break;
+            case ScreenEdge.Top:
+            case ScreenEdge.Bottom:
+                heightIncrease = 10.0f;
+                break;
+        }
+
+        _zoomCoroutine = StartCoroutine(CameraZoomOut(playerTransform));
+    }
+    private IEnumerator CameraZoomOut(Transform playerTransform)
+    {
+        _bSkillCam = true;
         _originalRotation = transform.rotation;
         _originalDelta = _delta;
 
-        _zoomCoroutine = StartCoroutine(CameraZoomOut(playerTransform, _direct));
-    }
+        Vector3 toTarget = transform.position;
+        float targetYAxis = transform.position.y + heightIncrease;
 
-    private IEnumerator CameraZoomOut(Transform playerTransform, ScreenEdge targetEdge)
-    {
-        Vector3 playerForward = playerTransform.forward;
-
-        bool isVertical = Mathf.Abs(playerForward.z) > Mathf.Abs(playerForward.x);
-
-        float targetHeight = isVertical ? _verticalZoomOffset : _horizontalZoomOffset;
-
-        float targetY = transform.position.y + targetHeight;
-
-        Vector3 toTarget = new Vector3();
-        toTarget = transform.position;
-        float targetYAxis = transform.position.y + HEIGHT_INC;
-
-        while (_bSkillCam) 
+        while (_bSkillCam)
         {
             Vector3 targetPosition = transform.position;
             targetPosition.y = targetYAxis;
-            targetPosition += playerForward * (_cameraSpeed * Time.deltaTime);
+            targetPosition += playerTransform.forward * _cameraSpeed;
 
             transform.position = Vector3.SmoothDamp(
                 transform.position,
                 targetPosition,
                 ref _currentVelocity,
                 _smoothTime
-            );
+             );
 
             Vector3 vp = Camera.main.WorldToViewportPoint(playerTransform.position);
-            if (vp.x < VIEWPORT_MIN || vp.x > VIEWPORT_MAX ||  vp.y < VIEWPORT_MIN || vp.y > VIEWPORT_MAX)
+            if (vp.x < VIEWPORT_MIN || vp.x > VIEWPORT_MAX || vp.y < VIEWPORT_MIN || vp.y > VIEWPORT_MAX)
             {
-                _bSkillCam = false;
                 yield break;
             }
             yield return null;
         }
     }
+
 
     public void EndAimMode()
     {
