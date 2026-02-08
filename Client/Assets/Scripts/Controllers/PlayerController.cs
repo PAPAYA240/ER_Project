@@ -850,7 +850,6 @@ public class PlayerController : CreatureController
                         if (mat.HasProperty("_OccludedColor"))
                         {
                             mat.SetColor("_OccludedColor", xrayColor);
-                            Debug.Log($"Set X-Ray: {renderer.gameObject.name} = {xrayColor}");
                         }
                     }
                 }
