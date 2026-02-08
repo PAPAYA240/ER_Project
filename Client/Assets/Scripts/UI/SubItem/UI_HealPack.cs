@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_HealPack : UI_Base
+public class UI_HealPack : Monobehaviour
 {
     enum Texts
     {

@@ -13,10 +13,8 @@ public class MyPlayerController : PlayerController
     private PlayerUIController _UI;
     public PlayerUIController UI {  get { return _UI; } }
 
-    public SkillIndicator Indicator { get { return _skillIndicator; } }
-
-    private SkillIndicator _skillIndicator;
-
+     private SkillIndicatorManager _indicatorManager;
+     public SkillIndicatorManager Indicator { get { return _indicatorManager; } }
     // Inventory
     List<ItemInfoBase> _inventory = new List<ItemInfoBase>();
 
@@ -69,10 +67,6 @@ public class MyPlayerController : PlayerController
             _input = gameObject.GetOrAddComponent<HyunwooInputController>();
         }
 
-        // 스킬 인디케이터
-        if (ObjInfo.Player.CharType == CharacterType.Theodore)
-            _skillIndicator = gameObject.GetOrAddComponent<SkillIndicator>();
-
         Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(gameObject);
         _skill.Init();
         _UI.Init();
@@ -85,6 +79,13 @@ public class MyPlayerController : PlayerController
         {
             string fogLayerName = $"FogTeam{ObjInfo.Player.Team}";
             fogCamGo.GetComponent<Camera>().cullingMask |= (1 << LayerMask.NameToLayer(fogLayerName));
+        }
+
+        // 스킬 인디케이터
+        if (_indicatorManager == null)
+        {
+            _indicatorManager = gameObject.GetOrAddComponent<SkillIndicatorManager>();
+            _indicatorManager.Init(ObjInfo.Player.CharType);
         }
 
         // inven

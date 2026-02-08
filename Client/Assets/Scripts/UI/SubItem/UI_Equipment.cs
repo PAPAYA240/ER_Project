@@ -4,7 +4,7 @@ using UnityEngine;
 using Google.Protobuf.Protocol;
 using Data;
 
-public class UI_Equipment : UI_Base
+public class UI_Equipment : Monobehaviour
 {
     enum GameObjects
     {

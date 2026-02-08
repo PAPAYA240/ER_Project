@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_TraitButton : UI_Base
+public class UI_TraitButton : Monobehaviour
 {
     enum Images { Image }
     enum GameObjects { Text }
@@ -53,17 +53,17 @@ public class UI_TraitButton : UI_Base
         GetObject((int)GameObjects.Text).SetActive(activate);
     }
 
-    // ÀÌ ¿ÀºêÁ§Æ®¸¦ ¼±ÅÃ/ÇØÁ¦ÇÏ´Â ÇÔ¼ö 
+    // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½ 
     public void SetSelected(bool isSelected)
     {
         if (isSelected)
         {
-            // ÀÌÀü¿¡ ¼±ÅÃµÈ °´Ã¼°¡ ÀÖ´Ù¸é, ±× °´Ã¼¸¦ Èæ¹éµ¹¸²
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½, ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½éµ¹ï¿½ï¿½
             if (CurrentSelected != null && CurrentSelected != this)
             {
-                CurrentSelected.SetSelected(false); // Àç±Í È£Ãâ ¹æÁö¸¦ À§ÇØ false
+                CurrentSelected.SetSelected(false); // ï¿½ï¿½ï¿½ È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ false
             }
-            // ÄÃ·¯
+            // ï¿½Ã·ï¿½
             ApplyBlendValue(0f);
             SetTextActivate(true);
             OnSelected?.Invoke(true);
@@ -71,7 +71,7 @@ public class UI_TraitButton : UI_Base
         }
         else
         {
-            // ¼±ÅÃ ÇØÁ¦ ½Ã Èæ¹é
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½
             ApplyBlendValue(1f);
             SetTextActivate(false);
             OnSelected?.Invoke(false);

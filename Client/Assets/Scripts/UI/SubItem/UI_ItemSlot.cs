@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_ItemSlot : UI_Base
+public class UI_ItemSlot : Monobehaviour
 {
     enum Texts
     {

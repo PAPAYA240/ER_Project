@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_TraitGroup : UI_Base
+public class UI_TraitGroup : Monobehaviour
 {
     enum TraitGroupType { Havoc, Chaos, Fortification, Support, None }
 
@@ -53,17 +53,17 @@ public class UI_TraitGroup : UI_Base
         
     }
 
-    // ÀÌ ¿ÀºêÁ§Æ®¸¦ ¼±ÅÃ/ÇØÁ¦ÇÏ´Â ÇÔ¼ö 
+    // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½ 
     public void SetSelected(bool isSelected)
     {
         if (isSelected)
         {
-            // ÀÌÀü¿¡ ¼±ÅÃµÈ °´Ã¼°¡ ÀÖ´Ù¸é, ±× °´Ã¼¸¦ Èæ¹éÀ¸·Î µ¹¸²
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½, ï¿½ï¿½ ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             if (_currentSelected != null && _currentSelected != this)
             {
-                _currentSelected.SetSelected(false); // Àç±Í È£Ãâ ¹æÁö¸¦ À§ÇØ false
+                _currentSelected.SetSelected(false); // ï¿½ï¿½ï¿½ È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ false
             }
-            // ÄÃ·¯
+            // ï¿½Ã·ï¿½
             ApplyBlendValue(0f);
 
             switch (_traitType)
@@ -86,7 +86,7 @@ public class UI_TraitGroup : UI_Base
         }
         else
         {
-            // ¼±ÅÃ ÇØÁ¦ ½Ã Èæ¹é
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½
             ApplyBlendValue(1f);
             GetImage((int)Images.Icon).color = new Color(0.3f, 0.3f, 0.3f, 1);
             if (_currentSelected == this)
@@ -96,7 +96,7 @@ public class UI_TraitGroup : UI_Base
         }
     }
 
-    //¼ÎÀÌ´õ ÇÁ·ÎÆÛÆ¼ ¼öÁ¤ ÇÔ¼ö
+    //ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¼ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
     private void ApplyBlendValue(float blendValue)
     {
         if (_material == null)

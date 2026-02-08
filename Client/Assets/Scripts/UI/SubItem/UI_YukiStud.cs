@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_YukiStud : UI_Base
+public class UI_YukiStud : Monobehaviour
 {
     enum Images { Gage_1, Gage_2, Gage_3, Gage_4 }
 

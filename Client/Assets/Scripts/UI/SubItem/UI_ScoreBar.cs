@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_ScoreBar : UI_Base
+public class UI_ScoreBar : Monobehaviour
 {
     enum Texts { ScoreText }
     enum GameObjects { Gauge }

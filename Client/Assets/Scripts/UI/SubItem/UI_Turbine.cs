@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_Turbine : UI_Base
+public class UI_Turbine : Monobehaviour
 {
     enum Images
     {
@@ -60,12 +60,12 @@ public class UI_Turbine : UI_Base
 
         if(isAlly)
         {
-            //¿ì¸®ÆÀ 
+            //ï¿½ì¸®ï¿½ï¿½ 
             SetImages(TurbineState.Ally);
         }
         else
         {
-            //ÀûÆÀ
+            //ï¿½ï¿½ï¿½ï¿½
             SetImages(TurbineState.Enemy);
         }
     }

@@ -9,7 +9,7 @@ using UnityEngine.UI;
 using static UI_Minimap;
 using static UI_Stat;
 
-public class UI_InteractionCharge : UI_Base
+public class UI_InteractionCharge : Monobehaviour
 {
     [Header("UI References")]
     [SerializeField] private Image chargingBarImage;            // ChargingBarImage

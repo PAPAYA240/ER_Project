@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UI_SkillBase;
 
-public class UI_PlayerInterface : UI_Base
+public class UI_PlayerInterface : Monobehaviour
 {
 
     enum Texts { DeathTimerText }

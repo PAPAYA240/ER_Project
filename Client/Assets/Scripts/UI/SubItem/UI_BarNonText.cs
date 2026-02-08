@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_BarNonText : UI_Base
+public class UI_BarNonText : Monobehaviour
 {
     enum Images
     { FillImage }

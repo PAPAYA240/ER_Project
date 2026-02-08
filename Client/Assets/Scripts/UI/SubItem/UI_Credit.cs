@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class UI_Credit : UI_Base
+public class UI_Credit : Monobehaviour
 {
     enum Texts { ValueText }
 

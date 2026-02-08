@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_WardLifeBar : UI_Base
+public class UI_WardLifeBar : Monobehaviour
 {
     enum Images
     { FillImage }

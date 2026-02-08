@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_HpBar : UI_Base
+public class UI_HpBar : Monobehaviour
 {
     enum Images
     { 

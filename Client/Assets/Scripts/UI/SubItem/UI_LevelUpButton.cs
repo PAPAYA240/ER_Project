@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_LevelUpButton : UI_Base
+public class UI_LevelUpButton : Monobehaviour
 {
     enum Buttons
     { 
@@ -26,7 +26,7 @@ public class UI_LevelUpButton : UI_Base
             //Debug.Log("null : _ImageComponent");
         }
 
-        //TODO ÁÖ¼Ò°¡ ÇÏµå ÄÚµùµÇ¾îÀÖÀ½.
+        //TODO ï¿½Ö¼Ò°ï¿½ ï¿½Ïµï¿½ ï¿½Úµï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½.
         _basicImg = Managers.Resource.Load<Sprite>("Sprite/Btn_LevelUp_Basic_02");
         _disabledImg = Managers.Resource.Load<Sprite>("Sprite/Btn_LevelUp_Disabled_02");
         _mouseOverImg = Managers.Resource.Load<Sprite>("Sprite/Btn_LevelUp_MouseOver_02");

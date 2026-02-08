@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class UI_SkillPopupLevelUpValue : UI_Base
+public class UI_SkillPopupLevelUpValue : Monobehaviour
 {
     enum Texts { Key, Values }
 

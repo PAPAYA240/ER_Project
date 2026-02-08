@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_ReadyButton : UI_Base
+public class UI_ReadyButton : Monobehaviour
 {
     enum State
     {

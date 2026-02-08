@@ -91,10 +91,10 @@ public class TheodoreInputController : PlayerInputController
             cc.EndAimMode();
         }
 
-        _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
+        _player.Indicator.DisableIndicator(KeyCode.F1);
         if (_currentSkillKey.HasValue)
         {
-            _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, _currentSkillKey.Value);
+            _player.Indicator.DisableIndicator(_currentSkillKey.Value);
         }
         _player.UI.PlayerInterface.StopChargingBar();
     }
@@ -107,7 +107,7 @@ public class TheodoreInputController : PlayerInputController
         if (_skillCoroutine != null)
             return;
 
-        _player.Indicator.EnableIndicator(_player.ObjInfo.Player.CharType, key);
+        _player.Indicator.EnableIndicator(key);
         switch (key)
         {
         case KeyCode.Q:
@@ -132,7 +132,7 @@ public class TheodoreInputController : PlayerInputController
     #region 스킬 실행
     private void ExecuteSkill(KeyCode key)
     {
-        _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
+        _player.Indicator.DisableIndicator(key);
         _player.UI.PlayerInterface.StopChargingBar();
 
         SendSkillInputPacket(key);
@@ -142,7 +142,7 @@ public class TheodoreInputController : PlayerInputController
 
     private void ExecuteSniperSkill(KeyCode key)
     {
-        _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
+        _player.Indicator.DisableIndicator(key);
         StartCoroutine(SniperSkill(key));
     }
 
@@ -152,7 +152,7 @@ public class TheodoreInputController : PlayerInputController
 
         // 인디케이터
         SendSkillInputPacket(key);
-        _player.Indicator.EnableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
+        _player.Indicator.EnableIndicator(KeyCode.F1);
 
         // 카메라
         CameraController cc = Camera.main.gameObject.GetComponent<CameraController>();
@@ -169,7 +169,7 @@ public class TheodoreInputController : PlayerInputController
             // 1. 스킬 취소
             if (Input.GetMouseButtonDown(1))
             {
-                _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
+                _player.Indicator.DisableIndicator(KeyCode.F1);
                 _skillCoroutine = null;
                 _SniperShotIdx = 0;
                 cc.EndAimMode();
@@ -191,11 +191,11 @@ public class TheodoreInputController : PlayerInputController
          _SniperShotIdx = 0;
         _skillCoroutine = null;
         cc.EndAimMode();
-        _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1);
+        _player.Indicator.DisableIndicator(KeyCode.F1);
     }
     private IEnumerator SniperShooting(KeyCode key)
     {
-        _player.Indicator.ActiveIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1, false);
+        _player.Indicator.ToggleVisual(KeyCode.F1, false);
         yield return new WaitForSeconds(0.5f); 
         ++_SniperShotIdx;
 
@@ -212,7 +212,7 @@ public class TheodoreInputController : PlayerInputController
             yield break;
         }
 
-        _player.Indicator.ActiveIndicator(_player.ObjInfo.Player.CharType, KeyCode.F1, true);
+        _player.Indicator.ToggleVisual(KeyCode.F1, true);
     }
     #endregion
 
@@ -277,7 +277,7 @@ public class TheodoreInputController : PlayerInputController
 
     private void CancelSkill(KeyCode key)
     {
-        _player.Indicator.DisableIndicator(_player.ObjInfo.Player.CharType, key);
+        _player.Indicator.DisableIndicator(key);
         _player.UI.PlayerInterface.StopChargingBar();
 
         _elapsedTime = 0;

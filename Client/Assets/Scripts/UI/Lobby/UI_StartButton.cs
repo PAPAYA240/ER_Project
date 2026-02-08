@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_StartButton : UI_Base
+public class UI_StartButton : Monobehaviour
 {
     Sprite _basicSprite;
     Sprite _rolloverSprite;

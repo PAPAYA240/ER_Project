@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using static CombatTextManager;
 
-public class UI_DamageText : UI_Base
+public class UI_DamageText : Monobehaviour
 {
     #region Member
 

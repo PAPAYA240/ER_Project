@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_SelectedCharacterImage : UI_Base
+public class UI_SelectedCharacterImage : Monobehaviour
 {
     enum Images { CharImage, TraitSkillIcon, WeaponImage, Bar }
     enum Texts { NameText }

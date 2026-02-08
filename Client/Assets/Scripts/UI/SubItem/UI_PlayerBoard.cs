@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_PlayerBoard : UI_Base
+public class UI_PlayerBoard : Monobehaviour
 {
     enum Images
     { 
@@ -30,13 +30,13 @@ public class UI_PlayerBoard : UI_Base
         Leg
     }
 
-    // ¹«¾ùÀ» ¼Õº¸³Ä
-    // Ä³¸¯ÅÍ ÀÌ¹ÌÁö
-    // ·¹º§
-    // ÀÌ¸§
-    // Å³µ«
-    // ¾ÆÀÌÅÛ
-    // ¹è°æ »ö
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Õºï¿½ï¿½ï¿½
+    // Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ï¿½
+    // ï¿½Ì¸ï¿½
+    // Å³ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ ï¿½ï¿½
 
     private PlayerController _targetPc;
 

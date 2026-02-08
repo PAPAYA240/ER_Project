@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_GameResultAlly : UI_Base
+public class UI_GameResultAlly : Monobehaviour
 {
     enum Images { CharImage }
     enum Texts { UserName, Kill, Death, Asist }

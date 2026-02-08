@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_GameResult : UI_Base
+public class UI_GameResult : Monobehaviour
 {
     enum Images { MyChar, MyCharShadow }
     enum Texts 
@@ -61,7 +61,7 @@ public class UI_GameResult : UI_Base
         myChar.sprite = sprite;
         myCharShadow.sprite = sprite;
 
-        // Å©±â Á¶Àý.
+        // Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
         Vector2 size = myChar.sprite.rect.size;
         RectTransform rtChar = myChar.gameObject.GetComponent<RectTransform>();
         RectTransform rtCharShadow = myCharShadow.gameObject.GetComponent<RectTransform>();

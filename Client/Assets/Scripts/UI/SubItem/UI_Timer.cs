@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Playables;
 
-public class UI_Timer : UI_Base
+public class UI_Timer : Monobehaviour
 {
     enum Texts
     {

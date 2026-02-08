@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 
-public class UI_TraitSelect : UI_Base
+public class UI_TraitSelect : Monobehaviour
 {
     [SerializeField]
     UI_TraitButton _havocFirstButton;

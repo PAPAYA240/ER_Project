@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UI_PickScrollView : UI_Base
+public class UI_PickScrollView : Monobehaviour
 {
     enum GameObjects
     { 

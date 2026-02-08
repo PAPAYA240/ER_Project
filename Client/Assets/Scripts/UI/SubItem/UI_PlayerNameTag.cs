@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_PlayerNameTag : UI_Base
+public class UI_PlayerNameTag : Monobehaviour
 {
     enum Images { Hp, FillImage }
 
@@ -133,11 +133,11 @@ public class UI_PlayerNameTag : UI_Base
 
     private bool IsOnScreen(Vector3 screenPoint)
     {
-        // 1. Ä«¸Þ¶ó µÚ¿¡ ÀÖÀ½
+        // 1. Ä«ï¿½Þ¶ï¿½ ï¿½Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (screenPoint.z < 0f) return false;
 
-        // 2. È­¸é °æ°è ¹Û¿¡ ÀÖÀ½ (¾à°£ÀÇ ¿©À¯ °ø°£ Ãß°¡)
-        float margin = 100f; // ÇÈ¼¿ ´ÜÀ§ ¿©À¯°ø°£
+        // 2. È­ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½à°£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½)
+        float margin = 100f; // ï¿½È¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (screenPoint.x < -margin || screenPoint.x > Screen.width + margin ||
             screenPoint.y < -margin || screenPoint.y > Screen.height + margin)
         {            
@@ -159,18 +159,18 @@ public class UI_PlayerNameTag : UI_Base
         {
             tmp.text = name;
             tmp.fontSize = fontSize;
-            tmp.ForceMeshUpdate(); // TMP¿¡ ÅØ½ºÆ® Áï½Ã °»½Å
+            tmp.ForceMeshUpdate(); // TMPï¿½ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
     }
 
     public void SetUntargetable()
     {
-        SetNameText("´ë»ó ÁöÁ¤ ºÒ°¡", 20);
+        SetNameText("ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò°ï¿½", 20);
     }
 
     public void SetUnstoppable()
     {
-        SetNameText("ÀÌµ¿ ¹æÇØ ¸é¿ª", 20);
+        SetNameText("ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½é¿ª", 20);
     }
 
     public void SetTarget(GameObject target)

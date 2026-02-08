@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_ChargingBar : UI_Base
+public class UI_ChargingBar : Monobehaviour
 {
     enum Images { ChargingBarImage }
 

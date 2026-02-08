@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class UI_DamageOverlay : UI_Base 
+public class UI_DamageOverlay : Monobehaviour 
 {
     enum Images
     {

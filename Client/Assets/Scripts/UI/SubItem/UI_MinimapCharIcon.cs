@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UI_MinimapCharIcon;
 
-public class UI_MinimapCharIcon : UI_Base
+public class UI_MinimapCharIcon : Monobehaviour
 {
     enum Images
     { CharImg, BoundaryCircle }
@@ -60,7 +60,7 @@ public class UI_MinimapCharIcon : UI_Base
 
     void Update()
     {
-        //À§Ä¡¸¦ ¾÷µ¥ÀÌÆ®ÇÑ´Ù.
+        //ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½Ñ´ï¿½.
 
         if (Target != null)
         {

@@ -2,7 +2,7 @@ using Google.Protobuf;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UI_BattleBoard : UI_Base
+public class UI_BattleBoard : Monobehaviour
 {
     enum GameObjects
     {

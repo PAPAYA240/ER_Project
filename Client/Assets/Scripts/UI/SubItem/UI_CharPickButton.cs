@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UI_CharPickButton : UI_Base
+public class UI_CharPickButton : Monobehaviour
 {
     enum Texts
     {

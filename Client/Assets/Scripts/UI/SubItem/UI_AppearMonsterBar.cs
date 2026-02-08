@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class UI_AppearMonsterBar : UI_Base
+public class UI_AppearMonsterBar : Monobehaviour
 {
     [SerializeField] public CanvasGroup targetCanvasGroup;
     enum Texts

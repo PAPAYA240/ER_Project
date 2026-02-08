@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_KillNoti : UI_Base
+public class UI_KillNoti : Monobehaviour
 {
     enum Images { KillNoti, KillCharImg, DeathCharImg, WeaponIcon }
     enum Texts { KillPlayerName, DeathPlayerName }

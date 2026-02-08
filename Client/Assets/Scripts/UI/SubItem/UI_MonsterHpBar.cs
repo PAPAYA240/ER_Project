@@ -7,7 +7,7 @@ using UnityEngine.Device;
 using static UI_Minimap;
 using static UnityEngine.GraphicsBuffer;
 
-public class UI_MonsterHpBar : UI_Base
+public class UI_MonsterHpBar : Monobehaviour
 {
     enum Texts 
     { 

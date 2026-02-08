@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_Fade : UI_Base
+public class UI_Fade : Monobehaviour
 {
     enum Images
     { 

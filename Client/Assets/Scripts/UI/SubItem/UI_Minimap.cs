@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static UI_MinimapCharIcon;
 
-public class UI_Minimap : UI_Base
+public class UI_Minimap : Monobehaviour
 {
     // 월드 오브젝트와 미니맵의 연동
     // 플레이어들(8명) 위치를 받아와서 갱신. > 내가 어떤 팀인지 우리팀 누군지 알아야 됨.

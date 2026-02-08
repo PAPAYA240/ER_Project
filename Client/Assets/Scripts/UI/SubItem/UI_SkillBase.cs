@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public abstract class UI_SkillBase : UI_Base
+public abstract class UI_SkillBase : Monobehaviour
 {
     public enum SkillEnum { Q,W,E,R,T,D,F,NONE }
 

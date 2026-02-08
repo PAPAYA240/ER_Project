@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class UI_Stat : UI_Base
+public class UI_Stat : Monobehaviour
 {
     public enum Texts
     {

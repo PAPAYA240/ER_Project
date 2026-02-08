@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
-public class UI_NicknamePopUp : UI_Base
+public class UI_NicknamePopUp : Monobehaviour
 {
     [SerializeField] InputField _nicknameInput;
     [SerializeField] Button _skipButton;
