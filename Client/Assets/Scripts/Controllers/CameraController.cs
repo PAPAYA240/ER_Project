@@ -212,6 +212,7 @@ public class CameraController : MonoBehaviour
                 _smoothTime
              );
 
+            // NOTE. 플레이어가 화면 밖으로 나가지 않도록 체크합니다.
             Vector3 vp = Camera.main.WorldToViewportPoint(playerTransform.position);
             if (vp.x < VIEWPORT_MIN || vp.x > VIEWPORT_MAX || vp.y < VIEWPORT_MIN || vp.y > VIEWPORT_MAX)
             {
