@@ -24,22 +24,11 @@ namespace Server.Game
                 ExecuteIdle(monster);
         }
 
-       // *플레이어를 타게팅 중이지만 공격 대기 중인 경우
-        private void HandleAttackDelay(Monster monster)
-        {
-            if (monster.Info.Monster.MonsterType == MonsterType.Gamma)
-            {
-                //RotateTowardTarget(monster);
-            }
-        }
-
         private void ExecuteActive(Monster monster)
         {
             if (Environment.TickCount64 < _delayTimer)
-            {
-                HandleAttackDelay(monster);
                 return;
-            }
+
             monster.ChangeState(FSMManager.Instance.EvaluateTargetForNextState(monster));
         }
 
@@ -47,7 +36,6 @@ namespace Server.Game
         {
             if (monster.Info.Monster.MonsterType == MonsterType.Turret)
             {
-                // *터렛의 경우 가까이 오면 공격
                 monster.Target = monster.SearchForPlayerInRange();
                 if (monster.Target != null)
                     return;
